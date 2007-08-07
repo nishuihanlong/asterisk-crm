@@ -38,6 +38,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 	/var/www/html/astercrm/includes 	files needed via the PHP scripts, also xajax and xajaxGrid
 	/var/www/html/astercrm/images		image files used via the PHP scripts
 	/var/www/html/astercrm/css		style files used via the PHP scripts
+	/var/www/html/astercrm/js		auto-complete java scripts
 
      It is highly advised that the whole proxyman directory be moved to a more secure
      location like /opt and out of the WEB root directory (see step 4)
@@ -109,34 +110,12 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
    At some point it may be desirable to delete unwanted events from the database
    table. The Python script delete_events.py is designed for this.
    If run from a CRON task:
+     
+	*/2 * * * * /opt/asterisk/scripts/events/delete_events.py >/dev/null 2>&1
 
-      1   0   * * * /opt/asterisk/scripts/events/delete_events.py >/dev/null 2>&1
+   It will delete all events older than the current time (2 mininute).
 
-   It will delete all events older than the current date (as of midnight
-   the previous day).
-
-6) This step is only needed to allow Manager Functions.
-
-   If the web server is not the same server that Asterisk is running on, for
-   the manager commands to work, the file
-
-       /var/www/html/events/includes/manager_login.php
-
-   needs customized. It will by default, try to open the
-
-       /etc/asterisk/manager.conf
-
-   file and get the user and secret from there to  use for Manager Login. 
-   Update it with the correct IP address, manager id and password to make the TCP/IP
-   connection to a different server and delete the code that tries to open the
-   /etc/asterisk/manager.conf file. Edit the file and look at the comments for
-   more information on this.
-
-   This customization is also necessary for the "Queues" option to work. The queues.php
-   code invokes Manager commands to display the Agent and Queue Information. It does not
-   obtain it from the event records.
-
-7) Basic Config: http://localhost/astercrm/manager.php
+6) Basic Config: http://localhost/astercrm/manager.php
    
 	        or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 
