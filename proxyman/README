@@ -1,0 +1,51 @@
+
+ProxyMan.py
+
+  Asterisk Manager Proxy Version 1.0  2006-05-24
+  (included with the Asterisk Event Monitor package)
+
+  This Python script is a multi-threaded server which connects to an
+  Asterisk Manager Interface and logs all messages (events) received.
+
+  The basic functionality is as follows:
+
+    Connects to the Asterisk Manager and listens for all events
+
+    Optionally listens on socket and accepts client connections
+               proxies all client commands to the Asterisk Manager Interface
+               sends all data received from the manager to all connected clients
+
+    Optionally prints data as received (also in optional hex dump format)
+
+    Optionally logs all data to a MySQL database table
+
+
+  For customization option to enable/disable the option functions, look at the
+  ProxMan.py script itself. The comments are the documentation.
+
+delete_events.py
+  A python script to delete old events. Run it via a cron job:
+
+asterstart.py
+  asterstart.py will become a deamon when started and checks that asterisk and
+  proxyman.py are running. If not it starts them.
+
+  at the end of asterstart.py there is a LOOP like this:
+
+  while(1):
+    cnt = check_process('/usr/sbin/asterisk')
+    if cnt == 0:
+      kill_process('/opt/asterisk/scripts/events/ProxyMan.py')
+      start_process('/usr/sbin/asterisk',' -p')
+      time.sleep(1)
+      start_process('/opt/asterisk/scripts/events/ProxyMan.py','')
+    time.sleep(10)
+
+Currently it checks if Asterisk is running. If not it kills any Asterisk related
+programs (like ProxyMan.py) and re-starts Asterisk and ProxyMan.py then re-checks
+every 10 seconds. You can add or delete processes by removing or adding
+kill_process() and start_process() commands.
+
+The start_process function takes two arguments, the command name and optional
+paramaters. The time between checks is changed by replacing the 10 with
+another value (in seconds).

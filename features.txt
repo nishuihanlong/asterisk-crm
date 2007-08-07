@@ -1,0 +1,11 @@
+features:
+
+1.	pop-up when incoming calls 
+2.	suggestion when enter business name or contact 
+3.	account/extension manager
+4.	click to dial
+
+furture:
+
+
+2.	pop-up when outbound calls
