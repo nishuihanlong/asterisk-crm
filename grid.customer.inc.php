@@ -409,7 +409,7 @@ class Customer extends PEAR
 				</tr>
 				<tr id="websiteTR" name="websiteTR">
 					<td nowrap align="left">Website</td>
-					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100"></td>
+					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="http://"><input type="button" value="go" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 				</tr>
 				<tr id="addressTR" name="addressTR">
 					<td nowrap align="left">Address</td>
@@ -660,7 +660,7 @@ function showNoteList($id,$type){
 					</tr>
 					<tr id="websiteTR" name="websiteTR">
 						<td nowrap align="left">Website</td>
-						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"></td>
+						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"><input type="button" value="go" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 					</tr>
 					<tr id="addressTR" name="addressTR">
 						<td nowrap align="left">Address</td>
@@ -759,7 +759,7 @@ function showNoteList($id,$type){
 				</tr>
 				<tr>
 					<td nowrap align="left">Website</td>
-					<td align="left">'.$customer['website'].'</td>
+					<td align="left"><a href="'.$customer['website'].'" target="_blank">'.$customer['website'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">Category</td>

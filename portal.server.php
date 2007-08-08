@@ -15,7 +15,7 @@ function listenCalls($aFormValues){
 }
 
 
-//判断uniqueid是否挂断
+//check if call (uniqueid) hangup
 function incomingCalls($myValue){
 	global $db;
 	$objResponse = new xajaxResponse();

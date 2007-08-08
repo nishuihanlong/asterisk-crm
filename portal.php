@@ -24,6 +24,10 @@ require_once('portal.common.php');
 			}
 		}
 
+		function openWindow(url){
+			window.open(url);
+		}
+
 		function btnConfirmContactOnClick(){
 			if (xajax.$('customerid').value == '')
 				return false;
