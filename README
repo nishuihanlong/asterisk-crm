@@ -24,13 +24,12 @@ processes can run on the same server, however, multiple servers enhance performa
 
 AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 
-1) Download and untar the source
+1) Download and unzip the source
 
      cd /var/www/html
-     wget http://www.magiclink.cn/astercrm/astercrm.tar.gz
-     tar -xzvf astercrm.tar.gz
+     unzip astercrm-X.X-XXXX.zip
 
-     Note: this creates the /var/www/html/events directory which contains the
+     Note: this creates the /var/www/html/astercrm directory which contains the
      PHP scripts and several sub-directories. 
 
         /var/www/html/astercrm			main directory and PHP scripts  
@@ -46,17 +45,20 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 2) Create the MySQL database and table
 
       mysqladmin create asterisk
-      mysql </var/www/html/astercrm.sql
+      mysql </var/www/html/astercrm/astercrm.sql
 
    Note: the astercrm.sql file has the GRANT commands to update MySQL with
          the desired authority. The settings here must match the userid/password
-         specified in the ProxyMan.py script and the includes/db_connect.php script
+         specified in the ProxyMan.py script and the config.php script
 
    Update the /var/www/html/astercrm/config.php script for the
-   correct MySQL login userid/password. Asterisk Manager login username/password. Make sure it matches what was specified
-   in the astercrm.sql and manager.conf file.
+   correct MySQL login userid/password 
+   Make sure it matches what was specified in the astercrm.sql
+   (user: asteriskuser password: asterisk by default)
+   Asterisk Manager login username/password. 
+   Make sure it matches what was specified in the manager.conf file.
 
-   Update the /var/www/html/proxyman/ProxyMan.py script for the correct MySQL
+   Update the /var/www/html/astercrm/proxyman/ProxyMan.py script for the correct MySQL
    login userid/password. Make sure it matches what was specified in the
    astercrm.sql file. ProxMan.py also needs updated with the Asterisk Manager
    password and secret (password), documented in the next step.
@@ -64,6 +66,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
    and their functions.
 
 3) Update /etc/asterisk/manager.conf to enable Manager connections
+   Note: asterisk and astercrm could be on different server
  
        Add something like this to the manager.conf file:
 
@@ -89,11 +92,12 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
         mkdir /opt/asterisk/scripts
         mkdir /opt/asterisk/scripts/events
 	mv /var/www/html/events/proxyman/* /opt/asterisk/scripts/events
+	chown +x /opt/asterisk/scripts/events/*.py
 
 5) Start Asterisk and  ProxyMan.py
 
-   Start ProxyMan (default settings):
 
+   Start ProxyMan (default settings):
 	/opt/asterisk/scripts/events/ProxyMan.py 
 
    OR Start ProxyMan (change settings):
@@ -115,7 +119,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 
    It will delete all events older than the current time (2 mininute).
 
-6) Basic Config: http://localhost/astercrm/manager.php
+6) Extension Config: http://localhost/astercrm/manager.php
    
 	        or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 
@@ -124,6 +128,8 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 7) Testing: browse to http://localhost/astercrm
 
 	        or http://YOUR-WEB-SERVER-ADDRESS/astercrm
+		
+	login with username/password set above
 
 
 ====================================================================================

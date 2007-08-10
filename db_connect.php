@@ -12,5 +12,11 @@ define('SQLC', "$dbtype://$username:$password@$dbhost/$dbname");
 
 $GLOBALS['db'] = DB::connect(SQLC);
 
+// need to check if db connected
+if (DB::iserror($GLOBALS['db'])){
+	die($GLOBALS['db']->getmessage());
+}
+
 $GLOBALS['db']->setFetchMode(DB_FETCHMODE_ASSOC);
+
 ?>

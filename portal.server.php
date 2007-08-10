@@ -39,7 +39,7 @@ function incomingCalls($myValue){
 }
 
 function waitingCalls($myValue){
-	global $db;
+	global $db,$length;
 	$objResponse = new xajaxResponse();
 	//query if there's new call since last call
 
@@ -85,12 +85,17 @@ function waitingCalls($myValue){
 		}
 		$callerid = trim($callerid);
 		
+//		$objResponse->addAssign("myevents","innerHTML", "Incoming call from " . $callerid );
+//		return $objResponse;
+
 		//判断callerid是否有效(包括无callerid,或者是内线)
 
 		//check if callerid valid
 
-//		if (strlen($callerid) < 6)
-//			return $objResponse;
+		if (strlen($callerid) < $length){
+			$objResponse->addAssign("myevents","innerHTML", "Incoming call from " . $callerid );
+			return $objResponse;
+		}
 
 		//判断是否有新的记录
 		//check if there're phone records already
@@ -140,7 +145,7 @@ function waitingCalls($myValue){
 			$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
 
-		}else {	//多条匹配...
+		}else {	//match a lot records... [only display the first one for now]
 			$res->fetchInto($list);
 			$customerid = $list['customerid'];
 			$contactid = $list['id'];
@@ -194,7 +199,7 @@ function waitingCalls($myValue){
 				$objResponse->addAssign("callerid","value", "" );
 			}else{
 				$objResponse->addAssign("myevents","innerHTML", $res->numRows() );
-				$objResponse->addAssign("status","innerHTML", "no callerid" );
+				$objResponse->addAssign("status","innerHTML", "$event" );
 				//$objResponse->addAssign("uniqueid","value", "" );
 				//$objResponse->addAssign("callerid","value", "" );
 			}
@@ -205,31 +210,15 @@ function waitingCalls($myValue){
 				$objResponse->addAssign("callerid","value", "" );
 		}
 	}
-/*
-	$result = mysql_query($query);
-	$erno = mysql_errno();
-	$err  = mysql_error();
-	if ($erno <> 0) die($action."|".$query."<br>".$err);
 
-	$count = mysql_num_rows($result);
-	
-	if ($count == 0){//没有新的来电
-
-
-	}else{	//有新的来电
-
-	}
-
-	mysql_close($mylink);
-*/
 	return $objResponse;
 }
 
 /*
-根据被叫channel的uniqueid从数据库匹配DestUniqueID
-以获得
-SrcUniqueID、CallerID和CallerIDName
+get SrcUniqueID、CallerID and CallerIDName from database 
+the rule is DestUniqueID = uniqueid
 */
+
 function getCallerID($vUniqueID){
 	global $db;
 	$vUniqueID = trim($vUniqueID);
@@ -259,7 +248,7 @@ function getCallerID($vUniqueID){
 	return $myArray;
 }
 
-//	创建grid
+//	create grid
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 
 	$_SESSION['ordering'] = $ordering;
@@ -631,6 +620,10 @@ function updateField($table, $field, $cell, $value, $id){
 	Customer::updateField($table,$field,$value,$id);
 	return $objResponse->getXML();
 }
+
+# click to dial
+# $phoneNum	phone to call
+# $first	which phone will ring first, caller or callee
 
 function dial($phoneNum,$first = 'caller'){
 	global $outcontext,$incontext;

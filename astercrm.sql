@@ -1,6 +1,6 @@
 #DROP DATABASE asterisk;
 
-CREATE DATABASE asterisk;
+#CREATE DATABASE asterisk;
 
 GRANT ALL
   ON asterisk.*
@@ -17,7 +17,7 @@ CREATE TABLE contact (
   position varchar(100) NOT NULL default '',
   phone varchar(50) NOT NULL default '',
   ext varchar(8) NOT NULL default '',
-  phone1 varchar(50) character set utf8 collate utf8_unicode_ci NOT NULL default '',
+  phone1 varchar(50) NOT NULL default '',
   ext1 varchar(8) NOT NULL default '',
   phone2 varchar(50) NOT NULL default '',
   ext2 varchar(8) NOT NULL default '',
@@ -32,13 +32,13 @@ CREATE TABLE contact (
 
 CREATE TABLE customer (
   id int(11) NOT NULL auto_increment,
-  customer varchar(120) character set utf8 collate utf8_unicode_ci NOT NULL default '',
-  address varchar(200) character set utf8 collate utf8_unicode_ci NOT NULL default '',
+  customer varchar(120) NOT NULL default '',
+  address varchar(200) NOT NULL default '',
   zipcode varchar(10) NOT NULL default '',
-  website varchar(100) character set utf8 collate utf8_unicode_ci NOT NULL default '',
-  category varchar(20) character set utf8 collate utf8_unicode_ci NOT NULL default '',
+  website varchar(100) NOT NULL default '',
+  category varchar(20) NOT NULL default '',
   cretime date NOT NULL default '0000-00-00',
-  creby varchar(30) character set utf8 collate utf8_unicode_ci NOT NULL default '',
+  creby varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
 
@@ -51,10 +51,10 @@ CREATE TABLE events (
 
 CREATE TABLE note (
   id int(11) NOT NULL auto_increment,
-  note text character set utf8 collate utf8_unicode_ci NOT NULL,
+  note text NOT NULL,
   priority int(11) NOT NULL default '0',
   cretime date NOT NULL default '0000-00-00',
-  creby varchar(30) character set utf8 collate utf8_unicode_ci NOT NULL default '',
+  creby varchar(30) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   contactid int(11) NOT NULL default '0',
   UNIQUE KEY id (id)
