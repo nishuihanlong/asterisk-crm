@@ -398,7 +398,7 @@ class Customer extends PEAR
 			
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">Incoming calls from '. $callerid .' </td>
+				<td nowrap align="left" colspan="2">Phone Number: '. $callerid .' </td>
 			</tr>';
 	
 	if ($customerid == null){

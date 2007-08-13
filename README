@@ -7,7 +7,10 @@
 
 The AsterCRM Lite is a WEB/AJAX based 'Call Center' system. 
 
-First, Asterisk Events are captured as the occur via a python script called ProxyMan.py and logged to a MySQl database table(using script from Asterisk Event Monitor by earl@micpc.com). Since Asterisk is sending these events as they occur (and not being polled for these events), this leads to a more efficient Asterisk interface.
+First, Asterisk Events are captured as the occur via a python script called ProxyMan.py and
+logged to a MySQl database table(using script from Asterisk Event Monitor by earl@micpc.com).
+Since Asterisk is sending these events as they occur (and not being polled for these events),
+this leads to a more efficient Asterisk interface.
 
 ProxyMan.py is a Python script which connects to the Asterisk Manager
 Interface via a TCP/IP connection, listens for any events or messages coming from
@@ -17,7 +20,8 @@ ProxyMan can be run on any machine with a TCP/IP connection to the Asterisk serv
 i.e. it does not have to run on the same machine as Asterisk.
 More information on the function of ProxyMan can be found in its source comments.
 
-WEB PHP scripts will analyze Asterisk Events in database, and finish call center jobs, such as pop-up, click to dial, call queue ... 
+WEB PHP scripts will analyze Asterisk Events in database, and finish call center jobs, 
+such as pop-up, click to dial, call queue ... 
 
 The AsterCRM Lite scripts require a running WEB and MySQL server. All of these 
 processes can run on the same server, however, multiple servers enhance performance.
@@ -42,7 +46,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
      It is highly advised that the whole proxyman directory be moved to a more secure
      location like /opt and out of the WEB root directory (see step 4)
 
-2) Create the MySQL database and table
+2) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
       mysqladmin create asterisk
       mysql </var/www/html/astercrm/astercrm.sql

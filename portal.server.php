@@ -42,16 +42,24 @@ function waitingCalls($myValue){
 	global $db,$length;
 	$objResponse = new xajaxResponse();
 	//query if there's new call since last call
+	$curid = trim($myValue['curid']);
 
-	$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE '%State: Ringing%' AND id > " . $myValue['curid'] . " order by id desc";
 
+	$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE 'Event: Newchannel%State: Ringing%' AND id > " . $curid . " order by id desc";
+
+/*	$now = date("Y-M-d H:i:s");
+   		
+	$fd = fopen ("/tmp/xajaxDebug.log",'a');
+	$log = $now." ".$_SERVER["REMOTE_ADDR"] ." - $query \n";
+	fwrite($fd,$log);
+   	fclose($fd);
+*/
 	$res = $db->query($query);
 
 
 	if ( $res->numRows() > 0 ){//有新的来电
 //		$numfields = mysql_num_fields($result);
 		$rows = 0;
-		$curid = $myValue['curid'];
 		while ($res->fetchInto($list)) {
 //			$list      = mysql_fetch_assoc($result);
 			$id        = $list['id'];
@@ -83,84 +91,17 @@ function waitingCalls($myValue){
 			if ($id > $curid) $curid = $id;
 //			$rows++;
 		}
+
 		$callerid = trim($callerid);
 		
-//		$objResponse->addAssign("myevents","innerHTML", "Incoming call from " . $callerid );
-//		return $objResponse;
-
-		//判断callerid是否有效(包括无callerid,或者是内线)
-
-		//check if callerid valid
-
-		if (strlen($callerid) < $length){
-			$objResponse->addAssign("myevents","innerHTML", "Incoming call from " . $callerid );
-			return $objResponse;
-		}
-
-		//判断是否有新的记录
-		//check if there're phone records already
-
-		$query = '
-				SELECT id,customerid 
-				FROM contact
-				WHERE phone LIKE \'%'. $callerid . '%\'
-				OR phone1 LIKE \'%'. $callerid . '%\'
-				OR phone2 LIKE \'%'. $callerid . '%\'
-				OR mobile LIKE \'%'. $callerid . '%\'
-				 ' ;
-
-		$res = $db->query($query);
-/*
-		$result = mysql_query($query);
-		$erno = mysql_errno();
-		$err  = mysql_error();
-		if ($erno <> 0) die($action."|".$query."<br>".$err);
-
-		$count = mysql_num_rows($result);
-*/
-		$objResponse->addAssign("myevents","innerHTML", "Incoming call from " . $callerid );
-		$objResponse->addScript('document.title='.$callerid.';');
-		$objResponse->addAssign("status","innerHTML", "ringing" );
-		$objResponse->addAssign("uniqueid","value", $uniqueid );
-		$objResponse->addAssign("callerid","value", $callerid );
-		$objResponse->addAssign("curid","value", $curid );
-
-
-		if ($res->numRows() == 0){	//no match
-			
-			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
-
-		} elseif ($res->numRows() == 1) { // one match
-
-			$res->fetchInto($list);
-			$customerid = $list['customerid'];
-			$contactid = $list['id'];
-		
-			$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
-			$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
-			$html .= Table::Footer();
-			$objResponse->addAssign("formDiv", "style.visibility", "visible");
-			$objResponse->addAssign("formDiv", "innerHTML", $html);
-
-			$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
-			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
-
-		}else {	//match a lot records... [only display the first one for now]
-			$res->fetchInto($list);
-			$customerid = $list['customerid'];
-			$contactid = $list['id'];
-		
-			$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
-			$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
-			$html .= Table::Footer();
-			$objResponse->addAssign("formDiv", "style.visibility", "visible");
-			$objResponse->addAssign("formDiv", "innerHTML", $html);
-
-			$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
-			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
-		}
+		$call['phoneNum'] = $callerid;
+		$call['uniqueid'] = trim($uniqueid);
+		$call['callerid'] = $callerid;
+		$call['curid'] = trim($curid);
+		$call['info'] = "Incoming call from " . $call['phoneNum'];
+		return newCalls($call);
 	}else{//没有新的来电
-		$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE '%Dial%' AND id > " . $myValue['curid'] . " order by id desc";	//判断是否有拨出的电话
+		$query = "SELECT * FROM events WHERE event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE 'Event: Dial%' AND id > " . $curid . " order by id desc";	//判断是否有拨出的电话
 
 		$res = $db->query($query);
 		if ( $res->numRows() > 0 ){//有新的拨出
@@ -176,42 +117,53 @@ function waitingCalls($myValue){
 				$callerid  = '';
 				$transferid= '';
 
-				for($i=4;$i<$c;++$i) {
-					if ($flds[1] == 'Dial'){
-						if (strstr($flds[$i],"CallerID:"))	//尝试获取callerid
-							$callerid = substr($flds[$i],9);
 
-						if (strstr($flds[$i],"Uniqueid:")){	//获取uniqueid
-							$uniqueid = substr($flds[$i],9);
-							$dstInfo = getCallerID($uniqueid);
-							$callerid = $dstInfo['CallerID'] ;
-						}
-					}
+				if ($flds[0] == 'Event: Dial'){
+					$SrcUniqueID = substr($flds[6],12);
+
+					$srcInfo = getInfoBySrcID($SrcUniqueID);
+					$callerid = $srcInfo['Extension'] ;
 				}
 			}
 			
 			if ($id > $curid) $curid = $id;
 
-			if ($callerid != ''){
-				$objResponse->addAssign("myevents","innerHTML", $res->numRows() );
-				$objResponse->addAssign("status","innerHTML", $callerid );
-				$objResponse->addAssign("uniqueid","value", "" );
-				$objResponse->addAssign("callerid","value", "" );
-			}else{
-				$objResponse->addAssign("myevents","innerHTML", $res->numRows() );
-				$objResponse->addAssign("status","innerHTML", "$event" );
-				//$objResponse->addAssign("uniqueid","value", "" );
-				//$objResponse->addAssign("callerid","value", "" );
-			}
+			$callerid = trim($callerid);
+			$call['phoneNum'] = $callerid;
+			$call['uniqueid'] = trim($SrcUniqueID);
+			$call['callerid'] = $callerid;
+			$call['curid'] = trim($curid);
+			$call['info'] = "Dial to " . $call['phoneNum'];
+			return newCalls($call);
 		}else{
 				$objResponse->addAssign("myevents","innerHTML", "waiting" );
 				$objResponse->addAssign("status","innerHTML", "listening" );
 				$objResponse->addAssign("uniqueid","value", "" );
 				$objResponse->addAssign("callerid","value", "" );
+				$objResponse->addAssign("curid","value", $curid );
 		}
 	}
 
 	return $objResponse;
+}
+
+function getInfoBySrcID($SrcUniqueID){
+	global $db;
+	$SrcUniqueID = trim($SrcUniqueID);
+	$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%'";
+	$res = $db->query($query);
+	if ($res->fetchInto($list)){
+		$event = $list['event'];
+		$flds = split("  ",$event);
+
+		foreach ($flds as $myFld) {
+			if (strstr($myFld,"Extension:")){	
+				$myArray['Extension'] = substr($myFld,10);
+			} 
+		}
+	}
+
+	return $myArray;
 }
 
 /*
@@ -225,11 +177,6 @@ function getCallerID($vUniqueID){
 	$query  = "SELECT * FROM events WHERE event LIKE '%DestUniqueID: $vUniqueID%'";
 	$res = $db->query($query);
 
-//	$result = mysql_query($query);
-//	$erno = mysql_errno();
-//	$err  = mysql_error();
-//	if ($erno <> 0) die($action."|".$query."<br>".$err);
-//	$list  = mysql_fetch_assoc($result);
 	if ($res->fetchInto($list)){
 		$event = $list['event'];
 		$flds = split("  ",$event);
@@ -647,6 +594,75 @@ function dial($phoneNum,$first = 'caller'){
 	}
 	return $objResponse->getXML();
 }
+
+function newCalls($call){
+	global $db;	
+	$objResponse = new xajaxResponse();
+
+//	$objResponse->addAlert($call['phoneNum']);
+//	return $objResponse;
+
+	//判断是否有新的记录
+	//check if there're phone records already
+
+	$query = '
+			SELECT id,customerid 
+			FROM contact
+			WHERE phone LIKE \'%'. $call['phoneNum'] . '%\'
+			OR phone1 LIKE \'%'. $call['phoneNum'] . '%\'
+			OR phone2 LIKE \'%'. $call['phoneNum'] . '%\'
+			OR mobile LIKE \'%'. $call['phoneNum'] . '%\'
+			 ' ;
+	
+//	$objResponse->addAssign("status","innerHTML", "$query" );
+//	return $objResponse;
+	$res = $db->query($query);
+
+	$objResponse->addScript('document.title='.$call['phoneNum'].';');
+	$objResponse->addAssign("status","innerHTML", "ringing" );
+	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
+	$objResponse->addAssign("callerid","value", $call['callerid'] );
+	$objResponse->addAssign("curid","value", $call['curid'] );
+	$objResponse->addAssign("myevents","innerHTML", $call['info']);
+
+
+	if ($res->numRows() == 0){	//no match
+		
+		$objResponse->addScript('xajax_add(\'' . $call['phoneNum'] . '\');');
+
+	} elseif ($res->numRows() == 1) { // one match
+
+		$res->fetchInto($list);
+		$customerid = $list['customerid'];
+		$contactid = $list['id'];
+		
+		$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
+		$html .= Customer::formAdd($call['phoneNum'],$customerid,$contactid);  // <-- Change by your method
+		$html .= Table::Footer();
+		$objResponse->addAssign("formDiv", "style.visibility", "visible");
+		$objResponse->addAssign("formDiv", "innerHTML", $html);
+
+		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
+		$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
+
+	}else {	//match a lot records... [only display the first one for now]
+		$res->fetchInto($list);
+		$customerid = $list['customerid'];
+		$contactid = $list['id'];
+		
+		$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
+		$html .= Customer::formAdd($call['phoneNum'],$customerid,$contactid);  // <-- Change by your method
+		$html .= Table::Footer();
+		$objResponse->addAssign("formDiv", "style.visibility", "visible");
+		$objResponse->addAssign("formDiv", "innerHTML", $html);
+
+		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
+		$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
+	}
+
+	return $objResponse;
+}
+
 $xajax->processRequests();
 
 ?>
