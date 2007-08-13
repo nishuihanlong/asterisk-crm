@@ -60,6 +60,7 @@ require_once('portal.common.php');
 		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
+		<input type="hidden" name="direction" id="direction" value=""/>
 		<div id="debug"></div>
 	</form>
 

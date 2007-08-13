@@ -26,7 +26,11 @@ function transfer($aFormValues){
 		$objResponse->addAssign("debug", "innerText", "Failed");
 
 	//$strChannel = "Local/".$phoneNum."@".$config['OUTCONTEXT']."";
-	$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
+	if ($aFormValues['direction'] == 'in')		
+		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
+	else
+		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
+
 
 //	$objResponse->addAlert("Fine");
 	return $objResponse;
@@ -52,10 +56,16 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("curid","value", $curid );
 			$transfer = '
 						<SELECT id="sltExten" name="sltExten">
-							<option value="8201">8201</option>
-							<option value="8701">8701</option>
-							<option value="8702">8702</option>
-							<option value="8707">8707</option>
+						';
+			$query = "SELECT * FROM account WHERE extension <> '".$_SESSION['curuser']['extension']."'";
+			$myres = $db->query($query);
+			while ($myres->fetchInto($list)){
+				$transfer .= '
+								<option value="'.$list['extension'].'">'.$list['extension'].'</option>
+							';
+			}
+
+			$transfer .= '
 						</SELECT>
 						<INPUT type="BUTTON" value="Transfer" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
 						';
@@ -152,6 +162,7 @@ function waitingCalls($myValue){
 		$call['callerid'] = $callerid;
 		$call['curid'] = trim($curid);
 		$call['info'] = "Incoming call from " . $call['phoneNum'];
+		$call['direction'] = "in";
 		return newCalls($call);
 	}else{//没有新的来电
 		if ($config['POP_UP_WHEN_DIAL_OUT']){
@@ -189,6 +200,7 @@ function waitingCalls($myValue){
 				$call['callerid'] = $callerid;
 				$call['curid'] = trim($curid);
 				$call['info'] = "Dial to " . $call['phoneNum'];
+				$call['direction'] = "out";
 				return newCalls($call);
 			}else{
 					$objResponse->addAssign("myevents","innerHTML", "waiting" );
@@ -670,6 +682,7 @@ function newCalls($call){
 	$objResponse->addAssign("curid","value", $call['curid'] );
 	$objResponse->addAssign("callerChannel","value", '' );
 	$objResponse->addAssign("calleeChannel","value", '' );
+	$objResponse->addAssign("direction","value", $call['direction'] );
 	$objResponse->addAssign("myevents","innerHTML", $call['info']);
 
 
