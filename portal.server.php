@@ -39,7 +39,7 @@ function incomingCalls($myValue){
 }
 
 function waitingCalls($myValue){
-	global $db,$length;
+	global $db,$config;
 	$objResponse = new xajaxResponse();
 	//query if there's new call since last call
 	$curid = trim($myValue['curid']);
@@ -101,46 +101,48 @@ function waitingCalls($myValue){
 		$call['info'] = "Incoming call from " . $call['phoneNum'];
 		return newCalls($call);
 	}else{//没有新的来电
-		$query = "SELECT * FROM events WHERE event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE 'Event: Dial%' AND id > " . $curid . " order by id desc";	//判断是否有拨出的电话
+		if ($config['POP_UP_WHEN_DIAL_OUT']){
+			$query = "SELECT * FROM events WHERE event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE 'Event: Dial%' AND id > " . $curid . " order by id desc";	//判断是否有拨出的电话
 
-		$res = $db->query($query);
-		if ( $res->numRows() > 0 ){//有新的拨出
-			$rows = 0;
-			$curid = $myValue['curid'];
-			while ($res->fetchInto($list)) {
+			$res = $db->query($query);
+			if ( $res->numRows() > 0 ){//有新的拨出
+				$rows = 0;
+				$curid = $myValue['curid'];
+				while ($res->fetchInto($list)) {
 
-				$id        = $list['id'];
-				$timestamp = $list['timestamp'];
-				$event     = $list['event'];
-				$flds      = split("  ",$event);
-				$c         = count($flds);
-				$callerid  = '';
-				$transferid= '';
+					$id        = $list['id'];
+					$timestamp = $list['timestamp'];
+					$event     = $list['event'];
+					$flds      = split("  ",$event);
+					$c         = count($flds);
+					$callerid  = '';
+					$transferid= '';
 
 
-				if ($flds[0] == 'Event: Dial'){
-					$SrcUniqueID = substr($flds[6],12);
+					if ($flds[0] == 'Event: Dial'){
+						$SrcUniqueID = substr($flds[6],12);
 
-					$srcInfo = getInfoBySrcID($SrcUniqueID);
-					$callerid = $srcInfo['Extension'] ;
+						$srcInfo = getInfoBySrcID($SrcUniqueID);
+						$callerid = $srcInfo['Extension'] ;
+					}
 				}
-			}
-			
-			if ($id > $curid) $curid = $id;
+				
+				if ($id > $curid) $curid = $id;
 
-			$callerid = trim($callerid);
-			$call['phoneNum'] = $callerid;
-			$call['uniqueid'] = trim($SrcUniqueID);
-			$call['callerid'] = $callerid;
-			$call['curid'] = trim($curid);
-			$call['info'] = "Dial to " . $call['phoneNum'];
-			return newCalls($call);
-		}else{
-				$objResponse->addAssign("myevents","innerHTML", "waiting" );
-				$objResponse->addAssign("status","innerHTML", "listening" );
-				$objResponse->addAssign("uniqueid","value", "" );
-				$objResponse->addAssign("callerid","value", "" );
-				$objResponse->addAssign("curid","value", $curid );
+				$callerid = trim($callerid);
+				$call['phoneNum'] = $callerid;
+				$call['uniqueid'] = trim($SrcUniqueID);
+				$call['callerid'] = $callerid;
+				$call['curid'] = trim($curid);
+				$call['info'] = "Dial to " . $call['phoneNum'];
+				return newCalls($call);
+			}else{
+					$objResponse->addAssign("myevents","innerHTML", "waiting" );
+					$objResponse->addAssign("status","innerHTML", "listening" );
+					$objResponse->addAssign("uniqueid","value", "" );
+					$objResponse->addAssign("callerid","value", "" );
+					$objResponse->addAssign("curid","value", $curid );
+			}
 		}
 	}
 
@@ -573,7 +575,7 @@ function updateField($table, $field, $cell, $value, $id){
 # $first	which phone will ring first, caller or callee
 
 function dial($phoneNum,$first = 'caller'){
-	global $outcontext,$incontext;
+	global $config;
 	global $asmanager;
 	$myAsterisk = new Asterisk();
 	$myAsterisk->config['asmanager'] = $asmanager;
@@ -586,21 +588,33 @@ function dial($phoneNum,$first = 'caller'){
 	$first = 'callee';
 
 	if ($first == 'caller'){	//caller phone will ring first
-		$strChannel = "Local/".$phoneNum."@".$outcontext."";
-		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$incontext,1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
+		$strChannel = "Local/".$phoneNum."@".$config['OUTCONTEXT']."";
+		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['INCONTEXT'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
 	}else{
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$incontext."";
-		$myAsterisk->Originate($strChannel,$phoneNum,$outcontext,1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['INCONTEXT']."";
+//		$objResponse->addAlert($strChannel);
+//		return $objResponse;
+		$myAsterisk->Originate($strChannel,$phoneNum,$config['OUTCONTEXT'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
 	}
 	return $objResponse->getXML();
 }
 
 function newCalls($call){
-	global $db;	
+	global $db,$config;	
 	$objResponse = new xajaxResponse();
 
-//	$objResponse->addAlert($call['phoneNum']);
-//	return $objResponse;
+	$objResponse->addScript('document.title='.$call['phoneNum'].';');
+	$objResponse->addAssign("status","innerHTML", "ringing" );
+	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
+	$objResponse->addAssign("callerid","value", $call['callerid'] );
+	$objResponse->addAssign("curid","value", $call['curid'] );
+	$objResponse->addAssign("myevents","innerHTML", $call['info']);
+
+
+	//check if callerid is long enough
+
+	if (strlen($call['phoneNum'])<$config['PHONE_NUMBER_LENGTH'])
+		return $objResponse;
 
 	//判断是否有新的记录
 	//check if there're phone records already
@@ -617,14 +631,6 @@ function newCalls($call){
 //	$objResponse->addAssign("status","innerHTML", "$query" );
 //	return $objResponse;
 	$res = $db->query($query);
-
-	$objResponse->addScript('document.title='.$call['phoneNum'].';');
-	$objResponse->addAssign("status","innerHTML", "ringing" );
-	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
-	$objResponse->addAssign("callerid","value", $call['callerid'] );
-	$objResponse->addAssign("curid","value", $call['curid'] );
-	$objResponse->addAssign("myevents","innerHTML", $call['info']);
-
 
 	if ($res->numRows() == 0){	//no match
 		
