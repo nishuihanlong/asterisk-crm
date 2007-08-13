@@ -31,6 +31,7 @@ $xajax->registerFunction("showCustomer");
 $xajax->registerFunction("showContact");
 $xajax->registerFunction("showNote");
 $xajax->registerFunction("dial");
+$xajax->registerFunction("transfer");
 //$xajax->processRequests();
 
 //$xajax->processRequests();

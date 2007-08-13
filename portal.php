@@ -46,9 +46,9 @@ require_once('portal.common.php');
 	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
 	<body onload="updateEvents();">
-	Welcome <span id="username"><?echo $_SESSION['curuser']['username'];?></span>, your extension is <span id="extension"><?echo $_SESSION['curuser']['extension'];?></span>
+	Welcome <span id="username"><?echo $_SESSION['curuser']['username'];?></span>, your extension is <span id="extension"><?echo $_SESSION['curuser']['extension'];?></span>&nbsp;
 	<form name="myForm" id="myForm">
-
+		<span id="transfer" name="transfer"></span>
 		<div id="formWrapper">
 		</div>
 		
@@ -58,6 +58,8 @@ require_once('portal.common.php');
 		<input type="hidden" name="callerid" id="callerid" value=""/>
 		<input type="hidden" name="curid" id="curid" value="0"/>
 		<input type="hidden" name="extension" id="extension" value=""/>
+		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
+		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<div id="debug"></div>
 	</form>
 

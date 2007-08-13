@@ -14,12 +14,61 @@ function listenCalls($aFormValues){
 	}
 }
 
+//transfer
+function transfer($aFormValues){
+	global $config;
+	global $asmanager;
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $asmanager;
+	$res = $myAsterisk->connect();
+	$objResponse = new xajaxResponse();
+	if (!$res)
+		$objResponse->addAssign("debug", "innerText", "Failed");
+
+	//$strChannel = "Local/".$phoneNum."@".$config['OUTCONTEXT']."";
+	$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
+
+//	$objResponse->addAlert("Fine");
+	return $objResponse;
+}
 
 //check if call (uniqueid) hangup
 function incomingCalls($myValue){
 	global $db;
 	$objResponse = new xajaxResponse();
-	$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE '%Hangup%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc limit 2";
+	if ($myValue['callerChannel'] == ''){
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc ";
+		$res = $db->query($query);
+
+		if ($res->fetchInto($list)){	// call connected
+
+			$curid	= $list['id'];
+			$flds	= split("  ",$list['event']);
+
+			$objResponse->addAssign("status","innerHTML", "connected" );
+			$objResponse->addAssign("myevents","innerHTML", "talking to " . $myValue['callerid'] );
+			$objResponse->addAssign("callerChannel","value", trim(substr($flds[2],9)));
+			$objResponse->addAssign("calleeChannel","value", trim(substr($flds[3],9)));
+			$objResponse->addAssign("curid","value", $curid );
+			$transfer = '
+						<SELECT id="sltExten" name="sltExten">
+							<option value="8201">8201</option>
+							<option value="8701">8701</option>
+							<option value="8702">8702</option>
+							<option value="8707">8707</option>
+						</SELECT>
+						<INPUT type="BUTTON" value="Transfer" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
+						';
+			$objResponse->addAssign("transfer","innerHTML", $transfer );
+
+//			$objResponse->addAssign("myevents","innerHTML", $flds[3] );
+
+			return $objResponse;
+		}
+	}
+
+	//$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE '%Hangup%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc ";
+	$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc ";
 
 	$res = $db->query($query);
 
@@ -31,7 +80,11 @@ function incomingCalls($myValue){
 		$objResponse->addAssign("myevents","innerHTML", "Hang up call from " . $myValue['callerid'] );
 		$objResponse->addAssign("uniqueid","value", "" );
 		$objResponse->addAssign("callerid","value", "" );
+		$objResponse->addAssign("callerChannel","value", '');
+		$objResponse->addAssign("calleeChannel","value", '');
 		$objResponse->addAssign("curid","value", $curid );
+		$objResponse->addAssign("transfer","innerHTML", '' );
+
 	}
 //	}
 //	mysql_close($mylink);
@@ -124,6 +177,7 @@ function waitingCalls($myValue){
 
 						$srcInfo = getInfoBySrcID($SrcUniqueID);
 						$callerid = $srcInfo['Extension'] ;
+						//$channel = $srcInfo['Channel'] ;
 					}
 				}
 				
@@ -141,6 +195,8 @@ function waitingCalls($myValue){
 					$objResponse->addAssign("status","innerHTML", "listening" );
 					$objResponse->addAssign("uniqueid","value", "" );
 					$objResponse->addAssign("callerid","value", "" );
+					$objResponse->addAssign("callerChannel","value", "" );
+					$objResponse->addAssign("calleeChannel","value", "" );
 					$objResponse->addAssign("curid","value", $curid );
 			}
 		}
@@ -162,6 +218,10 @@ function getInfoBySrcID($SrcUniqueID){
 			if (strstr($myFld,"Extension:")){	
 				$myArray['Extension'] = substr($myFld,10);
 			} 
+			if (strstr($myFld,"Channel:")){	
+				$myArray['Channel'] = substr($myFld,8);
+			} 
+
 		}
 	}
 
@@ -608,6 +668,8 @@ function newCalls($call){
 	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
 	$objResponse->addAssign("callerid","value", $call['callerid'] );
 	$objResponse->addAssign("curid","value", $call['curid'] );
+	$objResponse->addAssign("callerChannel","value", '' );
+	$objResponse->addAssign("calleeChannel","value", '' );
 	$objResponse->addAssign("myevents","innerHTML", $call['info']);
 
 

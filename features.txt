@@ -5,6 +5,7 @@ features:
 3.	account/extension manager
 4.	click to dial
 5.	pop-up when outbound calls
+6.	click to transfer
 
 furture:
 
