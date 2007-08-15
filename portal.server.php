@@ -299,8 +299,8 @@ function confirmContact($contactName,$customerID,$callerID){
 //		$contact = Customer::getContactByID
 //		$objResponse->addAssign("position","value", $contactID );
 //		$objResponse->addScript("xajax_fillContact($customerID)");
-	} else
-			$objResponse->addAlert("不存在" );
+	} //else
+//			$objResponse->addAlert("不存在" );
 
 	return $objResponse;
 }
