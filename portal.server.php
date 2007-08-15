@@ -1,7 +1,8 @@
 <?php
-require_once ("portal.common.php");
 require_once ("db_connect.php");
+require_once ("portal.common.php");
 require_once ('grid.customer.inc.php');
+require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterisk.php');
 
@@ -40,20 +41,18 @@ function transfer($aFormValues){
 function incomingCalls($myValue){
 	global $db;
 	$objResponse = new xajaxResponse();
-	if ($myValue['callerChannel'] == ''){
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc ";
-		$res = $db->query($query);
 
-		if ($res->fetchInto($list)){	// call connected
+	if ($myValue['direction'] != ''){
 
-			$curid	= $list['id'];
-			$flds	= split("  ",$list['event']);
+		$call = asterEvent::checkCallStatus($myValue['curid'],$myValue['uniqueid']);
 
-			$objResponse->addAssign("status","innerHTML", "connected" );
-			$objResponse->addAssign("myevents","innerHTML", "talking to " . $myValue['callerid'] );
-			$objResponse->addAssign("callerChannel","value", trim(substr($flds[2],9)));
-			$objResponse->addAssign("calleeChannel","value", trim(substr($flds[3],9)));
-			$objResponse->addAssign("curid","value", $curid );
+		if ($call['status'] ==''){
+			return $objResponse;
+		} elseif ($call['status'] =='link'){
+			$status	= 'link';
+			$info	= 'talking to '.$myValue['callerid'];
+			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
+			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
 			$transfer = '
 						<SELECT id="sltExten" name="sltExten">
 						';
@@ -71,202 +70,64 @@ function incomingCalls($myValue){
 						';
 			$objResponse->addAssign("transfer","innerHTML", $transfer );
 
-//			$objResponse->addAssign("myevents","innerHTML", $flds[3] );
 
-			return $objResponse;
+		} elseif ($call['status'] =='hangup'){
+			$status	= 'hang up';
+			$info	= "Hang up call from " . $myValue['callerid'];
+			$objResponse->addAssign("uniqueid","value", "" );
+			$objResponse->addAssign("callerid","value", "" );
+			$objResponse->addAssign("callerChannel","value", '');
+			$objResponse->addAssign("calleeChannel","value", '');
 		}
+		$objResponse->addAssign("status","innerHTML", $status );
+		$objResponse->addAssign("myevents","innerHTML", $info );
 	}
 
-	//$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE '%Hangup%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc ";
-	$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $myValue['uniqueid'] . "%' order by id desc ";
-
-	$res = $db->query($query);
-
-	if ($res->fetchInto($list)){	// call hangup
-
-		$curid        = $list['id'];
-
-		$objResponse->addAssign("status","innerHTML", "hangup" );
-		$objResponse->addAssign("myevents","innerHTML", "Hang up call from " . $myValue['callerid'] );
-		$objResponse->addAssign("uniqueid","value", "" );
-		$objResponse->addAssign("callerid","value", "" );
-		$objResponse->addAssign("callerChannel","value", '');
-		$objResponse->addAssign("calleeChannel","value", '');
-		$objResponse->addAssign("curid","value", $curid );
-		$objResponse->addAssign("transfer","innerHTML", '' );
-
-	}
-//	}
-//	mysql_close($mylink);
 	return $objResponse;
 }
+
+
 
 function waitingCalls($myValue){
 	global $db,$config;
 	$objResponse = new xajaxResponse();
-	//query if there's new call since last call
 	$curid = trim($myValue['curid']);
+	
+	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
 
-
-	$query = "SELECT * FROM events WHERE  event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE 'Event: Newchannel%State: Ringing%' AND id > " . $curid . " order by id desc";
-
-/*	$now = date("Y-M-d H:i:s");
-   		
-	$fd = fopen ("/tmp/xajaxDebug.log",'a');
-	$log = $now." ".$_SERVER["REMOTE_ADDR"] ." - $query \n";
-	fwrite($fd,$log);
-   	fclose($fd);
-*/
-	$res = $db->query($query);
-
-
-	if ( $res->numRows() > 0 ){//有新的来电
-//		$numfields = mysql_num_fields($result);
-		$rows = 0;
-		while ($res->fetchInto($list)) {
-//			$list      = mysql_fetch_assoc($result);
-			$id        = $list['id'];
-			$timestamp = $list['timestamp'];
-			$event     = $list['event'];
-			$flds      = split("  ",$event);
-			$c         = count($flds);
-			$callerid  = '';
-			$transferid= '';
-
-			for($i=4;$i<$c;++$i) {
-				if ($flds[3] == 'State: Ringing'){
-					if (strstr($flds[$i],"CallerID:"))	//尝试获取callerid
-						$transferid = substr($flds[$i],9);
-
-					if (strstr($flds[$i],"Uniqueid:")){	//获取uniqueid
-							$uniqueid = substr($flds[$i],9);
-//							if ($callerid == ''){	//再次尝试获取callerid
-								$dstInfo = getCallerID($uniqueid);
-								$callerid = $dstInfo['CallerID'] ;
-//							}
-					}
-				}
-			}
-			
-			if ($callerid == '')
-				$callerid = $transferid;
-
-			if ($id > $curid) $curid = $id;
-//			$rows++;
-		}
-
-		$callerid = trim($callerid);
-		
-		$call['phoneNum'] = $callerid;
-		$call['uniqueid'] = trim($uniqueid);
-		$call['callerid'] = $callerid;
-		$call['curid'] = trim($curid);
-		$call['info'] = "Incoming call from " . $call['phoneNum'];
-		$call['direction'] = "in";
-		return newCalls($call);
-	}else{//没有新的来电
-		if ($config['POP_UP_WHEN_DIAL_OUT']){
-			$query = "SELECT * FROM events WHERE event LIKE '%".$_SESSION['curuser']['extension']."%' AND event LIKE 'Event: Dial%' AND id > " . $curid . " order by id desc";	//判断是否有拨出的电话
-
-			$res = $db->query($query);
-			if ( $res->numRows() > 0 ){//有新的拨出
-				$rows = 0;
-				$curid = $myValue['curid'];
-				while ($res->fetchInto($list)) {
-
-					$id        = $list['id'];
-					$timestamp = $list['timestamp'];
-					$event     = $list['event'];
-					$flds      = split("  ",$event);
-					$c         = count($flds);
-					$callerid  = '';
-					$transferid= '';
-
-
-					if ($flds[0] == 'Event: Dial'){
-						$SrcUniqueID = substr($flds[6],12);
-
-						$srcInfo = getInfoBySrcID($SrcUniqueID);
-						$callerid = $srcInfo['Extension'] ;
-						//$channel = $srcInfo['Channel'] ;
-					}
-				}
-				
-				if ($id > $curid) $curid = $id;
-
-				$callerid = trim($callerid);
-				$call['phoneNum'] = $callerid;
-				$call['uniqueid'] = trim($SrcUniqueID);
-				$call['callerid'] = $callerid;
-				$call['curid'] = trim($curid);
-				$call['info'] = "Dial to " . $call['phoneNum'];
-				$call['direction'] = "out";
-				return newCalls($call);
-			}else{
-					$objResponse->addAssign("myevents","innerHTML", "waiting" );
-					$objResponse->addAssign("status","innerHTML", "listening" );
-					$objResponse->addAssign("uniqueid","value", "" );
-					$objResponse->addAssign("callerid","value", "" );
-					$objResponse->addAssign("callerChannel","value", "" );
-					$objResponse->addAssign("calleeChannel","value", "" );
-					$objResponse->addAssign("curid","value", $curid );
-			}
-		}
+	if ($call['status'] == ''){
+		$title	= 'waiting';
+		$status	= 'waiting';
+		$call['curid'] = $curid;
+		$direction	= '';
+		$info	= 'waiting, please stand by';
+	} elseif ($call['status'] == 'incoming'){
+		$title	= $call['callerid'];
+		$stauts	= 'ringing';
+		$direction	= 'in';
+		$info	= 'incoming call from '. $call['callerid'];
+		if ($config['POP_UP_WHEN_INCOMING'])
+			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH'])
+				$objResponse->loadXML(getContact($call['callerid']));
+	} elseif ($call['status'] == 'dialout'){
+		$title	= $call['callerid'];
+		$status	= 'dialing';
+		$direction	= 'out';
+		$info	= 'dial out to '. $call['callerid'];
+		if ($config['POP_UP_WHEN_DIAL_OUT'])
+			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH'])
+				$objResponse->loadXML(getContact($call['callerid']));
 	}
+
+	$objResponse->addScript('document.title='.$title.';');
+	$objResponse->addAssign("status","innerHTML", $stauts );
+	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
+	$objResponse->addAssign("callerid","value", $call['callerid'] );
+	$objResponse->addAssign("curid","value", $call['curid'] );
+	$objResponse->addAssign("direction","value", $direction );
+	$objResponse->addAssign("myevents","innerHTML", $info);
 
 	return $objResponse;
-}
-
-function getInfoBySrcID($SrcUniqueID){
-	global $db;
-	$SrcUniqueID = trim($SrcUniqueID);
-	$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%'";
-	$res = $db->query($query);
-	if ($res->fetchInto($list)){
-		$event = $list['event'];
-		$flds = split("  ",$event);
-
-		foreach ($flds as $myFld) {
-			if (strstr($myFld,"Extension:")){	
-				$myArray['Extension'] = substr($myFld,10);
-			} 
-			if (strstr($myFld,"Channel:")){	
-				$myArray['Channel'] = substr($myFld,8);
-			} 
-
-		}
-	}
-
-	return $myArray;
-}
-
-/*
-get SrcUniqueID、CallerID and CallerIDName from database 
-the rule is DestUniqueID = uniqueid
-*/
-
-function getCallerID($vUniqueID){
-	global $db;
-	$vUniqueID = trim($vUniqueID);
-	$query  = "SELECT * FROM events WHERE event LIKE '%DestUniqueID: $vUniqueID%'";
-	$res = $db->query($query);
-
-	if ($res->fetchInto($list)){
-		$event = $list['event'];
-		$flds = split("  ",$event);
-
-		foreach ($flds as $myFld) {
-			if (strstr($myFld,"CallerID:")){	
-				$myArray['CallerID'] = substr($myFld,9);
-			} elseif(strstr($myFld,"CallerIDName:")){
-				$myArray['CallerIDName'] = substr($myFld,13);
-			} elseif(strstr($myFld,"SrcUniqueID:")){
-				$myArray['SrcUniqueID'] = substr($myFld,12);
-			}
-		}
-	}
-
-	return $myArray;
 }
 
 //	create grid
@@ -671,25 +532,10 @@ function dial($phoneNum,$first = 'caller'){
 	return $objResponse->getXML();
 }
 
-function newCalls($call){
-	global $db,$config;	
+function getContact($callerid){
+	global $db;	
 	$objResponse = new xajaxResponse();
 
-	$objResponse->addScript('document.title='.$call['phoneNum'].';');
-	$objResponse->addAssign("status","innerHTML", "ringing" );
-	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
-	$objResponse->addAssign("callerid","value", $call['callerid'] );
-	$objResponse->addAssign("curid","value", $call['curid'] );
-	$objResponse->addAssign("callerChannel","value", '' );
-	$objResponse->addAssign("calleeChannel","value", '' );
-	$objResponse->addAssign("direction","value", $call['direction'] );
-	$objResponse->addAssign("myevents","innerHTML", $call['info']);
-
-
-	//check if callerid is long enough
-
-	if (strlen($call['phoneNum'])<$config['PHONE_NUMBER_LENGTH'])
-		return $objResponse;
 
 	//判断是否有新的记录
 	//check if there're phone records already
@@ -697,19 +543,17 @@ function newCalls($call){
 	$query = '
 			SELECT id,customerid 
 			FROM contact
-			WHERE phone LIKE \'%'. $call['phoneNum'] . '%\'
-			OR phone1 LIKE \'%'. $call['phoneNum'] . '%\'
-			OR phone2 LIKE \'%'. $call['phoneNum'] . '%\'
-			OR mobile LIKE \'%'. $call['phoneNum'] . '%\'
+			WHERE phone LIKE \'%'. $callerid . '%\'
+			OR phone1 LIKE \'%'. $callerid . '%\'
+			OR phone2 LIKE \'%'. $callerid . '%\'
+			OR mobile LIKE \'%'. $callerid . '%\'
 			 ' ;
 	
-//	$objResponse->addAssign("status","innerHTML", "$query" );
-//	return $objResponse;
 	$res = $db->query($query);
 
 	if ($res->numRows() == 0){	//no match
 		
-		$objResponse->addScript('xajax_add(\'' . $call['phoneNum'] . '\');');
+		$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
 
 	} elseif ($res->numRows() == 1) { // one match
 
@@ -718,7 +562,7 @@ function newCalls($call){
 		$contactid = $list['id'];
 		
 		$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
-		$html .= Customer::formAdd($call['phoneNum'],$customerid,$contactid);  // <-- Change by your method
+		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
@@ -732,7 +576,7 @@ function newCalls($call){
 		$contactid = $list['id'];
 		
 		$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
-		$html .= Customer::formAdd($call['phoneNum'],$customerid,$contactid);  // <-- Change by your method
+		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);

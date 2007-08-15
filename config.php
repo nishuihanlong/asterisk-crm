@@ -4,15 +4,15 @@
 $dbtype = 'mysql';
 $dbhost = 'localhost';
 $dbname = 'asterisk';
-$username = '';
-$password = '';
+$username = 'asteriskuser';
+$password = 'movingon';
 
 // asterisk config
 
-$asmanager['server'] ='';
-$asmanager['port'] = '';
-$asmanager['username'] = '';
-$asmanager['secret'] = '';
+$asmanager['server'] ='210.83.203.100';
+$asmanager['port'] = '7998';
+$asmanager['username'] = 'solo';
+$asmanager['secret'] = '123654';
 
 // asterisk context setting
 
@@ -23,7 +23,12 @@ $config['INCONTEXT'] = 'from-siptrunk';
 
 $config['PHONE_NUMBER_LENGTH'] = 6;
 
+$config['POP_UP_WHEN_DIAL_OUT'] = true;
+
+$config['POP_UP_WHEN_INCOMING'] = true;
+//$config['POP_UP_WHEN_DIAL_OUT'] = true;
 // if
 
-$config['POP_UP_WHEN_DIAL_OUT'] = true;
+//$config['POP_UP_WHEN_DIAL_OUT'] = true;
+//define(POP_UP_WHEN_DIAL_OUT, true);  
 ?>
