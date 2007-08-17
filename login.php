@@ -10,24 +10,29 @@ require_once('login.common.php');
 		function loginSignup()
 		{
 			xajax.$('loginButton').disabled=true;
-			xajax.$('loginButton').value="please wait...";
+			xajax.$('loginButton').value=xajax.$('onclickMsg').value;
 			xajax_processForm(xajax.getFormValues("loginForm"));
 			return false;
+		}
+
+		function init(){
+			xajax_init();
 		}
 		</script>
 		<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
-	<body>
+	<body onload="init();">
 		<div id="formWrapper">
 		
-			<div id="title">User Login</div>
+			<div id="titleDiv"></div>
 			
 			<div id="formDiv">
 				<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
-					<div>Username:</div><div><input type="text" name="username" /></div>
-					<div>Password:</div><div><input type="password" name="password" /></div>
+					<div name="usernameDiv" id="usernameDiv"></div><div><input type="text" name="username" /></div>
+					<div name="passwordDiv" id="passwordDiv"></div><div><input type="password" name="password" /></div>
 					<div class="submitDiv">
-					<input id="loginButton" type="submit" value="continue ->"/></div>
+					<input id="loginButton" name="loginButton" type="submit" value=""/></div>
+					<input id="onclickMsg" name="onclickMsg" type="hidden" value=""/></div>
 				</form>
 			</div>
 			

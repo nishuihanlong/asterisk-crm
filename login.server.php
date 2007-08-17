@@ -10,9 +10,24 @@ function processForm($aFormValues)
 	}
 }
 
+function init(){
+	global $locate;
+
+	$objResponse = new xajaxResponse();
+
+	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("title"));
+	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
+	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
+	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
+	$objResponse->addScript("xajax.$('username').focus();");
+
+	return $objResponse;
+}
+
 function processAccountData($aFormValues)
 {
-	global $db;
+	global $db,$locate;
 
 	$objResponse = new xajaxResponse();
 	
@@ -20,12 +35,12 @@ function processAccountData($aFormValues)
 	
 	if (trim($aFormValues['username']) == "")
 	{
-		$objResponse->addAlert("Please enter a username.");
+		$objResponse->addAlert($locate->Translate("username_cannot_be_blank"));
 		$bError = true;
 	}
 	if (trim($aFormValues['password']) == "")
 	{
-		$objResponse->addAlert("You may not have a blank password.");
+		$objResponse->addAlert($locate->Translate("password_cannot_be_blank"));
 		$bError = true;
 	}
 
@@ -43,7 +58,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
 
-				$objResponse->addAlert("Good Boy.");
+				$objResponse->addAlert($locate->Translate("login_success"));
 				$objResponse->addScript("location.href='portal.php';");
 
 			} else{
@@ -57,13 +72,13 @@ function processAccountData($aFormValues)
 		if (!$loginError){
 			return $objResponse;
 		} else {
-			$objResponse->addAlert("Login error.");
-			$objResponse->addAssign("loginButton","value","continue ->");
+			$objResponse->addAlert($locate->Translate("login_failed"));
+			$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 			$objResponse->addAssign("loginButton","disabled",false);
 			return $objResponse;
 		}
 	} else {
-		$objResponse->addAssign("loginButton","value","continue ->");
+		$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 		$objResponse->addAssign("loginButton","disabled",false);
 	}
 	

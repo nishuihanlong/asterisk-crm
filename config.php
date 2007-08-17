@@ -31,4 +31,6 @@ $config['POP_UP_WHEN_INCOMING'] = true;
 
 //$config['POP_UP_WHEN_DIAL_OUT'] = true;
 //define(POP_UP_WHEN_DIAL_OUT, true);  
+
+
 ?>

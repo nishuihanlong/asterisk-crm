@@ -7,6 +7,11 @@ require_once('portal.common.php');
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<?php $xajax->printJavascript('include/'); ?>
 		<script type="text/javascript">
+		function init(){
+			xajax_init();
+			updateEvents();
+		}
+
 		function updateEvents(){
 //			alert (document.getElementById('myevents').innerHTML);
 //			xajax_myEvents(document.getElementById('myevents').innerHTML);
@@ -45,22 +50,25 @@ require_once('portal.common.php');
 	<script type="text/javascript" src="js/ajax-dynamic-list.js"></script>
 	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
-	<body onload="updateEvents();">
-	Welcome <span id="username"><?echo $_SESSION['curuser']['username'];?></span>, your extension is <span id="extension"><?echo $_SESSION['curuser']['extension'];?></span>&nbsp;
+	<body onload="init();">
 	<form name="myForm" id="myForm">
+		<div id="userMsg" name="userMsg">
+		</div>
 		<span id="transfer" name="transfer"></span>
 		<div id="formWrapper">
 		</div>
 		
-		<div id="myevents">waiting</div>
-		<div id="status">listening</div>
-		<input type="text" name="uniqueid" id="uniqueid" value=""/>
-		<input type="text" name="callerid" id="callerid" value=""/>
-		<input type="text" name="curid" id="curid" value="0"/>
-		<input type="text" name="extension" id="extension" value=""/>
-		<input type="text" name="callerChannel" id="callerChannel" value=""/>
-		<input type="text" name="calleeChannel" id="calleeChannel" value=""/>
-		<input type="text" name="direction" id="direction" value=""/>
+		<div id="myevents"></div>
+		<div id="status"></div>
+		<input type="hidden" name="username" id="username" value=""/>
+		<input type="hidden" name="extension" id="extension" value=""/>
+		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
+		<input type="hidden" name="callerid" id="callerid" value=""/>
+		<input type="hidden" name="curid" id="curid" value="0"/>
+		<input type="hidden" name="extension" id="extension" value=""/>
+		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
+		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
+		<input type="hidden" name="direction" id="direction" value=""/>
 		<div id="debug"></div>
 	</form>
 

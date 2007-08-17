@@ -6,6 +6,21 @@ require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterisk.php');
 
+function init(){
+	global $locate;
+
+	$objResponse = new xajaxResponse();
+	
+	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
+	$html .= $locate->Translate("extension").$_SESSION['curuser']['extension'];
+	$objResponse->addAssign("userMsg","innerHTML", $html );
+	$objResponse->addAssign("username","value", $_SESSION['curuser']['username'] );
+	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
+	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
+	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
+
+	return $objResponse;
+}
 
 function listenCalls($aFormValues){
 	if ($aFormValues['uniqueid'] == ''){
@@ -78,6 +93,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerid","value", "" );
 			$objResponse->addAssign("callerChannel","value", '');
 			$objResponse->addAssign("calleeChannel","value", '');
+			$objResponse->addAssign("transfer","innerHTML", '');
 		}
 		$objResponse->addAssign("status","innerHTML", $status );
 		$objResponse->addAssign("myevents","innerHTML", $info );
