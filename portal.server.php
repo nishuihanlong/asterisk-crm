@@ -315,15 +315,7 @@ function confirmContact($contactName,$customerID,$callerID){
 		//显示contact信息
 		$objResponse->addScript("xajax_showContact($contactID)");
 
-//		$objResponse->addAlert("$customerID" );
-//		$objResponse->addAssign("btnConfirmContact","value", "Cancel" );
-//		$objResponse->addAssign("contact","readOnly", "true" );
-//		$objResponse->addAssign("contactid","value", $contactID );
-//		$contact = Customer::getContactByID
-//		$objResponse->addAssign("position","value", $contactID );
-//		$objResponse->addScript("xajax_fillContact($customerID)");
-	} //else
-//			$objResponse->addAlert("不存在" );
+	} 
 
 	return $objResponse;
 }
