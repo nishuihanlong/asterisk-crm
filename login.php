@@ -16,7 +16,7 @@ require_once('login.common.php');
 		}
 
 		function init(){
-			xajax_init();
+			xajax_init(xajax.getFormValues("loginForm"));
 		}
 		</script>
 		<meta http-equiv="Content-Language" content="utf-8" />
@@ -30,6 +30,12 @@ require_once('login.common.php');
 				<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
 					<div name="usernameDiv" id="usernameDiv"></div><div><input type="text" name="username" /></div>
 					<div name="passwordDiv" id="passwordDiv"></div><div><input type="password" name="password" /></div>
+					<div name="locateDiv" id="locateDiv">
+						<SELECT name="locate" id="locate" onchange="init();">
+							<OPTION value="en_US">English</OPTION>
+							<OPTION value="cn_ZH">¼òÌåÖÐÎÄ</OPTION>
+						</SELECT>
+					</div>
 					<div class="submitDiv">
 					<input id="loginButton" name="loginButton" type="submit" value=""/></div>
 					<input id="onclickMsg" name="onclickMsg" type="hidden" value=""/></div>

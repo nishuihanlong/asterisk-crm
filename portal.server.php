@@ -18,6 +18,7 @@ function init(){
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
+	$objResponse->addAssign("panelDiv","innerHTML", "<a href='login.php'>".$locate->Translate("logout")."</a>" );
 
 	return $objResponse;
 }
@@ -41,20 +42,18 @@ function transfer($aFormValues){
 	if (!$res)
 		$objResponse->addAssign("debug", "innerText", "Failed");
 
-	//$strChannel = "Local/".$phoneNum."@".$config['OUTCONTEXT']."";
 	if ($aFormValues['direction'] == 'in')		
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
 	else
 		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
 
 
-//	$objResponse->addAlert("Fine");
 	return $objResponse;
 }
 
 //check if call (uniqueid) hangup
 function incomingCalls($myValue){
-	global $db;
+	global $db,$locate;
 	$objResponse = new xajaxResponse();
 
 	if ($myValue['direction'] != ''){
@@ -81,7 +80,7 @@ function incomingCalls($myValue){
 
 			$transfer .= '
 						</SELECT>
-						<INPUT type="BUTTON" value="Transfer" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
+						<INPUT type="BUTTON" value="'.$locate->Translate("transfer").'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
 						';
 			$objResponse->addAssign("transfer","innerHTML", $transfer );
 
@@ -105,23 +104,23 @@ function incomingCalls($myValue){
 
 
 function waitingCalls($myValue){
-	global $db,$config;
+	global $db,$config,$locate;
 	$objResponse = new xajaxResponse();
 	$curid = trim($myValue['curid']);
 	
 	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
 
 	if ($call['status'] == ''){
-		$title	= 'waiting';
+		$title	= $locate->Translate("waiting");
 		$status	= 'waiting';
 		$call['curid'] = $curid;
 		$direction	= '';
-		$info	= 'waiting, please stand by';
+		$info	= $locate->Translate("stand_by");
 	} elseif ($call['status'] == 'incoming'){
 		$title	= $call['callerid'];
 		$stauts	= 'ringing';
 		$direction	= 'in';
-		$info	= 'incoming call from '. $call['callerid'];
+		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
 		if ($config['POP_UP_WHEN_INCOMING'])
 			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH'])
 				$objResponse->loadXML(getContact($call['callerid']));
@@ -129,7 +128,7 @@ function waitingCalls($myValue){
 		$title	= $call['callerid'];
 		$status	= 'dialing';
 		$direction	= 'out';
-		$info	= 'dial out to '. $call['callerid'];
+		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
 		if ($config['POP_UP_WHEN_DIAL_OUT'])
 			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH'])
 				$objResponse->loadXML(getContact($call['callerid']));
@@ -148,7 +147,7 @@ function waitingCalls($myValue){
 
 //	create grid
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-
+	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
 	if(($filter == null) or ($content == null)){
@@ -175,12 +174,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = "Customer Name";
-	$headers[] = "Category";
-	$headers[] = "Contact";
-	$headers[] = "Note";
-	$headers[] = "Create Time";
-	$headers[] = "Create By";
+	$headers[] = $locate->Translate("customer_name");//"Customer Name";
+	$headers[] = $locate->Translate("category");//"Category";
+	$headers[] = $locate->Translate("contact");//"Contact";
+	$headers[] = $locate->Translate("note");//"Note";
+	$headers[] = $locate->Translate("create_time");//"Create Time";
+	$headers[] = $locate->Translate("create_by");//"Create By";
 	$headers[] = "P";
 //	$headers[] = "D";
 
@@ -225,17 +224,24 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'cretime';
 	$fieldsFromSearch[] = 'creby';
 	$fieldsFromSearch[] = 'priority';
-
+/*
+	$headers[] = $locate->Translate("customer_name")//"Customer Name";
+	$headers[] = $locate->Translate("category")//"Category";
+	$headers[] = $locate->Translate("contact")//"Contact";
+	$headers[] = $locate->Translate("note")//"Note";
+	$headers[] = $locate->Translate("create_time")//"Create Time";
+	$headers[] = $locate->Translate("create_by")//"Create By";
+*/
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = "Customer Name";
-	$fieldsFromSearchShowAs[] = "Address";
-	$fieldsFromSearchShowAs[] = "Website";
-	$fieldsFromSearchShowAs[] = "Category";
-	$fieldsFromSearchShowAs[] = "Contact";
-	$fieldsFromSearchShowAs[] = "Create Time";
-	$fieldsFromSearchShowAs[] = "Create User";
-	$fieldsFromSearchShowAs[] = "Priority";
+	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("address");
+	$fieldsFromSearchShowAs[] = $locate->Translate("website");
+	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
+	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
+	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
+	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
+	$fieldsFromSearchShowAs[] = $locate->Translate("priority");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -271,12 +277,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 // 判断是否存在$customerName, 如果存在就显示
 function confirmCustomer($customerName,$callerID = null){
-
+	global $locate;
 	$objResponse = new xajaxResponse();
 
 	$customerID = Customer::checkValues("customer","customer",$customerName); 
 	if ($customerID){//存在
-		$html = Table::Top("Adding Record","formDiv"); 
+		$html = Table::Top($locate->Translate("add_record"),"formDiv"); 
 		$html .= Customer::formAdd($callerID,$customerID);
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
@@ -291,13 +297,14 @@ function confirmCustomer($customerName,$callerID = null){
 
 //判断是否存在$contactName
 function confirmContact($contactName,$customerID,$callerID){
+	global $locate;
 
 	$objResponse = new xajaxResponse();
 
 	$contactID = Customer::checkValues("contact","contact",$contactName,"string","customerid",$customerID,"int"); 
 	if ($contactID){//存在
 
-		$html = Table::Top("Adding Record","formDiv"); 
+		$html = Table::Top($locate->Translate("add_record"),"formDiv"); 
 		$html .= Customer::formAdd($callerID,$customerID,$contactID);
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
@@ -335,9 +342,10 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 }
 
 function add($callerid = null,$customerid = null,$contactid = null){
+	global $locate;
    // Edit zone
 	$objResponse = new xajaxResponse();
-	$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 //	$objResponse->addAlert($callerid);
 	// End edit zone
@@ -361,12 +369,10 @@ function editField($table, $field, $cell, $value, $id){
 
 
 function edit($id = null, $tblName, $type = "note"){
-
-	$lable = "Editing $type record";
-
+	global $locate;
 
 	// Edit zone
-	$html = Table::Top($lable,"formEditInfo"); 	// <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo"); 	// <-- Set the title for your form.
 	$html .= Customer::formEdit($id, $type); 			// <-- Change by your method
 	$html .= Table::Footer();
    	// End edit zone
@@ -378,17 +384,19 @@ function edit($id = null, $tblName, $type = "note"){
 }
 
 function delete($id = null, $table_DB = null){
+	global $locate;
 	Customer::deleteRecord($id); 				// <-- Change by your method
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", "Record Deleted"); // <-- Change by your leyend
+	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
 	return $objResponse->getXML();
 }
 
 function showCustomer($id = null, $type="customer"){
+	global $locate;
 	if($id != null){
-		$html = Table::Top("Customer Detail","formCustomerInfo"); 			
+		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
 		$html .= Customer::showCustomerRecord($id,$type); 		
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
@@ -399,8 +407,9 @@ function showCustomer($id = null, $type="customer"){
 }
 
 function showNote($id = '', $type="customer"){
+	global $locate;
 	if($id != ''){
-		$html = Table::Top("Note Detail","formNoteInfo"); 			
+		$html = Table::Top($locate->Translate("note_detail"),"formNoteInfo"); 			
 		$html .= Customer::showNoteList($id,$type); 		
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
@@ -411,9 +420,10 @@ function showNote($id = '', $type="customer"){
 }
 
 function showContact($id = null, $type="contact"){
+	global $locate;
 
 	if($id != null){
-		$html = Table::Top("Contact Detail","formContactInfo"); 			// <-- Set the title for your form.
+		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 
 		$html .= Customer::showContactRecord($id,$type); 		// <-- Change by your method
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
@@ -425,6 +435,7 @@ function showContact($id = null, $type="contact"){
 
 function save($f){
 	$objResponse = new xajaxResponse();
+	global $locate;
 
 	$message = Customer::checkAllData($f,1); // <-- Change by your method
 	if(!$message){
@@ -446,7 +457,7 @@ function save($f){
 				if ($respOk){
 					$respOk = $f['contactid'];
 				}else{
-					$objResponse->addAssign("msgZone", "innerHTML", "Contact record could not be updated");
+					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("contact_update_error"));
 				}
 			}
 
@@ -456,18 +467,18 @@ function save($f){
 				if ($respOk){
 					$html = createGrid(0,ROWSXPAGE);
 					$objResponse->addAssign("grid", "innerHTML", $html);
-					$objResponse->addAssign("msgZone", "innerHTML", "A note has been added");
+					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("note_add_success"));
 					$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 					$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
 					$objResponse->addAssign("formContactInfo", "style.visibility", "hidden");
 				}else{
-					$objResponse->addAssign("msgZone", "innerHTML", "Note record could not be added");
+					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("note_add_error"));
 				}
 			}else{
-				$objResponse->addAssign("msgZone", "innerHTML", "Contact record could not be added");
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("contact_update_error"));
 			}
 		}else{
-			$objResponse->addAssign("msgZone", "innerHTML", "Customer record could not be added");
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("customer_add_error"));
 		}
 	}else{
 		$objResponse->addAlert($message);
@@ -549,7 +560,7 @@ function dial($phoneNum,$first = 'caller'){
 }
 
 function getContact($callerid){
-	global $db;	
+	global $db,$locate;	
 	$objResponse = new xajaxResponse();
 
 
@@ -577,7 +588,7 @@ function getContact($callerid){
 		$customerid = $list['customerid'];
 		$contactid = $list['id'];
 		
-		$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
+		$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
@@ -591,7 +602,7 @@ function getContact($callerid){
 		$customerid = $list['customerid'];
 		$contactid = $list['id'];
 		
-		$html = Table::Top("Adding Record","formDiv");  // <-- Set the title for your form.
+		$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");

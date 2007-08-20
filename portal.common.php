@@ -1,7 +1,8 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['curuser'])) header("Location: login.php");
+if ($_SESSION['curuser']['extension'] == '') 
+	header("Location: login.php");
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;
 
 require_once ("include/xajax.inc.php");
@@ -12,8 +13,12 @@ define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
 define(ROWSXPAGE, 5); // Number of rows show it per page.
 define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 
-$_SESSION['curuser']['country'] = 'en';
-$_SESSION['curuser']['language'] = 'US';
+//echo "ok";
+//echo $_SESSION['curuser']['country'];
+//print_r($_SESSION['curuser']);
+//exit();
+//$_SESSION['curuser']['country'] = 'cn';
+//$_SESSION['curuser']['language'] = 'ZH';
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
 

@@ -94,6 +94,6 @@ require_once('portal.common.php');
 				</td>
 			</tr>
 		</table>
-
+		<div id="panelDiv" name="panelDiv" class="divPanel"></div>
 	</body>
 </html>

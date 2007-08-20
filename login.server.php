@@ -10,10 +10,14 @@ function processForm($aFormValues)
 	}
 }
 
-function init(){
+function init($aFormValue){
 	global $locate;
+	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);
+
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');
 
 	$objResponse = new xajaxResponse();
+//	global $locate;
 
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("title"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
@@ -21,6 +25,9 @@ function init(){
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
+	$_SESSION['curuser']['username'] = '';
+	$_SESSION['curuser']['extension'] = '';
+
 
 	return $objResponse;
 }
@@ -57,6 +64,7 @@ function processAccountData($aFormValues)
 				$_SESSION = array();
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
+				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 
 				$objResponse->addAlert($locate->Translate("login_success"));
 				$objResponse->addScript("location.href='portal.php';");
