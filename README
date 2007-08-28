@@ -53,7 +53,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 
    Note: the astercrm.sql file has the GRANT commands to update MySQL with
          the desired authority. The settings here must match the userid/password
-         specified in the ProxyMan.py script and the config.php script
+         specified in the ProxyMan.py , delete_events.py script and the config.php script
 
    Update the /var/www/html/astercrm/config.php script for the
    correct MySQL login userid/password 
