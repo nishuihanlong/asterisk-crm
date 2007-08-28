@@ -1,0 +1,5 @@
+how to use confirm button
+
+customer field support auto-complete, which means it will list all items in customer database matched with your entered. if you find there already the customer exsited, select the item and then click "confirm" button, then all information for the customer will be filled automaticly. (screenshot/1,2,3) Click "Cancel" button will clear all information, you can enter another customer .
+
+Contact field is almost same with customer field, but it only list contacts belongs to the customer above.

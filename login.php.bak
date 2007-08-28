@@ -33,7 +33,7 @@ require_once('login.common.php');
 					<div name="locateDiv" id="locateDiv">
 						<SELECT name="locate" id="locate" onchange="init();">
 							<OPTION value="en_US">English</OPTION>
-							<OPTION value="cn_ZH">ç®€ä½“ä¸­æ–‡</OPTION>
+							<OPTION value="cn_ZH">¼òÌåÖÐÎÄ</OPTION>
 						</SELECT>
 					</div>
 					<div class="submitDiv">
