@@ -18,6 +18,7 @@ function init(){
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
+	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	$objResponse->addAssign("panelDiv","innerHTML", "<a href='login.php'>".$locate->Translate("logout")."</a>" );
 
 	return $objResponse;

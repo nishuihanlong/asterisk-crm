@@ -3,6 +3,7 @@ $welcome="Welcome ";
 $extension="Your extension is ";
 $waiting="Waiting ";
 $listening="Listening ";
+$processing_please_wait = "Processing, please wait";
 $logout="Log out";
 $transfer="Transfer";
 $stand_by="please stand by";

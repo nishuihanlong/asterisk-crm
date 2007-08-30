@@ -10,7 +10,17 @@ require_once('portal.common.php');
 		function init(){
 			xajax_init();
 			updateEvents();
+			xajax.loadingFunction = showProcessingMessage;
+			xajax.doneLoadingFunction = hideProcessingMessage;
 		}
+
+		function showProcessingMessage(){
+			xajax.$('processingMessage').style.display='block';
+		}
+		function hideProcessingMessage(){
+			xajax.$('processingMessage').style.display = 'none';
+		}
+
 
 		function updateEvents(){
 //			alert (document.getElementById('myevents').innerHTML);
@@ -75,7 +85,7 @@ require_once('portal.common.php');
 <br><br><br><br><br><br>
 <br><br><br><br><br><br>
 <br><br><br><br><br><br>
-
+<div id="processingMessage" name="processingMessage"></div>
 
 		<table width="95%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>

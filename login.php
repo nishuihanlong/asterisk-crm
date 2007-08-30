@@ -4,6 +4,7 @@ require_once('login.common.php');
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
+		<meta http-equiv="Content-Language" content="utf-8" />
 		<?php $xajax->printJavascript('include/'); ?>
 		<LINK href="css/style.css" type=text/css rel=stylesheet>
 		<script type="text/javascript">
@@ -19,7 +20,6 @@ require_once('login.common.php');
 			xajax_init(xajax.getFormValues("loginForm"));
 		}
 		</script>
-		<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
 	<body onload="init();">
 		<div id="formWrapper">

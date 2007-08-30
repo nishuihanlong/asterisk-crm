@@ -3,6 +3,7 @@ $welcome="欢迎 ";
 $extension="你的分机是 ";
 $waiting="请等待 ";
 $listening="正在监听 ";
+$processing_please_wait = "正在处理, 请稍候";
 $logout="登出 ";
 $transfer="转接";
 $stand_by="请稍候";

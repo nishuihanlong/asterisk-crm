@@ -889,6 +889,7 @@ div.main {
 	visibility: hidden; 
 	background-color: #F1F1F1;
 	overflow: auto;
+	z-index:10;
 }
 
 .formContactInfo {
@@ -978,4 +979,21 @@ div.main {
 	
 form{
 	display:inline;
+}
+
+#processingMessage {
+    background: white;
+    padding: 20px;
+    border: 2px solid green;
+    display: none; /* hidden */
+    position: absolute;    
+    left: 50%;
+    margin-left: -100px;
+    top: 25%;
+    width: 200px;
+    /*height: 100px;*/
+        /*margin-top: -50;*/
+    font-weight: bold;
+    font-size: large;
+	z-index:100;
 }
