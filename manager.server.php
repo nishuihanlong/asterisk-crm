@@ -16,7 +16,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-
+	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
 	if(($filter == null) or ($content == null)){
@@ -39,9 +39,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = "User Name";
-	$headers[] = "Password";
-	$headers[] = "Extension";
+	$headers[] = $locate->Translate("username");
+	$headers[] = $locate->Translate("password");
+	$headers[] = $locate->Translate("extension");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -69,9 +69,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = "User Name";
-	$fieldsFromSearchShowAs[] = "Password";
-	$fieldsFromSearchShowAs[] = "Extension";
+	$fieldsFromSearchShowAs[] = $locate->Translate("username");
+	$fieldsFromSearchShowAs[] = $locate->Translate("password");
+	$fieldsFromSearchShowAs[] = $locate->Translate("extension");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -100,8 +100,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 function add(){
    // Edit zone
+	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top("Adding Account","formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("adding_account"),"formDiv");  // <-- Set the title for your form.
 	$html .= Account::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -112,6 +113,7 @@ function add(){
 }
 
 function save($f){
+	global $locate;
 	$objResponse = new xajaxResponse();
 
 	$message = Account::checkAllData($f,1); // <-- Change by your method
@@ -120,9 +122,9 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "A note has been added");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_note"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
-		$objResponse->addAssign("msgZone", "innerHTML", "New account record added");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_account"));
 	}else{
 		$objResponse->addAlert($message);
 	}
@@ -131,6 +133,7 @@ function save($f){
 }
 
 function update($f){
+	global $locate;
 	$objResponse = new xajaxResponse();
 
 	$respOk = Account::updateRecord($f);
@@ -138,24 +141,25 @@ function update($f){
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "A record has been updated");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("update_rec"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", "The record could not be updated");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_update"));
 	}
 	
 	return $objResponse->getXML();
 }
 
 function delete($id = null){
+	global $locate;
 	$respOk = Account::deleteRecord($id); 				// <-- Change by your method
 	$objResponse = new xajaxResponse();
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "Record Deleted"); // <-- Change by your leyend
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); // <-- Change by your leyend
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", "The record could not be deleted");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete"));
 	}
 	return $objResponse->getXML();
 }

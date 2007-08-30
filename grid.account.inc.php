@@ -8,7 +8,6 @@
 
 require_once 'db_connect.php';
 require_once 'manager.common.php';
-
 /** \brief Customer Class
 *
 
@@ -194,26 +193,26 @@ class Account extends PEAR
 	*/
 	
 	function formAdd(){
-	
+			global $locate;
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">Username</td>
+					<td nowrap align="left">'.$locate->Translate("username").'</td>
 					<td align="left"><input type="text" id="username" name="username" size="50" maxlength="100"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">Password</td>
+					<td nowrap align="left">'.$locate->Translate("password").'</td>
 					<td align="left"><input type="text" id="password" name="password" size="50" maxlength="100"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">Extension</td>
+					<td nowrap align="left">'.$locate->Translate("extension").'</td>
 					<td align="left"><input type="text" id="extension" name="extension" size="50" maxlength="100"></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>Continue</button></td>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
 			 </table>
@@ -221,7 +220,7 @@ class Account extends PEAR
 
 		$html .='
 			</form>
-			* Obligatory fields
+			'.$locate->Translate("obligatory_fields").'
 			';
 		
 		return $html;
@@ -236,7 +235,7 @@ class Account extends PEAR
 	*/
 	
 	function formEdit($id){
-		
+		global $locate;
 		$account =& Account::getRecordByID($id);
 		$html = '
 			<!-- No edit the next line -->
@@ -244,19 +243,19 @@ class Account extends PEAR
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">Username</td>
+					<td nowrap align="left">'.$locate->Translate("username").'</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $account['id'].'"><input type="text" id="username" name="username" size="50" maxlength="100" value="'.$account['username'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">Password</td>
+					<td nowrap align="left">'.$locate->Translate("password").'</td>
 					<td align="left"><input type="text" id="password" name="password" size="50" maxlength="100" value="'.$account['password'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">Extension</td>
+					<td nowrap align="left">'.$locate->Translate("extension").'</td>
 					<td align="left"><input type="text" id="extension" name="extension" size="50" maxlength="100" value="'.$account['extension'].'"></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>Continue</button></td>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
 			 </table>
@@ -266,7 +265,7 @@ class Account extends PEAR
 
 		$html .= '
 				</form>
-				* Obligatory fields
+				'.$locate->Translate("obligatory_fields").'
 				';
 
 		return $html;
