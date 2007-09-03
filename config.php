@@ -29,9 +29,8 @@ $config['POP_UP_WHEN_INCOMING'] = true;
 
 $config['ENABLE_EXTERNAL_CRM'] = true;
 
-// enabled if $config['ENABLE_EXTERNAL_CRM'] = true
-// %callerid,%calleeid,%method(inbound,outbound)
+$config['EXTERNAL_URL_DEFAULT'] = 'http://www.magiclink.cn';
 
-$config['EXTERNAL_URL'] = "http://www.mycrm.com/customer.php?callerid=%callerid&calleeid=%calleeid&method=%method";
-
+// method: incoming, dialout
+$config['EXTERNAL_URL'] = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method";
 ?>

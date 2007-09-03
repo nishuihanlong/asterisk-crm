@@ -7,7 +7,7 @@ require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterisk.php');
 
 function init(){
-	global $locate;
+	global $locate,$config;
 
 	$objResponse = new xajaxResponse();
 	
@@ -20,6 +20,37 @@ function init(){
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	$objResponse->addAssign("panelDiv","innerHTML", "<a href='login.php'>".$locate->Translate("logout")."</a>" );
+
+	if ($config['ENABLE_EXTERNAL_CRM'] == false){
+		$objResponse->addClear("crm","innerHTML");
+		$mycrm = '
+					<br><br><br><br><br><br>
+					<br><br><br><br><br><br>
+					<br><br><br><br><br><br>
+					<table width="95%" border="0" style="background: #F9F9F9; padding: 0px;">
+					<tr>
+						<td style="padding: 0px;">
+							<fieldset>
+							<div id="formDiv" class="formDiv"></div>
+							<div id="formCustomerInfo" class="formCustomerInfo"></div>
+							<div id="formContactInfo" class="formContactInfo"></div>
+							<div id="formNoteInfo" class="formNoteInfo"></div>
+							<div id="formEditInfo" class="formEditInfo"></div>
+							<div id="grid" align="center"> </div>';
+		$objResponse->addAppend("crm","innerHTML", $mycrm );
+		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
+		/*
+		$mycrm ='
+							</fieldset>
+						</td>
+					</tr>
+				</table>';
+		$objResponse->addAppend("crm","innerHTML", $mycrm );
+		*/
+	} else {
+		$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['EXTERNAL_URL_DEFAULT'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+		$objResponse->addAssign("crm","innerHTML", $mycrm );
+	}
 
 	return $objResponse;
 }
@@ -117,22 +148,49 @@ function waitingCalls($myValue){
 		$call['curid'] = $curid;
 		$direction	= '';
 		$info	= $locate->Translate("stand_by");
-	} elseif ($call['status'] == 'incoming'){
+	} elseif ($call['status'] == 'incoming'){	//incoming calls here
 		$title	= $call['callerid'];
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
-		if ($config['POP_UP_WHEN_INCOMING'])
-			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH'])
-				$objResponse->loadXML(getContact($call['callerid']));
-	} elseif ($call['status'] == 'dialout'){
+		if ($config['POP_UP_WHEN_INCOMING']){
+			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH']){
+				if ($config['ENABLE_EXTERNAL_CRM'] == false){
+					$objResponse->loadXML(getContact($call['callerid']));
+				}else{
+					//use external link
+					$myurl = $config['EXTERNAL_URL'];
+					$myurl = preg_replace("/\%method/","incoming",$myurl);
+					$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
+					$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
+					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+					$objResponse->addAssign("crm","innerHTML", $mycrm );
+//					$objResponse->addAlert($mycrm );
+				}
+
+			}
+		}
+	} elseif ($call['status'] == 'dialout'){	//dailing out here
 		$title	= $call['callerid'];
 		$status	= 'dialing';
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
-		if ($config['POP_UP_WHEN_DIAL_OUT'])
-			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH'])
-				$objResponse->loadXML(getContact($call['callerid']));
+		if ($config['POP_UP_WHEN_DIAL_OUT']){
+			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH']){
+				if ($config['ENABLE_EXTERNAL_CRM'] == false){
+					$objResponse->loadXML(getContact($call['callerid']));
+				}else{
+					//use external link
+					$myurl = $config['EXTERNAL_URL'];
+					$myurl = preg_replace("/\%method/","dialout",$myurl);
+					$myurl = preg_replace("/\%callerid/",$_SESSION['curuser']['extension'],$myurl);
+					$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
+					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+					$objResponse->addAssign("crm","innerHTML", $mycrm );
+//					$objResponse->addAlert($mycrm );
+				}
+			}
+		}
 	}
 
 	$objResponse->addScript('document.title='.$title.';');

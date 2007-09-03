@@ -82,28 +82,9 @@ require_once('portal.common.php');
 		<div id="debug"></div>
 	</form>
 
-<br><br><br><br><br><br>
-<br><br><br><br><br><br>
-<br><br><br><br><br><br>
 <div id="processingMessage" name="processingMessage"></div>
 
-		<table width="95%" border="0" style="background: #F9F9F9; padding: 0px;">
-			<tr>
-				<td style="padding: 0px;">
-					<fieldset>
-					<div id="formDiv" class="formDiv"></div>
-					<div id="formCustomerInfo" class="formCustomerInfo"></div>
-					<div id="formContactInfo" class="formContactInfo"></div>
-					<div id="formNoteInfo" class="formNoteInfo"></div>
-					<div id="formEditInfo" class="formEditInfo"></div>
-					<div id="grid" align="center"> </div>
-					<script type="text/javascript">
-						xajax_showGrid(0,<?=ROWSXPAGE?>,'','','');
-					</script>
-					</fieldset>
-				</td>
-			</tr>
-		</table>
-		<div id="panelDiv" name="panelDiv" class="divPanel"></div>
+<div id="crm" name="crm"></div>
+<div id="panelDiv" name="panelDiv" class="divPanel"></div>
 	</body>
 </html>

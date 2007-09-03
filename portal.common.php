@@ -27,23 +27,26 @@ $xajax = new xajax("portal.server.php");
 $xajax->waitCursorOff();
 $xajax->registerFunction("myEvents");
 $xajax->registerFunction("listenCalls");
-$xajax->registerFunction("showGrid");
-$xajax->registerFunction("add");
-$xajax->registerFunction("edit");
-$xajax->registerFunction("delete");
-$xajax->registerFunction("save");
-$xajax->registerFunction("update");
-$xajax->registerFunction("editField");
-$xajax->registerFunction("updateField");
-$xajax->registerFunction("confirmCustomer");
-$xajax->registerFunction("confirmContact");
-$xajax->registerFunction("showCustomer");
-$xajax->registerFunction("showContact");
-$xajax->registerFunction("showNote");
 $xajax->registerFunction("dial");
 $xajax->registerFunction("transfer");
 $xajax->registerFunction("init");
 
+if ($config['ENABLE_EXTERNAL_CRM'] == false){
+	//crm function
+	$xajax->registerFunction("showGrid");
+	$xajax->registerFunction("add");
+	$xajax->registerFunction("edit");
+	$xajax->registerFunction("delete");
+	$xajax->registerFunction("save");
+	$xajax->registerFunction("update");
+	$xajax->registerFunction("editField");
+	$xajax->registerFunction("updateField");
+	$xajax->registerFunction("confirmCustomer");
+	$xajax->registerFunction("confirmContact");
+	$xajax->registerFunction("showCustomer");
+	$xajax->registerFunction("showContact");
+	$xajax->registerFunction("showNote");
+}
 //$xajax->processRequests();
 
 //$xajax->processRequests();
