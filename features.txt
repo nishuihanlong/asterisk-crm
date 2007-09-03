@@ -1,4 +1,4 @@
-features:
+﻿features:
 
 1.	pop-up when incoming calls 
 2.	suggestion when enter business name or contact 
@@ -23,3 +23,7 @@ checkIncoming 函数需要优化
 多语言版本
 
 多数据库支持
+
+分离crm和call center的功能
+
+支持外挂crm系统

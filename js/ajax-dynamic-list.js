@@ -155,7 +155,10 @@
 	
 	function ajax_showOptions(inputObj,paramToExternalFile,e)
 	{
-		if(e.keyCode==13 || e.keyCode==9)return;
+		if(e.keyCode==13)return;
+
+		if (e.keyCode==9) return;
+
 		if(ajax_list_currentLetters[inputObj.name]==inputObj.value)return;
 		if(!ajax_list_cachedLists[paramToExternalFile])ajax_list_cachedLists[paramToExternalFile] = new Array();
 		ajax_list_currentLetters[inputObj.name] = inputObj.value;

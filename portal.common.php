@@ -24,7 +24,7 @@ $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['c
 
 $xajax = new xajax("portal.server.php");
 //$xajax->debugOn();
-$xajax->configure('waitCursor', false);
+$xajax->waitCursorOff();
 $xajax->registerFunction("myEvents");
 $xajax->registerFunction("listenCalls");
 $xajax->registerFunction("showGrid");

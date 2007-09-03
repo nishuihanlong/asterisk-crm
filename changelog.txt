@@ -1,1 +1,2 @@
 2007-8-30	add processing message				solo
+2007-8-31	disabled waitCursor				solo

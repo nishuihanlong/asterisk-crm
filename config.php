@@ -26,11 +26,12 @@ $config['PHONE_NUMBER_LENGTH'] = 6;
 $config['POP_UP_WHEN_DIAL_OUT'] = true;
 
 $config['POP_UP_WHEN_INCOMING'] = true;
-//$config['POP_UP_WHEN_DIAL_OUT'] = true;
-// if
 
-//$config['POP_UP_WHEN_DIAL_OUT'] = true;
-//define(POP_UP_WHEN_DIAL_OUT, true);  
+$config['ENABLE_EXTERNAL_CRM'] = true;
 
+// enabled if $config['ENABLE_EXTERNAL_CRM'] = true
+// %callerid,%calleeid,%method(inbound,outbound)
+
+$config['EXTERNAL_URL'] = "http://www.mycrm.com/customer.php?callerid=%callerid&calleeid=%calleeid&method=%method";
 
 ?>
