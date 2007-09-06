@@ -1,15 +1,15 @@
-#!/bin/env python
+#!/usr/local/bin/python
 
 import sys,datetime,MySQLdb
 
 db = MySQLdb.connect(host="localhost",
                      user="asteriskuser",
-                     passwd="asterisk",
+                     passwd="movingon",
                      db="asterisk")
 
 cursor = db.cursor()
 cdate = datetime.datetime.now()
-ymd  = str(cdate.year) + '-' + str(cdate.month) + '-' + str(cdate.day)
-cmd = "DELETE FROM events WHERE timestamp <  '" + ymd + "'"
+mydate = cdate - datetime.timedelta(minutes=2)
+cmd = "DELETE FROM events WHERE timestamp <  '" + str(mydate) + "'"
 cursor.execute(cmd)
 sys.exit()

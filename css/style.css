@@ -889,7 +889,7 @@ div.main {
 	visibility: hidden; 
 	background-color: #F1F1F1;
 	overflow: auto;
-	z-index:10;
+	z-index:200;
 }
 
 .formContactInfo {
@@ -940,6 +940,23 @@ div.main {
 	top: 0px;
 	background-color: #F1F1F1;
 	overflow: auto;
+}
+
+.divExtension {
+	width: 150px; 
+	/* height: 400px;  */
+	border: thin solid #767676; 
+/*	border-right-width: medium; 
+	border-right-color: #767676; 
+	border-bottom-width: medium; 
+	border-bottom-color: #767676; 
+*/
+	position: absolute; 
+	right: 0%; 
+	top: 20px;
+	background-color: #F1F1F1;
+	overflow: auto;
+	z-index:-5;
 }
 
 
@@ -997,3 +1014,57 @@ form{
     font-size: large;
 	z-index:100;
 }
+#ButtonB  { width: 120px; height: 25px; 
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#000099;    color:white;   }
+#ButtonF  { width: 120px; height: 25px; 
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#993300;    color:white;   }
+#ButtonR  { width: 120px; height: 25px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#CC0033;    color:white;   }
+#ButtonY  { width: 120px; height: 25px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#FFFF00;    color:black;   }
+#ButtonG  { width: 120px; height: 25px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#006600;    color:white;   }
+#ButtonU  { width: 120px; height: 25px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#CC3399;    color:white;   }
+#Sel      { width: 120px; height: 25px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#0033CC;    color:white;   }
+#ButtonA  { width: 85px; height: 20px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#993300;    color:white;   }
+#ButtonYA { width: 85px; height: 20px;
+            white-space: nowrap;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px; font-weight: bold;
+            text-align: center; border: none;
+            background-color:#FFFF00;    color:black;   }

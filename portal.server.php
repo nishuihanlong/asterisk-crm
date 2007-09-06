@@ -23,6 +23,12 @@ function init(){
 
 	if ($config['ENABLE_EXTERNAL_CRM'] == false){
 		$objResponse->addClear("crm","innerHTML");
+		$objResponse->addIncludeScript("js/astercrm.js");
+		$objResponse->addIncludeScript("js/ajax.js");
+		$objResponse->addIncludeScript("js/ajax-dynamic-list.js");
+				//$objResponse->addAlert($_SESSION['curuser']['country']);
+				//$objResponse->addAlert($_SESSION['curuser']['language']);
+				//exit;
 		$mycrm = '
 					<br><br><br><br><br><br>
 					<br><br><br><br><br><br>
@@ -72,7 +78,7 @@ function transfer($aFormValues){
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
 	if (!$res)
-		$objResponse->addAssign("debug", "innerText", "Failed");
+		$objResponse->addAssign("debug", "innerText", "asterisk connect failed");
 
 	if ($aFormValues['direction'] == 'in')		
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
@@ -139,8 +145,15 @@ function waitingCalls($myValue){
 	global $db,$config,$locate;
 	$objResponse = new xajaxResponse();
 	$curid = trim($myValue['curid']);
+
+	$phone_html = asterEvent::checkPhoneStatus($curid);
+ 	//$objResponse->addAlert($phone_html );
+
+	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
+
 	
 	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
+
 
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
@@ -296,7 +309,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("address");
 	$fieldsFromSearchShowAs[] = $locate->Translate("website");
-	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
+	$fieldsFromSearchShowAs[] = $locate->Translate("category");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");

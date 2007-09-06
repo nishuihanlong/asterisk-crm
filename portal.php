@@ -23,50 +23,20 @@ require_once('portal.common.php');
 
 
 		function updateEvents(){
-//			alert (document.getElementById('myevents').innerHTML);
-//			xajax_myEvents(document.getElementById('myevents').innerHTML);
 			xajax_listenCalls(xajax.getFormValues("myForm"));
-//			xajax_myEvents();
 			setTimeout("updateEvents()", 1000);
 		}
 		
-		function btnConfirmCustomerOnClick(){
-			if (xajax.$('btnConfirmCustomer').value == 'Cancel')
-			{
-				xajax_add(xajax.$('callerid').value);
-			}else{
-				xajax_confirmCustomer(xajax.$('customer').value,xajax.$('callerid').value);
-			}
-		}
-
-		function openWindow(url){
-			window.open(url);
-		}
-
-		function btnConfirmContactOnClick(){
-			if (xajax.$('customerid').value == '')
-				return false;
-			if (xajax.$('btnConfirmContact').value == 'Cancel')
-			{
-				xajax_add(xajax.$('callerid').value,xajax.$('customerid').value);
-			}else{
-				xajax_confirmContact(xajax.$('contact').value,xajax.$('customerid').value,xajax.$('callerid').value);
-			}
-		}
 		</script>
 
 	<LINK href="css/style.css" type=text/css rel=stylesheet>
-	<script type="text/javascript" src="js/ajax.js"></script>
-	<script type="text/javascript" src="js/ajax-dynamic-list.js"></script>
 	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
 	<body onload="init();">
 	<form name="myForm" id="myForm">
-		<div id="userMsg" name="userMsg">
-		</div>
+		<div id="userMsg" name="userMsg"></div>
 		<span id="transfer" name="transfer"></span>
-		<div id="formWrapper">
-		</div>
+		<div id="formWrapper"></div>
 		
 		<div id="myevents"></div>
 		<div id="status"></div>
@@ -82,9 +52,10 @@ require_once('portal.common.php');
 		<div id="debug"></div>
 	</form>
 
-<div id="processingMessage" name="processingMessage"></div>
+	<div id="processingMessage" name="processingMessage"></div>
 
-<div id="crm" name="crm"></div>
-<div id="panelDiv" name="panelDiv" class="divPanel"></div>
+	<div id="crm" name="crm"></div>
+	<div id="panelDiv" name="panelDiv" class="divPanel"></div>
+	<div id="extensionDiv" name="extensionDiv" class="divExtension"></div>
 	</body>
 </html>

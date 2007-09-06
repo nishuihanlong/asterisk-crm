@@ -35,7 +35,7 @@ class Customer extends PEAR
 		$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
 
 //		if ($creby != null)
-			$sql .= " WHERE note.creby = '".$_SESSION['curuser']['username']."' ";
+		$sql .= " WHERE note.creby = '".$_SESSION['curuser']['username']."' ";
 			
 
 		if($order == null){
@@ -88,11 +88,12 @@ class Customer extends PEAR
 	function &getNumRows($filter = null, $content = null){
 		global $db;
 		
-		$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid";
+		$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE note.creby = '".$_SESSION['curuser']['username']."'";
 		
 		if(($filter != null) and ($content != null)){
 			$sql = 	"SELECT COUNT(*) AS numRows "
 				."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+				." AND  note.creby = '".$_SESSION['curuser']['username']."' "
 				."WHERE ".$filter." like '%$content%'";
 		}
 		Customer::events($sql);

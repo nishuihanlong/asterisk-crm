@@ -38,15 +38,24 @@
  * The ScrollTable class generate dynamically a table
  * 
  * @package XajaxGrid
- */ 
+ */
+
+
 require_once ('Localization.php');
 
-$_SESSION['curuser']['country'] = cn;
-$_SESSION['curuser']['language'] = ZH;
+//echo $_SESSION['curuser']['country'];
+//echo $_SESSION['curuser']['language'];
+
+
+
 if ($_SESSION['curuser']['country'] != '' )
-	$GLOBALS['localset']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'xajaxGrid');
-else
-	$GLOBALS['localset']=new Localization($_SESSION['curuser']['en'],$_SESSION['curuser']['US'],'xajaxGrid');
+	{
+	$GLOBALS['local_grid']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'xajaxGrid');
+
+}else
+
+	$GLOBALS['local_grid']=new Localization('en','US','xajaxGrid');
+
 class ScrollTable{
 	/**
 	 * <i>integer</i> Number of columns for the table.
@@ -153,7 +162,7 @@ class ScrollTable{
 
 	function setHeader($class,$headers,$attribs,$events,$edit=true,$delete=true,$detail=true){
 
-		global $localset;
+		global $local_grid;
 		$ind = 0;
 		$this->header = '
 		<tr>';
@@ -179,19 +188,19 @@ class ScrollTable{
 		if($edit)
 			$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
-					'.$localset->Translate("edit").'
+					'.$local_grid->Translate("edit").'
 				</th>';
 				
 		if($delete)
 			$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
-					'.$localset->Translate("delete").'
+					'.$local_grid->Translate("delete").'
 				</th>';
 
 		if($detail)
 			$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
-					'.$localset->Translate("detail").'
+					'.$local_grid->Translate("detail").'
 				</th>';
 
 		$this->header .= '
@@ -224,7 +233,7 @@ class ScrollTable{
 	*/
 	
 	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null){
-		global $localset;
+		global $local_grid;
 		$nameRow = $divName."Row".$arr[0];
 	   $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
 		$ind = 0; 
@@ -255,7 +264,7 @@ class ScrollTable{
 		if($detail)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="xajax_showContact(\''.$arr[0].'\',\'note\');xajax_showCustomer(\''.$arr[0].'\',\'note\');return false;">'.$localset->Translate("detail").'</a>
+						<a href="?" onClick="xajax_showContact(\''.$arr[0].'\',\'note\');xajax_showCustomer(\''.$arr[0].'\',\'note\');return false;">'.$local_grid->Translate("detail").'</a>
 					</td>';
 					
 		$row .= "</tr>\n";
@@ -306,32 +315,32 @@ class ScrollTable{
 	*/
 
 	function addRowSearch($table,$fieldsFromSearch,$fieldsFromSearchShowAs, $withNewButton = 1){
-		global $localset;
+		global $local_grid;
 		$ind = 0;
 		$this->search = '
 			<table width="99%" border="0">
 			<tr>
 				<td align="left" width="10%">';
 				if($withNewButton){
-					$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$localset->Translate("add_record").'</button>';
+					$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
 				}
 		$this->search .= '
 				</td>
-				<td> '.$localset->Translate("table").': '.
+				<td> '.$local_grid->Translate("table").': '.
 					$table.
 				'</td>
 				<td align="right" width="30%" nowrap>
-				'.$localset->Translate(search).' : &nbsp;<input type="text" size="30" id="searchContent" name="searchContent">
-				&nbsp;&nbsp;'.$localset->Translate("by").' &nbsp;
+				'.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30" id="searchContent" name="searchContent">
+				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
 					<select id="searchField" name="searchField">
-						<option value="'.null.'">'.$localset->Translate("select_field").'</option>';
+						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
 					foreach ($fieldsFromSearchShowAs as $value) {
 						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'">'.$value.'</option>';
 						$ind++;
 					}	
 		$this->search .= '
 					</select>
-				&nbsp;&nbsp;<button id="submitButton" onClick="xajax_showGrid(0,'.$this->numRowsToShow.',document.getElementById(\'searchField\').value,document.getElementById(\'searchContent\').value,document.getElementById(\'searchField\').value);return false;">'.$localset->Translate("continue").'</button>
+				&nbsp;&nbsp;<button id="submitButton" onClick="xajax_showGrid(0,'.$this->numRowsToShow.',document.getElementById(\'searchField\').value,document.getElementById(\'searchContent\').value,document.getElementById(\'searchField\').value);return false;">'.$local_grid->Translate("continue").'</button>
 				</td>
 				
 			</tr>
@@ -345,7 +354,7 @@ class ScrollTable{
 	*/
 
 	function setFooter(){
-		global $localset;
+		global $local_grid;
 		$next_rows = $this->start + $this->limit;
 		$previos_rows = $this->start - $this->limit;
 		if($next_rows>$this->numRows) $next_rows = $this->numRows;
@@ -358,42 +367,42 @@ class ScrollTable{
 				<th colspan="'.$this->n_cols.'">
 					<span class="pagenav">';
 					if($this->start>0){
-						$this->footer .= '<a href="?" onClick=\'xajax_showGrid(0,'.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$localset->Translate("first").'</a>';
+						$this->footer .= '<a href="?" onClick=\'xajax_showGrid(0,'.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("first").'</a>';
 					}else{
-						$this->footer .= $localset->Translate("first");
+						$this->footer .= $local_grid->Translate("first");
 					}
 					$this->footer .= '</span>
 					<span class="pagenav">';
 					
 					if($this->start >0){
 					$this->footer .= '
-						<a href="?" onClick=\'xajax_showGrid('.$previos_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$localset->Translate("previous").'</a>';
+						<a href="?" onClick=\'xajax_showGrid('.$previos_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("previous").'</a>';
 					}else{
-						$this->footer .= $localset->Translate("previous");
+						$this->footer .= $local_grid->Translate("previous");
 					}
 					$this->footer .= '
 					</span>
 					<span class="pagenav">';
 					
-					$this->footer .= ' [ ' . ($this->start+1) . ' / ' . $next_rows .$localset->Translate("total"). $this->numRows .' ] ';
+					$this->footer .= ' [ ' . ($this->start+1) . ' / ' . $next_rows .$local_grid->Translate("total"). $this->numRows .' ] ';
 					
 					$this->footer .= '
 					</span>
 					<span class="pagenav">';
 					
 					if($next_rows < $this->numRows){
-						$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.$next_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$localset->Translate("next").'</a>';
+						$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.$next_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("next").'</a>';
 					}else{
-						$this->footer .= $localset->Translate("next");
+						$this->footer .= $local_grid->Translate("next");
 					}
 					
 					$this->footer .= ' </span>
 					<span class="pagenav">';
 					
 					if($next_rows < $this->numRows){
-					$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.($this->numRows - $this->limit).','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$localset->Translate("last").'</a>';
+					$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.($this->numRows - $this->limit).','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("last").'</a>';
 					}else{
-					$this->footer .= $localset->Translate("last").'</span>';
+					$this->footer .= $local_grid->Translate("last").'</span>';
 					}
 				$this->footer .= '
 				</th>
@@ -405,7 +414,7 @@ class ScrollTable{
 				<td width="25%" align="left"><a href="http://jvelazqu.glo.org.mx/xajaxGrid/">XajaxGrid V 1.2.1</a></td>
 				<td width="50%" align="center"><div id="msgZone">&nbsp;</div></td>
 				<td width="25%" align="right">
-					<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$localset->Translate("show_all").'</button>
+					<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$local_grid->Translate("show_all").'</button>
 				</td>
 			</tr>
 		</table>';

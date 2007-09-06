@@ -20,7 +20,11 @@ define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show A
 //$_SESSION['curuser']['country'] = 'cn';
 //$_SESSION['curuser']['language'] = 'ZH';
 
+//echo $_SESSION['curuser']['country'];
+//echo $_SESSION['curuser']['language'];
+//exit;
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
+
 
 $xajax = new xajax("portal.server.php");
 //$xajax->debugOn();

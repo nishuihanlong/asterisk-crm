@@ -65,7 +65,8 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
-
+				//$objResponse->addAlert($_SESSION['curuser']['country']);
+				//$objResponse->addAlert($_SESSION['curuser']['language']);
 				$objResponse->addAlert($locate->Translate("login_success"));
 				$objResponse->addScript("location.href='portal.php';");
 
