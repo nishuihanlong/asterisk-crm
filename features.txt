@@ -1,4 +1,4 @@
-﻿features:
+features:
 
 1.	pop-up when incoming calls 
 2.	suggestion when enter business name or contact 
@@ -15,19 +15,7 @@ to-do list
 
 
 checkIncoming 函数需要优化
-
 通话记录
-
 用户管理
-
-多语言版本
-
 多数据库支持
-
 分离crm和call center的功能
-
-增加显示分机状态的功能
-
-有时候获取callerid不准确 需要判断callerid是否为数字
-
-

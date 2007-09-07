@@ -21,7 +21,7 @@ function init(){
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	$objResponse->addAssign("panelDiv","innerHTML", "<a href='login.php'>".$locate->Translate("logout")."</a>" );
 
-	if ($config['ENABLE_EXTERNAL_CRM'] == false){
+	if ($config['system']['enable_external_crm'] == false){
 		$objResponse->addClear("crm","innerHTML");
 		$objResponse->addIncludeScript("js/astercrm.js");
 		$objResponse->addIncludeScript("js/ajax.js");
@@ -54,7 +54,7 @@ function init(){
 		$objResponse->addAppend("crm","innerHTML", $mycrm );
 		*/
 	} else {
-		$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['EXTERNAL_URL_DEFAULT'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+		$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 		$objResponse->addAssign("crm","innerHTML", $mycrm );
 	}
 
@@ -72,18 +72,17 @@ function listenCalls($aFormValues){
 //transfer
 function transfer($aFormValues){
 	global $config;
-	global $asmanager;
 	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $asmanager;
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
 	if (!$res)
 		$objResponse->addAssign("debug", "innerText", "asterisk connect failed");
 
 	if ($aFormValues['direction'] == 'in')		
-		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
+		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
 	else
-		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['OUTCONTEXT'],1);
+		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
 
 
 	return $objResponse;
@@ -101,27 +100,26 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
-			$status	= 'link';
-			$info	= 'talking to '.$myValue['callerid'];
+			$status	= "link";
+			$info	= $locate->Translate("talking_to").$myValue['callerid'];
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
-			$transfer = '
-						<SELECT id="sltExten" name="sltExten">
-						';
-			$query = "SELECT * FROM account WHERE extension <> '".$_SESSION['curuser']['extension']."'";
-			$myres = $db->query($query);
-			while ($myres->fetchInto($list)){
-				$transfer .= '
-								<option value="'.$list['extension'].'">'.$list['extension'].'</option>
+			if ($myValue['sltExten'] == ''){
+				$transfer = '
+							<SELECT id="sltExten" name="sltExten">
 							';
+				foreach ($_SESSION['curuser']['extensions'] as $extension){
+					$transfer .= '
+									<option value="'.trim($extension).'">'.trim($extension).'</option>
+								';
+				}
+
+				$transfer .= '
+							</SELECT>
+							<INPUT type="BUTTON" value="'.$locate->Translate("transfer").'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
+							';
+				$objResponse->addAssign("transfer","innerHTML", $transfer );
 			}
-
-			$transfer .= '
-						</SELECT>
-						<INPUT type="BUTTON" value="'.$locate->Translate("transfer").'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
-						';
-			$objResponse->addAssign("transfer","innerHTML", $transfer );
-
 
 		} elseif ($call['status'] =='hangup'){
 			$status	= 'hang up';
@@ -146,7 +144,7 @@ function waitingCalls($myValue){
 	$objResponse = new xajaxResponse();
 	$curid = trim($myValue['curid']);
 
-	$phone_html = asterEvent::checkPhoneStatus($curid);
+	$phone_html = asterEvent::checkExtensionStatus($curid);
  	//$objResponse->addAlert($phone_html );
 
 	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
@@ -166,14 +164,14 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
-		if ($config['POP_UP_WHEN_INCOMING']){
-			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH']){
-				if ($config['ENABLE_EXTERNAL_CRM'] == false){
+		if ($config['system']['pop_up_when_dial_in']){
+			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
+				if ($config['system']['enable_external_crm'] == false){
 					$objResponse->loadXML(getContact($call['callerid']));
 				}else{
 					//use external link
-					$myurl = $config['EXTERNAL_URL'];
-					$myurl = preg_replace("/\%method/","incoming",$myurl);
+					$myurl = $config['system']['external_crm_url'];
+					$myurl = preg_replace("/\%method/","dial_in",$myurl);
 					$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
 					$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
 					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
@@ -188,14 +186,14 @@ function waitingCalls($myValue){
 		$status	= 'dialing';
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
-		if ($config['POP_UP_WHEN_DIAL_OUT']){
-			if (strlen($call['callerid']) > $config['PHONE_NUMBER_LENGTH']){
-				if ($config['ENABLE_EXTERNAL_CRM'] == false){
+		if ($config['system']['pop_up_when_dial_out']){
+			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
+				if ($config['system']['enable_external_crm'] == false){
 					$objResponse->loadXML(getContact($call['callerid']));
 				}else{
 					//use external link
-					$myurl = $config['EXTERNAL_URL'];
-					$myurl = preg_replace("/\%method/","dialout",$myurl);
+					$myurl = $config['system']['external_crm_url'];
+					$myurl = preg_replace("/\%method/","dial_out",$myurl);
 					$myurl = preg_replace("/\%callerid/",$_SESSION['curuser']['extension'],$myurl);
 					$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
 					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
@@ -600,25 +598,23 @@ function updateField($table, $field, $cell, $value, $id){
 
 function dial($phoneNum,$first = 'caller'){
 	global $config;
-	global $asmanager;
 	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $asmanager;
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 	$callerid = "Web Call <" . $_SESSION['curuser']['extension'] . ">";
-	$first = 'callee';
-
-	if ($first == 'caller'){	//caller phone will ring first
-		$strChannel = "Local/".$phoneNum."@".$config['OUTCONTEXT']."";
-		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['INCONTEXT'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
+//	$first = 'callee';
+//	$objResponse->addAlert($first);
+	if ($config['system']['firstring'] == 'caller'){	//caller phone will ring first
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
 	}else{
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['INCONTEXT']."";
-//		$objResponse->addAlert($strChannel);
-//		return $objResponse;
-		$myAsterisk->Originate($strChannel,$phoneNum,$config['OUTCONTEXT'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."";
+		//$objResponse->addAlert($strChannel);
+		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
 	}
 	return $objResponse->getXML();
 }

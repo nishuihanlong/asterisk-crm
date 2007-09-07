@@ -1,4 +1,6 @@
 function btnConfirmCustomerOnClick(){
+	//alert();
+	//alert (xajax.$('customer').readOnly);
 
 	if (xajax.$('customer').readOnly  == 'true')
 	{

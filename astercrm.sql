@@ -65,6 +65,7 @@ CREATE TABLE account (
   username varchar(30) NOT NULL default '',
   password varchar(30) NOT NULL default '',
   extension varchar(30) NOT NULL default '',
+  related varchar(200) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
 

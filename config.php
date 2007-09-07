@@ -1,36 +1,93 @@
 <?php
+/*******************************************************************************
+* config.php
+* Revision 0.044  2007/09/6 16:55:00  modified by solo
+********************************************************************************/
 
-// database config
-$dbtype = 'mysql';
-$dbhost = 'localhost';
-$dbname = 'asterisk';
-$username = '';
-$password = '';
+/** 
+* Database connection parameter 
+* 数据库连接参数 
+*/ 
 
-// asterisk config
+/** 
+* Database type 
+* 数据库类型 
+* Only support mysql for now
+* 目前只支持mysql数据库
+*/ 
+$config['database']['dbtype'] = 'mysql';
 
-$asmanager['server'] ='';
-$asmanager['port'] = '';
-$asmanager['username'] = '';
-$asmanager['secret'] = '';
+$config['database']['dbhost'] = 'localhost';
+$config['database']['dbname'] = 'asterisk';
+$config['database']['username'] = 'asteriskuser';
+$config['database']['password'] = 'movingon';
 
-// asterisk context setting
+/** 
+* Asterisk connection parameter 
+* Asterisk连接参数 
+*/ 
+$config['asterisk']['server'] = '210.83.203.100';
+$config['asterisk']['port'] = '7998';			//should be matched in manager.conf
+$config['asterisk']['username'] = 'solo';		//should be matched in manager.conf
+$config['asterisk']['secret'] = '123654';		//should be matched in manager.conf
 
-$config['OUTCONTEXT'] = 'from-sipuser';
-$config['INCONTEXT'] = 'from-siptrunk';
+$asmanager['server'] ='210.83.203.100';
+$asmanager['port'] = '7998';
+$asmanager['username'] = 'solo';
+$asmanager['secret'] = '123654';
 
-// popup only when the length of callerid is longer than $PHONE_NUMBER_LENGTH
+/** 
+* Asterisk context parameter, set whick context to use when dial in or dial out
+* 设定拨入拨出时使用哪个context 
+*/ 
 
-$config['PHONE_NUMBER_LENGTH'] = 6;
+$config['system']['outcontext'] = 'from-sipuser';	//context when dial out
+$config['system']['incontext'] = 'from-siptrunk';	//context when dial in
 
-$config['POP_UP_WHEN_DIAL_OUT'] = true;
+/**
+* astercrm wouldnot pop-up unless the callerid is longer than this number
+* 只有当callerid大于该参数时, astercrm才会弹屏
+*/
+$config['system']['phone_number_length'] = 6; // number only
 
-$config['POP_UP_WHEN_INCOMING'] = true;
+/**
+* astercrm wouldnot pop-up when dial out unless this parameter is true
+* 当该参数为true时, 拨出电话时系统将弹屏
+*/
+$config['system']['pop_up_when_dial_out'] = true;	// true | false
 
-$config['ENABLE_EXTERNAL_CRM'] = true;
+/**
+* astercrm wouldnot pop-up when dial in unless this parameter is true
+* 当该参数为true时, 拨入电话时系统将弹屏
+*/
+$config['system']['pop_up_when_dial_in'] = true;	// true | false
 
-$config['EXTERNAL_URL_DEFAULT'] = 'http://www.magiclink.cn';
+/**
+* which phone ring first when using click to dial
+* 当使用页面点击呼叫功能时,是桌面分机先振铃还是被叫号码先振铃
+* callee 主叫分机先振铃
+* caller 被叫号码先振铃
+*/
+$config['system']['firstring'] = 'callee'; //	callee | caller
 
-// method: incoming, dialout
-$config['EXTERNAL_URL'] = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method";
+/**
+* astercrm will use external crm software if this parameter is true
+* 当该参数为true时, 系统将使用外挂CRM系统
+*/
+$config['system']['enable_external_crm'] = false;	// true | false
+
+/**
+* when using external crm, put default page here
+* 当使用外部crm系统时, 默认的显示页面
+*/
+$config['system']['external_crm_default_url'] = 'http://www.magiclink.cn';
+
+/**
+* when using external crm, put pop up page here
+* 当使用外部crm系统时, 系统弹屏时显示的界面
+* %callerid		callerid				主叫号码
+* %calleeid		calleeid				被叫号码
+* %method		dial out or dial in		拨入还是拨出		dial_in | dial_out
+*/
+$config['system']['external_crm_url'] = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method";
 ?>

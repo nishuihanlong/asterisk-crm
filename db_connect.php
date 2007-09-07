@@ -8,7 +8,7 @@ require_once 'PEAR.php';
 require_once 'config.php';
 
 // Change for your DB parameters
-define('SQLC', "$dbtype://$username:$password@$dbhost/$dbname");
+define('SQLC', $config['database']['dbtype']."://".$config['database']['username'].":".$config['database']['password']."@".$config['database']['dbhost']."/".$config['database']['dbname']."");
 
 $GLOBALS['db'] = DB::connect(SQLC);
 

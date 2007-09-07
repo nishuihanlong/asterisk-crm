@@ -8,4 +8,5 @@ $username_cannot_be_blank = "Username field can not be blank";
 $password_cannot_be_blank = "Password field can not be blank";
 $login_success = "Login success";
 $login_failed = "Login failed, please check your username/password";
+$asterisk_connect_failed = "can not connect to asterisk, some function could not work, please check your config file";
 ?>

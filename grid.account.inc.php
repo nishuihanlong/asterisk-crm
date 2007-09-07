@@ -125,7 +125,8 @@ class Account extends PEAR
 		$sql= "INSERT INTO account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
-				."extension='".$f['extension']."'";
+				."extension='".$f['extension']."'"
+				."extensions='".$f['extensions']."'";
 
 		Account::events($sql);
 		$res =& $db->query($sql);
@@ -145,7 +146,8 @@ class Account extends PEAR
 		$sql= "UPDATE account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
-				."extension='".$f['extension']."' "
+				."extension='".$f['extension']."', "
+				."extensions='".$f['extensions']."' "
 				."WHERE id='".$f['id']."'";
 
 		Account::events($sql);
@@ -212,6 +214,10 @@ class Account extends PEAR
 					<td align="left"><input type="text" id="extension" name="extension" size="50" maxlength="100"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
+					<td align="left"><input type="text" id="extensions" name="extensions" size="50" maxlength="100"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -255,6 +261,10 @@ class Account extends PEAR
 					<td align="left"><input type="text" id="extension" name="extension" size="50" maxlength="100" value="'.$account['extension'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
+					<td align="left"><input type="text" id="extensions" name="extensions" size="50" maxlength="100" value="'.$account['extensions'].'"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -290,7 +300,6 @@ class Account extends PEAR
 		if(empty($f['username'])) return "The field Customer does not have to be null";
 		if(empty($f['password'])) return "The field Contact does not have to be null";
 		if(empty($f['extension'])) return "The field Note does not have to be null";
-	 	return 0;
 	}
 
 	function events($event = null){

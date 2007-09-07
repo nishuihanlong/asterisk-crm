@@ -36,21 +36,25 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'username';
 	$fields[] = 'password';
 	$fields[] = 'extension';
+	$fields[] = 'extensions';
 
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("username");
 	$headers[] = $locate->Translate("password");
 	$headers[] = $locate->Translate("extension");
+	$headers[] = $locate->Translate("extensions");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="30%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="50%"';
+	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="40%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -60,18 +64,21 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","password","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extension","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'username';
 	$fieldsFromSearch[] = 'passowrd';
 	$fieldsFromSearch[] = 'extension';
+	$fieldsFromSearch[] = 'extensions';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("username");
 	$fieldsFromSearchShowAs[] = $locate->Translate("password");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extension");
+	$fieldsFromSearchShowAs[] = $locate->Translate("extensions");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -88,6 +95,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['username'];
 		$rowc[] = $row['password'];
 		$rowc[] = $row['extension'];
+		$rowc[] = $row['extensions'];
 		$table->addRow("account",$rowc,1,1,1,$divName,$fields);
  	}
  	

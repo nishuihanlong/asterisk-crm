@@ -5,8 +5,6 @@
 
 ====================================================================================
 
-			current version 0.043
-
 The AsterCRM Lite is a WEB/AJAX based 'Call Center' system. 
 
 First, Asterisk Events are captured as the occur via a python script called ProxyMan.py and
@@ -112,7 +110,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 
    Note: when ProxyMan.py starts it will automatically become a daemon
          (so no need for for the & at the end of the command)
-
+         
    Another python script is provided (asterstart.py) which can also be used to start
    Asterisk and ProxyMan.py and keep them running. See the README in the proxyman 
    directory.

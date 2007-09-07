@@ -60,7 +60,7 @@ class asterEvent extends PEAR
 		return $call;
 	}
 
-	function checkPhoneStatus($curid){
+	function checkExtensionStatus($curid){
 		$events =& asterEvent::getEvents($curid);
 /*
 		while ($events->fetchInto($list)) {
@@ -71,11 +71,8 @@ class asterEvent extends PEAR
 //		return $html;
 //		$phones = array();
 
+		//$html = Table::Top("Status","extensionDiv"); 
 
-		if (!isset($_SESSION['phones']))
-			$phones = array();
-		else
-			$phones = $_SESSION['phones'];
 
 		if (!isset($_SESSION['sipstatus']))
 			$status = array();
@@ -89,6 +86,7 @@ class asterEvent extends PEAR
 			//print $data."\n";
 			if (strtolower(substr($chan_val,0,3)) != "sip") continue;
 			//print $event_val."\n";
+			$phones = array();
 			if (substr($event_val,0,10) == "PeerStatus") {
 				if (!in_array($chan_val,$phones)) $phones[] = $chan_val;
 				if (substr($stat_val,0,11) == "Unreachable")  { $status[$chan_val] = 2; continue; }
@@ -131,17 +129,22 @@ class asterEvent extends PEAR
 //		exit;
 //		$phones = array('SIP/8700','SIP/8701','SIP/8702','SIP/8707','SIP/8708');
 
-		 $_SESSION['phones']    = $phones;
+		if (!isset($_SESSION['curuser']['extensions']))
+			$phones = array();
+		else
+			$phones = $_SESSION['curuser']['extensions'];
+
 		 $_SESSION['sipstatus'] = $status;
 
 		 $action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		 //$action .= '<tr>';
-		 foreach ($phones as $key => $value) {
+		foreach ($phones as $key => $value) {
 		   //if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
-		   $action .= "<tr><td align=center><button name='" . substr($value,4)."'";
+		   $value = "SIP/".$value;
+			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
 		   //$action .= " onMouseOver='change_id(this,\"ButtonY\")'\n";
 		   //$action .= "  onClick='eventlist_channel(\"" . $value . "\")'\n";
-		   if (isset($status[$value])) {
+			if (isset($status[$value])) {
 				//echo $key.'->'.$value."\n";
 				//echo $status[$value]."\n";
 			 //echo "ok";
@@ -175,7 +178,9 @@ class asterEvent extends PEAR
 		 }
 		 $action .= '</table><br>';
 //		exit;
-		return $action;
+		$html .= $action;
+		//$html .= Table::Footer();
+		return $html;
 	}
 
 
@@ -404,7 +409,7 @@ while ( list( $key, $val ) = each( $flsearch ) ) {
 	function &getInfoBySrcID($SrcUniqueID){
 		global $db;
 		$SrcUniqueID = trim($SrcUniqueID);
-		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%'";
+		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%' ORDER BY id DESC";
 		asterEvent::events($query);
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){
@@ -436,7 +441,7 @@ while ( list( $key, $val ) = each( $flsearch ) ) {
 	function &getCallerID($uniqueid){
 		global $db;
 		$uniqueid = trim($uniqueid);
-		$query  = "SELECT * FROM events WHERE event LIKE '%DestUniqueID: $uniqueid%'";
+		$query  = "SELECT * FROM events WHERE event LIKE '%DestUniqueID: $uniqueid%' ORDER BY id DESC";
 		$res = $db->query($query);
 
 		if ($res->fetchInto($list)){

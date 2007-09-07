@@ -8,7 +8,9 @@ $rec_cannot_delete = "The record could not be deleted";
 $username = "User Name ";
 $password = "Password ";
 $extension = "Extension ";
+$extensions = "Extensions, use comma between extensions ";
 $continue = "Continue";
 $obligatory_fields = "* Obligatory fields";
 $adding_account = "Adding Account";
+
 ?>

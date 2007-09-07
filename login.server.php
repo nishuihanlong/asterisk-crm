@@ -11,13 +11,12 @@ function processForm($aFormValues)
 }
 
 function init($aFormValue){
-	global $locate;
+	global $locate,$config;
 	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);
 
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');
 
 	$objResponse = new xajaxResponse();
-//	global $locate;
 
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("title"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
@@ -27,7 +26,6 @@ function init($aFormValue){
 	$objResponse->addScript("xajax.$('username').focus();");
 	$_SESSION['curuser']['username'] = '';
 	$_SESSION['curuser']['extension'] = '';
-
 
 	return $objResponse;
 }
@@ -64,6 +62,16 @@ function processAccountData($aFormValues)
 				$_SESSION = array();
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
+
+				if ($list['extensions'] != '')
+					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);
+				else
+					$_SESSION['curuser']['extensions'] = array();
+
+ 				//$objResponse->addAlert($list['extensions']);
+				//print_r($_SESSION['curuser']['extensions']);
+				//exit;
+
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 				//$objResponse->addAlert($_SESSION['curuser']['country']);
 				//$objResponse->addAlert($_SESSION['curuser']['language']);

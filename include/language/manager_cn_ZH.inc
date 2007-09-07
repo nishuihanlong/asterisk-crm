@@ -8,6 +8,7 @@ $rec_cannot_delete = "该记录不能被删除";
 $username = "用户名 ";
 $password = "密码 ";
 $extension = "分机号码 ";
+$extensions = "可观察的分机, 分机之间用逗号隔开 ";
 $continue = "继续";
 $obligatory_fields = "带*的为必填项目";
 $adding_account = "添加用户";

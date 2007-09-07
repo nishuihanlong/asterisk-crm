@@ -35,7 +35,7 @@ $xajax->registerFunction("dial");
 $xajax->registerFunction("transfer");
 $xajax->registerFunction("init");
 
-if ($config['ENABLE_EXTERNAL_CRM'] == false){
+if ($config['system']['enable_external_crm'] == false){
 	//crm function
 	$xajax->registerFunction("showGrid");
 	$xajax->registerFunction("add");
