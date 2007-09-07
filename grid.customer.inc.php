@@ -381,7 +381,17 @@ class Customer extends PEAR
 		return $res;
 		
 	}
+	if ($_SESSION['curuser']['country'] != '' )
+	{
+	$GLOBALS['local_grid']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'gridcustomer');
 
+}else
+
+	$GLOBALS['local_grid']=new Localization('cn','ZH','gridcustomer');
+	
+//	$locate_grid_customer=new Localization('cn','ZH','grid.customer');
+ // $Customer_text=$locate_grid_customer->Translate("Customer");
+ //  echo $Customer_text;
 	
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
@@ -435,9 +445,9 @@ class Customer extends PEAR
 	}
 
 	if ($contactid == null){
-		$html .='
+		$html .="
 				<tr>
-					<td nowrap align="left">Contact*</td>
+					<td nowrap align="left">Customer_text.'*'</td>
 					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input type="button" value="Confirm" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value=""></td>
 				</tr>
 				<tr name="positionTR" id="positionTR">
@@ -468,7 +478,7 @@ class Customer extends PEAR
 					<td nowrap align="left">Email</td>
 					<td align="left"><input type="text" id="email" name="email" size="35"></td>
 				</tr>					
-				';
+				";
 	}else{
 		$contact =& Customer::getContactByID($contactid);
 		$html .='
