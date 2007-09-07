@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*******************************************************************************
 * config.php
 * Revision 0.044  2007/09/6 16:55:00  modified by solo
@@ -30,11 +30,6 @@ $config['asterisk']['server'] = '';
 $config['asterisk']['port'] = '5038';			//should be matched in manager.conf
 $config['asterisk']['username'] = '';		//should be matched in manager.conf
 $config['asterisk']['secret'] = '';		//should be matched in manager.conf
-
-$asmanager['server'] ='210.83.203.100';
-$asmanager['port'] = '7998';
-$asmanager['username'] = 'solo';
-$asmanager['secret'] = '123654';
 
 /** 
 * Asterisk context parameter, set whick context to use when dial in or dial out
