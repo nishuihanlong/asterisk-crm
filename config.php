@@ -44,8 +44,8 @@ $config['asterisk']['secret'] = '';		//should be matched in manager.conf
 * 设定拨入拨出时使用哪个context 
 */ 
 
-$config['system']['outcontext'] = 'from-sipuser';	//context when dial out
-$config['system']['incontext'] = 'from-siptrunk';	//context when dial in
+$config['system']['outcontext'] = 'from-sipuser';	//context when dial out, in trixbox this could be from-internal
+$config['system']['incontext'] = 'from-siptrunk';	//context when dial in, in trixbox this could be from-trunk
 
 /**
 * astercrm wouldnot pop-up unless the callerid is longer than this number
