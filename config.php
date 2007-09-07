@@ -19,17 +19,17 @@ $config['database']['dbtype'] = 'mysql';
 
 $config['database']['dbhost'] = 'localhost';
 $config['database']['dbname'] = 'asterisk';
-$config['database']['username'] = 'asteriskuser';
-$config['database']['password'] = 'movingon';
+$config['database']['username'] = '';
+$config['database']['password'] = '';
 
 /** 
 * Asterisk connection parameter 
 * Asterisk连接参数 
 */ 
-$config['asterisk']['server'] = '210.83.203.100';
-$config['asterisk']['port'] = '7998';			//should be matched in manager.conf
-$config['asterisk']['username'] = 'solo';		//should be matched in manager.conf
-$config['asterisk']['secret'] = '123654';		//should be matched in manager.conf
+$config['asterisk']['server'] = '';
+$config['asterisk']['port'] = '5038';			//should be matched in manager.conf
+$config['asterisk']['username'] = '';		//should be matched in manager.conf
+$config['asterisk']['secret'] = '';		//should be matched in manager.conf
 
 $asmanager['server'] ='210.83.203.100';
 $asmanager['port'] = '7998';
