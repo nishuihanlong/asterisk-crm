@@ -1,7 +1,15 @@
-﻿<?php
+<?php
 /*******************************************************************************
 * config.php
+* 系统配置信息文件
+* system configuration file
+* 功能描述
+* Function Desc
+
 * Revision 0.044  2007/09/7 17:55:00  modified by solo
+* Desc: change all system configuration parameter to be saved in variable: $config
+* 描述: 统一了系统参数的格式, 配置信息都保存在变量 $config 中
+
 ********************************************************************************/
 
 /** 

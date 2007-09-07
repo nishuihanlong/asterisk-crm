@@ -1,35 +1,99 @@
 <?php
+/*******************************************************************************
+* login.server.php
+* 用户登入程序文件
+* user login function page
+
+* Public Functions List
+									processForm
+
+* Private Functions List
+									processAccountData
+
+* Revision 0.044  2007/09/7 19:55:00  last modified by solo
+* Desc: modify function init, use unset() to clean session, which means everytime user visit login page, he will log out automaticly
+* 描述: 修改了init函数, 使用 unset() 函数清除session, 每当用户访问login时, 都会视为自动登出
+
+* Revision 0.044  2007/09/7 17:55:00  last modified by solo
+* Desc: add some comments
+* 描述: 增加了一些注释信息
+
+
+********************************************************************************/
 require_once ("login.common.php");
 require_once ("db_connect.php");
+
+/**
+*  function to process form data
+*	
+*  	@param $aFormValues	(array)			login form data
+															$aFormValues['username']
+															$aFormValues['password']
+															$aFormValues['locate']
+*	@return $objResponse
+*/
 
 function processForm($aFormValues)
 {
 	if (array_key_exists("username",$aFormValues))
 	{
 		return processAccountData($aFormValues);
+	} else{
+		$objResponse = new xajaxResponse();
+		return $objResponse;
 	}
 }
 
+/**
+*  function to init login page
+*	
+*  	@param $aFormValues	(array)			login form data
+															$aFormValues['username']
+															$aFormValues['password']
+															$aFormValues['locate']
+*	@return $objResponse
+*  @session
+															$_SESSION['curuser']['country']
+															$_SESSION['curuser']['language']
+*  @global
+															$locate
+*/
+
 function init($aFormValue){
-	global $locate,$config;
-	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);
-
-	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');
-
 	$objResponse = new xajaxResponse();
+	
+	global $locate,$config;
 
+	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);	//get locate parameter
+
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("title"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
-	$_SESSION['curuser']['username'] = '';
-	$_SESSION['curuser']['extension'] = '';
-
+	unset($_SESSION['curuser']['username']);
+	unset($_SESSION['curuser']['extension']);
+	unset($_SESSION['curuser']['extensions']);
 	return $objResponse;
 }
 
+/**
+*  function to verify user data
+*	
+*  	@param $aFormValues	(array)			login form data
+															$aFormValues['username']
+															$aFormValues['password']
+															$aFormValues['locate']
+*	@return $objResponse
+*  @session
+															$_SESSION['curuser']['username']
+															$_SESSION['curuser']['extension']
+															$_SESSION['curuser']['extensions']
+															$_SESSION['curuser']['country']
+															$_SESSION['curuser']['language']
+*/
 function processAccountData($aFormValues)
 {
 	global $db,$locate;
@@ -38,6 +102,8 @@ function processAccountData($aFormValues)
 	
 	$bError = false;
 	
+	//需要加上对有害代码的过滤
+
 	if (trim($aFormValues['username']) == "")
 	{
 		$objResponse->addAlert($locate->Translate("username_cannot_be_blank"));
@@ -68,13 +134,7 @@ function processAccountData($aFormValues)
 				else
 					$_SESSION['curuser']['extensions'] = array();
 
- 				//$objResponse->addAlert($list['extensions']);
-				//print_r($_SESSION['curuser']['extensions']);
-				//exit;
-
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
-				//$objResponse->addAlert($_SESSION['curuser']['country']);
-				//$objResponse->addAlert($_SESSION['curuser']['language']);
 				$objResponse->addAlert($locate->Translate("login_success"));
 				$objResponse->addScript("location.href='portal.php';");
 

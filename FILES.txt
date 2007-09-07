@@ -1,0 +1,4 @@
+﻿config.php			系统配置文件
+				system configuration file
+db_connect.php		数据库连接文件, 定义了一个全局数据连接变量: $db
+				database connect file, define a global database variable: $db
