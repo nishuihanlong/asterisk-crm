@@ -60,33 +60,24 @@ class asterEvent extends PEAR
 		return $call;
 	}
 
-	function checkExtensionStatus($curid){
+	function checkExtensionStatus($curid, $type = 'list'){
 		$events =& asterEvent::getEvents($curid);
-/*
-		while ($events->fetchInto($list)) {
-			$data  = trim($list['event']);
-			$action .= $list['id'].'->'.$data.'<br>';
-		}
-*/
-//		return $html;
-//		$phones = array();
-
-		//$html = Table::Top("Status","extensionDiv"); 
-
 
 		if (!isset($_SESSION['sipstatus']))
 			$status = array();
 		else
 			$status = $_SESSION['sipstatus'];
 
+		if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == '')
+			$phones = array();
+		else
+			$phones = $_SESSION['curuser']['extensions'];
+
 		$events =& asterEvent::getEvents($curid);
 		while ($events->fetchInto($list)) {
 			$data  = trim($list['event']);
 			list($event,$event_val,$ev,$priv,$priv_val,$pv,$chan,$chan_val,$cv,$stat,$stat_val,$sv,$extra) = split(" ", $data, 13);
-			//print $data."\n";
 			if (strtolower(substr($chan_val,0,3)) != "sip") continue;
-			//print $event_val."\n";
-			$phones = array();
 			if (substr($event_val,0,10) == "PeerStatus") {
 				if (!in_array($chan_val,$phones)) $phones[] = $chan_val;
 				if (substr($stat_val,0,11) == "Unreachable")  { $status[$chan_val] = 2; continue; }
@@ -103,19 +94,19 @@ class asterEvent extends PEAR
 				}
 				if (!isset($status[$chan_val])) $status[$chan_val] = 0;
 				continue;
-		   } 
-		   if (substr($event_val,0,10) == "Newchannel") {
-			 $peer_val = split("-",$chan_val);
-			 if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
-			 $status[$peer_val[0]] = 1;
-			 continue;
-		   } 
-		   if (substr($event_val,0,8) == "Newstate") {
-			 $peer_val = split("-",$chan_val);
-			 if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
-			 $status[$peer_val[0]] = 1;
-			 continue;
-		   } 
+			} 
+			if (substr($event_val,0,10) == "Newchannel") {
+				$peer_val = split("-",$chan_val);
+				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
+				$status[$peer_val[0]] = 1;
+				continue;
+			} 
+			if (substr($event_val,0,8) == "Newstate") {
+				$peer_val = split("-",$chan_val);
+				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
+				$status[$peer_val[0]] = 1;
+				continue;
+			} 
 			if (substr($event_val,0,6) == "Hangup") {
 				$peer_val = split("-",$chan_val);
 				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
@@ -123,67 +114,88 @@ class asterEvent extends PEAR
 				continue;
 		   } 
 		} 
-//		print_r($status);
-//		print $status["SIP/8701"];
-//		exit;
-//		exit;
-//		$phones = array('SIP/8700','SIP/8701','SIP/8702','SIP/8707','SIP/8708');
+		
+//		print_r($phones);
+		if ($type == 'list'){
+			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == '')
+				$phones = array();
+			else
+				$phones = $_SESSION['curuser']['extensions'];
+			$action = asterEvent::listStatus($phones,$status);
+		}else{
+			$_SESSION['curuser']['extensions'] = $phones;
+//			print_r($status);
+			$action = asterEvent::tableStatus($phones,$status);
+		}
 
-		if (!isset($_SESSION['curuser']['extensions']))
-			$phones = array();
-		else
-			$phones = $_SESSION['curuser']['extensions'];
+		$_SESSION['sipstatus'] = $status;
 
-		 $_SESSION['sipstatus'] = $status;
-
-		 $action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
-		 //$action .= '<tr>';
-		foreach ($phones as $key => $value) {
-		   //if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
-		   $value = "SIP/".$value;
-			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
-		   //$action .= " onMouseOver='change_id(this,\"ButtonY\")'\n";
-		   //$action .= "  onClick='eventlist_channel(\"" . $value . "\")'\n";
-			if (isset($status[$value])) {
-				//echo $key.'->'.$value."\n";
-				//echo $status[$value]."\n";
-			 //echo "ok";
-			 if ($status[$value] == 2) {
-			   //$action .= "  onMouseOut='change_id(this,\"ButtonU\")'\n";
-			   $action .= "  id='ButtonU'>\n";
-			 }
-			 else {
-			   if ($status[$value] == 1) {
-				 //$action .= "  onMouseOut='change_id(this,\"ButtonR\")'\n";
-				 $action .= "  id='ButtonR'>\n";
-				//if ($info[$value] == "Dial"){
-				//	$action .= "Dial";
-				//}
-			   }
-			   else {
-				 //$action .= "  onMouseOut='change_id(this,\"ButtonG\")'\n";
-				 $action .= "  id='ButtonG'>\n";
-			   }
-			 }
-		   }
-		   else {
-			 //$action .= "  onMouseOut='change_id(this,\"ButtonB\")'\n";
-			 $action .= "  id='ButtonB'>\n";
-		   }
-		   //$action .= strtoupper(substr($value,4));
-		   $action .= $value;
-		   $action .= "</button>\n";
-
-		   $action .=  "</td></tr>\n";
-		 }
-		 $action .= '</table><br>';
-//		exit;
 		$html .= $action;
-		//$html .= Table::Footer();
 		return $html;
 	}
 
+	function tableStatus($phones,$status){
+		//print_r($phones);
+		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
+		$action .= '<tr>';
+		foreach ($phones as $key => $value) {
+			//$value = "SIP/".$value;
+			if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
+			$action .= "<td align=center><button name='" . substr($value,4) . "' ";
+			if (isset($status[$value])) {
+				if ($status[$value] == 2) {
+					$action .= "  id='ButtonU'>\n";
+				}
+				else {
+					if ($status[$value] == 1) {
+						$action .= "  id='ButtonR'>\n";
+					}
+					else {
+						$action .= "  id='ButtonG'>\n";
+					}
+				}
+			}
+			else {
+				$action .= "  id='ButtonB'>\n";
+			}
+			$action .= strtoupper(substr($value,4));
+			$action .= "</button>\n";
 
+			$action .=  "</td>\n";
+		}
+		$action .= '</tr></table><br>';
+		return $action;
+	}
+
+	function listStatus($phones,$status){
+		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
+		foreach ($phones as $key => $value) {
+			$value = "SIP/".$value;
+			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
+			if (isset($status[$value])) {
+				if ($status[$value] == 2) {
+					$action .= "  id='ButtonU'>\n";
+				}
+				else {
+					if ($status[$value] == 1) {
+						$action .= "  id='ButtonR'>\n";
+					}
+					else {
+						$action .= "  id='ButtonG'>\n";
+					}
+				}
+			}
+			else {
+				$action .= "  id='ButtonB'>\n";
+			}
+			$action .= $value;
+			$action .= "</button>\n";
+
+			$action .=  "</td></tr>\n";
+		 }
+		 $action .= '</table><br>';
+		return $action;
+	}
 /*
 	get information from database based some rules
 	@param	$condition				(array)		

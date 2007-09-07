@@ -7,12 +7,21 @@ require_once('manager.common.php');
 		<?php $xajax->printJavascript('include/'); ?>
 		<LINK href="css/style.css" type=text/css rel=stylesheet>
 		<meta http-equiv="Content-Language" content="utf-8" />
+		<SCRIPT LANGUAGE="JavaScript">
+		<!--
+			function showStatus(){
+//				alert();
+				xajax_showStatus();
+				setTimeout("showStatus()", 1000);
+			}
+		//-->
+		</SCRIPT>
 	</head>
 	<body>
 
 	<div id="panel" name="panel">
 		<input type="button" value="Extension Manager" onclick="xajax_showGrid(0,<?=ROWSXPAGE?>,'','','');"><br/>
-		<input type="button" value="System Monitor" onclick="">
+		<input type="button" value="System Monitor" onclick="showStatus();">
 	</div>
 		
 		<div id="formWrapper">

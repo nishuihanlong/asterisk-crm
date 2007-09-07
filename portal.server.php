@@ -45,14 +45,6 @@ function init(){
 							<div id="grid" align="center"> </div>';
 		$objResponse->addAppend("crm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
-		/*
-		$mycrm ='
-							</fieldset>
-						</td>
-					</tr>
-				</table>';
-		$objResponse->addAppend("crm","innerHTML", $mycrm );
-		*/
 	} else {
 		$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 		$objResponse->addAssign("crm","innerHTML", $mycrm );

@@ -1,4 +1,4 @@
-2007-8-30	add processing message								solo
+﻿2007-8-30	add processing message								solo
 2007-8-31	disabled waitCursor								solo
 2007-9-3	support external crm								solo
 2007-9-6	modify delete_events.py only delete events 2 minutes ago			solo
@@ -6,3 +6,4 @@
 2007-9-7	add table column extensions in table account					solo
 2007-9-7	修改了转接和分机状态显示,需要在数据库里设置用户可以转接以及状态显示的分机	solo
 2007-9-7	修正了获取主叫、被叫号码的一个bug						solo
+2007-9-7	增加了manager界面中显示分机状态的功能						solo

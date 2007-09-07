@@ -3,6 +3,7 @@ require_once ("manager.common.php");
 require_once ("db_connect.php");
 require_once ('grid.account.inc.php');
 require_once ('include/xajaxGrid.inc.php');
+require_once ('asterevent.class.php');
 
 
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
@@ -14,6 +15,13 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 	return $objResponse;
 }
 
+function showStatus(){
+	$objResponse = new xajaxResponse();
+	$_SESSION['curuser']['extensions'] = '';
+	$phone_html = asterEvent::checkExtensionStatus(0,'table');
+	$objResponse->addAssign("grid", "innerHTML", $phone_html);
+	return $objResponse;
+}
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;

@@ -20,4 +20,5 @@ $xajax->registerFunction("save");
 $xajax->registerFunction("edit");
 $xajax->registerFunction("update");
 $xajax->registerFunction("delete");
+$xajax->registerFunction("showStatus");
 ?>
