@@ -1,11 +1,11 @@
 
 ====================================================================================
 
-      AsterCRM Lite (C) 2006,2007  Solo Fu  solo@magiclink.cn solo.fu@gmail.com
+      asterCRM  (C) 2006,2007  Solo Fu  solo@magiclink.cn solo.fu@gmail.com
 
 ====================================================================================
 
-The AsterCRM Lite is a WEB/AJAX based 'Call Center' system. 
+asterCRM is a WEB/AJAX based 'Call Center' system. 
 
 First, Asterisk Events are captured as the occur via a python script called ProxyMan.py and
 logged to a MySQl database table(using script from Asterisk Event Monitor by earl@micpc.com).
@@ -23,10 +23,28 @@ More information on the function of ProxyMan can be found in its source comments
 WEB PHP scripts will analyze Asterisk Events in database, and finish call center jobs, 
 such as pop-up, click to dial, call queue ... 
 
-The AsterCRM Lite scripts require a running WEB and MySQL server. All of these 
+asterCRM scripts require a running WEB and MySQL server (in which stored asterisk events). All of these 
 processes can run on the same server, however, multiple servers enhance performance.
 
-AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
+1. Features
+
+1) pop-up when incoming calls 
+
+2) pop-up when outbound calls
+
+3) suggestion when enter business name or contact 
+
+4) account/extension manager
+
+5) click to dial
+
+6) click to transfer
+
+7) extension status
+
+8) external CRM support
+
+2. asterCRM Installation: (assuming your WEB root is /var/www/html)
 
 1) Download and unzip the source
 
@@ -42,6 +60,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 	/var/www/html/astercrm/images		image files used via the PHP scripts
 	/var/www/html/astercrm/css		style files used via the PHP scripts
 	/var/www/html/astercrm/js		auto-complete java scripts
+	/var/www/html/astercrm/screenshot	some screen shot of asterCRM
 
      It is highly advised that the whole proxyman directory be moved to a more secure
      location like /opt and out of the WEB root directory (see step 4)
@@ -54,6 +73,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
    Note: the astercrm.sql file has the GRANT commands to update MySQL with
          the desired authority. The settings here must match the userid/password
          specified in the ProxyMan.py , delete_events.py script and the config.php script
+	 you can modify this script to meet your database
 
    Update the /var/www/html/astercrm/config.php script for the
    correct MySQL login userid/password 
@@ -123,22 +143,34 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
 
    It will delete all events older than the current time (2 mininute).
 
-6) Extension Config: http://localhost/astercrm/manager.php
-   
-	        or http://YOUR-WEB-SERVER-ADDRESS/astercrm
-
-	to set username/password for extensions
-
-7) Testing: browse to http://localhost/astercrm
+6) Testing: browse to http://localhost/astercrm
 
 	        or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 		
-	login with username/password set above
+	login with admin/admin
 
+7) Administrator
+   
+	click "Manager" on top right, then
+
+	click "Extension Manager" to setup extension username and password
+
+	click "System Monitor" to monitor system status
+
+3. How to use confirm button
+
+	Customer field support auto-complete, which means it will list all items in 
+	customer database matched with your entered. if you find the customer  already exsited, 
+	select the item and then click "confirm" button, then all information for the customer 
+	will be filled automaticly. (screenshot/1,2,3) Click "Cancel" button will clear all 
+	information, you can enter another customer .
+
+	Contact field is almost same with customer field, but it only list contacts belongs 
+	to the customer above.
 
 ====================================================================================
 
-2007-08-7	Version 0.01 Released (GPL)
+2007-09-10	Version 0.44 Released (GPL)
 
 ====================================================================================
 

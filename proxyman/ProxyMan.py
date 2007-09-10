@@ -78,20 +78,21 @@
 #
 HOST           = '127.0.0.1' 
 CLIENTPORT     = 4575 
-MANAGER        = '127.0.0.1'
-MANAGERPORT    = 5038
-USERNAME       = 'eventmonitor'
-SECRET         = 'asterisksecret'
+MANAGER        = '127.0.0.1'			#change to your asterisk server
+MANAGERPORT    = 5038				#change to your asterisk manager port
+USERNAME       = 'eventmonitor'			#change to your asterisk username in manager.conf
+SECRET         = 'asterisksecret'		#change to your asterisk secret in manager.conf
 debug          = 0
 dblog          = 1
 hexdump        = 0
 clients        = 0
 MAXCONNECTIONS = 20
 
-SQLhost        = 'localhost'
-SQLuser        = 'asteriskuser'
-SQLpass        = 'asterisk'
-SQLdb          = 'asterisk'
+SQLhost        = 'localhost'			#change to your mysql server
+SQLdb          = 'asterisk'			#change to your mysql database
+SQLuser        = 'asteriskuser'			#change to your mysql username
+SQLpass        = 'asterisk'			#change to your mysql password	
+
 
 #
 #

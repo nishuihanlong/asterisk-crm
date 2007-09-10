@@ -70,3 +70,14 @@ CREATE TABLE account (
   UNIQUE KEY id (id)
 ) ;
 
+INSERT INTO `asterisk`.`account` (
+`id` ,
+`username` ,
+`password` ,
+`extension` ,
+`extensions` ,
+`usertype` 
+)
+VALUES (
+NULL , 'admin', 'admin', '0000', '', 'admin'
+);

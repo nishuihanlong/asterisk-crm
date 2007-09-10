@@ -1,69 +1,37 @@
+<?php
+/*******************************************************************************
+* ajax-list-values.php
+* 自动完成php程序
+* auto complete php script
+* 功能描述
+* 根据get方式传来的值从数据库中查找相匹配的文本, 分别从customer表和contact表查找
+* Function Desc
+
+* Revision 0.044  2007/09/10 17:00:00  by solo
+* Desc: add some comments
+* 描述: 增加了一些注释
+
+********************************************************************************/
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 	</head>
 <?php 
-
-//function is_utf8($str)//判断是否为UTF8不是则转换成UTF8 
-//{ 
-//    if ($str == mb_convert_encoding(mb_convert_encoding($str, "UTF-32", "UTF-8"), "UTF-8", "UTF-32")) 
-//    { 
-//        return $str; 
-//    } 
-//    else 
-//    { 
-//        return iconv("gb2312", "UTF-8", $str); 
-//    } 
-//}
-//$letters = $_GET['letters'];
-//$letters = "付磊";
-//echo mb_detect_encoding($letters, "auto"); 
-//echo "ok";
-//exit;
-?>
-<?
 require_once ("db_connect.php");
-//function is_utf8($str)//判断是否为UTF8不是则转换成UTF8{    if ($str === mb_convert_encoding(mb_convert_encoding($str, "UTF-32", "UTF-8"), &q
-//echo "123";
-//if (mb_convert_encoding($_GET['letters'],"UTF-8","GB2312") == $_GET['letters'])
-//	echo "yes";
-//else
-//	echo "no";
-//exit;
 
 if(isset($_GET['getCustomersByLetters']) && isset($_GET['letters'])){
 	$letters = $_GET['letters'];
-	//$letters = preg_replace("/[^a-z0-9 ]/si","",$letters);
-	//mb_convert_encoding("妳係我的友仔","UTF-8","GBK");
-//	$query = "SELECT id,name FROM customer WHERE name LIKE '%" . mb_convert_encoding($letters,"eucjp-win","utf-8") . "%'";
-//	$query = "SELECT id,name FROM customer";
-//	echo "123";
-//	die();
-//	$query = "SELECT id,name FROM customer WHERE name LIKE '%".urlencode($letters)."%'";
 	if ($letters != mb_convert_encoding($letters,"UTF-8","UTF-8"))
 			$letters=mb_convert_encoding($letters,"UTF-8","GB2312");
 
 	$query = "SELECT id,customer FROM customer WHERE customer LIKE '%".$letters."%'";
-//	echo mb_detect_encoding($letters, "auto"); 
-
-//	$query = "SELECT id,customer FROM customer WHERE customer LIKE '%".$letters."%'";
-//	echo "1###".$query."|";
-//	exit;
-//	$query = "SELECT id,name FROM customer WHERE name LIKE '%大连%'";
-//	echo $query;
-//	exit;
-//	mysql_query("set names utf-8");//
 	$result = mysql_query($query);
 	$erno = mysql_errno();
 	$err  = mysql_error();
 	if ($erno <> 0) die("Get customer values"."|".$query."<br>".$err);
-//	$inf = mysql_fetch_array($result)
-//	echo $inf["name"];
-//	if ($erno == 0) die("Get customer values"."|".$query."<br>".$err);
-	#echo "1###select ID,countryName from ajax_countries where countryName like '".$letters."%'|";
 	while($inf = mysql_fetch_array($result)){
 		echo $inf["id"]."###".$inf["customer"]."|";
-//		echo "###123";
 	}	
 }elseif (isset($_GET['getContactsByLetters']) && isset($_GET['letters']) && isset($_GET['customerid']) && $_GET['customerid'] != ''){
 	$letters = $_GET['letters'];
