@@ -19,7 +19,13 @@ function init(){
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
-	$objResponse->addAssign("panelDiv","innerHTML", "<a href='login.php'>".$locate->Translate("logout")."</a>" );
+//	echo $_SESSION['curuser']['usertype'];
+//	exit;
+	if ($_SESSION['curuser']['usertype'] == "admin"){
+		$panelHTML = '<a href=# onclick="this.href=\'manager.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
+	}
+	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a>";
+	$objResponse->addAssign("panelDiv","innerHTML", $panelHTML);
 
 	if ($config['system']['enable_external_crm'] == false){
 		$objResponse->addClear("crm","innerHTML");

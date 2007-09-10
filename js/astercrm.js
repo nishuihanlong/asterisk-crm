@@ -1,11 +1,13 @@
 function btnConfirmCustomerOnClick(){
-	//alert();
-	//alert (xajax.$('customer').readOnly);
+//	alert();
+//	alert (xajax.$('customer').readOnly);
 
-	if (xajax.$('customer').readOnly  == 'true')
+	if (xajax.$('customer').readOnly  == true)
 	{
+		alert('true');
 		xajax_add(xajax.$('callerid').value);
 	}else{
+		alert('false');
 		xajax_confirmCustomer(xajax.$('customer').value,xajax.$('callerid').value);
 	}
 }

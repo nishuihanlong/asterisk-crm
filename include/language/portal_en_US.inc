@@ -7,6 +7,7 @@ $processing_please_wait = "Processing, please wait";
 $logout="Log out";
 $transfer="Transfer";
 $talking_to	=	"Talking to ";
+$manager	=	"Manager";
 $stand_by="please stand by";
 $incoming="Incoming call from";
 $dial_out="Dial to";

@@ -96,7 +96,7 @@ AsterCRM Lite Installation: (assuming your WEB root is /var/www/html)
         mkdir /opt/asterisk/scripts
         mkdir /opt/asterisk/scripts/events
 	mv /var/www/html/events/proxyman/* /opt/asterisk/scripts/events
-	chown +x /opt/asterisk/scripts/events/*.py
+	chmod +x /opt/asterisk/scripts/events/*.py
 
 5) Start Asterisk and  ProxyMan.py
 

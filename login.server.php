@@ -10,11 +10,16 @@
 * Private Functions List
 									processAccountData
 
-* Revision 0.044  2007/09/7 19:55:00  last modified by solo
+* Revision 0.044  2007/09/10 14:21:00  modified by solo
+* Desc: add $_SESSION['curuser']['usertype'] to save user type: admin | user
+* 描述: 增加了保存用户权限的变量: admin | user, 保存在变量$_SESSION['curuser']['usertype']
+
+
+* Revision 0.044  2007/09/7 19:55:00  modified by solo
 * Desc: modify function init, use unset() to clean session, which means everytime user visit login page, he will log out automaticly
 * 描述: 修改了init函数, 使用 unset() 函数清除session, 每当用户访问login时, 都会视为自动登出
 
-* Revision 0.044  2007/09/7 17:55:00  last modified by solo
+* Revision 0.044  2007/09/7 17:55:00  modified by solo
 * Desc: add some comments
 * 描述: 增加了一些注释信息
 
@@ -128,6 +133,7 @@ function processAccountData($aFormValues)
 				$_SESSION = array();
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
+				$_SESSION['curuser']['usertype'] = $list['usertype'];
 
 				if ($list['extensions'] != '')
 					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);
