@@ -416,7 +416,7 @@ class Customer extends PEAR
 		$html .= '
 				<tr>
 					<td nowrap align="left">'.$grid_lan->Translate("Customer").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="Cancel"></td>
+					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value=""></td>
 				</tr>
 				<tr id="websiteTR" name="websiteTR">
 					<td nowrap align="left">'.$grid_lan->Translate("Website").'</td>
@@ -585,7 +585,7 @@ class Customer extends PEAR
 */
 		$html .='
 			</form>
-			* Obligatory fields
+			'.$grid_lan->Translate("ob_fields").'
 			';
 		
 		return $html;
@@ -736,7 +736,7 @@ function showNoteList($id,$type){
 		$html .= '
 				</table>
 				</form>
-				* Obligatory fields
+				'.$grid_lan->Translate("ob_fields").'
 				';
 
 		return $html;
@@ -830,14 +830,14 @@ function showNoteList($id,$type){
 					<td align="left">'.$contact['contact'].'&nbsp;&nbsp;&nbsp;&nbsp;<span align="right">[<a href=? onclick="xajax_add(xajax.$(\'callerid\').value,xajax.$(\'customerid\').value,\''. $contact['id'] .'\');return false;">'.$grid_lan->Translate("copy").'</a>]</span>&nbsp;&nbsp;[<a href=? onclick="xajax_edit(\''.$contact['id'].'\',\'\',\'contact\');return false;">'.$grid_lan->Translate("Edit").'</a>]</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Position").'</td>
+					<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
 					<td align="left">'.$contact['position'].'</td>
 				</tr>';
 
 		if ($contact['ext'] == '')
 			$html .='
 					<tr>
-						<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
+						<td nowrap align="left">'.$grid_lan->Translate("phone").'</td>
 						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a></td>
 					</tr>';
 		else
@@ -851,7 +851,7 @@ function showNoteList($id,$type){
 			if ($contact['ext1'] == '')
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$grid_lan->Translate("Phone1").'</td>
+							<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a></td>
 						</tr>';
 			else
