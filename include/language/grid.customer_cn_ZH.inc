@@ -1,0 +1,30 @@
+<?
+$Phone_Numbr    = "添加客户信息";
+$welcome        = "欢迎光临";
+$Customer       = "公司名称*";
+$Address        =  "地址";
+$Zip_Code       = "邮编";
+$Website        = "网址";
+$Category       = "类型";
+$Creattime      = "创建时间";
+$CreatBY        = "创建人";
+$Display_All    = "显示所有";
+$contact        = "联系人*";
+$position       = "职务";
+$phone          = "固定电话";
+$phone1          = "固定电话1";
+$phone2          = "固定电话2";
+$Mobile         = "手机";
+$Fax            = "传真机";
+$Email          = "邮件";
+$Note           = "备注*";
+$extension      = "您的分机";
+$Priority       = "优先级";
+$Continue       = "提交";
+$Confirm        = "查找";
+$can            = "取消";
+$go             = "浏览";
+$Edit           = "编辑";
+$copy           = "复制";
+$ob_fields      ="*表示必需填写";
+?>

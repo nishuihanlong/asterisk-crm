@@ -1,0 +1,30 @@
+<?php
+$Phone_Numbr    = "Phone_Numbr";
+$welcome        = "welcome";
+$Customer       = "Customer*";
+$Address        =  "Address ";
+$Zip_Code       = "Zip_Code";
+$Website        = "Website";
+$Category       = "Category";
+$Creattime      = "Creattime";
+$CreatBY        = "CreatBY ";
+$Display_All    = "Display_All";
+$contact        = "contact*";
+$position       = "position";
+$phone          = "phone";
+$phone1          = "phone1";
+$phone2          = "phone2";
+$Mobile         = "Mobile";
+$Fax            = "Fax";
+$Email          = "Email";
+$Note           = "Note*";
+$extension      = "extension";
+$Priority       = "Priority";
+$Continue       = "Continue";
+$Confirm        = "Confirm";
+$can            = "cancel";
+$go             = "go";
+$Edit           = "Edit";
+$copy           = "Copy";
+$ob_fields      ="*Obligatory fields";
+?>
