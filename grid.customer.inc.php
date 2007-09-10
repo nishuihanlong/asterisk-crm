@@ -515,7 +515,7 @@ class Customer extends PEAR
 					</td>
 				</tr>
 				<tr name="positionTR" id="positionTR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Position").'</td>
+					<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
 					<td align="left"><input type="text" id="position" name="position" size="35" value="'.$contact['position'].'"></td>
 				</tr>
 				<tr name="phoneTR" id="phoneTR" style="display:none">
@@ -625,7 +625,7 @@ function showNoteList($id,$type){
 					<input type="hidden" id="noteid"  name="noteid" value="'.$note['id'].'">
 					<table border="0" width="100%">
 					<tr>
-						<td nowrap align="left">Note</td>
+						<td nowrap align="left">'.$grid_lan->Translate("Note").'</td>
 						<td align="left">'.$note['note']. '</td>
 					</tr>
 					<tr>
@@ -655,7 +655,7 @@ function showNoteList($id,$type){
 						<td colspan="2" align="center">[<a href=? onclick="xajax_showCustomer(\'' . $note['customerid'] . '\');return false;">customer</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=? onclick="xajax_showContact(\'' . $note['contactid'] . '\');return false;">'.$grid_lan->Translate("contact").'</a>]</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>Continue</button></td>
+						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
 					</tr>
 					';
 
@@ -686,7 +686,7 @@ function showNoteList($id,$type){
 						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"customer");return false;\'>Continue</button></td>
+						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"customer");return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
 					</tr>
 					';
 		}else {
@@ -700,7 +700,7 @@ function showNoteList($id,$type){
 						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"></td>
 					</tr>
 					<tr name="positionTR" id="positionTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Position").'</td>
+						<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
 						<td align="left"><input type="text" id="position" name="position" size="35"  value="'.$contact['position'].'"></td>
 					</tr>
 					<tr name="phoneTR" id="phoneTR">
@@ -728,7 +728,7 @@ function showNoteList($id,$type){
 						<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
 					</tr>					
 					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>Continue</button></td>
+						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
 					</tr>
 					';
 		}
@@ -916,9 +916,10 @@ function showNoteList($id,$type){
 	*									correspondiente a la validaci&oacute;n.
 	*/
 	function checkAllData($f,$new = 0){
-		if(empty($f['customer'])) return "The field Customer does not have to be null";
-		if(empty($f['contact'])) return "The field Contact does not have to be null";
-		if(empty($f['note'])) return "The field Note does not have to be null";
+	 	global $grid_lan;
+		if(empty($f['customer'])) return $grid_lan->Translate("info2");
+		if(empty($f['contact'])) return $grid_lan->Translate("info1");
+		if(empty($f['note'])) return $grid_lan->Translate("info3");
 	 	return 0;
 	}
 
