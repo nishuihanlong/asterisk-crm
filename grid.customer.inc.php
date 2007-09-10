@@ -9,13 +9,13 @@
 require_once 'db_connect.php';
 require_once 'portal.common.php';
 require_once 'include/Localization.php';
-$GLOBALS['grid_lan']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'gridcustomer');
+$GLOBALS['grid_lan']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'grid.customer');
 		if ($_SESSION['curuser']['country'] != '' )
 	{
-	$GLOBALS['local_grid1']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'gridcustomer');
+	$GLOBALS['local_grid1']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'grid.customer');
 
 }else
-	$GLOBALS['local_grid1']=new Localization('cn','ZH','gridcustomer');
+	$GLOBALS['local_grid1']=new Localization('cn','ZH','grid.customer');
 
 
 
@@ -416,7 +416,7 @@ class Customer extends PEAR
 		$html .= '
 				<tr>
 					<td nowrap align="left">'.$grid_lan->Translate("Customer").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'.$grid_lan->Translate("can").'"></td>
+					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="Cancel"></td>
 				</tr>
 				<tr id="websiteTR" name="websiteTR">
 					<td nowrap align="left">'.$grid_lan->Translate("Website").'</td>
@@ -438,7 +438,7 @@ class Customer extends PEAR
 		$customer =& Customer::getCustomerByID($customerid);
 		$html .= '
 				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">Customer</a>*</td>
+					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$grid_lan->Translate("Customer").'</a></td>
 					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer[customer] .'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="Cancel" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 				</tr>
 				';
@@ -447,11 +447,11 @@ class Customer extends PEAR
 	if ($contactid == null){
 		$html .='
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Contact").'</td>
+					<td nowrap align="left">'.$grid_lan->Translate("contact").'</td>
 					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value=""></td>
 				</tr>
 				<tr name="positionTR" id="positionTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Position").'</td>
+					<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
 					<td align="left"><input type="text" id="position" name="position" size="35"></td>
 				</tr>
 				<tr name="phoneTR" id="phoneTR">
@@ -486,7 +486,7 @@ class Customer extends PEAR
 					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$grid_lan->Translate("Contact").'</a></td>
 					<td align="left">
 					<input type="text" id="contact" name="contact" value="'.$contact['contact'].'" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>
-					<input type="button" value="Cancel" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
+					<input type="button" value="cancel" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
 					<input type="hidden" id="contactid" name="contactid" value="'. $contactid .'">
 					<input type="hidden" id="contactDetial" name="contactDetial" value="OFF">
 					[<a href=? onclick="
