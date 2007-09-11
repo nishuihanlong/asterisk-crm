@@ -1,4 +1,5 @@
 <?
+//En for mangaer
 $add_note = "A note has been added ";
 $add_account = "New account record added";
 $update_rec = "A record has been updated";
@@ -12,5 +13,4 @@ $extensions = "Extensions, use comma between extensions ";
 $continue = "Continue";
 $obligatory_fields = "* Obligatory fields";
 $adding_account = "Adding Account";
-
 ?>

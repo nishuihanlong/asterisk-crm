@@ -1,4 +1,5 @@
 <?
+//Cn for mangaer
 $add_note = "一条记录被添加 ";
 $add_account = "添加了一个新帐号";
 $update_rec = "该记录已更新";
