@@ -125,7 +125,8 @@ class Account extends PEAR
 		$sql= "INSERT INTO account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
-				."extension='".$f['extension']."'"
+				."extension='".$f['extension']."',"
+				."usertype='".$f['usertype']."',"
 				."extensions='".$f['extensions']."'";
 
 		Account::events($sql);
@@ -147,6 +148,7 @@ class Account extends PEAR
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."', "
+				."usertype='".$f['usertype']."', "
 				."extensions='".$f['extensions']."' "
 				."WHERE id='".$f['id']."'";
 
@@ -218,6 +220,10 @@ class Account extends PEAR
 					<td align="left"><input type="text" id="extensions" name="extensions" size="50" maxlength="100"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
+					<td align="left"><input type="text" id="usertype" name="usertype" size="50" maxlength="100"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -263,6 +269,10 @@ class Account extends PEAR
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
 					<td align="left"><input type="text" id="extensions" name="extensions" size="50" maxlength="100" value="'.$account['extensions'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
+					<td align="left"><input type="text" id="usertype" name="usertype" size="50" maxlength="100" value="'.$account['usertype'].'"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>

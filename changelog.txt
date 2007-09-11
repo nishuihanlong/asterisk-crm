@@ -9,3 +9,16 @@
 2007-9-7	增加了manager界面中显示分机状态的功能									solo
 2007-9-10	fix bug in README file
 2007-9-10	增加了用户权限, 进入manager页面需要一定的权限
+
+
+-----------------------------------------------------------------------------------------
+
+need to add customer manage page for admin and user
+need to add contact manage page for admin and user
+
+need to add queue status
+need to add auto-dial outbound campaign  
+need to add Real-time campaign display screens 
+need to add CDR to user
+need to add record control
+need to add phone spy

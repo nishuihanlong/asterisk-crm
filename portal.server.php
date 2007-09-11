@@ -37,7 +37,7 @@ function init(){
 					<br><br><br><br><br><br>
 					<br><br><br><br><br><br>
 					<br><br><br><br><br><br>
-					<table width="95%" border="0" style="background: #F9F9F9; padding: 0px;">
+					<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 					<tr>
 						<td style="padding: 0px;">
 							<fieldset>
@@ -141,7 +141,6 @@ function waitingCalls($myValue){
 	$curid = trim($myValue['curid']);
 
 	$phone_html = asterEvent::checkExtensionStatus($curid);
- 	//$objResponse->addAlert($phone_html );
 
 	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
 

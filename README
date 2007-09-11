@@ -5,7 +5,7 @@
 
 ====================================================================================
 
-asterCRM is a WEB/AJAX based 'Call Center' system. 
+asterCRM is a AJAX based 'Call Center' system. 
 
 First, Asterisk Events are captured as the occur via a python script called ProxyMan.py and
 logged to a MySQl database table(using script from Asterisk Event Monitor by earl@micpc.com).
@@ -28,71 +28,71 @@ processes can run on the same server, however, multiple servers enhance performa
 
 1. Features
 
-1) pop-up when incoming calls 
+	1) pop-up when incoming calls 
 
-2) pop-up when outbound calls
+	2) pop-up when outbound calls
 
-3) suggestion when enter business name or contact 
+	3) suggestion when enter business name or contact 
 
-4) account/extension manager
+	4) account/extension manager
 
-5) click to dial
+	5) click to dial
 
-6) click to transfer
+	6) click to transfer
 
-7) extension status
+	7) extension status
 
-8) external CRM support
+	8) external CRM support
 
 2. asterCRM Installation: (assuming your WEB root is /var/www/html)
 
 1) Download and unzip the source
 
-     cd /var/www/html
-     unzip astercrm-X.X-XXXX.zip
+	cd /var/www/html
+	unzip astercrm-X.X-XXXX.zip
 
-     Note: this creates the /var/www/html/astercrm directory which contains the
-     PHP scripts and several sub-directories. 
+	Note: this creates the /var/www/html/astercrm directory which contains the
+	PHP scripts and several sub-directories. 
 
-        /var/www/html/astercrm			main directory and PHP scripts  
+	/var/www/html/astercrm			main directory and PHP scripts  
 	/var/www/html/astercrm/proxyman 	proxyman related files
-	/var/www/html/astercrm/includes 	files needed via the PHP scripts, also xajax and xajaxGrid
+	/var/www/html/astercrm/includes 	files needed in php scripts
 	/var/www/html/astercrm/images		image files used via the PHP scripts
 	/var/www/html/astercrm/css		style files used via the PHP scripts
 	/var/www/html/astercrm/js		auto-complete java scripts
 	/var/www/html/astercrm/screenshot	some screen shot of asterCRM
 
-     It is highly advised that the whole proxyman directory be moved to a more secure
-     location like /opt and out of the WEB root directory (see step 4)
+	It is highly advised that the whole proxyman directory be moved to a more secure
+	location like /opt and out of the WEB root directory (see step 4)
 
 2) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
-      mysqladmin create asterisk
-      mysql </var/www/html/astercrm/astercrm.sql
+	mysqladmin create asterisk
+	mysql </var/www/html/astercrm/astercrm.sql
 
-   Note: the astercrm.sql file has the GRANT commands to update MySQL with
-         the desired authority. The settings here must match the userid/password
-         specified in the ProxyMan.py , delete_events.py script and the config.php script
-	 you can modify this script to meet your database
+	Note: the astercrm.sql file has the GRANT commands to update MySQL with
+		the desired authority. The settings here must match the userid/password
+		specified in the ProxyMan.py , delete_events.py script and the config.php script
+		you can modify this script to meet your database
 
-   Update the /var/www/html/astercrm/config.php script for the
-   correct MySQL login userid/password 
-   Make sure it matches what was specified in the astercrm.sql
-   (user: asteriskuser password: asterisk by default)
-   Asterisk Manager login username/password. 
-   Make sure it matches what was specified in the manager.conf file.
+	Update the /var/www/html/astercrm/config.php script for the
+	correct MySQL login userid/password 
+	Make sure it matches what was specified in the astercrm.sql
+	(user: asteriskuser password: asterisk by default)
+	Asterisk Manager login username/password. 
+	Make sure it matches what was specified in the manager.conf file.
 
-   Update the /var/www/html/astercrm/proxyman/ProxyMan.py script for the correct MySQL
-   login userid/password. Make sure it matches what was specified in the
-   astercrm.sql file. ProxMan.py also needs updated with the Asterisk Manager
-   password and secret (password), documented in the next step.
-   The proxyman.py script has comments in the source noting the variable names
-   and their functions.
+	Update the /var/www/html/astercrm/proxyman/ProxyMan.py script for the correct MySQL
+	login userid/password. Make sure it matches what was specified in the
+	astercrm.sql file. ProxMan.py also needs updated with the Asterisk Manager
+	password and secret (password), documented in the next step.
+	The proxyman.py script has comments in the source noting the variable names
+	and their functions.
 
 3) Update /etc/asterisk/manager.conf to enable Manager connections
-   Note: asterisk and astercrm could be on different server
+	Note: asterisk and astercrm could be on different server
  
-       Add something like this to the manager.conf file:
+	Add something like this to the manager.conf file:
 
 	[general]
 	enabled = yes
@@ -100,52 +100,53 @@ processes can run on the same server, however, multiple servers enhance performa
 	bindaddr = 0.0.0.0
 	;displayconnects = yes
 
+	;the following line could be changed by your selft
 	[eventmanager]
 	secret = asterisksecret
 	read = system,call,log,verbose,command,agent,user
 	write = system,call,log,verbose,command,agent,user
 
-   Note: the manager.conf settings for user ([eventmanager] in this example)
-	 and secret need to match the /var/www/html/ProxyMan.py variable settings.
-	 The ProxyMan.py script has comments in the source noting the variable
-	 names and their functions.
+	Note: the manager.conf settings for user ([eventmanager] in this example)
+		and secret need to match the /var/www/html/ProxyMan.py variable settings.
+		The ProxyMan.py script has comments in the source noting the variable
+		names and their functions.
 
-4) Create the directories and move the scripts:
+4) Create the directories and move proxyman scripts:
 
-        mkdir /opt/asterisk
-        mkdir /opt/asterisk/scripts
-        mkdir /opt/asterisk/scripts/events
+	mkdir /opt/asterisk
+	mkdir /opt/asterisk/scripts
+	mkdir /opt/asterisk/scripts/events
 	mv /var/www/html/events/proxyman/* /opt/asterisk/scripts/events
 	chmod +x /opt/asterisk/scripts/events/*.py
 
 5) Start Asterisk and  ProxyMan.py
 
 
-   Start ProxyMan (default settings):
-	/opt/asterisk/scripts/events/ProxyMan.py 
+	Start ProxyMan (default settings):
+		/opt/asterisk/scripts/events/ProxyMan.py 
 
-   OR Start ProxyMan (change settings):
+	OR Start ProxyMan (change settings):
 
-        /opt/asterisk/scripts/events/ProxyMan.py debug 
+		/opt/asterisk/scripts/events/ProxyMan.py debug 
 
-   Note: when ProxyMan.py starts it will automatically become a daemon
-         (so no need for for the & at the end of the command)
+	Note: when ProxyMan.py starts it will automatically become a daemon
+		(so no need for for the & at the end of the command)
          
-   Another python script is provided (asterstart.py) which can also be used to start
-   Asterisk and ProxyMan.py and keep them running. See the README in the proxyman 
-   directory.
+	Another python script is provided (asterstart.py) which can also be used to start
+	Asterisk and ProxyMan.py and keep them running. See the README in the proxyman 
+	directory.
  
-   At some point it may be desirable to delete unwanted events from the database
-   table. The Python script delete_events.py is designed for this.
-   If run from a CRON task:
+	At some point it may be desirable to delete unwanted events from the database
+	table. The Python script delete_events.py is designed for this.
+	If run from a CRON task:
      
 	*/2 * * * * /opt/asterisk/scripts/events/delete_events.py >/dev/null 2>&1
 
-   It will delete all events older than the current time (2 mininute).
+	It will delete all events older than the 2 minutes before current time .
 
 6) Testing: browse to http://localhost/astercrm
 
-	        or http://YOUR-WEB-SERVER-ADDRESS/astercrm
+	or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 		
 	login with admin/admin
 

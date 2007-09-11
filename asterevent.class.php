@@ -5,9 +5,23 @@
 * asterisk events class
 
 * Public Functions List
-
+			
+			checkNewCall			检查是否有新的电话
+			checkCallStatus			检查通话的状态
+			checkExtensionStatus	读取分机的状态
 
 * Private Functions List
+
+			listStatus				生成列表格式的分机状态代码
+			tableStatus				生成表格世的分机状态代码
+			getEvents				从数据库中读取事件
+			events					日志记录函数
+			getCallerID				用于外部来电时获取主叫号码
+			getInfoBySrcID			用于呼出时获取主叫号码
+			checkLink				检查呼叫是否连接
+			checkHangup				检查呼叫是否挂断
+			checkIncoming			检查是否有来电
+			checkDialout			检查是否有向外的呼叫
 
 * Revision 0.044  2007/09/11 10:55:00  modified by solo
 * Desc: fix extension status bug when user switch between user interface and admin interface
@@ -77,6 +91,13 @@ class asterEvent extends PEAR
 		return $call;
 	}
 
+/*
+	check call status
+	@param	$curid					(int)		only check data after index(curid)
+	@param	$type					(string)	list | table
+	return	$html					(string)	HTML code from extension status
+*/
+
 	function checkExtensionStatus($curid, $type = 'list'){
 		if ($type == 'list')
 			$_SESSION['curuser']['extensions_session'] = $_SESSION['curuser']['extensions'];
@@ -141,10 +162,10 @@ class asterEvent extends PEAR
 				$phones = array();
 			else
 				$phones = $_SESSION['curuser']['extensions'];
-			$action = asterEvent::listStatus($phones,$status);
+			$action =& asterEvent::listStatus($phones,$status);
 		}else{
 			$_SESSION['curuser']['extensions_session'] = $phones;
-			$action = asterEvent::tableStatus($phones,$status);
+			$action =& asterEvent::tableStatus($phones,$status);
 		}
 
 		$_SESSION['sipstatus'] = $status;
@@ -153,7 +174,7 @@ class asterEvent extends PEAR
 		return $html;
 	}
 
-	function tableStatus($phones,$status){
+	function &tableStatus($phones,$status){
 		//print_r($phones);
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
@@ -186,7 +207,7 @@ class asterEvent extends PEAR
 		return $action;
 	}
 
-	function listStatus($phones,$status){
+	function &listStatus($phones,$status){
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $key => $value) {
 			if (!strstr($value,'SIP/'))
@@ -216,57 +237,16 @@ class asterEvent extends PEAR
 		 $action .= '</table><br>';
 		return $action;
 	}
+
 /*
-	get information from database based some rules
-	@param	$condition				(array)		
-	@param	$result					(array)
-	return	$info					(array)
-			
-*/
-/*
-function &getInfo($condition,$result){
-	global $db;
-
-$flsearch=array("姓名"=>array("name"),"地址"=>array("dz"),"编号"=>array("id"));
-while ( list( $key, $val ) = each( $flsearch ) ) {
-  echo "$key => $val<br>";
-}
-
-	$query  = "SELECT * FROM events WHERE event LIKE '%DestUniqueID: $uniqueid%'";
-	
-	if ($condition){
-		$query  = "SELECT * FROM events WHERE 1 ";
-		while ( list( $key, $val ) = each( $condition ) ) {
-		  $query .= "AND event LIKE '%$key: $val%' ";
-		}
-	}
-	
-	asterEvent::events($query);
-
-	$res = $db->query($query);
-
-	if ($res->fetchInto($list)){
-		$event = $list['event'];
-		$flds = split("  ",$event);
-
-		foreach ($flds as $myFld) {
-			foreach ($result as $myResult){
-				if (strstr($myFld,$myResult)){	
-					$info[$myResult] = substr($myFld,strlen($myResult));
-				}
-			}
-		}
-	}
-
-	return $info;
-}
+	get events from database
+	@param	$curid					(int)		only check data after index(curid)
+	return	$res					(array)	
 */
 
 	function &getEvents($curid){
 		global $db;
 		$query = "SELECT * FROM events WHERE id > $curid order by id";
-		//$query = "SELECT * FROM events WHERE id > $curid and event LIKE '%8700%' order by id";
-		//$query = "SELECT * FROM events order by id";
 		asterEvent::events($query);
 		$res = $db->query($query);
 		return $res;

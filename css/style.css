@@ -639,11 +639,11 @@ table.adminheading td {
 /* standard list style table */
 table.adminlist {
 	background-color: #FFFFFF;
-	margin: 5px;
+	margin: 4px;
 	padding: 0px;
 	border: 1px solid #ddd;
 	border-spacing: 0px;
-	width: 98%;
+	width: 100%;
 	border-collapse: collapse;
 }
 

@@ -11,4 +11,4 @@ config.php		系统配置文件
 db_connect.php		数据库连接文件
 			database connect file
 grid.account.inc.php	账户管理类文件
-			
+			account manager class file

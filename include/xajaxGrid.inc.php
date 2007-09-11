@@ -259,7 +259,7 @@ class ScrollTable{
 		if($delete)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="if (confirm(\'Esta seguro de eliminar este registro?\'))  xajax_delete(\''.$arr[0].'\',\''.$table.'\',\''.$divName.'\');return false;"><img src="images/trash.png" border="0"></a>
+						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\'))  xajax_delete(\''.$arr[0].'\',\''.$table.'\',\''.$divName.'\');return false;"><img src="images/trash.png" border="0"></a>
 					</td>';
 		if($detail)
 			$row .= '
@@ -448,7 +448,7 @@ class Table {
 	*/
 	function Top($tableTitle = "tableTitle", $formId = "formDiv"){
 		$table = '
-			<table width="98%" border="1" align="center" class="adminlist">
+			<table width="100%" border="1" align="center" class="adminlist">
 			<tr>
 				<th align="right" valign="center">
 					<img src="images/close.png" onClick=\'javascript:document.getElementById("'.$formId.'").style.visibility="hidden";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">

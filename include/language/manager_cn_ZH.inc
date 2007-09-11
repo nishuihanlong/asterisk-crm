@@ -16,4 +16,6 @@ $adding_account = "添加用户";
 $extension_manager = "分机用户管理";
 $system_monitor = "系统分机状态";
 $back = "返回";
+$usertype = "用户类型";
+$usertype_note = "目前只支持admin";
 ?>

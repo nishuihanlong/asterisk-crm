@@ -20,7 +20,8 @@ function init(){
 }
 
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
+	$html .= "<br><br><br><br>";
+	$html .= createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
@@ -30,9 +31,9 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 
 function showStatus(){
 	$objResponse = new xajaxResponse();
-	//$_SESSION['curuser']['extensions'] = '';
-	$phone_html = asterEvent::checkExtensionStatus(0,'table');
-	$objResponse->addAssign("grid", "innerHTML", $phone_html);
+	$html .= "<br><br><br><br>";
+	$html .= asterEvent::checkExtensionStatus(0,'table');
+	$objResponse->addAssign("grid", "innerHTML", $html);
 	return $objResponse;
 }
 
@@ -58,6 +59,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'password';
 	$fields[] = 'extension';
 	$fields[] = 'extensions';
+	$fields[] = 'usertype';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -65,16 +67,19 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("password");
 	$headers[] = $locate->Translate("extension");
 	$headers[] = $locate->Translate("extensions");
+	$headers[] = $locate->Translate("usertype").'&nbsp;'.$locate->Translate("usertype_note");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="35%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="40%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -85,6 +90,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","password","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extension","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
@@ -117,6 +123,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['password'];
 		$rowc[] = $row['extension'];
 		$rowc[] = $row['extensions'];
+		$rowc[] = $row['usertype'];
 		$table->addRow("account",$rowc,1,1,1,$divName,$fields);
  	}
  	
