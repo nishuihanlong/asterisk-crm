@@ -13,4 +13,7 @@ $extensions = "Extensions, use comma between extensions ";
 $continue = "Continue";
 $obligatory_fields = "* Obligatory fields";
 $adding_account = "Adding Account";
+$extension_manager = "Extension Manager";
+$system_monitor = "System Monitor";
+$back = "Back";
 ?>

@@ -1,5 +1,5 @@
 <?
-$Phone_Numbr    = "添加客户信息";
+$Phone_Numbr    = "添加客户信息 ";
 $welcome        = "欢迎光临";
 $Customer       = "公司名称*";
 $Address        =  "地址";

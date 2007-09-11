@@ -6,6 +6,18 @@ require_once ('grid.account.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('asterevent.class.php');
 
+function init(){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html .= "<a href=# onclick='showAccounts();return false;'>".$locate->Translate("extension_manager")."</a><br>";
+
+	$html .= "<a href=# onclick='showStatus();return false;'>".$locate->Translate("system_monitor")."</a><br>";
+
+	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
+
+	$objResponse->addAssign("panelDiv", "innerHTML", $html);
+	return $objResponse;
+}
 
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
@@ -18,7 +30,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 
 function showStatus(){
 	$objResponse = new xajaxResponse();
-	$_SESSION['curuser']['extensions'] = '';
+	//$_SESSION['curuser']['extensions'] = '';
 	$phone_html = asterEvent::checkExtensionStatus(0,'table');
 	$objResponse->addAssign("grid", "innerHTML", $phone_html);
 	return $objResponse;

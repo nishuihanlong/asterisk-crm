@@ -1,5 +1,5 @@
 <?php
-$Phone_Numbr    = "Phone_Numbr";
+$Phone_Numbr    = "Add Phone Numbr ";
 $welcome        = "welcome";
 $Customer       = "Customer*";
 $Address        =  "Address ";

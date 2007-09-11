@@ -32,9 +32,7 @@ function init(){
 		$objResponse->addIncludeScript("js/astercrm.js");
 		$objResponse->addIncludeScript("js/ajax.js");
 		$objResponse->addIncludeScript("js/ajax-dynamic-list.js");
-				//$objResponse->addAlert($_SESSION['curuser']['country']);
-				//$objResponse->addAlert($_SESSION['curuser']['language']);
-				//exit;
+
 		$mycrm = '
 					<br><br><br><br><br><br>
 					<br><br><br><br><br><br>

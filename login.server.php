@@ -78,6 +78,7 @@ function init($aFormValue){
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
+
 	unset($_SESSION['curuser']['username']);
 	unset($_SESSION['curuser']['extension']);
 	unset($_SESSION['curuser']['extensions']);
@@ -135,10 +136,12 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['extension'] = $list['extension'];
 				$_SESSION['curuser']['usertype'] = $list['usertype'];
 
-				if ($list['extensions'] != '')
+				if ($list['extensions'] != ''){
 					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);
-				else
+				}
+				else{
 					$_SESSION['curuser']['extensions'] = array();
+				}
 
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 				$objResponse->addAlert($locate->Translate("login_success"));

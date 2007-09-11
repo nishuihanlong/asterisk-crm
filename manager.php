@@ -44,14 +44,19 @@ require_once('manager.common.php');
 				clearTimeout(timer);											//disable showStauts() function
 				xajax_showGrid(0,<?=ROWSXPAGE?>,'','','');
 			}
+
+			function init(){
+				xajax_init();
+			}
 		//-->
 		</SCRIPT>
 	</head>
-	<body>
+	<body onload="init();">
 
-	<div id="panel" name="panel">
-		<input type="button" value="Extension Manager" onclick="showAccounts();"><br/>
-		<input type="button" value="System Monitor" onclick="showStatus();">
+<div id="panelDiv" name="panelDiv" class="divPanel">
+<!--<input type="button" value="" id="btnExtenManager" name="btnExtenManager"  onclick="showAccounts();"><br/>
+		<input type="button" value="" id="btnSysMonitor" name="btnSysMonitor" onclick="showStatus();">
+		-->
 	</div>
 		
 			<div id="formDiv" name="formDiv" class="formDiv">

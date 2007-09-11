@@ -927,7 +927,7 @@ div.main {
 }
 
 .divPanel {
-	width: 100px; 
+	/*width: 100px; */
 	/* height: 400px;  */
 	border: thin solid #767676; 
 /*	border-right-width: medium; 

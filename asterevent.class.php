@@ -1,7 +1,24 @@
 <?
-/* NOTE: For this example, the package PEAR is required, you can see http://pear.php.net for more information 
-*/
+/*******************************************************************************
+* asterevent.class.php
+* asterisk事件处理类
+* asterisk events class
 
+* Public Functions List
+
+
+* Private Functions List
+
+* Revision 0.044  2007/09/11 10:55:00  modified by solo
+* Desc: fix extension status bug when user switch between user interface and admin interface
+* 描述: 修正了分机状态显示的bug(如果用户在管理员界面和用户界面之间切换，分级状态列表会出现问题)
+
+* Revision 0.044  2007/09/11 10:55:00  modified by solo
+* Desc: add some comments
+* 描述: 增加了一些注释信息
+
+
+********************************************************************************/
 
 /** \brief asterEvent Class
 *
@@ -61,17 +78,21 @@ class asterEvent extends PEAR
 	}
 
 	function checkExtensionStatus($curid, $type = 'list'){
-		$events =& asterEvent::getEvents($curid);
+		if ($type == 'list')
+			$_SESSION['curuser']['extensions_session'] = $_SESSION['curuser']['extensions'];
+		else
+			$_SESSION['curuser']['extensions_session'] = array();
 
+		$events =& asterEvent::getEvents($curid);
 		if (!isset($_SESSION['sipstatus']))
 			$status = array();
 		else
 			$status = $_SESSION['sipstatus'];
 
-		if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == '')
+		if (!isset($_SESSION['curuser']['extensions_session']) or $_SESSION['curuser']['extensions_session'] == '')
 			$phones = array();
 		else
-			$phones = $_SESSION['curuser']['extensions'];
+			$phones = $_SESSION['curuser']['extensions_session'];
 
 		$events =& asterEvent::getEvents($curid);
 		while ($events->fetchInto($list)) {
@@ -115,7 +136,6 @@ class asterEvent extends PEAR
 		   } 
 		} 
 		
-//		print_r($phones);
 		if ($type == 'list'){
 			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == '')
 				$phones = array();
@@ -123,8 +143,7 @@ class asterEvent extends PEAR
 				$phones = $_SESSION['curuser']['extensions'];
 			$action = asterEvent::listStatus($phones,$status);
 		}else{
-			$_SESSION['curuser']['extensions'] = $phones;
-//			print_r($status);
+			$_SESSION['curuser']['extensions_session'] = $phones;
 			$action = asterEvent::tableStatus($phones,$status);
 		}
 
@@ -170,7 +189,8 @@ class asterEvent extends PEAR
 	function listStatus($phones,$status){
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $key => $value) {
-			$value = "SIP/".$value;
+			if (!strstr($value,'SIP/'))
+				$value = "SIP/".$value;
 			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {

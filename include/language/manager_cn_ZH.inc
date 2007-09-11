@@ -13,4 +13,7 @@ $extensions = "可观察的分机, 分机之间用逗号隔开 ";
 $continue = "继续";
 $obligatory_fields = "带*的为必填项目";
 $adding_account = "添加用户";
+$extension_manager = "分机用户管理";
+$system_monitor = "系统分机状态";
+$back = "返回";
 ?>
