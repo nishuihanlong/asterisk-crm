@@ -9,14 +9,7 @@
 require_once 'db_connect.php';
 require_once 'portal.common.php';
 require_once 'include/Localization.php';
-$GLOBALS['grid_lan']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'grid.customer');
-		if ($_SESSION['curuser']['country'] != '' )
-	{
-	$GLOBALS['local_grid1']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'grid.customer');
-
-}else
-	$GLOBALS['local_grid1']=new Localization('cn','ZH','grid.customer');
-
+$GLOBALS['grid_customer']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'grid.customer');
 
 
 /** \brief Customer Class
@@ -402,44 +395,44 @@ class Customer extends PEAR
 	*/
 
 	function formAdd($callerid = null,$customerid = null, $contactid = null){
-	global $grid_lan;
+	global $grid_customer;
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
 			
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">'.$grid_lan->Translate("Phone_Numbr").''. $callerid .' </td>
+				<td nowrap align="left" colspan="2">'.$grid_customer->Translate("Phone_Numbr").''. $callerid .' </td>
 			</tr>';
 	
 	if ($customerid == null){
 		$html .= '
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Customer").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value=""></td>
+					<td nowrap align="left">'.$grid_customer->Translate("Customer").'</td>
+					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_customer->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value=""></td>
 				</tr>
 				<tr id="websiteTR" name="websiteTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Website").'</td>
-					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="http://"><input type="button" value="'.$grid_lan->Translate("go").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+					<td nowrap align="left">'.$grid_customer->Translate("Website").'</td>
+					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="http://"><input type="button" value="'.$grid_customer->Translate("go").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 				</tr>
 				<tr id="addressTR" name="addressTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Address").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Address").'</td>
 					<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200"></td>
 				</tr>
 				<tr id="zipcodeTR" name="zipcodeTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Zip_Code").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Zip_Code").'</td>
 					<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
 				</tr>
 				<tr id="categoryTR" name="categoryTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Category").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Category").'</td>
 					<td align="left"><input type="text" id="category" name="category" size="35"></td>
 				</tr>';
 	}else{
 		$customer =& Customer::getCustomerByID($customerid);
 		$html .= '
 				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$grid_lan->Translate("Customer").'</a></td>
-					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer[customer] .'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="Cancel" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
+					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$grid_customer->Translate("Customer").'</a></td>
+					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$grid_customer->Translate("Cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 				</tr>
 				';
 	}
@@ -447,35 +440,35 @@ class Customer extends PEAR
 	if ($contactid == null){
 		$html .='
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("contact").'</td>
-					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_lan->Translate("Confirm").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value=""></td>
+					<td nowrap align="left">'.$grid_customer->Translate("Contact").'</td>
+					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input type="button" value="'.$grid_customer->Translate("Confirm").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value=""></td>
 				</tr>
 				<tr name="positionTR" id="positionTR">
-					<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("position").'</td>
 					<td align="left"><input type="text" id="position" name="position" size="35"></td>
 				</tr>
 				<tr name="phoneTR" id="phoneTR">
-					<td nowrap align="left">'.$grid_lan->Translate("phone").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Phone").'</td>
 					<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value=""></td>
 				</tr>
 				<tr name="phone1TR" id="phone1TR">
-					<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Phone1").'</td>
 					<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value=""></td>
 				</tr>
 				<tr name="phone2TR" id="phone2TR">
-					<td nowrap align="left">'.$grid_lan->Translate("phone2").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Phone2").'</td>
 					<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
 				</tr>
 				<tr name="mobileTR" id="mobileTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Mobile").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Mobile").'</td>
 					<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
 				</tr>
 				<tr name="faxTR" id="faxTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Fax").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Fax").'</td>
 					<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
 				</tr>
 				<tr name="emailTR" id="emailTR">
-					<td nowrap align="left">'.$grid_lan->Translate("Email").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Email").'</td>
 					<td align="left"><input type="text" id="email" name="email" size="35"></td>
 				</tr>					
 				';
@@ -483,10 +476,10 @@ class Customer extends PEAR
 		$contact =& Customer::getContactByID($contactid);
 		$html .='
 				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$grid_lan->Translate("Contact").'</a></td>
+					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$grid_customer->Translate("Contact").'</a></td>
 					<td align="left">
 					<input type="text" id="contact" name="contact" value="'.$contact['contact'].'" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>
-					<input type="button" value="cancel" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
+					<input type="button" value="'.$grid_customer->Translate("Cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
 					<input type="hidden" id="contactid" name="contactid" value="'. $contactid .'">
 					<input type="hidden" id="contactDetial" name="contactDetial" value="OFF">
 					[<a href=? onclick="
@@ -510,36 +503,36 @@ class Customer extends PEAR
 							xajax.$(\'contactDetial\').value = \'OFF\';
 						};
 						return false;">
-						Detail
+						'.$grid_customer->Translate("Detail").'
 					</a>]
 					</td>
 				</tr>
 				<tr name="positionTR" id="positionTR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("position").'</td>
 					<td align="left"><input type="text" id="position" name="position" size="35" value="'.$contact['position'].'"></td>
 				</tr>
 				<tr name="phoneTR" id="phoneTR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Phone").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Phone").'</td>
 					<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $contact['phone'] .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value="'.$contact['ext'].'"></td>
 				</tr>
 				<tr name="phone1TR" id="phone1TR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Phone1").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Phone1").'</td>
 					<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="'. $contact['phone1'] .'">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value="'.$contact['ext1'].'"></td>
 				</tr>
 				<tr name="phone2TR" id="phone2TR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Phone2").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Phone2").'</td>
 					<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="'. $callerid .'">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
 				</tr>
 				<tr name="mobileTR" id="mobileTR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Mobile").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Mobile").'</td>
 					<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="'. $contact['mobile'] .'"></td>
 				</tr>
 				<tr name="faxTR" id="faxTR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Fax").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Fax").'</td>
 					<td align="left"><input type="text" id="fax" name="fax" size="35" value="'. $contact['fax'] .'"></td>
 				</tr>
 				<tr name="emailTR" id="emailTR" style="display:none">
-					<td nowrap align="left">'.$grid_lan->Translate("Email").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Email").'</td>
 					<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
 				</tr>					
 				';
@@ -547,11 +540,11 @@ class Customer extends PEAR
 
 	$html .='
 			<tr>
-				<td nowrap align="left">'.$grid_lan->Translate("Note").'</td>
+				<td nowrap align="left">'.$grid_customer->Translate("Note").'</td>
 				<td align="left"><input type="text" id="note" name="note" size="35"></td>
 			</tr>
 			<tr>
-				<td nowrap align="left">'.$grid_lan->Translate("Priority").'</td>
+				<td nowrap align="left">'.$grid_customer->Translate("Priority").'</td>
 				<td align="left">
 					<select id="priority" name="priority">
 						<option value=0>0</option>
@@ -569,7 +562,7 @@ class Customer extends PEAR
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
+				<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$grid_customer->Translate("Continue").'</button></td>
 			</tr>
 			</table>';
 /*
@@ -585,7 +578,7 @@ class Customer extends PEAR
 */
 		$html .='
 			</form>
-			'.$grid_lan->Translate("ob_fields").'
+			'.$grid_customer->Translate("ob_fields").'
 			';
 		
 		return $html;
@@ -617,7 +610,7 @@ function showNoteList($id,$type){
 	*/
 	
 	function formEdit($id , $type){
-			global $grid_lan;
+			global $grid_customer;
 		if ($type == 'note'){
 			$note =& Customer::getNoteByID($id);
 			$html = '
@@ -625,15 +618,15 @@ function showNoteList($id,$type){
 					<input type="hidden" id="noteid"  name="noteid" value="'.$note['id'].'">
 					<table border="0" width="100%">
 					<tr>
-						<td nowrap align="left">'.$grid_lan->Translate("Note").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Note").'</td>
 						<td align="left">'.$note['note']. '</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">Append</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Append").'</td>
 						<td align="left"><input type="text" value="" name="note" id="note" length="35"></td>
 					</tr>
 					<tr>
-						<td nowrap align="left">Priority</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Priority").'</td>
 						<td align="left">
 							<select id="priority" name="priority">
 								<option value='. $note['priority'] .' selected>'. $note['priority'] .'</option>
@@ -652,10 +645,10 @@ function showNoteList($id,$type){
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center">[<a href=? onclick="xajax_showCustomer(\'' . $note['customerid'] . '\');return false;">customer</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=? onclick="xajax_showContact(\'' . $note['contactid'] . '\');return false;">'.$grid_lan->Translate("contact").'</a>]</td>
+						<td colspan="2" align="center">[<a href=? onclick="xajax_showCustomer(\'' . $note['customerid'] . '\');return false;">'.$grid_customer->Translate("Customer").'</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=? onclick="xajax_showContact(\'' . $note['contactid'] . '\');return false;">'.$grid_customer->Translate("Contact").'</a>]</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
+						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>'.$grid_customer->Translate("Continue").'</button></td>
 					</tr>
 					';
 
@@ -666,27 +659,27 @@ function showNoteList($id,$type){
 					<input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
 					<table border="0" width="100%">
 					<tr id="customer" name="customer">
-						<td nowrap align="left">'.$grid_lan->Translate("Customer").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Customer").'</td>
 						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"></td>
 					</tr>
 					<tr id="websiteTR" name="websiteTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Website").'</td>
-						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"><input type="button" value='.$grid_lan->Translate("go").' onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+						<td nowrap align="left">'.$grid_customer->Translate("Website").'</td>
+						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"><input type="button" value='.$grid_customer->Translate("go").' onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 					</tr>
 					<tr id="addressTR" name="addressTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Address").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Address").'</td>
 						<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200" value="' . $customer['address'] . '"></td>
 					</tr>
 					<tr id="zipcodeTR" name="zipcodeTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Zip_Code").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Zip_Code").'</td>
 						<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10" value="' . $customer['zipcode'] . '"></td>
 					</tr>
 					<tr id="categoryTR" name="categoryTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Category").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Category").'</td>
 						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"customer");return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
+						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"customer");return false;\'>'.$grid_customer->Translate("Continue").'</button></td>
 					</tr>
 					';
 		}else {
@@ -696,39 +689,39 @@ function showNoteList($id,$type){
 					<input type="hidden" id="contactid"  name="contactid" value="'.$contact['id'].'">
 					<table border="0" width="100%">
 					<tr>
-						<td nowrap align="left">'.$grid_lan->Translate("contact").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Contact").'</td>
 						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"></td>
 					</tr>
 					<tr name="positionTR" id="positionTR">
-						<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("position").'</td>
 						<td align="left"><input type="text" id="position" name="position" size="35"  value="'.$contact['position'].'"></td>
 					</tr>
 					<tr name="phoneTR" id="phoneTR">
-						<td nowrap align="left">'.$grid_lan->Translate("phone").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Phone").'</td>
 						<td align="left"><input type="text" id="phone" name="phone" size="35"  value="'.$contact['phone'].'">-<input type="text" id="ext" name="ext" size="6" maxlength="6"  value="'.$contact['ext'].'"></td>
 					</tr>
 					<tr name="phone1TR" id="phone1TR">
-						<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Phone1").'</td>
 						<td align="left"><input type="text" id="phone1" name="phone1" size="35"  value="'.$contact['phone1'].'">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6"  value="'.$contact['ext1'].'"></td>
 					</tr>
 					<tr name="phone2TR" id="phone2TR">
-						<td nowrap align="left">'.$grid_lan->Translate("phone2").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Phone2").'</td>
 						<td align="left"><input type="text" id="phone2" name="phone2" size="35"  value="'.$contact['phone2'].'">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6"  value="'.$contact['ext2'].'"></td>
 					</tr>
 					<tr name="mobileTR" id="mobileTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Mobile").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Mobile").'</td>
 						<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="'.$contact['mobile'].'"></td>
 					</tr>
 					<tr name="faxTR" id="faxTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Fax").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Fax").'</td>
 						<td align="left"><input type="text" id="fax" name="fax" size="35" value="'.$contact['fax'].'"></td>
 					</tr>
 					<tr name="emailTR" id="emailTR">
-						<td nowrap align="left">'.$grid_lan->Translate("Email").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Email").'</td>
 						<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
 					</tr>					
 					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>'.$grid_lan->Translate("Continue").'</button></td>
+						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>'.$grid_customer->Translate("Continue").'</button></td>
 					</tr>
 					';
 		}
@@ -736,7 +729,7 @@ function showNoteList($id,$type){
 		$html .= '
 				</table>
 				</form>
-				'.$grid_lan->Translate("ob_fields").'
+				'.$grid_customer->Translate("ob_fields").'
 				';
 
 		return $html;
@@ -750,42 +743,42 @@ function showNoteList($id,$type){
 	*									a extraidos de la base de datos para ser mostrados 
 	*/
 	function showCustomerRecord($id,$type="customer"){
-    	global $grid_lan;
+    	global $grid_customer;
 		$customer =& Customer::getCustomerByID($id,$type);
 		$contactList =& Customer::getContactListByID($customer['id']);
 
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="80">'.$grid_lan->Translate("Customer").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$grid_lan->Translate("Note").'</a>]</td>
-					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'\',\'customer\');return false;">'.$grid_lan->Translate("Edit").'</a>]</td>
+					<td nowrap align="left" width="80">'.$grid_customer->Translate("Customer").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$grid_customer->Translate("Note").'</a>]</td>
+					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'\',\'customer\');return false;">'.$grid_customer->Translate("Edit").'</a>]</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Address").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Address").'</td>
 					<td align="left">'.$customer['address'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Zip_Code").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Zip_Code").'</td>
 					<td align="left">'.$customer['zipcode'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Website").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Website").'</td>
 					<td align="left"><a href="'.$customer['website'].'" target="_blank">'.$customer['website'].'</a></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Category").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Category").'</td>
 					<td align="left">'.$customer['category'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Creattime").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Creattime").'</td>
 					<td align="left">'.$customer['cretime'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("CreatBY").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("CreatBY").'</td>
 					<td align="left">'.$customer['creby'].'</td>
 				</tr>
 				</table>
-					<a href=? onclick="if (xajax.$(\'allContact\').value==\'off\'){xajax.$(\'contactList\').style.display=\'block\';xajax.$(\'allContact\').value=\'on\'}else{xajax.$(\'contactList\').style.display=\'none\';xajax.$(\'allContact\').value=\'off\'} return false;">'.$grid_lan->Translate("Display_All").'</a>
+					<a href=? onclick="if (xajax.$(\'allContact\').value==\'off\'){xajax.$(\'contactList\').style.display=\'block\';xajax.$(\'allContact\').value=\'on\'}else{xajax.$(\'contactList\').style.display=\'none\';xajax.$(\'allContact\').value=\'off\'} return false;">'.$grid_customer->Translate("Display_All").'</a>
 					<input type="hidden" id="allContact" name="allContact" value="off">
 				<table border="0" width="100%" id="contactList" name="contactList" style="display:none">
 					';
@@ -819,31 +812,31 @@ function showNoteList($id,$type){
 	*									a extraidos de la base de datos para ser mostrados 
 	*/
 	function showContactRecord($id,$type="contact"){
-    	global $grid_lan;
+    	global $grid_customer;
 		$contact =& Customer::getContactByID($id,$type);
 
 
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="80">'.$grid_lan->Translate("contact").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$contact['id'].'\',\'contact\');return false;">'.$grid_lan->Translate("Note").'</a>]</td>
-					<td align="left">'.$contact['contact'].'&nbsp;&nbsp;&nbsp;&nbsp;<span align="right">[<a href=? onclick="xajax_add(xajax.$(\'callerid\').value,xajax.$(\'customerid\').value,\''. $contact['id'] .'\');return false;">'.$grid_lan->Translate("copy").'</a>]</span>&nbsp;&nbsp;[<a href=? onclick="xajax_edit(\''.$contact['id'].'\',\'\',\'contact\');return false;">'.$grid_lan->Translate("Edit").'</a>]</td>
+					<td nowrap align="left" width="80">'.$grid_customer->Translate("Contact").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$contact['id'].'\',\'contact\');return false;">'.$grid_customer->Translate("Note").'</a>]</td>
+					<td align="left">'.$contact['contact'].'&nbsp;&nbsp;&nbsp;&nbsp;<span align="right">[<a href=? onclick="xajax_add(xajax.$(\'callerid\').value,xajax.$(\'customerid\').value,\''. $contact['id'] .'\');return false;">'.$grid_customer->Translate("copy").'</a>]</span>&nbsp;&nbsp;[<a href=? onclick="xajax_edit(\''.$contact['id'].'\',\'\',\'contact\');return false;">'.$grid_customer->Translate("Edit").'</a>]</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("position").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("position").'</td>
 					<td align="left">'.$contact['position'].'</td>
 				</tr>';
 
 		if ($contact['ext'] == '')
 			$html .='
 					<tr>
-						<td nowrap align="left">'.$grid_lan->Translate("phone").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Phone").'</td>
 						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a></td>
 					</tr>';
 		else
 			$html .='
 					<tr>
-						<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
+						<td nowrap align="left">'.$grid_customer->Translate("Phone1").'</td>
 						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a> ext: '.$contact['ext'].'</td>
 					</tr>';
 
@@ -851,13 +844,13 @@ function showNoteList($id,$type){
 			if ($contact['ext1'] == '')
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
+							<td nowrap align="left">'.$grid_customer->Translate("Phone1").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$grid_lan->Translate("phone1").'</td>
+							<td nowrap align="left">'.$grid_customer->Translate("Phone1").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a> ext: '.$contact['ext1'].'</td>
 						</tr>';
 		
@@ -865,35 +858,35 @@ function showNoteList($id,$type){
 			if ($contact['ext2'] == '')
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$grid_lan->Translate("phone2").'</td>
+							<td nowrap align="left">'.$grid_customer->Translate("Phone2").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\');return false;">'.$contact['phone2'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$grid_lan->Translate("phone2").'</td>
+							<td nowrap align="left">'.$grid_customer->Translate("Phone2").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\');return false;">'.$contact['phone2'].'</a> ext: '.$contact['ext2'].'</td>
 						</tr>';
 
 		$html .='
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Mobile").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Mobile").'</td>
 					<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['mobile'].'\');return false;">'.$contact['mobile'].'</a></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Fax").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Fax").'</td>
 					<td align="left">'.$contact['fax'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Email").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Email").'</td>
 					<td align="left">'.$contact['email'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("Creattime").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("Creattime").'</td>
 					<td align="left">'.$contact['cretime'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$grid_lan->Translate("CreatBY").'</td>
+					<td nowrap align="left">'.$grid_customer->Translate("CreatBY").'</td>
 					<td align="left">'.$contact['creby'].'</td>
 				</tr>
 				</table>';
@@ -916,10 +909,10 @@ function showNoteList($id,$type){
 	*									correspondiente a la validaci&oacute;n.
 	*/
 	function checkAllData($f,$new = 0){
-	 	global $grid_lan;
-		if(empty($f['customer'])) return $grid_lan->Translate("info2");
-		if(empty($f['contact'])) return $grid_lan->Translate("info1");
-		if(empty($f['note'])) return $grid_lan->Translate("info3");
+	 	global $grid_customer;
+		if(empty($f['customer'])) return $grid_customer->Translate("info2");
+		if(empty($f['contact'])) return $grid_customer->Translate("info1");
+		if(empty($f['note'])) return $grid_customer->Translate("info3");
 	 	return 0;
 	}
 

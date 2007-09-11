@@ -4,10 +4,10 @@ function btnConfirmCustomerOnClick(){
 
 	if (xajax.$('customer').readOnly  == true)
 	{
-		alert('true');
+//		alert('true');
 		xajax_add(xajax.$('callerid').value);
 	}else{
-		alert('false');
+//		alert('false');
 		xajax_confirmCustomer(xajax.$('customer').value,xajax.$('callerid').value);
 	}
 }
@@ -19,7 +19,7 @@ function openWindow(url){
 function btnConfirmContactOnClick(){
 	if (xajax.$('customerid').value == '')
 		return false;
-	if (xajax.$('customer').readOnly == 'true')
+	if (xajax.$('customer').readOnly == true)
 	{
 		xajax_add(xajax.$('callerid').value,xajax.$('customerid').value);
 	}else{
