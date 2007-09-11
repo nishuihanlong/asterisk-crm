@@ -527,7 +527,7 @@ INPUT, TEXTAREA, SELECT {
 	font-weight: bold;
 }
 table.menubar {
-	width: 100%;
+	width: 98%;
 	
 }
 td {
@@ -540,7 +540,7 @@ table.adminheading {
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
-	width: 100%;
+	width: 98%;
 	border-collapse: collapse;
 	color: #C64934;
 	font-size : 18px;
@@ -643,7 +643,7 @@ table.adminlist {
 	padding: 0px;
 	border: 1px solid #ddd;
 	border-spacing: 0px;
-	width: 100%;
+	width: 98%;
 	border-collapse: collapse;
 }
 
@@ -701,7 +701,7 @@ select.options, input.options {
 table.adminform {
 	background-color: #f9f9f9;
 	border: solid 1px #d5d5d5;
-	width: 100%;
+	width: 98%;
 	padding: 10px;
 	border-collapse: collapse;
 }
