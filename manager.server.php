@@ -1,4 +1,5 @@
 <?php
+// Tanslate to chinese by Donnie
 require_once ("manager.common.php");
 require_once ("db_connect.php");
 require_once ('grid.account.inc.php');

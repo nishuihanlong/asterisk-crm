@@ -5,7 +5,7 @@
 	
 	But anyway, the full package contain the DB.php and PEAR.php files obtained from PEAR package.
 */
-
+// Tanslate to chinese by Donnie
 require_once 'db_connect.php';
 require_once 'manager.common.php';
 /** \brief Customer Class
