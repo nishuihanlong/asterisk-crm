@@ -40,9 +40,13 @@ processes can run on the same server, however, multiple servers enhance performa
 
 	6) click to transfer
 
-	7) extension status
+	7) can be integrated with all asterisk based systems, such as Magiclink IP PBX, Trixbox ...
+	
+	8)	multi-language support (Chinese and English for now)
 
-	8) external CRM support
+	9)	support external crm
+
+	10)	extension status
 
 2. asterCRM Installation: (assuming your WEB root is /var/www/html)
 
