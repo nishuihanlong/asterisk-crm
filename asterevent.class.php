@@ -23,6 +23,16 @@
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
+
+* Revision 0.044  2007/09/12 10:55:00  modified by solo
+* Desc: 
+* 描述: 修改了 checkIncoming 和 checkDialout 函数的SQL语句
+
+
+* Revision 0.044  2007/09/12 10:55:00  modified by solo
+* Desc: 
+* 描述: 修改了 getInfoBySrcID 函数 将数据集的排序顺序改为ASC
+
 * Revision 0.044  2007/09/11 10:55:00  modified by solo
 * Desc: fix extension status bug when user switch between user interface and admin interface
 * 描述: 修正了分机状态显示的bug(如果用户在管理员界面和用户界面之间切换，分级状态列表会出现问题)
@@ -319,7 +329,7 @@ class asterEvent extends PEAR
 
 	function &checkIncoming($curid,$exten){
 		global $db;
-		$query = "SELECT * FROM events WHERE  event LIKE '%".$exten."%' AND event LIKE 'Event: Newchannel%State: Ringing%' AND id > " . $curid . " order by id desc";
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Newchannel%Channel: %".$exten."%State: Ringing%' AND id > " . $curid . " order by id desc";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
@@ -375,7 +385,7 @@ class asterEvent extends PEAR
 
 	function &checkDialout($curid,$exten){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE '%".$exten."%' AND event LIKE 'Event: Dial%' AND id > " . $curid . " order by id desc";	
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " order by id desc";	
 
 		asterEvent::events($query);
 
@@ -390,10 +400,15 @@ class asterEvent extends PEAR
 
 
 			if ($flds[0] == 'Event: Dial'){
-				$SrcUniqueID = substr($flds[6],12);
+				$SrcUniqueID = trim(substr($flds[6],12));
+				$DescUniqueID = trim(substr($flds[7],13));
 
+				//print $DescUniqueID;
+				//exit;
 				$srcInfo = & asterEvent::getInfoBySrcID($SrcUniqueID);
 				$callerid = $srcInfo['Extension'] ;
+				//$descInfo = & asterEvent::getInfoByDescID($DescUniqueID);
+				//$callerid = $descInfo['Extension'] ;
 			}
 
 			if ($id > $curid) 
@@ -401,8 +416,43 @@ class asterEvent extends PEAR
 
 			$call['status'] = 'dialout';
 			$call['callerid'] = trim($callerid);
-			$call['uniqueid'] = trim($SrcUniqueID);
+			$call['uniqueid'] = $SrcUniqueID;
 			$call['curid'] = trim($curid);
+		} else
+			$call['status'] = '';
+
+		return $call;
+	}
+
+/*
+	check if there's a new dial out
+	@param	$DescUniqueID			(string)	DescUniqueID field in manager event
+	return	$call					(array)	
+			$call['status']			(string)	'','found'
+			$call['Extension']		(string)	extension which unique id is $SrcUniqueID
+			$call['Channel']		(string)	channel which unique id is $SrcUniqueID
+*/
+
+	function &getInfoByDescID($DescUniqueID){
+		global $db;
+		$SrcUniqueID = trim($SrcUniqueID);
+		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newcallerid%' ORDER BY id DESC";
+		asterEvent::events($query);
+		$res = $db->query($query);
+		if ($res->fetchInto($list)){
+			$event = $list['event'];
+			$flds = split("  ",$event);
+
+			foreach ($flds as $myFld) {
+				if (strstr($myFld,"CallerID:")){	
+					$call['Extension'] = substr($myFld,9);
+				} 
+				if (strstr($myFld,"Channel:")){	
+					$call['Channel'] = substr($myFld,8);
+				} 
+
+			}
+			$call['status'] = 'found';
 		} else
 			$call['status'] = '';
 
@@ -421,7 +471,7 @@ class asterEvent extends PEAR
 	function &getInfoBySrcID($SrcUniqueID){
 		global $db;
 		$SrcUniqueID = trim($SrcUniqueID);
-		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%' ORDER BY id DESC";
+		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%' ORDER BY id ASC";
 		asterEvent::events($query);
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){
