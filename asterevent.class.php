@@ -23,6 +23,13 @@
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
+* Revision 0.044  2007/09/12 18:00:00  modified by solo
+* Desc: 
+* 描述: 修改了checkNewCall函数，当来电的callerid为空时跳过不处理
+
+* Revision 0.044  2007/09/12 18:00:00  modified by solo
+* Desc: 
+* 描述: 由于不同asterisk事件振铃事件不同(Ring/Ringing, Newstate/Newchannel)，在checkIncoming函数中修正了获取拨号事件的sql语句
 
 * Revision 0.044  2007/09/12 10:55:00  modified by solo
 * Desc: 
@@ -70,7 +77,8 @@ class asterEvent extends PEAR
 
 		$call =& asterEvent::checkIncoming($curid,$exten);
 
-		if ($call['status'] == 'incoming'){
+		if ($call['status'] == 'incoming' && $call['callerid'] != '' ){
+//		if ($call['status'] == 'incoming' ){
 			return $call;
 		}
 
@@ -329,7 +337,17 @@ class asterEvent extends PEAR
 
 	function &checkIncoming($curid,$exten){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Newchannel%Channel: %".$exten."%State: Ring%' AND id > " . $curid . " order by id desc";
+		// State: Ring or Ringing in different asterisk version
+
+//		$query = "SELECT * FROM events WHERE event LIKE 'Event: New% %Channel: %".$exten."% %State: Ring%' AND id > " . $curid . " order by id desc";
+
+		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND id > " . $curid . " order by id desc";
+
+//		$query = "SELECT * FROM events WHERE  event LIKE 'Event: Newchannel%State: Ringing%' AND id > " . $curid . " order by id desc";
+
+//		$query = "SELECT * FROM events WHERE event LIKE 'Event: Newstate%Channel: %".$exten."%State: Ring%' AND id > " . $curid . " order by id desc";
+
+//		$query = "SELECT * FROM events WHERE event LIKE 'Event: New% Channel: %".$exten."%State:	Ringing%' AND id > " . $curid . " order by id desc";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
