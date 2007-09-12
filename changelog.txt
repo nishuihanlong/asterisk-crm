@@ -10,9 +10,10 @@
 2007-9-10	fix bug in README file
 2007-9-10	增加了用户权限, 进入manager页面需要一定的权限
 
+2007-9-11	change asterevent class
 
 -----------------------------------------------------------------------------------------
-
+need to avoid mulit-Proxyman in memory
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
 
