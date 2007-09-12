@@ -329,7 +329,7 @@ class asterEvent extends PEAR
 
 	function &checkIncoming($curid,$exten){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Newchannel%Channel: %".$exten."%State: Ringing%' AND id > " . $curid . " order by id desc";
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Newchannel%Channel: %".$exten."%State: Ring%' AND id > " . $curid . " order by id desc";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
