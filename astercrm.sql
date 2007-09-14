@@ -2,10 +2,10 @@
 
 #CREATE DATABASE asterisk;
 
-GRANT ALL
-  ON asterisk.*
-  TO asteriskuser@localhost
-  IDENTIFIED BY 'asterisk';
+#GRANT ALL
+#  ON asterisk.*
+#  TO asteriskuser@localhost
+#  IDENTIFIED BY 'asterisk';
 
 USE asterisk;
 
