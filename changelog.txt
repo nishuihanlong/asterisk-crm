@@ -9,13 +9,16 @@
 2007-9-7	增加了manager界面中显示分机状态的功能									solo
 2007-9-10	fix bug in README file
 2007-9-10	增加了用户权限, 进入manager页面需要一定的权限
-
 2007-9-11	change asterevent class
+-----------------------------------------------------
+v0.0442
+2007-9-14	增加弹屏弹出新窗口的功能
 
 -----------------------------------------------------------------------------------------
-need to avoid mulit-Proxyman in memory
+增加显示版权信息的位置
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
+need to avoid mulit-Proxyman in memory
 
 need to add queue status
 need to add auto-dial outbound campaign  
@@ -23,3 +26,4 @@ need to add Real-time campaign display screens
 need to add CDR to user
 need to add record control
 need to add phone spy
+增加对sqlite的支持

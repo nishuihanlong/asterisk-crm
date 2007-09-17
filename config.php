@@ -6,6 +6,12 @@
 * 功能描述
 * Function Desc
 
+* Revision 0.045  2007/09/7 17:55:00  modified by solo
+* Desc: add $config['system']['open_new_window']
+* 描述: 增加了$config['system']['open_new_window'] 参数
+
+
+
 * Revision 0.044  2007/09/7 17:55:00  modified by solo
 * Desc: change all system configuration parameter to be saved in variable: $config
 * 描述: 统一了系统参数的格式, 配置信息都保存在变量 $config 中
@@ -78,6 +84,12 @@ $config['system']['firstring'] = 'callee'; //	callee | caller
 * 当该参数为true时, 系统将使用外挂CRM系统
 */
 $config['system']['enable_external_crm'] = false;	// true | false
+
+/**
+* asterCRM will open a new browser window when need popup
+* 当该参数为true时, 系统将弹出新窗口
+*/
+$config['system']['open_new_window'] = false;	// true | false
 
 /**
 * when using external crm, put default page here

@@ -50,8 +50,14 @@ function init(){
 		$objResponse->addAppend("crm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 	} else {
-		$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-		$objResponse->addAssign("crm","innerHTML", $mycrm );
+		$objResponse->addIncludeScript("js/extercrm.js");
+		if ($config['system']['open_new_window'] == false){
+			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+			$objResponse->addAssign("crm","innerHTML", $mycrm );
+		}else{
+			$javascript = "openwindow('".$config['system']['external_crm_default_url']."')";
+			$objResponse->addScript($javascript);
+		}
 	}
 
 	return $objResponse;
@@ -169,7 +175,16 @@ function waitingCalls($myValue){
 					$myurl = preg_replace("/\%method/","dial_in",$myurl);
 					$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
 					$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
-					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+
+					if ($config['system']['open_new_window'] == false){
+						$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+						$objResponse->addAssign("crm","innerHTML", $mycrm );
+					}else{
+						$javascript = "openwindow('".$myurl."')";
+						$objResponse->addScript($javascript);
+					}
+
+//					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 					$objResponse->addAssign("crm","innerHTML", $mycrm );
 //					$objResponse->addAlert($mycrm );
 				}

@@ -4,8 +4,8 @@ import sys,datetime,MySQLdb
 
 db = MySQLdb.connect(host="localhost",
                      user="asteriskuser",
-                     passwd="movingon",
-                     db="asterisk")
+                     passwd="",
+                     db="")
 
 cursor = db.cursor()
 cdate = datetime.datetime.now()
