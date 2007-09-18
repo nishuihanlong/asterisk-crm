@@ -147,10 +147,13 @@ function waitingCalls($myValue){
 	$curid = trim($myValue['curid']);
 
 	$phone_html = asterEvent::checkExtensionStatus($curid);
-
-	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
-
 	
+	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
+//	$objResponse->addAssign("extensionDiv","style.visibility", "visible");
+//	$objResponse->addAssign("extensionDiv","innerHTML", "Hello" );
+//	$objResponse->addAssign("extensionDiv","innerText", $phone_html );
+//	echo $phone_html;
+//	exit;
 	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
 
 
@@ -620,11 +623,11 @@ function dial($phoneNum,$first = 'caller'){
 //	$objResponse->addAlert($first);
 	if ($config['system']['firstring'] == 'caller'){	//caller phone will ring first
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
+		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 	}else{
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."";
 		//$objResponse->addAlert($strChannel);
-		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['extension']);
+		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$$phoneNum,NULL,NULL);
 	}
 	return $objResponse->getXML();
 }
