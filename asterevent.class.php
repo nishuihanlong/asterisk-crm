@@ -23,13 +23,6 @@
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
-* Revision 0.044  2007/09/12 18:00:00  modified by solo
-* Desc: 
-* 描述: 修改了checkNewCall函数，当来电的callerid为空时跳过不处理
-
-* Revision 0.044  2007/09/12 18:00:00  modified by solo
-* Desc: 
-* 描述: 由于不同asterisk事件振铃事件不同(Ring/Ringing, Newstate/Newchannel)，在checkIncoming函数中修正了获取拨号事件的sql语句
 
 * Revision 0.044  2007/09/12 10:55:00  modified by solo
 * Desc: 

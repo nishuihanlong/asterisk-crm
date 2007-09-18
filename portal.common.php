@@ -1,31 +1,6 @@
 <?php
-/*******************************************************************************
-* portal.common.php
-* portal参数信息文件
-* portal parameter file
-* 功能描述
-* Function Desc
 
-* Revision 0.0442  2007/09/14 08:55:00  modified by solo
-* Desc: modify session scripts to be compatible with trixbox
-* 描述: 改进了对session的处理以兼容trixbox2.0
-
-* Revision 0.0441  2007/09/14 08:55:00  modified by solo
-* Desc: add some comments
-* 描述: 增加了一些注释信息
-
-********************************************************************************/
-header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
-header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-header('Cache-Control: post-check=0, pre-check=0',false);
-header('Pragma: no-cache');
-session_cache_limiter('public, no-store');
-
-session_set_cookie_params(0);
-if (!session_id()) session_start();
-setcookie('PHPSESSID', session_id());
-
-
+session_start();
 if ($_SESSION['curuser']['extension'] == '') 
 	header("Location: login.php");
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;

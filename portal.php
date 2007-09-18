@@ -56,6 +56,6 @@ require_once('portal.common.php');
 
 	<div id="crm" name="crm"></div>
 	<div id="panelDiv" name="panelDiv" class="divPanel"></div>
-	<div id="extensionDiv" name="extensionDiv" class="divExtension"></div>
+	<div id="extensionDiv" name="extensionDiv" class="divExtension">123456</div>
 	</body>
 </html>

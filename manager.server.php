@@ -5,6 +5,7 @@ require_once ("db_connect.php");
 require_once ('grid.account.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('asterevent.class.php');
+require_once ('include/asterisk.php');
 
 function init(){
 	global $locate;
@@ -216,6 +217,64 @@ function edit($id = null){
 	return $objResponse->getXML();
 }
 
+function preDialer(){
+	global $config;
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$objResponse = new xajaxResponse();
+	if (!$res){
+		$objResponse->addAlert("connect failed");
+		return $objResponse;
+	}
+	/*
+	$phoneNum = '84350822';
+	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);	
+	return $objResponse;
+	*/
+	//get a phone number
+
+	$query = '
+			SELECT id,phonenumber 
+			FROM prediallist 
+			LIMIT 0,1 
+			ORDER BY id DESC
+			 ' ;
+	
+	$res = $db->query($query);
+	if ($res->numRows() == 0){
+		//no phone number need to be called
+
+
+	} else {
+		$res->fetchInto($list);
+		$id = $list['id'];
+		$phoneNum = $list['phonenumber'];
+		//remove this record from prediallist table
+		$query = '
+			DELETE FROM prediallist
+			WHERE id = '.$id;
+		$res = $db->query($query);
+
+		//insert this record to dialresult table
+		$query = '
+			INSERT INTO dialresult SET
+			phoneid = \''.$id.'\',
+			phonenumber = \''.$phoneNum.'\',
+			dialstatus = \'begin\'
+			';
+		$res = $db->query($query);
+
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+
+	}
+	
+	return $objResponse;
+
+
+}
 
 $xajax->processRequests();
 ?>

@@ -64,6 +64,6 @@ require_once('manager.common.php');
 
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="center"> </div>
-		
+		<input type="button" value="test" onclick="xajax_preDialer();">
 	</body>
 </html>

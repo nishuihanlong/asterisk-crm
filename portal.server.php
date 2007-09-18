@@ -169,7 +169,7 @@ function waitingCalls($myValue){
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
 		if ($config['system']['pop_up_when_dial_in']){
-			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
+			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
 				if ($config['system']['enable_external_crm'] == false){
 					$objResponse->loadXML(getContact($call['callerid']));
 				}else{
@@ -191,6 +191,8 @@ function waitingCalls($myValue){
 					$objResponse->addAssign("crm","innerHTML", $mycrm );
 //					$objResponse->addAlert($mycrm );
 				}
+
+			}else{
 
 			}
 		}
