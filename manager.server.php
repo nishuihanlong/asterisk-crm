@@ -258,16 +258,17 @@ function preDialer(){
 		$res = $db->query($query);
 
 		//insert this record to dialresult table
+		$actionid=md5(uniqid(""));
 		$query = '
 			INSERT INTO dialresult SET
 			phoneid = \''.$id.'\',
 			phonenumber = \''.$phoneNum.'\',
-			dialstatus = \'begin\'
+			dialstatus = \'begin\',
+			actionid = \''.$actionid.'\'
 			';
 		$res = $db->query($query);
-
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
 
 	}
 	
