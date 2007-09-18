@@ -831,6 +831,7 @@ div.main {
 	visibility: hidden; 
 	background-color: #F1F1F1;
 	overflow: auto;
+	z-index:100;
 }
 
 .formEditInfo {
@@ -956,7 +957,8 @@ div.main {
 	top: 20px;
 	background-color: #F1F1F1;
 	overflow: auto;
-	z-index:-5;
+	z-index:0;
+
 }
 
 
