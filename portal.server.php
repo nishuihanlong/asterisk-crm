@@ -626,10 +626,10 @@ function dial($phoneNum,$first = 'caller'){
 	if ($config['system']['firstring'] == 'caller'){	//caller phone will ring first
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
 		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+
 	}else{
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."";
-		//$objResponse->addAlert($strChannel);
-		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$$phoneNum,NULL,NULL);
+		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 	}
 	return $objResponse->getXML();
 }

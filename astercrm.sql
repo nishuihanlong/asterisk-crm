@@ -70,6 +70,23 @@ CREATE TABLE account (
   UNIQUE KEY id (id)
 ) ;
 
+#store Predictive dialer phone list
+CREATE TABLE dial-list (
+  id int(11) NOT NULL auto_increment,
+  dialnumber varchar(30) NOT NULL default '',
+  UNIQUE KEY id (id)
+) ;
+
+#store Predictive dialer dial result
+
+CREATE TABLE dial-result (
+  id int(11) NOT NULL auto_increment,
+  dialnumber varchar(30) NOT NULL default '',
+  dialresult varchar(30) NOT NULL default '',
+  UNIQUE KEY id (id)
+) ;
+
+
 INSERT INTO `asterisk`.`account` (
 `id` ,
 `username` ,

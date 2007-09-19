@@ -217,6 +217,19 @@ function edit($id = null){
 	return $objResponse->getXML();
 }
 
+<<<<<<< .mine
+function preDialer(){
+	global $config;
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$objResponse = new xajaxResponse();
+	if (!$res){
+		$objResponse->addAlert("connect failed");
+		return $objResponse;
+	}
+	
+=======
 function preDialer(){
 	global $config;
 	$myAsterisk = new Asterisk();

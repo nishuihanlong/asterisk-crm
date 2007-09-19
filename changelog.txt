@@ -13,17 +13,31 @@
 -----------------------------------------------------
 v0.0442
 2007-9-14	增加弹屏弹出新窗口的功能
+2007-9-18	增加dial-list,dial-result两个表
+2007-9-18	修改了 style.css , 解决了和firefox的兼容问题
+2007-9-18	修改了 portal.server.php , incotext => incontext 拼写错误
 
 -----------------------------------------------------------------------------------------
+predialer
+
+
+
 增加显示版权信息的位置
+增加提示asterisk状态的位置
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
 need to avoid mulit-Proxyman in memory
-
-need to add queue status
 need to add auto-dial outbound campaign  
+
+增加对拨入拨出号码的处理功能
+修改delete_events.py 将被删除的事件保存到另外的位置
+need to add queue status
 need to add Real-time campaign display screens 
 need to add CDR to user
-need to add record control
+need to add monitor control
 need to add phone spy
 增加对sqlite的支持
+增加对config.php的管理为web模式
+增加导入/导出客户信息的功能
+
+#为什么在系统监视里面看到的分机不全？

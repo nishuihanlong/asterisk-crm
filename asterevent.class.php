@@ -446,8 +446,8 @@ class asterEvent extends PEAR
 
 	function &getInfoByDescID($DescUniqueID){
 		global $db;
-		$SrcUniqueID = trim($SrcUniqueID);
-		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newcallerid%' ORDER BY id DESC";
+		$DescUniqueID = trim($DescUniqueID);
+		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $DescUniqueID%' AND event LIKE 'Event: Newcallerid%' ORDER BY id DESC";
 		asterEvent::events($query);
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){

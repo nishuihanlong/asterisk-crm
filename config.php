@@ -6,6 +6,13 @@
 * 功能描述
 * Function Desc
 
+<<<<<<< .mine
+* Revision 0.045  2007/09/7 17:55:00  modified by solo
+* Desc: add $config['system']['open_new_window']
+* 描述: 增加了$config['system']['open_new_window'] 参数
+
+=======
+>>>>>>> .r68
 * Revision 0.044  2007/09/7 17:55:00  modified by solo
 * Desc: change all system configuration parameter to be saved in variable: $config
 * 描述: 统一了系统参数的格式, 配置信息都保存在变量 $config 中
@@ -102,4 +109,5 @@ $config['system']['external_crm_url'] = "http://www.magiclink.cn/index.html?call
 
 $config['system']['preDialer_extension'] = '1';
 //$config['system']['dialout_callerid'] = null;
+
 ?>

@@ -53,17 +53,12 @@ require_once('manager.common.php');
 	</head>
 	<body onload="init();">
 
-<div id="panelDiv" name="panelDiv" class="divPanel">
-<!--<input type="button" value="" id="btnExtenManager" name="btnExtenManager"  onclick="showAccounts();"><br/>
-		<input type="button" value="" id="btnSysMonitor" name="btnSysMonitor" onclick="showStatus();">
-		-->
-	</div>
+		<div id="panelDiv" name="panelDiv" class="divPanel"></div>
 		
-			<div id="formDiv" name="formDiv" class="formDiv">
-			</div>
+		<div id="formDiv" name="formDiv" class="formDiv"></div>
 
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="center"> </div>
-		<input type="button" value="test" onclick="xajax_preDialer();">
+		<!--<input type="button" value="test" onclick="xajax_preDialer();">-->
 	</body>
 </html>
