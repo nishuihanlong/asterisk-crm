@@ -18,4 +18,7 @@ $system_monitor = "System Monitor";
 $back = "Back";
 $usertype = "User Type";
 $usertype_note = "support admin only";
+$active_channels = "Active Channels";
+$predictive_dialer = "Predictive Dialer";
+$msgChannelsInfo = "reading message,please stand by...";
 ?>

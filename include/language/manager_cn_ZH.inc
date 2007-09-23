@@ -18,4 +18,7 @@ $system_monitor = "系统分机状态";
 $back = "返回";
 $usertype = "用户类型";
 $usertype_note = "目前只支持admin";
+$active_channels = "激活的通道";
+$predictive_dialer = "预拨号器";
+$msgChannelsInfo = "正在读取信息，请稍后...";
 ?>

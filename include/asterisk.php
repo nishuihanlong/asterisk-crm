@@ -17,6 +17,7 @@ class Asterisk extends AGI_AsteriskManager{
 		$callfile = $callfile."Context:".$arrayPara['Context']."\r\n";
 		$callfile = $callfile."Priority:".$arrayPara['Priority']."\r\n";
 		$callfile = $callfile."MaxRetries:".$arrayPara['MaxRetries']."\r\n";
+		$callfile = $callfile."CallerID:".$arrayPara['CallerID']."\r\n";
 
 		if ($arrayPara['Variable'] != '')
 			foreach ( split("\|",$arrayPara['Variable']) as $strVar)

@@ -16,7 +16,7 @@ v0.0442
 2007-9-18	增加dial-list,dial-result两个表
 2007-9-18	修改了 style.css , 解决了和firefox的兼容问题
 2007-9-18	修改了 portal.server.php , incotext => incontext 拼写错误
-
+2007-9-23	增加了 Active Channels 功能
 -----------------------------------------------------------------------------------------
 predialer
 

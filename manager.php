@@ -45,8 +45,17 @@ require_once('manager.common.php');
 				xajax_showGrid(0,<?=ROWSXPAGE?>,'','','');
 			}
 
+			function showChannelsInfo(){
+				alert (xajax.$('msgChannelsInfo').value);
+				xajax_showChannelsInfo();
+			}
+
 			function init(){
 				xajax_init();
+			}
+
+			function showPredictiveDialer(){
+				xajax_preDialer();
 			}
 		//-->
 		</SCRIPT>
@@ -58,7 +67,11 @@ require_once('manager.common.php');
 		<div id="formDiv" name="formDiv" class="formDiv"></div>
 
 		<div id="grid" name="grid" align="center"> </div>
-		<div id="msgZone" name="msgZone" align="center"> </div>
-		<!--<input type="button" value="test" onclick="xajax_preDialer();">-->
+		<div id="msgZone" name="msgZone" align="left"> </div>
+		Channels
+		<div id="channels" name="channels" align="left"> </div><br><br>
+		Sip Channels
+		<div id="sipChannels" name="sipChannels" align="left"> </div>
+		<input type="hidden" value="" id="msgChannelsInfo" name="msgChannelsInfo">
 	</body>
 </html>

@@ -41,12 +41,11 @@ define(ROWSXPAGE, 10); // Number of rows show it per page.
 define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
 require_once ('include/Localization.php');
-//$_SESSION['curuser']['country'] = 'en';
-//$_SESSION['curuser']['language'] = 'US';
+
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'manager');
 
 $xajax = new xajax("manager.server.php");
-//print_r($_SESSION['curuser']['extensions']);
+$xajax->waitCursorOff();
 
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("add");
@@ -57,4 +56,5 @@ $xajax->registerFunction("delete");
 $xajax->registerFunction("showStatus");
 $xajax->registerFunction("init");
 $xajax->registerFunction("preDialer");
+$xajax->registerFunction("showChannelsInfo");
 ?>

@@ -14,9 +14,15 @@ function init(){
 
 	$html .= "<a href=# onclick='showStatus();return false;'>".$locate->Translate("system_monitor")."</a><br>";
 
+	$html .= "<a href=# onclick='showChannelsInfo();return false;'>".$locate->Translate("active_channels")."</a><br>";
+
+	$html .= "<a href=# onclick='showPredictiveDialer();return false;'>".$locate->Translate("predictive_dialer")."</a><br>";
+	  
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 
 	$objResponse->addAssign("panelDiv", "innerHTML", $html);
+	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
+
 	return $objResponse;
 }
 
@@ -217,20 +223,170 @@ function edit($id = null){
 	return $objResponse->getXML();
 }
 
-<<<<<<< .mine
-function preDialer(){
+function showChannelsInfo(){
+/*
 	global $config;
 	$myAsterisk = new Asterisk();
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
+	$channels = $myAsterisk->Command("show channels");	
+	$sip_channels = $myAsterisk->Command("sip show channels");
+	print $channels['data'];
 	$objResponse = new xajaxResponse();
-	if (!$res){
-		$objResponse->addAlert("connect failed");
-		return $objResponse;
+	return $objResponse;
+*/
+	$channels = split(chr(13),getChannels());
+	$channels = split(chr(10),$channels[1]);
+	//trim the first two records and the last three records
+
+//	array_pop($channels); 
+	array_pop($channels); 
+	$activeCalls = array_pop($channels); 
+	$activeChannels = array_pop($channels); 
+
+	array_shift($channels); 
+	array_shift($channels); 
+//	print_r($channels);
+	
+//	$channels = implode("<BR \>",$myChannels);
+	$sipChannels = split(chr(13),getSipChannels());
+	$sipChannels = split(chr(10),$sipChannels[1]);
+	//trim the first two records and the last three records
+//	array_pop($sipChannels); 
+	array_pop($sipChannels); 
+	$activeSipCalls=array_pop($sipChannels); 
+	array_shift($sipChannels); 
+	array_shift($sipChannels); 
+//	print_r($sipChannels);
+
+	//get channels
+	$myInfo[] = Array("<b>Account</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Dialed Number</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Call Type</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Call Status</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Trunk</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Start Time</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+	foreach ($channels as $channel ){
+		if (strstr($channel," Dial(")) {
+			$myItem = split("_",implode("_",array_filter(split(" ",$channel))));
+//			print_r($myItem);
+//			exit;
+//			$myChannels[] = $channel;
+			//get sip account from myItem[0]
+			//print $myItem[0];
+			//exit;
+			$mySipChannel = $myItem[0];						// 0
+			$sipAccount = split("-",$mySipChannel);
+			$sipAccount = split("\/",$sipAccount[0]);
+			$mySipAccount = $sipAccount[1];					// 1
+//			print_r($sipAccount);
+//			exit;
+			$dialedNumber = split("\@",$myItem[1]);
+			$myDialedNumber = $dialedNumber[0];				// 2
+			$myCallType = $dialedNumber[1];					// 3
+			if (strstr($myCallType,"call")){
+				$myCallType = "Call Shop";
+			} elseif (strstr($myCallType,"a2b")){
+				$myCallType = "Callback";
+			}
+			$myCallStatus = $myItem[2];						// 4
+//			if ($myCallStatus == "Up")
+//				print_r($myItem);
+			$trunk = $myItem[3];
+//			preg_match("/Dial\((.+)|(.+)", $trunk, $matches);
+			$trunk = split("\(",$trunk);
+			$trunk = split("\/",$trunk[1]);
+			$myTrunk = $trunk[0]."/".$trunk[1];				// 5
+//			print $myTrunk;
+//			print_r($matches);
+//			exit;
+			
+			//$myInfo[] = $mySipChannel."&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk;
+//			do {
+//				$mySipChannel = array_shift($sipChannels);
+//				$myItem = split("_",implode("_",array_filter(split(" ",$mySipChannel))));
+//				if (is_numeric($myItem[1])){
+//					if (trim($myItem[1]) == trim($mySipAccount) )
+//						$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[0]."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[1];
+			$timestamp = getTimeStamp($mySipChannel);
+			$myInfo[] = Array($mySipAccount,$myDialedNumber,$myCallType,$myCallStatus,$myTrunk,$timestamp);
+//			$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;".$timestamp;
+//					else
+//						$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;<font color=red>".$myItem[0]."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[1]."</font>";
+
+//					$flag = 0;
+//				} 
+
+//			} while ($flag == 1);
+			//获得相符的sip channels
+		}
+		//print $channel;
+		//exit;
 	}
 	
-=======
-function preDialer(){
+//	print_r($myInfo);
+//	exit;
+	$sipChannels = implode("<BR \>",$sipChannels);
+//	$myChannels = implode("<BR \>",$myInfo);
+//	print_r($myInfo);
+	$myChannels = generateTabelHtml($myInfo);
+//	print_r($channels);
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("msgZone", "innerHTML", "Active Calls: ".$activeCalls."<BR>Active sip calls: ".$activeSipCalls);
+
+	$objResponse->addAssign("channels", "innerHTML", nl2br(trim($myChannels)));
+	$objResponse->addAssign("sipChannels", "innerHTML",  nl2br(trim($sipChannels)));
+//	$objResponse->addAlert("Active Calls: ".$activeCalls);
+//	$objResponse->addAlert("Active Channels ".$activeChannels);
+	return $objResponse;
+}
+
+function generateTabelHtml($aDyadicArray,$thArray = null){
+	$html .= "<table class='myTable'>";
+	foreach ($aDyadicArray as $myArray){
+		//print_r($myArray);
+		//exit;
+		$html .="<tr>";
+		foreach ($myArray as $field){
+			$html .= "<td>";
+			$html .= $field;
+			$html .= "</td>";
+		}
+		$html .="</tr>";
+	}
+	$html .= "</table>";
+//	print $html;
+	return $html;
+}
+
+function getTimeStamp($channel){
+	global $db;
+	$query = "SELECT timestamp FROM events WHERE event LIKE '%$channel%' ORDER BY timestamp DESC limit 0,1";
+	$res = $db->query($query);
+	$res = $db->query($query);
+	if ($res->numRows() == 0){
+		return 0;
+	}else{
+		$res->fetchInto($list);
+		$timestamp = $list['timestamp'];
+		return $timestamp;
+	}
+}
+
+function getSipChannels(){
+	global $config;
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$channels = $myAsterisk->Command("sip show channels");	
+	return  $channels['data'];
+}
+
+function getChannels(){
+	global $config;
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$channels = $myAsterisk->Command("show channels");	
+	return  $channels['data'];
+}
+
+function preDialer1(){
 	global $config;
 	$myAsterisk = new Asterisk();
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
@@ -240,14 +396,56 @@ function preDialer(){
 		$objResponse->addAlert("connect failed");
 		return $objResponse;
 	}
-	/*
+
+	$phoneNum = '13909846473';
+	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);	
+	return $objResponse;
+}
+
+function dialerStatus(){
+	// Cause: 16  Cause-txt: Normal Clearing			普通挂机
+	// Cause: 0  Cause-txt: Unknown
+}
+
+function preDialer(){
+	//只能通过dropcall方法实现群拨
+/*
+	global $config;
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$objResponse = new xajaxResponse();
+	if (!$res){
+		$objResponse->addAlert("connect failed");
+		return $objResponse;
+	}
+*/
+/*
 	$phoneNum = '84350822';
 	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
 	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);	
 	return $objResponse;
-	*/
+*/
 	//get a phone number
+	global $config;
+	$sid=md5(uniqid(""));
+	$objResponse = new xajaxResponse();
+	$myAsterisk = new Asterisk();
+	$phoneNum = '13909846473';
+	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+	$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+									'WaitTime'=>30,
+									'Exten'=>$config['system']['preDialer_extension'],
+									'Context'=>$config['system']['incontext'],
+									'Variable'=>"$strVariable",
+									'Priority'=>1,
+									'CallerID'=>$phoneNum));
 
+	$objResponse->AddAlert("finished");
+	return $objResponse;
+	exit;
+	//获取一个号码
 	$query = '
 			SELECT id,phonenumber 
 			FROM prediallist 
@@ -257,13 +455,13 @@ function preDialer(){
 	
 	$res = $db->query($query);
 	if ($res->numRows() == 0){
-		//no phone number need to be called
-
-
+		$objResponse->addAssign("msgZone", "innerHTML",  "no phone need to be called");
+		return $objResponse;
 	} else {
 		$res->fetchInto($list);
 		$id = $list['id'];
 		$phoneNum = $list['phonenumber'];
+//		$callerid = $list['phonenumber'];
 		//remove this record from prediallist table
 		$query = '
 			DELETE FROM prediallist
@@ -271,7 +469,7 @@ function preDialer(){
 		$res = $db->query($query);
 
 		//insert this record to dialresult table
-		$actionid=md5(uniqid(""));
+		$sid=md5(uniqid(""));
 		$query = '
 			INSERT INTO dialresult SET
 			phoneid = \''.$id.'\',
@@ -281,7 +479,15 @@ function preDialer(){
 			';
 		$res = $db->query($query);
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
+		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+									'WaitTime'=>30,
+									'Exten'=>$config['system']['preDialer_extension'],
+									'Context'=>$config['system']['incontext'],
+									'Variable'=>"$strVariable",
+									'Priority'=>1,
+									'CallerID'=>$phoneNum));
+
+//		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
 
 	}
 	
