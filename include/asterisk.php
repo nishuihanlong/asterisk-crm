@@ -3,10 +3,6 @@
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'phpagi-asmanager.php');
 
 class Asterisk extends AGI_AsteriskManager{
-	function Asterisk(){
-		global $asmanager;
-		$this->config = $asmanager;
-	}
 
 	function dropCall($sID,$arrayPara){
 
@@ -18,6 +14,7 @@ class Asterisk extends AGI_AsteriskManager{
 		$callfile = $callfile."Priority:".$arrayPara['Priority']."\r\n";
 		$callfile = $callfile."MaxRetries:".$arrayPara['MaxRetries']."\r\n";
 		$callfile = $callfile."CallerID:".$arrayPara['CallerID']."\r\n";
+		$callfile = $callfile."ActionID:".$arrayPara['ActionID']."\r\n";
 
 		if ($arrayPara['Variable'] != '')
 			foreach ( split("\|",$arrayPara['Variable']) as $strVar)
