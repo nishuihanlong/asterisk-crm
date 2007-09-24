@@ -19,6 +19,10 @@
 									showStatus	
 									showAccounts					 
 
+* Revision 0.045  2007/09/24 17:55:00  last modified by solo
+* Desc: add div to show channel infomation, addfunction showPredictiveDialer,showChannelsInfo
+* 描述: 增加了显示channel信息的div
+
 * Revision 0.044  2007/09/7 17:55:00  last modified by solo
 * Desc: add some comments, and function showAccounts()
 * 描述: 增加了一些注释信息, 增加了 showAccounts() 函数, 当进行分机管理的时候, 自动中止显示分机状态的函数
