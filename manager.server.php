@@ -223,16 +223,44 @@ function edit($id = null){
 	return $objResponse->getXML();
 }
 
+<<<<<<< .mine
+//需要和asterisk在一台设备上运行
+function preDialer($phoneNum){
+	global $config,$db;
+=======
 function showChannelsInfo(){
 /*
 	global $config;
+>>>>>>> .r70
 	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
+
+//	$myAsterisk->config['asmanager'] = $config['asterisk'];
+//	$res = $myAsterisk->connect();
+
 	$channels = $myAsterisk->Command("show channels");	
 	$sip_channels = $myAsterisk->Command("sip show channels");
 	print $channels['data'];
 	$objResponse = new xajaxResponse();
+<<<<<<< .mine
+
+//	if (!$res){
+//		$objResponse->addAlert("connect failed");
+//		return $objResponse;
+//	}
+//	$phoneNum = '84350822';
+
+
+	$actionid = md5(uniqid(""));
+	$query = '
+		INSERT INTO dialresult SET
+		phoneid = \''.$id.'\',
+		phonenumber = \''.$phoneNum.'\',
+		dialstatus = \'begin\',
+		actionid = \''.$actionid.'\'
+		';
+	$res = $db->query($query);
+
+=======
 	return $objResponse;
 */
 	$channels = split(chr(13),getChannels());
@@ -421,12 +449,7 @@ function preDialer(){
 		return $objResponse;
 	}
 */
-/*
 	$phoneNum = '84350822';
-	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);	
-	return $objResponse;
-*/
 	//get a phone number
 	global $config;
 	$sid=md5(uniqid(""));
