@@ -31,4 +31,11 @@ $number_only = "Number only";
 $dialer_stopped = "Ready to dial";
 $dialing = "Dialing";
 $reach_maximum_concurrent_calls = "Reach maximum concurrent calls";
+$account = "SIP account";
+$dialed_number = "Dialed number";
+$call_type = "Call type";
+$call_status = "Call status";
+$trunk = "Trunk";
+$start_time = "Start Time";
+$duration = "Duration";
 ?>

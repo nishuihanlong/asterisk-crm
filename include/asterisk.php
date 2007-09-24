@@ -29,5 +29,24 @@ class Asterisk extends AGI_AsteriskManager{
 		system("mv $filename /var/spool/asterisk/outgoing/");
 		return ;
 	}
+
+	function getSipChannels(){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$channels = $myAsterisk->Command("sip show channels");	
+		return  $channels['data'];
+	}
+
+	function getChannels(){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$channels = $myAsterisk->Command("show channels");	
+		return  $channels['data'];
+	}
+
 }
 ?>

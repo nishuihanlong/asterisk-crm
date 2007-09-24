@@ -22,6 +22,18 @@ TD {
 TH {
 	FONT: 12px/150% Arial, Helvetica, sans-serif
 }
+
+.myTable TH {
+	FONT: 12px/150% Arial, Helvetica, sans-serif
+	HEIGHT: 30px;
+	FONT-WEIGHT: bold;
+	WIDTH: 120px;
+}
+.myTable TD {
+	FONT: 12px/150% Arial, Helvetica, sans-serif
+	HEIGHT: 30px;
+}
+
 TABLE {
 	BORDER-RIGHT: medium none; PADDING-RIGHT: 0px; BORDER-TOP: medium none; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: medium none; PADDING-TOP: 0px; BORDER-BOTTOM: medium none
 }

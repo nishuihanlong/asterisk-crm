@@ -31,4 +31,11 @@ $number_only = "只允许输入数字";
 $dialer_stopped = "可以拨号";
 $dialing = "正在拨号";
 $reach_maximum_concurrent_calls = "超过系统最大允许并发呼叫";
+$account = "SIP账户";
+$dialed_number = "被叫号码";
+$call_type = "呼叫类型";
+$call_status = "呼叫状态";
+$trunk = "中继";
+$start_time = "开始时间";
+$duration = "时长";
 ?>

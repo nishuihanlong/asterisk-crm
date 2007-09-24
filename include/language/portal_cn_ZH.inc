@@ -30,9 +30,5 @@ $contact_update_error	= "联系人信息无法更新";
 $customer_add_error	= "无法添加客户";
 $note_add_error		=	"无法添加备注信息";
 $note_add_success	=	"成功添加备注信息";
-$info1      	  = "请填写联系人";
-$info2          = "请填写客户名称";
-$info3          = "请填写备注";
-$info4          ="缺乏参数";
-
+$no_dial_list		=	"拨号列表为空";
 ?>

@@ -230,22 +230,12 @@ function edit($id = null){
 }
 
 function showChannelsInfo(){
-/*
-	global $config;
-	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
-	$channels = $myAsterisk->Command("show channels");	
-	$sip_channels = $myAsterisk->Command("sip show channels");
-	print $channels['data'];
-	$objResponse = new xajaxResponse();
-	return $objResponse;
-*/
-	$channels = split(chr(13),getChannels());
+	global $locate;
+	$channels = split(chr(13),asterisk::getChannels());
 	$channels = split(chr(10),$channels[1]);
 	//trim the first two records and the last three records
 
-//	array_pop($channels); 
+	//	array_pop($channels); 
 	array_pop($channels); 
 	$activeCalls = array_pop($channels); 
 	$activeChannels = array_pop($channels); 
@@ -255,18 +245,21 @@ function showChannelsInfo(){
 //	print_r($channels);
 	
 //	$channels = implode("<BR \>",$myChannels);
-	$sipChannels = split(chr(13),getSipChannels());
-	$sipChannels = split(chr(10),$sipChannels[1]);
+//	$sipChannels = split(chr(13),asterisk::getSipChannels());
+//	$sipChannels = split(chr(10),$sipChannels[1]);
 	//trim the first two records and the last three records
 //	array_pop($sipChannels); 
-	array_pop($sipChannels); 
-	$activeSipCalls=array_pop($sipChannels); 
-	array_shift($sipChannels); 
-	array_shift($sipChannels); 
+//	array_pop($sipChannels); 
+//	$activeSipCalls=array_pop($sipChannels); 
+//	array_shift($sipChannels); 
+//	array_shift($sipChannels); 
 //	print_r($sipChannels);
 
 	//get channels
-	$myInfo[] = Array("<b>Account</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Dialed Number</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Call Type</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Call Status</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Trunk</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","<b>Start Time</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+	//$myInfo[] = Array("Account","Dialed Number","Call Type","Call Status","Trunk","Start Time");
+
+	$myInfo[] = Array($locate->Translate("account"),$locate->Translate("dialed_number"),$locate->Translate("call_type"),$locate->Translate("call_status"),$locate->Translate("trunk"),$locate->Translate("start_time"),$locate->Translate("duration"));
+
 	foreach ($channels as $channel ){
 		if (strstr($channel," Dial(")) {
 			$myItem = split("_",implode("_",array_filter(split(" ",$channel))));
@@ -314,7 +307,14 @@ function showChannelsInfo(){
 //					if (trim($myItem[1]) == trim($mySipAccount) )
 //						$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[0]."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[1];
 			$timestamp = getTimeStamp($mySipChannel);
-			$myInfo[] = Array($mySipAccount,$myDialedNumber,$myCallType,$myCallStatus,$myTrunk,$timestamp);
+			if ($timestamp != ''){
+				$duration = mktime()-strtotime($timestamp);
+			}
+			else
+				$duration = 0;
+//			print $timestamp;
+//			exit;
+			$myInfo[] = Array($mySipAccount,$myDialedNumber,$myCallType,$myCallStatus,$myTrunk,$timestamp,$duration);
 //			$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;".$timestamp;
 //					else
 //						$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;<font color=red>".$myItem[0]."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[1]."</font>";
@@ -331,24 +331,35 @@ function showChannelsInfo(){
 	
 //	print_r($myInfo);
 //	exit;
-	$sipChannels = implode("<BR \>",$sipChannels);
+//	$sipChannels = implode("<BR \>",$sipChannels);
 //	$myChannels = implode("<BR \>",$myInfo);
 //	print_r($myInfo);
 	$myChannels = generateTabelHtml($myInfo);
 //	print_r($channels);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
-	$objResponse->addAssign("msgZone", "innerHTML", "Active sip calls: ".$activeSipCalls);
+//	$objResponse->addAssign("msgZone", "innerHTML", "Active sip calls: ".$activeSipCalls);
 
 	$objResponse->addAssign("channels", "innerHTML", nl2br(trim($myChannels)));
-	$objResponse->addAssign("sipChannels", "innerHTML",  nl2br(trim($sipChannels)));
+//	$objResponse->addAssign("sipChannels", "innerHTML",  nl2br(trim($sipChannels)));
 //	$objResponse->addAlert("Active Calls: ".$activeCalls);
 //	$objResponse->addAlert("Active Channels ".$activeChannels);
 	return $objResponse;
 }
 
 function generateTabelHtml($aDyadicArray,$thArray = null){
+	if (!is_Array($aDyadicArray))
+		return '';
 	$html .= "<table class='myTable'>";
+//	print_r($aDyadicArray);
+//	exit;
+	$myArray = array_shift($aDyadicArray);
+	foreach ($myArray as $field){
+		$html .= "<th>";
+		$html .= $field;
+		$html .= "</th>";
+	}
+
 	foreach ($aDyadicArray as $myArray){
 		//print_r($myArray);
 		//exit;
@@ -377,24 +388,6 @@ function getTimeStamp($channel){
 		$timestamp = $list['timestamp'];
 		return $timestamp;
 	}
-}
-
-function getSipChannels(){
-	global $config;
-	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
-	$channels = $myAsterisk->Command("sip show channels");	
-	return  $channels['data'];
-}
-
-function getChannels(){
-	global $config;
-	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
-	$channels = $myAsterisk->Command("show channels");	
-	return  $channels['data'];
 }
 
 function dialerStatus(){
@@ -527,6 +520,7 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 		return $objResponse;
 	} else {
 		$res->fetchInto($list);
+
 		$id = $list['id'];
 		$phoneNum = $list['dialnumber'];
 
@@ -570,7 +564,10 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 									'CallerID'=>$phoneNum));
 
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");
-		$objResponse->addAssign("spanTotalRecords", "innerHTML", ($totalRecords - 1)." ".$locate->Translate("records_left"));
+		$totalRecords -= $totalRecords;
+		if ($totalRecords < 0 )
+			$totalRecords = 0;
+		$objResponse->addAssign("spanTotalRecords", "innerHTML", $totalRecords." ".$locate->Translate("records_left"));
 
 //		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
 

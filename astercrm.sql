@@ -74,6 +74,7 @@ CREATE TABLE account (
 CREATE TABLE diallist (
   id int(11) NOT NULL auto_increment,
   dialnumber varchar(30) NOT NULL default '',
+  assign varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
 

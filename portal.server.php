@@ -7,7 +7,7 @@ require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterisk.php');
 
 function init(){
-	global $locate,$config;
+	global $locate,$config,$db;
 
 	$objResponse = new xajaxResponse();
 	
@@ -19,6 +19,20 @@ function init(){
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
+
+	// get dial list
+	$query = 'SELECT COUNT(*) FROM diallist WHERE assign = "'.$_SESSION['curuser']['username'].'"';
+	$res =& $db->getOne($query);
+
+	if ($res == 0 || $res == "0"){
+		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
+	} else{
+		// add span
+//		$objResponse->addCreateInput("divPredictiveDialer", "button", "btnDial", "btnDial");
+//		$objResponse->addAssign("btnDial", "value", $locate->Translate("dial"));
+//		$objResponse->addEvent("btnDial", "onclick", "btnDialOnClick();");
+	}
+
 //	echo $_SESSION['curuser']['usertype'];
 //	exit;
 	if ($_SESSION['curuser']['usertype'] == "admin"){

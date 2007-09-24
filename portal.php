@@ -52,8 +52,9 @@ require_once('portal.common.php');
 		<div id="debug"></div>
 	</form>
 
+	<div id="divDialList" name="divDialList"></div>
 	<div id="processingMessage" name="processingMessage"></div>
-
+	
 	<div id="crm" name="crm"></div>
 	<div id="panelDiv" name="panelDiv" class="divPanel"></div>
 	<div id="extensionDiv" name="extensionDiv" class="divExtension"></div>
