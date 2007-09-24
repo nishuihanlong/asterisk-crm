@@ -21,4 +21,14 @@ $usertype_note = "目前只支持admin";
 $active_channels = "激活的通道";
 $predictive_dialer = "预拨号器";
 $msgChannelsInfo = "正在读取信息，请稍后...";
+$no_phonenumber_in_database = "没有任何需要可以拨打的号码";
+//$phonenumber_in_database = "数据库中号码数量: ";
+$records_left = "数据剩余";
+$ready_to_dial = "可以拨号";
+$dial = "拨号";
+$stop = "停止";
+$number_only = "只允许输入数字";
+$dialer_stopped = "可以拨号";
+$dialing = "正在拨号";
+$reach_maximum_concurrent_calls = "超过系统最大允许并发呼叫";
 ?>

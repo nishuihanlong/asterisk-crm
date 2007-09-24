@@ -71,7 +71,7 @@ CREATE TABLE account (
 ) ;
 
 #store Predictive dialer phone list
-CREATE TABLE dial-list (
+CREATE TABLE diallist (
   id int(11) NOT NULL auto_increment,
   dialnumber varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)
@@ -79,7 +79,7 @@ CREATE TABLE dial-list (
 
 #store Predictive dialer dial result
 
-CREATE TABLE dial-result (
+CREATE TABLE dialresult (
   id int(11) NOT NULL auto_increment,
   dialnumber varchar(30) NOT NULL default '',
   dialresult varchar(30) NOT NULL default '',

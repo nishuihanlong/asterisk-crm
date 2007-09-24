@@ -10,13 +10,19 @@ require_once ('include/asterisk.php');
 function init(){
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html .= "<a href=# onclick='showAccounts();return false;'>".$locate->Translate("extension_manager")."</a><br>";
+	$objResponse->addClear("grid", "innerHTML");
+	$objResponse->addClear("formDiv", "innerHTML");
+	$objResponse->addClear("channels", "innerHTML");
+	$objResponse->addClear("sipChannels", "innerHTML");
+	$objResponse->addClear("msgZone", "innerHTML");
 
-	$html .= "<a href=# onclick='showStatus();return false;'>".$locate->Translate("system_monitor")."</a><br>";
+	$html .= "<a href=# onclick='clearAll();showAccounts();return false;'>".$locate->Translate("extension_manager")."</a><br>";
 
-	$html .= "<a href=# onclick='showChannelsInfo();return false;'>".$locate->Translate("active_channels")."</a><br>";
+	$html .= "<a href=# onclick='clearAll();showStatus();return false;'>".$locate->Translate("system_monitor")."</a><br>";
 
-	$html .= "<a href=# onclick='showPredictiveDialer();return false;'>".$locate->Translate("predictive_dialer")."</a><br>";
+	$html .= "<a href=# onclick='clearAll();showChannelsInfo();return false;'>".$locate->Translate("active_channels")."</a><br>";
+
+	$html .= "<a href=# onclick='clearAll();showPredictiveDialer();return false;'>".$locate->Translate("predictive_dialer")."</a><br>";
 	  
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 
@@ -223,44 +229,16 @@ function edit($id = null){
 	return $objResponse->getXML();
 }
 
-<<<<<<< .mine
-//闇�瑕佸拰asterisk鍦ㄤ竴鍙拌澶囦笂杩愯
-function preDialer($phoneNum){
-	global $config,$db;
-=======
 function showChannelsInfo(){
 /*
 	global $config;
->>>>>>> .r70
 	$myAsterisk = new Asterisk();
-
-//	$myAsterisk->config['asmanager'] = $config['asterisk'];
-//	$res = $myAsterisk->connect();
-
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
 	$channels = $myAsterisk->Command("show channels");	
 	$sip_channels = $myAsterisk->Command("sip show channels");
 	print $channels['data'];
 	$objResponse = new xajaxResponse();
-<<<<<<< .mine
-
-//	if (!$res){
-//		$objResponse->addAlert("connect failed");
-//		return $objResponse;
-//	}
-//	$phoneNum = '84350822';
-
-
-	$actionid = md5(uniqid(""));
-	$query = '
-		INSERT INTO dialresult SET
-		phoneid = \''.$id.'\',
-		phonenumber = \''.$phoneNum.'\',
-		dialstatus = \'begin\',
-		actionid = \''.$actionid.'\'
-		';
-	$res = $db->query($query);
-
-=======
 	return $objResponse;
 */
 	$channels = split(chr(13),getChannels());
@@ -317,9 +295,13 @@ function showChannelsInfo(){
 //				print_r($myItem);
 			$trunk = $myItem[3];
 //			preg_match("/Dial\((.+)|(.+)", $trunk, $matches);
-			$trunk = split("\(",$trunk);
-			$trunk = split("\/",$trunk[1]);
-			$myTrunk = $trunk[0]."/".$trunk[1];				// 5
+			preg_match_all("/^Dial\((.*)\//i",$trunk,$out);
+			//print $out[1][0];
+			//exit;
+			//$trunk = split("\(",$trunk);
+			//$trunk = split("\/",$trunk[1]);
+			//$myTrunk = $trunk[0]."/".$trunk[1];				// 5
+			$myTrunk = $out[1][0];
 //			print $myTrunk;
 //			print_r($matches);
 //			exit;
@@ -355,7 +337,8 @@ function showChannelsInfo(){
 	$myChannels = generateTabelHtml($myInfo);
 //	print_r($channels);
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("msgZone", "innerHTML", "Active Calls: ".$activeCalls."<BR>Active sip calls: ".$activeSipCalls);
+	$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
+	$objResponse->addAssign("msgZone", "innerHTML", "Active sip calls: ".$activeSipCalls);
 
 	$objResponse->addAssign("channels", "innerHTML", nl2br(trim($myChannels)));
 	$objResponse->addAssign("sipChannels", "innerHTML",  nl2br(trim($sipChannels)));
@@ -414,48 +397,86 @@ function getChannels(){
 	return  $channels['data'];
 }
 
-function preDialer1(){
-	global $config;
-	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
-	$objResponse = new xajaxResponse();
-	if (!$res){
-		$objResponse->addAlert("connect failed");
-		return $objResponse;
-	}
-
-	$phoneNum = '13909846473';
-	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);	
-	return $objResponse;
-}
-
 function dialerStatus(){
 	// Cause: 16  Cause-txt: Normal Clearing			普通挂机
 	// Cause: 0  Cause-txt: Unknown
+	// 可以考虑从cdr表中读取拨号结果
 }
 
-function preDialer(){
-	//只能通过dropcall方法实现群拨
-/*
-	global $config;
-	$myAsterisk = new Asterisk();
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
+function showPredictiveDialer($preDictiveDialerStatus){
+	global $db,$locate;
+
 	$objResponse = new xajaxResponse();
-	if (!$res){
-		$objResponse->addAlert("connect failed");
+	//从数据库读取预拨号的总数
+	$query = '
+		SELECT COUNT(*) FROM diallist';
+	$res =& $db->getOne($query);
+
+	if ($res == 0 || $res == "0"){
+		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
+	} else{
+		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("ready_to_dial"));
+		$objResponse->addAssign("spanTotalRecords", "innerHTML", $res.' '.$locate->Translate("records_left"));
+
+		// add dial button
+		$objResponse->addCreateInput("divPredictiveDialer", "button", "btnDial", "btnDial");
+		$objResponse->addAssign("btnDial", "value", $locate->Translate("dial"));
+		$objResponse->addEvent("btnDial", "onclick", "btnDialOnClick();");
+
+		// add max active calls field
+		$objResponse->addCreateInput("divPredictiveDialer", "text", "fldMaxActiveCalls", "fldMaxActiveCalls");
+		$objResponse->addAssign("fldMaxActiveCalls", "size", "3");
+		$objResponse->addAssign("fldMaxActiveCalls", "value", "5");
+
+		//add dial language
+		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialMsg", "btnDialMsg");
+		$objResponse->addAssign("btnDialMsg", "value", $locate->Translate("dial"));
+
+		//add stop language
+		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnStopMsg", "btnStopMsg");
+		$objResponse->addAssign("btnStopMsg", "value", $locate->Translate("stop"));
+
+		//add number only language
+		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnNumberOnlyMsg", "btnNumberOnlyMsg");
+		$objResponse->addAssign("btnNumberOnlyMsg", "value", $locate->Translate("number_only"));
+
+		//add dialer stopped language
+		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialerStoppedMsg", "btnDialerStoppedMsg");
+		$objResponse->addAssign("btnDialerStoppedMsg", "value", $locate->Translate("dialer_stopped"));
+
+/*
+		$html .= '<form name="formPreDictiveDialer" id="formPreDictiveDialer">';
+		$html .= '<input type="button" value="'.$locate->Translate("dial").'" id="btnDial" name="btnDial" onclick="btnDialOnClick();">';
+		$html .= '<input type="text" value="5" id="fldMaxActiveCalls" name="fldMaxActiveCalls">';
+		$html .='</form>';
+*/
+//		$objResponse->addAssign("divPredictiveDialer", "innerHTML",$html);
+//		$objResponse->addInsertInputAfter("predictiveDialerStatus", "hidden", "username", "input1");
+
+	}
+	return $objResponse;
+}
+
+function predictiveDialer($maxChannels,$curCalls,$totalRecords){
+	global $config,$db,$locate;
+	$objResponse = new xajaxResponse();
+	if ($curCalls == -1 ){
+		
 		return $objResponse;
 	}
-*/
-	$phoneNum = '84350822';
-	//get a phone number
-	global $config;
+
+	if ($curCalls > $maxChannels){
+		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("reach_maximum_concurrent_calls"));
+		return $objResponse;
+	}
+
+/*
+	test scripts
+
 	$sid=md5(uniqid(""));
 	$objResponse = new xajaxResponse();
 	$myAsterisk = new Asterisk();
-	$phoneNum = '13909846473';
+	$phoneNum = '84350822';
 	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
 	$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
@@ -468,31 +489,55 @@ function preDialer(){
 	$objResponse->AddAlert("finished");
 	return $objResponse;
 	exit;
+*/
+
+	$myAsterisk = new Asterisk();
+//	$myAsterisk->config['asmanager'] = $config['asterisk'];
+//	$res = $myAsterisk->connect();
+//	print_r($res);
+//	exit;
+	//检查是否超出限制
+
+//	print_r($channels);
+//	exit;
+/*
+	$channels = split(chr(13),getChannels());
+	$channels = split(chr(10),$channels[1]);
+
+	array_pop($channels);
+	array_pop($channels);
+	$activeCalls = array_pop($channels);
+	//array_pop($channels);
+	//print array_shift($channels);
+	print $activeCalls;
+	exit;
+	*/
 	//获取一个号码
 	$query = '
-			SELECT id,phonenumber 
-			FROM prediallist 
-			LIMIT 0,1 
+			SELECT id,dialnumber 
+			FROM diallist 
 			ORDER BY id DESC
+			LIMIT 0,1 
 			 ' ;
 	
 	$res = $db->query($query);
 	if ($res->numRows() == 0){
-		$objResponse->addAssign("msgZone", "innerHTML",  "no phone need to be called");
+		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
+		$objResponse->addScript("stopDial();");
 		return $objResponse;
 	} else {
 		$res->fetchInto($list);
 		$id = $list['id'];
-		$phoneNum = $list['phonenumber'];
-//		$callerid = $list['phonenumber'];
-		//remove this record from prediallist table
+		$phoneNum = $list['dialnumber'];
+
 		$query = '
-			DELETE FROM prediallist
+			DELETE FROM diallist
 			WHERE id = '.$id;
 		$res = $db->query($query);
 
 		//insert this record to dialresult table
 		$sid=md5(uniqid(""));
+		/*
 		$query = '
 			INSERT INTO dialresult SET
 			phoneid = \''.$id.'\',
@@ -501,7 +546,21 @@ function preDialer(){
 			actionid = \''.$actionid.'\'
 			';
 		$res = $db->query($query);
+		*/
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+	//	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$sid);
+
+/*		$myAsterisk->send_request('Originate',array('Channel'=>"$strChannel",
+									'WaitTime'=>30,
+									'Exten'=>$config['system']['preDialer_extension'],
+									'Context'=>$config['system']['incontext'],
+									'Variable'=>"$strVariable",
+									'Priority'=>1,
+									'CallerID'=>$phoneNum));
+*/
+//		exit;
+
+
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
 									'Exten'=>$config['system']['preDialer_extension'],
@@ -509,6 +568,9 @@ function preDialer(){
 									'Variable'=>"$strVariable",
 									'Priority'=>1,
 									'CallerID'=>$phoneNum));
+
+		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");
+		$objResponse->addAssign("spanTotalRecords", "innerHTML", ($totalRecords - 1)." ".$locate->Translate("records_left"));
 
 //		$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
 

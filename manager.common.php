@@ -55,6 +55,7 @@ $xajax->registerFunction("update");
 $xajax->registerFunction("delete");
 $xajax->registerFunction("showStatus");
 $xajax->registerFunction("init");
-$xajax->registerFunction("preDialer");
+$xajax->registerFunction("predictiveDialer");
+$xajax->registerFunction("showPredictiveDialer");
 $xajax->registerFunction("showChannelsInfo");
 ?>

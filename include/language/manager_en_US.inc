@@ -21,4 +21,14 @@ $usertype_note = "support admin only";
 $active_channels = "Active Channels";
 $predictive_dialer = "Predictive Dialer";
 $msgChannelsInfo = "reading message,please stand by...";
+$no_phonenumber_in_database = "no phone numbers in database";
+//$phonenumber_in_database = "Phone numbers in database ";
+$records_left = "records left";
+$ready_to_dial = "Ready to dial";
+$dial = "Dial";
+$stop = "Stop";
+$number_only = "Number only";
+$dialer_stopped = "Ready to dial";
+$dialing = "Dialing";
+$reach_maximum_concurrent_calls = "Reach maximum concurrent calls";
 ?>
