@@ -21,9 +21,23 @@ require_once('portal.common.php');
 			xajax.$('processingMessage').style.display = 'none';
 		}
 
+		
+		function btnGetAPhoneNumberOnClick(){
+			xajax_addWithPhoneNumber();
+		}
 
 		function updateEvents(){
-			xajax_listenCalls(xajax.getFormValues("myForm"));
+
+			myFormValue = xajax.getFormValues("myForm");
+			xajax_listenCalls(myFormValue);
+				if (xajax.$('formDiv') != null){
+					if (xajax.$('formDiv').style.visibility == 'visible')
+						xajax.$('popup').value = 'no';
+					else
+						xajax.$('popup').value = 'yes';
+				}else{
+					xajax.$('popup').value = 'yes';
+				}
 			setTimeout("updateEvents()", 1000);
 		}
 		
@@ -49,6 +63,7 @@ require_once('portal.common.php');
 		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>
+		<input type="hidden" name="popup" id="popup" value="yes"/>
 		<div id="debug"></div>
 	</form>
 

@@ -5,31 +5,29 @@
 2007-9-6	add extension status													solo
 2007-9-7	add table column extensions in table account									solo
 2007-9-7	修改了转接和分机状态显示,需要在数据库里设置用户可以转接以及状态显示的分机		solo
-2007-9-7	修正了获取主叫、被叫号码的一个bug										solo
-2007-9-7	增加了manager界面中显示分机状态的功能									solo
+2007-9-7	fix a bug when get callerid or calleeid										solo
+2007-9-7	add extension status in manager interface									solo
 2007-9-10	fix bug in README file
-2007-9-10	增加了用户权限, 进入manager页面需要一定的权限
+2007-9-10	add authority to manager interface
 2007-9-11	change asterevent class
 -----------------------------------------------------
 v0.0442
-2007-9-14	增加弹屏弹出新窗口的功能
-2007-9-18	增加dial-list,dial-result两个表
-2007-9-18	修改了 style.css , 解决了和firefox的兼容问题
-2007-9-18	修改了 portal.server.php , incotext => incontext 拼写错误
-2007-9-23	增加了 Active Channels 功能
+2007-9-14	could open new window when pop-up
+2007-9-18	add table diallist
+2007-9-18	modify style.css to improve compatibility with firefox
+2007-9-18	fix spelling bug in portal.server.php , incotext => incontext
+2007-9-23	add Active Channels in manager interface
+2007-9-24	add predictive dialer (need asterisk be installed with asterisk)
+2007-9-25	if customer information display, it wouldnot pop up
+2007-9-25	add agent outbound campaign
 -----------------------------------------------------------------------------------------
-predialer
-
-
 
 增加显示版权信息的位置
 增加提示asterisk状态的位置
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
 need to avoid mulit-Proxyman in memory
-need to add auto-dial outbound campaign  
 
-增加对拨入拨出号码的处理功能
 修改delete_events.py 将被删除的事件保存到另外的位置
 need to add queue status
 need to add Real-time campaign display screens 

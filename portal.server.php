@@ -6,6 +6,34 @@ require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterisk.php');
 
+
+function getPrivateDialList($extension = null){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	// get dial list
+	if ($extension == null)
+		$query = 'SELECT COUNT(*) FROM diallist';
+	else
+		$query = 'SELECT COUNT(*) FROM diallist WHERE assign = "'.$extension.'"';
+
+	$res =& $db->getOne($query);
+
+	if ($res == 0 || $res == "0"){
+		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
+	} else{
+		// add div
+		$objResponse->addCreate("divDialList", "div", "spanDialListRecords");
+		$objResponse->addAssign("spanDialListRecords", "innerHTML", $locate->Translate("records_in_dial_list_table").$res);
+
+		// add start campaign button
+		$objResponse->addCreateInput("divDialList", "button", "btnGetAPhoneNumber", "btnGetAPhoneNumber");
+		$objResponse->addAssign("btnGetAPhoneNumber", "value", $locate->Translate("get_a_phone_number"));
+		$objResponse->addEvent("btnGetAPhoneNumber", "onclick", "btnGetAPhoneNumberOnClick();");
+	}
+
+	return $objResponse;
+}
+
 function init(){
 	global $locate,$config,$db;
 
@@ -20,18 +48,7 @@ function init(){
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 
-	// get dial list
-	$query = 'SELECT COUNT(*) FROM diallist WHERE assign = "'.$_SESSION['curuser']['username'].'"';
-	$res =& $db->getOne($query);
-
-	if ($res == 0 || $res == "0"){
-		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
-	} else{
-		// add span
-//		$objResponse->addCreateInput("divPredictiveDialer", "button", "btnDial", "btnDial");
-//		$objResponse->addAssign("btnDial", "value", $locate->Translate("dial"));
-//		$objResponse->addEvent("btnDial", "onclick", "btnDialOnClick();");
-	}
+	$objResponse->loadXML(getPrivateDialList($_SESSION['curuser']['extension']));
 
 //	echo $_SESSION['curuser']['usertype'];
 //	exit;
@@ -140,6 +157,7 @@ function incomingCalls($myValue){
 		} elseif ($call['status'] =='hangup'){
 			$status	= 'hang up';
 			$info	= "Hang up call from " . $myValue['callerid'];
+			$objResponse->addScript('document.title=\'asterCrm\';');
 			$objResponse->addAssign("uniqueid","value", "" );
 			$objResponse->addAssign("callerid","value", "" );
 			$objResponse->addAssign("callerChannel","value", '');
@@ -163,11 +181,7 @@ function waitingCalls($myValue){
 	$phone_html = asterEvent::checkExtensionStatus($curid);
 	
 	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
-//	$objResponse->addAssign("extensionDiv","style.visibility", "visible");
-//	$objResponse->addAssign("extensionDiv","innerHTML", "Hello" );
-//	$objResponse->addAssign("extensionDiv","innerText", $phone_html );
-//	echo $phone_html;
-//	exit;
+
 	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
 
 
@@ -184,28 +198,25 @@ function waitingCalls($myValue){
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
 		if ($config['system']['pop_up_when_dial_in']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
-				if ($config['system']['enable_external_crm'] == false){
-					$objResponse->loadXML(getContact($call['callerid']));
-				}else{
-					//use external link
-					$myurl = $config['system']['external_crm_url'];
-					$myurl = preg_replace("/\%method/","dial_in",$myurl);
-					$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
-					$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
-
-					if ($config['system']['open_new_window'] == false){
-						$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-						$objResponse->addAssign("crm","innerHTML", $mycrm );
+				if ($myValue['popup'] == 'yes'){
+					if ($config['system']['enable_external_crm'] == false){
+							$objResponse->loadXML(getContact($call['callerid']));
 					}else{
-						$javascript = "openwindow('".$myurl."')";
-						$objResponse->addScript($javascript);
+						//use external link
+						$myurl = $config['system']['external_crm_url'];
+						$myurl = preg_replace("/\%method/","dial_in",$myurl);
+						$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
+						$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
+
+						if ($config['system']['open_new_window'] == false){
+								$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+								$objResponse->addAssign("crm","innerHTML", $mycrm );
+						}else{
+							$javascript = "openwindow('".$myurl."')";
+							$objResponse->addScript($javascript);
+						}
 					}
-
-//					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-					$objResponse->addAssign("crm","innerHTML", $mycrm );
-//					$objResponse->addAlert($mycrm );
 				}
-
 			}else{
 
 			}
@@ -217,17 +228,23 @@ function waitingCalls($myValue){
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
 		if ($config['system']['pop_up_when_dial_out']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
-				if ($config['system']['enable_external_crm'] == false){
-					$objResponse->loadXML(getContact($call['callerid']));
-				}else{
-					//use external link
-					$myurl = $config['system']['external_crm_url'];
-					$myurl = preg_replace("/\%method/","dial_out",$myurl);
-					$myurl = preg_replace("/\%callerid/",$_SESSION['curuser']['extension'],$myurl);
-					$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
-					$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-					$objResponse->addAssign("crm","innerHTML", $mycrm );
-//					$objResponse->addAlert($mycrm );
+				if ($myValue['popup'] == 'yes'){
+					if ($config['system']['enable_external_crm'] == false ){
+							$objResponse->loadXML(getContact($call['callerid']));
+					}else{
+						//use external link
+						$myurl = $config['system']['external_crm_url'];
+						$myurl = preg_replace("/\%method/","dial_out",$myurl);
+						$myurl = preg_replace("/\%callerid/",$_SESSION['curuser']['extension'],$myurl);
+						$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
+						if ($config['system']['open_new_window'] == false){
+							$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+							$objResponse->addAssign("crm","innerHTML", $mycrm );
+						} else {
+							$javascript = "openwindow('".$myurl."')";
+							$objResponse->addScript($javascript);
+						}
+					}
 				}
 			}
 		}
@@ -430,6 +447,36 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	
 	return $objResponse->getXML();
+}
+
+function addWithPhoneNumber(){
+	$objResponse = new xajaxResponse();
+	global $db;
+	//get a phone number from database
+	
+	$query = '
+		SELECT id,dialnumber 
+		FROM diallist
+		WHERE assign = '.$_SESSION['curuser']['extension'].'
+		ORDER BY id DESC
+		LIMIT 0,1 
+		 ' ;
+	
+	$res = $db->query($query);
+	if ($res->numRows() == 0){
+
+	} else {
+		$res->fetchInto($list);
+		$phoneNumber = $list['dialnumber'];
+		$objResponse->loadXML(getContact($phoneNumber));
+		$id = $list['id'];
+		$query = 'DELETE FROM diallist WHERE id ='.$id ;
+		$res = $db->query($query);
+	}
+
+	$objResponse->loadXML(getPrivateDialList($_SESSION['curuser']['extension']));
+
+	return $objResponse;
 }
 
 function add($callerid = null,$customerid = null,$contactid = null){

@@ -31,4 +31,7 @@ $customer_add_error	=	"Customer record could not be added";
 $note_add_error		=	"Note record could not be added";
 $note_add_success	=	"A note has been added";
 $no_dial_list		=	"empty in dial list table";
+$records_in_dial_list_table		=	"Records in dial list table: ";
+$start_campaign					=	"Start campaign";
+$get_a_phone_number					=	"Get a phone number";
 ?>

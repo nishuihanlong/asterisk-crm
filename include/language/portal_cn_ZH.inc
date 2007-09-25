@@ -31,4 +31,7 @@ $customer_add_error	= "无法添加客户";
 $note_add_error		=	"无法添加备注信息";
 $note_add_success	=	"成功添加备注信息";
 $no_dial_list		=	"拨号列表为空";
+$records_in_dial_list_table		=	"等待拨打的电话数目: ";
+$start_campaign					=	"启动拨号系统";
+$get_a_phone_number				=	"获取一个电话号码";
 ?>
