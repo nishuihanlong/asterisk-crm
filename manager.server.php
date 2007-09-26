@@ -231,7 +231,7 @@ function edit($id = null){
 
 function showChannelsInfo(){
 	global $locate;
-	$channels = split(chr(13),asterisk::getChannels());
+	$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
 	$channels = split(chr(10),$channels[1]);
 	//trim the first two records and the last three records
 
@@ -241,109 +241,23 @@ function showChannelsInfo(){
 	$activeChannels = array_pop($channels); 
 
 	array_shift($channels); 
-	array_shift($channels); 
-//	print_r($channels);
-	
-//	$channels = implode("<BR \>",$myChannels);
-//	$sipChannels = split(chr(13),asterisk::getSipChannels());
-//	$sipChannels = split(chr(10),$sipChannels[1]);
-	//trim the first two records and the last three records
-//	array_pop($sipChannels); 
-//	array_pop($sipChannels); 
-//	$activeSipCalls=array_pop($sipChannels); 
-//	array_shift($sipChannels); 
-//	array_shift($sipChannels); 
-//	print_r($sipChannels);
-
-	//get channels
-	//$myInfo[] = Array("Account","Dialed Number","Call Type","Call Status","Trunk","Start Time");
-
-	$myInfo[] = Array($locate->Translate("account"),$locate->Translate("dialed_number"),$locate->Translate("call_type"),$locate->Translate("call_status"),$locate->Translate("trunk"),$locate->Translate("start_time"),$locate->Translate("duration"));
+	$title = array_shift($channels); 
+	$title = split("_",implode("_",array_filter(split(" ",$title))));
+	$myInfo[] = $title;
 
 	foreach ($channels as $channel ){
-		if (strstr($channel," Dial(")) {
+		if (strstr($channel," Dial")) {
 			$myItem = split("_",implode("_",array_filter(split(" ",$channel))));
-//			print_r($myItem);
-//			exit;
-//			$myChannels[] = $channel;
-			//get sip account from myItem[0]
-			//print $myItem[0];
-			//exit;
-			$mySipChannel = $myItem[0];						// 0
-			$sipAccount = split("-",$mySipChannel);
-			$sipAccount = split("\/",$sipAccount[0]);
-			$mySipAccount = $sipAccount[1];					// 1
-//			print_r($sipAccount);
-//			exit;
-			$dialedNumber = split("\@",$myItem[1]);
-			$myDialedNumber = $dialedNumber[0];				// 2
-			$myCallType = $dialedNumber[1];					// 3
-			if (strstr($myCallType,"call")){
-				$myCallType = "Call Shop";
-			} elseif (strstr($myCallType,"a2b")){
-				$myCallType = "Callback";
-			}
-			$myCallStatus = $myItem[2];						// 4
-//			if ($myCallStatus == "Up")
-//				print_r($myItem);
-			$trunk = $myItem[3];
-//			preg_match("/Dial\((.+)|(.+)", $trunk, $matches);
-			preg_match_all("/^Dial\((.*)\//i",$trunk,$out);
-			//print $out[1][0];
-			//exit;
-			//$trunk = split("\(",$trunk);
-			//$trunk = split("\/",$trunk[1]);
-			//$myTrunk = $trunk[0]."/".$trunk[1];				// 5
-			$myTrunk = $out[1][0];
-//			print $myTrunk;
-//			print_r($matches);
-//			exit;
-			
-			//$myInfo[] = $mySipChannel."&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk;
-//			do {
-//				$mySipChannel = array_shift($sipChannels);
-//				$myItem = split("_",implode("_",array_filter(split(" ",$mySipChannel))));
-//				if (is_numeric($myItem[1])){
-//					if (trim($myItem[1]) == trim($mySipAccount) )
-//						$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[0]."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[1];
-			$timestamp = getTimeStamp($mySipChannel);
-			if ($timestamp != ''){
-				$duration = mktime()-strtotime($timestamp);
-			}
-			else
-				$duration = 0;
-//			print $timestamp;
-//			exit;
-			$myInfo[] = Array($mySipAccount,$myDialedNumber,$myCallType,$myCallStatus,$myTrunk,$timestamp,$duration);
-//			$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;".$timestamp;
-//					else
-//						$myInfo[] = "&nbsp;&nbsp;&nbsp;&nbsp;".$mySipAccount."&nbsp;&nbsp;&nbsp;&nbsp;".$myDialedNumber."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallType."&nbsp;&nbsp;&nbsp;&nbsp;".$myCallStatus."&nbsp;&nbsp;&nbsp;&nbsp;".$myTrunk."&nbsp;&nbsp;&nbsp;&nbsp;<font color=red>".$myItem[0]."&nbsp;&nbsp;&nbsp;&nbsp;".$myItem[1]."</font>";
-
-//					$flag = 0;
-//				} 
-
-//			} while ($flag == 1);
-			//获得相符的sip channels
+			$myInfo[] = $myItem;
 		}
-		//print $channel;
-		//exit;
 	}
 	
-//	print_r($myInfo);
-//	exit;
-//	$sipChannels = implode("<BR \>",$sipChannels);
-//	$myChannels = implode("<BR \>",$myInfo);
-//	print_r($myInfo);
 	$myChannels = generateTabelHtml($myInfo);
-//	print_r($channels);
+
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
-//	$objResponse->addAssign("msgZone", "innerHTML", "Active sip calls: ".$activeSipCalls);
 
 	$objResponse->addAssign("channels", "innerHTML", nl2br(trim($myChannels)));
-//	$objResponse->addAssign("sipChannels", "innerHTML",  nl2br(trim($sipChannels)));
-//	$objResponse->addAlert("Active Calls: ".$activeCalls);
-//	$objResponse->addAlert("Active Channels ".$activeChannels);
 	return $objResponse;
 }
 

@@ -39,7 +39,7 @@ class Asterisk extends AGI_AsteriskManager{
 		return  $channels['data'];
 	}
 
-	function getChannels(){
+	function getChannels($verbose = null){
 		global $config;
 		$myAsterisk = new Asterisk();
 		$myAsterisk->config['asmanager'] = $config['asterisk'];
@@ -48,5 +48,13 @@ class Asterisk extends AGI_AsteriskManager{
 		return  $channels['data'];
 	}
 
+	function getCommandData($command){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$channels = $myAsterisk->Command("show channels verbose");	
+		return  $channels['data'];
+	}
 }
 ?>

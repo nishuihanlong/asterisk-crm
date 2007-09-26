@@ -9,7 +9,7 @@ db = MySQLdb.connect(host="localhost",
 
 cursor = db.cursor()
 cdate = datetime.datetime.now()
-mydate = cdate - datetime.timedelta(minutes=2)
+mydate = cdate - datetime.timedelta(minutes=5)
 cmd = "DELETE FROM events WHERE timestamp <  '" + str(mydate) + "'"
 cursor.execute(cmd)
 sys.exit()
