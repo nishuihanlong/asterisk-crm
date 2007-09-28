@@ -154,13 +154,19 @@ processes can run on the same server, however, multiple servers enhance performa
 		
 	login with admin/admin
 
-7) Administrator
+7) Manager interface
    
 	click "Manager" on top right, then
 
 	click "Extension Manager" to setup extension username and password
 
 	click "System Monitor" to monitor system status
+
+	click "Active Channels" to monitor active channels in asterisk
+
+	click "Predictive Dialer" to enter predictive dialer section
+
+	click "Back" to return to agent interface
 
 3. How to use confirm button
 
@@ -182,3 +188,20 @@ processes can run on the same server, however, multiple servers enhance performa
        The author can be reached at solo.fu@gmail.com for comments and suggestions.
 
 ====================================================================================
+
+Manager Interface 
+
+1. Extension Manager
+
+Binding astercrm account and asterisk extension here, also manager could grant privileges
+to astercrm account.
+
+username:	username to log into astercrm
+password:	password to log into astercrm
+
+, only two levels for now. If it's "admin" in "User Type" field, that
+means this account could enter manager interface section.
+
+2. System Monitor
+3. Active Channels
+4. Predictive Dialer

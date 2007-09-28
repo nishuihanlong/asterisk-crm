@@ -14,6 +14,10 @@ require_once('portal.common.php');
 			xajax.doneLoadingFunction = hideProcessingMessage;
 		}
 
+		function dial(phonenum){
+//			alert (phonenum);
+			xajax_dial(phonenum);
+		}
 		function showProcessingMessage(){
 			xajax.$('processingMessage').style.display='block';
 		}

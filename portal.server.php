@@ -22,6 +22,9 @@ function getPrivateDialList($extension = null){
 		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
 	} else{
 		// add div
+		$objResponse->addRemove("spanDialListRecords");
+		$objResponse->addRemove("btnGetAPhoneNumber");
+
 		$objResponse->addCreate("divDialList", "div", "spanDialListRecords");
 		$objResponse->addAssign("spanDialListRecords", "innerHTML", $locate->Translate("records_in_dial_list_table").$res);
 
@@ -675,23 +678,46 @@ function updateField($table, $field, $cell, $value, $id){
 function dial($phoneNum,$first = 'caller'){
 	global $config;
 	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
-	$objResponse = new xajaxResponse();
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
-	$callerid = "Web Call <" . $_SESSION['curuser']['extension'] . ">";
+//	$callerid = "Web Call <" . $_SESSION['curuser']['extension'] . ">";
 //	$first = 'callee';
-//	$objResponse->addAlert($first);
-	if ($config['system']['firstring'] == 'caller'){	//caller phone will ring first
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+//	echo "ok";
+	if ($config['system']['firstring'] == 'caller'){	//caller will ring first
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
 
-	}else{
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."";
+/*
+		$temp=		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+									'WaitTime'=>30,
+									'Exten'=>$phoneNum,
+									'Context'=>$config['system']['outcontext'],
+									'Variable'=>"$strVariable",
+									'Priority'=>1,
+									'MaxRetries'=>1,
+									'CallerID'=>$phoneNum));
+*/
+//	$objResponse->addAlert("dial to ".$temp);
 		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+	}else{
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+/*
+				$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+									'WaitTime'=>30,
+									'Exten'=>$_SESSION['curuser']['extension'],
+									'Context'=>$config['system']['incontext'],
+									'Variable'=>"$strVariable",
+									'Priority'=>1,
+									'MaxRetries'=>1,
+									'CallerID'=>$phoneNum));
+*/
+		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 	}
+
 	return $objResponse->getXML();
 }
 

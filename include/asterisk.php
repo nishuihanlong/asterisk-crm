@@ -5,6 +5,8 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'phpagi-asmanager.php');
 class Asterisk extends AGI_AsteriskManager{
 
 	function dropCall($sID,$arrayPara){
+		if (!isset($arrayPara['MaxRetries']) || $arrayPara['MaxRetries'] == '')
+			$arrayPara['MaxRetries'] = 1;
 
 		$callfile = "";
 		$callfile = $callfile."Channel:".$arrayPara['Channel']."\r\n";
@@ -21,13 +23,13 @@ class Asterisk extends AGI_AsteriskManager{
 				$callfile = $callfile."SetVar: $strVar\r\n";
 
 
-		$filename="/tmp/$sID.call";
+		$filename="/tmp/$sID.abc";
 		$handle=fopen($filename,"w+");
 		fwrite($handle,$callfile);
 
 
 		system("mv $filename /var/spool/asterisk/outgoing/");
-		return ;
+		return $callfile;
 	}
 
 	function getSipChannels(){

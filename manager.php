@@ -109,8 +109,10 @@ require_once('manager.common.php');
 					totalRecordsHTMLArray = totalRecordsHTML.split(" ");
 					totalRecords = totalRecordsHTMLArray[0];
 				}
-
-
+	
+				//alert (totalRecordsHTML);
+				//alert (totalRecords);
+				//return;
 
 				xajax_predictiveDialer(maxActiveCalls, activeCalls,totalRecords);
 				xajax.$('predictiveDialerStatus').value = "dialing";

@@ -367,6 +367,7 @@ function showPredictiveDialer($preDictiveDialerStatus){
 function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 	global $config,$db,$locate;
 	$objResponse = new xajaxResponse();
+
 	if ($curCalls == -1 ){
 		
 		return $objResponse;
@@ -377,48 +378,8 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 		return $objResponse;
 	}
 
-/*
-	test scripts
-
-	$sid=md5(uniqid(""));
-	$objResponse = new xajaxResponse();
 	$myAsterisk = new Asterisk();
-	$phoneNum = '84350822';
-	$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
-	$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
-									'WaitTime'=>30,
-									'Exten'=>$config['system']['preDialer_extension'],
-									'Context'=>$config['system']['incontext'],
-									'Variable'=>"$strVariable",
-									'Priority'=>1,
-									'CallerID'=>$phoneNum));
 
-	$objResponse->AddAlert("finished");
-	return $objResponse;
-	exit;
-*/
-
-	$myAsterisk = new Asterisk();
-//	$myAsterisk->config['asmanager'] = $config['asterisk'];
-//	$res = $myAsterisk->connect();
-//	print_r($res);
-//	exit;
-	//检查是否超出限制
-
-//	print_r($channels);
-//	exit;
-/*
-	$channels = split(chr(13),getChannels());
-	$channels = split(chr(10),$channels[1]);
-
-	array_pop($channels);
-	array_pop($channels);
-	$activeCalls = array_pop($channels);
-	//array_pop($channels);
-	//print array_shift($channels);
-	print $activeCalls;
-	exit;
-	*/
 	//获取一个号码
 	$query = '
 			SELECT id,dialnumber 
@@ -455,7 +416,7 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 			';
 		$res = $db->query($query);
 		*/
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
 	//	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$sid);
 
 /*		$myAsterisk->send_request('Originate',array('Channel'=>"$strChannel",
@@ -472,13 +433,14 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
 									'Exten'=>$config['system']['preDialer_extension'],
-									'Context'=>$config['system']['incontext'],
+									'Context'=>$config['system']['preDialer_context'],
 									'Variable'=>"$strVariable",
 									'Priority'=>1,
+									'MaxRetries'=>1,
 									'CallerID'=>$phoneNum));
 
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");
-		$totalRecords -= $totalRecords;
+		$totalRecords = $totalRecords-1;
 		if ($totalRecords < 0 )
 			$totalRecords = 0;
 		$objResponse->addAssign("spanTotalRecords", "innerHTML", $totalRecords." ".$locate->Translate("records_left"));

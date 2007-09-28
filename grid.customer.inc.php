@@ -402,7 +402,7 @@ class Customer extends PEAR
 			
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">'.$grid_customer->Translate("Phone_Numbr").' <a href=? onclick="xajax_dial(\''.$callerid.'\');return false;">'. $callerid .'</a> </td>
+				<td nowrap align="left" colspan="2">'.$grid_customer->Translate("Phone_Numbr").' <a href=? onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a> </td>
 			</tr>';
 	
 	if ($customerid == null){

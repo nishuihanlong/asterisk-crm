@@ -75,10 +75,10 @@ $config['system']['pop_up_when_dial_in'] = true;	// true | false
 /**
 * which phone ring first when using click to dial
 * 当使用页面点击呼叫功能时,是桌面分机先振铃还是被叫号码先振铃
-* callee 主叫分机先振铃
-* caller 被叫号码先振铃
+* callee 被叫号码先振铃
+* caller 主叫分机先振铃
 */
-$config['system']['firstring'] = 'callee'; //	callee | caller
+$config['system']['firstring'] = 'caller'; //	callee | caller
 
 /**
 * astercrm will use external crm software if this parameter is true
@@ -107,6 +107,7 @@ $config['system']['external_crm_default_url'] = 'http://www.magiclink.cn';
 */
 $config['system']['external_crm_url'] = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method";
 
+$config['system']['preDialer_context'] = 'from-trunk';
 $config['system']['preDialer_extension'] = '1';
 $config['system']['dialout_callerid'] = null;
 
