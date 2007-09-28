@@ -205,3 +205,28 @@ means this account could enter manager interface section.
 2. System Monitor
 3. Active Channels
 4. Predictive Dialer
+
+Administrator could upload a phone list to table "diallist", so that astercrm know which number could be dialed.
+there's are two field in table "diallist"
+	phonenumber and assign
+About assign, it would be a extension number in this field, means this number could be dialed by which extension, 
+this phone number would appears in "agent dial mode"
+
+there're two mode in dialer setion:
+	a. agent dial mode
+
+		if phone number is assigned to extension in table "dial list", when agent login, he could see a
+button "get a new number" and XX records in dial list, then he can dial the button, a new table would pop up,
+and in this table would have a phone number, agent could click the number to make a call. 
+		once agent click the button and a new table pop up with a new phone number, the number would be
+deleted from database, so agent could see that the number in dial list would decrease, until no records in 
+database, and the button disappears.
+
+	b. manager dial mode
+
+	manager dial mode need a "admim" user, in predictive dialer module, if there're records in table "diallist"
+(whatever assigned or not), he could see XXX records (means records number in database), 
+a "Dial" button and a inputbox (means maximum concurrent active channel in asterisk, it would "pause" when 
+asterisk active channels reach this number untill some channels hang up dialer would "continue" automaticly), during
+this progress manger could stop/start the dialer or change max channels number. In config.php you could set where
+the call would be sent to when answered, such as a IVR, a queue or whatever you need.
