@@ -37,6 +37,9 @@ CREATE TABLE customer (
   zipcode varchar(10) NOT NULL default '',
   website varchar(100) NOT NULL default '',
   category varchar(20) NOT NULL default '',
+  city	varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
+  state varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
+  phone varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   cretime date NOT NULL default '0000-00-00',
   creby varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)

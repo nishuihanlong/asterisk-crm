@@ -10,8 +10,8 @@ require_once('portal.common.php');
 		function init(){
 			xajax_init();
 			updateEvents();
-			xajax.loadingFunction = showProcessingMessage;
-			xajax.doneLoadingFunction = hideProcessingMessage;
+//			xajax.loadingFunction = showProcessingMessage;
+//			xajax.doneLoadingFunction = hideProcessingMessage;
 		}
 
 		function dial(phonenum){
@@ -73,6 +73,7 @@ require_once('portal.common.php');
 
 	<div id="divDialList" name="divDialList"></div>
 	<div id="processingMessage" name="processingMessage"></div>
+	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber"><input type="button" id="btnDial" name="btnDial" value="Dial" onclick="dial(xajax.$('iptDestnationNumber').value)"></div>
 	
 	<div id="crm" name="crm"></div>
 	<div id="panelDiv" name="panelDiv" class="divPanel"></div>

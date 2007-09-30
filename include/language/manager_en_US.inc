@@ -15,6 +15,7 @@ $obligatory_fields = "* Obligatory fields";
 $adding_account = "Adding Account";
 $extension_manager = "Extension Manager";
 $system_monitor = "System Monitor";
+$customer_manager	= "Customer Manager";
 $back = "Back";
 $usertype = "User Type";
 $usertype_note = "support admin only";

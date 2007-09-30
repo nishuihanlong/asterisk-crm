@@ -19,7 +19,8 @@ function openWindow(url){
 function btnConfirmContactOnClick(){
 	if (xajax.$('customerid').value == '')
 		return false;
-	if (xajax.$('customer').readOnly == true)
+
+	if (xajax.$('contact').readOnly == true)
 	{
 		xajax_add(xajax.$('callerid').value,xajax.$('customerid').value);
 	}else{

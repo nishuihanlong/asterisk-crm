@@ -1,0 +1,33 @@
+<?
+$customer_name		= 'Customer Name';
+$address		= 'Address';
+$zipcode		= 'Zip Code';
+$website		= 'Website';
+$category		= 'Category';
+$create_time		= "Create Time";
+$create_by		= "Create By";
+$back			= "Back to MI";
+
+$category = 'Category';
+$contact = "Contact";
+$note = "Note";
+$create_time = "Create Time";
+$create_by = "Create By";
+$address = "Address";
+$website = "Website";
+$priority = "Priority";
+$add_record = "Adding Record";
+$edit_record = "Editing Record";
+$record_deleted = "Record Deleted";
+$customer_detail = "Customer Detail";
+$note_detail = "Note Detail";
+$contact_detail = "Contact Detail";
+$contact_update_error	=	"Contact record could not be updated";
+$customer_add_error	=	"Customer record could not be added";
+$note_add_error		=	"Note record could not be added";
+$note_add_success	=	"A note has been added";
+$no_dial_list		=	"empty in dial list table";
+$records_in_dial_list_table		=	"Records in dial list table: ";
+$start_campaign					=	"Start campaign";
+$get_a_phone_number					=	"Get a phone number";
+?>

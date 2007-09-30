@@ -51,6 +51,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("showCustomer");
 	$xajax->registerFunction("showContact");
 	$xajax->registerFunction("showNote");
+	$xajax->registerFunction("showDetail");
 }
 //$xajax->processRequests();
 

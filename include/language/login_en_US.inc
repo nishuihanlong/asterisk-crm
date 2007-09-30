@@ -6,7 +6,9 @@ $submit="Submit ";
 $please_waiting = 'login, please wait';
 $username_cannot_be_blank = "Username field can not be blank";
 $password_cannot_be_blank = "Password field can not be blank";
-$login_success = "Login success";
+$login_success = "user login success";
 $login_failed = "Login failed, please check your username/password";
-$asterisk_connect_failed = "can not connect to asterisk, some function could not work, please check your config file";
+$ami_connect_failed = "AMI connect failed, some function could not work, please check your config file";
+$extension_not_online = "extension is off line, please check your device";
+
 ?>

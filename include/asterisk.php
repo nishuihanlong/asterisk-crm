@@ -6,7 +6,7 @@ class Asterisk extends AGI_AsteriskManager{
 
 	function dropCall($sID,$arrayPara){
 		if (!isset($arrayPara['MaxRetries']) || $arrayPara['MaxRetries'] == '')
-			$arrayPara['MaxRetries'] = 1;
+			$arrayPara['MaxRetries'] = 0;
 
 		$callfile = "";
 		$callfile = $callfile."Channel:".$arrayPara['Channel']."\r\n";
@@ -37,7 +37,8 @@ class Asterisk extends AGI_AsteriskManager{
 		$myAsterisk = new Asterisk();
 		$myAsterisk->config['asmanager'] = $config['asterisk'];
 		$res = $myAsterisk->connect();
-		$channels = $myAsterisk->Command("sip show channels");	
+		$channels = $myAsterisk->Command("sip show channels");
+		$myAsterisk->disconnect();
 		return  $channels['data'];
 	}
 
@@ -47,6 +48,7 @@ class Asterisk extends AGI_AsteriskManager{
 		$myAsterisk->config['asmanager'] = $config['asterisk'];
 		$res = $myAsterisk->connect();
 		$channels = $myAsterisk->Command("show channels");	
+		$myAsterisk->disconnect();
 		return  $channels['data'];
 	}
 
@@ -56,7 +58,33 @@ class Asterisk extends AGI_AsteriskManager{
 		$myAsterisk->config['asmanager'] = $config['asterisk'];
 		$res = $myAsterisk->connect();
 		$channels = $myAsterisk->Command("show channels verbose");	
+		$myAsterisk->disconnect();
 		return  $channels['data'];
 	}
+
+	function getPeerIP($name, $type = 'sip'){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$peer = $myAsterisk->Command($type." show peer ".$name);	
+		$myAsterisk->disconnect();
+		$peer = $peer['data'];
+		$peer =split(chr(10),$peer);
+		return $peer[31];
+	}
+
+	function getPeerStatus($name, $type = 'sip'){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$peer = $myAsterisk->Command($type." show peer ".$name);	
+		$myAsterisk->disconnect();
+		$peer = $peer['data'];
+		$peer =split(chr(10),$peer);
+		return $peer[37];
+	}
+
 }
 ?>

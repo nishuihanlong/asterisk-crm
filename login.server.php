@@ -27,6 +27,7 @@
 ********************************************************************************/
 require_once ("login.common.php");
 require_once ("db_connect.php");
+require_once ('include/asterisk.php');
 
 /**
 *  function to process form data
@@ -102,7 +103,7 @@ function init($aFormValue){
 */
 function processAccountData($aFormValues)
 {
-	global $db,$locate;
+	global $db,$locate,$config;
 
 	$objResponse = new xajaxResponse();
 	
@@ -144,9 +145,19 @@ function processAccountData($aFormValues)
 				}
 
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
-				$objResponse->addAlert($locate->Translate("login_success"));
+				//check AMI connection
+				$myAsterisk = new Asterisk();
+				$myAsterisk->config['asmanager'] = $config['asterisk'];
+				if ($myAsterisk->connect()){
+					//check extension status
+					$peerStatus = asterisk::getPeerIP($_SESSION['curuser']['extension']);
+					$objResponse->addAlert(asterisk::getPeerIP($_SESSION['curuser']['extension']));
+					$objResponse->addAlert(asterisk::getPeerStatus($_SESSION['curuser']['extension']));
+					$objResponse->addAlert($locate->Translate("login_success"));
+				}else{
+					$objResponse->addAlert($locate->Translate("ami_connect_failed"));
+				}
 				$objResponse->addScript("location.href='portal.php';");
-
 			} else{
 				$loginError = true;
 			}

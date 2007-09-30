@@ -23,8 +23,11 @@ function init(){
 	$html .= "<a href=# onclick='clearAll();showChannelsInfo();return false;'>".$locate->Translate("active_channels")."</a><br>";
 
 	$html .= "<a href=# onclick='clearAll();showPredictiveDialer();return false;'>".$locate->Translate("predictive_dialer")."</a><br>";
-	  
+
+  	$html .= "<a href='customer.php' >".$locate->Translate("customer_manager")."</a><br>";
+
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
+
 
 	$objResponse->addAssign("panelDiv", "innerHTML", $html);
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
@@ -232,7 +235,12 @@ function edit($id = null){
 function showChannelsInfo(){
 	global $locate;
 	$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
-	$channels = split(chr(10),$channels[1]);
+/*
+	if ($channels == null){
+			$objResponse->addAssign("channels", "innerHTML", "can not connect to AMI, please check config.php");
+			return $objResponse;
+	}
+*/	$channels = split(chr(10),$channels[1]);
 	//trim the first two records and the last three records
 
 	//	array_pop($channels); 

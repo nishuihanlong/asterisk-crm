@@ -6,6 +6,12 @@ require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterisk.php');
 
+function showDetail($recordId){
+	$objResponse = new xajaxResponse();
+	$objResponse->addScript('xajax_showContact(\''.$recordId.'\',\'note\');');
+	$objResponse->addScript('xajax_showCustomer(\''.$recordId.'\',\'note\');');
+	return $objResponse;
+}
 
 function getPrivateDialList($extension = null){
 	global $locate,$db;
@@ -49,6 +55,7 @@ function init(){
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
+	$objResponse->addAssign("btnDial","value", $locate->Translate("dial") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 
 	$objResponse->loadXML(getPrivateDialList($_SESSION['curuser']['extension']));
@@ -112,15 +119,12 @@ function transfer($aFormValues){
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
-	if (!$res)
-		$objResponse->addAssign("debug", "innerText", "asterisk connect failed");
 
 	if ($aFormValues['direction'] == 'in')		
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
 	else
 		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
-
-
+	$myAsterisk->disconnect();
 	return $objResponse;
 }
 
@@ -419,7 +423,6 @@ function confirmContact($contactName,$customerID,$callerID){
 	global $locate;
 
 	$objResponse = new xajaxResponse();
-
 	$contactID = Customer::checkValues("contact","contact",$contactName,"string","customerid",$customerID,"int"); 
 	if ($contactID){//存在
 
@@ -486,6 +489,9 @@ function add($callerid = null,$customerid = null,$contactid = null){
 	global $locate;
    // Edit zone
 	$objResponse = new xajaxResponse();
+//	$objResponse->addAlert($customerid);
+//	$objResponse->addAlert($contactid);
+//	return $objResponse;
 	$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 //	$objResponse->addAlert($callerid);
@@ -717,7 +723,7 @@ function dial($phoneNum,$first = 'caller'){
 */
 		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 	}
-
+	$myAsterisk->disconnect();
 	return $objResponse->getXML();
 }
 

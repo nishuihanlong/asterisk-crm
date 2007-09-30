@@ -21,13 +21,17 @@ v0.0442
 2007-9-25	if customer information display, it wouldnot pop up
 2007-9-25	add agent outbound campaign
 -----------------------------------------------------------------------------------------
+v0.0443
+2007-9-30	agent界面增加Dial功能
+2007-9-30	customer表中增加了contact和phone字段
+2007-9-30	login时检查AMI的连接状况和分机状态
 
+-----------------------------------------------------------------------------------------
 增加显示版权信息的位置
-增加提示asterisk状态的位置
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
 need to avoid mulit-Proxyman in memory
-
+增加agent之间的im功能
 修改delete_events.py 将被删除的事件保存到另外的位置
 need to add queue status
 need to add Real-time campaign display screens 

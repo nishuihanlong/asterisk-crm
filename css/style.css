@@ -861,10 +861,10 @@ div.main {
 	visibility: hidden; 
 	background-color: #F1F1F1;
 	overflow: auto;
+	z-index:100;
 }
 
 .extensionInfo {
-	z-index:1;
 	width: 480px; 
 	border: thin solid #767676; 
 	position: absolute; 
@@ -873,6 +873,7 @@ div.main {
 	visibility: hidden; 
 	background-color: #F1F1F1;
 	overflow: auto;
+	z-index:1;
 }
 
 .extensionDetail {
@@ -916,7 +917,7 @@ div.main {
 */
 	position: absolute; 
 	left: 1%; 
-	top: 330px;
+	top: 430px;
 	visibility: hidden; 
 	background-color: #F1F1F1;
 	overflow: auto;

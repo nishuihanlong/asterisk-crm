@@ -15,6 +15,7 @@ $obligatory_fields = "带*的为必填项目";
 $adding_account = "添加用户";
 $extension_manager = "分机用户管理";
 $system_monitor = "系统分机状态";
+$customer_manager	= "客户信息管理";
 $back = "返回";
 $usertype = "用户类型";
 $usertype_note = "目前只支持admin";

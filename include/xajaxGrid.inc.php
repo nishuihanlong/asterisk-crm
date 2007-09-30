@@ -264,7 +264,7 @@ class ScrollTable{
 		if($detail)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="xajax_showContact(\''.$arr[0].'\',\'note\');xajax_showCustomer(\''.$arr[0].'\',\'note\');return false;">'.$local_grid->Translate("detail").'</a>
+						<a href="?" onClick="xajax_showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
 					</td>';
 					
 		$row .= "</tr>\n";
