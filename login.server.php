@@ -145,19 +145,34 @@ function processAccountData($aFormValues)
 				}
 
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
+/*
+	if you dont want check manager status and show device status when user login 
+	please uncomment these three line
+*/
+				$objResponse->addAlert($locate->Translate("login_success"));
+				$objResponse->addScript('window.location.href="portal.php";');
+				return $objResponse;
+
+
 				//check AMI connection
 				$myAsterisk = new Asterisk();
 				$myAsterisk->config['asmanager'] = $config['asterisk'];
-				if ($myAsterisk->connect()){
-					//check extension status
-					$peerStatus = asterisk::getPeerIP($_SESSION['curuser']['extension']);
-					$objResponse->addAlert(asterisk::getPeerIP($_SESSION['curuser']['extension']));
-					$objResponse->addAlert(asterisk::getPeerStatus($_SESSION['curuser']['extension']));
-					$objResponse->addAlert($locate->Translate("login_success"));
+				$res = $myAsterisk->connect();
+				
+			
+				$html .= $locate->Translate("server_connection_test");
+				if ($res){
+					$html .= '<font color=green>'.$locate->Translate("pass").'</font><br>';
+					$html .= '<b>'.$_SESSION['curuser']['extension'].' '.$locate->Translate("device_status").'</b><br>';
+					$html .= asterisk::getPeerIP($_SESSION['curuser']['extension']).'<br>';
+					$html .= asterisk::getPeerStatus($_SESSION['curuser']['extension']).'<br>';
 				}else{
-					$objResponse->addAlert($locate->Translate("ami_connect_failed"));
+					$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
 				}
-				$objResponse->addScript("location.href='portal.php';");
+				$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'portal.php\';">';
+				$objResponse->addAssign("formDiv","innerHTML",$html);
+				$objResponse->addClear("titleDiv","innerHTML");
+				$objResponse->addScript("xajax.$('btnContinue').focus();");
 			} else{
 				$loginError = true;
 			}

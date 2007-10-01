@@ -8,7 +8,7 @@ require_once ('asterevent.class.php');
 require_once ('include/asterisk.php');
 
 function init(){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("grid", "innerHTML");
 	$objResponse->addClear("formDiv", "innerHTML");
@@ -28,6 +28,12 @@ function init(){
 
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI_connection_failed"));
+	}
 
 	$objResponse->addAssign("panelDiv", "innerHTML", $html);
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));

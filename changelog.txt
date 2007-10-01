@@ -1,15 +1,15 @@
-﻿2007-8-30	add processing message												solo
-2007-8-31	disabled waitCursor													solo
-2007-9-3	support external crm													solo
-2007-9-6	modify delete_events.py only delete events 2 minutes ago						solo
-2007-9-6	add extension status													solo
-2007-9-7	add table column extensions in table account									solo
+﻿2007-8-30	add processing message									solo
+2007-8-31	disabled waitCursor									solo
+2007-9-3	support external crm									solo
+2007-9-6	modify delete_events.py only delete events 2 minutes ago				solo
+2007-9-6	add extension status									solo
+2007-9-7	add table column extensions in table account						solo
 2007-9-7	修改了转接和分机状态显示,需要在数据库里设置用户可以转接以及状态显示的分机		solo
-2007-9-7	fix a bug when get callerid or calleeid										solo
-2007-9-7	add extension status in manager interface									solo
-2007-9-10	fix bug in README file
-2007-9-10	add authority to manager interface
-2007-9-11	change asterevent class
+2007-9-7	fix a bug when get callerid or calleeid							solo
+2007-9-7	add extension status in manager interface						solo
+2007-9-10	fix bug in README file									solo
+2007-9-10	add authority to manager interface							solo
+2007-9-11	change asterevent class									solo
 -----------------------------------------------------
 v0.0442
 2007-9-14	could open new window when pop-up
@@ -24,8 +24,8 @@ v0.0442
 v0.0443
 2007-9-30	agent界面增加Dial功能
 2007-9-30	customer表中增加了contact和phone字段
-2007-9-30	login时检查AMI的连接状况和分机状态
-
+2007-9-30	login时检查AMI的连接状况和分机状态(可选)
+2007-10-1	AMI连接失败时, 在Manager Interface会有连接失败的提示
 -----------------------------------------------------------------------------------------
 增加显示版权信息的位置
 need to add customer manage page for admin and user

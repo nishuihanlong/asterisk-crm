@@ -39,4 +39,5 @@ $call_status = "呼叫状态";
 $trunk = "中继";
 $start_time = "开始时间";
 $duration = "时长";
+$AMI_connection_failed			= "AMI连接失败, 请检查系统配置文件";
 ?>

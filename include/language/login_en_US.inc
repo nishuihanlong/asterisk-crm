@@ -10,5 +10,9 @@ $login_success = "user login success";
 $login_failed = "Login failed, please check your username/password";
 $ami_connect_failed = "AMI connect failed, some function could not work, please check your config file";
 $extension_not_online = "extension is off line, please check your device";
-
+$server_connection_test		= "Server connection test: ";
+$pass				= "passed";
+$device_status			= "Device status";
+$continue			= "Contunue";
+$no_pass			= "no pass, please check your configuration file";
 ?>

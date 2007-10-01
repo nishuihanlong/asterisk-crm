@@ -10,4 +10,9 @@ $login_success = "用户登入成功";
 $login_failed = "登入失败，请检查用户名密码";
 $asterisk_connect_failed = "AMI连接失败,部分呼叫控制功能无法使用,请检查配置文件";
 $extension_not_online = "分机不在线, 请检查您的分机配置";
+$server_connection_test		= "服务器连接测试: ";
+$pass				= "通过";
+$device_status			= "设备状态";
+$continue			= "继续";
+$no_pass			= "失败, 请检查服务器配置文件";
 ?>
