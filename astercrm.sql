@@ -40,6 +40,7 @@ CREATE TABLE customer (
   city	varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   state varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   phone varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
+  contact varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   cretime date NOT NULL default '0000-00-00',
   creby varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)

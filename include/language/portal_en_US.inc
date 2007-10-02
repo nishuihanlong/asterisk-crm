@@ -28,6 +28,7 @@ $customer_detail = "Customer Detail";
 $note_detail = "Note Detail";
 $contact_detail = "Contact Detail";
 $contact_update_error	=	"Contact record could not be updated";
+$customer_update_error	=	"Customer record could not be updated";
 $customer_add_error	=	"Customer record could not be added";
 $note_add_error		=	"Note record could not be added";
 $note_add_success	=	"A note has been added";
@@ -43,8 +44,10 @@ $cancel			= "Cancel";
 $confirm		= "Confirm";
 $continue		= "Continue";
 $copy			= "Copy";
+$city			= "City";
 $display_all		= "Display_All";
 $edit			= "Edit";
+$state			= "State";
 $zipcode		= "Zip Code";
 $customer_contact	= "Main Contact";
 $customer_phone		= "Main Phone";
@@ -60,5 +63,7 @@ $detail			= "Detail";
 $customer_cant_null	= "The field Customer does not have to be null";
 $contact_cant_null	= "The field Contact does not have to be null";
 $note_cant_null		= "The field Note does not have to be null";
-
+$a_new_customer_added	= "A new customer added";
+$a_new_contact_added	= "A new contact added";
+$a_new_note_added	= "A new note added";
 ?>

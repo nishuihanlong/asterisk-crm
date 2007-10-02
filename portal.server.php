@@ -270,16 +270,15 @@ function waitingCalls($myValue){
 
 //	create grid
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-	global $locate;
+	global $locate,$config;
+
 	$_SESSION['ordering'] = $ordering;
+
+	$numRows =& Customer::getNumRows($filter,$content);
 	
 	if(($filter == null) or ($content == null)){
-		
-		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
-		
-		$numRows =& Customer::getNumRows($filter, $content);
 		$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);	
 	}
 
@@ -584,7 +583,75 @@ function save($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
 
-	$message = Customer::checkAllData($f,1); // <-- Change by your method
+	if(empty($f['customer'])) {
+		$objResponse->addAlert($locate->Translate("customer_cant_null"));
+		return $objResponse;
+	} else{
+		if ($f['customerid'] == ''){
+			$respOk = Customer::insertNewCustomer($f); // insert a new customer record
+//			$objResponse->addAlert($respOk);
+//			return $objResponse;
+			if (!$respOk){
+				$objResponse->addAlert($locate->Translate("customer_add_error"));
+				return $objResponse;
+			}
+			$objResponse->addAlert($locate->Translate("a_new_customer_added"));
+		} else{
+//			$respOk = Customer::updateCustomerRecord($f); // update a customer record
+//			if (!$respOk){
+//				$objResponse->addAlert($locate->Translate("customer_update_error"));
+//				return $objResponse;
+//			}
+			$respOk = $f['customerid'];
+		}
+	}
+	$customerID = $respOk;
+
+	if(empty($f['contact'])) {
+		$contactID = 0;
+	} else{
+		if ($f['contactid'] == ''){
+			$respOk = Customer::insertNewContact($f,$customerID); // insert a new contact record
+			if (!$respOk){
+				$objResponse->addAlert($locate->Translate("contact_add_error"));
+				return $objResponse;
+			}
+			$objResponse->addAlert($locate->Translate("a_new_contact_added"));
+		}else{
+//			$respOk = Customer::updateContactRecord($f); // update a contact record
+//			if (!$respOk){
+//				$objResponse->addAlert($locate->Translate("contact_update_error"));
+//				return $objResponse;
+//			}
+			$respOk = $f['contactid'];
+		}
+		$contactID = $respOk;
+	}
+
+
+
+	if(empty($f['note'])) {
+
+	} else{
+		$respOk = Customer::insertNewNote($f,$customerID,$contactID); // add a new Note
+		if ($respOk){
+			$objResponse->addAlert($locate->Translate("a_new_note_added"));
+		}else{
+			$objResponse->addAlert($locate->Translate("note_add_error"));
+			return $objResponse;
+		}
+	}
+
+	$html = createGrid(0,ROWSXPAGE);
+	$objResponse->addAssign("grid", "innerHTML", $html);
+	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("note_add_success"));
+	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
+	$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
+	$objResponse->addAssign("formContactInfo", "style.visibility", "hidden");
+
+	return $objResponse->getXML();
+
+//	$message = Customer::checkAllData($f,1); // <-- Change by your method
 	if(!$message){
 		
 		if ($f['customerid'] == '')
@@ -640,6 +707,7 @@ function update($f, $type){
 	if ($type == 'note'){
 		$respOk = Customer::updateNoteRecord($f,"append");
 	}elseif ($type == 'customer'){
+//		print_r($f);
 		if (empty($f['customer']))
 			$message = "The field Customer does not have to be null";
 		else
