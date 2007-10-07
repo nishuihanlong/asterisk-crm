@@ -401,6 +401,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 function confirmCustomer($customerName,$callerID = null){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if (trim($customerName) == '')
+		return $objResponse;
 
 	$customerID = Customer::checkValues("customer","customer",$customerName); 
 	if ($customerID){//存在
@@ -567,12 +569,18 @@ function showNote($id = '', $type="customer"){
 
 function showContact($id = null, $type="contact"){
 	global $locate;
+	$objResponse = new xajaxResponse();
 
-	if($id != null){
+	if($id != null ){
 		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 
-		$html .= Customer::showContactRecord($id,$type); 		// <-- Change by your method
+		$contactHTML .= Customer::showContactRecord($id,$type);
+
+		if ($contactHTML == '')
+			return $objResponse->getXML();
+		else
+			$html .= $contactHTML;
+
 		$html .= Table::Footer();
-		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
 		return $objResponse->getXML();
@@ -582,11 +590,17 @@ function showContact($id = null, $type="contact"){
 function save($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
+//	print "save";
+//	exit;
+	if (empty($f['customer']) && empty($f['contact']))
+		return $objResponse;
 
 	if(empty($f['customer'])) {
-		$objResponse->addAlert($locate->Translate("customer_cant_null"));
-		return $objResponse;
+//		$objResponse->addAlert($locate->Translate("customer_cant_null"));
+//		return $objResponse;
+		$customerID = 0;
 	} else{
+
 		if ($f['customerid'] == ''){
 			$respOk = Customer::insertNewCustomer($f); // insert a new customer record
 //			$objResponse->addAlert($respOk);
@@ -604,8 +618,8 @@ function save($f){
 //			}
 			$respOk = $f['customerid'];
 		}
+		$customerID = $respOk;
 	}
-	$customerID = $respOk;
 
 	if(empty($f['contact'])) {
 		$contactID = 0;
@@ -642,12 +656,14 @@ function save($f){
 		}
 	}
 
-	$html = createGrid(0,ROWSXPAGE);
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("note_add_success"));
+
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
 	$objResponse->addAssign("formContactInfo", "style.visibility", "hidden");
+
+	$objResponse->addClear("formDiv", "innerHTML");
+	$objResponse->addClear("formCustomerInfo", "innerHTML");
+	$objResponse->addClear("formContactInfo", "innerHTML");
 
 	return $objResponse->getXML();
 
@@ -800,9 +816,9 @@ function getContact($callerid){
 	$objResponse = new xajaxResponse();
 
 
-	//判断是否有新的记录
 	//check if there're phone records already
 
+	//check contact table first
 	$query = '
 			SELECT id,customerid 
 			FROM contact
@@ -811,13 +827,23 @@ function getContact($callerid){
 			OR phone2 LIKE \'%'. $callerid . '%\'
 			OR mobile LIKE \'%'. $callerid . '%\'
 			 ' ;
-	
+//	print $query;
 	$res = $db->query($query);
 
 	if ($res->numRows() == 0){	//no match
-		
-		$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
-
+		//try get customer
+		$customerid = getCustomer($callerid);
+//		print 'no match in contact';
+		if ($customerid == 0){
+			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
+		}else{
+			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
+			$html .= Customer::formAdd($callerid,$customerid);  // <-- Change by your method
+			$html .= Table::Footer();
+			$objResponse->addAssign("formDiv", "style.visibility", "visible");
+			$objResponse->addAssign("formDiv", "innerHTML", $html);
+			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
+		}
 	} elseif ($res->numRows() == 1) { // one match
 
 		$res->fetchInto($list);
@@ -849,6 +875,22 @@ function getContact($callerid){
 	}
 
 	return $objResponse;
+}
+
+function getCustomer($callerid){
+	global $db,$locate;
+	$query = '
+			SELECT id 
+			FROM customer
+			WHERE phone LIKE \'%'. $callerid . '%\'';
+	$res = $db->query($query);
+//	print $res->numRows();
+	if ($res->numRows() == 0){	//no match
+		return 0;
+	}else{
+		$res->fetchInto($list);
+		return $list['id'];
+	}
 }
 
 $xajax->processRequests();

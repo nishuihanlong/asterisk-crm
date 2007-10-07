@@ -378,20 +378,10 @@ function showPredictiveDialer($preDictiveDialerStatus){
 	return $objResponse;
 }
 
-function predictiveDialer($maxChannels,$curCalls,$totalRecords){
+function predictiveDialer($maxChannels,$totalRecords){
 	global $config,$db,$locate;
 	$objResponse = new xajaxResponse();
-
-	if ($curCalls == -1 ){
-		
-		return $objResponse;
-	}
-
-	if ($curCalls > $maxChannels){
-		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("reach_maximum_concurrent_calls"));
-		return $objResponse;
-	}
-
+	
 	$myAsterisk = new Asterisk();
 
 	//获取一个号码
@@ -413,12 +403,27 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 		$id = $list['id'];
 		$phoneNum = $list['dialnumber'];
 
+		// get active channel
+		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
+		$channels = split(chr(10),$channels[1]);
+		//trim the first two records and the last three records
+
+		array_pop($channels); 
+		$activeCalls = array_pop($channels); 
+		$activeChannels = array_pop($channels); 
+		
+		$curCalls = split(" ",$activeCalls);
+		$curCalls = $curCalls[0];
+		if ($curCalls >= $maxChannels){
+			$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("reach_maximum_concurrent_calls"));
+			return $objResponse;
+		}
+
+
 		$query = '
 			DELETE FROM diallist
 			WHERE id = '.$id;
 		$res = $db->query($query);
-
-		//insert this record to dialresult table
 		$sid=md5(uniqid(""));
 		/*
 		$query = '
@@ -431,18 +436,6 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 		$res = $db->query($query);
 		*/
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
-	//	$myAsterisk->Originate($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$sid);
-
-/*		$myAsterisk->send_request('Originate',array('Channel'=>"$strChannel",
-									'WaitTime'=>30,
-									'Exten'=>$config['system']['preDialer_extension'],
-									'Context'=>$config['system']['incontext'],
-									'Variable'=>"$strVariable",
-									'Priority'=>1,
-									'CallerID'=>$phoneNum));
-*/
-//		exit;
-
 
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
@@ -450,7 +443,7 @@ function predictiveDialer($maxChannels,$curCalls,$totalRecords){
 									'Context'=>$config['system']['preDialer_context'],
 									'Variable'=>"$strVariable",
 									'Priority'=>1,
-									'MaxRetries'=>1,
+									'MaxRetries'=>0,
 									'CallerID'=>$phoneNum));
 
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");

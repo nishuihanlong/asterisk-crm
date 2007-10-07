@@ -1,5 +1,7 @@
 <?
 $customer_name		= "客户名";
+$city			= "城市";
+$state			= "省份";
 $address		= "地址";
 $zipcode		= "邮政编码";
 $website		= "网址";
@@ -7,7 +9,7 @@ $category		= "类别";
 $create_time		= "建立时间";
 $create_by		= "添加人";
 $back			= "返回管理界面";
-
+$phone			= "电话";
 
 $category = "类别";
 $contact = "联系人";

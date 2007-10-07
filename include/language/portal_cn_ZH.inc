@@ -44,6 +44,7 @@ $copy			= "复制";
 $detail			= "详细";
 $zipcode		= "邮政编码";
 $city			= "城市";
+$customer		= "客户";
 $customer_contact	= "主联系人";
 $customer_phone		= "主联系电话";
 $display_all		= "全部显示";
@@ -66,4 +67,8 @@ $state			= "省份";
 $a_new_customer_added	= "添加了一个新的客户";
 $a_new_contact_added	= "添加了一个新的联系人";
 $a_new_note_added	= "添加了一个新的备注";
+$gender			= "性别";
+$male			= "男";
+$female			= "女";
+$unknown		= "未知";
 ?>

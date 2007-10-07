@@ -1,14 +1,17 @@
 <?
-$customer_name		= 'Customer Name';
-$address		= 'Address';
-$zipcode		= 'Zip Code';
-$website		= 'Website';
-$category		= 'Category';
+$customer_name		= "Customer Name";
+$city			= "City";
+$state			= "State";
+$address		= "Address";
+$zipcode		= "Zip Code";
+$website		= "Website";
+$category		= "Category";
 $create_time		= "Create Time";
 $create_by		= "Create By";
 $back			= "Back to MI";
+$phone			= "Phone";
 
-$category = 'Category';
+$category = "Category";
 $contact = "Contact";
 $note = "Note";
 $create_time = "Create Time";

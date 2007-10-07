@@ -27,7 +27,8 @@ class Asterisk extends AGI_AsteriskManager{
 		$handle=fopen($filename,"w+");
 		fwrite($handle,$callfile);
 
-
+//		system("chown asterisk.asterisk /tmp/$filename");
+		@chmod   ($filename,   0777);
 		system("mv $filename /var/spool/asterisk/outgoing/");
 		return $callfile;
 	}

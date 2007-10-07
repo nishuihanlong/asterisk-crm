@@ -86,13 +86,6 @@ require_once('manager.common.php');
 			}
 
 			function startDial(){
-				activeCallsHTML = trim(xajax.$('divActiveCalls').innerHTML);
-				if (activeCallsHTML == '')
-					activeCalls = -1;
-				else{
-					activeCallsHTMLArray = activeCallsHTML.split(" ");
-					activeCalls = activeCallsHTMLArray[0];
-				}
 				maxActiveCalls = xajax.$('fldMaxActiveCalls').value;
 				if (!isNumber(maxActiveCalls)){
 					alert(xajax.$('btnNumberOnlyMsg').value);
@@ -109,14 +102,10 @@ require_once('manager.common.php');
 					totalRecordsHTMLArray = totalRecordsHTML.split(" ");
 					totalRecords = totalRecordsHTMLArray[0];
 				}
-	
-				//alert (totalRecordsHTML);
-				//alert (totalRecords);
-				//return;
 
-				xajax_predictiveDialer(maxActiveCalls, activeCalls,totalRecords);
+				xajax_predictiveDialer(maxActiveCalls,totalRecords);
 				xajax.$('predictiveDialerStatus').value = "dialing";
-				timerPredictiveDialer = setTimeout("startDial()", 1000);
+				timerPredictiveDialer = setTimeout("startDial()", 2000);
 
 			}
 			

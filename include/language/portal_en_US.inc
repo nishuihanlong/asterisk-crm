@@ -49,6 +49,7 @@ $display_all		= "Display_All";
 $edit			= "Edit";
 $state			= "State";
 $zipcode		= "Zip Code";
+$customer		= "Customer";
 $customer_contact	= "Main Contact";
 $customer_phone		= "Main Phone";
 $position		= "Position";
@@ -66,4 +67,8 @@ $note_cant_null		= "The field Note does not have to be null";
 $a_new_customer_added	= "A new customer added";
 $a_new_contact_added	= "A new contact added";
 $a_new_note_added	= "A new note added";
+$gender			= "Gender";
+$male			= "male";
+$female			= "female";
+$unknown		= "unknown";
 ?>

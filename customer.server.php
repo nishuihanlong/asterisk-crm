@@ -39,8 +39,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Databse Table: fields
 	$fields = array();
 	$fields[] = 'customer';
-	$fields[] = 'address';
-	$fields[] = 'zipcode';
+	$fields[] = 'state';
+	$fields[] = 'city';
+	$fields[] = 'phone';
+	$fields[] = 'contact';
 	$fields[] = 'website';
 	$fields[] = 'category';
 	$fields[] = 'cretime';
@@ -49,8 +51,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("customer_name");//"Customer Name";
-	$headers[] = $locate->Translate("address");//"Category";
-	$headers[] = $locate->Translate("zipcode");//"Contact";
+	$headers[] = $locate->Translate("state");//"Customer Name";
+	$headers[] = $locate->Translate("city");//"Category";
+	$headers[] = $locate->Translate("phone");//"Contact";
+	$headers[] = $locate->Translate("contact");//"Category";
 	$headers[] = $locate->Translate("website");//"Note";
 	$headers[] = $locate->Translate("category");//"Create Time";
 	$headers[] = $locate->Translate("create_time");//"Create By";
@@ -59,7 +63,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML table: hearders attributes
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="7%"';
+	$attribsHeader[] = 'width="8%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
@@ -72,6 +78,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -80,8 +88,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","address","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","zipcode","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","state","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","city","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","phone","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","website","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
@@ -90,8 +100,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'customer';
-	$fieldsFromSearch[] = 'address';
-	$fieldsFromSearch[] = 'zipcode';
+	$fieldsFromSearch[] = 'state';
+	$fieldsFromSearch[] = 'city';
+	$fieldsFromSearch[] = 'phone';
+	$fieldsFromSearch[] = 'contact';
 	$fieldsFromSearch[] = 'website';
 	$fieldsFromSearch[] = 'category';
 	$fieldsFromSearch[] = 'cretime';
@@ -100,8 +112,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
-	$fieldsFromSearchShowAs[] = $locate->Translate("address");
-	$fieldsFromSearchShowAs[] = $locate->Translate("zipcode");
+	$fieldsFromSearchShowAs[] = $locate->Translate("state");
+	$fieldsFromSearchShowAs[] = $locate->Translate("city");
+	$fieldsFromSearchShowAs[] = $locate->Translate("phone");
+	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("website");
 	$fieldsFromSearchShowAs[] = $locate->Translate("category");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
@@ -119,8 +133,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc = array();
 		$rowc[] = $row['id'];
 		$rowc[] = $row['customer'];
-		$rowc[] = $row['address'];
-		$rowc[] = $row['zipcode'];
+		$rowc[] = $row['state'];
+		$rowc[] = $row['city'];
+		$rowc[] = $row['phone'];
+		$rowc[] = $row['contact'];
 		$rowc[] = $row['website'];
 		$rowc[] = $row['category'];
 		$rowc[] = $row['cretime'];

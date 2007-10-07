@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS contact;
 CREATE TABLE contact (
   id int(11) NOT NULL auto_increment,
   contact varchar(30) NOT NULL default '',
+  gender varchar(10) NOT NULL default 'unknown',	#add 2007-10-5 by solo
   position varchar(100) NOT NULL default '',
   phone varchar(50) NOT NULL default '',
   ext varchar(8) NOT NULL default '',
@@ -24,7 +25,7 @@ CREATE TABLE contact (
   mobile varchar(50) NOT NULL default '',
   fax varchar(50) NOT NULL default '',
   email varchar(100) NOT NULL default '',
-  cretime date NOT NULL default '0000-00-00',
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(40) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   UNIQUE KEY id (id)
@@ -41,7 +42,8 @@ CREATE TABLE customer (
   state varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   phone varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   contact varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
-  cretime date NOT NULL default '0000-00-00',
+  contactgender varchar(10) NOT NULL default 'unknown',	#add 2007-10-5 by solo
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
@@ -57,7 +59,7 @@ CREATE TABLE note (
   id int(11) NOT NULL auto_increment,
   note text NOT NULL,
   priority int(11) NOT NULL default '0',
-  cretime date NOT NULL default '0000-00-00',
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(30) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   contactid int(11) NOT NULL default '0',
@@ -81,6 +83,40 @@ CREATE TABLE diallist (
   assign varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
+
+
+#store survey
+CREATE TABLE survey (
+  id int(11) NOT NULL auto_increment,
+  surveyname varchar(50) NOT NULL default '',
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
+  creby  varchar(50) NOT NULL default '',
+  UNIQUE KEY id (id)
+) ;
+
+#store surveyoptions
+CREATE TABLE surveyoptions (
+  id int(11) NOT NULL auto_increment,
+  surveyoption varchar(50) NOT NULL default '',
+  surveyid int(11) NOT NULL default '0',
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
+  creby  varchar(50) NOT NULL default '',
+  UNIQUE KEY id (id)
+) ;
+
+#store surveyresult
+CREATE TABLE surveyresult (
+  id int(11) NOT NULL auto_increment,
+  customerid int(11) NOT NULL default '',
+  contactid int(11) NOT NULL default '0',
+  surveyid  int(11)  NOT NULL default '0',
+  surveyoption varchar(50) NOT NULL default '',
+  surveynote text NOT NULL,
+  creby  varchar(50) NOT NULL default '',
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY id (id)
+) ;
+
 
 INSERT INTO `asterisk`.`account` (
 `id` ,

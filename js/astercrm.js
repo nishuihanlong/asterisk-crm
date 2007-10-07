@@ -1,6 +1,9 @@
 function btnConfirmCustomerOnClick(){
-//	alert();
 //	alert (xajax.$('customer').readOnly);
+	if (xajax.$('customer').value == '')
+	{
+		return false;
+	}
 
 	if (xajax.$('customer').readOnly  == true)
 	{
@@ -19,6 +22,12 @@ function openWindow(url){
 function btnConfirmContactOnClick(){
 	if (xajax.$('customerid').value == '')
 		return false;
+
+	if (xajax.$('contact').value == '')
+	{
+		return false;
+	}
+
 
 	if (xajax.$('contact').readOnly == true)
 	{
