@@ -48,7 +48,7 @@ $xajax->registerFunction("update");
 $xajax->registerFunction("editField");
 $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
-//$xajax->registerFunction("showContact");
-//$xajax->registerFunction("showNote");
+$xajax->registerFunction("showContact");
+$xajax->registerFunction("showNote");
 
 ?>

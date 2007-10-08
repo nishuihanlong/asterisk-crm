@@ -10,8 +10,7 @@ function init(){
 	global $locate;//,$config,$db;
 
 	$objResponse = new xajaxResponse();
-	
-	$html .= "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate("back")."</a><br>";
+	$html .= "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate('back_to_mi')."</a><br>";
 	$objResponse->addAssign("divPanel","innerHTML",$html);
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
@@ -167,8 +166,9 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 
 function add($callerid = null,$customerid = null,$contactid = null){
 	global $locate;
-   // Edit zone
 	$objResponse = new xajaxResponse();
+	return $objResponse;
+
 	$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 //	$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
 	$html .= Customer::formAdd();
@@ -193,12 +193,12 @@ function editField($table, $field, $cell, $value, $id){
 }
 
 
-function edit($id = null, $tblName, $type = "note"){
+function edit($id = null, $tblName, $type = "customer"){
 	global $locate;
 
 	// Edit zone
-	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo"); 	// <-- Set the title for your form.
-	$html .= Customer::formEdit($id, $type); 			// <-- Change by your method
+	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
+	$html .= Customer::formEdit($id, $type);
 	$html .= Table::Footer();
    	// End edit zone
 
@@ -218,18 +218,11 @@ function delete($id = null, $table_DB = null){
 	return $objResponse->getXML();
 }
 
-function showDetail($recordId){
-		$objResponse = new xajaxResponse();
-//		$objResponse->addAlert($recordId);
-		return $objResponse;
-}
-
-/*
-function showCustomer($id = null, $type="customer"){
+function showDetail($recordID){
 	global $locate;
-	if($id != null){
+	if($recordID != null){
 		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-		$html .= Customer::showCustomerRecord($id,$type); 		
+		$html .= Customer::showCustomerRecord($recordID); 		
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
@@ -237,7 +230,39 @@ function showCustomer($id = null, $type="customer"){
 		return $objResponse->getXML();
 	}
 }
-*/
+
+function showContact($id = null, $type="contact"){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	if($id != null ){
+		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 
+		$contactHTML .= Customer::showContactRecord($id,$type);
+
+		if ($contactHTML == '')
+			return $objResponse->getXML();
+		else
+			$html .= $contactHTML;
+
+		$html .= Table::Footer();
+		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
+
+function showNote($id = '', $type="customer"){
+	global $locate;
+	if($id != ''){
+		$html = Table::Top($locate->Translate("note_detail"),"formNoteInfo"); 			
+		$html .= Customer::showNoteList($id,$type); 		
+		$html .= Table::Footer();
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formNoteInfo", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
 
 function save($f){
 	$objResponse = new xajaxResponse();

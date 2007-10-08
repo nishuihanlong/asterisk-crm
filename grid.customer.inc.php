@@ -1008,7 +1008,7 @@ function showNoteList($id,$type){
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="80">'.$locate->Translate("Contact").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$contact['id'].'\',\'contact\');return false;">'.$locate->Translate("note").'</a>]</td>
+					<td nowrap align="left" width="80">'.$locate->Translate("contact").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$contact['id'].'\',\'contact\');return false;">'.$locate->Translate("note").'</a>]</td>
 					<td align="left">'.$contact['contact'].'&nbsp;&nbsp;&nbsp;&nbsp;<span align="right">[<a href=? onclick="xajax_add(xajax.$(\'callerid\').value,xajax.$(\'customerid\').value,\''. $contact['id'] .'\');return false;">'.$locate->Translate("copy").'</a>]</span>&nbsp;&nbsp;[<a href=? onclick="xajax_edit(\''.$contact['id'].'\',\'\',\'contact\');return false;">'.$locate->Translate("edit").'</a>]</td>
 				</tr>
 				<tr>

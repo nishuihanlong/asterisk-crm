@@ -10,6 +10,9 @@
 * Private Functions List
 									processAccountData
 
+* Revision 0.045  2007/10/8 14:21:00  modified by solo
+* Desc: add string check
+
 * Revision 0.044  2007/09/10 14:21:00  modified by solo
 * Desc: add $_SESSION['curuser']['usertype'] to save user type: admin | user
 * 描述: 增加了保存用户权限的变量: admin | user, 保存在变量$_SESSION['curuser']['usertype']
@@ -41,9 +44,21 @@ require_once ('include/asterisk.php');
 
 function processForm($aFormValues)
 {
+	global $locate;
 	if (array_key_exists("username",$aFormValues))
 	{
-		return processAccountData($aFormValues);
+		if (ereg("[0-9a-zA-Z]+",$aFormValues['username']) && ereg("[0-9a-zA-Z]+",$aFormValues['password']))
+		{
+		  // passed
+			return processAccountData($aFormValues);
+		}else{
+		  // error
+			$objResponse = new xajaxResponse();
+			$objResponse->addAlert($locate->Translate("invalid_string"));
+			$objResponse->addScript('init();');
+			return $objResponse;
+		}
+
 	} else{
 		$objResponse = new xajaxResponse();
 		return $objResponse;
@@ -77,6 +92,7 @@ function init($aFormValue){
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
 
@@ -109,8 +125,6 @@ function processAccountData($aFormValues)
 	
 	$bError = false;
 	
-	//需要加上对有害代码的过滤
-
 	if (trim($aFormValues['username']) == "")
 	{
 		$objResponse->addAlert($locate->Translate("username_cannot_be_blank"));

@@ -8,9 +8,7 @@
 
 require_once 'db_connect.php';
 require_once 'customer.common.php';
-//require_once 'include/Localization.php';
-//$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'grid.customer');
-
+require_once 'include/Localization.php';
 
 /** \brief Customer Class
 *
@@ -201,6 +199,11 @@ class Customer extends PEAR
 				."website='".$f['website']."', "
 				."address='".$f['address']."', "
 				."zipcode='".$f['zipcode']."', "
+				."city='".$f['city']."', "
+				."state='".$f['state']."', "
+				."contactgender='".$f['customerContactGender']."', "
+				."contact='".$f['customerContact']."', "
+				."phone='".$f['customerPhone']."', "
 				."category='".$f['category']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -227,6 +230,7 @@ class Customer extends PEAR
 		
 		$sql= "INSERT INTO contact SET "
 				."contact='".$f['contact']."', "
+				."gender='".$f['gender']."', "
 				."position='".$f['position']."', "
 				."phone='".$f['phone']."', "
 				."ext='".$f['ext']."', "
@@ -261,7 +265,6 @@ class Customer extends PEAR
 		
 		$sql= "INSERT INTO note SET "
 				."note='".$f['note']."', "
-//				."process='".$f['process']."', "
 				."priority=".$f['priority'].", "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
@@ -287,6 +290,11 @@ class Customer extends PEAR
 				."website='".$f['website']."', "
 				."address='".$f['address']."', "
 				."zipcode='".$f['zipcode']."', "
+				."phone='".$f['customerPhone']."', "
+				."contact='".$f['customerContact']."', "
+				."contactgender='".$f['customerContactGender']."', "
+				."state='".$f['state']."', "
+				."city='".$f['city']."', "
 				."category='".$f['category']."' "
 				."WHERE id='".$f['customerid']."'";
 
@@ -333,6 +341,7 @@ class Customer extends PEAR
 		
 		$sql= "UPDATE contact SET "
 				."contact='".$f['contact']."', "
+				."gender='".$f['contactGender']."', "
 				."position='".$f['position']."', "
 				."phone='".$f['phone']."', "
 				."ext='".$f['ext']."', "
@@ -395,84 +404,191 @@ class Customer extends PEAR
 			
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">'.$locate->Translate("Phone_Numbr").' <a href=? onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a> </td>
+				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href=? onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> </td>
 			</tr>';
 	
-	if ($customerid == null){
+	if ($customerid == null || $customerid ==0){
+		$customerid = 0;
 		$html .= '
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Customer").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$locate->Translate("Confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value=""></td>
+					<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
+					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
+					<input type="hidden" id="customerDetial" name="customerDetial" value="OFF">
+					[<a href=? onclick="
+						if (xajax.$(\'customerDetial\').value == \'OFF\'){
+							xajax.$(\'websiteTR\').style.display = \'\';
+							xajax.$(\'stateTR\').style.display = \'\';
+							xajax.$(\'cityTR\').style.display = \'\';
+							xajax.$(\'addressTR\').style.display = \'\';
+							xajax.$(\'zipcodeTR\').style.display = \'\';
+							xajax.$(\'customerContactTR\').style.display = \'\';
+							xajax.$(\'customerPhoneTR\').style.display = \'\';
+							xajax.$(\'categoryTR\').style.display = \'\';
+							xajax.$(\'customerDetial\').value = \'ON\';
+						}else{
+							xajax.$(\'websiteTR\').style.display = \'none\';
+							xajax.$(\'stateTR\').style.display = \'none\';
+							xajax.$(\'cityTR\').style.display = \'none\';
+							xajax.$(\'addressTR\').style.display = \'none\';
+							xajax.$(\'zipcodeTR\').style.display = \'none\';
+							xajax.$(\'customerContactTR\').style.display = \'none\';
+							xajax.$(\'customerPhoneTR\').style.display = \'none\';
+							xajax.$(\'categoryTR\').style.display = \'none\';
+							xajax.$(\'customerDetial\').value = \'OFF\';
+						};
+						return false;">
+						'.$locate->Translate("detail").'
+					</a>]
+					</td>
 				</tr>
-				<tr id="websiteTR" name="websiteTR">
-					<td nowrap align="left">'.$locate->Translate("Website").'</td>
-					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("go").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+				<tr id="websiteTR" name="websiteTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("website").'</td>
+					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 				</tr>
-				<tr id="addressTR" name="addressTR">
-					<td nowrap align="left">'.$locate->Translate("Address").'</td>
+				<tr id="stateTR" name="stateTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("state").'</td>
+					<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50"></td>
+				</tr>
+				<tr id="cityTR" name="cityTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("city").'</td>
+					<td align="left"><input type="text" id="city" name="city" size="50" maxlength="50"></td>
+				</tr>
+				<tr id="addressTR" name="addressTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("address").'</td>
 					<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200"></td>
 				</tr>
-				<tr id="zipcodeTR" name="zipcodeTR">
-					<td nowrap align="left">'.$locate->Translate("Zip_Code").'</td>
+				<tr id="zipcodeTR" name="zipcodeTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 					<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
 				</tr>
-				<tr id="categoryTR" name="categoryTR">
-					<td nowrap align="left">'.$locate->Translate("Category").'</td>
+				<tr id="customerContactTR" name="customerContactTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
+					<td align="left">
+						<input type="text" id="customerContact" name="customerContact" size="35" maxlength="35">
+						<select id="customerContactGender" name="customerContactGender">
+							<option value="male">'.$locate->Translate("male").'</option>
+							<option value="female">'.$locate->Translate("female").'</option>
+							<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
+						</select>
+					</td>
+				</tr>
+				<tr id="customerPhoneTR" name="customerPhoneTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
+					<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"></td>
+				</tr>
+				<tr id="categoryTR" name="categoryTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("category").'</td>
 					<td align="left"><input type="text" id="category" name="category" size="35"></td>
 				</tr>';
 	}else{
 		$customer =& Customer::getCustomerByID($customerid);
 		$html .= '
 				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("Customer").'</a></td>
-					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("Cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
+					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
+					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 				</tr>
 				';
 	}
 
 	if ($contactid == null){
-		$html .='
+		//<input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
+
+			$html .='
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Contact").'</td>
-					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input type="button" value="'.$locate->Translate("Confirm").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value=""></td>
+					<td nowrap align="left">'.$locate->Translate("contact").'</td>
+					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input id="btnConfirmContact" name="btnConfirmContact" type="button" onclick="btnConfirmContactOnClick();return false;" value="'.$locate->Translate("confirm").'"><input type="hidden" id="contactid" name="contactid" value="">
+					<input type="hidden" id="contactDetial" name="contactDetial" value="OFF">
+					[<a href=? onclick="
+						if (xajax.$(\'contactDetial\').value == \'OFF\'){
+							xajax.$(\'genderTR\').style.display = \'\';
+							xajax.$(\'positionTR\').style.display = \'\';
+							xajax.$(\'phoneTR\').style.display = \'\';
+							xajax.$(\'phone1TR\').style.display = \'\';
+							xajax.$(\'phone2TR\').style.display = \'\';
+							xajax.$(\'mobileTR\').style.display = \'\';
+							xajax.$(\'faxTR\').style.display = \'\';
+							xajax.$(\'emailTR\').style.display = \'\';
+							xajax.$(\'contactDetial\').value = \'ON\';
+						}else{
+							xajax.$(\'genderTR\').style.display = \'none\';
+							xajax.$(\'positionTR\').style.display = \'none\';
+							xajax.$(\'phoneTR\').style.display = \'none\';
+							xajax.$(\'phone1TR\').style.display = \'none\';
+							xajax.$(\'phone2TR\').style.display = \'none\';
+							xajax.$(\'mobileTR\').style.display = \'none\';
+							xajax.$(\'faxTR\').style.display = \'none\';
+							xajax.$(\'emailTR\').style.display = \'none\';
+							xajax.$(\'contactDetial\').value = \'OFF\';
+						};
+						return false;">
+						'.$locate->Translate("detail").'
+					</a>]
+					</td>
 				</tr>
-				<tr name="positionTR" id="positionTR">
+				<tr name="genderTR" id="genderTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("gender").'</td>
+					<td align="left">
+						<select id="contactGender" name="contactGender">
+							<option value="male">'.$locate->Translate("male").'</option>
+							<option value="female">'.$locate->Translate("female").'</option>
+							<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
+						</select>
+					</td>
+				</tr>
+				<tr name="positionTR" id="positionTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("position").'</td>
 					<td align="left"><input type="text" id="position" name="position" size="35"></td>
 				</tr>
-				<tr name="phoneTR" id="phoneTR">
-					<td nowrap align="left">'.$locate->Translate("Phone").'</td>
+				<tr name="phoneTR" id="phoneTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("phone").'</td>
 					<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value=""></td>
 				</tr>
-				<tr name="phone1TR" id="phone1TR">
-					<td nowrap align="left">'.$locate->Translate("Phone1").'</td>
+				<tr name="phone1TR" id="phone1TR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("phone1").'</td>
 					<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value=""></td>
 				</tr>
-				<tr name="phone2TR" id="phone2TR">
-					<td nowrap align="left">'.$locate->Translate("Phone2").'</td>
+				<tr name="phone2TR" id="phone2TR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("phone2").'</td>
 					<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
 				</tr>
-				<tr name="mobileTR" id="mobileTR">
-					<td nowrap align="left">'.$locate->Translate("Mobile").'</td>
+				<tr name="mobileTR" id="mobileTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
 					<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
 				</tr>
-				<tr name="faxTR" id="faxTR">
-					<td nowrap align="left">'.$locate->Translate("Fax").'</td>
+				<tr name="faxTR" id="faxTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("fax").'</td>
 					<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
 				</tr>
-				<tr name="emailTR" id="emailTR">
-					<td nowrap align="left">'.$locate->Translate("Email").'</td>
+				<tr name="emailTR" id="emailTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("email").'</td>
 					<td align="left"><input type="text" id="email" name="email" size="35"></td>
 				</tr>					
 				';
 	}else{
 		$contact =& Customer::getContactByID($contactid);
+
+			$html .='
+				<tr>
+					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
+					<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
+				</tr>
+				';
+
+		/*
+		if ($contact['gender'] == 'male')
+			$maleselected = 'selected';
+		elseif ($contact['gender'] == 'female')
+			$femaleselected = 'selected';
+		else
+			$unknownselected = 'selected';
+
+
 		$html .='
 				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("Contact").'</a></td>
+					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
 					<td align="left">
 					<input type="text" id="contact" name="contact" value="'.$contact['contact'].'" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>
-					<input type="button" value="'.$locate->Translate("Cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
+					<input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();">
 					<input type="hidden" id="contactid" name="contactid" value="'. $contactid .'">
 					<input type="hidden" id="contactDetial" name="contactDetial" value="OFF">
 					[<a href=? onclick="
@@ -496,8 +612,18 @@ class Customer extends PEAR
 							xajax.$(\'contactDetial\').value = \'OFF\';
 						};
 						return false;">
-						'.$locate->Translate("Detail").'
+						'.$locate->Translate("detail").'
 					</a>]
+					</td>
+				</tr>
+				<tr name="genderTR" id="genderTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("gender").'</td>
+					<td align="left">
+						<select id="contactGender" name="contactGender">
+							<option value="male" '.$maleselected.'>'.$locate->Translate("male").'</option>
+							<option value="female" '.$femaleselected.'>'.$locate->Translate("female").'</option>
+							<option value="unknown" '.$unknownselected.'>'.$locate->Translate("unknown").'</option>
+						</select>
 					</td>
 				</tr>
 				<tr name="positionTR" id="positionTR" style="display:none">
@@ -505,39 +631,40 @@ class Customer extends PEAR
 					<td align="left"><input type="text" id="position" name="position" size="35" value="'.$contact['position'].'"></td>
 				</tr>
 				<tr name="phoneTR" id="phoneTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("Phone").'</td>
+					<td nowrap align="left">'.$locate->Translate("phone").'</td>
 					<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $contact['phone'] .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value="'.$contact['ext'].'"></td>
 				</tr>
 				<tr name="phone1TR" id="phone1TR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("Phone1").'</td>
+					<td nowrap align="left">'.$locate->Translate("phone1").'</td>
 					<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="'. $contact['phone1'] .'">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value="'.$contact['ext1'].'"></td>
 				</tr>
 				<tr name="phone2TR" id="phone2TR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("Phone2").'</td>
+					<td nowrap align="left">'.$locate->Translate("phone2").'</td>
 					<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="'. $callerid .'">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
 				</tr>
 				<tr name="mobileTR" id="mobileTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("Mobile").'</td>
+					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
 					<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="'. $contact['mobile'] .'"></td>
 				</tr>
 				<tr name="faxTR" id="faxTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("Fax").'</td>
+					<td nowrap align="left">'.$locate->Translate("fax").'</td>
 					<td align="left"><input type="text" id="fax" name="fax" size="35" value="'. $contact['fax'] .'"></td>
 				</tr>
 				<tr name="emailTR" id="emailTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("Email").'</td>
+					<td nowrap align="left">'.$locate->Translate("email").'</td>
 					<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
 				</tr>					
 				';
+				*/
 	}
 
 	$html .='
 			<tr>
-				<td nowrap align="left">'.$locate->Translate("Note").'</td>
+				<td nowrap align="left">'.$locate->Translate("note").'</td>
 				<td align="left"><input type="text" id="note" name="note" size="35"></td>
 			</tr>
 			<tr>
-				<td nowrap align="left">'.$locate->Translate("Priority").'</td>
+				<td nowrap align="left">'.$locate->Translate("priority").'</td>
 				<td align="left">
 					<select id="priority" name="priority">
 						<option value=0>0</option>
@@ -555,7 +682,7 @@ class Customer extends PEAR
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
+				<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 			</tr>
 			</table>';
 /*
@@ -573,7 +700,7 @@ class Customer extends PEAR
 			</form>
 			'.$locate->Translate("ob_fields").'
 			';
-//		$html = 'helo';
+		
 		return $html;
 	}
 
@@ -603,118 +730,166 @@ function showNoteList($id,$type){
 	*/
 	
 	function formEdit($id , $type){
-			global $locate;
+		global $locate;
+//		print $type;
+//		exit;
 		if ($type == 'note'){
 			$note =& Customer::getNoteByID($id);
+			for ($i=0;$i<11;$i++){
+				$options .= "<option value='$i' ";
+				if (trim($note['priority']) == $i)
+					$options .= 'selected>';
+				else
+					$options .= '>';
+
+				$options .= $i."</option>";
+			}
+		//	print $options;
+		//	exit;
 			$html = '
 					<form method="post" name="f" id="f">
 					<input type="hidden" id="noteid"  name="noteid" value="'.$note['id'].'">
 					<table border="0" width="100%">
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Note").'</td>
+						<td nowrap align="left">'.$locate->Translate("note").'</td>
 						<td align="left">'.$note['note']. '</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Append").'</td>
+						<td nowrap align="left">'.$locate->Translate("append").'</td>
 						<td align="left"><input type="text" value="" name="note" id="note" length="35"></td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Priority").'</td>
+						<td nowrap align="left">'.$locate->Translate("priority").'</td>
 						<td align="left">
-							<select id="priority" name="priority">
-								<option value='. $note['priority'] .' selected>'. $note['priority'] .'</option>
-								<option value=0>0</option>
-								<option value=1>1</option>
-								<option value=2>2</option>
-								<option value=3>3</option>
-								<option value=4>4</option>
-								<option value=5>5</option>
-								<option value=6>6</option>
-								<option value=7>7</option>
-								<option value=8>8</option>
-								<option value=9>9</option>
-								<option value=10>10</option>
-							</select> 
+							<select id="priority" name="priority">'.$options.'</select>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center">[<a href=? onclick="xajax_showCustomer(\'' . $note['customerid'] . '\');return false;">'.$locate->Translate("Customer").'</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=? onclick="xajax_showContact(\'' . $note['contactid'] . '\');return false;">'.$locate->Translate("Contact").'</a>]</td>
+						<td colspan="2" align="center">[<a href=? onclick="xajax_showCustomer(\'' . $note['customerid'] . '\');return false;">'.$locate->Translate("customer").'</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=? onclick="xajax_showContact(\'' . $note['contactid'] . '\');return false;">'.$locate->Translate("contact").'</a>]</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>'.$locate->Translate("Continue").'</button></td>
+						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>'.$locate->Translate("continue").'</button></td>
 					</tr>
 					';
 
 		}elseif ($type == 'customer'){
 			$customer =& Customer::getCustomerByID($id);
+			if ($customer['contactgender'] == 'male')
+				$customerMaleSelected = 'selected';
+			elseif ($customer['contactgender'] == 'female')
+				$customerFemaleSelected = 'selected';
+			else
+				$customerUnknownSelected = 'selected';
+
 			$html = '
-					<form method="post" name="f" id="f">
-					<input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
+					<form method="post" name="frmCustomerEdit" id="frmCustomerEdit">
 					<table border="0" width="100%">
 					<tr id="customer" name="customer">
-						<td nowrap align="left">'.$locate->Translate("Customer").'</td>
-						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"></td>
+						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
+						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"><input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
+</td>
 					</tr>
 					<tr id="websiteTR" name="websiteTR">
-						<td nowrap align="left">'.$locate->Translate("Website").'</td>
-						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"><input type="button" value='.$locate->Translate("go").' onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+						<td nowrap align="left">'.$locate->Translate("website").'</td>
+						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"><input type="button" value="'.$locate->Translate("browser").'"  onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+					</tr>
+					<tr id="stateTR" name="stateTR">
+						<td nowrap align="left">'.$locate->Translate("state").'</td>
+						<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50" value="'.$customer['state'].'"></td>
+					</tr>
+					<tr id="cityTR" name="cityTR">
+						<td nowrap align="left">'.$locate->Translate("city").'</td>
+						<td align="left"><input type="text" id="city" name="city" size="50" maxlength="50" value="'.$customer['city'].'"></td>
 					</tr>
 					<tr id="addressTR" name="addressTR">
-						<td nowrap align="left">'.$locate->Translate("Address").'</td>
+						<td nowrap align="left">'.$locate->Translate("address").'</td>
 						<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200" value="' . $customer['address'] . '"></td>
 					</tr>
 					<tr id="zipcodeTR" name="zipcodeTR">
-						<td nowrap align="left">'.$locate->Translate("Zip_Code").'</td>
+						<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 						<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10" value="' . $customer['zipcode'] . '"></td>
 					</tr>
+					<tr id="customerContactTR" name="customerContactTR">
+						<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
+						<td align="left"><input type="text" id="customerContact" name="customerContact" size="35" maxlength="35" value="' . $customer['contact'] . '">
+
+						<select id="customerContactGender" name="customerContactGender">
+							<option value="male" '.$customerMaleSelected.'>'.$locate->Translate("male").'</option>
+							<option value="female" '.$customerFemaleSelected.'>'.$locate->Translate("female").'</option>
+							<option value="unknown" '.$customerUnknownSelected.'>'.$locate->Translate("unknown").'</option>
+						</select>
+						
+						</td>
+					</tr>
+					<tr id="customerPhoneTR" name="customerPhoneTR">
+						<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
+						<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"  value="' . $customer['phone'] . '"></td>
+					</tr>
 					<tr id="categoryTR" name="categoryTR">
-						<td nowrap align="left">'.$locate->Translate("Category").'</td>
+						<td nowrap align="left">'.$locate->Translate("category").'</td>
 						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"customer");return false;\'>'.$locate->Translate("Continue").'</button></td>
+						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("frmCustomerEdit"),"customer");return false;\'>'.$locate->Translate("continue").'</button></td>
 					</tr>
 					';
 		}else {
 			$contact =& Customer::getContactByID($id);
+			if ($contact['gender'] == 'male')
+				$maleSelected = 'selected';
+			elseif ($contact['gender'] == 'female')
+				$femaleSelected = 'selected';
+			else
+				$unknownSelected = 'selected';
+
 			$html = '
 					<form method="post" name="formEdit" id="formEdit">
-					<input type="hidden" id="contactid"  name="contactid" value="'.$contact['id'].'">
 					<table border="0" width="100%">
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Contact").'</td>
-						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"></td>
+						<td nowrap align="left">'.$locate->Translate("contact").'</td>
+						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"><input type="hidden" id="contactid"  name="contactid" value="'.$contact['id'].'">
+</td>
+					</tr>
+					<tr name="genderTR" id="genderTR">
+						<td nowrap align="left">'.$locate->Translate("gender").'</td>
+						<td align="left">
+							<select id="contactGender" name="contactGender">
+								<option value="male" '.$maleSelected.'>'.$locate->Translate("male").'</option>
+								<option value="female" '.$femaleSelected.'>'.$locate->Translate("female").'</option>
+								<option value="unknown" '.$unknownSelected.'>'.$locate->Translate("unknown").'</option>
+							</select>
+						</td>
 					</tr>
 					<tr name="positionTR" id="positionTR">
 						<td nowrap align="left">'.$locate->Translate("position").'</td>
 						<td align="left"><input type="text" id="position" name="position" size="35"  value="'.$contact['position'].'"></td>
 					</tr>
 					<tr name="phoneTR" id="phoneTR">
-						<td nowrap align="left">'.$locate->Translate("Phone").'</td>
+						<td nowrap align="left">'.$locate->Translate("phone").'</td>
 						<td align="left"><input type="text" id="phone" name="phone" size="35"  value="'.$contact['phone'].'">-<input type="text" id="ext" name="ext" size="6" maxlength="6"  value="'.$contact['ext'].'"></td>
 					</tr>
 					<tr name="phone1TR" id="phone1TR">
-						<td nowrap align="left">'.$locate->Translate("Phone1").'</td>
+						<td nowrap align="left">'.$locate->Translate("phone1").'</td>
 						<td align="left"><input type="text" id="phone1" name="phone1" size="35"  value="'.$contact['phone1'].'">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6"  value="'.$contact['ext1'].'"></td>
 					</tr>
 					<tr name="phone2TR" id="phone2TR">
-						<td nowrap align="left">'.$locate->Translate("Phone2").'</td>
+						<td nowrap align="left">'.$locate->Translate("phone2").'</td>
 						<td align="left"><input type="text" id="phone2" name="phone2" size="35"  value="'.$contact['phone2'].'">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6"  value="'.$contact['ext2'].'"></td>
 					</tr>
 					<tr name="mobileTR" id="mobileTR">
-						<td nowrap align="left">'.$locate->Translate("Mobile").'</td>
+						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
 						<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="'.$contact['mobile'].'"></td>
 					</tr>
 					<tr name="faxTR" id="faxTR">
-						<td nowrap align="left">'.$locate->Translate("Fax").'</td>
+						<td nowrap align="left">'.$locate->Translate("fax").'</td>
 						<td align="left"><input type="text" id="fax" name="fax" size="35" value="'.$contact['fax'].'"></td>
 					</tr>
 					<tr name="emailTR" id="emailTR">
-						<td nowrap align="left">'.$locate->Translate("Email").'</td>
+						<td nowrap align="left">'.$locate->Translate("email").'</td>
 						<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
 					</tr>					
 					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>'.$locate->Translate("Continue").'</button></td>
+						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>'.$locate->Translate("continue").'</button></td>
 					</tr>
 					';
 		}
@@ -743,35 +918,51 @@ function showNoteList($id,$type){
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="80">'.$locate->Translate("Customer").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("Note").'</a>]</td>
-					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'\',\'customer\');return false;">'.$locate->Translate("Edit").'</a>]</td>
+					<td nowrap align="left" width="80">'.$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
+					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Address").'</td>
+					<td nowrap align="left">'.$locate->Translate("state").'</td>
+					<td align="left">'.$customer['state'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("city").'</td>
+					<td align="left">'.$customer['city'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("address").'</td>
 					<td align="left">'.$customer['address'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Zip_Code").'</td>
+					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 					<td align="left">'.$customer['zipcode'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Website").'</td>
+					<td nowrap align="left">'.$locate->Translate("website").'</td>
 					<td align="left"><a href="'.$customer['website'].'" target="_blank">'.$customer['website'].'</a></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Category").'</td>
+					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
+					<td align="left">'.$customer['contact'].'&nbsp;&nbsp;('.$locate->Translate($customer['contactgender']).')</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
+					<td align="left">'.$customer['phone'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("category").'</td>
 					<td align="left">'.$customer['category'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Creattime").'</td>
+					<td nowrap align="left">'.$locate->Translate("create_time").'</td>
 					<td align="left">'.$customer['cretime'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("CreatBY").'</td>
+					<td nowrap align="left">'.$locate->Translate("create_by").'</td>
 					<td align="left">'.$customer['creby'].'</td>
 				</tr>
 				</table>
-					<a href=? onclick="if (xajax.$(\'allContact\').value==\'off\'){xajax.$(\'contactList\').style.display=\'block\';xajax.$(\'allContact\').value=\'on\'}else{xajax.$(\'contactList\').style.display=\'none\';xajax.$(\'allContact\').value=\'off\'} return false;">'.$locate->Translate("Display_All").'</a>
+					<a href=? onclick="if (xajax.$(\'allContact\').value==\'off\'){xajax.$(\'contactList\').style.display=\'block\';xajax.$(\'allContact\').value=\'on\'}else{xajax.$(\'contactList\').style.display=\'none\';xajax.$(\'allContact\').value=\'off\'} return false;">'.$locate->Translate("display_all").'</a>
 					<input type="hidden" id="allContact" name="allContact" value="off">
 				<table border="0" width="100%" id="contactList" name="contactList" style="display:none">
 					';
@@ -807,13 +998,17 @@ function showNoteList($id,$type){
 	function showContactRecord($id,$type="contact"){
     	global $locate;
 		$contact =& Customer::getContactByID($id,$type);
-
-
+		if ($contact['id'] == '' )
+			return '';
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="80">'.$locate->Translate("Contact").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$contact['id'].'\',\'contact\');return false;">'.$locate->Translate("Note").'</a>]</td>
-					<td align="left">'.$contact['contact'].'&nbsp;&nbsp;&nbsp;&nbsp;<span align="right">[<a href=? onclick="xajax_add(xajax.$(\'callerid\').value,xajax.$(\'customerid\').value,\''. $contact['id'] .'\');return false;">'.$locate->Translate("copy").'</a>]</span>&nbsp;&nbsp;[<a href=? onclick="xajax_edit(\''.$contact['id'].'\',\'\',\'contact\');return false;">'.$locate->Translate("Edit").'</a>]</td>
+					<td nowrap align="left" width="80">'.$locate->Translate("contact").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$contact['id'].'\',\'contact\');return false;">'.$locate->Translate("note").'</a>]</td>
+					<td align="left">'.$contact['contact'].'&nbsp;&nbsp;&nbsp;&nbsp;<span align="right">[<a href=? onclick="xajax_add(xajax.$(\'callerid\').value,xajax.$(\'customerid\').value,\''. $contact['id'] .'\');return false;">'.$locate->Translate("copy").'</a>]</span>&nbsp;&nbsp;[<a href=? onclick="xajax_edit(\''.$contact['id'].'\',\'\',\'contact\');return false;">'.$locate->Translate("edit").'</a>]</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("gender").'</td>
+					<td align="left">'.$locate->Translate($contact['gender']).'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("position").'</td>
@@ -823,13 +1018,13 @@ function showNoteList($id,$type){
 		if ($contact['ext'] == '')
 			$html .='
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Phone").'</td>
+						<td nowrap align="left">'.$locate->Translate("phone").'</td>
 						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a></td>
 					</tr>';
 		else
 			$html .='
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Phone1").'</td>
+						<td nowrap align="left">'.$locate->Translate("phone").'</td>
 						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a> ext: '.$contact['ext'].'</td>
 					</tr>';
 
@@ -837,13 +1032,13 @@ function showNoteList($id,$type){
 			if ($contact['ext1'] == '')
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$locate->Translate("Phone1").'</td>
+							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$locate->Translate("Phone1").'</td>
+							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a> ext: '.$contact['ext1'].'</td>
 						</tr>';
 		
@@ -851,35 +1046,35 @@ function showNoteList($id,$type){
 			if ($contact['ext2'] == '')
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$locate->Translate("Phone2").'</td>
+							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\');return false;">'.$contact['phone2'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
-							<td nowrap align="left">'.$locate->Translate("Phone2").'</td>
+							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
 							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\');return false;">'.$contact['phone2'].'</a> ext: '.$contact['ext2'].'</td>
 						</tr>';
 
 		$html .='
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Mobile").'</td>
+					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
 					<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['mobile'].'\');return false;">'.$contact['mobile'].'</a></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Fax").'</td>
+					<td nowrap align="left">'.$locate->Translate("fax").'</td>
 					<td align="left">'.$contact['fax'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Email").'</td>
+					<td nowrap align="left">'.$locate->Translate("email").'</td>
 					<td align="left">'.$contact['email'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Creattime").'</td>
+					<td nowrap align="left">'.$locate->Translate("create_time").'</td>
 					<td align="left">'.$contact['cretime'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("CreatBY").'</td>
+					<td nowrap align="left">'.$locate->Translate("create_by").'</td>
 					<td align="left">'.$contact['creby'].'</td>
 				</tr>
 				</table>';
@@ -903,9 +1098,9 @@ function showNoteList($id,$type){
 	*/
 	function checkAllData($f,$new = 0){
 	 	global $locate;
-		if(empty($f['customer'])) return $locate->Translate("info2");
-		if(empty($f['contact'])) return $locate->Translate("info1");
-		if(empty($f['note'])) return $locate->Translate("info3");
+		if(empty($f['customer'])) return $locate->Translate("customer_cant_null");
+		if(empty($f['contact'])) return $locate->Translate("contact_cant_null");
+		if(empty($f['note'])) return $locate->Translate("note_cant_null");
 	 	return 0;
 	}
 

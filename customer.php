@@ -38,12 +38,18 @@ require_once('customer.common.php');
 		}
 		//-->
 		</SCRIPT>
+		<script language="JavaScript" src="js/astercrm.js"></script>
 	</head>
 	<body onload="init();">
-	<div id="divPanel" name="divPanel" class="divPanel">Back</div>
+	<div id="divPanel" name="divPanel" class="divPanel"></div>
 	<br>
 	<form name="myForm" id="myForm">
 		<div id="formDiv" name="formDiv" class="formDiv"></div>
+		<div id="formCustomerInfo" class="formCustomerInfo"></div>
+							<div id="formContactInfo" class="formContactInfo"></div>
+							<div id="formNoteInfo" class="formNoteInfo"></div>
+							<div id="formEditInfo" class="formEditInfo"></div>
+
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 	</form>

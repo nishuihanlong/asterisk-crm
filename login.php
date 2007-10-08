@@ -30,6 +30,10 @@
 									init					 
 
 
+* Revision 0.0443  2007/10/8 17:55:00  last modified by solo
+* Desc: add a div to display copyright
+
+
 
 * Revision 0.044  2007/09/7 17:55:00  last modified by solo
 * Desc: add some comments

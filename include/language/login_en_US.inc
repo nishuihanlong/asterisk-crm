@@ -15,4 +15,5 @@ $pass				= "passed";
 $device_status			= "Device status";
 $continue			= "Contunue";
 $no_pass			= "no pass, please check your configuration file";
+$invalid_string		= "Invalid inpur, only digits or letters allowed";
 ?>

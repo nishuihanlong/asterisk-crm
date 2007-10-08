@@ -27,7 +27,7 @@ v0.0443
 2007-9-30	login时检查AMI的连接状况和分机状态(可选)
 2007-10-1	AMI连接失败时, 在Manager Interface会有连接失败的提示
 2007-10-2	更改contact为可选, 添加记录时允许不填写联系人或者备注
-2007-10-3	修改了asterisk.php, 修正了call文件的权限问题
+2007-10-3	修改了asterisk.php, 修正了生成call文件的权限问题
 2007-10-3	修改了MaxRetries为0
 2007-10-4	改进了predictive dialer，增强对最大active channels的控制
 2007-10-5	修改了astercrm.sql文件, 将date类型修改为datetime
@@ -37,9 +37,14 @@ v0.0443
 2007-10-8	修改了弹出窗口获得callerid的一个bug
 2007-10-8	允许contact在不同的customer中切换
 -----------------------------------------------------------------------------------------
+v0.045
+2007-10-8	增加了对用户登陆信息的过滤
 
-add autdial in agent interface
-增加显示版权信息的位置
+
+-----------------------------------------------------------------------------------------
+
+改进后台管理
+
 need to add queue status
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
@@ -56,5 +61,7 @@ need to add monitor control
 need to add phone spy
 增加对sqlite的支持
 增加对config.php的管理为web模式
+add autodial in agent interface
+增加显示版权信息的位置
 
 #为什么在系统监视里面看到的分机不全？
