@@ -89,7 +89,7 @@ require_once('login.common.php');
 				</form>
 			</div>
 			
-		<div id="outputDiv">
-		</div>
+		<div id="outputDiv"></div>
+		<div align="center"><?require_once('copyright.php');?></div>
 	</body>
 </html>

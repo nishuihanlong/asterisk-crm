@@ -1,17 +1,17 @@
 function btnConfirmCustomerOnClick(){
-//	alert (xajax.$('customer').readOnly);
-	if (xajax.$('customer').value == '')
-	{
-		return false;
-	}
+//	alert (xajax.$('contactid').value);
 
 	if (xajax.$('customer').readOnly  == true)
 	{
 //		alert('true');
-		xajax_add(xajax.$('callerid').value);
+		xajax_add(xajax.$('iptcallerid').value,0,xajax.$('contactid').value);
 	}else{
 //		alert('false');
-		xajax_confirmCustomer(xajax.$('customer').value,xajax.$('callerid').value);
+		if (xajax.$('customer').value == '')
+		{
+			return false;
+		}
+		xajax_confirmCustomer(xajax.$('customer').value,xajax.$('iptcallerid').value,xajax.$('contactid').value);
 	}
 }
 
@@ -31,8 +31,8 @@ function btnConfirmContactOnClick(){
 
 	if (xajax.$('contact').readOnly == true)
 	{
-		xajax_add(xajax.$('callerid').value,xajax.$('customerid').value);
+		xajax_add(xajax.$('iptcallerid').value,xajax.$('customerid').value);
 	}else{
-		xajax_confirmContact(xajax.$('contact').value,xajax.$('customerid').value,xajax.$('callerid').value);
+		xajax_confirmContact(xajax.$('contact').value,xajax.$('customerid').value,xajax.$('iptcallerid').value);
 	}
 }

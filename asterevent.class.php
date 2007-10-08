@@ -276,7 +276,9 @@ class asterEvent extends PEAR
 
 	function &checkLink($curid,$uniqueid){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $uniqueid. "%' AND id > $curid order by id desc ";
+		// SELECT "1997-12-31 23:59:59" + INTERVAL 1 SECOND; 
+
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $uniqueid. "%' AND id > $curid AND timestamp > (now()-INTERVAL 10 SECOND) order by id desc ";
 		asterEvent::events($query);
 		$res = $db->query($query);
 
@@ -303,7 +305,7 @@ class asterEvent extends PEAR
 
 	function &checkHangup($curid,$uniqueid){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $uniqueid . "%' AND id> $curid order by id desc ";
+		$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $uniqueid . "%' AND timestamp > (now()-INTERVAL 10 SECOND) AND id> $curid order by id desc ";
 		asterEvent::events($query);
 		$res = $db->query($query);
 
@@ -334,7 +336,7 @@ class asterEvent extends PEAR
 
 //		$query = "SELECT * FROM events WHERE event LIKE 'Event: New% %Channel: %".$exten."% %State: Ring%' AND id > " . $curid . " order by id desc";
 
-		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND id > " . $curid . " order by id desc";
+		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > (now()-INTERVAL 10 SECOND) AND id > " . $curid . " order by id desc";
 
 //		$query = "SELECT * FROM events WHERE  event LIKE 'Event: Newchannel%State: Ringing%' AND id > " . $curid . " order by id desc";
 
@@ -396,7 +398,7 @@ class asterEvent extends PEAR
 
 	function &checkDialout($curid,$exten){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " order by id desc";	
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND timestamp > (now()-INTERVAL 10 SECOND) order by id desc";	
 
 		asterEvent::events($query);
 

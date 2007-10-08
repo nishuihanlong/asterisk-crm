@@ -409,14 +409,15 @@ class Customer extends PEAR
 			
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href=? onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a> </td>
+				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href=? onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> </td>
 			</tr>';
 	
-	if ($customerid == null){
+	if ($customerid == null || $customerid ==0){
+		$customerid = 0;
 		$html .= '
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="">
+					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
 					<input type="hidden" id="customerDetial" name="customerDetial" value="OFF">
 					[<a href=? onclick="
 						if (xajax.$(\'customerDetial\').value == \'OFF\'){
@@ -570,12 +571,22 @@ class Customer extends PEAR
 				';
 	}else{
 		$contact =& Customer::getContactByID($contactid);
+
+			$html .='
+				<tr>
+					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
+					<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
+				</tr>
+				';
+
+		/*
 		if ($contact['gender'] == 'male')
 			$maleselected = 'selected';
 		elseif ($contact['gender'] == 'female')
 			$femaleselected = 'selected';
 		else
 			$unknownselected = 'selected';
+
 
 		$html .='
 				<tr>
@@ -649,6 +660,7 @@ class Customer extends PEAR
 					<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
 				</tr>					
 				';
+				*/
 	}
 
 	$html .='

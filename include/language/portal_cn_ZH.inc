@@ -71,4 +71,5 @@ $gender			= "性别";
 $male			= "男";
 $female			= "女";
 $unknown		= "未知";
+$a_contact_binding	= "联系人已绑定";
 ?>

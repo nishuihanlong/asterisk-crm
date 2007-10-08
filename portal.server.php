@@ -398,20 +398,19 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 
 // 判断是否存在$customerName, 如果存在就显示
-function confirmCustomer($customerName,$callerID = null){
+function confirmCustomer($customerName,$callerID = null,$contactID){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	if (trim($customerName) == '')
 		return $objResponse;
 
 	$customerID = Customer::checkValues("customer","customer",$customerName); 
-	if ($customerID){//存在
-		$html = Table::Top($locate->Translate("add_record"),"formDiv"); 
-		$html .= Customer::formAdd($callerID,$customerID);
+	if ($customerID && $customerID !=0){//存在
+		$html = Table::Top($locate->Translate("add_record"),"formDiv");
+		$html .= Customer::formAdd($callerID,$customerID,$contactID);
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
-		
 		$objResponse->addScript("xajax_showCustomer($customerID)");
 	} //else
 	//		$objResponse->addAlert("不存在" );
@@ -433,7 +432,8 @@ function confirmContact($contactName,$customerID,$callerID){
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
 		//显示customer信息
-		$objResponse->addScript("xajax_showCustomer($customerID)");
+		if ($customerID !=0)
+			$objResponse->addScript("xajax_showCustomer($customerID)");
 
 		//显示contact信息
 		$objResponse->addScript("xajax_showContact($contactID)");
@@ -638,6 +638,22 @@ function save($f){
 //				return $objResponse;
 //			}
 			$respOk = $f['contactid'];
+			//获取该contact的customerid
+			$res =& Customer::getContactByID($respOk);
+			if ($res){
+				$contactCustomerID = $res['customerid'];
+				if ($contactCustomerID == 0 && $customerID ==0)
+				{
+				}else{
+					$res =& Customer::updateField('contact','customerid',$customerID,$f['contactid']
+					);
+					if ($res){
+						$objResponse->addAlert($locate->Translate("a_contact_binding"));
+					}
+				}
+			}
+
+
 		}
 		$contactID = $respOk;
 	}
@@ -857,7 +873,8 @@ function getContact($callerid){
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
 
 		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
-		$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
+		if ($customerid != 0)
+			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
 
 	}else {	//match a lot records... [only display the first one for now]
 		$res->fetchInto($list);

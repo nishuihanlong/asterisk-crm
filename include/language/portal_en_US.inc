@@ -71,4 +71,5 @@ $gender			= "Gender";
 $male			= "male";
 $female			= "female";
 $unknown		= "unknown";
+$a_contact_binding	= "binding a contact";
 ?>

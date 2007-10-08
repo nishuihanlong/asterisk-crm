@@ -32,18 +32,22 @@ v0.0443
 2007-10-4	改进了predictive dialer，增强对最大active channels的控制
 2007-10-5	修改了astercrm.sql文件, 将date类型修改为datetime
 2007-10-5	将contact和customer改成独立的部分, contact可以脱离customer存在
-
+2007-10-5	在customer表和contact表中增加了gender字段
+2007-10-8	在asterevent里面查询事件的类中增加对timestamp的判断，仅捕获10秒钟之前的事件
+2007-10-8	修改了弹出窗口获得callerid的一个bug
+2007-10-8	允许contact在不同的customer中切换
 -----------------------------------------------------------------------------------------
-在asterevent里面查询事件的类中增加对timestamp的判断，防止重复捕获事件
 
+add autdial in agent interface
 增加显示版权信息的位置
-自动重拨的问题
 need to add queue status
 need to add customer manage page for admin and user
 need to add contact manage page for admin and user
-
-
+增加导入diallist数据的模块
+增加分配座席diallist数据的模块
+增加导入/导出客户信息的功能
 need to avoid mulit-Proxyman in memory
+多css类型支持
 增加agent之间的im功能
 修改delete_events.py 将被删除的事件保存到另外的位置
 need to add Real-time campaign display screens 
@@ -52,6 +56,5 @@ need to add monitor control
 need to add phone spy
 增加对sqlite的支持
 增加对config.php的管理为web模式
-增加导入/导出客户信息的功能
 
 #为什么在系统监视里面看到的分机不全？
