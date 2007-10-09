@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************
-* customer.common.php
-* customer参数信息文件
-* customer parameter file
+* note.common.php
+* note
+* note parameter file
 * 功能描述
 * Function Desc
 
-* Revision 0.0443  2007/09/29 15:25:00  modified by solo
+* Revision 0.045  2007/09/29 15:25:00  modified by solo
 * Desc: page create
 * 描述: 页面建立
 
@@ -36,7 +36,7 @@ require_once ('include/Localization.php');
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'customer');
 
-$xajax = new xajax("customer.server.php");
+$xajax = new xajax("note.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");

@@ -34,9 +34,9 @@ define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show A
 require_once ("include/xajax.inc.php");
 require_once ('include/Localization.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'customer');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'contact');
 
-$xajax = new xajax("customer.server.php");
+$xajax = new xajax("contact.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");

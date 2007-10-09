@@ -368,8 +368,21 @@ class Customer extends PEAR
 	
 	function deleteRecord($id){
 		global $db;
-	
-		$sql = "DELETE FROM note WHERE id = $id";
+		
+		//backup all datas
+
+		//delete all customers
+		$sql = "DELETE FROM customer WHERE id = $id";
+		Customer::events($sql);
+		$res =& $db->query($sql);
+
+		//delete all note
+		$sql = "DELETE FROM note WHERE customerid = $id OR contactid in (SELECT id FROM contact WHERE customerid = $id)";
+		Customer::events($sql);
+		$res =& $db->query($sql);
+
+		//delete all contact
+		$sql = "DELETE FROM contact WHERE customerid = $id";
 		Customer::events($sql);
 		$res =& $db->query($sql);
 
@@ -443,7 +456,7 @@ class Customer extends PEAR
 				</tr>
 				<tr id="websiteTR" name="websiteTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("website").'</td>
-					<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+					<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 				</tr>
 				<tr id="stateTR" name="stateTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("state").'</td>
@@ -791,7 +804,7 @@ function showNoteList($id,$type){
 					</tr>
 					<tr id="websiteTR" name="websiteTR">
 						<td nowrap align="left">'.$locate->Translate("website").'</td>
-						<td align="left"><input type="text" id="website" name="website" size="50" maxlength="100" value="' . $customer['website'] . '"><input type="button" value="'.$locate->Translate("browser").'"  onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+						<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="' . $customer['website'] . '"><input type="button" value="'.$locate->Translate("browser").'"  onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 					</tr>
 					<tr id="stateTR" name="stateTR">
 						<td nowrap align="left">'.$locate->Translate("state").'</td>

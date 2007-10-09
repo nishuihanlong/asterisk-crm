@@ -1,13 +1,13 @@
 <?php
 /*******************************************************************************
-* customer.php
+* note.php
 * 客户信息管理界面
-* cutomer information management interface
+* note information management interface
 * 功能描述
 	 提供客户信息管理的功能
 
 * Function Desc
-	customer management
+	note management
 
 * Page elements
 * div:							
@@ -18,12 +18,12 @@
 									init	
 
 
-* Revision 0.0443  2007/09/29 12:55:00  modified by solo
+* Revision 0.045  2007/10/9 12:55:00  modified by solo
 * Desc: create page
 * 描述: 建立
 ********************************************************************************/
 
-require_once('customer.common.php');
+require_once('note.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -48,7 +48,6 @@ require_once('customer.common.php');
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 	<br>
 	<div id="divActive" name="divActive">
-		<input type="button" value="IMPORT" id="btnImport" name="btnImport">
 		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();">
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">

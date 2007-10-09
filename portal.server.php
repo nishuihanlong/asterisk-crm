@@ -87,7 +87,10 @@ function init(){
 							<div id="formContactInfo" class="formContactInfo"></div>
 							<div id="formNoteInfo" class="formNoteInfo"></div>
 							<div id="formEditInfo" class="formEditInfo"></div>
-							<div id="grid" align="center"> </div>';
+							<div id="grid" align="center"> </div>
+						</td>
+					</tr>
+					</table>';
 		$objResponse->addAppend("crm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 	} else {

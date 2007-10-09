@@ -1,13 +1,10 @@
 <?php
 /*******************************************************************************
-* customer.php
-* 客户信息管理界面
-* cutomer information management interface
-* 功能描述
-	 提供客户信息管理的功能
+* contact.php
+* contact information management interface
 
 * Function Desc
-	customer management
+	contact management
 
 * Page elements
 * div:							
@@ -18,12 +15,12 @@
 									init	
 
 
-* Revision 0.0443  2007/09/29 12:55:00  modified by solo
+* Revision 0.045  2007/10/9 12:55:00  modified by solo
 * Desc: create page
 * 描述: 建立
 ********************************************************************************/
 
-require_once('customer.common.php');
+require_once('contact.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>

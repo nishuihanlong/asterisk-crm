@@ -23,7 +23,10 @@ function init(){
 	$html .= "<a href=# onclick='clearAll();showChannelsInfo();return false;'>".$locate->Translate("active_channels")."</a><br>";
 
 	$html .= "<a href=# onclick='clearAll();showPredictiveDialer();return false;'>".$locate->Translate("predictive_dialer")."</a><br>";
+
   	$html .= "<a href='customer.php' >".$locate->Translate("customer_manager")."</a><br>";
+  	$html .= "<a href='contact.php' >".$locate->Translate("contact_manager")."</a><br>";
+  	$html .= "<a href='note.php' >".$locate->Translate("note_manager")."</a><br>";
 
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 

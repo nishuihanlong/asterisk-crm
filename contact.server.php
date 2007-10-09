@@ -1,16 +1,15 @@
 <?php
 require_once ("db_connect.php");
-require_once ("customer.common.php");
-require_once ('grid.customer.manager.inc.php');
+require_once ("contact.common.php");
+require_once ('grid.contact.manager.inc.php');
 require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
-require_once ('include/functions.inc.php');
 
 function export(){
 	$objResponse = new xajaxResponse();
 
-	$objResponse->addAssign("sql","value","SELECT * FROM customer");
-	$objResponse->addAssign("filename","value","customer.csv");
+	$objResponse->addAssign("sql","value","SELECT contact.*,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid ");
+	$objResponse->addAssign("filename","value","contact.csv");
 	$objResponse->addScript("xajax.$('frmDownload').submit();");
 	$objResponse->addAlert("downloading, please wait");
 	return $objResponse;
@@ -47,27 +46,25 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
-	$fields[] = 'customer';
-	$fields[] = 'state';
-	$fields[] = 'city';
-	$fields[] = 'phone';
 	$fields[] = 'contact';
-	$fields[] = 'website';
-	$fields[] = 'category';
-	$fields[] = 'cretime';
-	$fields[] = 'creby';
+	$fields[] = 'gender';
+	$fields[] = 'position';
+	$fields[] = 'phone';
+	$fields[] = 'mobile';
+	$fields[] = 'email';
+	$fields[] = 'customer';
+//	$fields[] = 'cretime';
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("customer_name");//"Customer Name";
-	$headers[] = $locate->Translate("state");//"Customer Name";
-	$headers[] = $locate->Translate("city");//"Category";
+	$headers[] = $locate->Translate("contact");//"Customer Name";
+	$headers[] = $locate->Translate("gender");//"Customer Name";
+	$headers[] = $locate->Translate("position");//"Category";
 	$headers[] = $locate->Translate("phone");//"Contact";
-	$headers[] = $locate->Translate("contact");//"Category";
-	$headers[] = $locate->Translate("website");//"Note";
-	$headers[] = $locate->Translate("category");//"Create Time";
-	$headers[] = $locate->Translate("create_time");//"Create By";
-	$headers[] = $locate->Translate("create_by");
+	$headers[] = $locate->Translate("mobile");//"Category";
+	$headers[] = $locate->Translate("email");//"Note";
+	$headers[] = $locate->Translate("customer_name");
+//	$headers[] = $locate->Translate("create_time");//"Create Time";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -77,9 +74,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="8%"';
-	$attribsHeader[] = 'width="7%"';
+	$attribsHeader[] = 'width="25%"';
+//	$attribsHeader[] = 'width="15%"';
+//	$attribsHeader[] = 'width="7%"';
 //	$attribsHeader[] = 'width="5%"';
 
 	// HTML Table: columns attributes
@@ -91,8 +88,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
+//	$attribsCols[] = 'style="text-align: left"';
+//	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -103,31 +100,29 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","website","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'customer';
-	$fieldsFromSearch[] = 'state';
-	$fieldsFromSearch[] = 'city';
-	$fieldsFromSearch[] = 'phone';
 	$fieldsFromSearch[] = 'contact';
-	$fieldsFromSearch[] = 'website';
-	$fieldsFromSearch[] = 'category';
-	$fieldsFromSearch[] = 'cretime';
+	$fieldsFromSearch[] = 'gender';
+	$fieldsFromSearch[] = 'position';
+	$fieldsFromSearch[] = 'phone';
+	$fieldsFromSearch[] = 'mobile';
+	$fieldsFromSearch[] = 'email';
+	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'creby';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
-	$fieldsFromSearchShowAs[] = $locate->Translate("state");
-	$fieldsFromSearchShowAs[] = $locate->Translate("city");
-	$fieldsFromSearchShowAs[] = $locate->Translate("phone");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
-	$fieldsFromSearchShowAs[] = $locate->Translate("website");
-	$fieldsFromSearchShowAs[] = $locate->Translate("category");
-	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
+	$fieldsFromSearchShowAs[] = $locate->Translate("gender");
+	$fieldsFromSearchShowAs[] = $locate->Translate("position");
+	$fieldsFromSearchShowAs[] = $locate->Translate("phone");
+	$fieldsFromSearchShowAs[] = $locate->Translate("mobile");
+	$fieldsFromSearchShowAs[] = $locate->Translate("email");
+	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
 
@@ -135,23 +130,22 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearch("contact",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['customer'];
-		$rowc[] = $row['state'];
-		$rowc[] = $row['city'];
-		$rowc[] = $row['phone'];
 		$rowc[] = $row['contact'];
-		$rowc[] = $row['website'];
-		$rowc[] = $row['category'];
-		$rowc[] = $row['cretime'];
-		$rowc[] = $row['creby'];
+		$rowc[] = $row['gender'];
+		$rowc[] = $row['position'];
+		$rowc[] = $row['phone'];
+		$rowc[] = $row['mobile'];
+		$rowc[] = $row['email'];
+		$rowc[] = $row['customer'];
+//		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
-		$table->addRow("customer",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("contact",$rowc,1,1,1,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -203,7 +197,7 @@ function editField($table, $field, $cell, $value, $id){
 }
 
 
-function edit($id = null, $tblName, $type = "customer"){
+function edit($id = null, $tblName, $type = "contact"){
 	global $locate;
 
 	// Edit zone
@@ -231,12 +225,12 @@ function delete($id = null, $table_DB = null){
 function showDetail($recordID){
 	global $locate;
 	if($recordID != null){
-		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-		$html .= Customer::showCustomerRecord($recordID); 		
+		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 			
+		$html .= Customer::showContactRecord($recordID); 		
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
+		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
 		return $objResponse->getXML();
 	}
 }
@@ -261,7 +255,7 @@ function showContact($id = null, $type="contact"){
 	}
 }
 
-function showNote($id = '', $type="customer"){
+function showNote($id = '', $type="contact"){
 	global $locate;
 	if($id != ''){
 		$html = Table::Top($locate->Translate("note_detail"),"formNoteInfo"); 			

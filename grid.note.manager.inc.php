@@ -7,7 +7,7 @@
 */
 
 require_once 'db_connect.php';
-require_once 'portal.common.php';
+require_once 'note.common.php';
 require_once 'include/Localization.php';
 
 /** \brief Customer Class
@@ -32,13 +32,11 @@ class Customer extends PEAR
 	*/
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
-		$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
-
-//		if ($creby != null)
-		$sql .= " WHERE note.creby = '".$_SESSION['curuser']['username']."' ";
+		
+		$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid";
 
 		if($order == null){
-			$sql .= " ORDER BY priority DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
@@ -63,14 +61,12 @@ class Customer extends PEAR
 		global $db;
 		
 		if(($filter != null) and ($content != null)){
-			$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
 					." WHERE ".$filter." like '%".$content."%' "
-					." AND  note.creby = '".$_SESSION['curuser']['username']."' "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -86,15 +82,14 @@ class Customer extends PEAR
 	
 	function &getNumRows($filter = null, $content = null){
 		global $db;
-		$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE note.creby = '".$_SESSION['curuser']['username']."'";
-			
+		
+		$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid";
+		
 		if(($filter != null) and ($content != null)){
 			$sql = 	"SELECT COUNT(*) AS numRows "
 				."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				." AND  note.creby = '".$_SESSION['curuser']['username']."' "
-				."WHERE ".$filter." like '%".$content."%'";
+				."WHERE ".$filter." like '%$content%'";
 		}
-
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
@@ -109,9 +104,9 @@ class Customer extends PEAR
 	
 	function &getRecordByID($id){
 		global $db;
+		
 		$sql = "SELECT note.id AS id, note, priority,customer.name AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby , note.customerid, note.contactid, customer.website AS website, contact.position as position FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-			." WHERE note.id = $id";
-
+				." WHERE note.id = $id";
 		Customer::events($sql);
 		$row =& $db->getRow($sql);
 		return $row;
@@ -373,7 +368,10 @@ class Customer extends PEAR
 	
 	function deleteRecord($id){
 		global $db;
-	
+		
+		//backup all datas
+
+		//delete all note
 		$sql = "DELETE FROM note WHERE id = $id";
 		Customer::events($sql);
 		$res =& $db->query($sql);
@@ -736,6 +734,8 @@ function showNoteList($id,$type){
 	
 	function formEdit($id , $type){
 		global $locate;
+//		print $type;
+//		exit;
 		if ($type == 'note'){
 			$note =& Customer::getNoteByID($id);
 			for ($i=0;$i<11;$i++){
@@ -777,7 +777,6 @@ function showNoteList($id,$type){
 
 		}elseif ($type == 'customer'){
 			$customer =& Customer::getCustomerByID($id);
-
 			if ($customer['contactgender'] == 'male')
 				$customerMaleSelected = 'selected';
 			elseif ($customer['contactgender'] == 'female')
@@ -787,16 +786,15 @@ function showNoteList($id,$type){
 
 			$html = '
 					<form method="post" name="frmCustomerEdit" id="frmCustomerEdit">
-					<input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
 					<table border="0" width="100%">
 					<tr id="customer" name="customer">
 						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '">
-						</td>
+						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"><input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
+</td>
 					</tr>
 					<tr id="websiteTR" name="websiteTR">
 						<td nowrap align="left">'.$locate->Translate("website").'</td>
-						<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="' . $customer['website'] . '"><input type="button" value='.$locate->Translate("browser").' onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+						<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="' . $customer['website'] . '"><input type="button" value="'.$locate->Translate("browser").'"  onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 					</tr>
 					<tr id="stateTR" name="stateTR">
 						<td nowrap align="left">'.$locate->Translate("state").'</td>
@@ -849,11 +847,11 @@ function showNoteList($id,$type){
 
 			$html = '
 					<form method="post" name="formEdit" id="formEdit">
-					<input type="hidden" id="contactid"  name="contactid" value="'.$contact['id'].'">
 					<table border="0" width="100%">
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("contact").'</td>
-						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"></td>
+						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"><input type="hidden" id="contactid"  name="contactid" value="'.$contact['id'].'">
+</td>
 					</tr>
 					<tr name="genderTR" id="genderTR">
 						<td nowrap align="left">'.$locate->Translate("gender").'</td>
