@@ -1,17 +1,4 @@
 <?
-$welcome="欢迎 ";
-$extension="你的分机是 ";
-$waiting="请等待 ";
-$listening="正在监听 ";
-$processing_please_wait = "正在处理, 请稍候";
-$logout="登出 ";
-$transfer="转接";
-$talking_to	=	"正在通话";
-$manager	=	"管理";
-$dial			= "拨号";
-$stand_by="请稍候";
-$incoming="你有新的来电";
-$dial_out="正在拨号";
 $customer_name = '客户名';
 $category = '类别';
 $contact = "联系人";
@@ -36,7 +23,7 @@ $no_dial_list		=	"拨号列表为空";
 $records_in_dial_list_table		=	"等待拨打的电话数目: ";
 $start_campaign					=	"启动拨号系统";
 $get_a_phone_number				=	"获取一个电话号码";
-
+$contact_add_error	= "添加联系人失败";
 $add_record		= "添加记录: ";
 $append			= "添加";
 $confirm		= "查找";

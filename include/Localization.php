@@ -14,7 +14,7 @@ class Localization
 	 
 	function Translate($str)
 		{
-		include ('language/'.($this->page)."_".($this->language)."_".($this->country).".inc");
+		include ('language/'.($this->page)."_".($this->language)."_".($this->country).".php");
 		return $$str;
 		}
 	}

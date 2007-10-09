@@ -40,16 +40,6 @@ $xajax = new xajax("note.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
-$xajax->registerFunction("add");
-$xajax->registerFunction("edit");
-$xajax->registerFunction("delete");
-$xajax->registerFunction("save");
-$xajax->registerFunction("update");
-$xajax->registerFunction("editField");
-$xajax->registerFunction("updateField");
-$xajax->registerFunction("showDetail");
-$xajax->registerFunction("showContact");
-$xajax->registerFunction("showNote");
 $xajax->registerFunction("export");
 
 ?>

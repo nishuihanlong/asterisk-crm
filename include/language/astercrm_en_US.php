@@ -1,17 +1,4 @@
 <?
-$welcome="Welcome ";
-$extension="Your extension is ";
-$waiting="Waiting ";
-$listening="Listening ";
-$processing_please_wait = "Processing, please wait";
-$logout="Log out";
-$transfer="Transfer";
-$talking_to	=	"Talking to ";
-$manager	=	"Manager";
-$dial			= "Dial";
-$stand_by="please stand by";
-$incoming="Incoming call from";
-$dial_out="Dialing to";
 $customer_name = "Customer Name";
 $category = "Category";
 $contact = "Contact";
@@ -36,7 +23,7 @@ $no_dial_list		=	"empty in dial list table";
 $records_in_dial_list_table		=	"Records in dial list table: ";
 $start_campaign					=	"Start campaign";
 $get_a_phone_number					=	"Get a phone number";
-
+$contact_add_error	= "Faile to add a contact";
 $add_record		= "Add record: ";
 $append			= "Append";
 $browser		= "Browser";

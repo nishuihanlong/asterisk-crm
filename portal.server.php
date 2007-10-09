@@ -536,7 +536,7 @@ function edit($id = null, $tblName, $type = "note"){
 
 function delete($id = null, $table_DB = null){
 	global $locate;
-	Customer::deleteRecord($id); 				// <-- Change by your method
+	Customer::deleteRecord($id,'note'); 				// <-- Change by your method
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("grid", "innerHTML", $html);
@@ -593,18 +593,15 @@ function showContact($id = null, $type="contact"){
 function save($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
-//	print "save";
 //	exit;
 	if (empty($f['customer']) && empty($f['contact']))
 		return $objResponse;
-
 	if(empty($f['customer'])) {
 //		$objResponse->addAlert($locate->Translate("customer_cant_null"));
 //		return $objResponse;
 		$customerID = 0;
 	} else{
-
-		if ($f['customerid'] == ''){
+		if ($f['customerid'] == '' || $f['customerid'] == 0){
 			$respOk = Customer::insertNewCustomer($f); // insert a new customer record
 //			$objResponse->addAlert($respOk);
 //			return $objResponse;
@@ -668,13 +665,14 @@ function save($f){
 	} else{
 		$respOk = Customer::insertNewNote($f,$customerID,$contactID); // add a new Note
 		if ($respOk){
-			$objResponse->addAlert($locate->Translate("a_new_note_added"));
+			$html = createGrid(0,ROWSXPAGE);
+			$objResponse->addAssign("grid", "innerHTML", $html);
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("a_new_note_added"));
 		}else{
 			$objResponse->addAlert($locate->Translate("note_add_error"));
 			return $objResponse;
 		}
 	}
-
 
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
@@ -685,55 +683,6 @@ function save($f){
 	$objResponse->addClear("formContactInfo", "innerHTML");
 
 	return $objResponse->getXML();
-
-//	$message = Customer::checkAllData($f,1); // <-- Change by your method
-	if(!$message){
-		
-		if ($f['customerid'] == '')
-			$respOk = Customer::insertNewCustomer($f); // 添加一个新的客户
-		else{
-			$respOk = $f['customerid'];
-		}
-
-		if ($respOk != 0){
-
-			$customerID = $respOk;
-
-			if ($f['contactid'] == ''){
-				$respOk = Customer::insertNewContact($f,$customerID); // 添加一个新的联系人
-			}else{
-				$respOk = Customer::updateContactRecord($f); // update contact record
-				if ($respOk){
-					$respOk = $f['contactid'];
-				}else{
-					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("contact_update_error"));
-				}
-			}
-
-			if ($respOk != 0){
-				$contactID = $respOk;
-				$respOk = Customer::insertNewNote($f,$customerID,$contactID); // add a new Note
-				if ($respOk){
-					$html = createGrid(0,ROWSXPAGE);
-					$objResponse->addAssign("grid", "innerHTML", $html);
-					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("note_add_success"));
-					$objResponse->addAssign("formDiv", "style.visibility", "hidden");
-					$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
-					$objResponse->addAssign("formContactInfo", "style.visibility", "hidden");
-				}else{
-					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("note_add_error"));
-				}
-			}else{
-				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("contact_update_error"));
-			}
-		}else{
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("customer_add_error"));
-		}
-	}else{
-		$objResponse->addAlert($message);
-	}
-	return $objResponse->getXML();
-	
 }
 
 function update($f, $type){
