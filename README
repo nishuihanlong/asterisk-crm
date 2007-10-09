@@ -40,13 +40,23 @@ processes can run on the same server, however, multiple servers enhance performa
 
 	6) click to transfer
 
-	7) can be integrated with all asterisk based systems, such as Magiclink IP PBX, Trixbox ...
+	7) can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
 	
 	8)	multi-language support (Chinese and English for now)
 
 	9)	support external crm
 
 	10)	extension status
+
+	11) show asterisk active channels 
+
+	12) predictive dialer
+
+	13) CRM data export
+
+	14) dial manually in agent interface 
+
 
 2. asterCRM Installation: (assuming your WEB root is /var/www/html)
 
@@ -58,13 +68,14 @@ processes can run on the same server, however, multiple servers enhance performa
 	Note: this creates the /var/www/html/astercrm directory which contains the
 	PHP scripts and several sub-directories. 
 
-	/var/www/html/astercrm			main directory and PHP scripts  
-	/var/www/html/astercrm/proxyman 	proxyman related files
-	/var/www/html/astercrm/includes 	files needed in php scripts
-	/var/www/html/astercrm/images		image files used via the PHP scripts
-	/var/www/html/astercrm/css		style files used via the PHP scripts
-	/var/www/html/astercrm/js		auto-complete java scripts
-	/var/www/html/astercrm/screenshot	some screen shot of asterCRM
+	/var/www/html/astercrm						main directory and PHP scripts  
+	/var/www/html/astercrm/proxyman 			proxyman related files
+	/var/www/html/astercrm/includes 			files needed in php scripts
+	/var/www/html/astercrm/includes/language 	asterCRM language files
+	/var/www/html/astercrm/images				image files used via the PHP scripts
+	/var/www/html/astercrm/css					style files used via the PHP scripts
+	/var/www/html/astercrm/js					auto-complete java scripts
+	/var/www/html/astercrm/screenshot			some screen shot of asterCRM
 
 	It is highly advised that the whole proxyman directory be moved to a more secure
 	location like /opt and out of the WEB root directory (see step 4)
@@ -166,6 +177,12 @@ processes can run on the same server, however, multiple servers enhance performa
 
 	click "Predictive Dialer" to enter predictive dialer section
 
+	click "Customer Manager" to enter customer information management section
+
+	click "Contact Manager" to enter contact information management section
+
+	click "Note Manager" to enter note information management section
+
 	click "Back" to return to agent interface
 
 3. How to use confirm button
@@ -181,7 +198,7 @@ processes can run on the same server, however, multiple servers enhance performa
 
 ====================================================================================
 
-2007-09-10	Version 0.44 Released (GPL)
+2007-10-9	Version 0.445 Released (GPL)
 
 ====================================================================================
 
@@ -193,40 +210,76 @@ Manager Interface
 
 1. Extension Manager
 
-Binding astercrm account and asterisk extension here, also manager could grant privileges
-to astercrm account.
+Binding astercrm account and asterisk extension here, 
+also manager could grant privileges to astercrm account.
 
-username:	username to log into astercrm
-password:	password to log into astercrm
-
-, only two levels for now. If it's "admin" in "User Type" field, that
-means this account could enter manager interface section.
+username:		username to log into astercrm
+password:		password to log into astercrm
+usertype:		only two levels for now. 
+				If it's "admin" in this field, 
+				which means this account could enter manager interface section.
+extension:		a extension would be binding to this user,
+				which means all events of the extension would reflect this user
+				such as dial, hangup, also pop-up
+				digits only 
+				(e.g. 8000)
+extensions:		which extensions the user could see status, and use click to transfer
+				put several extensions here, use comma to seperate
+				(e.g. 8000,8001,8002,8003)
 
 2. System Monitor
+
+	You could see sip peer status here, 
+	such as which peer is calling, 
+		    which peer is online or offline
+
+	Notice:
+		some peer may not appear here, because system monitor read data from database
+		so usually we can not read all sip peer status here
+
 3. Active Channels
+
+	this page shows the result of cli command:
+		sip show channels verbose
+	the result refresh every one second.
+
 4. Predictive Dialer
 
-Administrator could upload a phone list to table "diallist", so that astercrm know which number could be dialed.
+Administrator could upload a phone list to table "diallist", so that astercrm know 
+which number could be dialed.
 there's are two field in table "diallist"
 	phonenumber and assign
 About assign, it would be a extension number in this field, means this number could be dialed by which extension, 
 this phone number would appears in "agent dial mode"
 
 there're two mode in dialer setion:
+
 	a. agent dial mode
 
-		if phone number is assigned to extension in table "dial list", when agent login, he could see a
-button "get a new number" and XX records in dial list, then he can dial the button, a new table would pop up,
+if phone number is assigned to extension in table "dial list", when agent login, 
+he could see a button "get a new number" and XX records in dial list, 
+then he can dial the button, a new table would pop up,
 and in this table would have a phone number, agent could click the number to make a call. 
-		once agent click the button and a new table pop up with a new phone number, the number would be
-deleted from database, so agent could see that the number in dial list would decrease, until no records in 
-database, and the button disappears.
+once agent click the button and a new table pop up with a new phone number, 
+the number would be
+deleted from database, so agent could see that the number in dial list would decrease, 
+until no records in database, and the button disappears.
 
-	b. manager dial mode
+	b. manager predial mode
 
-	manager dial mode need a "admim" user, in predictive dialer module, if there're records in table "diallist"
+manager dial mode need a "admim" user, in predictive dialer module, 
+if there're records in table "diallist"
 (whatever assigned or not), he could see XXX records (means records number in database), 
-a "Dial" button and a inputbox (means maximum concurrent active channel in asterisk, it would "pause" when 
-asterisk active channels reach this number untill some channels hang up dialer would "continue" automaticly), during
-this progress manger could stop/start the dialer or change max channels number. In config.php you could set where
-the call would be sent to when answered, such as a IVR, a queue or whatever you need.
+a "Dial" button and a inputbox (means maximum concurrent active channel in asterisk, 
+it would "pause" when asterisk active channels reach this number untill some channels 
+hang up dialer would "continue" automaticly), during
+this progress manger could stop/start the dialer or change max channels number. 
+In config.php you could set where the call would be sent to when answered, 
+such as a IVR, a queue or whatever you need.
+
+
+5. Customer Manager
+
+6. Contact Manager
+
+7. Note Manager
