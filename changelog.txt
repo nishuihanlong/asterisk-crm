@@ -48,8 +48,6 @@ v0.045
 增加导入/导出客户信息的功能
 
 need to add queue status
-need to add customer manage page for admin and user
-need to add contact manage page for admin and user
 增加导入diallist数据的模块
 增加分配座席diallist数据的模块
 need to avoid mulit-Proxyman in memory
@@ -62,8 +60,6 @@ need to add monitor control
 need to add phone spy
 增加对sqlite的支持
 增加对config.php的管理为web模式
-add autodial in agent interface
-增加显示版权信息的位置
 删除数据时，改删除操作为转移表操作
 关闭数据库
 #为什么在系统监视里面看到的分机不全？
