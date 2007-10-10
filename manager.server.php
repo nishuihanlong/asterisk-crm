@@ -27,6 +27,7 @@ function init(){
   	$html .= "<a href='customer.php' >".$locate->Translate("customer_manager")."</a><br>";
   	$html .= "<a href='contact.php' >".$locate->Translate("contact_manager")."</a><br>";
   	$html .= "<a href='note.php' >".$locate->Translate("note_manager")."</a><br>";
+  	$html .= "<a href='diallist.php' >".$locate->Translate("diallist_manager")."</a><br>";
 
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 
@@ -426,6 +427,10 @@ function predictiveDialer($maxChannels,$totalRecords){
 			DELETE FROM diallist
 			WHERE id = '.$id;
 		$res = $db->query($query);
+
+		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime) VALUES ("'.$phoneNum.'","predictivedialer",now())';
+		$res = $db->query($query);
+
 		$sid=md5(uniqid(""));
 		/*
 		$query = '

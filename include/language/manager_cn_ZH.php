@@ -18,6 +18,7 @@ $system_monitor = "系统分机状态";
 $customer_manager	= "客户信息管理";
 $contact_manager	= "联系人信息管理";
 $note_manager		= "备注信息管理";
+$diallist_manager		= "拨号列表管理";
 $back = "返回";
 $usertype = "用户类型";
 $usertype_note = "目前只支持admin";

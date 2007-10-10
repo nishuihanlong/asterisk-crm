@@ -18,6 +18,7 @@ $system_monitor = "System Monitor";
 $customer_manager	= "Customer Manager";
 $contact_manager	= "Contact Manager";
 $note_manager		= "Note Manager";
+$diallist_manager		= "Diallist Manager";
 $back = "Back";
 $usertype = "User Type";
 $usertype_note = "support admin only";

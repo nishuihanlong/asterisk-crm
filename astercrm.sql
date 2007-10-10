@@ -84,6 +84,15 @@ CREATE TABLE diallist (
   UNIQUE KEY id (id)
 ) ;
 
+#store dialed number (from diallist table)
+CREATE TABLE dialedlist (
+  id int(11) NOT NULL auto_increment,
+  dialnumber	varchar(30) NOT NULL default '',
+  dialedby	varchar(30) NOT NULL default '',
+  dialedtime	datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY id (id)
+) ;
+
 
 #store survey
 CREATE TABLE survey (

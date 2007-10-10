@@ -97,7 +97,7 @@ $config['system']['external_crm_default_url'] = 'http://www.magiclink.cn';
 * when using external crm, put pop up page here
 * %callerid		callerid				
 * %calleeid		calleeid				
-* %method		dial out or dial in	
+* %method		dialout or dialin	
 */
 $config['system']['external_crm_url'] = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method";
 ?>

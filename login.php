@@ -80,8 +80,10 @@ require_once('login.common.php');
 			
 			<div id="formDiv">
 				<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
-					<div name="usernameDiv" id="usernameDiv"></div><div><input type="text" name="username" id="username" /></div>
-					<div name="passwordDiv" id="passwordDiv"></div><div><input type="password" name="password" id="password"/></div>
+					<div name="usernameDiv" id="usernameDiv"></div>
+					<div><input type="text" name="username" id="username" /></div>
+					<div name="passwordDiv" id="passwordDiv"></div>
+					<div><input type="password" name="password" id="password"/></div>
 					<div name="locateDiv" id="locateDiv">
 						<SELECT name="locate" id="locate" onchange="init();">
 							<OPTION value="en_US">English</OPTION>

@@ -4,6 +4,7 @@ require_once ("customer.common.php");
 require_once ('grid.note.manager.inc.php');
 require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
+require_once ('grid.common.php');
 
 function export(){
 	$objResponse = new xajaxResponse();
@@ -133,18 +134,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	$html = $table->render();
  	
  	return $html;
-}
-
-
-
-function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-	
-	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
-	$objResponse = new xajaxResponse();
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
-	
-	return $objResponse->getXML();
 }
 
 function delete($id = null, $table_DB = null){
