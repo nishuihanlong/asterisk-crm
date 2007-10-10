@@ -44,16 +44,16 @@ v0.045
 2007-10-9	将语言文件改名为.php, 并且合并了相同的部分
 2007-10-10	修改了点击复制联系人时出现的javascript bug
 2007-10-10	增加了代替ProxyMan的方法eventsdeamon
+		以前的ProxyMan.py和delete_evnets.py都可以不用了
+		代之以 eventsdeamon.pl &
 -----------------------------------------------------------------------------------------
 
 改进后台管理
 增加导入客户信息/拨号列表的功能
 增加分配座席diallist数据的模块
 need to add queue status
-need to avoid mulit-Proxyman in memory
 多css类型支持
 增加agent之间的im功能
-修改delete_events.py 将被删除的事件保存到另外的位置
 need to add Real-time campaign display screens 
 need to add CDR to user
 need to add monitor control
@@ -62,4 +62,7 @@ need to add phone spy
 增加对config.php的管理为web模式
 删除数据时，改删除操作为转移表操作
 关闭数据库
+
+分机状态不准的问题 (更改缺省状态为 未注册)
+
 #为什么在系统监视里面看到的分机不全？

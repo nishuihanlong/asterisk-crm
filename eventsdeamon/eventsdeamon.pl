@@ -6,12 +6,12 @@ use DBI;
 # Config;
 my $log_life = 180;
 
-#my	$create_table = qq~CREATE TABLE events(
-#`id` INT(16) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-#`timestamp` DATETIME,
-#`event` TEXT,
-#INDEX `timestamp` (`timestamp`)
-#) ENGINE = MyISAM;~;
+my	$create_table = qq~CREATE TABLE events(
+`id` INT(16) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+`timestamp` DATETIME,
+`event` TEXT,
+INDEX `timestamp` (`timestamp`)
+) ENGINE = MyISAM;~;
 
 
 
