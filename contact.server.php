@@ -8,8 +8,7 @@ require_once ('include/xajaxGrid.inc.php');
 function export(){
 	$objResponse = new xajaxResponse();
 
-	$objResponse->addAssign("sql","value","SELECT contact.*,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid ");
-	$objResponse->addAssign("filename","value","contact.csv");
+	$objResponse->addAssign("type","value","contact");
 	$objResponse->addScript("xajax.$('frmDownload').submit();");
 	$objResponse->addAlert("downloading, please wait");
 	return $objResponse;

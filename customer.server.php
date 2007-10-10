@@ -4,13 +4,12 @@ require_once ("customer.common.php");
 require_once ('grid.customer.manager.inc.php');
 require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
-require_once ('include/functions.inc.php');
+
 
 function export(){
 	$objResponse = new xajaxResponse();
 
-	$objResponse->addAssign("sql","value","SELECT * FROM customer");
-	$objResponse->addAssign("filename","value","customer.csv");
+	$objResponse->addAssign("type","value","customer");
 	$objResponse->addScript("xajax.$('frmDownload').submit();");
 	$objResponse->addAlert("downloading, please wait");
 	return $objResponse;

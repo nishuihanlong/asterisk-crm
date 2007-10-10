@@ -1,3 +1,22 @@
+function contactCopy(contactid){
+	if ( xajax.$('iptcallerid') == null)
+	{
+		callerid= '';
+	}else{
+		callerid= xajax.$('iptcallerid').value;
+	}
+
+	if ( xajax.$('customerid') == null)
+	{
+		customerid= '';
+	}else{
+		customerid= xajax.$('customerid').value;
+	}
+
+	xajax_add(callerid,customerid,contactid);
+	return false;
+}
+
 function btnConfirmCustomerOnClick(){
 //	alert (xajax.$('contactid').value);
 

@@ -42,14 +42,14 @@ v0.045
 2007-10-9	增加了contact和note管理，以及customer,contact,note的导出功能
 2007-10-9	增加了astercrm类, 修改了grid.*
 2007-10-9	将语言文件改名为.php, 并且合并了相同的部分
+2007-10-10	修改了点击复制联系人时出现的javascript bug
+2007-10-10	增加了代替ProxyMan的方法eventsdeamon
 -----------------------------------------------------------------------------------------
 
 改进后台管理
-增加导入/导出客户信息的功能
-
-need to add queue status
-增加导入diallist数据的模块
+增加导入客户信息/拨号列表的功能
 增加分配座席diallist数据的模块
+need to add queue status
 need to avoid mulit-Proxyman in memory
 多css类型支持
 增加agent之间的im功能

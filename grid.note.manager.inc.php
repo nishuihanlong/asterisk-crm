@@ -1,11 +1,4 @@
 <?
-/* NOTE: For this example, the package PEAR is required, you can see http://pear.php.net for more information 
-	In addition, in my example  the "include_pah" is modify including the PEAR full path.
-	You can to modify the class methods, as you wish you.
-	
-	But anyway, the full package contain the DB.php and PEAR.php files obtained from PEAR package.
-*/
-
 require_once 'db_connect.php';
 require_once 'note.common.php';
 require_once 'include/Localization.php';

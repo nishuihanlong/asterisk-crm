@@ -14,18 +14,18 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 	header("Location: portal.php");
 
 require_once ("db_connect.php");
-require_once ('include/functions.inc.php');
+require_once ('astercrm.php');
 
 
-$filename = $_REQUEST['filename'];
-$sql = $_REQUEST['sql'];
+//$filename = $_REQUEST['filename'];
+$type = $_REQUEST['type'];
 ob_start();
 header('Content-type:  application/force-download');
 header('Content-Transfer-Encoding:  Binary');
-header('Content-disposition:  attachment; filename='.$filename);
+header('Content-disposition:  attachment; filename='.$type.'.csv');
 
 
-
+/*
 $res = Common::export($GLOBALS['db'],$sql);
 	while ($res->fetchInto($row)) {
 		foreach ($row as $val){
@@ -37,8 +37,8 @@ $res = Common::export($GLOBALS['db'],$sql);
 		}
 		$txtstr .= "\n";
  	}
-
-echo $txtstr;
+*/
+echo astercrm::exportCSV($type);
 ob_end_flush();
 
 ?>

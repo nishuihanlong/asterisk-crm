@@ -2,6 +2,7 @@
 			auto-complete script
 astercrm.sql		astercrm数据库脚本
 			astercrm sql script
+astercrm.php		crm类文件
 asterevent.class.php	对asterisk事件处理的php类
 			asterisk events php class
 changelog.txt		改动日志

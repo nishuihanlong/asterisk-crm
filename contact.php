@@ -64,8 +64,7 @@ require_once('contact.common.php');
 		</tr>
 	</table>
 	<form name="frmDownload" id="frmDownload" action="download.php">
-		<input type="hidden" value="" id="sql" name="sql">
-		<input type="hidden" value="" id="filename" name="filename">
+		<input type="hidden" value="" id="type" name="type">
 	</form>
 	</body>
 </html>
