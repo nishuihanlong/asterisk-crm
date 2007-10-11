@@ -35,6 +35,7 @@ $xajax->registerFunction("dial");
 $xajax->registerFunction("transfer");
 $xajax->registerFunction("init");
 $xajax->registerFunction("addWithPhoneNumber");
+$xajax->registerFunction("monitor");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

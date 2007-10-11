@@ -4,6 +4,9 @@
 * system configuration file
 * Function Desc
 
+* Revision 0.045  2007/10/11 17:55:00  modified by solo
+* Desc: add $config['asterisk']['monitorpath']
+
 * Revision 0.045  2007/10/8 17:55:00  modified by solo
 * Desc: delete all Chinese comments
 
@@ -42,6 +45,13 @@ $config['asterisk']['port'] = '';			//should be matched in manager.conf
 $config['asterisk']['username'] = '';		//should be matched in manager.conf
 $config['asterisk']['secret'] = '';			//should be matched in manager.conf
 
+/**
+* Recorded file path
+*
+*/
+$config['asterisk']['monitorpath'] = '/var/spool/asterisk/monitor/';
+$config['asterisk']['monitorformat'] = 'gsm';	//gsm|wav|wav49 
+
 /** 
 * Asterisk context parameter, use which context when dial in or dial out
 */ 
@@ -56,6 +66,7 @@ $config['system']['incontext'] = 'from-siptrunk';	//context when dial in, in tri
 
 $config['system']['preDialer_context'] = 'from-siptrunk';
 $config['system']['preDialer_extension'] = '1';
+
 
 /**
 * astercrm wouldnot pop-up unless the length of callerid is greater than or equal to

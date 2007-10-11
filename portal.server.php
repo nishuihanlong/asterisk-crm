@@ -55,9 +55,18 @@ function init(){
 	$objResponse->addAssign("username","value", $_SESSION['curuser']['username'] );
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
-	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
+//	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
+	$objResponse->addAssign("btnStatus","value", 'idle');
 	$objResponse->addAssign("btnDial","value", $locate->Translate("dial") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
+	$objResponse->addAssign("spanMonitorSetting","innerText", $locate->Translate("always_record_when_connected") );
+	$objResponse->addAssign("spanMonitor","innerText", $locate->Translate("monitor") );
+
+	$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
+	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
+	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+	$objResponse->addAssign("btnMonitor","disabled", true );
+	
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
@@ -144,10 +153,22 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
+			if ($myValue['btnStatus'] == 'link')
+				return $objResponse;
+//			if ($call['callerChannel'] == '' or $call['calleeChannel'] == '')
+//				return $objResponse;
 			$status	= "link";
 			$info	= $locate->Translate("talking_to").$myValue['callerid'];
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
+//			if  ($call['callerChannel'] != '' and $call['calleeChannel']!=''){
+				//enable monitor
+				$objResponse->addAssign("btnMonitor","disabled", false );
+				$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+				if ($myValue['chkMonitor'] == 'on') //always recording
+					$objResponse->addScript("monitor();");
+//			}
+			
 			if ($myValue['sltExten'] == ''){
 				$transfer = '
 							<SELECT id="sltExten" name="sltExten">
@@ -174,8 +195,15 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerChannel","value", '');
 			$objResponse->addAssign("calleeChannel","value", '');
 			$objResponse->addAssign("transfer","innerHTML", '');
+
+			//disable monitor
+			$objResponse->addAssign("btnMonitor","disabled", true );
+			$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
+
+
 		}
-		$objResponse->addAssign("status","innerHTML", $status );
+//		$objResponse->addAssign("status","innerHTML", $status );
+		$objResponse->addAssign("btnStatus","value", $status );
 		$objResponse->addAssign("myevents","innerHTML", $info );
 	}
 
@@ -198,7 +226,7 @@ function waitingCalls($myValue){
 
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
-		$status	= 'waiting';
+		$status	= 'idle';
 		$call['curid'] = $curid;
 		$direction	= '';
 		$info	= $locate->Translate("stand_by");
@@ -262,7 +290,8 @@ function waitingCalls($myValue){
 	}
 
 	$objResponse->addScript('document.title='.$title.';');
-	$objResponse->addAssign("status","innerHTML", $stauts );
+//	$objResponse->addAssign("status","innerHTML", $stauts );
+	$objResponse->addAssign("btnStatus","value", $stauts );
 	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
 	$objResponse->addAssign("callerid","value", $call['callerid'] );
 	$objResponse->addAssign("curid","value", $call['curid'] );
@@ -527,7 +556,8 @@ function dial($phoneNum,$first = 'caller'){
 //	echo "ok";
 	if ($config['system']['firstring'] == 'caller'){	//caller will ring first
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
-
+//		print $strChannel;
+//		exit;
 /*
 		$temp=		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
@@ -541,7 +571,7 @@ function dial($phoneNum,$first = 'caller'){
 //	$objResponse->addAlert("dial to ".$temp);
 		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 	}else{
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."";
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
 /*
 				$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
@@ -556,6 +586,49 @@ function dial($phoneNum,$first = 'caller'){
 	}
 	$myAsterisk->disconnect();
 	return $objResponse->getXML();
+}
+
+function monitor($channel,$action = 'start'){
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+
+	if ($action == 'start'){
+		$filename = str_replace("/","-",$channel);
+		$filename = $config['asterisk']['monitorpath'].$channel;
+		$filename .= '.'.time();
+
+//		print $filename;
+//		exit;
+
+		$format = $config['asterisk']['monitorformat'];
+		$mix = true;
+		$res = $myAsterisk->Monitor($channel,$filename,$format,$mix);
+		if ($res['Response'] == 'Error'){
+			$objResponse->addAlert($res['Message']);
+			return $objResponse;
+		}
+		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("recording") );
+		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
+
+		$objResponse->addAssign("btnMonitor","value", $locate->Translate("stop_record") );
+	}else{
+		$myAsterisk->StopMontor($channel);
+
+		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
+		$objResponse->addAssign("btnMonitorStatus","value", "idle" );
+
+		$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+	}
+
+	$objResponse->addAssign("btnMonitor","disabled", false );
+	return $objResponse;
 }
 
 function getContact($callerid){

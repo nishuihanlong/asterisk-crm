@@ -202,7 +202,7 @@ function add($callerid = null,$customerid = null,$contactid = null){
 
 	$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 //	$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
-	$html .= Customer::formAdd();
+	$html .= Customer::formAdd($callerid,$customerid,$contactid);
 //	$objResponse->addAlert($callerid);
 	// End edit zone
 	$html .= Table::Footer();

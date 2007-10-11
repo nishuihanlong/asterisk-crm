@@ -13,4 +13,10 @@ $dial			= "拨号";
 $stand_by="请稍候";
 $incoming="你有新的来电";
 $dial_out="正在拨号";
+$idle	= "空闲";
+$always_record_when_connected = "通话时自动录音";
+$start_record	= "开始录音";
+$stop_record	= "停止录音";
+$monitor	= "系统录音";
+$recording	= "正在录音";
 ?>

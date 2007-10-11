@@ -284,10 +284,25 @@ class asterEvent extends PEAR
 
 		if ($res->fetchInto($list)) {
 			$flds	= split("  ",$list['event']);
+//			print_r($flds);
+//			exit;
 			$call['callerChannel'] = trim(substr($flds[2],9));
+			$call['callerChannel'] = split(",",$call['callerChannel']);
+			$call['callerChannel'] = $call['callerChannel'][0];
+
 			$call['calleeChannel'] = trim(substr($flds[3],9));
+			//检查是否是local事件
+
 			$call['status'] = 'link';
 			$call['curid'] = $list['id'];
+
+			//检查是否是local事件
+			//如果是local, 返回状态为空闲
+			//if (strstr($call['callerChannel'],'Local')){
+			//	//print_r($call['callerChannel']);
+			//	$call['status'] = '';
+			//}
+
 		} else
 			$call['status'] = '';
 
@@ -373,7 +388,8 @@ class asterEvent extends PEAR
 
 			if ($id > $curid) 
 				$curid = $id;
-
+//			print_r($flds);
+//			print $callerid;
 //			$callerid = trim($callerid);
 			$call['status'] = 'incoming';
 			$call['callerid'] = trim($callerid);

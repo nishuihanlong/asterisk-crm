@@ -47,7 +47,10 @@ v0.045
 		以前的ProxyMan.py和delete_evnets.py都可以不用了
 		代之以 eventsdeamon.pl &
 2007-10-10	增加了dialedlist表，保存从diallist里拨出的号码
-2007-10-10	修改了manager.server.php和portal.server.php, 从diallist表里获取号码后会保存在dialedlist表里
+2007-10-10	修改了manager.server.php和portal.server.php, 
+		从diallist表里获取号码后会保存在dialedlist表里
+2007-10-10	增加了grid.common.php, 用于保存crm的通用函数
+2007-10-11	增加了对录音功能的控制
 -----------------------------------------------------------------------------------------
 
 改进后台管理
@@ -58,7 +61,6 @@ need to add queue status
 增加agent之间的im功能
 need to add Real-time campaign display screens 
 need to add CDR to user
-need to add monitor control
 need to add phone spy
 增加对sqlite的支持
 增加对config.php的管理为web模式
@@ -66,6 +68,6 @@ need to add phone spy
 关闭数据库
 diallist中完成拨号的号码保存到另外的表
 增加调查统计功能
-分机状态不准的问题 (更改缺省状态为 未注册)
+voicemail check
 
 #为什么在系统监视里面看到的分机不全？

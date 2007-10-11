@@ -829,7 +829,7 @@ div.main {
 }
 
 .formDiv {
-	width: 480px; 
+	width: 520px; 
 	/* height: 400px;  */
 	border: thin solid #767676; 
 /*	border-right-width: medium; 
@@ -838,7 +838,7 @@ div.main {
 	border-bottom-color: #767676; 
 */
 	position: absolute; 
-	left: 50%; 
+	right: 10px; 
 	top: 10px;
 	visibility: hidden; 
 	background-color: #F1F1F1;

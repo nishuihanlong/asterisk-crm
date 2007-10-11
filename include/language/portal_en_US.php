@@ -13,4 +13,10 @@ $dial			= "Dial";
 $stand_by="please stand by";
 $incoming="Incoming call from";
 $dial_out="Dialing to";
+$idle	= "idle";
+$always_record_when_connected = "Always record when connected";
+$start_record	= "Start record";
+$stop_record	= "Stop record";
+$monitor	= "Monitor";
+$recording	= "Recording";
 ?>

@@ -44,6 +44,20 @@ require_once('portal.common.php');
 				}
 			setTimeout("updateEvents()", 1000);
 		}
+
+		function monitor(){
+			if (xajax.$('callerChannel').value.indexOf("Local") < 0 )
+				channel = xajax.$('callerChannel').value;
+			else
+				channel = xajax.$('calleeChannel').value;
+
+			if (xajax.$('btnMonitorStatus').value == 'recording')
+				xajax_monitor(channel,'stop');
+			else
+				xajax_monitor(channel,'start');
+
+			return false;
+		}
 		
 		</script>
 
@@ -57,7 +71,18 @@ require_once('portal.common.php');
 		<div id="formWrapper"></div>
 		
 		<div id="myevents"></div>
-		<div id="status"></div>
+		<br>
+
+		<span id="spanMonitor" name="spanMonitor"></span><br>
+		<div id="divMonitor">
+			<span id="spanMonitorStatus" name="spanMonitorStatus"></span><br>
+			<input type='button' value='' name="btnMonitor" id="btnMonitor" onclick="monitor();return false;">
+			<input type='hidden' value='' name="btnMonitorStatus" id="btnMonitorStatus">
+			<input type='checkbox' name='chkMonitor' id="chkMonitor">
+			<span id="spanMonitorSetting" name="spanMonitorSetting"></span>
+		</div>
+
+		<input type="hidden" name="btnStatus" id="btnStatus" value=""/>
 		<input type="hidden" name="username" id="username" value=""/>
 		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
@@ -70,7 +95,7 @@ require_once('portal.common.php');
 		<input type="hidden" name="popup" id="popup" value="yes"/>
 		<div id="debug"></div>
 	</form>
-
+	<br>
 	<div id="divDialList" name="divDialList"></div>
 	<div id="processingMessage" name="processingMessage"></div>
 	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber"><input type="button" id="btnDial" name="btnDial" value="Dial" onclick="dial(xajax.$('iptDestnationNumber').value)"></div>

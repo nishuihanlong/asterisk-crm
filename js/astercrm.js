@@ -8,11 +8,10 @@ function contactCopy(contactid){
 
 	if ( xajax.$('customerid') == null)
 	{
-		customerid= '';
+		customerid= 0;
 	}else{
 		customerid= xajax.$('customerid').value;
 	}
-
 	xajax_add(callerid,customerid,contactid);
 	return false;
 }
