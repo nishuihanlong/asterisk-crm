@@ -53,7 +53,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("surveyname");
+	$headers[] = $locate->Translate("survey_title");
 	$headers[] = $locate->Translate("create_time");
 	$headers[] = $locate->Translate("create_by");
 
@@ -83,7 +83,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("surveyname");
+	$fieldsFromSearchShowAs[] = $locate->Translate("survey_title");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
@@ -114,13 +114,80 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 function delete($id = null, $table_DB = null){
 	global $locate;
-	Customer::deleteRecord($id,'survey'); 				// <-- Change by your method
+	Customer::deleteSurvey($id); 				// <-- Change by your method
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("grid", "innerHTML", $html);
 	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
 	return $objResponse->getXML();
 }
+
+function add($surveyid = 0){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	$html = Table::Top($locate->Translate("add_survey"),"formDiv");  
+	$html .= Customer::formAdd($surveyid);
+	$html .= Table::Footer();
+	$objResponse->addAssign("formDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formDiv", "innerHTML", $html);
+
+	if ($surveyid == 0 ){
+		$objResponse->addScript("xajax.$('surveyname').focus();");
+	}else{
+		$objResponse->addScript("xajax.$('surveyoption').focus();");
+	}
+
+	return $objResponse->getXML();
+}
+
+function edit($surveyid = 0){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if ($surveyid == 0)
+		return $objResponse;
+
+	$html = Table::Top($locate->Translate("add_survey"),"formDiv");  
+	$html .= Customer::formEdit($surveyid);
+	$html .= Table::Footer();
+	$objResponse->addAssign("formDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formDiv", "innerHTML", $html);
+
+	return $objResponse->getXML();
+}
+
+	function save($f){
+		global $locate;
+		$objResponse = new xajaxResponse();
+		if ($f['surveyid'] == 0){
+			if ($f['surveyname'] == ''){
+				$objResponse->addAlert($locate->Translate("please_enter_survey"));
+				$objResponse->addScript("xajax.$('surveyname').focus();");
+				return $objResponse;
+			}else{
+				$surveyid = Customer::insertNewSurvey($f['surveyname']); 
+				$objResponse->addAlert($locate->Translate("survey_added"));
+				$html = createGrid(0,ROWSXPAGE);
+				$objResponse->addAssign("grid", "innerHTML", $html);
+			}
+
+		}
+		else
+			$surveyid = $f['surveyid'];
+
+
+		if ($surveyid == 0){
+			return $objResponse;
+		}else{
+			if ($f['surveyoption'] != ''){
+				$surveyoptionid = Customer::insertNewOption($f['surveyoption'],$surveyid);
+				$objResponse->addAlert($locate->Translate("option_added"));
+			}
+		}
+		$objResponse->addScript("xajax_add('".$surveyid."')");
+
+		return $objResponse->getXML();
+	}
 
 $xajax->processRequests();
 
