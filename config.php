@@ -30,6 +30,12 @@
 * Database type 
 * Only support mysql for now
 */ 
+define("UPLOAD_IMAGE_MIME", "application/vnd.ms-excel,application/msword,text/plain");
+define("UPLOAD_IMAGE_SIZE", 10240);
+define("UPLOAD_IMAGE_SIZE_KB", 1024); 
+define("UPLOAD_IMAGE_PATH", "./tempimage/"); 
+session_start();
+///////////////////////
 $config['database']['dbtype'] = 'mysql';
 
 $config['database']['dbhost'] = 'localhost';
@@ -111,4 +117,6 @@ $config['system']['external_crm_default_url'] = 'http://www.magiclink.cn';
 * %method		dialout or dialin	
 */
 $config['system']['external_crm_url'] = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method";
+//**********************
+
 ?>

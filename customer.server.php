@@ -200,6 +200,13 @@ function showDetail($recordID){
 	}
 }
 
+function importCsv(){
+	$objResponse = new xajaxResponse();
+	//$objResponse->addScript("gotourl('./index.html');");
+	$objResponse->addScript("window.location.href='./importcsv.html'");
+	return $objResponse->getXML();
+}
+
 $xajax->processRequests();
 
 ?>

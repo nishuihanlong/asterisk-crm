@@ -40,6 +40,10 @@ require_once('customer.common.php');
 		function exportCustomer(){
 			xajax_export();
 		}
+
+		function importCsv(){
+			xajax_importCsv();
+		}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -48,8 +52,8 @@ require_once('customer.common.php');
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 	<br>
 	<div id="divActive" name="divActive">
-		<input type="button" value="IMPORT" id="btnImport" name="btnImport">
-		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();">
+		<input type="button" value="IMPORT" id="btnImport" name="btnImport" onClick="importCsv();"/>
+		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

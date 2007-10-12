@@ -51,5 +51,6 @@ $xajax->registerFunction("showDetail");
 $xajax->registerFunction("showContact");
 $xajax->registerFunction("showNote");
 $xajax->registerFunction("export");
+$xajax->registerFunction("importCsv");
 
 ?>
