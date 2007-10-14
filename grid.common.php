@@ -49,6 +49,7 @@ function showContact($id = null, $type="contact"){
 function save($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
+//	print $f['surveyoption'];
 //	exit;
 	if (empty($f['customer']) && empty($f['contact']))
 		return $objResponse;
@@ -101,8 +102,7 @@ function save($f){
 				if ($contactCustomerID == 0 && $customerID ==0)
 				{
 				}else{
-					$res =& Customer::updateField('contact','customerid',$customerID,$f['contactid']
-					);
+					$res =& Customer::updateField('contact','customerid',$customerID,$f['contactid']);
 					if ($res){
 						$objResponse->addAlert($locate->Translate("a_contact_binding"));
 					}
@@ -114,11 +114,17 @@ function save($f){
 		$contactID = $respOk;
 	}
 
-
+	if ($f['surveyoption'] != '' || $f['surveynote'] != ''){
+		$respOk = Customer::insertNewSurveyResult($f['surveyid'],$f['surveyoption'],$f['surveynote'],$customerID,$contactID); 
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_added"));
+	}
+	
+	if ($respOk)
 
 	if(empty($f['note'])) {
 
 	} else{
+
 		$respOk = Customer::insertNewNote($f,$customerID,$contactID); // add a new Note
 		if ($respOk){
 			$html = createGrid(0,ROWSXPAGE);

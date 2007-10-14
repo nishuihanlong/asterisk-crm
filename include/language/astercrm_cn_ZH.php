@@ -59,4 +59,5 @@ $male			= "男";
 $female			= "女";
 $unknown		= "未知";
 $a_contact_binding	= "联系人已绑定";
+$survey_added	= "添加了一个问卷";
 ?>

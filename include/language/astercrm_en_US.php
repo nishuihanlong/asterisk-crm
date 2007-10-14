@@ -59,4 +59,5 @@ $male			= "male";
 $female			= "female";
 $unknown		= "unknown";
 $a_contact_binding	= "binding a contact";
+$survey_added	= "A survey has been added";
 ?>

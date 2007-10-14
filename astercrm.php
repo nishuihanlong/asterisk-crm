@@ -576,6 +576,15 @@ Class astercrm extends PEAR{
 				';
 	}
 
+	//add survey html
+	$html .= '<tr><td colspan="2">';
+	//print astercrm::generateSurvey();
+	//exit;
+	$html .= astercrm::generateSurvey();
+
+	$html .= '</tr></td>';
+
+	//add note html
 	$html .='
 			<tr>
 				<td nowrap align="left">'.$locate->Translate("note").'</td>
@@ -601,9 +610,10 @@ Class astercrm extends PEAR{
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
-			</tr>
-			</table>';
+			</tr>';
+			
 		$html .='
+			</table>
 			</form>
 			'.$locate->Translate("ob_fields").'
 			';
@@ -612,6 +622,69 @@ Class astercrm extends PEAR{
 	}
 
 
+	function getOptions($surveyid){
+
+		global $db;
+		
+		$sql= "SELECT * FROM surveyoptions "
+				." WHERE "
+				."surveyid = " . $surveyid 
+				." ORDER BY cretime ASC";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function insertNewSurveyResult($surveyid,$surveyoption,$surveynote,$customerID,$contactID){
+		global $db;
+		
+		$sql= "INSERT INTO surveyresult SET "
+				."surveyid='".$surveyid."', "
+				."surveyoption='".$surveyoption."', "
+				."surveynote='".$surveynote."', "
+				."customerid='".$customerID."', "
+				."contactid='".$contactID."', "
+				."cretime=now(), "
+				."creby='".$_SESSION['curuser']['username']."'";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+//		$customerid = mysql_insert_id();
+//		return $customerid;
+		return $res;
+	}
+
+	function generateSurvey(){
+		global $db;
+
+		$sql = "SELECT * FROM survey ORDER BY cretime DESC LIMIT 0,1";
+		astercrm::events($sql);
+		$res =& $db->getRow($sql);
+		if (!$res)
+			return '';
+
+		//get survey title and id
+		$surveytitle = $res['surveyname'];
+		$surveyid = $res['id'];
+
+		$html = "<table width='100%'>";
+		$html .= "<tr><td>$surveytitle<input type='hidden' value='$surveyid' name='surveyid' id='surveyid'></td></tr>";
+		
+
+		//get survey options
+		$options = astercrm::getOptions($surveyid);
+		if (!$options)
+			return '';
+		else {
+			while ($options->fetchInto($row)) {
+				$html .= "<tr><td><input type='radio' value='".$row['surveyoption']."' id='surveyoption' name='surveyoption'>".$row['surveyoption']."</td></tr>";
+			}
+			$html .= "<tr><td><input type='text' value='' id='surveynote' name='surveynote' size='50'></td></tr>";
+		}
+
+		$html .= "</table>";
+		return $html;
+	}
 	/**
 	*  Imprime la forma para editar un nuevo registro sobre el DIV identificado por "formDiv".
 	*

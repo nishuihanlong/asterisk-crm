@@ -4,7 +4,6 @@ $back_to_mi		= "Back to MI";
 $add_survey		= "Add Survey";
 $edit_survey	= "Edit Survey";
 $please_enter_survey	= "Please enter survey title";
-$survey_added	= "A survey has been added";
 $survey_title	= "Survey Title";
 $option_added	= "An option has been added";
 $option			= "Option";

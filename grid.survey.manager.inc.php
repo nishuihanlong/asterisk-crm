@@ -89,58 +89,7 @@ class Customer extends astercrm
 		return $res;		
 	}
 
-/*
-	function formAdd($surveyid = 0){
-		global $locate;
-		$html = '
-				<!-- No edit the next line -->
-				<form method="post" name="f" id="f">
-				
-				<table border="1" width="100%" class="adminlist">
-				';
 
-		$html .= '<tr><td colspan=2>
-					'. $locate->Translate("survey_title") .'
-				</td></tr>';
-
-		if ($surveyid == 0){
-			$html .= '<tr><td colspan=2>
-						<input type="text" size="50" maxlangth="100" id="surveyname" name="surveyname"/>
-					 </td></tr>';
-		}else{
-			$survey = Customer::getRecord($surveyid,'survey');
-			$html .= '<tr><td colspan=2>
-						<input type="hidden" id="surveyid" name="surveyid" value="'.$surveyid.'"/>'.$survey['surveyname'].'
-					 </td></tr>';
-		}
-
-		$options = Customer::getOptions($surveyid);
-
-		if ($options){
-			while	($options->fetchInto($row)){
-				$html .= '
-					<tr><td align="left" width="25">'. $locate->Translate("option") .'
-					</td><td>'.$row['surveyoption'].'</td></tr>
-					';
-			}
-		}
-
-		$html .= '<tr><td colspan=2>
-					'.$locate->Translate("option").'
-				 </td></tr>';
-
-		$html .= '<tr><td colspan=2>
-					<input type="text" size="50" maxlength="100" id="surveyoption" name="surveyoption"/>
-					<input type="button" value="'.$locate->Translate("add_record").'" onclick="addOption(\'f\');return false;">
-				 </td></tr>';
-
-		$html .= '
-				</table>
-				</form>
-				';
-		return $html;
-	}
-*/
 	function formAdd($surveyid = 0){
 		global $locate;
 		$html = '
@@ -230,19 +179,6 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		$optionid = mysql_insert_id();
 		return $optionid;
-	}
-
-	function getOptions($surveyid){
-
-		global $db;
-		
-		$sql= "SELECT * FROM surveyoptions "
-				." WHERE "
-				."surveyid = " . $surveyid ;
-
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
 	}
 
 	function deleteSurvey($surveyid){
