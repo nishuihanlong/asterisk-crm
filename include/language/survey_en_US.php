@@ -2,9 +2,12 @@
 require('astercrm_en_US.php');
 $back_to_mi		= "Back to MI";
 $add_survey		= "Add Survey";
+$edit_survey	= "Edit Survey";
 $please_enter_survey	= "Please enter survey title";
-$survey_added	= "Survey added";
+$survey_added	= "A survey has been added";
 $survey_title	= "Survey Title";
-$option_added	= "Option added";
+$option_added	= "An option has been added";
 $option			= "Option";
+$survey_updated = "A survey has been updated";
+$option_updated = "An option has been updated";
 ?>

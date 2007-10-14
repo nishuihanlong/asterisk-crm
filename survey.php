@@ -36,6 +36,11 @@ require_once('survey.common.php');
 		function init(){
 			xajax_init();
 		}
+		
+		function addOption(formName){
+			xajax_save(xajax.getFormValues(formName));
+		}
+
 
 		//-->
 		</SCRIPT>
