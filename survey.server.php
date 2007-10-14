@@ -183,6 +183,84 @@ function add($surveyid = 0){
 	return $objResponse->getXML();
 }
 
+function showDetail($surveyid){
+	global $db;
+	$objResponse = new xajaxResponse();
+
+	//get all accounts
+	$sql = "SELECT * FROM account";
+	$resAccount =& $db->query($sql);
+	if (!$resAccount)
+		return;
+//	return $objResponse;
+	$html .= "<table width='98%'>";
+
+	$ind = 0;
+
+	while ($resAccount->fetchInto($account)){
+//		print_r($account);
+//		exit;
+		if ($ind % 3 == 0)
+			$html .= "<tr>";
+
+		$html .= "<td valign='top' width='30%' align='left'>";
+
+		$html  .= "<table>";
+		$html .= "<tr><th align='left'>Agent: ".$account['username']."</th></tr>";
+		$sql = "SELECT COUNT(*) as number, surveyoption, surveynote FROM surveyresult WHERE creby = '".$account['username']."' AND surveyid = $surveyid GROUP BY surveyoption,surveynote";
+		
+		$res =& $db->query($sql);
+		if ($res){
+			$html .= "<tr><td>";
+			$html .= "<table>";
+			$html .= "<tr><td>Option</td><td>Note</td><td>Number</td></tr>";
+
+			while ($res->fetchInto($row)){
+				$html .= "<tr><td>".$row['surveyoption']."</td><td>".$row['surveynote']."</td><td>".$row['number']."</td></tr>";
+			}
+			$html .= "</table>";
+			$html .= "</td></tr>";
+		}
+		$html .= "</table>";
+
+		$html .= "</td>";
+
+		$ind ++;
+		if ($ind % 3 == 0)
+			$html .= "<tr><td colspan=3 height=2 bgcolor=#000000></td></tr></tr>";
+	}
+	$rest = $ind % 3;
+//	print $rest;
+//	exit;
+	if ($rest != 0){
+		for ($i=0;$i<(3-$rest);$i++){
+			$html .= "<td></td>";
+		}
+		$html .= "</tr>";
+	}
+
+	$html .= "</table>";
+//	print $html;
+//	exit;
+	$sql = "SELECT COUNT(*) as number, surveyoption FROM surveyresult WHERE surveyid = $surveyid GROUP BY surveyoption";
+	$res =& $db->query($sql);
+
+		if ($res){
+			$html .= "<table width=200 align=left>";
+			$html .= "<tr><td colspan=2 align=left><strong>Total</strong></td></tr>";
+			$html .= "<tr><td>Option</td><td>Number</td></tr>";
+
+			while ($res->fetchInto($row)){
+				$html .= "<tr><td>".$row['surveyoption']."</td><td>".$row['number']."</td></tr>";
+			}
+			$html .= "</table>";
+		}
+
+	$objResponse->addAssign("divSurveyStatistc", "innerHTML", $html);
+
+	return $objResponse;
+}
+
 	function save($f){
 		global $locate;
 		$objResponse = new xajaxResponse();

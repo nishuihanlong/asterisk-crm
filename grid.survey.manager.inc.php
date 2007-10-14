@@ -39,7 +39,7 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
+
 	/**
 	*  Obtiene todos registros de la tabla paginados y aplicando un filtro
 	*
@@ -88,8 +88,7 @@ class Customer extends astercrm
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
-
-
+	
 	function formAdd($surveyid = 0){
 		global $locate;
 		$html = '

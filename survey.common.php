@@ -46,5 +46,6 @@ $xajax->registerFunction("delete");
 $xajax->registerFunction("edit");
 $xajax->registerFunction("editField");
 $xajax->registerFunction("updateField");
+$xajax->registerFunction("showDetail");
 
 ?>
