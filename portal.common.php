@@ -53,6 +53,10 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("showContact");
 	$xajax->registerFunction("showNote");
 	$xajax->registerFunction("showDetail");
+	$xajax->registerFunction("noteAdd");
+	$xajax->registerFunction("surveyAdd");
+	$xajax->registerFunction("saveNote");
+	$xajax->registerFunction("saveSurvey");
 }
 //$xajax->processRequests();
 

@@ -18,10 +18,12 @@ Class astercrm extends PEAR{
 				."zipcode='".$f['zipcode']."', "
 				."city='".$f['city']."', "
 				."state='".$f['state']."', "
-				."contactgender='".$f['customerContactGender']."', "
 				."contact='".$f['customerContact']."', "
+				."contactgender='".$f['customerContactGender']."', "
 				."phone='".$f['customerPhone']."', "
 				."category='".$f['category']."', "
+				."bankname='".$f['bankname']."', "
+				."bankaccount='".$f['bankaccount']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);
@@ -98,7 +100,6 @@ Class astercrm extends PEAR{
 	
 	function updateCustomerRecord($f){
 		global $db;
-		
 		$sql= "UPDATE customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
@@ -109,7 +110,9 @@ Class astercrm extends PEAR{
 				."contactgender='".$f['customerContactGender']."', "
 				."state='".$f['state']."', "
 				."city='".$f['city']."', "
-				."category='".$f['category']."' "
+				."category='".$f['category']."', "
+				."bankname='".$f['bankname']."', "
+				."bankaccount='".$f['bankaccount']."' "
 				."WHERE id='".$f['customerid']."'";
 
 		astercrm::events($sql);
@@ -389,6 +392,68 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function surveyAdd($customerid,$contactid){
+		global $locate;
+		$html .= '
+				<form method="post" name="f" id="f">
+				';
+		$html .= astercrm::generateSurvey();
+		$html .= '<div align="right">
+					<input type="button" value="'.$locate->Translate("continue").'" name="btnAddSurvey" id="btnAddSurvey" onclick="xajax_saveSurvey(xajax.getFormValues(\'f\'));return false;">
+					<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
+					<input type="hidden" value="'.$conatctid.'" name="contactid" id="contactid">
+					</div>';
+		$html .= '
+				</form>
+				';
+//		print $html;
+//		exit;
+		return $html;
+	}
+
+	function noteAdd($customerid,$contactid){
+		global $locate;
+		$html .= '
+				<form method="post" name="f" id="f">
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("note").'</td>
+						<td align="left">
+							<input type="text" id="note" name="note" size="35">
+							<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
+							<input type="hidden" value="'.$contactid.'" name="contactid" id="contactid">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("priority").'</td>
+						<td align="left">
+							<select id="priority" name="priority">
+								<option value=0>0</option>
+								<option value=1>1</option>
+								<option value=2>2</option>
+								<option value=3>3</option>
+								<option value=4>4</option>
+								<option value=5 selected>5</option>
+								<option value=6>6</option>
+								<option value=7>7</option>
+								<option value=8>8</option>
+								<option value=9>9</option>
+								<option value=10>10</option>
+							</select> 
+						</td>
+					</tr>
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddNote" name="btnAddNote" value="'.$locate->Translate("continue").'" onclick="xajax_saveNote(xajax.getFormValues(\'f\'));return false;"></td>
+					</tr>
+				';
+			
+		$html .='
+				</table>
+				</form>
+				';
+		return $html;
+	}
+
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
 	*
@@ -427,6 +492,8 @@ Class astercrm extends PEAR{
 							xajax.$(\'customerContactTR\').style.display = \'\';
 							xajax.$(\'customerPhoneTR\').style.display = \'\';
 							xajax.$(\'categoryTR\').style.display = \'\';
+							xajax.$(\'bankNameTR\').style.display = \'\';
+							xajax.$(\'bankAccountTR\').style.display = \'\';
 							xajax.$(\'customerDetial\').value = \'ON\';
 						}else{
 							xajax.$(\'websiteTR\').style.display = \'none\';
@@ -437,6 +504,8 @@ Class astercrm extends PEAR{
 							xajax.$(\'customerContactTR\').style.display = \'none\';
 							xajax.$(\'customerPhoneTR\').style.display = \'none\';
 							xajax.$(\'categoryTR\').style.display = \'none\';
+							xajax.$(\'bankNameTR\').style.display = \'none\';
+							xajax.$(\'bankAccountTR\').style.display = \'none\';
 							xajax.$(\'customerDetial\').value = \'OFF\';
 						};
 						return false;">
@@ -482,6 +551,14 @@ Class astercrm extends PEAR{
 				<tr id="categoryTR" name="categoryTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
 					<td align="left"><input type="text" id="category" name="category" size="35"></td>
+				</tr>
+				<tr id="bankNameTR" name="bankNameTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
+					<td align="left"><input type="text" id="bankname" name="bankname" size="50"></td>
+				</tr>
+				<tr id="bankAccountTR" name="bankAccountTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+					<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"></td>
 				</tr>';
 	}else{
 		$customer =& Customer::getCustomerByID($customerid);
@@ -649,8 +726,6 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
-//		$customerid = mysql_insert_id();
-//		return $customerid;
 		return $res;
 	}
 
@@ -791,6 +866,14 @@ Class astercrm extends PEAR{
 						<td nowrap align="left">'.$locate->Translate("category").'</td>
 						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
 					</tr>
+					<tr id="bankNameTR" name="bankNameTR">
+						<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
+						<td align="left"><input type="text" id="bankname" name="bankname" size="50"  value="' . $customer['bankname'] . '"></td>
+					</tr>
+					<tr id="bankAccountTR" name="bankAccountTR">
+						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"  value="' . $customer['bankaccount'] . '"></td>
+					</tr>
 					<tr>
 						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("frmCustomerEdit"),"customer");return false;\'>'.$locate->Translate("continue").'</button></td>
 					</tr>
@@ -916,6 +999,14 @@ Class astercrm extends PEAR{
 					<td align="left">'.$customer['category'].'</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
+					<td align="left">'.$customer['bankname'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+					<td align="left">'.$customer['bankaccount'].'</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("create_time").'</td>
 					<td align="left">'.$customer['cretime'].'</td>
 				</tr>
@@ -923,9 +1014,24 @@ Class astercrm extends PEAR{
 					<td nowrap align="left">'.$locate->Translate("create_by").'</td>
 					<td align="left">'.$customer['creby'].'</td>
 				</tr>
-				</table>
+				<tr>
+					<td colspan=2>
+						<table width="100%">
+							<tr>
+							<td>
 					<a href=? onclick="if (xajax.$(\'allContact\').value==\'off\'){xajax.$(\'contactList\').style.display=\'block\';xajax.$(\'allContact\').value=\'on\'}else{xajax.$(\'contactList\').style.display=\'none\';xajax.$(\'allContact\').value=\'off\'} return false;">'.$locate->Translate("display_all").'</a>
-					<input type="hidden" id="allContact" name="allContact" value="off">
+							</td>
+							<td>
+							<a href="?" onclick="xajax_noteAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_note").'</a>
+							</td>
+							<td>
+							<a href="?" onclick="xajax_surveyAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_survey").'</a>
+							</td>					<input type="hidden" id="allContact" name="allContact" value="off">
+							</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
 				<table border="0" width="100%" id="contactList" name="contactList" style="display:none">
 					';
 

@@ -1,5 +1,28 @@
 <?
 
+function noteAdd($customerid,$contactid){
+	global $locate;
+	$html = Table::Top($locate->Translate("add_note"),"formNoteInfo"); 			
+	$html .= Customer::noteAdd($customerid,$contactid); 		
+	$html .= Table::Footer();
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
+	$objResponse->addAssign("formNoteInfo", "innerHTML", $html);	
+	return $objResponse->getXML();
+}
+
+function surveyAdd($customerid,$contactid){
+	global $locate;
+
+	$html = Table::Top($locate->Translate("add_survey"),"formNoteInfo"); 			
+	$html .= Customer::surveyAdd($customerid,$contactid); 		
+	$html .= Table::Footer();
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
+	$objResponse->addAssign("formNoteInfo", "innerHTML", $html);	
+	return $objResponse->getXML();
+}
+
 function showCustomer($id = null, $type="customer"){
 	global $locate;
 	if($id != null){
@@ -46,6 +69,40 @@ function showContact($id = null, $type="contact"){
 	}
 }
 
+function saveNote($f){
+	$objResponse = new xajaxResponse();
+	global $locate;
+	$respOk = Customer::insertNewNote($f,$f['customerid'],$f['contactid']);
+	if ($respOk){
+		$objResponse->addAssign("formNoteInfo", "style.visibility", "hidden");
+		$objResponse->addClear("formNoteInfo", "innerHTML");	
+
+		$html = createGrid(0,ROWSXPAGE);
+		$objResponse->addAssign("grid", "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("a_new_note_added"));
+
+	}else
+		$objResponse->addAlert('can not add note');
+
+	return $objResponse;
+}
+
+function saveSurvey($f){
+	$objResponse = new xajaxResponse();
+	global $locate;
+	if ($f['surveyoption'] != '' || $f['surveynote'] != ''){
+//		print_r($f);
+		$respOk = Customer::insertNewSurveyResult($f['surveyid'],$f['surveyoption'],$f['surveynote'],$f['customerid'],$f['contactid']); 
+		if ($respOk){
+			$objResponse->addAlert('add a new survey');
+			$objResponse->addAssign("formNoteInfo", "style.visibility", "hidden");
+			$objResponse->addClear("formNoteInfo", "innerHTML");	
+		}else
+			$objResponse->addAlert('can not add survey');
+	}
+	return $objResponse;
+}
+
 function save($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
@@ -68,11 +125,6 @@ function save($f){
 			}
 			$objResponse->addAlert($locate->Translate("a_new_customer_added"));
 		} else{
-//			$respOk = Customer::updateCustomerRecord($f); // update a customer record
-//			if (!$respOk){
-//				$objResponse->addAlert($locate->Translate("customer_update_error"));
-//				return $objResponse;
-//			}
 			$respOk = $f['customerid'];
 		}
 		$customerID = $respOk;
@@ -155,8 +207,11 @@ function update($f, $type){
 	}elseif ($type == 'customer'){
 		if (empty($f['customer']))
 			$message = "The field Customer does not have to be null";
-		else
+		else{
 			$respOk = Customer::updateCustomerRecord($f);
+			if (!$respOk)
+				$message = 'update customer table failed';
+		}
 	}elseif ($type == 'contact'){
 		if (empty($f['contact']))
 			$message = "The field Contact does not have to be null";
