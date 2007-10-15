@@ -1,6 +1,10 @@
 <?php
-//header("content-type:text/html;charset=utf-8");
-header("content-type:text/html;charset=gb2312");
+header("content-type:text/html;charset=utf-8");
+//header("content-type:text/html;charset=gb2312");
+
+session_start();
+require_once ('include/Localization.php');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 
 include_once('config.php');
 
@@ -54,34 +58,43 @@ $row = 0;
 $file_path = UPLOAD_IMAGE_PATH.$_SESSION['filename'];
 $handle = fopen($file_path,"r");
 $show_msg .= "<form action='./insert.php' method='post' name='submitForm'><input type='hidden' name='CHECK' value='1'/><table class='imagetable' style=''><tr>";
-$show_msg .= "<td style='border:0;width:15%;height:270px;' align='left' valign='top'><ul style='width:100%;height:20px;line-height:20px;list-style:none;text-align:left;'><li height='20px'>1: customer</li><li height='20px'>2: address</li><li height='20px'>3: state</li><li height='20px'>4: city</li><li height='20px'>5: contact</li><li height='20px'>6: contactgender</li><li height='20px'>7: phone</li><li height='20px'>8: zipcode</li><li height='20px'>9: website</li><li height='20px'>10: category</li></ul></td>";
+$show_msg .= "<td style='border:0;width:15%;height:290px;' align='left' valign='top'><ul style='width:100%;height:20px;line-height:20px;list-style:none;text-align:left;'><li height='20px'>1: customer</li><li height='20px'>2: address</li><li height='20px'>3: state</li><li height='20px'>4: city</li><li height='20px'>5: contact</li><li height='20px'>6: contactgender</li><li height='20px'>7: phone</li><li height='20px'>8: zipcode</li><li height='20px'>9: website</li><li height='20px'>10: category</li></ul></td>";
 $show_msg .= "<td style='border:0;' valign='top'><table cellspacing='0' cellpadding='0' border='0' width='100%'>";
 while($data = fgetcsv($handle, 1000, ",")){
     $num = count($data);
     $row++;
 	$show_msg .= "<tr>";
 	for ($c=0; $c < $num; $c++) {
-		if($row == 1){
-			$show_msg .= "<td bgcolor='orange'><font color='#0033cc'>".$data[$c]."</font><input type='text' style='width:20px;border:1px double #cccccc;' name='order[]'/></td>";
-		}else{
+		if($row % 2 != 0){
 			$show_msg .= "<td bgcolor='#ffffff'>".$data[$c]."</td>";
+		}else{
+			$show_msg .= "<td bgcolor='#efefef'>".$data[$c]."</td>";
 		}
-    }
+		
+	}
 	$show_msg .= "</tr>";
 	if($row == 8)
-		break;
+	break;
 }
+$show_msg .= "<tr>";
+for ($c=0; $c < $num; $c++) {
+	$show_msg .= "<td bgcolor='#0099cc' height='20px'><input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  /></td>";
+}
+$show_msg .= "</tr>";
 $show_msg .= "</table></td>";
 fclose($handle);
 //*************************************************************
 if($show_msg == "") 
 {
-	$show_msg = "没有选中文件";
+	$show_msg =  $locate->Translate("nofilechoose");
 }
 else 
 {
 	$show_msg .= "</tr></table>";
 }
+$add = $locate->Translate('add');
+$to = $locate->Translate('todiallist');
+$show_msg .= "<table cellspacing='0' cellpadding='0' border='0' width='100%' ><tr><td><input type='checkbox' value='1' name='myCheckBox' id=name='myCheckBox' onclick='ddd();'/> &nbsp;&nbsp; $add  <input type='text' name='mytext' id='mytext' style='border:1px double #000000;width:20px;heiht:12px;' disabled /> $to </td></tr></table>";
 $show_msg .= "<table cellspacing='0' cellpadding='0' border='0' width='100%' ><tr><td><input type='submit' value=' submit ' style='border:1px double #cccccc;'></td></tr></table></form>";
 //$show_msg = iconv($show_msg,'GB2312','utf-8');
 

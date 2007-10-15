@@ -197,7 +197,7 @@ function showDetail($recordID){
 function importCsv(){
 	$objResponse = new xajaxResponse();
 	//$objResponse->addScript("gotourl('./index.html');");
-	$objResponse->addScript("window.location.href='./importcsv_con.html'");
+	$objResponse->addScript("window.location.href='./importcsv_con.php'");
 	return $objResponse->getXML();
 }
 

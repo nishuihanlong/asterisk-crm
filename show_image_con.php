@@ -1,6 +1,10 @@
 <?php
-//header("content-type:text/html;charset=utf-8");
-header("content-type:text/html;charset=gb2312");
+header("content-type:text/html;charset=utf-8");
+//header("content-type:text/html;charset=gb2312");
+
+session_start();
+require_once ('include/Localization.php');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 
 include_once('config.php');
 
@@ -61,27 +65,32 @@ while($data = fgetcsv($handle, 1000, ",")){
     $row++;
 	$show_msg .= "<tr>";
 	for ($c=0; $c < $num; $c++) {
-		if($row == 1){
-			$show_msg .= "<td bgcolor='orange'><font color='#0033cc'>".$data[$c]."</font><input type='text' style='width:20px;border:1px double #cccccc;' name='order[]'/></td>";
-		}else{
-			$show_msg .= "<td bgcolor='#ffffff'>".$data[$c]."</td>";
-		}
-    }
+		$show_msg .= "<td bgcolor='#ffffff'>".$data[$c]."</td>";
+	}
 	$show_msg .= "</tr>";
 	if($row == 8)
 		break;
 }
+$show_msg .= "<tr>";
+
+for ($c=0; $c < $num; $c++) {
+	$show_msg .= "<td bgcolor='#0099cc' height='20px'><input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  /></td>";
+}
+$show_msg .= "</tr>";
 $show_msg .= "</table></td>";
 fclose($handle);
 //*************************************************************
 if($show_msg == "") 
 {
-	$show_msg = "没有选中文件";
+	$show_msg = $locate->Translate("nofilechoose");
 }
 else 
 {
 	$show_msg .= "</tr></table>";
 }
+$add = $locate->Translate('add');
+$to = $locate->Translate('todiallist');
+$show_msg .= "<table cellspacing='0' cellpadding='0' border='0' width='100%' ><tr><td><input type='checkbox' value='1' name='myCheckBox' id=name='myCheckBox' onclick='ddd();'/> &nbsp;&nbsp; $add  <input type='text' name='mytext' id='mytext' style='border:1px double #000000;width:20px;heiht:12px;' disabled /> $to </td></tr></table>";
 $show_msg .= "<table cellspacing='0' cellpadding='0' border='0' width='100%' ><tr><td><input type='submit' value=' submit ' style='border:1px double #cccccc;'></td></tr></table></form>";
 //$show_msg = iconv($show_msg,'GB2312','utf-8');
 

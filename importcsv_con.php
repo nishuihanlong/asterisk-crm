@@ -1,9 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<?php
+	session_start();
+	require_once ('include/Localization.php');
+	$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 
 <head>
-<meta http-equiv="Content-Language" content="zh-cn" />
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="robots" content="all" />
 <title></title>
@@ -11,19 +15,33 @@
 <meta name="description" content="Power By Phzzy.org" />
 <meta name="author" content="Phzzy" />
 <link rel="stylesheet" type="text/css" href="template/style.css" />
+<script language='javascript'>
+	function ddd(){
+		if(document.getElementById('myCheckBox').checked == true) 
+		{ 
+			document.getElementById('mytext').value = "";
+			document.getElementById('mytext').disabled = false;
+		} 
+		else 
+		{ 
+			document.getElementById('mytext').value = "";
+			document.getElementById('mytext').disabled = true;
+		}
+	}
+</script>
 </head>
-<body onload='iframe1.window.location="show_image.php"'>
+<body onload='iframe1.window.location="show_image_con.php"'>
 
 <!--<div id="header"></div>
 <div id="des">
 </div>-->
 
 <div id="mainform">
-<form action="upload.php" method="post" enctype="multipart/form-data" name="upload_img" target="iframe1">
+<form action="upload_con.php" method="post" enctype="multipart/form-data" name="upload_img" target="iframe1">
 <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
 <input type="hidden" name="CHECK" value="1" />
-选择要上传的文件：<input type="file" name="image"><br />
-<input type="submit" value=" 上  传 ">
+<?echo $locate->Translate("file_name"); ?> ：<input type="file" name="image" ><br />
+<input type="submit" value=" <?echo $locate->Translate("upload");?> ">
 </form>
 </div>
 
@@ -31,7 +49,7 @@
 
 <table id="maintable">
 	<tr>
-		<td colspan="2" id="title">文件管理 &nbsp;&nbsp;<a href="./customer.php" color='red'>返回</a></td>
+		<td colspan="2" id="title"><?echo $locate->Translate("filemanager");?> &nbsp;&nbsp;<a href="./contact.php" color='red'><?echo $locate->Translate("back");?></a></td>
 	</tr>
 	<!--<tr>
 		<td>

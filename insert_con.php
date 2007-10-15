@@ -38,6 +38,12 @@
 		$handle = fopen($file_path,"r");
 		$v = 0;
 		$date = date('Y-m-d H:i:s');
+		//********************************
+		if($_POST['myCheckBox'] != '' && $_POST['myCheckBox'] == '1'){
+			$mytext = $_POST['mytext']; //Êý×Ö
+			$field_name = mysql_field_name($res, $mytext);
+		}
+		//********************************
 		while($data = fgetcsv($handle, 1000, ",")){
 			$row_num_csv = count($data);  
 			$v++;
@@ -48,12 +54,19 @@
 					$field_order = $order[$i];
 					$mysql_field_name .= mysql_field_name($res, $field_order).',';
 					$data_str .= '"'.$data[$i].'"'.',';
+					if($field_name == mysql_field_name($res, $field_order)){
+						$array= $data[$i];
+					}
 				}
 				$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
 				$data_str = substr($data_str,0,strlen($data_str)-1);
 				$sql_str = "insert into contact ($mysql_field_name,cretime,creby) values ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
+				if(isset($field_name) && trim($field_name) != ''){
+					$sql_string = "insert into diallist (dialnumber) values ('".$array."')";
+				}
 				$rs = @mysql_query($sql_str);
-				if($rs){
+				$rs2 = @mysql_query($sql_string);
+				if($rs && $rs2){
 					//echo $sql_str;
 					//echo '<br />';
 				}else{

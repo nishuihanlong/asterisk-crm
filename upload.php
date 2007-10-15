@@ -1,14 +1,16 @@
 <?php
 header("content-type:text/html;charset=utf-8");
+session_start();
+require_once ('include/Localization.php');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 
 include_once('config.php');
 
-$mime = explode(",", UPLOAD_IMAGE_MIME);
-$is_vaild = 0;
-$row = 0;
 if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$upload_msg = $_FILES['image']['type'];
-
+	$mime = explode(",", UPLOAD_IMAGE_MIME);
+	$is_vaild = 0;
+	
 	foreach ($mime as $type){
 		if($_FILES['image']['type'] == $type){
 			$is_vaild = 1;
@@ -20,19 +22,21 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	//{
 		if (move_uploaded_file($_FILES['image']['tmp_name'], UPLOAD_IMAGE_PATH . $_FILES['image']['name'])) 
 		{
-			$upload_msg ="文件".$_FILES['image']['name']."上传成功！<br />";
-			while($data = fgetcsv(UPLOAD_IMAGE_PATH . $_FILES['image']['name'], 1000, ",")){
-				$row = $row + 1;
-				$_SESSION['row'] = $row;
+			$upload_msg =$locate->Translate('file').$_FILES['image']['name']."$locate->Translate('uploadsuccess')！<br />";
+			$handleup = fopen(UPLOAD_IMAGE_PATH . $_FILES['image']['name'],"r");
+			$row = 0;
+			while($data = fgetcsv($handleup, 1000, ",")){
+			   $row++;
 			}
-			//$upload_msg .= " <font color='red'>共有".$_SESSION['row']."条记录，显示8条记录</font>";
-			$upload_msg .= " <font color='red'>只显示8条记录</font>";
+			$upload_msg .= " <font color='red'>$locate->Translate('have')".$row."$locate->Translate('default')</font>";
+			//$upload_msg .= '<br />';
+			//$upload_msg .= 'vv'.$data;
 			$_SESSION['filename'] = $_FILES['image']['name'];  //新传的文件名做为session
 			//$upload_msg =$_SESSION['filename'];
 		} 
 		else 
 		{
-			$upload_msg = "上传文件失败";
+			$upload_msg = $locate->Translate('failed');
 		}
 }
 /*}
