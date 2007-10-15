@@ -1,6 +1,11 @@
 FORM {
 	BORDER-RIGHT: 0px; PADDING-RIGHT: 0px; BORDER-TOP: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-TOP: 0px; BORDER-BOTTOM: 0px
 }
+.login_in {
+	height: auto;
+	width: 461px;
+}
+
 A:link {
 	COLOR: #336699; TEXT-DECORATION: underline
 }
@@ -1084,3 +1089,28 @@ form{
             font-size: 10px; font-weight: bold;
             text-align: center; border: none;
             background-color:#FFFF00;    color:black;   }
+.login_in .login_in_logo {
+	background-image: url(../images/login_in_01.gif);
+	background-repeat: no-repeat;
+	height: 46px;
+	width: 461px;
+}
+.login_in .left {
+	float: left;
+	height: 165px;
+	width: 385px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #000000;
+}
+.login_in .right {
+	height: 165px;
+	width: 76px;
+	background-image: url(../images/login_in_02.gif);
+	background-repeat: repeat-y;
+	float: right;
+}
+.botton {
+	height: 14px;
+	width: 461px;
+}

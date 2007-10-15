@@ -74,28 +74,59 @@ require_once('login.common.php');
 			return false;
 		}
 		</script>
-	</head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
+<!--
+body {
+	margin-top: 80px;
+}
+-->
+</style></head>
 	<body onload="init();">
-			<div id="titleDiv"></div>
-			
-			<div id="formDiv">
-				<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
-					<div name="usernameDiv" id="usernameDiv"></div>
-					<div><input type="text" name="username" id="username" /></div>
-					<div name="passwordDiv" id="passwordDiv"></div>
-					<div><input type="password" name="password" id="password"/></div>
-					<div name="locateDiv" id="locateDiv">
-						<SELECT name="locate" id="locate" onchange="init();">
-							<OPTION value="en_US">English</OPTION>
-							<OPTION value="cn_ZH">简体中文</OPTION>
-						</SELECT>
-					</div>
-					<input id="loginButton" name="loginButton" type="submit" value=""/>
-					<input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
-				</form>
-			</div>
-			
-		<div id="outputDiv"></div>
-		<div align="center"><?require_once('copyright.php');?></div>
+	 <div align="center">
+	 		<div id="formDiv">
+			<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
+		  <div class="login_in">
+				<div class="login_in_logo" align="right"><br /><div id="titleDiv"></div></div>
+				<div class="left">
+			<table width="385" height="143" border="0" cellpadding="0" cellspacing="0">
+			  <tr>
+				<th width="92" height="58" scope="col">&nbsp;</th>
+				<th width="92" valign="bottom" scope="col"><div name="usernameDiv" id="usernameDiv"></div></th>
+				<th width="201" valign="bottom" scope="col"><div align="left">
+				  <input type="text" name="username" id="username" width="180px" />
+			    </div></th>
+			  </tr>
+			  <tr>
+				<td height="49">&nbsp;</td>
+				<th><div name="passwordDiv" id="passwordDiv"></div></th>
+				<td><div align="left">
+				  <input type="password" name="password" id="password" width="180px" />
+			    </div></td>
+			  </tr>
+			  <tr>
+				<td height="36" colspan="2">&nbsp;</td>
+				<td><div name="locateDiv" id="locateDiv">
+						<div align="left">
+						  <SELECT name="locate" id="locate" onchange="init();">
+						    <OPTION value="en_US">English</OPTION>
+						    <OPTION value="cn_ZH">简体中文</OPTION>
+					      </SELECT>
+				      <input id="loginButton" name="loginButton" type="submit" value=""/>
+				  <input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
+			    </div>
+				</div></td>
+			  </tr>
+				  </table>
+
+				</div>
+				<div class="right"></div><div id="outputDiv"></div>
+		
+            
+                                      <div align="center"><img src="images/login_in_03.gif" width="461" />
+                      <?require_once('copyright.php');?>
+                    </div>
+		  </div></form></div>
+
+	    </div>
 	</body>
 </html>
