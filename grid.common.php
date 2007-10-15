@@ -91,7 +91,6 @@ function saveSurvey($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
 	if ($f['surveyoption'] != '' || $f['surveynote'] != ''){
-//		print_r($f);
 		$respOk = Customer::insertNewSurveyResult($f['surveyid'],$f['surveyoption'],$f['surveynote'],$f['customerid'],$f['contactid']); 
 		if ($respOk){
 			$objResponse->addAlert('add a new survey');

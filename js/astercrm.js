@@ -54,3 +54,16 @@ function btnConfirmContactOnClick(){
 		xajax_confirmContact(xajax.$('contact').value,xajax.$('customerid').value,xajax.$('iptcallerid').value);
 	}
 }
+
+function getRadioValue(radio)
+{
+   var RadioValue='';
+   for(i=0,len=radio.length;i<len;i++)
+   {
+       if(radio[i].checked)
+       {
+       RadioValue = radio[i].value
+       }
+   }
+   return RadioValue;
+}

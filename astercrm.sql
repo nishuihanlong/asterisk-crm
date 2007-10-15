@@ -100,6 +100,7 @@ CREATE TABLE dialedlist (
 CREATE TABLE survey (
   id int(11) NOT NULL auto_increment,
   surveyname varchar(50) NOT NULL default '',
+  enable int	NOT NULL default '0',	#add 2007-10-15 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby  varchar(50) NOT NULL default '',
   UNIQUE KEY id (id)

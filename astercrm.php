@@ -395,11 +395,11 @@ Class astercrm extends PEAR{
 	function surveyAdd($customerid,$contactid){
 		global $locate;
 		$html .= '
-				<form method="post" name="f" id="f">
+				<form method="post" name="formSurvey" id="formSurvey">
 				';
 		$html .= astercrm::generateSurvey();
 		$html .= '<div align="right">
-					<input type="button" value="'.$locate->Translate("continue").'" name="btnAddSurvey" id="btnAddSurvey" onclick="xajax_saveSurvey(xajax.getFormValues(\'f\'));return false;">
+					<input type="button" value="'.$locate->Translate("continue").'" name="btnAddSurvey" id="btnAddSurvey" onclick="xajax_saveSurvey(xajax.getFormValues(\'formSurvey\'));return false;">
 					<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
 					<input type="hidden" value="'.$conatctid.'" name="contactid" id="contactid">
 					</div>';
@@ -732,7 +732,7 @@ Class astercrm extends PEAR{
 	function generateSurvey(){
 		global $db;
 
-		$sql = "SELECT * FROM survey ORDER BY cretime DESC LIMIT 0,1";
+		$sql = "SELECT * FROM survey WHERE enable=1 ORDER BY cretime DESC LIMIT 0,1";
 		astercrm::events($sql);
 		$res =& $db->getRow($sql);
 		if (!$res)

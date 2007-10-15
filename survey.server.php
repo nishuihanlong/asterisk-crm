@@ -98,7 +98,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['surveyname'];
+		if ($row['enable'] == 1)
+			$rowc[] = $row['surveyname'];
+		else
+			$rowc[] = "<font color=gray>".$row['surveyname']."</font>";
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
@@ -183,8 +186,29 @@ function add($surveyid = 0){
 	return $objResponse->getXML();
 }
 
+function setSurvey($survey){
+	global $locate;
+//	print_r($survey);
+//	exit;
+	$objResponse = new xajaxResponse();
+	if ($survey['radEnable'] == 1)
+		Customer::setSurveyEnable(0);
+
+	Customer::setSurveyEnable($survey['surveyid'],$survey['radEnable']);
+//	print $surveyenable;
+
+	$html = createGrid(0,ROWSXPAGE);
+	$objResponse->addAssign("grid", "innerHTML", $html);
+	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_updated"));
+	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
+	$objResponse->addClear("formDiv", "innerHTML");
+
+//	$objResponse->addAlert($locate->Translate("survey_updated"));
+	return $objResponse;
+}
+
 function showDetail($surveyid){
-	global $db;
+	global $db,$locate;
 	$objResponse = new xajaxResponse();
 
 	//get all accounts
@@ -206,14 +230,14 @@ function showDetail($surveyid){
 		$html .= "<td valign='top' width='30%' align='left'>";
 
 		$html  .= "<table>";
-		$html .= "<tr><th align='left'>Agent: ".$account['username']."</th></tr>";
+		$html .= "<tr><th align='left'>".$locate->Translate("agent").": ".$account['username']."</th></tr>";
 		$sql = "SELECT COUNT(*) as number, surveyoption, surveynote FROM surveyresult WHERE creby = '".$account['username']."' AND surveyid = $surveyid GROUP BY surveyoption,surveynote";
 		
 		$res =& $db->query($sql);
 		if ($res){
 			$html .= "<tr><td>";
 			$html .= "<table>";
-			$html .= "<tr><td>Option</td><td>Note</td><td>Number</td></tr>";
+			$html .= "<tr><td>".$locate->Translate("option")."</td><td>".$locate->Translate("note")."</td><td>".$locate->Translate("number")."</td></tr>";
 
 			while ($res->fetchInto($row)){
 				$html .= "<tr><td>".$row['surveyoption']."</td><td>".$row['surveynote']."</td><td>".$row['number']."</td></tr>";
@@ -242,17 +266,21 @@ function showDetail($surveyid){
 	$html .= "</table>";
 //	print $html;
 //	exit;
+	
 	$sql = "SELECT COUNT(*) as number, surveyoption FROM surveyresult WHERE surveyid = $surveyid GROUP BY surveyoption";
+	$totalrecords = 0;
 	$res =& $db->query($sql);
 
 		if ($res){
 			$html .= "<table width=200 align=left>";
-			$html .= "<tr><td colspan=2 align=left><strong>Total</strong></td></tr>";
+			$html .= "<tr><td colspan=2 align=left><strong>".$locate->Translate("total")."</strong></td></tr>";
 			$html .= "<tr><td>Option</td><td>Number</td></tr>";
 
 			while ($res->fetchInto($row)){
 				$html .= "<tr><td>".$row['surveyoption']."</td><td>".$row['number']."</td></tr>";
+				$totalreocrds += $row['number'];
 			}
+			$html .= "<tr><td colspan=2>".$locate->Translate("total").": ".$totalreocrds."</td></tr>";
 			$html .= "</table>";
 		}
 
@@ -270,8 +298,7 @@ function showDetail($surveyid){
 				$objResponse->addScript("xajax.$('surveyname').focus();");
 				return $objResponse;
 			}else{
-				$surveyid = Customer::insertNewSurvey($f['surveyname']); 
-//				$objResponse->addAlert($locate->Translate("survey_added"));
+				$surveyid = Customer::insertNewSurvey($f['surveyname'],$f['radEnable']); 
 				$html = createGrid(0,ROWSXPAGE);
 				$objResponse->addAssign("grid", "innerHTML", $html);
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_added"));

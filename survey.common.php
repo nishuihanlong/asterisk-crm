@@ -47,5 +47,6 @@ $xajax->registerFunction("edit");
 $xajax->registerFunction("editField");
 $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
+$xajax->registerFunction("setSurvey");
 
 ?>

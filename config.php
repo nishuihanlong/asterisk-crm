@@ -75,7 +75,7 @@ $config['system']['preDialer_extension'] = '1';
 
 
 /**
-* astercrm wouldnot pop-up unless the length of callerid is greater than or equal to
+* astercrm wouldnot pop-up unless the length of callerid is greater than 
 * this number
 */
 $config['system']['phone_number_length'] = 6; // number only

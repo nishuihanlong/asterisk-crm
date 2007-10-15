@@ -44,7 +44,21 @@ require_once ('include/asterisk.php');
 
 function processForm($aFormValues)
 {
+	$objResponse = new xajaxResponse();
 	global $locate;
+	if (trim($aFormValues['username']) == "")
+	{
+		$objResponse->addAlert($locate->Translate("username_cannot_be_blank"));
+		$objResponse->addScript('init();');
+		return $objResponse;
+	}
+	if (trim($aFormValues['password']) == "")
+	{
+		$objResponse->addAlert($locate->Translate("password_cannot_be_blank"));
+		$objResponse->addScript('init();');
+		return $objResponse;
+	}
+
 	if (array_key_exists("username",$aFormValues))
 	{
 		if (ereg("[0-9a-zA-Z]+",$aFormValues['username']) && ereg("[0-9a-zA-Z]+",$aFormValues['password']))
@@ -53,7 +67,6 @@ function processForm($aFormValues)
 			return processAccountData($aFormValues);
 		}else{
 		  // error
-			$objResponse = new xajaxResponse();
 			$objResponse->addAlert($locate->Translate("invalid_string"));
 			$objResponse->addScript('init();');
 			return $objResponse;
@@ -125,16 +138,6 @@ function processAccountData($aFormValues)
 	
 	$bError = false;
 	
-	if (trim($aFormValues['username']) == "")
-	{
-		$objResponse->addAlert($locate->Translate("username_cannot_be_blank"));
-		$bError = true;
-	}
-	if (trim($aFormValues['password']) == "")
-	{
-		$objResponse->addAlert($locate->Translate("password_cannot_be_blank"));
-		$bError = true;
-	}
 
 	$loginError = false;
 

@@ -106,14 +106,30 @@ class Customer extends astercrm
 			$html .= '<tr><td colspan=2>
 						<input type="text" size="50" maxlangth="100" id="surveyname" name="surveyname"/>
 					 </td></tr>';
+			$enable_html = '<tr>
+								<td colspan=2>
+								<input type="radio" value="1" id="radEnable" name="radEnable" checked>'.$locate->Translate("enable").'
+								<input type="radio" value="0" id="radEnable" name="radEnable">'.$locate->Translate("disable").'
+								</td>
+							 </tr>';
 		}else{
 			$survey = Customer::getRecord($surveyid,'survey');
 		   	$nameCell = "TitleCol";
-//			$html .= '<tr><td colspan=2>
-//						<input type="hidden" id="surveyid" name="surveyid" value="'.$surveyid.'"/>'.$survey['surveyname'].'
-//					 </td></tr>';
 
 			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'survey\',\'surveyname\',\''.$nameCell.'\',\''.$survey['surveyname'].'\',\''.$survey['id'].'\');return false">'.$survey['surveyname'].'<input type="hidden" id="surveyid" name="surveyid" value="'.$surveyid.'"/></td></tr>';
+			if ($survey['enable'] == 1)
+				$enable_html = '<tr>
+								<td colspan=2>
+								<input type="radio" value="1" id="radEnable" name="radEnable" checked>'.$locate->Translate("enable").'
+								<input type="radio" value="0" id="radEnable" name="radEnable">'.$locate->Translate("disable");
+			else
+				$enable_html = '<tr>
+								<td colspan=2>
+								<input type="radio" value="1" id="radEnable" name="radEnable" >'.$locate->Translate("enable").'
+								<input type="radio" value="0" id="radEnable" name="radEnable" checked>'.$locate->Translate("disable");
+			$enable_html .= '<input type="button" onclick="xajax_setSurvey(xajax.getFormValues(\'f\'));return false;" value="'.$locate->Translate("update").'">
+								</td>
+							 </tr>';
 
 		}
 
@@ -127,7 +143,6 @@ class Customer extends astercrm
 				
 				$html .= '<tr id="'.$nameRow.'" >'."\n";
 
-//<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].' onDblClick="xajax_editField(\''.$table.'\',\''.$fields[$ind-1].'\',\''.$nameCell.'\',\''.$value.'\',\''.$arr[0].'\');return false">'.$value.'</td>
 				$html .= '
 					<tr><td align="left" width="10%">'. $locate->Translate("option") .'
 					</td><td id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'surveyoptions\',\'surveyoption\',\''.$nameCell.'\',\''.$row['surveyoption'].'\',\''.$row['id'].'\');return false">'.$row['surveyoption'].'</td></tr>
@@ -146,6 +161,8 @@ class Customer extends astercrm
 					<input type="button" value="'.$locate->Translate("add_record").'" onclick="addOption(\'f\');return false;">
 				 </td></tr>';
 
+		$html .= $enable_html;
+
 		$html .= '
 				</table>
 				</form>
@@ -153,11 +170,13 @@ class Customer extends astercrm
 		return $html;
 	}
 
-	function insertNewSurvey($surveyname){
+	function insertNewSurvey($surveyname,$enable){
 		global $db;
-		
+		if ($enable == 1)
+			astercrm::setSurveyEnable(0);
 		$sql= "INSERT INTO survey SET "
 				."surveyname='".$surveyname."', "
+				."enable='".$enable."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);
@@ -166,6 +185,18 @@ class Customer extends astercrm
 		return $surveyid;
 	}
 
+	function setSurveyEnable($surveyid,$surveyenable = 1){
+		//$table,$field,$value,$id
+		if ($surveyid == 0){
+			global $db;
+			$sql = 'UPDATE survey SET enable = 0';
+			$res = $db->query($sql);
+		}else{
+			$res = astercrm::updateField('survey','enable',$surveyenable,$surveyid);
+		}
+		return;
+	}
+	
 	function insertNewOption($option,$surveyid){
 		global $db;
 		
