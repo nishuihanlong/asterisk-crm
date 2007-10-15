@@ -91,6 +91,11 @@ $config['system']['pop_up_when_dial_out'] = true;	// true | false
 $config['system']['pop_up_when_dial_in'] = true;	// true | false
 
 /**
+* browser will maximize when pop up
+*/
+$config['system']['maximize_when_pop_up'] = true;	// true | false
+
+/**
 * which phone ring first when using click to dial
 */
 $config['system']['firstring'] = 'caller'; //	callee | caller

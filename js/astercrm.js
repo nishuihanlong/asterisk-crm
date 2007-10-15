@@ -67,3 +67,46 @@ function getRadioValue(radio)
    }
    return RadioValue;
 }
+
+function maximizeWin() {
+	if (window.screen) { 
+		var aw = screen.availWidth; 
+
+		var ah = screen.availHeight; 
+
+		window.moveTo(0, 0); 
+
+		window.resizeTo(aw, ah); 
+	} 
+	window.focus();
+} 
+
+function titlebar(val)
+{
+	var msg  = "asterCRM";
+	var speed = 500;
+	var pos = val;
+	if (document.getElementById('callerid').value == "")
+	{
+		document.title = msg;
+		blinkingtitle = window.setTimeout("titlebar("+pos+")",speed);
+		return;
+	}
+
+	var msg1  = "****** "+document.getElementById('callerid').value+" ******";
+	var msg2  = "------- "+document.getElementById('callerid').value+" -------";
+
+	if(pos == 0){
+		masg = msg1;
+		pos = 1;
+	}
+	else if(pos == 1){
+		masg = msg2;
+		pos = 0;
+	}
+
+	document.title = masg;
+	blinkingtitle = window.setTimeout("titlebar("+pos+")",speed);
+}
+
+titlebar(0);

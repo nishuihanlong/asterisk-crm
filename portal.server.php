@@ -189,7 +189,7 @@ function incomingCalls($myValue){
 		} elseif ($call['status'] =='hangup'){
 			$status	= 'hang up';
 			$info	= "Hang up call from " . $myValue['callerid'];
-			$objResponse->addScript('document.title=\'asterCrm\';');
+//			$objResponse->addScript('document.title=\'asterCrm\';');
 			$objResponse->addAssign("uniqueid","value", "" );
 			$objResponse->addAssign("callerid","value", "" );
 			$objResponse->addAssign("callerChannel","value", '');
@@ -240,6 +240,9 @@ function waitingCalls($myValue){
 				if ($myValue['popup'] == 'yes'){
 					if ($config['system']['enable_external_crm'] == false){
 							$objResponse->loadXML(getContact($call['callerid']));
+							if ( $config['system']['maximize_when_pop_up'] == true ){
+								$objResponse->addScript('maximizeWin();');
+							}
 					}else{
 						//use external link
 						$myurl = $config['system']['external_crm_url'];
@@ -270,6 +273,9 @@ function waitingCalls($myValue){
 				if ($myValue['popup'] == 'yes'){
 					if ($config['system']['enable_external_crm'] == false ){
 							$objResponse->loadXML(getContact($call['callerid']));
+							if ( $config['system']['maximize_when_pop_up'] == true ){
+								$objResponse->addScript('maximizeWin();');
+							}
 					}else{
 						//use external link
 						$myurl = $config['system']['external_crm_url'];
@@ -289,7 +295,7 @@ function waitingCalls($myValue){
 		}
 	}
 
-	$objResponse->addScript('document.title='.$title.';');
+//	$objResponse->addScript('document.title='.$title.';');
 //	$objResponse->addAssign("status","innerHTML", $stauts );
 	$objResponse->addAssign("btnStatus","value", $stauts );
 	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );

@@ -95,6 +95,7 @@ require_once('portal.common.php');
 		<input type="hidden" name="popup" id="popup" value="yes"/>
 		<div id="debug"></div>
 	</form>
+	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
 	<div id="divDialList" name="divDialList"></div>
 	<div id="processingMessage" name="processingMessage"></div>
