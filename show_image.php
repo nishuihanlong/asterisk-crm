@@ -27,7 +27,7 @@ $i=0;
 $row = 0;
 $file_path = UPLOAD_IMAGE_PATH.$_SESSION['filename'];
 $handle = fopen($file_path,"r");
-$show_msg .= "<form action='./insert_con.php' method='post' name='submitForm'><input type='hidden' name='CHECK' value='1'/><table class='imagetable'><tr>";
+$show_msg .= "<form action='./insert.php' method='post' name='submitForm'><input type='hidden' name='CHECK' value='1'/><table class='imagetable'><tr>";
 $show_msg .= "<td style='border:0;width:15%;height:270px;' align='left' valign='top'><ul style='width:100%;height:20px;line-height:20px;list-style:none;text-align:left;'>";
 //*************************
 $link = mysql_connect('localhost', 'asteriskuser', 'movingon');

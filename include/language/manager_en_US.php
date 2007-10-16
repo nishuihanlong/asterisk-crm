@@ -43,4 +43,5 @@ $trunk = "Trunk";
 $start_time = "Start Time";
 $duration = "Duration";
 $AMI_connection_failed			= "AMI connection failed, please check your configuration file";
+$survey_manager	= "Survey Manager";
 ?>
