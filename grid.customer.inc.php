@@ -64,14 +64,13 @@ class Customer extends astercrm
 		global $db;
 		
 		if(($filter != null) and ($content != null)){
-			$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note WHERE priority>0 LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
+			$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
 					." WHERE ".$filter." like '%".$content."%' AND priority>0 "
 					." AND  note.creby = '".$_SESSION['curuser']['username']."' "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -95,7 +94,7 @@ class Customer extends astercrm
 				." AND  note.creby = '".$_SESSION['curuser']['username']."' "
 				."WHERE ".$filter." like '%".$content."%'";
 		}
-
+		
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		

@@ -28,6 +28,7 @@ function init(){
   	$html .= "<a href='contact.php' >".$locate->Translate("contact_manager")."</a><br>";
   	$html .= "<a href='note.php' >".$locate->Translate("note_manager")."</a><br>";
   	$html .= "<a href='diallist.php' >".$locate->Translate("diallist_manager")."</a><br>";
+  	$html .= "<a href='survey.php' >".$locate->Translate("survey_manager")."</a><br>";
 
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 

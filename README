@@ -7,18 +7,17 @@
 
 asterCRM is a AJAX based 'Call Center' system. 
 
-First, Asterisk Events are captured as the occur via a python script called ProxyMan.py and
-logged to a MySQl database table(using script from Asterisk Event Monitor by earl@micpc.com).
+First, Asterisk Events are captured as the occur via a perl script called eventsdaemon and
+logged to a MySQl database table.
 Since Asterisk is sending these events as they occur (and not being polled for these events),
 this leads to a more efficient Asterisk interface.
 
-ProxyMan.py is a Python script which connects to the Asterisk Manager
-Interface via a TCP/IP connection, listens for any events or messages coming from
-the Manager Interface, time stamps each event and logs them to a MySQL database table.
+eventsdaemon.pl is a perl script which connects to AMI (the Asterisk Manager
+Interface) via a stock, listens for any events or messages coming from
+the AMI, time stamps each event and logs them to a MySQL database table.
 
-ProxyMan can be run on any machine with a TCP/IP connection to the Asterisk server,
-i.e. it does not have to run on the same machine as Asterisk.
-More information on the function of ProxyMan can be found in its source comments.
+eventsdaemon can be run on any machine and not confined running in your Asterisk server,
+More information on the function of eventsdaemon can be found in its source comments.
 
 WEB PHP scripts will analyze Asterisk Events in database, and finish call center jobs, 
 such as pop-up, click to dial, call queue ... 
@@ -131,33 +130,22 @@ processes can run on the same server, however, multiple servers enhance performa
 	mkdir /opt/asterisk
 	mkdir /opt/asterisk/scripts
 	mkdir /opt/asterisk/scripts/events
-	mv /var/www/html/events/proxyman/* /opt/asterisk/scripts/events
-	chmod +x /opt/asterisk/scripts/events/*.py
+	mv /var/www/html/events/eventsdaemon/* /opt/asterisk/scripts/events
+	chmod +x /opt/asterisk/scripts/events/eventsdaemon.pl
 
-5) Start Asterisk and  ProxyMan.py
+5) Start Asterisk and  eventsdaemon.pl
 
 
-	Start ProxyMan (default settings):
-		/opt/asterisk/scripts/events/ProxyMan.py 
+	Start eventsdaemon (default settings):
+		/opt/asterisk/scripts/events/eventsdaemon.pl &
 
-	OR Start ProxyMan (change settings):
+	OR Start eventsdaemon (debug settings):
 
-		/opt/asterisk/scripts/events/ProxyMan.py debug 
+		/opt/asterisk/scripts/events/eventsdaemon.pl debug 
 
-	Note: when ProxyMan.py starts it will automatically become a daemon
-		(so no need for for the & at the end of the command)
-         
-	Another python script is provided (asterstart.py) which can also be used to start
-	Asterisk and ProxyMan.py and keep them running. See the README in the proxyman 
-	directory.
- 
 	At some point it may be desirable to delete unwanted events from the database
-	table. The Python script delete_events.py is designed for this.
-	If run from a CRON task:
-     
-	*/2 * * * * /opt/asterisk/scripts/events/delete_events.py >/dev/null 2>&1
-
-	It will delete all events older than the 2 minutes before current time .
+	table. The eventsdaemon is also designed for this.
+	please check eventsdaemon.pl for parameter "log_life"
 
 6) Testing: browse to http://localhost/astercrm
 

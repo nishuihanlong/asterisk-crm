@@ -84,6 +84,7 @@ function init(){
 		$objResponse->addIncludeScript("js/ajax.js");
 		$objResponse->addIncludeScript("js/ajax-dynamic-list.js");
 
+
 		$mycrm = '
 					<br><br><br><br><br><br>
 					<br><br><br><br><br><br>
@@ -103,6 +104,7 @@ function init(){
 					</table>';
 		$objResponse->addAppend("crm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
+//		$objResponse->addScript("titlebar(0);");
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");
 		if ($config['system']['open_new_window'] == false){

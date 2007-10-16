@@ -58,6 +58,7 @@ v0.045
 2007-10-15	增加了survey的enable属性
 2007-10-15	弹屏的同时可以自动最大化(在config.php中设置开关变量)
 2007-10-15	来电或着去电时标题栏会闪烁
+2007-10-16	修正了搜索customer时产生的bug
 -----------------------------------------------------------------------------------------
 增加div移动的代码
 改进后台管理
@@ -68,13 +69,11 @@ need to add queue status
 增加agent之间的im功能
 need to add Real-time campaign display screens 
 need to add CDR to user
+CDR和predictive dialer的关联
 need to add phone spy
 增加对sqlite的支持
 增加对config.php的管理为web模式
-删除数据时，改删除操作为转移表操作
 关闭数据库
-diallist中完成拨号的号码保存到另外的表
-增加调查统计功能
 voicemail check
 增加SMS模块
 增加对号码进行处理的模块

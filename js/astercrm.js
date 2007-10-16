@@ -86,6 +86,10 @@ function titlebar(val)
 	var msg  = "asterCRM";
 	var speed = 500;
 	var pos = val;
+	
+	if   (document.getElementById('callerid')   ==   null)
+		return;
+
 	if (document.getElementById('callerid').value == "")
 	{
 		document.title = msg;
