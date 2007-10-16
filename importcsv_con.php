@@ -2,6 +2,18 @@
 	session_start();
 	require_once ('include/Localization.php');
 	$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
+	$file_name = $locate->Translate("file_name");
+	if ($file_name != mb_convert_encoding($file_name,"UTF-8","UTF-8"))
+			$file_name=mb_convert_encoding($file_name,"UTF-8","GB2312");
+	$upload = $locate->Translate("upload");
+	if ($upload != mb_convert_encoding($upload,"UTF-8","UTF-8"))
+			$upload=mb_convert_encoding($upload,"UTF-8","GB2312");
+	$filemanager = $locate->Translate("filemanager");
+	if ($filemanager != mb_convert_encoding($filemanager,"UTF-8","UTF-8"))
+			$filemanager=mb_convert_encoding($filemanager,"UTF-8","GB2312");
+	$back = $locate->Translate("back");
+	if ($back != mb_convert_encoding($back,"UTF-8","UTF-8"))
+			$back=mb_convert_encoding($back,"UTF-8","GB2312");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -16,16 +28,40 @@
 <meta name="author" content="Phzzy" />
 <link rel="stylesheet" type="text/css" href="template/style.css" />
 <script language='javascript'>
-	function ddd(){
-		if(document.getElementById('myCheckBox').checked == true) 
+	function btnonclick(){
+		if(document.getElementsByName('myCheckBox')[0].checked == true) 
 		{ 
 			document.getElementById('mytext').value = "";
 			document.getElementById('mytext').disabled = false;
+			document.getElementById('mytext').style.border = "1px double #000000";
+			document.getElementById('mytext').focus(); 
+			document.getElementsByName('myCheckBox2')[0].disabled = false;
 		} 
 		else 
 		{ 
 			document.getElementById('mytext').value = "";
 			document.getElementById('mytext').disabled = true;
+			document.getElementById('mytext').style.border = "1px double #cccccc";
+			document.getElementsByName('myCheckBox2')[0].disabled = true;
+			document.getElementsByName('myCheckBox2')[0].checked = false;
+			document.getElementById('mytext2').value = "";
+			document.getElementById('mytext2').disabled = true;
+			document.getElementById('mytext2').style.border = "1px double #cccccc";
+		}
+	}
+	function btnonclick2(){
+		if(document.getElementsByName('myCheckBox2')[0].checked == true) 
+		{ 
+			document.getElementById('mytext2').value = "";
+			document.getElementById('mytext2').disabled = false;
+			document.getElementById('mytext2').style.border = "1px double #000000";
+			document.getElementById('mytext2').focus(); 
+		} 
+		else 
+		{ 
+			document.getElementById('mytext2').value = "";
+			document.getElementById('mytext2').disabled = true;
+			document.getElementById('mytext2').style.border = "1px double #cccccc";
 		}
 	}
 </script>
@@ -38,10 +74,10 @@
 
 <div id="mainform">
 <form action="upload_con.php" method="post" enctype="multipart/form-data" name="upload_img" target="iframe1">
-<input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+<input type="hidden" name="MAX_FILE_SIZE" value="300000" />
 <input type="hidden" name="CHECK" value="1" />
-<?echo $locate->Translate("file_name"); ?> ：<input type="file" name="image" ><br />
-<input type="submit" value=" <?echo $locate->Translate("upload");?> ">
+<?echo $file_name; ?> ：<input type="file" name="image" ><br />
+<input type="submit" value=" <?echo $upload ;?> ">
 </form>
 </div>
 
@@ -49,7 +85,7 @@
 
 <table id="maintable">
 	<tr>
-		<td colspan="2" id="title"><?echo $locate->Translate("filemanager");?> &nbsp;&nbsp;<a href="./contact.php" color='red'><?echo $locate->Translate("back");?></a></td>
+		<td colspan="2" id="title"><?echo $filemanager;?> &nbsp;&nbsp;<a href="./contact.php" color='red'><?echo $back;?></a></td>
 	</tr>
 	<!--<tr>
 		<td>

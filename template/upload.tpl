@@ -1,6 +1,6 @@
 <script>
 function callbackMessage(msg){
-var othermsg = "<br />点击关闭本信息";
+var othermsg = "<br />";
 //把父窗口显示消息的层打开
 parent.document.getElementById("message").style.display = "block";
 //把本窗口获取的消息写上去

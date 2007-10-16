@@ -13,4 +13,6 @@
 	$failed = "上传失败";
 	$choose = "浏览";
 	$submit = "提交";
+	$area = "选择分区";
+	$cantup = "只能上传excel文档文件";
 ?>

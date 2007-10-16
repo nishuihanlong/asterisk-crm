@@ -13,4 +13,6 @@
 	$failed = "upload failed";
 	$choose = "choose file";
 	$submit = "submit";
+	$area = "choose area";
+	$cantup = "excel only";
 ?>
