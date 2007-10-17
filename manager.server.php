@@ -29,6 +29,7 @@ function init(){
   	$html .= "<a href='note.php' >".$locate->Translate("note_manager")."</a><br>";
   	$html .= "<a href='diallist.php' >".$locate->Translate("diallist_manager")."</a><br>";
   	$html .= "<a href='survey.php' >".$locate->Translate("survey_manager")."</a><br>";
+  	$html .= "<a href='surveyresult.php' >".$locate->Translate("survey_reslut")."</a><br>";
 
 	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 
@@ -329,9 +330,14 @@ function dialerStatus(){
 }
 
 function showPredictiveDialer($preDictiveDialerStatus){
-	global $db,$locate;
+	global $db,$locate,$config;
 
 	$objResponse = new xajaxResponse();
+	if ($config['system']['allow_dropcall'] == false){
+		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("cannot_use_predictive_dialer"));
+		return $objResponse;
+	}
+
 	//从数据库读取预拨号的总数
 	$query = '
 		SELECT COUNT(*) FROM diallist';

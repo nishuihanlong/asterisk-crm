@@ -9,4 +9,6 @@ $option_added	= "An option has been added";
 $option			= "Option";
 $survey_updated = "A survey has been updated";
 $option_updated = "An option has been updated";
+$survey_note	= "Survey Note";
+$survey_result	= "Survey Result";
 ?>

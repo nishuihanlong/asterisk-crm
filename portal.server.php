@@ -1,4 +1,9 @@
 <?php
+/**
+2007-10-17	修正了点击搜索的问题	solo
+2007-10-17	将电话号码匹配方式修改为前端模糊	solo
+2007-10-17	修正了点击title排序的问题	solo
+*/
 require_once ("db_connect.php");
 require_once ("portal.common.php");
 require_once ('grid.customer.inc.php');
@@ -370,9 +375,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","address","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","website","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
@@ -380,31 +385,20 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'customer';
-	$fieldsFromSearch[] = 'address';
-	$fieldsFromSearch[] = 'website';
 	$fieldsFromSearch[] = 'category';
-	$fieldsFromSearch[] = 'contact';
-	$fieldsFromSearch[] = 'cretime';
-	$fieldsFromSearch[] = 'creby';
+	$fieldsFromSearch[] = 'contact.contact';
+	$fieldsFromSearch[] = 'note';
 	$fieldsFromSearch[] = 'priority';
-/*
-	$headers[] = $locate->Translate("customer_name")//"Customer Name";
-	$headers[] = $locate->Translate("category")//"Category";
-	$headers[] = $locate->Translate("contact")//"Contact";
-	$headers[] = $locate->Translate("note")//"Note";
-	$headers[] = $locate->Translate("create_time")//"Create Time";
-	$headers[] = $locate->Translate("create_by")//"Create By";
-*/
+	$fieldsFromSearch[] = 'note.cretime';
+
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
-	$fieldsFromSearchShowAs[] = $locate->Translate("address");
-	$fieldsFromSearchShowAs[] = $locate->Translate("website");
 	$fieldsFromSearchShowAs[] = $locate->Translate("category");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
-	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
-	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
+	$fieldsFromSearchShowAs[] = $locate->Translate("note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("priority");
+	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -559,38 +553,38 @@ function dial($phoneNum,$first = 'caller'){
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
-//	$callerid = "Web Call <" . $_SESSION['curuser']['extension'] . ">";
-//	$first = 'callee';
-//	echo "ok";
+
 	if ($config['system']['firstring'] == 'caller'){	//caller will ring first
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
-//		print $strChannel;
-//		exit;
-/*
-		$temp=		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
-									'WaitTime'=>30,
-									'Exten'=>$phoneNum,
-									'Context'=>$config['system']['outcontext'],
-									'Variable'=>"$strVariable",
-									'Priority'=>1,
-									'MaxRetries'=>1,
-									'CallerID'=>$phoneNum));
-*/
-//	$objResponse->addAlert("dial to ".$temp);
-		$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+
+		if ($config['system']['allow_dropcall'] == true){
+			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+								'WaitTime'=>30,
+								'Exten'=>$phoneNum,
+								'Context'=>$config['system']['outcontext'],
+								'Variable'=>"$strVariable",
+								'Priority'=>1,
+								'MaxRetries'=>0,
+								'CallerID'=>$phoneNum));
+		}else{
+			$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+		}
 	}else{
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
-/*
-				$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
-									'WaitTime'=>30,
-									'Exten'=>$_SESSION['curuser']['extension'],
-									'Context'=>$config['system']['incontext'],
-									'Variable'=>"$strVariable",
-									'Priority'=>1,
-									'MaxRetries'=>1,
-									'CallerID'=>$phoneNum));
-*/
-		$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+
+		if ($config['system']['allow_dropcall'] == true){
+
+			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+								'WaitTime'=>30,
+								'Exten'=>$_SESSION['curuser']['extension'],
+								'Context'=>$config['system']['incontext'],
+								'Variable'=>"$strVariable",
+								'Priority'=>1,
+								'MaxRetries'=>0,
+								'CallerID'=>$phoneNum));
+		}else{
+			$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+		}
 	}
 	$myAsterisk->disconnect();
 	return $objResponse->getXML();
@@ -611,9 +605,6 @@ function monitor($channel,$action = 'start'){
 		$filename = str_replace("/","-",$channel);
 		$filename = $config['asterisk']['monitorpath'].$channel;
 		$filename .= '.'.time();
-
-//		print $filename;
-//		exit;
 
 		$format = $config['asterisk']['monitorformat'];
 		$mix = true;
@@ -640,27 +631,32 @@ function monitor($channel,$action = 'start'){
 }
 
 function getContact($callerid){
-	global $db,$locate;	
+	global $db,$locate,$config;	
+	$mycallerid = $callerid;
 	$objResponse = new xajaxResponse();
 
-
-	//check if there're phone records already
+	if ( $config['system']['trim_zreo'] == true){
+		while (substr($mycallerid,0,1) == '0'){
+			$mycallerid = substr($mycallerid,1);
+		}
+	}
+			
 
 	//check contact table first
 	$query = '
 			SELECT id,customerid 
 			FROM contact
-			WHERE phone LIKE \'%'. $callerid . '%\'
-			OR phone1 LIKE \'%'. $callerid . '%\'
-			OR phone2 LIKE \'%'. $callerid . '%\'
-			OR mobile LIKE \'%'. $callerid . '%\'
+			WHERE phone LIKE \'%'. $mycallerid . '\'
+			OR phone1 LIKE \'%'. $mycallerid . '\'
+			OR phone2 LIKE \'%'. $mycallerid . '\'
+			OR mobile LIKE \'%'. $mycallerid . '\'
 			 ' ;
 //	print $query;
 	$res = $db->query($query);
 
 	if ($res->numRows() == 0){	//no match
 		//try get customer
-		$customerid = getCustomer($callerid);
+		$customerid = getCustomer($mycallerid);
 //		print 'no match in contact';
 		if ($customerid == 0){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
@@ -711,7 +707,7 @@ function getCustomer($callerid){
 	$query = '
 			SELECT id 
 			FROM customer
-			WHERE phone LIKE \'%'. $callerid . '%\'';
+			WHERE phone LIKE \'%'. $callerid . '\'';
 	$res = $db->query($query);
 //	print $res->numRows();
 	if ($res->numRows() == 0){	//no match

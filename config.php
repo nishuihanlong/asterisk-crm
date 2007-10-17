@@ -4,6 +4,19 @@
 * system configuration file
 * Function Desc
 
+* Revision 0.045  2007/10/17 17:55:00  modified by solo
+* Desc: add $config['system']['allow_dropcall']
+
+
+* Revision 0.045  2007/10/17 17:55:00  modified by solo
+* Desc: add $config['system']['allow_same_data']
+
+* Revision 0.045  2007/10/17 17:55:00  modified by solo
+* Desc: add $config['system']['trim_zreo']
+
+* Revision 0.045  2007/10/15 17:55:00  modified by solo
+* Desc: add $config['system']['maximize_when_pop_up']
+
 * Revision 0.045  2007/10/11 17:55:00  modified by solo
 * Desc: add $config['asterisk']['monitorpath']
 
@@ -30,12 +43,12 @@
 * Database type 
 * Only support mysql for now
 */ 
-define("UPLOAD_IMAGE_MIME", "application/vnd.ms-excel,application/msword,text/plain");
-define("UPLOAD_IMAGE_SIZE", 10240);
-define("UPLOAD_IMAGE_SIZE_KB", 1024); 
-define("UPLOAD_IMAGE_PATH", "./tempimage/"); 
-session_start();
-///////////////////////
+define("UPLOAD_IMAGE_PATH", "./upload/"); 
+
+/** 
+* Database type 
+* Only support mysql for now
+*/ 
 $config['database']['dbtype'] = 'mysql';
 
 $config['database']['dbhost'] = 'localhost';
@@ -79,6 +92,23 @@ $config['system']['preDialer_extension'] = '1';
 * this number
 */
 $config['system']['phone_number_length'] = 6; // number only
+
+/**
+* if astercrm trim the 0 in the phonenumber before search for customer/contact in database
+*/
+$config['system']['trim_zreo'] = true; // true | false
+
+/**
+* if your astercrm work on the same server with asterisk, set to true
+* when astercrm start a call, it would drop a .call file to asterisk spool 
+*/
+$config['system']['allow_dropcall'] = true; // true | false
+
+/**
+* if astercrm allow same customer name
+*/
+$config['system']['allow_same_data'] = true; // true | false
+
 
 /**
 * astercrm wouldnot pop-up when dial out unless this parameter is true

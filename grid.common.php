@@ -23,17 +23,18 @@ function surveyAdd($customerid,$contactid){
 	return $objResponse->getXML();
 }
 
-function showCustomer($id = null, $type="customer"){
+function showCustomer($id = 0, $type="customer"){
 	global $locate;
-	if($id != null){
+	$objResponse = new xajaxResponse();
+	if($id != 0 && $id != null ){
 		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
 		$html .= Customer::showCustomerRecord($id,$type); 		
 		$html .= Table::Footer();
-		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
 		return $objResponse->getXML();
-	}
+	}else
+		return $objResponse->getXML();
 }
 
 function showNote($id = '', $type="customer"){
@@ -104,25 +105,39 @@ function saveSurvey($f){
 
 function save($f){
 	$objResponse = new xajaxResponse();
-	global $locate;
-//	print $f['surveyoption'];
-//	exit;
+	global $locate,$config;
+
+	$f['customer'] = trim($f['customer']);
+	$f['contact'] = trim($f['contact']);
+
 	if (empty($f['customer']) && empty($f['contact']))
 		return $objResponse;
+	
 	if(empty($f['customer'])) {
-//		$objResponse->addAlert($locate->Translate("customer_cant_null"));
-//		return $objResponse;
 		$customerID = 0;
 	} else{
+	
+
 		if ($f['customerid'] == '' || $f['customerid'] == 0){
-			$respOk = Customer::insertNewCustomer($f); // insert a new customer record
-//			$objResponse->addAlert($respOk);
-//			return $objResponse;
-			if (!$respOk){
-				$objResponse->addAlert($locate->Translate("customer_add_error"));
-				return $objResponse;
+			if ($config['system']['allow_same_data'] == false){
+				//检查是否有完全匹配的customer记录
+				$customer = Customer::checkValues("customer","customer",$f['customer']);
+			}else{
+				$customer = '';
 			}
-			$objResponse->addAlert($locate->Translate("a_new_customer_added"));
+
+			//有完全匹配的话就取这个customerid
+			if ($customer != ''){
+				$respOk = $customer;
+				$objResponse->addAlert($locate->Translate("found_customer_replaced"));
+			}else{
+				$respOk = Customer::insertNewCustomer($f); // insert a new customer record
+				if (!$respOk){
+					$objResponse->addAlert($locate->Translate("customer_add_error"));
+					return $objResponse;
+				}
+				$objResponse->addAlert($locate->Translate("a_new_customer_added"));
+			}
 		} else{
 			$respOk = $f['customerid'];
 		}
@@ -133,20 +148,29 @@ function save($f){
 		$contactID = 0;
 	} else{
 		if ($f['contactid'] == ''){
-			$respOk = Customer::insertNewContact($f,$customerID); // insert a new contact record
-			if (!$respOk){
-				$objResponse->addAlert($locate->Translate("contact_add_error"));
-				return $objResponse;
+
+			if ($config['system']['allow_same_data'] == false){
+				//检查是否有完全匹配的contact记录
+				$contact = Customer::checkValues("contact","contact",$f['contact'],"string","customerid",$customerID,"int");
+			}else{
+				$contact = '';
 			}
-			$objResponse->addAlert($locate->Translate("a_new_contact_added"));
+
+			//有完全匹配的话就取这个contactid
+			if ($contact != ''){
+				$respOk = $contact;
+				$objResponse->addAlert($locate->Translate("found_contact_replaced"));
+			}else{
+				$respOk = Customer::insertNewContact($f,$customerID); // insert a new contact record
+				if (!$respOk){
+					$objResponse->addAlert($locate->Translate("contact_add_error"));
+					return $objResponse;
+				}
+				$objResponse->addAlert($locate->Translate("a_new_contact_added"));
+			}
 		}else{
-//			$respOk = Customer::updateContactRecord($f); // update a contact record
-//			if (!$respOk){
-//				$objResponse->addAlert($locate->Translate("contact_update_error"));
-//				return $objResponse;
-//			}
 			$respOk = $f['contactid'];
-			//获取该contact的customerid
+
 			$res =& Customer::getContactByID($respOk);
 			if ($res){
 				$contactCustomerID = $res['customerid'];
@@ -159,8 +183,6 @@ function save($f){
 					}
 				}
 			}
-
-
 		}
 		$contactID = $respOk;
 	}
@@ -187,11 +209,13 @@ function save($f){
 		}
 	}
 
+
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
 	$objResponse->addAssign("formContactInfo", "style.visibility", "hidden");
 
 	$objResponse->addClear("formDiv", "innerHTML");
+
 	$objResponse->addClear("formCustomerInfo", "innerHTML");
 	$objResponse->addClear("formContactInfo", "innerHTML");
 

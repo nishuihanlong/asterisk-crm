@@ -9,5 +9,6 @@ $option_added	= "添加了一个选项";
 $option			= "选项";
 $survey_updated = "更新了一个问卷";
 $option_updated = "更新了一个选项";
-
+$survey_note	= "问卷备注";
+$survey_result	= "问卷结果";
 ?>

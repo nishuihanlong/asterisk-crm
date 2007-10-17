@@ -44,5 +44,6 @@ $start_time = "开始时间";
 $duration = "时长";
 $AMI_connection_failed			= "AMI连接失败, 请检查系统配置文件";
 $survey_manager	= "问卷管理";
-
+$cannot_use_predictive_dialer	= "无法使用拨号器, 请确定astercrm和asterisk在同一服务器上, 并检查配置文件";
+$survey_reslut	= "问卷结果";
 ?>

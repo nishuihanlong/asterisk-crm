@@ -483,7 +483,7 @@ class Table {
 			<table width="100%" border="1" align="center" class="adminlist">
 			<tr>
 				<th align="right" valign="center">
-					<img src="images/close.png" onClick=\'javascript:document.getElementById("'.$formId.'").style.visibility="hidden";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
+					<img src="images/close.png" onClick=\'javascript: document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
 				</th>
 			</tr>
 			<tr ><td><fieldset><legend>'.$tableTitle.'</legend>';

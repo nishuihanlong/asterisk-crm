@@ -71,4 +71,6 @@ $number		= "Number";
 $user		= "User";
 $enable		= "Enable";
 $disable		= "Disable";
+$found_contact_replaced	= "found a same contact in this customer, use old data replaced";
+$found_customer_replaced	= "found a same customer, use old data replaced";
 ?>

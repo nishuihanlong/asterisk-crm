@@ -59,16 +59,27 @@ v0.045
 2007-10-15	弹屏的同时可以自动最大化(在config.php中设置开关变量)
 2007-10-15	来电或着去电时标题栏会闪烁
 2007-10-16	修正了搜索customer时产生的bug
+2007-10-17	config.php中增加一个参数,  $config['system']['trim_zreo']
+		用于判定在将电话号码送入数据库进行匹配前是否会去除前面的0
+2007-10-17	customer的main phone处增加了点击呼叫
+2007-10-17	增加开关控制, 可以控制是否能够自动匹配完全相符的customer和contact
+2007-10-17	copyright内增加版本号信息
+2007-10-17	在发行版中增加了CDR
+2007-10-17	修改了xajaxGrid类文件, 当关闭一个层时自动清空其中的内容
+2007-10-17	config.php中增加一个参数,  $config['system']['allow_dropcall']
+		用于区分系统拨号时使用的方法
+2007-10-17	增加了surveyresult, 允许查看问卷结果
 -----------------------------------------------------------------------------------------
-增加div移动的代码
-改进后台管理
-增加导入客户信息/拨号列表的功能
-增加分配座席diallist数据的模块
+增加对survey结果的管理
+
+
+
 need to add queue status
+need to add CDR to user
+增加div移动的代码
 多css类型支持
 增加agent之间的im功能
-need to add Real-time campaign display screens 
-need to add CDR to user
+
 CDR和predictive dialer的关联
 need to add phone spy
 增加对sqlite的支持
@@ -76,5 +87,5 @@ need to add phone spy
 关闭数据库
 voicemail check
 增加SMS模块
-增加对号码进行处理的模块
+
 #为什么在系统监视里面看到的分机不全？

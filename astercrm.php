@@ -341,6 +341,14 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
+	/**
+	*	get conatct detail 
+	*
+	*	@param  $id				(int)		identity
+	*	@param  $type			(string)	contactid or noteid
+	*	@return $row			(array)		conatct data array
+	*/
+
 	function &getDialByID($id,$type="diallist"){
 		global $db;
 		if ($type == 'diallist')
@@ -406,6 +414,14 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	/**
+	*	general survey add html
+	*
+	*	@param  $customerid		(int)		customerid
+	*	@param  $contactid		(int)		contactid
+	*	@return $html			(array)		HTML
+	*/
+
 	function surveyAdd($customerid,$contactid){
 		global $locate;
 		$html .= '
@@ -420,15 +436,22 @@ Class astercrm extends PEAR{
 		$html .= '
 				</form>
 				';
-//		print $html;
-//		exit;
 		return $html;
 	}
+
+
+	/**
+	*	general note add html
+	*
+	*	@param  $customerid		(int)		customerid
+	*	@param  $contactid		(int)		contactid
+	*	@return $html			(array)		HTML
+	*/
 
 	function noteAdd($customerid,$contactid){
 		global $locate;
 		$html .= '
-				<form method="post" name="f" id="f">
+				<form method="post" name="formNote" id="formNote">
 				<table border="1" width="100%" class="adminlist">
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("note").'</td>
@@ -457,7 +480,7 @@ Class astercrm extends PEAR{
 						</td>
 					</tr>
 					<tr>
-						<td nowrap colspan=2 align=right><input type="button" id="btnAddNote" name="btnAddNote" value="'.$locate->Translate("continue").'" onclick="xajax_saveNote(xajax.getFormValues(\'f\'));return false;"></td>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddNote" name="btnAddNote" value="'.$locate->Translate("continue").'" onclick="xajax_saveNote(xajax.getFormValues(\'formNote\'));return false;"></td>
 					</tr>
 				';
 			
@@ -669,8 +692,7 @@ Class astercrm extends PEAR{
 
 	//add survey html
 	$html .= '<tr><td colspan="2">';
-	//print astercrm::generateSurvey();
-	//exit;
+
 	$html .= astercrm::generateSurvey();
 
 	$html .= '</tr></td>';
@@ -1185,7 +1207,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-					<td align="left">'.$customer['phone'].'</td>
+					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['phone'].'\');return false;">'.$customer['phone'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
@@ -1406,9 +1428,9 @@ Class astercrm extends PEAR{
 			foreach ($row as $val){
 				$val .= ',';
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
-						$val=mb_convert_encoding($val,"UTF-8","GB2312");
+						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
 				
-				$txtstr .= $val;
+				$txtstr .= '"'.$val.'"';
 			}
 			$txtstr .= "\n";
 		}

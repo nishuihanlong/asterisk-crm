@@ -44,4 +44,6 @@ $start_time = "Start Time";
 $duration = "Duration";
 $AMI_connection_failed			= "AMI connection failed, please check your configuration file";
 $survey_manager	= "Survey Manager";
+$cannot_use_predictive_dialer	= "Cannot use predictive dialer, please ensure your astercrm work on the same serer with asterisk, and then check your config file";
+$survey_reslut	= "Survey Result";
 ?>

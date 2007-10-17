@@ -71,4 +71,6 @@ $number		= "数量";
 $user		= "用户";
 $enable		= "启用";
 $disable		= "禁用";
+$found_contact_replaced	= "在该客户表中发现同样的联系人, 使用旧有数据";
+$found_customer_replaced	= "发现同样的客户, 使用旧有数据";
 ?>
