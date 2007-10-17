@@ -51,9 +51,9 @@ require_once('diallist.common.php');
 	<body onload="init();">
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 	<br>
-	<div id="divActive" name="divActive">
-		<input type="button" value="IMPORT" id="btnImport" name="btnImport" onClick="importCsv();"/>
-		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();" />
+	<div id="divActive" name="divActive">&nbsp;
+		<!--<input type="button" value="IMPORT" id="btnImport" name="btnImport" onClick="importCsv();"/>
+		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();" />-->
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

@@ -10,9 +10,13 @@
 	$uploadsuccess = "upload success";
 	$have = "have";
 	$default = "records ,show 8 records";
-	$failed = "upload failed";
+	$failed = "upload failed,please check dir purview";
 	$choose = "choose file";
 	$submit = "submit";
-	$area = "choose area";
+	$area = "assign";
 	$cantup = "excel only";
+	$success = "success";
+	$font = "number error ";
+	$repeat = "number repeat";
+	$error = "failed";
 ?>

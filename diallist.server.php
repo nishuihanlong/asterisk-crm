@@ -91,9 +91,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearchDial("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -103,7 +103,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['assign'];
 		
 //		$rowc[] = 'Detail';
-		$table->addRow("diallist",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("diallist",$rowc,0,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -119,7 +119,7 @@ function edit($id = null, $tblName, $type = "diallist"){
 
 	// Edit zone
 	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
-	$html .= Diallist::formEdit($id, $type);
+	$html .= Diallist::formEditDial($id, $type);
 	$html .= Table::Footer();
    	// End edit zone
 
@@ -143,7 +143,7 @@ function showDetail($recordID){
 	global $locate;
 	if($recordID != null){
 		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-		$html .= Diallist::showCustomerRecord($recordID); 		
+		$html .= Diallist::showDialRecord($recordID); 		
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");

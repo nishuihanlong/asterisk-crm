@@ -9,5 +9,5 @@ parent.document.getElementById("message").innerHTML = msg + othermsg;
 setTimeout("parent.document.getElementById('message').style.display = 'none'", 10000);
 }
 [##upload_js_function##]
-window.location='show_image.php';
+window.location='show_excel.php';
 </script>

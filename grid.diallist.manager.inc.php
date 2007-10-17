@@ -108,7 +108,7 @@ class Diallist extends astercrm
 		
 		$sql = "SELECT note.id AS id, note, priority,customer.name AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby , note.customerid, note.contactid, customer.website AS website, contact.position as position FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
 				." WHERE note.id = $id";
-		Customer::events($sql);
+		Diallist::events($sql);
 		$row =& $db->getRow($sql);
 		return $row;
 	}
@@ -128,17 +128,17 @@ class Diallist extends astercrm
 
 		//delete all customers
 		$sql = "DELETE FROM diallist WHERE id = $id";
-		Customer::events($sql);
+		Diallist::events($sql);
 		$res =& $db->query($sql);
 
 		//delete all note
 		$sql = "DELETE FROM note WHERE customerid = $id OR contactid in (SELECT id FROM contact WHERE customerid = $id)";
-		Customer::events($sql);
+		Diallist::events($sql);
 		$res =& $db->query($sql);
 
 		//delete all contact
 		$sql = "DELETE FROM contact WHERE customerid = $id";
-		Customer::events($sql);
+		Diallist::events($sql);
 		$res =& $db->query($sql);
 
 		return $res;

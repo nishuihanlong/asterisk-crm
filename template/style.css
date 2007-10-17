@@ -109,11 +109,13 @@ select {
 }
 #message{
 	padding:5px 0;
-	background-color:#FAD163;
+	background-color:#0099cc;
 	width:auto;
 	font-weight:bold;
-	width:90%;
-	margin:0 0 20px 0;
+	width:100%;
+	margin-left:atuo;
+	margin-right:auto;
+	margin-top:5px;
 }
 #delform{
 	height:12px;

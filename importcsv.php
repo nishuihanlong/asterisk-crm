@@ -1,5 +1,8 @@
 <?php
 	session_start();
+	$action = trim($_GET['action']);
+	$action = base64_decode($action);
+	$_SESSION['action'] = $action;
 	require_once ('include/Localization.php');
 	$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 	$file_name = $locate->Translate("file_name");
@@ -17,9 +20,7 @@
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-
 <head>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="robots" content="all" />
 <title></title>
@@ -66,13 +67,8 @@
 	}
 </script>
 </head>
-<body onload='iframe1.window.location="show_image.php";'>
-
-<!--<div id="header"></div>
-<div id="des">
-</div>-->
-
-
+<body onload='iframe1.window.location="show_excel.php";' style="scrollbar-arrow-color:yellow;scrollbar-base-color:#efefef">
+<center>
 <div id="mainform">
 <form action="upload.php" method="post" enctype="multipart/form-data" name="upload_img" target="iframe1">
 <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
@@ -86,26 +82,14 @@
 
 <table id="maintable">
 	<tr>
-		<td colspan="2" id="title"><?echo $filemanager;?> &nbsp;&nbsp;<a href="./customer.php" color='red'><?echo $back;?></a></td>
+		<td colspan="2" id="title" align='center'><?echo $filemanager;?> &nbsp;&nbsp;<a href="./<?=$_SESSION['action']?>.php" color='red'><?echo $back;?></a></td>
 	</tr>
-	<!--<tr>
-		<td>
-				<form method="post" name="delimage" action="del.php" target="iframe1">
-					<a href="#" onclick='javascript:document.delimage.submit();'>[删除所有文件]</a>
-				</form>
-		</td>
-		<td>
-				<form method="post" name="showimage" action="show_image.php" target="iframe1">
-					<a href="#" onclick="javascript:document.showimage.submit();">[刷新所有文件]</a>
-				</form>
-		</td>
-	</tr>-->
 	<tr>
 		<td colspan="2"><div id="show_image"></div></td>
 	</tr>
 </table>
-
 <br>
 <iframe name="iframe1" width="0" height="0" scrolling="no"></iframe>
+</center>
 </body>
 </html>
