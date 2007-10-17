@@ -1,8 +1,8 @@
 <?php
 /*******************************************************************************
-* customer.common.php
-* customer参数信息文件
-* customer parameter file
+* contact.common.php
+* contact参数信息文件
+* contact parameter file
 * 功能描述
 * Function Desc
 
@@ -32,7 +32,7 @@ define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
 define(ROWSXPAGE, 25); // Number of rows show it per page.
 define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
-require_once ('include/Localization.php');
+require_once ('include/localization.class.php');
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'customer');
 

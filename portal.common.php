@@ -6,23 +6,13 @@ if ($_SESSION['curuser']['extension'] == '')
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;
 
 require_once ("include/xajax.inc.php");
-require_once ('include/Localization.php');
+require_once ('include/localization.class.php');
 
 define(LOG_ENABLED, 1); // Enable debuggin
 define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
 define(ROWSXPAGE, 5); // Number of rows show it per page.
 define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 
-//echo "ok";
-//echo $_SESSION['curuser']['country'];
-//print_r($_SESSION['curuser']);
-//exit();
-//$_SESSION['curuser']['country'] = 'cn';
-//$_SESSION['curuser']['language'] = 'ZH';
-
-//echo $_SESSION['curuser']['country'];
-//echo $_SESSION['curuser']['language'];
-//exit;
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
 
 
@@ -58,7 +48,4 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("saveNote");
 	$xajax->registerFunction("saveSurvey");
 }
-//$xajax->processRequests();
-
-//$xajax->processRequests();
 ?>

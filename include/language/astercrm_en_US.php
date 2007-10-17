@@ -10,6 +10,7 @@ $create_by = "Create By";
 $address = "Address";
 $website = "Website";
 $bank_name = "Bank Name";
+$bank_zip	= "Bank Zip";
 $bank_account = "Bank Account";
 $priority = "Priority";
 $add_record = "Adding Record";

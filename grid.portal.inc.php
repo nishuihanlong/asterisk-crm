@@ -8,8 +8,7 @@
 
 require_once 'db_connect.php';
 require_once 'portal.common.php';
-require_once 'include/Localization.php';
-require_once 'astercrm.php';
+require_once 'include/astercrm.class.php';
 
 /** \brief Customer Class
 *

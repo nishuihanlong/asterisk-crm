@@ -3,7 +3,7 @@
 	$action = trim($_GET['action']);
 	$action = base64_decode($action);
 	$_SESSION['action'] = $action;
-	require_once ('include/Localization.php');
+	require_once ('include/localization.class.php');
 	$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 	$file_name = $locate->Translate("file_name");
 	if ($file_name != mb_convert_encoding($file_name,"UTF-8","UTF-8"))

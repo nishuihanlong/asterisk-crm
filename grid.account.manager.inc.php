@@ -7,7 +7,7 @@
 */
 // Tanslate to chinese by Donnie
 require_once 'db_connect.php';
-require_once 'manager.common.php';
+require_once 'account.common.php';
 /** \brief Customer Class
 *
 
@@ -17,7 +17,7 @@ require_once 'manager.common.php';
 * @date		13 July 2007
 */
 
-class Account extends PEAR
+class Customer extends PEAR
 {
 
 	/**
@@ -44,7 +44,7 @@ class Account extends PEAR
 		}
 
 
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -70,7 +70,7 @@ class Account extends PEAR
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -88,7 +88,7 @@ class Account extends PEAR
 		
 		$sql = "SELECT COUNT(*) AS numRows FROM account";
 		
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
@@ -105,7 +105,7 @@ class Account extends PEAR
 		
 		$sql = "SELECT * FROM account "
 				." WHERE id = $id";
-		Account::events($sql);
+		Customer::events($sql);
 		$row =& $db->getRow($sql);
 		return $row;
 	}
@@ -129,7 +129,7 @@ class Account extends PEAR
 				."usertype='".$f['usertype']."',"
 				."extensions='".$f['extensions']."'";
 
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -152,7 +152,7 @@ class Account extends PEAR
 				."extensions='".$f['extensions']."' "
 				."WHERE id='".$f['id']."'";
 
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -170,7 +170,7 @@ class Account extends PEAR
 		global $db;
 	
 		$sql = "DELETE FROM account WHERE id = $id";
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 
 		return $res;
@@ -181,7 +181,7 @@ class Account extends PEAR
 		global $db;
 	
 		$sql = "UPDATE $table SET $field='$value' WHERE id='$id'";
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 		
@@ -248,7 +248,7 @@ class Account extends PEAR
 	
 	function formEdit($id){
 		global $locate;
-		$account =& Account::getRecordByID($id);
+		$account =& Customer::getRecordByID($id);
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -351,7 +351,7 @@ class Account extends PEAR
 				$sql .= "AND $fldName1=$myValue1";
 
 		
-		Account::events($sql);
+		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}

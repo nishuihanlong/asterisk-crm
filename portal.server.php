@@ -5,12 +5,12 @@
 2007-10-17	修正了点击title排序的问题	solo
 */
 require_once ("db_connect.php");
-require_once ("portal.common.php");
-require_once ('grid.customer.inc.php');
-require_once ('asterevent.class.php');
+require_once ('include/asterevent.class.php');
+require_once ('include/asterisk.class.php');
 require_once ('include/xajaxGrid.inc.php');
-require_once ('include/asterisk.php');
-require_once ('grid.common.php');
+require_once ('grid.portal.inc.php');
+require_once ('astercrm.server.common.php');
+require_once ("portal.common.php");
 
 function showDetail($recordId){
 	$objResponse = new xajaxResponse();
@@ -405,7 +405,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
 
 	while ($arreglo->fetchInto($row)) {
@@ -420,7 +420,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['priority'];
 //		$rowc[] = 'Detail';
-		$table->addRow("customer",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("note",$rowc,1,1,1,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -526,18 +526,6 @@ function edit($id = null, $tblName, $type = "note"){
 	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
 	return $objResponse->getXML();
 }
-
-function delete($id = null, $table_DB = null){
-	global $locate;
-	Customer::deleteRecord($id,'note'); 				// <-- Change by your method
-	$html = createGrid(0,ROWSXPAGE);
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
-	return $objResponse->getXML();
-}
-
-
 
 # click to dial
 # $phoneNum	phone to call
@@ -656,9 +644,9 @@ function getContact($callerid){
 
 	if ($res->numRows() == 0){	//no match
 		//try get customer
-		$customerid = getCustomer($mycallerid);
+		$customerid = Customer::getCustomerByCallerid($mycallerid);
 //		print 'no match in contact';
-		if ($customerid == 0){
+		if ($customerid == ''){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
 		}else{
 			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
@@ -700,22 +688,6 @@ function getContact($callerid){
 	}
 
 	return $objResponse;
-}
-
-function getCustomer($callerid){
-	global $db,$locate;
-	$query = '
-			SELECT id 
-			FROM customer
-			WHERE phone LIKE \'%'. $callerid . '\'';
-	$res = $db->query($query);
-//	print $res->numRows();
-	if ($res->numRows() == 0){	//no match
-		return 0;
-	}else{
-		$res->fetchInto($list);
-		return $list['id'];
-	}
 }
 
 $xajax->processRequests();

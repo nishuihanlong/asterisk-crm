@@ -1,15 +1,13 @@
-﻿ajax-list-values.php	自动完成文件
-			auto-complete script
-astercrm.sql		astercrm数据库脚本
-			astercrm sql script
-astercrm.php		crm类文件
-asterevent.class.php	对asterisk事件处理的php类
-			asterisk events php class
-changelog.txt		改动日志
-			change log
-config.php		系统配置文件
-			system configuration file
-db_connect.php		数据库连接文件
-			database connect file
-grid.account.inc.php	账户管理类文件
-			account manager class file
+﻿
+	./config.php				astercrm configration file
+
+
+	./sql/astercrm.sql			database create sql file
+
+	./include/astercrm.class.php		php class files
+	./include/asterevent.class.php		php class files
+	./include/asterisk.class.php		php class files
+	./include/excel.class.php		php class files
+
+	./cdr					Asterisk-Stat
+	./cdr/lib/defines.php			Asterisk-Stat configration file

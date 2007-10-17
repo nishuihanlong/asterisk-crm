@@ -2,8 +2,8 @@
 require_once ("db_connect.php");
 require_once ("survey.common.php");
 require_once ('grid.surveyresult.manager.inc.php');
-require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
+require_once ('include/asterevent.class.php');
 
 
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
@@ -140,7 +140,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 function delete($id = null, $table_DB = null){
 	global $locate;
-	Customer::deleteRecord($id,"surveyresult"); 				// <-- Change by your method
+	Customer::deleteRecord($id,$table_DB); 				// <-- Change by your method
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("grid", "innerHTML", $html);

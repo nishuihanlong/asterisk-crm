@@ -41,7 +41,7 @@
  */
 
 
-require_once ('Localization.php');
+require_once ('localization.class.php');
 
 //echo $_SESSION['curuser']['country'];
 //echo $_SESSION['curuser']['language'];

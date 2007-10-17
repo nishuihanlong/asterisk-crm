@@ -1,11 +1,59 @@
 <?
+/*******************************************************************************
+* astercrm.php
+* astercrm公用类
+* astercrm class
+
+* Public Functions List
+
+			insertNewCustomer		向customer表插入数据
+			insertNewContact		向contact表插入数据
+			insertNewNote			向note表插入数据
+			insertNewSurveyResult	向surveyresult表插入数据
+			updateCustomerRecord	更新customer表数据
+			updateContactRecord		更新contact表数据
+			updateNoteRecord		更新note表数据
+			deleteRecord			从表中删除数据(以id作为标识)
+			getRecord				从表中读取数据(以id作为标识)
+			updateField				更新表中的数据(以id作为标识)
+			events					日志记录
+			checkValues				根据条件从数据库中检索是否有符合条件的记录
+			showNoteList			生成note列表的HTML文件
+			getCustomerByID			根据customerid获取customer记录信息或者根据noteid获取与之相关的customer信息
+			getContactByID			根据contactid获取contact记录信息或者根据noteid获取与之相关的contact信息
+			getContactListByID		根据customerid获取与之邦定的contact记录
+			surveyAdd				生成添加survey的HTML语法
+			noteAdd					生成添加note的HTML语法
+			formAdd					生成添加综合信息(包括customer, contact, survey, note)的HTML语法
+			formEdit				生成综合信息编辑的HTML语法, 包括编辑customer, contact以及添加note
+			getOptions				读取survey的所有option
+			showCustomerRecord		生成显示customer信息的HTML语法
+			showContactRecord		生成显示contact信息的HTML语法
+			exportCSV				生成csv文件内容, 目前支持导出customer, contact
+			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
+
+* Private Functions List
+			generateSurvey			生成添加survey的HTML语法
+			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
+
+********************************************************************************/
+
+/** \brief astercrm Class
+*
+
+*
+* @author	Solo Fu <solo.fu@gmail.com>
+* @version	1.0
+* @date		13 Auguest 2007
+*/
+
+
 Class astercrm extends PEAR{
 	/**
 	*  insert a record to customer table
 	*
 	*	@param $f			(array)		array contain customer fields.
 	*	@return $customerid	(object) 	id number for the record just inserted.
-
 	*/
 	
 	function insertNewCustomer($f){
@@ -23,6 +71,7 @@ Class astercrm extends PEAR{
 				."phone='".$f['customerPhone']."', "
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
+				."bankzip='".$f['bankzip']."', "
 				."bankaccount='".$f['bankaccount']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -112,6 +161,7 @@ Class astercrm extends PEAR{
 				."city='".$f['city']."', "
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
+				."bankzip='".$f['bankzip']."', "
 				."bankaccount='".$f['bankaccount']."' "
 				."WHERE id='".$f['customerid']."'";
 
@@ -150,7 +200,9 @@ Class astercrm extends PEAR{
 	}
 
 	/**
-	*  update note table
+	*  update note table 
+	*  if $type is update, this function would use new data to replace the old one
+	*  or else astercrm would append new data to note field
 	*
 	*	@param $f			(array)			array contain note fields.
 	*	@param $type		(string)		update or append
@@ -270,7 +322,7 @@ Class astercrm extends PEAR{
 	*	@param  $fldName1		(string)	
 	*	@param  $myValue1		(string)	
 	*	@param  $type1			(string)	
-	*	@return $res			(int)		return identity of the record if exsits 
+	*	@return $id				(int)		return identity of the record if exsits or else return '' 
 	*/
 
 	function checkValues($tblName,$fldName,$myValue,$type="string",$fldName1 = null,$myValue1 = null,$type1 = "string"){
@@ -290,8 +342,8 @@ Class astercrm extends PEAR{
 
 		
 		astercrm::events($sql);
-		$res =& $db->getOne($sql);
-		return $res;		
+		$id =& $db->getOne($sql);
+		return $id;		
 	}
 
 	/**
@@ -349,6 +401,19 @@ Class astercrm extends PEAR{
 	*	@return $row			(array)		conatct data array
 	*/
 
+	function &getContactByID($id,$type="contact"){
+		global $db;
+		
+		if ($type == 'contact')
+			$sql = "SELECT * FROM contact WHERE id = $id";
+		elseif ($type == 'note')
+			$sql = "SELECT * FROM contact RIGHT JOIN (SELECT contactid FROM note WHERE id = $id ) g ON contact.id = g.contactid";
+
+		astercrm::events($sql);
+		$row =& $db->getRow($sql);
+		return $row;
+	}
+
 	function &getDialByID($id,$type="diallist"){
 		global $db;
 		if ($type == 'diallist')
@@ -363,22 +428,8 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
-	function &getContactByID($id,$type="contact"){
-		global $db;
-		
-		if ($type == 'contact')
-			$sql = "SELECT * FROM contact WHERE id = $id";
-		elseif ($type == 'note')
-			$sql = "SELECT * FROM contact RIGHT JOIN (SELECT contactid FROM note WHERE id = $id ) g ON contact.id = g.contactid";
-
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
-		return $row;
-	}
-
-
 	/**
-	*	get contact list from table
+	*	get contact list which are binding to a specific customer
 	*
 	*	@param  $id				(int)		customerid
 	*	@return $res			(object)
@@ -427,7 +478,8 @@ Class astercrm extends PEAR{
 		$html .= '
 				<form method="post" name="formSurvey" id="formSurvey">
 				';
-		$html .= astercrm::generateSurvey();
+		$surveyHTML   =& astercrm::generateSurvey();
+		$html .= $surveyHTML;
 		$html .= '<div align="right">
 					<input type="button" value="'.$locate->Translate("continue").'" name="btnAddSurvey" id="btnAddSurvey" onclick="xajax_saveSurvey(xajax.getFormValues(\'formSurvey\'));return false;">
 					<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
@@ -531,6 +583,7 @@ Class astercrm extends PEAR{
 							xajax.$(\'categoryTR\').style.display = \'\';
 							xajax.$(\'bankNameTR\').style.display = \'\';
 							xajax.$(\'bankAccountTR\').style.display = \'\';
+							xajax.$(\'bankZipTR\').style.display = \'\';
 							xajax.$(\'customerDetial\').value = \'ON\';
 						}else{
 							xajax.$(\'websiteTR\').style.display = \'none\';
@@ -543,6 +596,7 @@ Class astercrm extends PEAR{
 							xajax.$(\'categoryTR\').style.display = \'none\';
 							xajax.$(\'bankNameTR\').style.display = \'none\';
 							xajax.$(\'bankAccountTR\').style.display = \'none\';
+							xajax.$(\'bankZipTR\').style.display = \'none\';
 							xajax.$(\'customerDetial\').value = \'OFF\';
 						};
 						return false;">
@@ -581,6 +635,18 @@ Class astercrm extends PEAR{
 						</select>
 					</td>
 				</tr>
+				<tr id="bankNameTR" name="bankNameTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
+					<td align="left"><input type="text" id="bankname" name="bankname" size="50"></td>
+				</tr>
+				<tr id="bankZipTR" name="bankZipTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
+					<td align="left"><input type="text" id="bankzip" name="bankzip" size="50"></td>
+				</tr>
+				<tr id="bankAccountTR" name="bankAccountTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+					<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"></td>
+				</tr>
 				<tr id="customerPhoneTR" name="customerPhoneTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
 					<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"></td>
@@ -588,17 +654,9 @@ Class astercrm extends PEAR{
 				<tr id="categoryTR" name="categoryTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
 					<td align="left"><input type="text" id="category" name="category" size="35"></td>
-				</tr>
-				<tr id="bankNameTR" name="bankNameTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
-					<td align="left"><input type="text" id="bankname" name="bankname" size="50"></td>
-				</tr>
-				<tr id="bankAccountTR" name="bankAccountTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-					<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"></td>
 				</tr>';
 	}else{
-		$customer =& Customer::getCustomerByID($customerid);
+		$customer =& astercrm::getCustomerByID($customerid);
 		$html .= '
 				<tr>
 					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
@@ -680,7 +738,7 @@ Class astercrm extends PEAR{
 				</tr>					
 				';
 	}else{
-		$contact =& Customer::getContactByID($contactid);
+		$contact =& astercrm::getContactByID($contactid);
 
 			$html .='
 				<tr>
@@ -693,7 +751,8 @@ Class astercrm extends PEAR{
 	//add survey html
 	$html .= '<tr><td colspan="2">';
 
-	$html .= astercrm::generateSurvey();
+	$surveyHTML =& astercrm::generateSurvey();
+	$html .= $surveyHTML;
 
 	$html .= '</tr></td>';
 
@@ -765,7 +824,14 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function generateSurvey(){
+	/**
+	*  generate HTML to add survey
+	*  HTML include survey title, all survey options, survey note
+	*	@return $html	(string)	
+	*							
+	*/
+
+	function &generateSurvey(){
 		global $db;
 
 		$sql = "SELECT * FROM survey WHERE enable=1 ORDER BY cretime DESC LIMIT 0,1";
@@ -783,7 +849,7 @@ Class astercrm extends PEAR{
 		
 
 		//get survey options
-		$options = astercrm::getOptions($surveyid);
+		$options =& astercrm::getOptions($surveyid);
 		if (!$options)
 			return '';
 		else {
@@ -807,7 +873,7 @@ Class astercrm extends PEAR{
 	function formEdit($id , $type){
 		global $locate;
 		if ($type == 'note'){
-			$note =& Customer::getRecord($id,'note');
+			$note =& astercrm::getRecord($id,'note');
 			for ($i=0;$i<11;$i++){
 				$options .= "<option value='$i' ";
 				if (trim($note['priority']) == $i)
@@ -846,7 +912,7 @@ Class astercrm extends PEAR{
 					';
 
 		}elseif ($type == 'customer'){
-			$customer =& Customer::getCustomerByID($id);
+			$customer =& astercrm::getCustomerByID($id);
 			if ($customer['contactgender'] == 'male')
 				$customerMaleSelected = 'selected';
 			elseif ($customer['contactgender'] == 'female')
@@ -894,6 +960,18 @@ Class astercrm extends PEAR{
 						
 						</td>
 					</tr>
+					<tr id="bankNameTR" name="bankNameTR">
+						<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
+						<td align="left"><input type="text" id="bankname" name="bankname" size="50"  value="' . $customer['bankname'] . '"></td>
+					</tr>
+					<tr id="bankZipTR" name="bankZipTR">
+						<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
+						<td align="left"><input type="text" id="bankzip" name="bankzip" size="50"  value="' . $customer['bankzip'] . '"></td>
+					</tr>
+					<tr id="bankAccountTR" name="bankAccountTR">
+						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"  value="' . $customer['bankaccount'] . '"></td>
+					</tr>
 					<tr id="customerPhoneTR" name="customerPhoneTR">
 						<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
 						<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"  value="' . $customer['phone'] . '"></td>
@@ -902,20 +980,13 @@ Class astercrm extends PEAR{
 						<td nowrap align="left">'.$locate->Translate("category").'</td>
 						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
 					</tr>
-					<tr id="bankNameTR" name="bankNameTR">
-						<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
-						<td align="left"><input type="text" id="bankname" name="bankname" size="50"  value="' . $customer['bankname'] . '"></td>
-					</tr>
-					<tr id="bankAccountTR" name="bankAccountTR">
-						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"  value="' . $customer['bankaccount'] . '"></td>
-					</tr>
+
 					<tr>
 						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("frmCustomerEdit"),"customer");return false;\'>'.$locate->Translate("continue").'</button></td>
 					</tr>
 					';
 		}else {
-			$contact =& Customer::getContactByID($id);
+			$contact =& astercrm::getContactByID($id);
 			if ($contact['gender'] == 'male')
 				$maleSelected = 'selected';
 			elseif ($contact['gender'] == 'female')
@@ -984,185 +1055,7 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 	
-	function formEditDial($id , $type){
-		global $locate;
-		if ($type == 'note'){
-			$note =& Diallist::getRecordByID($id,'note');
-			for ($i=0;$i<11;$i++){
-				$options .= "<option value='$i' ";
-				if (trim($note['priority']) == $i)
-					$options .= 'selected>';
-				else
-					$options .= '>';
 
-				$options .= $i."</option>";
-			}
-		//	print $options;
-		//	exit;
-			$html = '
-					<form method="post" name="f" id="f">
-					<input type="hidden" id="noteid"  name="noteid" value="'.$note['id'].'">
-					<table border="0" width="100%">
-					<tr>
-						<td nowrap align="left">'.$locate->Translate("note").'</td>
-						<td align="left">'.$note['note']. '</td>
-					</tr>
-					<tr>
-						<td nowrap align="left">'.$locate->Translate("append").'</td>
-						<td align="left"><input type="text" value="" name="note" id="note" length="35"></td>
-					</tr>
-					<tr>
-						<td nowrap align="left">'.$locate->Translate("priority").'</td>
-						<td align="left">
-							<select id="priority" name="priority">'.$options.'</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" align="center">[<a href=? onclick="xajax_showCustomer(\'' . $note['customerid'] . '\');return false;">'.$locate->Translate("customer").'</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=? onclick="xajax_showContact(\'' . $note['contactid'] . '\');return false;">'.$locate->Translate("contact").'</a>]</td>
-					</tr>
-					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("f"),"note");return false;\'>'.$locate->Translate("continue").'</button></td>
-					</tr>
-					';
-
-		}elseif ($type == 'customer'){
-			$customer =& Diallist::getCustomerByID($id);
-			if ($customer['contactgender'] == 'male')
-				$customerMaleSelected = 'selected';
-			elseif ($customer['contactgender'] == 'female')
-				$customerFemaleSelected = 'selected';
-			else
-				$customerUnknownSelected = 'selected';
-
-			$html = '
-					<form method="post" name="frmCustomerEdit" id="frmCustomerEdit">
-					<table border="0" width="100%">
-					<tr id="customer" name="customer">
-						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"><input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
-</td>
-					</tr>
-					<tr id="websiteTR" name="websiteTR">
-						<td nowrap align="left">'.$locate->Translate("website").'</td>
-						<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="' . $customer['website'] . '"><input type="button" value="'.$locate->Translate("browser").'"  onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
-					</tr>
-					<tr id="stateTR" name="stateTR">
-						<td nowrap align="left">'.$locate->Translate("state").'</td>
-						<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50" value="'.$customer['state'].'"></td>
-					</tr>
-					<tr id="cityTR" name="cityTR">
-						<td nowrap align="left">'.$locate->Translate("city").'</td>
-						<td align="left"><input type="text" id="city" name="city" size="50" maxlength="50" value="'.$customer['city'].'"></td>
-					</tr>
-					<tr id="addressTR" name="addressTR">
-						<td nowrap align="left">'.$locate->Translate("address").'</td>
-						<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200" value="' . $customer['address'] . '"></td>
-					</tr>
-					<tr id="zipcodeTR" name="zipcodeTR">
-						<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
-						<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10" value="' . $customer['zipcode'] . '"></td>
-					</tr>
-					<tr id="customerContactTR" name="customerContactTR">
-						<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
-						<td align="left"><input type="text" id="customerContact" name="customerContact" size="35" maxlength="35" value="' . $customer['contact'] . '">
-
-						<select id="customerContactGender" name="customerContactGender">
-							<option value="male" '.$customerMaleSelected.'>'.$locate->Translate("male").'</option>
-							<option value="female" '.$customerFemaleSelected.'>'.$locate->Translate("female").'</option>
-							<option value="unknown" '.$customerUnknownSelected.'>'.$locate->Translate("unknown").'</option>
-						</select>
-						
-						</td>
-					</tr>
-					<tr id="customerPhoneTR" name="customerPhoneTR">
-						<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-						<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"  value="' . $customer['phone'] . '"></td>
-					</tr>
-					<tr id="categoryTR" name="categoryTR">
-						<td nowrap align="left">'.$locate->Translate("category").'</td>
-						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
-					</tr>
-					<tr id="bankNameTR" name="bankNameTR">
-						<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
-						<td align="left"><input type="text" id="bankname" name="bankname" size="50"  value="' . $customer['bankname'] . '"></td>
-					</tr>
-					<tr id="bankAccountTR" name="bankAccountTR">
-						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"  value="' . $customer['bankaccount'] . '"></td>
-					</tr>
-					<tr>
-						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("frmCustomerEdit"),"customer");return false;\'>'.$locate->Translate("continue").'</button></td>
-					</tr>
-					';
-		}else {
-			$contact =& Diallist::getContactByID($id);
-			if ($contact['gender'] == 'male')
-				$maleSelected = 'selected';
-			elseif ($contact['gender'] == 'female')
-				$femaleSelected = 'selected';
-			else
-				$unknownSelected = 'selected';
-
-			$html = '
-					<form method="post" name="formEdit" id="formEdit">
-					<table border="0" width="100%">
-					<tr>
-						<td nowrap align="left">'.$locate->Translate("contact").'</td>
-						<td align="left"><input type="text" id="contact" name="contact" size="35"  value="'.$contact['contact'].'"><input type="hidden" id="contactid"  name="contactid" value="'.$contact['id'].'">
-</td>
-					</tr>
-					<tr name="genderTR" id="genderTR">
-						<td nowrap align="left">'.$locate->Translate("gender").'</td>
-						<td align="left">
-							<select id="contactGender" name="contactGender">
-								<option value="male" '.$maleSelected.'>'.$locate->Translate("male").'</option>
-								<option value="female" '.$femaleSelected.'>'.$locate->Translate("female").'</option>
-								<option value="unknown" '.$unknownSelected.'>'.$locate->Translate("unknown").'</option>
-							</select>
-						</td>
-					</tr>
-					<tr name="positionTR" id="positionTR">
-						<td nowrap align="left">'.$locate->Translate("position").'</td>
-						<td align="left"><input type="text" id="position" name="position" size="35"  value="'.$contact['position'].'"></td>
-					</tr>
-					<tr name="phoneTR" id="phoneTR">
-						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><input type="text" id="phone" name="phone" size="35"  value="'.$contact['phone'].'">-<input type="text" id="ext" name="ext" size="6" maxlength="6"  value="'.$contact['ext'].'"></td>
-					</tr>
-					<tr name="phone1TR" id="phone1TR">
-						<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-						<td align="left"><input type="text" id="phone1" name="phone1" size="35"  value="'.$contact['phone1'].'">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6"  value="'.$contact['ext1'].'"></td>
-					</tr>
-					<tr name="phone2TR" id="phone2TR">
-						<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-						<td align="left"><input type="text" id="phone2" name="phone2" size="35"  value="'.$contact['phone2'].'">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6"  value="'.$contact['ext2'].'"></td>
-					</tr>
-					<tr name="mobileTR" id="mobileTR">
-						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-						<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="'.$contact['mobile'].'"></td>
-					</tr>
-					<tr name="faxTR" id="faxTR">
-						<td nowrap align="left">'.$locate->Translate("fax").'</td>
-						<td align="left"><input type="text" id="fax" name="fax" size="35" value="'.$contact['fax'].'"></td>
-					</tr>
-					<tr name="emailTR" id="emailTR">
-						<td nowrap align="left">'.$locate->Translate("email").'</td>
-						<td align="left"><input type="text" id="email" name="email" size="35" value="'.$contact['email'].'"></td>
-					</tr>					
-					<tr>
-						<td colspan="2" align="center"><button id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("formEdit"),"contact");return false;\'>'.$locate->Translate("continue").'</button></td>
-					</tr>
-					';
-		}
-
-		$html .= '
-				</table>
-				</form>
-				'.$locate->Translate("ob_fields").'
-				';
-
-		return $html;
-	}
 	/**
 	*  Muestra todos los datos de un registro sobre el DIV identificado por "formDiv".
 	*
@@ -1172,8 +1065,8 @@ Class astercrm extends PEAR{
 	*/
 	function showCustomerRecord($id,$type="customer"){
     	global $locate;
-		$customer =& Customer::getCustomerByID($id,$type);
-		$contactList =& Customer::getContactListByID($customer['id']);
+		$customer =& astercrm::getCustomerByID($id,$type);
+		$contactList =& astercrm::getContactListByID($customer['id']);
 
 		$html = '
 				<table border="0" width="100%">
@@ -1206,20 +1099,24 @@ Class astercrm extends PEAR{
 					<td align="left">'.$customer['contact'].'&nbsp;&nbsp;('.$locate->Translate($customer['contactgender']).')</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
+					<td align="left">'.$customer['bankname'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
+					<td align="left">'.$customer['bankzip'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+					<td align="left">'.$customer['bankaccount'].'</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
 					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['phone'].'\');return false;">'.$customer['phone'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
 					<td align="left">'.$customer['category'].'</td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
-					<td align="left">'.$customer['bankname'].'</td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-					<td align="left">'.$customer['bankaccount'].'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("create_time").'</td>
@@ -1271,46 +1168,6 @@ Class astercrm extends PEAR{
 
 	}
 	
-	function showDialRecord($id,$type="diallist"){
-    	global $locate;
-		$customer =& Diallist::getDialByID($id,$type);
-		$contactList =& Diallist::getContactListByID($customer['id']);
-
-		$html = '
-				<table border="0" width="100%">
-				<tr>
-					<td nowrap align="left">dialnumber</td>
-					<td align="left">'.$customer['dialnumber'].'</td>
-				</tr>
-				<tr>
-					<td nowrap align="left">assign</td>
-					<td align="left">'.$customer['assign'].'</td>
-				</tr>
-				</table>
-				<table border="0" width="100%" id="contactList" name="contactList" style="display:none">
-					';
-
-				/*while	($contactList->fetchInto($row)){
-					$html .= '<tr>';
-					for ($i=1;$i<5;$i++){
-						$html .= '
-								<td align="left" width="20%">
-									<a href=? onclick="xajax_showContact(\''. $row['id'] .'\');return false;">'. $row['contact'] .'</a>
-								</td>
-								';
-						if (!$contactList->fetchInto($row))
-							$html .= '<td>&nbsp;</td>';
-					}
-					$html .= '</tr>';
-				}*/
-
-				$html .= '
-					</table>';
-
-		return $html;
-
-	}
-
 	/**
 	*  Muestra todos los datos de un registro sobre el DIV identificado por "formDiv".
 	*
@@ -1320,7 +1177,7 @@ Class astercrm extends PEAR{
 	*/
 	function showContactRecord($id,$type="contact"){
     	global $locate;
-		$contact =& Customer::getContactByID($id,$type);
+		$contact =& astercrm::getContactByID($id,$type);
 		if ($contact['id'] == '' )
 			return '';
 		$html = '
@@ -1422,7 +1279,7 @@ Class astercrm extends PEAR{
 		else
 			$sql = 'SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid';
 
-		//astercrm::events($sql);
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		while ($res->fetchInto($row)) {
 			foreach ($row as $val){
@@ -1435,6 +1292,21 @@ Class astercrm extends PEAR{
 			$txtstr .= "\n";
 		}
 		return $txtstr;
+	}
+
+	/**
+	*  return customerid if match a phonenumber
+	*
+	*	@param $type		(string)		data to be exported
+	*	@return $txtstr		(string) 		csv format datas
+	*/
+
+	function getCustomerByCallerid($callerid){
+		global $db;
+		$sql = "SELECT id FROM customer WHERE phone LIKE '%$callerid'";
+		$customerid =& $db->getOne($sql);
+		astercrm::events($sql);
+		return $customerid;
 	}
 }
 ?>

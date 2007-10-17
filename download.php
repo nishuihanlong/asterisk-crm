@@ -14,7 +14,7 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 	header("Location: portal.php");
 
 require_once ("db_connect.php");
-require_once ('astercrm.php');
+require_once ('include/astercrm.class.php');
 
 
 //$filename = $_REQUEST['filename'];

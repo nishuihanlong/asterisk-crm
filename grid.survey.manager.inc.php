@@ -1,8 +1,7 @@
 <?
 require_once 'db_connect.php';
 require_once 'survey.common.php';
-require_once 'include/Localization.php';
-require_once 'astercrm.php';
+require_once 'include/astercrm.class.php';
 
 /** \brief Customer Class
 *
@@ -173,7 +172,7 @@ class Customer extends astercrm
 	function insertNewSurvey($surveyname,$enable){
 		global $db;
 		if ($enable == 1)
-			astercrm::setSurveyEnable(0);
+			Customer::setSurveyEnable(0);
 		$sql= "INSERT INTO survey SET "
 				."surveyname='".$surveyname."', "
 				."enable='".$enable."', "
@@ -219,6 +218,7 @@ class Customer extends astercrm
 		$sql= "DELETE FROM surveyoptions "
 				." WHERE "
 				."surveyid = " . $surveyid ;
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}

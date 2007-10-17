@@ -2,7 +2,7 @@
 require_once ("db_connect.php");
 require_once ("survey.common.php");
 require_once ('grid.survey.manager.inc.php');
-require_once ('asterevent.class.php');
+require_once ('include/asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
 
 

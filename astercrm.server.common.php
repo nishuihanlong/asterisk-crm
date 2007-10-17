@@ -1,4 +1,26 @@
 <?
+/*******************************************************************************
+* astercrm.server.common.php
+* 部分xajax.Grid类的共用函数, 适用于包含customer,contact,note信息的界面
+* astercrm
+
+* Functions List
+
+			noteAdd					显示增加note的表单
+			saveNote				保存note
+			surveyAdd				显示增加survey result的表单
+			saveSurvey				保存survey result结果
+			showCustomer			显示详细customer信息的表单
+			showContact				显示详细contact信息的表单
+			showNote				显示详细note信息的表单
+			save					主保存函数, 可用于插入customer, contact, survey result 和 note
+			update					主更新函数, 可用于更新customer, contact 和 note
+			updateField				更新某一域的函数
+			updateField				将表格对象更改为可修改记录的inputbox对象
+			add						主显示函数, 显示同时增加customer, contact, survey result 和 note
+			showGrid				显示grid表格
+			delete					从数据库中删除一条记录
+*/
 
 function noteAdd($customerid,$contactid){
 	global $locate;
@@ -219,6 +241,16 @@ function save($f){
 	$objResponse->addClear("formCustomerInfo", "innerHTML");
 	$objResponse->addClear("formContactInfo", "innerHTML");
 
+	return $objResponse->getXML();
+}
+
+function delete($id = null, $table_DB = null){
+	global $locate;
+	Customer::deleteRecord($id,$table_DB);
+	$html = createGrid(0,ROWSXPAGE);
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("grid", "innerHTML", $html);
+	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
 	return $objResponse->getXML();
 }
 

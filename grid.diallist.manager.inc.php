@@ -8,8 +8,7 @@
 
 require_once 'db_connect.php';
 require_once 'diallist.common.php';
-require_once 'include/Localization.php';
-require_once 'astercrm.php';
+require_once 'include/astercrm.class.php';
 
 /** \brief Customer Class
 *
@@ -20,7 +19,7 @@ require_once 'astercrm.php';
 * @date		13 July 2007
 */
 
-class Diallist extends astercrm
+class Customer extends astercrm
 {
 
 	/**
@@ -42,7 +41,7 @@ class Diallist extends astercrm
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
 
-		Diallist::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -68,7 +67,7 @@ class Diallist extends astercrm
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-		Diallist::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -91,7 +90,7 @@ class Diallist extends astercrm
 				."FROM diallist "
 				."WHERE ".$filter." like '%$content%'";
 		}
-		Diallist::events($sql);
+		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
@@ -108,7 +107,7 @@ class Diallist extends astercrm
 		
 		$sql = "SELECT note.id AS id, note, priority,customer.name AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby , note.customerid, note.contactid, customer.website AS website, contact.position as position FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
 				." WHERE note.id = $id";
-		Diallist::events($sql);
+		Customer::events($sql);
 		$row =& $db->getRow($sql);
 		return $row;
 	}
@@ -128,17 +127,17 @@ class Diallist extends astercrm
 
 		//delete all customers
 		$sql = "DELETE FROM diallist WHERE id = $id";
-		Diallist::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 
 		//delete all note
 		$sql = "DELETE FROM note WHERE customerid = $id OR contactid in (SELECT id FROM contact WHERE customerid = $id)";
-		Diallist::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 
 		//delete all contact
 		$sql = "DELETE FROM contact WHERE customerid = $id";
-		Diallist::events($sql);
+		Customer::events($sql);
 		$res =& $db->query($sql);
 
 		return $res;

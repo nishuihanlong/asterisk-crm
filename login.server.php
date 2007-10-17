@@ -30,7 +30,7 @@
 ********************************************************************************/
 require_once ("login.common.php");
 require_once ("db_connect.php");
-require_once ('include/asterisk.php');
+require_once ('include/asterisk.class.php');
 
 /**
 *  function to process form data

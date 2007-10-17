@@ -6,8 +6,8 @@ if($_SESSION['action'] == 'customer'){
 }elseif($_SESSION['action'] == 'contact'){
 	$table = 'contact';
 }
-require_once ('include/Localization.php');
-require_once ('include/excel_class.php');
+require_once ('include/localization.class.php');
+require_once ('include/excel.class.php');
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 include_once('config.php');
 include("./include/template.php");

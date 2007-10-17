@@ -1,8 +1,8 @@
 <?php
 header("content-type:text/html;charset=utf-8");
 session_start();
-require_once ('include/Localization.php');
-require_once ("include/excel_class.php");
+require_once ('include/localization.class.php');
+require_once ("include/excel.class.php");
 include_once('config.php');
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){

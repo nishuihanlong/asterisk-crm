@@ -1,20 +1,10 @@
 <?php
 require_once ("db_connect.php");
 require_once ("diallist.common.php");
-require_once ('grid.diallist.manager.inc.php');
-require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
-require_once ('grid.common.php');
+require_once ('grid.diallist.manager.inc.php');
+require_once ('astercrm.server.common.php');
 
-
-function export(){
-	$objResponse = new xajaxResponse();
-
-	$objResponse->addAssign("type","value","customer");
-	$objResponse->addScript("xajax.$('frmDownload').submit();");
-	$objResponse->addAlert("downloading, please wait");
-	return $objResponse;
-}
 
 function init(){
 	global $locate;//,$config,$db;
@@ -35,12 +25,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	
 	if(($filter == null) or ($content == null)){
 		
-		$numRows =& Diallist::getNumRows();
-		$arreglo =& Diallist::getAllRecords($start,$limit,$order);
+		$numRows =& Customer::getNumRows();
+		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
 		
-		$numRows =& Diallist::getNumRows($filter, $content);
-		$arreglo =& Diallist::getRecordsFiltered($start, $limit, $filter, $content, $order);	
+		$numRows =& Customer::getNumRows($filter, $content);
+		$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);	
 	}
 
 	// Editable zone
@@ -113,51 +103,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	return $html;
 }
 
-
-function edit($id = null, $tblName, $type = "diallist"){
-	global $locate;
-
-	// Edit zone
-	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
-	$html .= Diallist::formEditDial($id, $type);
-	$html .= Table::Footer();
-   	// End edit zone
-
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("formEditInfo", "style.visibility", "visible");
-	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
-	return $objResponse->getXML();
-}
-
-function delete($id = null, $table_DB = null){
-	global $locate;
-	Diallist::deleteRecord($id); 				// <-- Change by your method
-	$html = createGrid(0,ROWSXPAGE);
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
-	return $objResponse->getXML();
-}
-
-function showDetail($recordID){
-	global $locate;
-	if($recordID != null){
-		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-		$html .= Diallist::showDialRecord($recordID); 		
-		$html .= Table::Footer();
-		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
-		return $objResponse->getXML();
-	}
-}
-
-function importCsv(){
-	$objResponse = new xajaxResponse();
-	//$objResponse->addScript("gotourl('./index.html');");
-	$objResponse->addScript("window.location.href='./importcsv.php'");
-	return $objResponse->getXML();
-}
 
 $xajax->processRequests();
 

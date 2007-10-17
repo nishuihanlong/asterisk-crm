@@ -8,7 +8,8 @@
 			
 			checkNewCall			检查是否有新的电话
 			checkCallStatus			检查通话的状态
-			checkExtensionStatus	读取分机的状态
+			checkExtensionStatus	读取所有分机的状态, 并返回HTML结果
+			events					日志记录
 
 * Private Functions List
 
@@ -18,11 +19,16 @@
 			events					日志记录函数
 			getCallerID				用于外部来电时获取主叫号码
 			getInfoBySrcID			用于呼出时获取主叫号码
+			getInfoByDescID			未使用
 			checkLink				检查呼叫是否连接
 			checkHangup				检查呼叫是否挂断
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
+
+* Revision 0.045  2007/10/15 10:55:00  modified by solo
+* Desc: 
+* 描述: 修改了 checkIncoming , checkLink , checkHangup , checkDialout 函数的SQL语句, 修改为仅查询最近10秒的结果
 
 * Revision 0.044  2007/09/12 10:55:00  modified by solo
 * Desc: 
@@ -347,17 +353,8 @@ class asterEvent extends PEAR
 
 	function &checkIncoming($curid,$exten){
 		global $db;
-		// State: Ring or Ringing in different asterisk version
-
-//		$query = "SELECT * FROM events WHERE event LIKE 'Event: New% %Channel: %".$exten."% %State: Ring%' AND id > " . $curid . " order by id desc";
 
 		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > (now()-INTERVAL 10 SECOND) AND id > " . $curid . " order by id desc";
-
-//		$query = "SELECT * FROM events WHERE  event LIKE 'Event: Newchannel%State: Ringing%' AND id > " . $curid . " order by id desc";
-
-//		$query = "SELECT * FROM events WHERE event LIKE 'Event: Newstate%Channel: %".$exten."%State: Ring%' AND id > " . $curid . " order by id desc";
-
-//		$query = "SELECT * FROM events WHERE event LIKE 'Event: New% Channel: %".$exten."%State:	Ringing%' AND id > " . $curid . " order by id desc";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
@@ -388,9 +385,7 @@ class asterEvent extends PEAR
 
 			if ($id > $curid) 
 				$curid = $id;
-//			print_r($flds);
-//			print $callerid;
-//			$callerid = trim($callerid);
+
 			$call['status'] = 'incoming';
 			$call['callerid'] = trim($callerid);
 			$call['uniqueid'] = trim($uniqueid);
@@ -424,7 +419,6 @@ class asterEvent extends PEAR
 			$timestamp = $list['timestamp'];
 			$event     = $list['event'];
 			$flds      = split("  ",$event);
-			//$c         = count($flds);
 			$callerid  = '';
 
 
@@ -432,12 +426,8 @@ class asterEvent extends PEAR
 				$SrcUniqueID = trim(substr($flds[6],12));
 				$DescUniqueID = trim(substr($flds[7],13));
 
-				//print $DescUniqueID;
-				//exit;
 				$srcInfo = & asterEvent::getInfoBySrcID($SrcUniqueID);
 				$callerid = $srcInfo['Extension'] ;
-				//$descInfo = & asterEvent::getInfoByDescID($DescUniqueID);
-				//$callerid = $descInfo['Extension'] ;
 			}
 
 			if ($id > $curid) 
@@ -454,12 +444,12 @@ class asterEvent extends PEAR
 	}
 
 /*
-	check if there's a new dial out
+	get more information from events table by DescUniqueID
 	@param	$DescUniqueID			(string)	DescUniqueID field in manager event
 	return	$call					(array)	
 			$call['status']			(string)	'','found'
-			$call['Extension']		(string)	extension which unique id is $SrcUniqueID
-			$call['Channel']		(string)	channel which unique id is $SrcUniqueID
+			$call['Extension']		(string)	extension which unique id is $DescUniqueID
+			$call['Channel']		(string)	channel which unique id is $DescUniqueID
 */
 
 	function &getInfoByDescID($DescUniqueID){
@@ -489,7 +479,7 @@ class asterEvent extends PEAR
 	}
 
 /*
-	check if there's a new dial out
+	get more information from events table by SrcUniqueID
 	@param	$SrcUniqueID			(string)	SrcUniqueID field in manager event
 	return	$call					(array)	
 			$call['status']			(string)	'','found'

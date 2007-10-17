@@ -1,7 +1,7 @@
 <?php
 	session_start();
-	require_once ('include/Localization.php');
-	require_once ("include/excel_class.php");
+	require_once ('include/localization.class.php');
+	require_once ("include/excel.class.php");
 	$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 	if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 		$file_name = $_SESSION['filename'];

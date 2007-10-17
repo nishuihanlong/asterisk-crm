@@ -138,7 +138,7 @@ require_once('manager.common.php');
 	</head>
 	<body onload="init();">
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
-		<div id="panelDiv" name="panelDiv" class="divPanel"></div>
+		<div id="divPanel" name="divPanel" class="divPanel"></div>
 		
 		<div id="formDiv" name="formDiv" class="formDiv"></div>
 

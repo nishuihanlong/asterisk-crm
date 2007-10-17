@@ -1,10 +1,9 @@
 <?php
 require_once ("db_connect.php");
-require_once ("customer.common.php");
 require_once ('grid.note.manager.inc.php');
-require_once ('asterevent.class.php');
+require_once ('include/asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
-require_once ('grid.common.php');
+require_once ('astercrm.server.common.php');
 
 function export(){
 	$objResponse = new xajaxResponse();
@@ -134,16 +133,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	$html = $table->render();
  	
  	return $html;
-}
-
-function delete($id = null, $table_DB = null){
-	global $locate;
-	Customer::deleteRecord($id,'note'); 				// <-- Change by your method
-	$html = createGrid(0,ROWSXPAGE);
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
-	return $objResponse->getXML();
 }
 
 $xajax->processRequests();

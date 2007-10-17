@@ -10,6 +10,7 @@ $create_by = "创建人";
 $address = "地址";
 $website = "网址";
 $bank_name = "银行名称";
+$bank_zip	= "银行编码";
 $bank_account = "账户";
 $priority = "重要度";
 $add_record = "添加记录";

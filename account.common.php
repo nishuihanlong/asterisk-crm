@@ -1,15 +1,15 @@
 <?php
 /*******************************************************************************
-* dialist.common.php
-* dialist参数信息文件
-* dialist parameter file
+* account.common.php
+* account参数信息文件
+* account parameter file
 * 功能描述
 * Function Desc
 
-* Revision 0.0443  2007/09/29 15:25:00  modified by solo
-* Desc: page create
-* 描述: 页面建立
-  
+* Revision 0.045  2007/10/17 15:25:00  modified by solo
+* Desc: created
+
+
 ********************************************************************************/
 
 header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
@@ -29,16 +29,20 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 
 define(LOG_ENABLED, 1); // Enable debuggin
 define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
-define(ROWSXPAGE, 25); // Number of rows show it per page.
-define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.
+define(ROWSXPAGE, 10); // Number of rows show it per page.
+define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'diallist');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'account');
 
-$xajax = new xajax("diallist.server.php");
+$xajax = new xajax("account.server.php");
 
-$xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
+$xajax->registerFunction("add");
+$xajax->registerFunction("save");
+$xajax->registerFunction("edit");
+$xajax->registerFunction("update");
 $xajax->registerFunction("delete");
+$xajax->registerFunction("init");
 ?>

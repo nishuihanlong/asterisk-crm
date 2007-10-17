@@ -8,8 +8,7 @@
 
 require_once 'db_connect.php';
 require_once 'customer.common.php';
-require_once 'include/Localization.php';
-require_once 'astercrm.php';
+require_once 'include/astercrm.class.php';
 
 /** \brief Customer Class
 *
@@ -121,7 +120,7 @@ class Customer extends astercrm
 	*	@return $res	(object) Devuelve el objeto con la respuesta de la sentencia SQL ejecutada del DELETE.
 	*/
 	
-	function deleteRecord($id){
+	function deleteRecord($id,$table){
 		global $db;
 		
 		//backup all datas

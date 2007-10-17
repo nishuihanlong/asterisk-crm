@@ -28,7 +28,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 require_once ("include/xajax.inc.php");
-require_once ('include/Localization.php');
+require_once ('include/localization.class.php');
 
 //session_start();
 
