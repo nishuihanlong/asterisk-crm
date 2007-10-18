@@ -1191,7 +1191,28 @@ Class astercrm extends PEAR{
 		return $html;
 
 	}
+
+	/**
+	*  delete a record form a table
+	*
+	*	@param  $id			(int)		identity of the record
+	*	@param  $table		(string)	table name
+	*	@return $res		(object)	object
+	*/
 	
+	function deleteRecord($id,$table){
+		global $db;
+		
+		//backup all datas
+
+		//delete all note
+		$sql = "DELETE FROM $table WHERE id = $id";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+
+		return $res;
+	}
+
 	/**
 	*  Muestra todos los datos de un registro sobre el DIV identificado por "formDiv".
 	*
