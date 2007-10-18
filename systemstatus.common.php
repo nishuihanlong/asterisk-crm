@@ -3,8 +3,27 @@
 * systemstatus.common.php
 * systemstatus参数信息文件
 * systemstatus parameter file
+
 * 功能描述
+	检查用户权限
+	初始化语言变量
+	初始化xajax类
+	预定义xajaxGrid中需要使用的一些参数
+	注册xajax函数
+
 * Function Desc
+	authority
+	initialize localization class
+	initialize xajax class
+	define xajaxGrid parameters
+
+registed function:
+*	call these function by xajax_ + funcionname
+*	such as xajax_init()
+
+	init					init html page
+	showStatus				show sip extension status
+	showChannelsInfo		show asterisk active channels
 
 * Revision 0.045  2007/10/18 15:25:00  modified by solo
 * Desc: page created

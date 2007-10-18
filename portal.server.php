@@ -92,7 +92,7 @@ function init(){
 	
 	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
 	$html .= $locate->Translate("extension").$_SESSION['curuser']['extension'];
-	$objResponse->addAssign("userMsg","innerHTML", $html );
+	$objResponse->addAssign("divUserMsg","innerHTML", $html );
 	$objResponse->addAssign("username","value", $_SESSION['curuser']['username'] );
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
@@ -117,10 +117,10 @@ function init(){
 		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
 	}
 	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a>";
-	$objResponse->addAssign("panelDiv","innerHTML", $panelHTML);
+	$objResponse->addAssign("divPanel","innerHTML", $panelHTML);
 
 	if ($config['system']['enable_external_crm'] == false){
-		$objResponse->addClear("crm","innerHTML");
+		$objResponse->addClear("divCrm","innerHTML");
 		$objResponse->addIncludeScript("js/astercrm.js");
 		$objResponse->addIncludeScript("js/ajax.js");
 		$objResponse->addIncludeScript("js/ajax-dynamic-list.js");
@@ -143,13 +143,13 @@ function init(){
 						</td>
 					</tr>
 					</table>';
-		$objResponse->addAppend("crm","innerHTML", $mycrm );
+		$objResponse->addAppend("divCrm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");
 		if ($config['system']['open_new_window'] == false){
 			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-			$objResponse->addAssign("crm","innerHTML", $mycrm );
+			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 		}else{
 			$javascript = "openwindow('".$config['system']['external_crm_default_url']."')";
 			$objResponse->addScript($javascript);
@@ -223,9 +223,9 @@ function incomingCalls($myValue){
 
 				$transfer .= '
 							</SELECT>
-							<INPUT type="BUTTON" value="'.$locate->Translate("transfer").'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
+							<INPUT type="BUTTON" value="'.$locate->Translate(spanTransfer).'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
 							';
-				$objResponse->addAssign("transfer","innerHTML", $transfer );
+				$objResponse->addAssign(spanTransfer,"innerHTML", $transfer );
 			}
 
 		} elseif ($call['status'] =='hangup'){
@@ -236,7 +236,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerid","value", "" );
 			$objResponse->addAssign("callerChannel","value", '');
 			$objResponse->addAssign("calleeChannel","value", '');
-			$objResponse->addAssign("transfer","innerHTML", '');
+			$objResponse->addAssign(spanTransfer,"innerHTML", '');
 
 			//disable monitor
 			$objResponse->addAssign("btnMonitor","disabled", true );
@@ -261,7 +261,7 @@ function waitingCalls($myValue){
 
 	$phone_html = asterEvent::checkExtensionStatus($curid);
 	
-	$objResponse->addAssign("extensionDiv","innerHTML", $phone_html );
+	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
 
 	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
 
@@ -294,7 +294,7 @@ function waitingCalls($myValue){
 
 						if ($config['system']['open_new_window'] == false){
 								$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-								$objResponse->addAssign("crm","innerHTML", $mycrm );
+								$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 						}else{
 							$javascript = "openwindow('".$myurl."')";
 							$objResponse->addScript($javascript);
@@ -326,7 +326,7 @@ function waitingCalls($myValue){
 						$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
 						if ($config['system']['open_new_window'] == false){
 							$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-							$objResponse->addAssign("crm","innerHTML", $mycrm );
+							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 						} else {
 							$javascript = "openwindow('".$myurl."')";
 							$objResponse->addScript($javascript);

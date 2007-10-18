@@ -1,11 +1,35 @@
 <?php
-// Tanslate to chinese by Donnie
+/*******************************************************************************
+* systemstatus.server.php
+
+* Function Desc
+	show sip status and active channels
+
+* 功能描述
+	提供SIP分机状态信息和正在进行的通道
+
+* Function Desc
+
+	showGrid
+	init				初始化页面元素
+	showStatus			显示sip分机状态信息
+	showChannelsInfo	显示激活的通道信息
+
+* Revision 0.045  2007/10/18 15:38:00  last modified by solo
+* Desc: comment added
+
+********************************************************************************/
 require_once ("systemstatus.common.php");
 require_once ("db_connect.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('include/common.class.php');
+
+/**
+*  initialize page elements
+*
+*/
 
 function init(){
 	global $locate,$config;
@@ -25,6 +49,10 @@ function init(){
 	return $objResponse;
 }
 
+/**
+*  initialize page elements
+*  @return	objResponse		object		xajax response object
+*/
 
 function showStatus(){
 	$objResponse = new xajaxResponse();
@@ -33,6 +61,12 @@ function showStatus(){
 	$objResponse->addAssign("divStatus", "innerHTML", $html);
 	return $objResponse;
 }
+
+
+/**
+*  initialize page elements
+*  @return	objResponse		object		xajax response object
+*/
 
 function showChannelsInfo(){
 	global $locate;

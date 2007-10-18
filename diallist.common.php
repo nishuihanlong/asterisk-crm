@@ -3,8 +3,35 @@
 * dialist.common.php
 * dialist参数信息文件
 * dialist parameter file
+
 * 功能描述
+	检查用户权限
+	初始化语言变量
+	初始化xajax类
+	预定义xajaxGrid中需要使用的一些参数
+
 * Function Desc
+	authority
+	initialize localization class
+	initialize xajax class
+	define xajaxGrid parameters
+
+registed function:
+*	call these function by xajax_ + funcionname
+*	such as xajax_init()
+
+	init				init html page
+	showGrid
+	delete				delete a contact
+	add					null
+	save
+
+
+* Revision 0.045  2007/10/18 20:38:00  modified by solo
+* Desc: registed "add" "save" function
+
+* Revision 0.045  2007/10/18 19:54:00  modified by solo
+* Desc: comment added
 
 * Revision 0.0443  2007/09/29 15:25:00  modified by solo
 * Desc: page create
@@ -36,6 +63,8 @@ $xajax = new xajax("diallist.server.php");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("delete");
+$xajax->registerFunction("add");
+$xajax->registerFunction("save");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.

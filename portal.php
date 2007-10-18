@@ -22,31 +22,44 @@
 				grid				show accout grid
 				msgZone				show action result
 				divCopyright		show copyright
-				userMsg				show username and user extension
 				divMonitor			show monitor button
+				divExtension		list extensions
+				divPanel			list functions
+				divUserMsg			show username and user extension
+				divDialList			show if there're calls assigned to the agent]
+				divCrm				show 3rd party crm if user dont use internal crm
 				myevents			show system status
 				click2dial			show input box allow agent enter phone number to dial
-				extensionDiv		list extensions
 				...
 
 * span:
-				transfer			show transfer option list
+				spanTransfer		show transfer option list when call link
 				spanMonitor			show monitor description
 				spanMonitorStatus	show system monitor status
 				...
 
-* input:
+* hidden:
 				extensionStatus			extension status: idle | link | hangup
+				username
+				exenstion
+				uniqueid				uniqueid if there's a call
+				callerid
+				mycallerid				store callerid
+				curid					current id in events table
+				callerChannel
+				calleeChannel
+				direction				dialout or dialin
+				popup					if "yes" then pop-up when there's a call
 
 * javascript function:		
 
-				init				page onload function
-				monitor
-				dial
+				init							page onload function
+				monitor							start/stop monitor
+				dial							dial a phone
 				showProcessingMessage
 				hideProcessingMessage
 				btnGetAPhoneNumberOnClick
-				updateEvents
+				updateEvents					check database for asterisk events
 
 
 * Revision 0.045  2007/10/18 15:05:00  last modified by solo
@@ -120,11 +133,10 @@ require_once('portal.common.php');
 	</head>
 	<body onload="init();">
 	<form name="myForm" id="myForm">
-		<div id="userMsg" name="userMsg"></div>
-		<span id="transfer" name="transfer"></span>
+		<div id="divUserMsg" name="divUserMsg"></div>
+		<span id="spanTransfer" name="spanTransfer"></span>
 		<div id="myevents"></div>
 		<br>
-
 		<span id="spanMonitor" name="spanMonitor"></span><br>
 		<div id="divMonitor">
 			<span id="spanMonitorStatus" name="spanMonitorStatus"></span><br>
@@ -140,12 +152,10 @@ require_once('portal.common.php');
 		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
 		<input type="hidden" name="callerid" id="callerid" value=""/>
 		<input type="hidden" name="curid" id="curid" value="0"/>
-		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>
 		<input type="hidden" name="popup" id="popup" value="yes"/>
-		<div id="debug"></div>
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
@@ -153,9 +163,9 @@ require_once('portal.common.php');
 	<div id="processingMessage" name="processingMessage"></div>
 	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber"><input type="button" id="btnDial" name="btnDial" value="Dial" onclick="dial(xajax.$('iptDestnationNumber').value)"></div>
 	
-	<div id="crm" name="crm"></div>
-	<div id="panelDiv" name="panelDiv" class="divPanel"></div>
-	<div id="extensionDiv" name="extensionDiv" class="divExtension"></div>
+	<div id="divCrm" name="divCrm"></div>
+	<div id="divPanel" name="divPanel" class="divPanel"></div>
+	<div id="divExtension" name="divExtension" class="divExtension"></div>
 	<div id="divCopyright"></div>
 	</body>
 </html>

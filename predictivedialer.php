@@ -5,6 +5,37 @@
 * predictivedialer interface
 
 * Function Desc
+		拨号器控制: 开始/停止
+		最大通道控制
+
+* div
+				divNav
+				divAMIStatus					show error message if AMI is error
+				divActiveCalls					show active calls number
+				divPredictiveDialerMsg			
+				divPredictiveDialer				show predictive dialer
+				channels						show asterisk channels
+				divCopyright
+* span
+				spanTotalRecords				records in diallist
+
+* hidden
+				predictiveDialerStatus			dialer status: idle | busy
+
+
+* javascript functions
+
+				init
+				showChannelsInfo
+				showPredictiveDialer
+				btnDialOnClick
+				startDial
+				stopDial
+				trim
+				isNumber
+
+* Revision 0.045  2007/10/18 20:12:00  last modified by solo
+* Desc: change div id from AMIStatusDiv to divAMIStatus 
 
 * Revision 0.045  2007/10/18 17:55:00  last modified by solo
 * Desc: page created
@@ -99,7 +130,7 @@ require_once('predictivedialer.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
-		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
+		<div id="divAMIStatus" name="divAMIStatus"></div>
 		<span id="spanTotalRecords" name="spanTotalRecords" align="left"></span><!--&nbsp;&nbsp;records left-->
 		<div id="divActiveCalls" name="divActiveCalls" align="left"> </div>
 		<div id="divPredictiveDialerMsg" name="divPredictiveDialerMsg" align="left"> </div>

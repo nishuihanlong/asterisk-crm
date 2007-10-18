@@ -1,6 +1,7 @@
 <?php
-	require('astercrm_en_US.php');
-	$back_to_mi		= "Back to MI";
-	$number = "number";
-	$area = "assign";
+//require('astercrm_en_US.php');
+$number		= "number";
+$assign_to	= "assign to";
+$add_diallist	= "Add a phone number";
+$continue	= "Continue";
 ?>

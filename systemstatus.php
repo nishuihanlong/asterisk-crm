@@ -8,6 +8,12 @@
 
 * Function Desc
 
+
+* javascript function:		
+						showStatus				show sip extension status
+						showChannelsInfo		show asterisk channels information
+						init					initialize function after page loaded
+
 * Revision 0.045  2007/10/18 17:55:00  last modified by solo
 * Desc: page created
 ********************************************************************************/

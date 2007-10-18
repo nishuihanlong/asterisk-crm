@@ -1,23 +1,33 @@
 <?
-/* NOTE: For this example, the package PEAR is required, you can see http://pear.php.net for more information 
-	In addition, in my example  the "include_pah" is modify including the PEAR full path.
-	You can to modify the class methods, as you wish you.
-	
-	But anyway, the full package contain the DB.php and PEAR.php files obtained from PEAR package.
-*/
+/*******************************************************************************
+* diallist.grid.inc.php
+* diallist操作类
+* Customer class
+
+* @author			Solo Fu <solo.fu@gmail.com>
+* @classVersion		1.0
+* @date				18 Oct 2007
+
+* Functions List
+
+	getAllRecords				获取所有记录
+	getRecordsFiltered			获取记录集
+	getNumRows					获取记录集条数
+	formAdd
+
+
+* Revision 0.045  2007/10/18 19:53:00  last modified by solo
+* Desc: delete function getRecordByID, add function  formAdd
+
+
+* Revision 0.045  2007/10/18 13:30:00  last modified by solo
+* Desc: page created
+
+********************************************************************************/
 
 require_once 'db_connect.php';
 require_once 'diallist.common.php';
 require_once 'include/astercrm.class.php';
-
-/** \brief Customer Class
-*
-
-*
-* @author	Solo Fu <solo.fu@gmail.com>
-* @version	1.0
-* @date		13 July 2007
-*/
 
 class Customer extends astercrm
 {
@@ -94,53 +104,34 @@ class Customer extends astercrm
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
-	
-	/**
-	*  Devuelte el registro de acuerdo al $id pasado.
-	*
-	*	@param $id	(int)	Identificador del registro para hacer la b&uacute;squeda en la consulta SQL.
-	*	@return $row	(array)	Arreglo que contiene los datos del registro resultante de la consulta SQL.
-	*/
-	
-	function &getRecordByID($id){
-		global $db;
-		
-		$sql = "SELECT note.id AS id, note, priority,customer.name AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby , note.customerid, note.contactid, customer.website AS website, contact.position as position FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				." WHERE note.id = $id";
-		Customer::events($sql);
-		$row =& $db->getRow($sql);
-		return $row;
+
+	function formAdd(){
+		global $locate;
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="formDiallist" id="formDiallist">
+				
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("number").'</td>
+						<td align="left">
+							<input type="text" id="dialnumber" name="dialnumber" size="35">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("assign_to").'</td>
+						<td align="left">
+							<input type="text" id="assign" name="assign" size="35">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_save(xajax.getFormValues(\'formDiallist\'));return false;"></td>
+					</tr>
+				<table>
+				</form>
+				';
+		return $html;
 	}
 
-
-	/**
-	*  Borra un registro de la tabla.
-	*
-	*	@param $id		(int)	Identificador del registro a ser borrado.
-	*	@return $res	(object) Devuelve el objeto con la respuesta de la sentencia SQL ejecutada del DELETE.
-	*/
-	
-	function deleteRecord($id){
-		global $db;
-		
-		//backup all datas
-
-		//delete all customers
-		$sql = "DELETE FROM diallist WHERE id = $id";
-		Customer::events($sql);
-		$res =& $db->query($sql);
-
-		//delete all note
-		$sql = "DELETE FROM note WHERE customerid = $id OR contactid in (SELECT id FROM contact WHERE customerid = $id)";
-		Customer::events($sql);
-		$res =& $db->query($sql);
-
-		//delete all contact
-		$sql = "DELETE FROM contact WHERE customerid = $id";
-		Customer::events($sql);
-		$res =& $db->query($sql);
-
-		return $res;
-	}
 }
 ?>

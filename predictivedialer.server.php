@@ -1,5 +1,26 @@
 <?php
-// Tanslate to chinese by Donnie
+/*******************************************************************************
+* predictivedialer.server.php
+
+* 账户管理系统后台文件
+* predictivedialer management script
+
+* Function Desc
+	predictivedialer management script
+
+* 功能描述
+	提供帐户管理脚本
+
+* Function Desc
+		init				初始化页面元素
+		showChannelsInfo	显示asterisk channels
+		showPredictiveDialer
+		predictiveDialer
+
+* Revision 0.045  2007/10/18 20:10:00  last modified by solo
+* Desc: comment added
+
+*/
 require_once ("predictivedialer.common.php");
 require_once ("db_connect.php");
 require_once ('include/xajaxGrid.inc.php');
@@ -15,7 +36,7 @@ function init(){
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	if (!$res){
-		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI_connection_failed"));
+		$objResponse->addAssign("divAMIStatus", "innerHTML", $locate->Translate("AMI_connection_failed"));
 	}
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));

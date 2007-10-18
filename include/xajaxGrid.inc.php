@@ -347,39 +347,6 @@ class ScrollTable{
 		</table>';
 	}
 	
-	function addRowSearchDial($table,$fieldsFromSearch,$fieldsFromSearchShowAs, $withNewButton = 1){
-		global $local_grid;
-		$ind = 0;
-		$this->search = '
-			<table width="99%" border="0">
-			<tr>
-				<td align="left" width="10%">';
-				//if($withNewButton){
-				//	$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
-				//}
-		$this->search .= '
-				</td>
-				<td> '.$local_grid->Translate("table").': '.
-					$table.
-				'</td>
-				<td align="right" width="30%" nowrap>
-				'.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30" id="searchContent" name="searchContent">
-				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-					<select id="searchField" name="searchField">
-						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
-					foreach ($fieldsFromSearchShowAs as $value) {
-						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'">'.$value.'</option>';
-						$ind++;
-					}	
-		$this->search .= '
-					</select>
-				&nbsp;&nbsp;<button id="submitButton" onClick="xajax_showGrid(0,'.$this->numRowsToShow.',document.getElementById(\'searchField\').value,document.getElementById(\'searchContent\').value,document.getElementById(\'searchField\').value);return false;">'.$local_grid->Translate("continue").'</button>
-				</td>
-				
-			</tr>
-		</table>';
-	}
-
 	/**
 	* Add the footer of the table (Grid), that its contains the record information such as number of records, previos, next and final,  totals records, etc. Each one with its link when it is posible.
 	*

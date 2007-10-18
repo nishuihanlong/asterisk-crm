@@ -1,16 +1,28 @@
 <?
+/*******************************************************************************
+* surveyresult.grid.inc.php
+* surveyresult操作类
+* Customer class
+
+* @author			Solo Fu <solo.fu@gmail.com>
+* @classVersion		1.0
+* @date				18 Oct 2007
+
+* Functions List
+
+	getAllRecords				获取所有记录
+	getRecordsFiltered			获取记录集
+	getNumRows					获取记录集条数
+
+
+* Revision 0.045  2007/10/18 13:30:00  last modified by solo
+* Desc: page created
+
+********************************************************************************/
 require_once 'db_connect.php';
 require_once 'survey.common.php';
 require_once 'include/astercrm.class.php';
 
-/** \brief Customer Class
-*
-
-*
-* @author	Solo Fu <solo.fu@gmail.com>
-* @version	1.0
-* @date		13 July 2007
-*/
 
 class Customer extends astercrm
 {

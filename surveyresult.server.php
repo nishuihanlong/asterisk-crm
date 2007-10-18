@@ -13,9 +13,9 @@
 	showGrid
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
-	delete
-	add
-	showDetail
+	delete				删除一条问卷结果
+	add					null
+	showDetail			null
 
 * Revision 0.045  2007/10/18 15:38:00  last modified by solo
 * Desc: comment added
@@ -38,6 +38,11 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 	return $objResponse->getXML();
 }
 
+/**
+*  initialize page elements
+*
+*/
+
 function init(){
 	global $locate;//,$config,$db;
 
@@ -51,7 +56,16 @@ function init(){
 	return $objResponse;
 }
 
-//	create grid
+/**
+*  generate grid HTML code
+*  @param	start		int			record start
+*  @param	limit		int			how many records need
+*  @param	filter		string		the field need to search
+*  @param	content		string		the contect want to match
+*  @param	divName		string		which div grid want to be put
+*  @param	order		string		data order
+*  @return	html		string		grid HTML code
+*/
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
@@ -161,6 +175,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	return $html;
 }
 
+/**
+*  delete survey result
+*  @param	id				int			record start
+*  @param	table_DB		string		table name
+*  @return	objResponse		object		xajax response object
+*/
+
 function delete($id = null, $table_DB = null){
 	global $locate;
 	Customer::deleteRecord($id,$table_DB); 				// <-- Change by your method
@@ -171,14 +192,19 @@ function delete($id = null, $table_DB = null){
 	return $objResponse->getXML();
 }
 
+/**
+*  return null
+*/
 function add($surveyid = 0){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	return $objResponse;
 }
 
+/**
+*  return null
+*/
 function showDetail($surveyid){
-	global $db,$locate;
 	$objResponse = new xajaxResponse();
 	return $objResponse;
 }

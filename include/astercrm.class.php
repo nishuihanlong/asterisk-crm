@@ -11,10 +11,12 @@
 			insertNewNote			向note表插入数据
 			insertNewSurveyResult	向surveyresult表插入数据
 			insertNewAccount
+			insertNewDiallist
 
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
 			updateNoteRecord		更新note表数据
+			updateAccountRecord
 
 			deleteRecord			从表中删除数据(以id作为标识)
 			getRecord				从表中读取数据(以id作为标识)
@@ -39,6 +41,10 @@
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
 			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
+
+* Revision 0.045  2007/10/18 13:30:00  last modified by solo
+* Desc: add function insertNewDiallist
+
 
 ********************************************************************************/
 
@@ -167,6 +173,19 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function insertNewDiallist($f){
+		global $db;
+		
+		$sql= "INSERT INTO diallist SET "
+				."dialnumber='".$f['dialnumber']."', "
+				."assign='".$f['assign']."'";
+
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+
 	/**
 	*  update customer table
 	*
@@ -255,6 +274,29 @@ Class astercrm extends PEAR{
 						."note=CONCAT(note,'<br>',now(),'  ".$f['note']." by " .$_SESSION['curuser']['username']. "'), "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	/**
+	*  Actualiza un registro de la tabla.
+	*
+	*	@param $f	(array)		Arreglo que contiene los datos del formulario pasado.
+	*	@return $res	(object)	Devuelve el objeto con la respuesta de la sentencia SQL ejecutada del UPDATE.
+	*/
+	
+	function updateAccountRecord($f){
+		global $db;
+		
+		$sql= "UPDATE account SET "
+				."username='".$f['username']."', "
+				."password='".$f['password']."', "
+				."extension='".$f['extension']."', "
+				."usertype='".$f['usertype']."', "
+				."extensions='".$f['extensions']."' "
+				."WHERE id='".$f['id']."'";
 
 		astercrm::events($sql);
 		$res =& $db->query($sql);

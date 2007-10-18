@@ -8,10 +8,13 @@
 	survey management
 
 * Page elements
-* div:							
-									formDiv			-> add/edit form div in xgrid
-									grid				-> main div
-									msgZone		-> message from xgrid class
+* div:		
+									divNav
+									formDiv	
+									grid
+									msgZone
+									divSurveyStatistc
+									divCopyright
 * javascript function:		
 									init	
 
