@@ -10,9 +10,12 @@
 			insertNewContact		向contact表插入数据
 			insertNewNote			向note表插入数据
 			insertNewSurveyResult	向surveyresult表插入数据
+			insertNewAccount
+
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
 			updateNoteRecord		更新note表数据
+
 			deleteRecord			从表中删除数据(以id作为标识)
 			getRecord				从表中读取数据(以id作为标识)
 			updateField				更新表中的数据(以id作为标识)
@@ -22,6 +25,7 @@
 			getCustomerByID			根据customerid获取customer记录信息或者根据noteid获取与之相关的customer信息
 			getContactByID			根据contactid获取contact记录信息或者根据noteid获取与之相关的contact信息
 			getContactListByID		根据customerid获取与之邦定的contact记录
+			getRecordByID			根据id获取记录
 			surveyAdd				生成添加survey的HTML语法
 			noteAdd					生成添加note的HTML语法
 			formAdd					生成添加综合信息(包括customer, contact, survey, note)的HTML语法
@@ -81,6 +85,7 @@ Class astercrm extends PEAR{
 		return $customerid;
 	}
 
+
 	/**
 	*  insert a record to contact table
 	*
@@ -139,6 +144,28 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	/**
+	*  Inserta un nuevo registro en la tabla.
+	*
+	*	@param $f	(array)		Arreglo que contiene los datos del formulario pasado.
+	*	@return $res	(object) 	Devuelve el objeto con la respuesta de la sentencia SQL ejecutada del INSERT.
+
+	*/
+	
+	function insertNewAccount($f){
+		global $db;
+		
+		$sql= "INSERT INTO account SET "
+				."username='".$f['username']."', "
+				."password='".$f['password']."', "
+				."extension='".$f['extension']."',"
+				."usertype='".$f['usertype']."',"
+				."extensions='".$f['extensions']."'";
+
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 
 	/**
 	*  update customer table
@@ -234,26 +261,6 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	/**
-	*  delete a record form a table
-	*
-	*	@param  $id			(int)		identity of the record
-	*	@param  $table		(string)	table name
-	*	@return $res		(object)	object
-	*/
-	
-	function deleteRecord($id,$table){
-		global $db;
-		
-		//backup all datas
-
-		//delete all note
-		$sql = "DELETE FROM $table WHERE id = $id";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-
-		return $res;
-	}
 
 	/**
 	*  select a record form a table
@@ -793,6 +800,23 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 
+	/**
+	*  Devuelte el registro de acuerdo al $id pasado.
+	*
+	*	@param $id	(int)	Identificador del registro para hacer la b&uacute;squeda en la consulta SQL.
+	*	@return $row	(array)	Arreglo que contiene los datos del registro resultante de la consulta SQL.
+	*/
+	
+	function &getRecordByID($id,$table){
+		global $db;
+		
+		$sql = "SELECT * FROM $table "
+				." WHERE id = $id";
+		Customer::events($sql);
+		$row =& $db->getRow($sql);
+		return $row;
+	}
+
 
 	function getOptions($surveyid){
 
@@ -1072,7 +1096,7 @@ Class astercrm extends PEAR{
 				<table border="0" width="100%">
 				<tr>
 					<td nowrap align="left" width="80">'.$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
-					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]</td>
+					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("state").'</td>

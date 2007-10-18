@@ -1,25 +1,68 @@
 <?php
-// Tanslate to chinese by Donnie
+/*******************************************************************************
+* account.server.php
+
+* 账户管理系统后台文件
+* account background management script
+
+* Function Desc
+	provide account management script
+
+* 功能描述
+	提供帐户管理脚本
+
+* Function Desc
+		init				初始化页面元素
+		showGrid			显示grid
+		createGrid			生成grid的HTML代码
+		add					显示添加account的表单
+		save				保存account信息
+		update				更新account信息
+		edit				显示修改account的表单
+		delete				删除account信息
+		showDetail			显示account详细信息
+							当前返回空值
+
+* Revision 0.045  2007/10/18 12:40:00  last modified by solo
+* Desc: page created
+
+********************************************************************************/
+
 require_once ("db_connect.php");
-require_once ("account.common.php");
-require_once ('grid.account.manager.inc.php');
+require_once ('account.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/astercrm.class.php');
+require_once ('include/common.class.php');
+require_once ("account.common.php");
+
+/**
+*  initialize page elements
+*
+*/
 
 function init(){
 	global $locate;
 
 	$objResponse = new xajaxResponse();
-	$html = "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate('back_to_mi')."</a>";
-	$objResponse->addAssign("divPanel","innerHTML",$html);
-
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
 	return $objResponse;
 }
 
+/**
+*  show grid HTML code
+*  @param	start		int			record start
+*  @param	limit		int			how many records need
+*  @param	filter		string		the field need to search
+*  @param	content		string		the contect want to match
+*  @param	divName		string		which div grid want to be put
+*  @param	order		string		data order
+*  @return	objResponse	object		xajax response object
+*/
+
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-	$html .= "<br><br><br><br>";
 	$html .= createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
@@ -27,6 +70,18 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 
 	return $objResponse;
 }
+
+
+/**
+*  generate grid HTML code
+*  @param	start		int			record start
+*  @param	limit		int			how many records need
+*  @param	filter		string		the field need to search
+*  @param	content		string		the contect want to match
+*  @param	divName		string		which div grid want to be put
+*  @param	order		string		data order
+*  @return	html		string		grid HTML code
+*/
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
@@ -125,6 +180,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	return $html;
 }
 
+/**
+*  generate account add form HTML code
+*  @return	html		string		account add HTML code
+*/
+
 function add(){
    // Edit zone
 	global $locate;
@@ -139,31 +199,41 @@ function add(){
 	return $objResponse->getXML();
 }
 
+/**
+*  save account record
+*  @param	f			array		account record
+*  @return	objResponse	object		xajax response object
+*/
+
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
-
-	$message = Customer::checkAllData($f,1); // <-- Change by your method
 
 	$respOk = Customer::insertNewAccount($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_note"));
-		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_account"));
+		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
+		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
-		$objResponse->addAlert($message);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_insert"));
 	}
 	return $objResponse->getXML();
 	
 }
 
+/**
+*  update account record
+*  @param	f			array		account record
+*  @return	objResponse	object		xajax response object
+*/
+
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
-	$respOk = Customer::updateRecord($f);
+	$respOk = Customer::updateAccountRecord($f);
 
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -177,27 +247,16 @@ function update($f){
 	return $objResponse->getXML();
 }
 
-function delete($id = null){
+/**
+*  show account edit form
+*  @param	id			int			account id
+*  @return	objResponse	object		xajax response object
+*/
+
+function edit($id){
 	global $locate;
-	$respOk = Customer::deleteRecord($id); 				// <-- Change by your method
-	$objResponse = new xajaxResponse();
-	if($respOk){
-		$html = createGrid(0,ROWSXPAGE);
-		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); // <-- Change by your leyend
-	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete"));
-	}
-	return $objResponse->getXML();
-}
-
-function edit($id = null){
-
-	$lable = "Editing record";
-
-	// Edit zone
-	$html = Table::Top($lable,"formDiv"); 	// <-- Set the title for your form.
-	$html .= Customer::formEdit($id, $type); 			// <-- Change by your method
+	$html = Table::Top( $locate->Translate("edit_account"),"formDiv"); 
+	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
 
@@ -207,5 +266,36 @@ function edit($id = null){
 	return $objResponse->getXML();
 }
 
+/**
+*  update account record
+*  @param	accountid	int			account id
+*  @return	objResponse	object		xajax response object
+*/
+
+function delete($accountid = null){
+	global $locate;
+	$res = Customer::deleteRecord($accountid,'account');
+	if ($res){
+		$html = createGrid(0,ROWSXPAGE);
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("grid", "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+	}else{
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+	}
+	return $objResponse->getXML();
+}
+
+/**
+*  show account record detail
+*  @param	accountid	int			account id
+*  @return	objResponse	object		xajax response object
+*/
+
+function showDetail($accountid){
+	$objResponse = new xajaxResponse();
+
+	return $objResponse->getXML();
+}
 $xajax->processRequests();
 ?>

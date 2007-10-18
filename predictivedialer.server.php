@@ -1,36 +1,15 @@
 <?php
 // Tanslate to chinese by Donnie
-require_once ("manager.common.php");
+require_once ("predictivedialer.common.php");
 require_once ("db_connect.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
+require_once ('include/common.class.php');
 
 function init(){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
-	$objResponse->addClear("grid", "innerHTML");
-	$objResponse->addClear("formDiv", "innerHTML");
-	$objResponse->addClear("channels", "innerHTML");
-	$objResponse->addClear("sipChannels", "innerHTML");
-	$objResponse->addClear("msgZone", "innerHTML");
-
-	$html .= "<a href='account.php'>".$locate->Translate("extension_manager")."</a><br>";
-
-	$html .= "<a href=# onclick='clearAll();showStatus();return false;'>".$locate->Translate("system_monitor")."</a><br>";
-
-	$html .= "<a href=# onclick='clearAll();showChannelsInfo();return false;'>".$locate->Translate("active_channels")."</a><br>";
-
-	$html .= "<a href=# onclick='clearAll();showPredictiveDialer();return false;'>".$locate->Translate("predictive_dialer")."</a><br>";
-
-  	$html .= "<a href='customer.php' >".$locate->Translate("customer_manager")."</a><br>";
-  	$html .= "<a href='contact.php' >".$locate->Translate("contact_manager")."</a><br>";
-  	$html .= "<a href='note.php' >".$locate->Translate("note_manager")."</a><br>";
-  	$html .= "<a href='diallist.php' >".$locate->Translate("diallist_manager")."</a><br>";
-  	$html .= "<a href='survey.php' >".$locate->Translate("survey_manager")."</a><br>";
-  	$html .= "<a href='surveyresult.php' >".$locate->Translate("survey_reslut")."</a><br>";
-
-	$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate->Translate("back")."</a><br>";
 
 	$myAsterisk = new Asterisk();
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
@@ -38,33 +17,18 @@ function init(){
 	if (!$res){
 		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI_connection_failed"));
 	}
-	$objResponse->addAssign("divPanel", "innerHTML", $html);
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
 
 	return $objResponse;
 }
 
 
-function showStatus(){
-	$objResponse = new xajaxResponse();
-	$html .= "<br><br><br><br>";
-	$html .= asterEvent::checkExtensionStatus(0,'table');
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	return $objResponse;
-}
-
 function showChannelsInfo(){
 	global $locate;
 	$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
-/*
-	if ($channels == null){
-			$objResponse->addAssign("channels", "innerHTML", "can not connect to AMI, please check config.php");
-			return $objResponse;
-	}
-*/	$channels = split(chr(10),$channels[1]);
-	//trim the first two records and the last three records
-
-	//	array_pop($channels); 
+	$channels = split(chr(10),$channels[1]);
 	array_pop($channels); 
 	$activeCalls = array_pop($channels); 
 	$activeChannels = array_pop($channels); 
@@ -81,62 +45,13 @@ function showChannelsInfo(){
 		}
 	}
 	
-	$myChannels = generateTabelHtml($myInfo);
-
+	$myChannels = common::generateTabelHtml($myInfo);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
-
+//	$objResponse->addAssign("divActiveCalls", "innerHTML", uniqid(""));
 	$objResponse->addAssign("channels", "innerHTML", nl2br(trim($myChannels)));
+
 	return $objResponse;
-}
-
-function generateTabelHtml($aDyadicArray,$thArray = null){
-	if (!is_Array($aDyadicArray))
-		return '';
-	$html .= "<table class='myTable'>";
-//	print_r($aDyadicArray);
-//	exit;
-	$myArray = array_shift($aDyadicArray);
-	foreach ($myArray as $field){
-		$html .= "<th>";
-		$html .= $field;
-		$html .= "</th>";
-	}
-
-	foreach ($aDyadicArray as $myArray){
-		//print_r($myArray);
-		//exit;
-		$html .="<tr>";
-		foreach ($myArray as $field){
-			$html .= "<td>";
-			$html .= $field;
-			$html .= "</td>";
-		}
-		$html .="</tr>";
-	}
-	$html .= "</table>";
-//	print $html;
-	return $html;
-}
-
-function getTimeStamp($channel){
-	global $db;
-	$query = "SELECT timestamp FROM events WHERE event LIKE '%$channel%' ORDER BY timestamp DESC limit 0,1";
-	$res = $db->query($query);
-	$res = $db->query($query);
-	if ($res->numRows() == 0){
-		return 0;
-	}else{
-		$res->fetchInto($list);
-		$timestamp = $list['timestamp'];
-		return $timestamp;
-	}
-}
-
-function dialerStatus(){
-	// Cause: 16  Cause-txt: Normal Clearing			普通挂机
-	// Cause: 0  Cause-txt: Unknown
-	// 可以考虑从cdr表中读取拨号结果
 }
 
 function showPredictiveDialer($preDictiveDialerStatus){
@@ -184,15 +99,6 @@ function showPredictiveDialer($preDictiveDialerStatus){
 		//add dialer stopped language
 		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialerStoppedMsg", "btnDialerStoppedMsg");
 		$objResponse->addAssign("btnDialerStoppedMsg", "value", $locate->Translate("dialer_stopped"));
-
-/*
-		$html .= '<form name="formPreDictiveDialer" id="formPreDictiveDialer">';
-		$html .= '<input type="button" value="'.$locate->Translate("dial").'" id="btnDial" name="btnDial" onclick="btnDialOnClick();">';
-		$html .= '<input type="text" value="5" id="fldMaxActiveCalls" name="fldMaxActiveCalls">';
-		$html .='</form>';
-*/
-//		$objResponse->addAssign("divPredictiveDialer", "innerHTML",$html);
-//		$objResponse->addInsertInputAfter("predictiveDialerStatus", "hidden", "username", "input1");
 
 	}
 	return $objResponse;

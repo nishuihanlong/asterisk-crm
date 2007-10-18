@@ -120,11 +120,10 @@ body {
 
 				</div>
 				<div class="right"></div><div id="outputDiv"></div>
-		
-            
-                                      <div align="center"><img src="images/login_in_03.gif" width="461" />
-                      <?require_once('copyright.php');?>
-                    </div>
+                <div align="center">
+					<img src="images/login_in_03.gif" width="461" />
+				</div>
+				<div id="divCopyright"></div>                      
 		  </div></form></div>
 
 	    </div>

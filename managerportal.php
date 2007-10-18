@@ -23,14 +23,14 @@ require_once('managerportal.common.php');
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
 			function init(){
-
+				xajax_init();
 			}
 		//-->
 		</SCRIPT>
 	</head>
 	<body onload="init();">
-	<div id="divNav">
-		<?include "portalinterface.php";?>
-	</div>
+	<div id="divNav"></div>
+
+	<div id="divCopyright"></div>
 	</body>
 </html>

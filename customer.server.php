@@ -1,10 +1,42 @@
 <?php
+/*******************************************************************************
+* customer.server.php
+
+* 客户管理系统后台文件
+* customer background management script
+
+* Function Desc
+	provide customer management script
+
+* 功能描述
+	提供客户管理脚本
+
+* Function Desc
+
+	export				提交表单, 导出contact数据
+	init				初始化页面元素
+	createGrid			生成grid的HTML代码
+	showDetail			显示contact信息
+	importCsv			转到数据导入页面
+
+* Revision 0.045  2007/10/18 14:30:00  last modified by solo
+* Desc: remove function "edit"
+
+* Revision 0.045  2007/10/18 14:08:00  last modified by solo
+* Desc: comment added
+
+********************************************************************************/
 require_once ("db_connect.php");
 require_once ("customer.common.php");
-require_once ('grid.customer.manager.inc.php');
+require_once ('customer.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('astercrm.server.common.php');
+require_once ('include/common.class.php');
 
+/**
+*  submit frmDownload
+*
+*/
 
 function export(){
 	$objResponse = new xajaxResponse();
@@ -15,19 +47,35 @@ function export(){
 	return $objResponse;
 }
 
+/**
+*  initialize page elements
+*
+*/
+
 function init(){
-	global $locate;//,$config,$db;
+	global $locate;
 
 	$objResponse = new xajaxResponse();
-	$html .= "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate('back_to_mi')."</a><br>";
-	$objResponse->addAssign("divPanel","innerHTML",$html);
+
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
 	return $objResponse;
 }
 
-//	create grid
+/**
+*  generate grid HTML code
+*  @param	start		int			record start
+*  @param	limit		int			how many records need
+*  @param	filter		string		the field need to search
+*  @param	content		string		the contect want to match
+*  @param	divName		string		which div grid want to be put
+*  @param	order		string		data order
+*  @return	html		string		grid HTML code
+*/
+
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
@@ -160,34 +208,28 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	return $html;
 }
 
+/**
+*  show customer record detail
+*  @param	contactid	int			contact id
+*  @return	objResponse	object		xajax response object
+*/
 
-function edit($id = null, $tblName, $type = "customer"){
+function showDetail($customerid){
 	global $locate;
-
-	// Edit zone
-	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
-	$html .= Customer::formEdit($id, $type);
-	$html .= Table::Footer();
-   	// End edit zone
-
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("formEditInfo", "style.visibility", "visible");
-	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
+	if($customerid != null){
+		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
+		$html .= Customer::showCustomerRecord($customerid); 		
+		$html .= Table::Footer();
+		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
+	}
 	return $objResponse->getXML();
 }
 
-function showDetail($recordID){
-	global $locate;
-	if($recordID != null){
-		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-		$html .= Customer::showCustomerRecord($recordID); 		
-		$html .= Table::Footer();
-		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
-		return $objResponse->getXML();
-	}
-}
+/**
+*  redirect to import page
+*/
 
 function importCsv(){
 	$objResponse = new xajaxResponse();

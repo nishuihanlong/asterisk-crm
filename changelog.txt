@@ -72,10 +72,10 @@ v0.045
 		用于设定系统是否允许有相同名称的customer数据
 2007-10-17	增加了surveyresult, 允许查看问卷结果
 2007-10-17	customer表中增加了bankzip字段
+2007-10-18	config.php中增加两个参数,  $config['system']['log_enabled']
+					$config['system']['log_file_path']
+		用于设定日志系统是否启动以及日志文件保存的位置
 -----------------------------------------------------------------------------------------
-增加对survey结果的管理
-
-
 
 need to add queue status
 need to add CDR to user
@@ -93,11 +93,6 @@ voicemail check
 
 #为什么在系统监视里面看到的分机不全？
 ----------------------------------------------------------------------------
-astercrm.php中
-getDialByID	函数可以取消, 代之以可以直接使用astercrm::getRecord($id,'diallist');
-formEditDial	可以删除
-define("UPLOAD_IMAGE_PATH", "./upload/");	更改变量格式
-
 
 1。	数据导入
 2。	数据导出

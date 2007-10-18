@@ -3,8 +3,37 @@
 * survey.common.php
 * survey
 * survey parameter file
+
 * 功能描述
+	检查用户权限
+	初始化语言变量
+	初始化xajax类
+	预定义xajaxGrid中需要使用的一些参数
+
 * Function Desc
+	authority
+	initialize localization class
+	initialize xajax class
+	define xajaxGrid parameters
+
+registed function:
+*	call these function by xajax_ + funcionname
+*	such as xajax_init()
+
+
+* Revision 0.045  2007/10/18 15:14:00  modified by solo
+* Desc: comment added
+
+	init
+	showGrid
+	add
+	save
+	delete
+	edit
+	editField
+	updateField
+	showDetail
+	setSurvey
 
 * Revision 0.045  2007/10/11 15:25:00  modified by solo
 * Desc: page create
@@ -26,11 +55,6 @@ setcookie('PHPSESSID', session_id());
 if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
 	header("Location: portal.php");
 
-
-define(LOG_ENABLED, 1); // Enable debuggin
-define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
-define(ROWSXPAGE, 25); // Number of rows show it per page.
-define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
@@ -49,4 +73,8 @@ $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("setSurvey");
 
+define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
+define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
+define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 ?>

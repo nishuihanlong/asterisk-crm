@@ -1,9 +1,33 @@
 <?php
+/*******************************************************************************
+* note.server.php
+
+* Function Desc
+	provide note management script
+
+* 功能描述
+	提供备注管理脚本
+
+* Function Desc
+
+	export				提交表单, 导出contact数据
+	init				初始化页面元素
+	createGrid			生成grid的HTML代码
+
+* Revision 0.045  2007/10/18 14:08:00  last modified by solo
+* Desc: comment added
+
+********************************************************************************/
 require_once ("db_connect.php");
-require_once ('grid.note.manager.inc.php');
-require_once ('include/asterevent.class.php');
+require_once ('note.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
+require_once ('include/common.class.php');
 require_once ('astercrm.server.common.php');
+
+/**
+*  submit frmDownload
+*
+*/
 
 function export(){
 	$objResponse = new xajaxResponse();
@@ -14,19 +38,35 @@ function export(){
 	return $objResponse;
 }
 
+/**
+*  initialize page elements
+*
+*/
+
 function init(){
-	global $locate;//,$config,$db;
+	global $locate;
 
 	$objResponse = new xajaxResponse();
-	$html .= "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate('back_to_mi')."</a><br>";
-	$objResponse->addAssign("divPanel","innerHTML",$html);
+
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
 	return $objResponse;
 }
 
-//	create grid
+/**
+*  generate grid HTML code
+*  @param	start		int			record start
+*  @param	limit		int			how many records need
+*  @param	filter		string		the field need to search
+*  @param	content		string		the contect want to match
+*  @param	divName		string		which div grid want to be put
+*  @param	order		string		data order
+*  @return	html		string		grid HTML code
+*/
+
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
@@ -110,7 +150,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
@@ -125,7 +165,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
-		$table->addRow("note",$rowc,0,1,0,$divName,$fields);
+		$table->addRow("note",$rowc,1,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone

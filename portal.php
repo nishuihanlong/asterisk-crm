@@ -1,4 +1,53 @@
 <?php
+/*******************************************************************************
+* portal.php
+
+* 座席界面文件
+* agent portal interface
+
+* Function Desc
+	provide agent interface
+
+* 功能描述
+	点击呼叫
+	主动呼叫
+	电话转接
+	来电/去电弹屏
+
+* Page elements
+
+* div:							
+				divNav				show management function list
+				formDiv				show add/edit account form
+				grid				show accout grid
+				msgZone				show action result
+				divCopyright		show copyright
+				userMsg				show username and user extension
+				divMonitor			show monitor button
+				myevents			show system status
+				click2dial			show input box allow agent enter phone number to dial
+				...
+
+* span:
+				transfer			show transfer option list
+				spanMonitor			show monitor description
+				...
+
+* javascript function:		
+
+				init				page onload function
+				monitor
+				dial
+				showProcessingMessage
+				hideProcessingMessage
+				btnGetAPhoneNumberOnClick
+				updateEvents
+
+
+* Revision 0.045  2007/10/18 15:05:00  last modified by solo
+* Desc: comment added
+
+********************************************************************************/
 require_once('portal.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -15,16 +64,16 @@ require_once('portal.common.php');
 		}
 
 		function dial(phonenum){
-//			alert (phonenum);
 			xajax_dial(phonenum);
 		}
+
 		function showProcessingMessage(){
 			xajax.$('processingMessage').style.display='block';
 		}
+
 		function hideProcessingMessage(){
 			xajax.$('processingMessage').style.display = 'none';
 		}
-
 		
 		function btnGetAPhoneNumberOnClick(){
 			xajax_addWithPhoneNumber();
@@ -68,8 +117,6 @@ require_once('portal.common.php');
 	<form name="myForm" id="myForm">
 		<div id="userMsg" name="userMsg"></div>
 		<span id="transfer" name="transfer"></span>
-		<div id="formWrapper"></div>
-		
 		<div id="myevents"></div>
 		<br>
 
@@ -104,6 +151,6 @@ require_once('portal.common.php');
 	<div id="crm" name="crm"></div>
 	<div id="panelDiv" name="panelDiv" class="divPanel"></div>
 	<div id="extensionDiv" name="extensionDiv" class="divExtension"></div>
-	<div align="center"><?require_once('copyright.php');?></div>
+	<div id="divCopyright"></div>
 	</body>
 </html>

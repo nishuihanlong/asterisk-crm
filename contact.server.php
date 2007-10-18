@@ -1,10 +1,43 @@
 <?php
+/*******************************************************************************
+* contact.server.php
+
+* 联系人管理系统后台文件
+* contact background management script
+
+* Function Desc
+	provide contact management script
+
+* 功能描述
+	提供联系人管理脚本
+
+* Function Desc
+
+	export				提交表单, 导出contact数据
+	init				初始化页面元素
+	createGrid			生成grid的HTML代码
+	showDetail			显示contact信息
+	importCsv			转到数据导入页面
+
+* Revision 0.045  2007/10/18 14:30:00  last modified by solo
+* Desc: remove function "edit"
+
+* Revision 0.045  2007/10/18 12:40:00  last modified by solo
+* Desc: page created
+
+********************************************************************************/
 require_once ("db_connect.php");
 require_once ("contact.common.php");
-require_once ('grid.contact.manager.inc.php');
+require_once ('contact.grid.inc.php');
 require_once ('asterevent.class.php');
 require_once ('include/xajaxGrid.inc.php');
+require_once ('include/common.class.php');
 require_once ('astercrm.server.common.php');
+
+/**
+*  submit frmDownload
+*
+*/
 
 function export(){
 	$objResponse = new xajaxResponse();
@@ -15,19 +48,35 @@ function export(){
 	return $objResponse;
 }
 
+/**
+*  initialize page elements
+*
+*/
+
 function init(){
 	global $locate;//,$config,$db;
 
 	$objResponse = new xajaxResponse();
-	$html .= "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate('back_to_mi')."</a><br>";
-	$objResponse->addAssign("divPanel","innerHTML",$html);
+
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
 	return $objResponse;
 }
 
-//	create grid
+/**
+*  generate grid HTML code
+*  @param	start		int			record start
+*  @param	limit		int			how many records need
+*  @param	filter		string		the field need to search
+*  @param	content		string		the contect want to match
+*  @param	divName		string		which div grid want to be put
+*  @param	order		string		data order
+*  @return	html		string		grid HTML code
+*/
+
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
@@ -53,7 +102,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'mobile';
 	$fields[] = 'email';
 	$fields[] = 'customer';
-//	$fields[] = 'cretime';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -64,7 +112,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("mobile");//"Category";
 	$headers[] = $locate->Translate("email");//"Note";
 	$headers[] = $locate->Translate("customer_name");
-//	$headers[] = $locate->Translate("create_time");//"Create Time";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -75,9 +122,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="25%"';
-//	$attribsHeader[] = 'width="15%"';
-//	$attribsHeader[] = 'width="7%"';
-//	$attribsHeader[] = 'width="5%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -88,8 +132,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-//	$attribsCols[] = 'style="text-align: left"';
-//	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -100,8 +142,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mobile","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","email","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
-//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
-//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -142,9 +182,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['phone'];
 		$rowc[] = $row['mobile'];
 		$rowc[] = $row['email'];
-		$rowc[] = $row['customer'];
-//		$rowc[] = $row['creby'];
-//		$rowc[] = 'Detail';
+		if ($row['customer'] == '')
+			$rowc[] = $row['customer'];
+		else
+			$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."','customer');return false;\"
+		>".$row['customer']."</a>";
+
 		$table->addRow("contact",$rowc,1,1,1,$divName,$fields);
  	}
  	
@@ -156,34 +199,29 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 }
 
 
+/**
+*  show contact record detail
+*  @param	contactid	int			contact id
+*  @return	objResponse	object		xajax response object
+*/
 
-function edit($id = null, $tblName, $type = "contact"){
+function showDetail($contactid){
 	global $locate;
-
-	// Edit zone
-	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
-	$html .= Customer::formEdit($id, $type);
-	$html .= Table::Footer();
-   	// End edit zone
-
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("formEditInfo", "style.visibility", "visible");
-	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
+	if($contactid != null){
+		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 			
+		$html .= Customer::showContactRecord($contactid); 		
+		$html .= Table::Footer();
+		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
+	}
 	return $objResponse->getXML();
 }
 
-function showDetail($recordID){
-	global $locate;
-	if($recordID != null){
-		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 			
-		$html .= Customer::showContactRecord($recordID); 		
-		$html .= Table::Footer();
-		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
-		return $objResponse->getXML();
-	}
-}
+/**
+*  redirect to import page
+*/
+
 function importCsv(){
 	$objResponse = new xajaxResponse();
 	//$objResponse->addScript("gotourl('./index.html');");

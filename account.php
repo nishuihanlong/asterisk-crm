@@ -1,14 +1,32 @@
 <?php
 /*******************************************************************************
 * account.php
+
 * 账户管理界面文件
 * account management interface
+
+* Function Desc
+	provide an account management interface
+
 * 功能描述
-	 提供帐户管理
+	提供帐户管理界面
+
+* Page elements
+
+* div:							
+				divNav				show management function list
+				formDiv				show add/edit account form
+				grid				show accout grid
+				msgZone				show action result
+				divCopyright		show copyright
+
+* javascript function:		
+
+				init				page onload function			 
 
 
-* Revision 0.045  2007/10/17 17:55:00  last modified by solo
-* Desc: created
+* Revision 0.045  2007/10/18 11:44:00  last modified by solo
+* Desc: page created
 
 ********************************************************************************/
 
@@ -31,11 +49,10 @@ require_once('account.common.php');
 		</SCRIPT>
 	</head>
 	<body onload="init();">
-		<div id="divPanel" name="divPanel" class="divPanel"></div>
-		
+		<div id="divNav"></div>
 		<div id="formDiv" name="formDiv" class="formDiv"></div>
-
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
+		<div id="divCopyright"></div>
 	</body>
 </html>

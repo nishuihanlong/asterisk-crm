@@ -1,23 +1,30 @@
 <?
-/* NOTE: For this example, the package PEAR is required, you can see http://pear.php.net for more information 
-	In addition, in my example  the "include_pah" is modify including the PEAR full path.
-	You can to modify the class methods, as you wish you.
-	
-	But anyway, the full package contain the DB.php and PEAR.php files obtained from PEAR package.
-*/
+/*******************************************************************************
+* portal.grid.inc.php
+* portal操作类
+* Customer class
+
+* @author			Solo Fu <solo.fu@gmail.com>
+* @classVersion		1.0
+* @date				18 Oct 2007
+
+* Functions List
+
+	getAllRecords				获取所有记录
+	getRecordsFiltered			获取记录集
+	getNumRows					获取记录集条数
+
+* Revision 0.045  2007/10/18 15:11:00  last modified by solo
+* Desc: deleted function getRecordByID
+
+* Revision 0.045  2007/10/18 13:30:00  last modified by solo
+* Desc: page created
+
+********************************************************************************/
 
 require_once 'db_connect.php';
 require_once 'portal.common.php';
 require_once 'include/astercrm.class.php';
-
-/** \brief Customer Class
-*
-
-*
-* @author	Solo Fu <solo.fu@gmail.com>
-* @version	1.0
-* @date		13 July 2007
-*/
 
 class Customer extends astercrm
 {
@@ -97,23 +104,6 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
-	}
-	
-	/**
-	*  Devuelte el registro de acuerdo al $id pasado.
-	*
-	*	@param $id	(int)	Identificador del registro para hacer la b&uacute;squeda en la consulta SQL.
-	*	@return $row	(array)	Arreglo que contiene los datos del registro resultante de la consulta SQL.
-	*/
-	
-	function &getRecordByID($id){
-		global $db;
-		$sql = "SELECT note.id AS id, note, priority,customer.name AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby , note.customerid, note.contactid, customer.website AS website, contact.position as position FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-			." WHERE note.id = $id";
-
-		Customer::events($sql);
-		$row =& $db->getRow($sql);
-		return $row;
 	}
 }
 ?>

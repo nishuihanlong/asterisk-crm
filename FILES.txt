@@ -1,4 +1,17 @@
 ﻿
+	./account.*				account management interface
+	./contact.*				contact management interface
+	./customer.*				customer management interface
+	./diallist.*				diallist management interface
+	./managerportal.*			administrator portal interface
+	./note.*				note management interface
+	./portal.*				agent portal interface
+	./predictivedialer.*			predictive dialer interface
+	./survey.*				survey management interface
+	./surveyresult.*			survey result browser
+	./systemstatus.*			system status browser interface
+
+
 	./config.php				astercrm configration file
 
 

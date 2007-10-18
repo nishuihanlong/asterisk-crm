@@ -2,13 +2,37 @@
 /*******************************************************************************
 * account.common.php
 * account参数信息文件
+
 * account parameter file
+
 * 功能描述
+	检查用户权限
+	初始化语言变量
+	初始化xajax类
+	预定义xajaxGrid中需要使用的一些参数
+
 * Function Desc
+	authority
+	initialize localization class
+	initialize xajax class
+	define xajaxGrid parameters
+
+registed function:
+*	call these function by xajax_ + funcionname
+*	such as xajax_init()
+
+	showGrid
+	add					show account add form
+	save				save account information
+	edit				show account edit form
+	update				update account information
+	delete				delete an account
+	showDetail			show detail information about an account
+						return null for now
+	init				init html page
 
 * Revision 0.045  2007/10/17 15:25:00  modified by solo
-* Desc: created
-
+* Desc: page created
 
 ********************************************************************************/
 
@@ -27,10 +51,6 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 	header("Location: portal.php");
 
 
-define(LOG_ENABLED, 1); // Enable debuggin
-define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
-define(ROWSXPAGE, 10); // Number of rows show it per page.
-define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
@@ -45,4 +65,11 @@ $xajax->registerFunction("edit");
 $xajax->registerFunction("update");
 $xajax->registerFunction("delete");
 $xajax->registerFunction("init");
+$xajax->registerFunction("showDetail");
+
+define(LOG_ENABLED, $config['system']['log_enabled']);
+define(FILE_LOG, $config['system']['log_file_path']);
+define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
+
 ?>

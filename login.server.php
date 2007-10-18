@@ -31,6 +31,7 @@
 require_once ("login.common.php");
 require_once ("db_connect.php");
 require_once ('include/asterisk.class.php');
+require_once ('include/common.class.php');
 
 /**
 *  function to process form data
@@ -108,7 +109,7 @@ function init($aFormValue){
 	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
-
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	unset($_SESSION['curuser']['username']);
 	unset($_SESSION['curuser']['extension']);
 	unset($_SESSION['curuser']['extensions']);

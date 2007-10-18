@@ -40,7 +40,7 @@ require_once('surveyresult.common.php');
 		<script language="JavaScript" src="js/astercrm.js"></script>
 	</head>
 	<body onload="init();">
-	<div id="divPanel" name="divPanel" class="divPanel"></div>
+	<div id="divNav"></div>
 	<br>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
@@ -54,5 +54,6 @@ require_once('surveyresult.common.php');
 			</td>
 		</tr>
 	</table>
+	<div id="divCopyright"></div>
 	</body>
 </html>

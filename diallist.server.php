@@ -2,16 +2,18 @@
 require_once ("db_connect.php");
 require_once ("diallist.common.php");
 require_once ('include/xajaxGrid.inc.php');
-require_once ('grid.diallist.manager.inc.php');
+require_once ('diallist.grid.inc.php');
 require_once ('astercrm.server.common.php');
+require_once ('include/common.class.php');
 
 
 function init(){
-	global $locate;//,$config,$db;
+	global $locate;
 
 	$objResponse = new xajaxResponse();
-	$html .= "<a href=# onclick=\"self.location.href='manager.php';return false;\">".$locate->Translate('back_to_mi')."</a><br>";
-	$objResponse->addAssign("divPanel","innerHTML",$html);
+
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 

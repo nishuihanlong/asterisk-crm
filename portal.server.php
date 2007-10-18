@@ -1,14 +1,50 @@
 <?php
-/**
-2007-10-17	修正了点击搜索的问题	solo
-2007-10-17	将电话号码匹配方式修改为前端模糊	solo
-2007-10-17	修正了点击title排序的问题	solo
-*/
+/*******************************************************************************
+* poral.server.php
+* agent portal interface
+
+* Function Desc
+	agent portal background script
+
+* 功能描述
+	座席管理脚本
+
+* Function Desc
+
+	showDetail
+	getPrivateDialListNumber
+	init
+	listenCalls
+	incomingCalls
+	waitingCalls
+	createGrid
+	getContact
+	monitor
+	dial
+	transfer
+	confirmCustomer
+	confirmContact
+	addWithPhoneNumber
+
+
+* Revision 0.045  2007/10/18 14:19:00  modified by solo
+* Desc: comment added
+
+* Revision 0.045  2007/10/17 20:55:00  modified by solo
+* Desc: change callerid match method to like '%callerid'
+* 描述: 将电话号码匹配方式修改为前端模糊
+
+* Revision 0.045  2007/10/17 12:55:00  modified by solo
+* Desc: fix bugs in search, ordering
+
+********************************************************************************/
+
 require_once ("db_connect.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('include/xajaxGrid.inc.php');
-require_once ('grid.portal.inc.php');
+require_once ('include/common.class.php');
+require_once ('portal.grid.inc.php');
 require_once ('astercrm.server.common.php');
 require_once ("portal.common.php");
 
@@ -71,14 +107,14 @@ function init(){
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
-	
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
 //	echo $_SESSION['curuser']['usertype'];
 //	exit;
 	if ($_SESSION['curuser']['usertype'] == "admin"){
-		$panelHTML = '<a href=# onclick="this.href=\'manager.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
+		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
 	}
 	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a>";
 	$objResponse->addAssign("panelDiv","innerHTML", $panelHTML);
@@ -109,7 +145,6 @@ function init(){
 					</table>';
 		$objResponse->addAppend("crm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
-//		$objResponse->addScript("titlebar(0);");
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");
 		if ($config['system']['open_new_window'] == false){
@@ -510,21 +545,6 @@ function addWithPhoneNumber(){
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
 	return $objResponse;
-}
-
-function edit($id = null, $tblName, $type = "note"){
-	global $locate;
-
-	// Edit zone
-	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo"); 	// <-- Set the title for your form.
-	$html .= Customer::formEdit($id, $type); 			// <-- Change by your method
-	$html .= Table::Footer();
-   	// End edit zone
-
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("formEditInfo", "style.visibility", "visible");
-	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
-	return $objResponse->getXML();
 }
 
 # click to dial

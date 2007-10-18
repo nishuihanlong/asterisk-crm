@@ -1,22 +1,38 @@
 <?php
 /*******************************************************************************
 * customer.php
-* 客户信息管理界面
-* cutomer information management interface
-* 功能描述
-	 提供客户信息管理的功能
+* customer information management interface
 
 * Function Desc
 	customer management
 
-* Page elements
 * div:							
-									formDiv			-> add/edit form div in xgrid
-									grid				-> main div
-									msgZone		-> message from xgrid class
-* javascript function:		
-									init	
+				divNav				show management function list
+				formDiv				show add contact form
+				grid				show contact grid
+				msgZone				show action result
+				divCopyright		show copyright
+				formCustomerInfo	show customer detail
+				formContactInfo		show contact detail
+				formNoteInfo		show note detail
+				divActive			show import and export button
 
+* button
+				btnImport
+				btnExport
+* form
+				frmDownload			post csv type to download.php
+					@type
+
+* javascript function:		
+
+				init				page onload function			 
+				exportCustomer		call export script
+				importCsv			call import script
+
+
+* Revision 0.045  2007/10/18 14:07:00  modified by solo
+* Desc: comment added
 
 * Revision 0.0443  2007/09/29 12:55:00  modified by solo
 * Desc: create page
@@ -49,7 +65,7 @@ require_once('customer.common.php');
 		<script language="JavaScript" src="js/astercrm.js"></script>
 	</head>
 	<body onload="init();">
-	<div id="divPanel" name="divPanel" class="divPanel"></div>
+	<div id="divNav"></div>
 	<br>
 	<div id="divActive" name="divActive">
 		<input type="button" value="IMPORT" id="btnImport" name="btnImport" onClick="importCsv();"/>
@@ -73,5 +89,6 @@ require_once('customer.common.php');
 	<form name="frmDownload" id="frmDownload" action="download.php">
 		<input type="hidden" value="" id="type" name="type">
 	</form>
+	<div id="divCopyright"></div>
 	</body>
 </html>

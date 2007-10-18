@@ -1,22 +1,13 @@
 <?php
 /*******************************************************************************
-* manager.common.php
-* manager参数信息文件
+* managerportal.common.php
+* managerportal参数信息文件
 * manaer parameter file
 * 功能描述
 * Function Desc
 
-* Revision 0.0442  2007/09/14 08:55:00  modified by solo
-* Desc: modify session scripts to be compatible with trixbox
-* 描述: 改进了对session的处理以兼容trixbox2.0
-
-* Revision 0.044  2007/09/10 16:25:00  modified by solo
-* Desc: check user popedom 
-* 描述: 增加了对管理权限的判断
-
-* Revision 0.044  2007/09/10 15:25:00  modified by solo
-* Desc: add some comments
-* 描述: 增加了一些注释信息
+* Revision 0.045  2007/10/17 15:25:00  modified by solo
+* Desc: page created
 
 ********************************************************************************/
 
@@ -35,27 +26,17 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 	header("Location: portal.php");
 
 
-define(LOG_ENABLED, 1); // Enable debuggin
-define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
-define(ROWSXPAGE, 10); // Number of rows show it per page.
-define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'manager');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'managerportal');
 
-$xajax = new xajax("manager.server.php");
-$xajax->waitCursorOff();
+$xajax = new xajax("managerportal.server.php");
 
-$xajax->registerFunction("showGrid");
-$xajax->registerFunction("add");
-$xajax->registerFunction("save");
-$xajax->registerFunction("edit");
-$xajax->registerFunction("update");
-$xajax->registerFunction("delete");
-$xajax->registerFunction("showStatus");
 $xajax->registerFunction("init");
-$xajax->registerFunction("predictiveDialer");
-$xajax->registerFunction("showPredictiveDialer");
-$xajax->registerFunction("showChannelsInfo");
+
+define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
+define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
+define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 ?>

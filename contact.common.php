@@ -3,8 +3,44 @@
 * contact.common.php
 * contact参数信息文件
 * contact parameter file
+
 * 功能描述
+	检查用户权限
+	初始化语言变量
+	初始化xajax类
+	预定义xajaxGrid中需要使用的一些参数
+
 * Function Desc
+	authority
+	initialize localization class
+	initialize xajax class
+	define xajaxGrid parameters
+
+registed function:
+*	call these function by xajax_ + funcionname
+*	such as xajax_init()
+
+	init				init html page
+	showGrid
+	add					show contact add form
+	edit				show contact edit form
+	delete				delete a contact
+	save				save contact information
+	update				update contact information
+	editField			change table cell to input box
+	updateField			update editField when it lost focus
+	showDetail			show contact information
+	showContact			show contact information 
+	showCustomer		show customer information
+	showNote			show note information 
+	importCsv			redirect to import contact data page
+	export				download contact data csv file
+
+* Revision 0.045  2007/10/18 14:16:00  modified by solo
+* Desc: change localization file to astercrm
+
+* Revision 0.045  2007/10/18 13:20:00  modified by solo
+* Desc: comment added
 
 * Revision 0.0443  2007/09/29 15:25:00  modified by solo
 * Desc: page create
@@ -26,15 +62,10 @@ setcookie('PHPSESSID', session_id());
 if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
 	header("Location: portal.php");
 
-
-define(LOG_ENABLED, 1); // Enable debuggin
-define(FILE_LOG, "/tmp/xajaxDebug.log");  // File to debug.
-define(ROWSXPAGE, 25); // Number of rows show it per page.
-define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'customer');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'astercrm');
 
 $xajax = new xajax("contact.server.php");
 
@@ -49,8 +80,13 @@ $xajax->registerFunction("editField");
 $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("showContact");
+$xajax->registerFunction("showCustomer");
 $xajax->registerFunction("showNote");
 $xajax->registerFunction("export");
 $xajax->registerFunction("importCsv");
 
+define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
+define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
+define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 ?>

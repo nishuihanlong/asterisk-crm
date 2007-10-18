@@ -49,29 +49,19 @@ require_once('diallist.common.php');
 		<script language="JavaScript" src="js/astercrm.js"></script>
 	</head>
 	<body onload="init();">
-	<div id="divPanel" name="divPanel" class="divPanel"></div>
+	<div id="divNav"></div>
 	<br>
-	<div id="divActive" name="divActive">&nbsp;
-		<!--<input type="button" value="IMPORT" id="btnImport" name="btnImport" onClick="importCsv();"/>
-		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();" />-->
-	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
 					<div id="formDiv" class="formDiv"></div>
-					<div id="formCustomerInfo" class="formCustomerInfo"></div>
-					<div id="formContactInfo" class="formContactInfo"></div>
-					<div id="formNoteInfo" class="formNoteInfo"></div>
-					<div id="formEditInfo" class="formEditInfo"></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 				</fieldset>
 			</td>
 		</tr>
 	</table>
-	<form name="frmDownload" id="frmDownload" action="download.php">
-		<input type="hidden" value="" id="type" name="type">
-	</form>
+	<div id="divCopyright"></div>
 	</body>
 </html>

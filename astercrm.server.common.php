@@ -1,7 +1,11 @@
 <?
 /*******************************************************************************
 * astercrm.server.common.php
-* 部分xajax.Grid类的共用函数, 适用于包含customer,contact,note信息的界面
+* xajax.Grid类的共用函数, 适用于包含customer,contact,note信息的界面
+*							customer.*
+*							contact.*
+*							note.*
+*							survey.*
 * astercrm
 
 * Functions List
@@ -13,13 +17,16 @@
 			showCustomer			显示详细customer信息的表单
 			showContact				显示详细contact信息的表单
 			showNote				显示详细note信息的表单
-			save					主保存函数, 可用于插入customer, contact, survey result 和 note
+			save					主保存函数
+									可用于插入customer, contact, survey result 和 note
 			update					主更新函数, 可用于更新customer, contact 和 note
 			updateField				更新某一域的函数
 			updateField				将表格对象更改为可修改记录的inputbox对象
-			add						主显示函数, 显示同时增加customer, contact, survey result 和 note
+			add						主显示函数
+									显示同时增加customer, contact, survey result 和 note
 			showGrid				显示grid表格
 			delete					从数据库中删除一条记录
+			edit
 */
 
 function noteAdd($customerid,$contactid){
@@ -335,6 +342,28 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	
+	return $objResponse->getXML();
+}
+
+/**
+*  show edit form
+*  @param	id			int			id
+*  @param	type		sting		customer/contact/note
+*  @return	objResponse	object		xajax response object
+*/
+
+function edit($id = null, $type = "note"){
+	global $locate;
+
+	// Edit zone
+	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
+	$html .= Customer::formEdit($id, $type);
+	$html .= Table::Footer();
+   	// End edit zone
+
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formEditInfo", "style.visibility", "visible");
+	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

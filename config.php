@@ -4,9 +4,15 @@
 * system configuration file
 * Function Desc
 
+
+* Revision 0.045  2007/10/18 17:55:00  modified by solo
+* Desc: add $config['system']['log_enabled']
+
+* Revision 0.045  2007/10/18 17:55:00  modified by solo
+* Desc: add $config['system']['log_file_path']
+
 * Revision 0.045  2007/10/17 17:55:00  modified by solo
 * Desc: add $config['system']['allow_dropcall']
-
 
 * Revision 0.045  2007/10/17 17:55:00  modified by solo
 * Desc: add $config['system']['allow_same_data']
@@ -70,6 +76,19 @@ $config['asterisk']['secret'] = '';			//should be matched in manager.conf
 */
 $config['asterisk']['monitorpath'] = '/var/spool/asterisk/monitor/';
 $config['asterisk']['monitorformat'] = 'gsm';	//gsm|wav|wav49 
+
+
+/**
+* log file path
+*
+*/
+$config['system']['log_file_path'] = '/tmp/astercrmDebug.log';
+
+/**
+* log enabled
+*
+*/
+$config['system']['log_enabled'] = true;
 
 /** 
 * Asterisk context parameter, use which context when dial in or dial out
