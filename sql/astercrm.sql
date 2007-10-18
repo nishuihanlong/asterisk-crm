@@ -31,6 +31,8 @@ CREATE TABLE contact (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS customer;
+
 CREATE TABLE customer (
   id int(11) NOT NULL auto_increment,
   customer varchar(120) NOT NULL default '',
@@ -50,12 +52,16 @@ CREATE TABLE customer (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS events;
+
 CREATE TABLE events (
    id int(10) unsigned NOT NULL auto_increment,
    timestamp datetime NOT NULL default '0000-00-00 00:00:00',
    event LONGTEXT ,
    PRIMARY KEY (`id`)
 ); 
+
+DROP TABLE IF EXISTS note;
 
 CREATE TABLE note (
   id int(11) NOT NULL auto_increment,
@@ -68,6 +74,8 @@ CREATE TABLE note (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS account;
+
 CREATE TABLE account (
   id int(11) NOT NULL auto_increment,
   username varchar(30) NOT NULL default '',
@@ -78,6 +86,8 @@ CREATE TABLE account (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS diallist;
+
 #store Predictive dialer phone list
 CREATE TABLE diallist (
   id int(11) NOT NULL auto_increment,
@@ -85,6 +95,8 @@ CREATE TABLE diallist (
   assign varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
+
+DROP TABLE IF EXISTS dialedlist;
 
 #store dialed number (from diallist table)
 CREATE TABLE dialedlist (
@@ -95,6 +107,7 @@ CREATE TABLE dialedlist (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS survey;
 
 #store survey
 CREATE TABLE survey (
@@ -106,6 +119,8 @@ CREATE TABLE survey (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS surveyoptions;
+
 #store surveyoptions
 CREATE TABLE surveyoptions (
   id int(11) NOT NULL auto_increment,
@@ -116,10 +131,12 @@ CREATE TABLE surveyoptions (
   UNIQUE KEY id (id)
 ) ;
 
+DROP TABLE IF EXISTS surveyresult;
+
 #store surveyresult
 CREATE TABLE surveyresult (
   id int(11) NOT NULL auto_increment,
-  customerid int(11) NOT NULL default '',
+  customerid int(11) NOT NULL default '0',
   contactid int(11) NOT NULL default '0',
   surveyid  int(11)  NOT NULL default '0',
   surveyoption varchar(50) NOT NULL default '',
