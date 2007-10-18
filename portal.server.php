@@ -97,7 +97,7 @@ function init(){
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 //	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
-	$objResponse->addAssign("btnStatus","value", 'idle');
+	$objResponse->addAssign("extensionStatus","value", 'idle');
 	$objResponse->addAssign("btnDial","value", $locate->Translate("dial") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	$objResponse->addAssign("spanMonitorSetting","innerText", $locate->Translate("always_record_when_connected") );
@@ -195,7 +195,7 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
-			if ($myValue['btnStatus'] == 'link')
+			if ($myValue['extensionStatus'] == 'link')
 				return $objResponse;
 //			if ($call['callerChannel'] == '' or $call['calleeChannel'] == '')
 //				return $objResponse;
@@ -245,7 +245,7 @@ function incomingCalls($myValue){
 
 		}
 //		$objResponse->addAssign("status","innerHTML", $status );
-		$objResponse->addAssign("btnStatus","value", $status );
+		$objResponse->addAssign("extensionStatus","value", $status );
 		$objResponse->addAssign("myevents","innerHTML", $info );
 	}
 
@@ -339,7 +339,7 @@ function waitingCalls($myValue){
 
 //	$objResponse->addScript('document.title='.$title.';');
 //	$objResponse->addAssign("status","innerHTML", $stauts );
-	$objResponse->addAssign("btnStatus","value", $stauts );
+	$objResponse->addAssign("extensionStatus","value", $stauts );
 	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
 	$objResponse->addAssign("callerid","value", $call['callerid'] );
 	$objResponse->addAssign("curid","value", $call['curid'] );

@@ -3,8 +3,39 @@
 * surveyresult.common.php
 * survey
 * survey result parameter file
+
 * 功能描述
+	检查用户权限
+	初始化语言变量
+	初始化xajax类
+	预定义xajaxGrid中需要使用的一些参数
+
 * Function Desc
+	authority
+	initialize localization class
+	initialize xajax class
+	define xajaxGrid parameters
+
+registed function:
+*	call these function by xajax_ + funcionname
+*	such as xajax_init()
+
+
+	init
+	showGrid
+	add
+	save
+	delete
+	edit
+	editField
+	updateField
+	showDetail
+	setSurvey
+
+
+
+* Revision 0.045  2007/10/18 15:14:00  modified by solo
+* Desc: comment added
 
 * Revision 0.045  2007/10/11 15:25:00  modified by solo
 * Desc: page create

@@ -1,4 +1,33 @@
 <?php
+/*******************************************************************************
+* survey.server.php
+
+* Function Desc
+	provide survey management script
+
+* 功能描述
+	提供问卷管理脚本
+
+* Function Desc
+
+	showGrid
+	export				提交表单, 导出contact数据
+	init				初始化页面元素
+	createGrid			生成grid的HTML代码
+	delete
+	edit
+	editField
+	updateField
+	showDetail
+	add
+	setSurvey
+	save
+
+
+* Revision 0.045  2007/10/18 15:38:00  last modified by solo
+* Desc: comment added
+
+********************************************************************************/
 require_once ("db_connect.php");
 require_once ("survey.common.php");
 require_once ('survey.grid.inc.php');

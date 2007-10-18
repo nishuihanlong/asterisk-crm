@@ -26,12 +26,17 @@
 				divMonitor			show monitor button
 				myevents			show system status
 				click2dial			show input box allow agent enter phone number to dial
+				extensionDiv		list extensions
 				...
 
 * span:
 				transfer			show transfer option list
 				spanMonitor			show monitor description
+				spanMonitorStatus	show system monitor status
 				...
+
+* input:
+				extensionStatus			extension status: idle | link | hangup
 
 * javascript function:		
 
@@ -129,7 +134,7 @@ require_once('portal.common.php');
 			<span id="spanMonitorSetting" name="spanMonitorSetting"></span>
 		</div>
 
-		<input type="hidden" name="btnStatus" id="btnStatus" value=""/>
+		<input type="hidden" name="extensionStatus" id="extensionStatus" value=""/>
 		<input type="hidden" name="username" id="username" value=""/>
 		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
