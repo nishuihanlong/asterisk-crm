@@ -7,11 +7,7 @@
 		$file_name = $_SESSION['filename'];
 		$type = substr($file_name,-3);
 		include_once('config.php');
-		if($_SESSION['action'] == 'customer'){
-			$table = 'customer';
-		}elseif($_SESSION['action'] == 'contact'){
-			$table = 'contact';
-		}
+		$table = $_SESSION['table'];
 		$order = $_POST['order'];
 		for($j=0;$j<count($order);$j++){
 			if(trim($order[$j]) != ''){
@@ -35,17 +31,17 @@ $config['database']['password']);
 		mysql_select_db($dbname, $link) or die("Could not set $dbname: " . mysql_error());
 		$res = mysql_query("select * from $table", $link);
 		$fields_num = mysql_num_fields($res);
-		$file_path = UPLOAD_IMAGE_PATH.$_SESSION['filename'];
+		$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
 		$handle = fopen($file_path,"r");
 		$v = 0;
 		$date = date('Y-m-d H:i:s');
 		//********************************
 		if($_POST['myCheckBox'] != '' && $_POST['myCheckBox'] == '1'){
-			$mytext = trim($_POST['mytext']); //数字
+			$mytext = trim($_POST['dialListField']); //数字
 			//$field_name = mysql_field_name($res, $mytext);
 		}
 		if($_POST['myCheckBox2'] != '' && $_POST['myCheckBox2'] == '1'){
-			$mytext2 = trim($_POST['mytext2']); //分区,以','号分隔的字符串
+			$mytext2 = trim($_POST['assign']); //分区,以','号分隔的字符串
 			$area_array = explode(',',$mytext2);
 			$area_num = count($area_array);//得到分区数
 		}
@@ -79,7 +75,15 @@ $config['database']['password']);
 						$random_area = $area_array[$random_num];
 						$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
 					}else{
-						$sql_string = "insert into diallist (dialnumber) values ('".$array."')";
+						$sql_account = "select extension from account";
+						$res = mysql_query($sql_account);
+						while($row = mysql_fetch_array($res)){
+							$array_extension[] = $row['extension'];
+						}
+						$extension_num = count($array_extension);
+						$random_num = rand(0,$extension_num-1);
+						$random_area = $array_extension[$random_num];
+						$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
 					}
 				}
 				$rs = @mysql_query($sql_str);
@@ -116,7 +120,15 @@ $config['database']['password']);
 						$random_area = $area_array[$random_num];
 						$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
 					}else{
-						$sql_string = "insert into diallist (dialnumber) values ('".$array."')";
+						$sql_account = "select extension from account";
+						$res = mysql_query($sql_account);
+						while($row = mysql_fetch_array($res)){
+							$array_extension[] = $row['extension'];
+						}
+						$extension_num = count($array_extension);
+						$random_num = rand(0,$extension_num-1);
+						$random_area = $array_extension[$random_num];
+						$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
 					}
 				}
 				$rs = @mysql_query($sql_str);
@@ -132,5 +144,4 @@ $config['database']['password']);
 		echo  "javascript:history.go(-1);";
 		echo  "</script>";
 	}
-
 ?>

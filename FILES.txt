@@ -24,3 +24,10 @@
 
 	./cdr					Asterisk-Stat
 	./cdr/lib/defines.php			Asterisk-Stat configration file
+
+	./upload.php                            上传excel文件
+	./show_excel.php                        上传excel的显示页
+	./insert.php                            将excel文件数据导入数据库
+	./import.php                            excel文件操作系统入口文件
+	./import.common.php                     excel文件操作系统xajax配置文件
+	./import.server.php                     excel文件操作系统xajax函数库

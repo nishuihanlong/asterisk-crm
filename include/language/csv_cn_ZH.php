@@ -19,5 +19,9 @@
 	$font = "字段超过指定范围";
 	$repeat = "不允许添加重复字段号";
 	$error = "操作失败";
+	$recrod = "条记录";
+	$by = "根据account表的extension字段分派";
+	$submit = "提交";
+	$selecttable = "选择表";
 	//$empty = "空值";
 ?>

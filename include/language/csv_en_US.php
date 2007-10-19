@@ -19,4 +19,8 @@
 	$font = "number error ";
 	$repeat = "number repeat";
 	$error = "failed";
+	$recrod = " records";
+	$by = "import by account extension";
+	$submit = "submit";
+	$selecttable = "select table";
 ?>

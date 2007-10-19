@@ -7,13 +7,13 @@ include_once('config.php');
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
 if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$upload_msg = '';
-	$upload_type = $_FILES['image']['type'];
+	$upload_type = $_FILES['excel']['type'];
 	$is_vaild = 0;
 	if ( "application/vnd.ms-excel" == $upload_type)
 	{
-		$file_name = $_FILES['image']['name'];
+		$file_name = $_FILES['excel']['name'];
 		$type = substr($file_name,-4);
-		if (move_uploaded_file($_FILES['image']['tmp_name'], UPLOAD_IMAGE_PATH . $_FILES['image']['name'])) 
+		if (move_uploaded_file($_FILES['excel']['tmp_name'], $config['system']['upload_excel_path'] . $_FILES['excel']['name'])) 
 		{
 			$file = $locate->Translate('file');
 			if ($file != mb_convert_encoding($file,"UTF-8","UTF-8"))
@@ -21,15 +21,18 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 			$uploadsuccess = $locate->Translate('uploadsuccess');
 			if ($uploadsuccess != mb_convert_encoding($uploadsuccess,"UTF-8","UTF-8"))
 				$uploadsuccess=mb_convert_encoding($uploadsuccess,"UTF-8","GB2312");
-			$upload_msg =$file.$_FILES['image']['name'].$uploadsuccess."！<br />";
+			$upload_msg =$file.$_FILES['excel']['name'].' '.$uploadsuccess."！<br />";
 			$have = $locate->Translate('have');
 				if ($have != mb_convert_encoding($have,"UTF-8","UTF-8"))
 					$have=mb_convert_encoding($have,"UTF-8","GB2312");
 				$default = $locate->Translate('default');
 				if ($default != mb_convert_encoding($default,"UTF-8","UTF-8"))
 					$default=mb_convert_encoding($default,"UTF-8","GB2312");
+				$recrod = $locate->Translate('recrod');
+				if ($recrod != mb_convert_encoding($recrod,"UTF-8","UTF-8"))
+					$recrod=mb_convert_encoding($recrod,"UTF-8","GB2312");
 			if($type == '.csv'){
-				$handleup = fopen(UPLOAD_IMAGE_PATH . $_FILES['image']['name'],"r");
+				$handleup = fopen($config['system']['upload_excel_path'] . $_FILES['excel']['name'],"r");
 				$row = 0;
 				while($data = fgetcsv($handleup, 1000, ",")){
 				   $row++;
@@ -37,18 +40,18 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 				if($row > 8){
 					$upload_msg .= " <font color='#ffffff'>".$have.' '.$row.' '.$default."</font>";
 				}else{
-					$upload_msg .= " <font color='#ffffff'>".$have.' '.$row.' '.substr($default,0,3)."</font>";
+					$upload_msg .= " <font color='#ffffff'>".$have.' '.$row.' '.$recrod."</font>";
 				}
 			}elseif($type == '.xls'){
-				Read_Excel_File(UPLOAD_IMAGE_PATH . $_FILES['image']['name'],$return);
+				Read_Excel_File($config['system']['upload_excel_path'] . $_FILES['excel']['name'],$return);
 				$xlsrow = count($return[Sheet1]);
 				if($xlsrow > 8){
 					$upload_msg .= " <font color='#ffffff'>".$have.' '.$xlsrow.' '.$default."</font>";
 				}else{
-					$upload_msg .= " <font color='#ffffff'>".$have.' '.$xlsrow.' '.substr($default,0,3)."</font>";
+					$upload_msg .= " <font color='#ffffff'>".$have.' '.$xlsrow.' '.$recrod."</font>";
 				}
 			}
-				$_SESSION['filename'] = $_FILES['image']['name'];  //新传的文件名做为session
+				$_SESSION['filename'] = $_FILES['excel']['name'];  //新传的文件名做为session
 		} 
 		else 
 		{
