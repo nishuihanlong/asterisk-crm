@@ -21,7 +21,7 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 			$uploadsuccess = $locate->Translate('uploadsuccess');
 			if ($uploadsuccess != mb_convert_encoding($uploadsuccess,"UTF-8","UTF-8"))
 				$uploadsuccess=mb_convert_encoding($uploadsuccess,"UTF-8","GB2312");
-			$upload_msg =$file.$_FILES['excel']['name'].' '.$uploadsuccess."！<br />";
+			$upload_msg =$file.' '.$_FILES['excel']['name'].' '.$uploadsuccess."!<br />";
 			$have = $locate->Translate('have');
 				if ($have != mb_convert_encoding($have,"UTF-8","UTF-8"))
 					$have=mb_convert_encoding($have,"UTF-8","GB2312");

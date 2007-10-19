@@ -65,6 +65,11 @@ function submitForm($aFormValues){
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
+			if (!ereg("[0-9]+",trim($order[$j]))){
+				$objResponse->addAlert($locate->Translate('font'));
+				$objResponse->addScript('init();');
+				return $objResponse;
+			}
 			if($_SESSION['edq'] == $order[$j]){
 				$objResponse->addAlert($locate->Translate('repeat'));
 				$objResponse->addScript('init();');
@@ -84,7 +89,6 @@ function submitForm($aFormValues){
 	//********************************
 	if($aFormValues['myCheckBox'] != '' && $aFormValues['myCheckBox'] == '1'){
 		$mytext = trim($aFormValues['dialListField']); //数字
-		//$field_name = mysql_field_name($res, $mytext);
 	}
 	if($aFormValues['myCheckBox2'] != '' && $aFormValues['myCheckBox2'] == '1'){
 		$mytext2 = trim($aFormValues['assign']); //分区,以','号分隔的字符串
@@ -183,7 +187,7 @@ function submitForm($aFormValues){
 	}
 	unset($_SESSION['filename']);
 	$objResponse->addAlert($locate->Translate('success'));
-	$objResponse->addScript("window.location.href='./import.php';");
+	$objResponse->addScript("init();");
 	return $objResponse;
 }
 

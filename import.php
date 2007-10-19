@@ -105,7 +105,7 @@
 		<td colspan="2" id="title" align='center'><span id="spanFileManager"></span></td>
 	</tr>
 	<tr>
-		<td colspan="2"><div id="show_image"></div></td>
+		<td colspan="2"><div id="show_excel"></div></td>
 	</tr>
 </table>
 <br>

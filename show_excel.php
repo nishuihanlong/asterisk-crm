@@ -116,7 +116,7 @@ for ($c=0; $c < $num; $c++) {
 	$show_msg .= "<option value='$c'>$c</option>";
 }
 $show_msg .= "</select> $to &nbsp;&nbsp; <input type='checkbox' value='1' name='myCheckBox2' id=name='myCheckBox2' onclick='btnOnClick2();' disabled/> $area  <input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled /></td></tr></table>";
-$show_msg .= "<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'><tr><td><input type='button' value=' submit ' style='border:1px double #cccccc;' onclick='confirmMsg();'/></td></tr></table></form>";
+$show_msg .= "<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'><tr><td><input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;' onclick='confirmMsg();'/></td></tr></table></form>";
 $show_js_function="callbackMessage(\"$show_msg\");";
 $t->set_var(array("show_js_function"=> $show_js_function));
 $t->parse("show_imageout","show_image");
