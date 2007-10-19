@@ -43,14 +43,20 @@ require_once('account.common.php');
 
 			function init(){
 				xajax_init();
+				dragresize.apply(document);
 			}
 
 		//-->
 		</SCRIPT>
+		<script type="text/javascript" src="js/dragresize.js"></script>
+		<script type="text/javascript" src="js/dragresizeInit.js"></script>
+		<LINK href="css/dragresize.css" type=text/css rel=stylesheet>
+
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
-		<div id="formDiv" name="formDiv" class="formDiv"></div>
+		<div id="formDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 		<div id="divCopyright"></div>

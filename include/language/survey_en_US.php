@@ -1,6 +1,5 @@
 <?
 require('astercrm_en_US.php');
-$back_to_mi		= "Back to MI";
 $add_survey		= "Add Survey";
 $edit_survey	= "Edit Survey";
 $please_enter_survey	= "Please enter survey title";

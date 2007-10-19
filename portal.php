@@ -62,6 +62,15 @@
 				updateEvents					check database for asterisk events
 
 
+
+* Revision 0.045  2007/10/19 15:05:00  last modified by solo
+* Desc: make the following div draggable:
+			formDiv
+			formCustomerInfo
+			formContactInfo
+			formNoteInfo
+			formEditInfo
+
 * Revision 0.045  2007/10/18 15:05:00  last modified by solo
 * Desc: comment added
 
@@ -74,12 +83,6 @@ require_once('portal.common.php');
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<?php $xajax->printJavascript('include/'); ?>
 		<script type="text/javascript">
-		function init(){
-			xajax_init();
-			updateEvents();
-//			xajax.loadingFunction = showProcessingMessage;
-//			xajax.doneLoadingFunction = hideProcessingMessage;
-		}
 
 		function dial(phonenum){
 			xajax_dial(phonenum);
@@ -125,8 +128,22 @@ require_once('portal.common.php');
 
 			return false;
 		}
-		
+
+		function init(){
+			xajax_init();
+			updateEvents();
+
+			//make div draggable
+			dragresize.apply(document);
+//			xajax.loadingFunction = showProcessingMessage;
+//			xajax.doneLoadingFunction = hideProcessingMessage;
+		}
+	
 		</script>
+
+	<script type="text/javascript" src="js/dragresize.js"></script>
+	<script type="text/javascript" src="js/dragresizeInit.js"></script>
+	<LINK href="css/dragresize.css" type=text/css rel=stylesheet>
 
 	<LINK href="css/style.css" type=text/css rel=stylesheet>
 	<meta http-equiv="Content-Language" content="utf-8" />
@@ -162,10 +179,46 @@ require_once('portal.common.php');
 	<div id="divDialList" name="divDialList"></div>
 	<div id="processingMessage" name="processingMessage"></div>
 	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber"><input type="button" id="btnDial" name="btnDial" value="Dial" onclick="dial(xajax.$('iptDestnationNumber').value)"></div>
-	
+	<?if ($config['system']['enable_external_crm'] == false){?>
+		<br><br><br><br><br><br>
+		<br><br><br><br><br><br>
+		<br><br><br><br><br><br>
+		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
+			<tr>
+				<td style="padding: 0px;">
+					<fieldset>
+		<div id="formDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
+		<div id="formCustomerInfo" class="formDiv drsElement"
+			style="left: 20px; top: 50px;"></div>
+		<div id="formContactInfo" class="formDiv drsElement"
+			style="left: 20px; top: 330px;"></div>
+		<div id="formNoteInfo" class="formDiv  drsElement"
+			style="left: 450px; top: 330px;"></div>
+		<div id="formEditInfo" class="formDiv drsElement"
+			style="left: 450px; top: 50px;"></div>
+		<div id="grid" align="center"></div>
+		<div id="msgZone" name="msgZone" align="left"> </div>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+	<?}else{?>
 	<div id="divCrm" name="divCrm"></div>
+	<?
+	}
+	?>
+
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
-	<div id="divExtension" name="divExtension" class="divExtension"></div>
+
+	<div id="divExtension" name="divExtension" 
+		class="divExtension drsElement drsMoveHandle" 
+		style="left: 750px; top: 20px;	width: 220px; 
+				border: thin solid #767676; 
+				position: absolute; 
+				background-color: #F1F1F1;
+				overflow: auto;
+				z-index:0;"></div>
 	<div id="divCopyright"></div>
 	</body>
 </html>

@@ -43,18 +43,15 @@
 
 require_once ('localization.class.php');
 
-//echo $_SESSION['curuser']['country'];
-//echo $_SESSION['curuser']['language'];
 
 
-
-if ($_SESSION['curuser']['country'] != '' )
-	{
+if (isset($_SESSION['curuser']['country'])){
 	$GLOBALS['local_grid']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'xajaxGrid');
 
 }else
 
 	$GLOBALS['local_grid']=new Localization('en','US','xajaxGrid');
+
 
 class ScrollTable{
 	/**
@@ -448,7 +445,7 @@ class Table {
 	function Top($tableTitle = "tableTitle", $formId = "formDiv"){
 		$table = '
 			<table width="100%" border="1" align="center" class="adminlist">
-			<tr>
+			<tr class="drsMoveHandle">
 				<th align="right" valign="center">
 					<img src="images/close.png" onClick=\'javascript: document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
 				</th>

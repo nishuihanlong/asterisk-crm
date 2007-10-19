@@ -23,6 +23,9 @@
 		showDetail			显示account详细信息
 							当前返回空值
 
+* Revision 0.045  2007/10/19 10:01:00  last modified by solo
+* Desc: modify extensions description
+
 * Revision 0.045  2007/10/18 12:40:00  last modified by solo
 * Desc: page created
 
@@ -112,7 +115,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("username");
 	$headers[] = $locate->Translate("password");
 	$headers[] = $locate->Translate("extension");
-	$headers[] = $locate->Translate("extensions");
+	$headers[] = $locate->Translate("extensions").','.$locate->Translate("extensions_note");
 	$headers[] = $locate->Translate("usertype").'&nbsp;'.$locate->Translate("usertype_note");
 
 	// HTML table: hearders attributes

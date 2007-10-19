@@ -25,6 +25,7 @@ registed function:
 	edit				show contact edit form
 	delete				delete a contact
 	export				download contact data csv file
+	add					
 
 
 * Revision 0.045  2007/10/18 14:16:00  modified by solo
@@ -73,6 +74,7 @@ $xajax->registerFunction("save");
 $xajax->registerFunction("showCustomer");
 $xajax->registerFunction("showContact");
 $xajax->registerFunction("update");
+$xajax->registerFunction("add");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.

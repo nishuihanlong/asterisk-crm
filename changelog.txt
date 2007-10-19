@@ -75,8 +75,11 @@ v0.045
 2007-10-18	config.php中增加两个参数,  $config['system']['log_enabled']
 					$config['system']['log_file_path']
 		用于设定日志系统是否启动以及日志文件保存的位置
+2007-10-19	增加了德语支持
+2007-10-19	允许移动层
 -----------------------------------------------------------------------------------------
 
+需要php的mbstring模块
 need to add queue status
 need to add CDR to user
 增加div移动的代码

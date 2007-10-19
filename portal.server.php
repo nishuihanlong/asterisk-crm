@@ -42,11 +42,11 @@
 require_once ("db_connect.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
-require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
-require_once ('portal.grid.inc.php');
 require_once ('astercrm.server.common.php');
 require_once ("portal.common.php");
+require_once ('include/xajaxGrid.inc.php');
+require_once ('portal.grid.inc.php');
 
 function showDetail($recordId){
 	$objResponse = new xajaxResponse();
@@ -120,30 +120,9 @@ function init(){
 	$objResponse->addAssign("divPanel","innerHTML", $panelHTML);
 
 	if ($config['system']['enable_external_crm'] == false){
-		$objResponse->addClear("divCrm","innerHTML");
 		$objResponse->addIncludeScript("js/astercrm.js");
 		$objResponse->addIncludeScript("js/ajax.js");
 		$objResponse->addIncludeScript("js/ajax-dynamic-list.js");
-
-
-		$mycrm = '
-					<br><br><br><br><br><br>
-					<br><br><br><br><br><br>
-					<br><br><br><br><br><br>
-					<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
-					<tr>
-						<td style="padding: 0px;">
-							<fieldset>
-							<div id="formDiv" class="formDiv"></div>
-							<div id="formCustomerInfo" class="formCustomerInfo"></div>
-							<div id="formContactInfo" class="formContactInfo"></div>
-							<div id="formNoteInfo" class="formNoteInfo"></div>
-							<div id="formEditInfo" class="formEditInfo"></div>
-							<div id="grid" align="center"> </div>
-						</td>
-					</tr>
-					</table>';
-		$objResponse->addAppend("divCrm","innerHTML", $mycrm );
 		$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");

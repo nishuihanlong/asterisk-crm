@@ -51,6 +51,8 @@ require_once('customer.common.php');
 		<!--
 		function init(){
 			xajax_init();
+			//make div draggable
+			dragresize.apply(document);
 		}
 
 		function exportCustomer(){
@@ -63,6 +65,9 @@ require_once('customer.common.php');
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
+		<script type="text/javascript" src="js/dragresize.js"></script>
+		<script type="text/javascript" src="js/dragresizeInit.js"></script>
+		<LINK href="css/dragresize.css" type=text/css rel=stylesheet>
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
@@ -75,13 +80,18 @@ require_once('customer.common.php');
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
-					<div id="formDiv" class="formDiv"></div>
-					<div id="formCustomerInfo" class="formCustomerInfo"></div>
-					<div id="formContactInfo" class="formContactInfo"></div>
-					<div id="formNoteInfo" class="formNoteInfo"></div>
-					<div id="formEditInfo" class="formEditInfo"></div>
-					<div id="grid" align="center"> </div>
-					<div id="msgZone" name="msgZone" align="left"> </div>
+		<div id="formDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
+		<div id="formCustomerInfo" class="formDiv drsElement"
+			style="left: 20px; top: 50px;"></div>
+		<div id="formContactInfo" class="formDiv drsElement"
+			style="left: 20px; top: 330px;"></div>
+		<div id="formNoteInfo" class="formDiv  drsElement"
+			style="left: 450px; top: 330px;"></div>
+		<div id="formEditInfo" class="formDiv drsElement"
+			style="left: 450px; top: 50px;"></div>
+		<div id="grid" align="center"></div>
+		<div id="msgZone" name="msgZone" align="left"> </div>
 				</fieldset>
 			</td>
 		</tr>

@@ -35,6 +35,8 @@ require_once('survey.common.php');
 		<!--
 		function init(){
 			xajax_init();
+			//make div draggable
+			dragresize.apply(document);
 		}
 		
 		function addOption(formName){
@@ -45,6 +47,9 @@ require_once('survey.common.php');
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
+		<script type="text/javascript" src="js/dragresize.js"></script>
+		<script type="text/javascript" src="js/dragresizeInit.js"></script>
+		<LINK href="css/dragresize.css" type=text/css rel=stylesheet>
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
@@ -53,7 +58,8 @@ require_once('survey.common.php');
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
-					<div id="formDiv" class="formDiv"></div>
+		<div id="formDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 					<div id="divSurveyStatistc" align="divSurveyStatistc"> </div>

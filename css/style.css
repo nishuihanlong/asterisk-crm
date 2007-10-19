@@ -847,8 +847,7 @@ div.main {
 	top: 10px;
 	visibility: hidden; 
 	background-color: #F1F1F1;
-	overflow: auto;
-	z-index:100;
+/*	overflow: auto;*/
 }
 
 .formEditInfo {
@@ -961,25 +960,6 @@ div.main {
 	background-color: #F1F1F1;
 	overflow: auto;
 }
-
-.divExtension {
-	width: 260px; 
-	/* height: 400px;  */
-	border: thin solid #767676; 
-/*	border-right-width: medium; 
-	border-right-color: #767676; 
-	border-bottom-width: medium; 
-	border-bottom-color: #767676; 
-*/
-	position: absolute; 
-	right: 0%; 
-	top: 20px;
-	background-color: #F1F1F1;
-	overflow: auto;
-	z-index:0;
-
-}
-
 
 #ajax_listOfOptions{
 	position:absolute;	/* Never change this one */
