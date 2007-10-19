@@ -152,4 +152,7 @@ select {
 	line-height:20px;
 	list-style:none;
 	text-align:left;
+	margin-top:0px;
 }
+
+#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}

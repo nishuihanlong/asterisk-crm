@@ -28,7 +28,7 @@
 <script language='javascript'>
 	function init(){
 			xajax_init();
-			iframeShowExcel.window.location="show_excel.php";
+			//iframeShowExcel.window.location="show_excel.php";
 	}
 
 	function selectTable(tablename){
@@ -89,7 +89,7 @@
 <body onload="init();">
 <center>
 <div id="mainform">
-<form action="upload.php" method="post" enctype="multipart/form-data" name="upload_excel" target="iframeShowExcel"  >
+<form action="upload.php" method="post" enctype="multipart/form-data" name="upload_excel" target="iframeShowExcel2">
 <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
 <input type="hidden" name="CHECK" value="1" />
 <span id="file_name"></span>:<input type="file" name="excel"><br />
@@ -104,13 +104,11 @@
 	<tr>
 		<td colspan="2" id="title" align='center'><span id="spanFileManager"></span></td>
 	</tr>
-	<tr>
-		<td colspan="2"><div id="show_excel"></div></td>
-	</tr>
+	
 </table>
 <br>
-<iframe name="iframeShowExcel" id="iframeShowExcel" width="0" height="0" scrolling="no"></iframe>
-
+<iframe name="iframeShowExcel2" id="iframeShowExcel2" width="0" height="0" scrolling="no"></iframe>
+<div name="iframeShowExcel" id="iframeShowExcel"></div>
 </center>
 </body>
 </html>
