@@ -1,13 +1,13 @@
 <?php
 /*******************************************************************************
-* customer.php
-* excel文件管理界面//
-* excel file management interface
+* import.php
+* 上传、导出数据界面
+* upload / import management interface
 * 功能描述
-	 提供excel文件信息管理的功能
+	 提供上传 导出数据的功能
 
 * Function Desc
-	csv,xls management
+	csv,xls file upload and import management
 * Page elements
 * div:							
 									mainform			-> uploade excel file
@@ -20,6 +20,10 @@
 									chkAssignOnClick
 									confirmMsg
 
+* Revision 0.045  2007/10/22 13:02:00  modified by yunshida
+* Desc: modified some element id
+		upload -> btnUpload
+		upload_excel -> formUpload
 
 * Revision 0.045  2007/10/22 11:35:00  modified by yunshida
 * Desc: create page
@@ -92,13 +96,14 @@
 		</script>
 	</head>
 	<body onload="init();">
+			<div id="divNav"></div>
 		<center>
 			<div id="mainform">
-				<form action="upload.php" method="post" enctype="multipart/form-data" name="upload_excel" target="iframeShowExcel">
+				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel">
 					<input type="hidden" name="MAX_FILE_SIZE" value="300000" />
 					<input type="hidden" name="CHECK" value="1" />
 					<span id="divFileName"></span>:<input type="file" name="excel"><br />
-					<input type="submit" value="" id="upload" name="upload" />
+					<input type="submit" value="" id="btnUpload" name="btnUpload" />
 					<input type="hidden" value="" id="alertmsg" />
 				</form>
 			</div>
@@ -115,5 +120,6 @@
 			<iframe name="iframeShowExcel" id="iframeShowExcel" width="0" height="0" scrolling="no"></iframe>
 			<div name="divShowExcel" id="divShowExcel"></div>
 		</center>
+			<div id="divCopyright"></div>
 	</body>
 </html>

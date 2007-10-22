@@ -6,7 +6,13 @@
 * 功能描述
 * Function Desc
 	上传csv、xls格式文件
-* Revision 0.045  2007/10/22 15:25:00  modified by yunshida
+
+
+* Revision 0.045  2007/10/22 13:34:00  modified by yunshida
+* Desc: 
+* 描述: 取消了使用模板
+
+* Revision 0.045  2007/10/22   modified by yunshida
 * Desc: page create
 * 描述: 页面建立
   
@@ -16,6 +22,7 @@ session_start();
 require_once ('include/localization.class.php');
 require_once ("include/excel.class.php");
 include_once('config.php');
+
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'import');
 if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$upload_msg = '';
@@ -62,19 +69,10 @@ else
 {
 	$upload_msg = $locate->Translate('failed');
 }
-if($upload_msg != "")
-	$upload_js_function="callbackMessage(\"$upload_msg\");";
-else
-	$upload_js_function="";
 
-include("./include/template.php");
-$t=new Template('./include/');
-$t->caching = false;
-//$t->unknowns = "keep";
-$t->left_delimiter = "[##";
-$t->right_delimiter = "##]";
-$t->set_file("upload", "upload.tpl");
-$t->set_var(array("upload_js_function"=> $upload_js_function));
-$t->parse("uploadout","upload");
-$t->p("uploadout");
 ?>
+<SCRIPT LANGUAGE="JavaScript">
+	var msg = "<? echo $upload_msg; ?><br />";
+	window.parent.document.getElementById("divMessage").innerHTML = msg;//msg;
+	window.parent.init();
+</SCRIPT>

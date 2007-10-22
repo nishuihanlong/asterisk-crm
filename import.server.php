@@ -8,6 +8,13 @@
 	init()  页面初始化
 	selectTable()  选择表
 	submitForm()  将csv，xsl格式文件数据插入数据库
+
+
+* Revision 0.045  2007/10/22 13:39:00  modified by yunshida
+* Desc: 
+* 描述: 增加了包含include/common.class.php, 在init函数中增加了初始化对象divNav和divCopyright
+
+
 * Revision 0.045  2007/10/18 15:25:00  modified by yunshida
 * Desc: page create
 * 描述: 页面建立
@@ -16,6 +23,7 @@
 require_once ("db_connect.php");
 require_once ("import.common.php");
 require_once ('include/excel.class.php');
+require_once ('include/common.class.php');
 /**
 *  function to init import page
 *	
@@ -27,9 +35,12 @@ function init(){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divFileName","innerHTML", $locate->Translate("file_name"));
-	$objResponse->addAssign("upload","value",$locate->Translate("upload"));
+	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("filemanager"));
 	$objResponse->addAssign("alertmsg","value",$locate->Translate("by"));
+
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$show_msg = "";
 	$i=0;
@@ -38,6 +49,10 @@ function init(){
 	$file_name = $_SESSION['filename'];
 	$type = substr($file_name,-3);
 	$handle = fopen($file_path,"r");
+
+	//需要检查文件是否存在
+
+
 	$show_msg .= "<form method='post' name='formImport' id='formImport'>
 					<input type='hidden' name='CHECK' value='1'/>
 					<table class='imagetable'>

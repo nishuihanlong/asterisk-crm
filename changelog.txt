@@ -43,7 +43,7 @@ v0.045
 2007-10-9	增加了astercrm类, 修改了grid.*
 2007-10-9	将语言文件改名为.php, 并且合并了相同的部分
 2007-10-10	修改了点击复制联系人时出现的javascript bug
-2007-10-10	增加了代替ProxyMan的方法eventsdeamon
+2007-10-10	增加了代替ProxyMan的方法eventsdaemon
 		以前的ProxyMan.py和delete_evnets.py都可以不用了
 		代之以 eventsdeamon.pl &
 2007-10-10	增加了dialedlist表，保存从diallist里拨出的号码
@@ -77,9 +77,11 @@ v0.045
 		用于设定日志系统是否启动以及日志文件保存的位置
 2007-10-19	增加了德语支持
 2007-10-19	允许移动层
+2007-10-22	使用ini类型的文件代替原来的php格式 增加astercrm.conf.php保存系统参数
 -----------------------------------------------------------------------------------------
 
 需要php的mbstring模块
+增强导出模块
 need to add queue status
 need to add CDR to user
 增加div移动的代码
@@ -92,6 +94,7 @@ need to add phone spy
 增加对config.php的管理为web模式
 关闭数据库
 voicemail check
+电话会议功能
 增加SMS模块
 
 #为什么在系统监视里面看到的分机不全？

@@ -9,6 +9,8 @@ $note_manager			= "备注信息管理";
 $diallist_manager		= "拨号列表管理";
 $survey_manager			= "问卷管理";
 $survey_reslut			= "问卷结果";
+$import					= "导入";
+$export					= "导出";
 $log_out				= "退出";
 $back					= "返回";
 ?>

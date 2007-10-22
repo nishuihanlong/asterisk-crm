@@ -1,16 +1,15 @@
 <?
-	$file_name = "choose csv file";
+	$file_name = "choose csv/xls file";
 	$upload = "upload";
 	$filemanager = "file manager";
-	$back = "back";
-	$nofilechoose = "no file choose";
+	$nofilechoose = "no file was choosen";
 	$add = "add";
-	$todiallist = "to table diallist";
+	$todiallist = "to dial list";
 	$file = "file";
 	$uploadsuccess = "upload success";
 	$have = "have";
-	$default = "records ,show 8 records";
-	$failed = "upload failed,please check dir purview";
+	$default = "records ,show the top 8 records";
+	$failed = "upload failed, please check dir purview";
 	$choose = "choose file";
 	$submit = "submit";
 	$area = "assign";
@@ -20,7 +19,7 @@
 	$fieldcountrepeat = "number repeat";
 	$error = "failed";
 	$recrod = " records";
-	$by = "import by account extension";
+	$by = "assign to account automaticly";
 	$submit = "submit";
 	$selecttable = "select table";
 ?>

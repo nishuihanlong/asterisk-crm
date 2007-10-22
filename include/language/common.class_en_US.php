@@ -10,5 +10,7 @@ $diallist_manager		= "Diallist Manager";
 $survey_manager			= "Survey Manager";
 $survey_reslut			= "Survey Result";
 $log_out				= "Logout";
+$import					= "Import";
+$export					= "Export";
 $back					= "Back";
 ?>

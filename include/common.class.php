@@ -40,7 +40,7 @@ class common{
 					<tr>
 						<td>
 							©2007 asterCRM - <a href="http://www.astercrm.org" target="_blank">asterCRM home</a><br>
-							version: 0.045 beta
+							version: 0.045
 						</td>
 					</tr>
 					</table>
@@ -69,6 +69,8 @@ class common{
 		$html .= "<a href='survey.php' >".$locate_common->Translate("survey_manager")."</a> | ";
 		
 		$html .= "<a href='surveyresult.php' >".$locate_common->Translate("survey_reslut")."</a> | ";
+
+		$html .= "<a href='import.php' >".$locate_common->Translate("import")."</a> | ";
 
 		$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate_common->Translate("back")."</a> | ";
 

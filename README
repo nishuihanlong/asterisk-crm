@@ -52,9 +52,13 @@ processes can run on the same server, however, multiple servers enhance performa
 
 	12) predictive dialer
 
-	13) CRM data export
+	13) CRM data import/export
 
 	14) dial manually in agent interface 
+
+	15) survey
+
+	16) monitor control
 
 
 2. asterCRM Installation: (assuming your WEB root is /var/www/html)
@@ -68,13 +72,15 @@ processes can run on the same server, however, multiple servers enhance performa
 	PHP scripts and several sub-directories. 
 
 	/var/www/html/astercrm						main directory and PHP scripts  
-	/var/www/html/astercrm/proxyman 			proxyman related files
+	/var/www/html/astercrm/eventsdaemon 		eventsdaemon file
 	/var/www/html/astercrm/includes 			files needed in php scripts
 	/var/www/html/astercrm/includes/language 	asterCRM language files
 	/var/www/html/astercrm/images				image files used via the PHP scripts
 	/var/www/html/astercrm/css					style files used via the PHP scripts
 	/var/www/html/astercrm/js					auto-complete java scripts
-	/var/www/html/astercrm/screenshot			some screen shot of asterCRM
+	/var/www/html/astercrm/upload				
+	/var/www/html/astercrm/cdr					Asterisk-stat				
+	/var/www/html/astercrm/sql					sql to create astercrm database 
 
 	It is highly advised that the whole proxyman directory be moved to a more secure
 	location like /opt and out of the WEB root directory (see step 4)
@@ -82,7 +88,7 @@ processes can run on the same server, however, multiple servers enhance performa
 2) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
 	mysqladmin create asterisk
-	mysql </var/www/html/astercrm/astercrm.sql
+	mysql </var/www/html/astercrm/sql/astercrm.sql
 
 	Note: the astercrm.sql file has the GRANT commands to update MySQL with
 		the desired authority. The settings here must match the userid/password
@@ -96,7 +102,7 @@ processes can run on the same server, however, multiple servers enhance performa
 	Asterisk Manager login username/password. 
 	Make sure it matches what was specified in the manager.conf file.
 
-	Update the /var/www/html/astercrm/proxyman/ProxyMan.py script for the correct MySQL
+	Update the /var/www/html/astercrm/eventsdaemon/eventsdaemon.pl script for the correct MySQL
 	login userid/password. Make sure it matches what was specified in the
 	astercrm.sql file. ProxMan.py also needs updated with the Asterisk Manager
 	password and secret (password), documented in the next step.
@@ -147,13 +153,15 @@ processes can run on the same server, however, multiple servers enhance performa
 	table. The eventsdaemon is also designed for this.
 	please check eventsdaemon.pl for parameter "log_life"
 
-6) Testing: browse to http://localhost/astercrm
+6) modify astercrm.conf.php to fit your configration
+
+7) Testing: browse to http://localhost/astercrm
 
 	or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 		
 	login with admin/admin
 
-7) Manager interface
+8) Manager interface
    
 	click "Manager" on top right, then
 
@@ -187,6 +195,7 @@ processes can run on the same server, however, multiple servers enhance performa
 ====================================================================================
 
 2007-10-9	Version 0.445 Released (GPL)
+2007-10-22	Version 0.45  Released (GPL)
 
 ====================================================================================
 
