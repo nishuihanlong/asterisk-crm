@@ -175,8 +175,8 @@ class ScrollTable{
 			
 			$this->header .= '
 				&nbsp;
-				<img src="images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
-				<img src="images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
+				<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
+				<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
 			</th>';
 			
 			$ind++;
@@ -251,12 +251,12 @@ class ScrollTable{
 		if($edit)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="images/edit.png" border="0"></a>
+						<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
 					</td>';
 		if($delete)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\'))  xajax_delete(\''.$arr[0].'\',\''.$table.'\',\''.$divName.'\');return false;"><img src="images/trash.png" border="0"></a>
+						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\'))  xajax_delete(\''.$arr[0].'\',\''.$table.'\',\''.$divName.'\');return false;"><img src="skin/default/images/trash.png" border="0"></a>
 					</td>';
 		if($detail)
 			$row .= '
@@ -447,7 +447,7 @@ class Table {
 			<table width="100%" border="1" align="center" class="adminlist">
 			<tr class="drsMoveHandle">
 				<th align="right" valign="center">
-					<img src="images/close.png" onClick=\'javascript: document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
+					<img src="skin/default/images/close.png" onClick=\'javascript: document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
 				</th>
 			</tr>
 			<tr ><td><fieldset><legend>'.$tableTitle.'</legend>';
