@@ -24,7 +24,6 @@ require_once('systemstatus.common.php');
 <html>
 	<head>
 		<?php $xajax->printJavascript('include/'); ?>
-		<LINK href="css/style.css" type=text/css rel=stylesheet>
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
@@ -47,6 +46,12 @@ require_once('systemstatus.common.php');
 
 		//-->
 		</SCRIPT>
+
+		<script language="JavaScript" src="js/astercrm.js"></script>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>

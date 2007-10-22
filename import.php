@@ -36,7 +36,6 @@
 	<head>
 		<?php $xajax->printJavascript('include/'); ?>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<script language='javascript'>
 			function init(){
 				xajax_init();
@@ -94,6 +93,12 @@
 			}
 
 		</script>
+
+		<script language="JavaScript" src="js/astercrm.js"></script>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
 	</head>
 	<body onload="init();">
 			<div id="divNav"></div>

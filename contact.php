@@ -44,7 +44,6 @@ require_once('contact.common.php');
 <html>
 	<head>
 		<?php $xajax->printJavascript('include/'); ?>
-		<LINK href="css/style.css" type=text/css rel=stylesheet>
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
@@ -63,17 +62,21 @@ require_once('contact.common.php');
 		}
 		//-->
 		</SCRIPT>
+
+		<script type="text/javascript" src="js/astercrm.js"></script>
 		<script type="text/javascript" src="js/dragresize.js"></script>
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
-		<LINK href="css/dragresize.css" type=text/css rel=stylesheet>
-		<script language="JavaScript" src="js/astercrm.js"></script>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
 	<br>
 	<div id="divActive" name="divActive">
-		<input type="button" value="IMPORT" id="btnImport" name="btnImport" onClick="importCsv();" />
-		<input type="button" value="EXPORT" id="btnExport" name="btnExport" onClick="exportCustomer();" />
+		<input type="button" value="" id="btnCustomer" name="btnCustomer" onClick="window.location='customer.php';" />
+		<input type="button" value="" id="btnNote" name="btnNote" onClick="window.location='note.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

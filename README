@@ -155,13 +155,17 @@ processes can run on the same server, however, multiple servers enhance performa
 
 6) modify astercrm.conf.php to fit your configration
 
-7) Testing: browse to http://localhost/astercrm
+7) set upload folder access to 777
+
+	chmod 777 /var/www/html/astercrm/upload
+
+8) Testing: browse to http://localhost/astercrm
 
 	or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 		
 	login with admin/admin
 
-8) Manager interface
+9) Manager interface
    
 	click "Manager" on top right, then
 

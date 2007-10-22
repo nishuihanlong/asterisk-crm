@@ -19,6 +19,9 @@
 	showDetail			显示contact信息
 	importCsv			转到数据导入页面
 
+* Revision 0.045  2007/10/22 16:45:00  last modified by solo
+* Desc: remove function "importCSV", "export"
+
 * Revision 0.045  2007/10/18 14:30:00  last modified by solo
 * Desc: remove function "edit"
 
@@ -34,19 +37,6 @@ require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
 require_once ('astercrm.server.common.php');
 
-/**
-*  submit frmDownload
-*
-*/
-
-function export(){
-	$objResponse = new xajaxResponse();
-
-	$objResponse->addAssign("type","value","contact");
-	$objResponse->addScript("xajax.$('frmDownload').submit();");
-	$objResponse->addAlert("downloading, please wait");
-	return $objResponse;
-}
 
 /**
 *  initialize page elements
@@ -60,6 +50,9 @@ function init(){
 
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+
+	$objResponse->addAssign("btnCustomer","value",$locate->Translate("customer"));
+	$objResponse->addAssign("btnNote","value",$locate->Translate("note"));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
@@ -215,18 +208,6 @@ function showDetail($contactid){
 		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
 	}
-	return $objResponse->getXML();
-}
-
-/**
-*  redirect to import page
-*/
-
-function importCsv(){
-	$objResponse = new xajaxResponse();
-	//$objResponse->addScript("gotourl('./index.html');");
-	$value = base64_encode('contact');
-	$objResponse->addScript("window.location.href='./importcsv.php?action=$value'");
 	return $objResponse->getXML();
 }
 

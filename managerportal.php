@@ -18,8 +18,9 @@ require_once('managerportal.common.php');
 <html>
 	<head>
 		<?php $xajax->printJavascript('include/'); ?>
-		<LINK href="css/style.css" type=text/css rel=stylesheet>
+		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<meta http-equiv="Content-Language" content="utf-8" />
+		<script type="text/javascript" src="js/astercrm.js"></script>
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
 			function init(){

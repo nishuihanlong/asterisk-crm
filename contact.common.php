@@ -33,8 +33,11 @@ registed function:
 	showContact			show contact information 
 	showCustomer		show customer information
 	showNote			show note information 
-	importCsv			redirect to import contact data page
 	export				download contact data csv file
+
+
+* Revision 0.045  2007/10/22 16:45:00  modified by solo
+* Desc: delete importCSV function
 
 * Revision 0.045  2007/10/18 14:16:00  modified by solo
 * Desc: change localization file to astercrm

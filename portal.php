@@ -143,12 +143,13 @@ require_once('portal.common.php');
 
 	<script type="text/javascript" src="js/dragresize.js"></script>
 	<script type="text/javascript" src="js/dragresizeInit.js"></script>
-	<LINK href="css/dragresize.css" type=text/css rel=stylesheet>
 
-	<LINK href="css/style.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
 	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
-	<body onload="init();">
+	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
 		<div id="divUserMsg" name="divUserMsg"></div>
 		<span id="spanTransfer" name="spanTransfer"></span>

@@ -1,0 +1,12 @@
+new features in 0.045
+
+	use perl script: eventsdaemon to replace the python script: ProxyMan
+	customer and contact could be related or irrespective
+	import/export datas online
+	add survey module
+	add monitor control
+	all pop-up form is movable
+	browser title blinking when dial events happened
+	could maximize windows when dial events happened
+	enter phone number and dial in agent interface
+	could trim zero in the callerid

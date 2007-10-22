@@ -18,7 +18,7 @@ require_once ('include/astercrm.class.php');
 
 
 //$filename = $_REQUEST['filename'];
-$type = $_REQUEST['type'];
+$type = $_REQUEST['hidType'];
 ob_start();
 header('Content-type:  application/force-download');
 header('Content-Transfer-Encoding:  Binary');
@@ -38,6 +38,12 @@ $res = Common::export($GLOBALS['db'],$sql);
 		$txtstr .= "\n";
  	}
 */
+
+define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
+define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
+define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
+
 echo astercrm::exportCSV($type);
 ob_end_flush();
 

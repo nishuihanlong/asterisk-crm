@@ -23,7 +23,7 @@
 require_once ('localization.class.php');
 
 if ($_SESSION['curuser']['country'] != '' ){
-	$GLOBALS['locate_common']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'common.class');
+	$GLOBALS['locate_common']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['country'],'common.class');
 }else{
 	$GLOBALS['locate_common']=new Localization('en','US','common.class');
 }
@@ -51,31 +51,43 @@ class common{
 
 	function generateManageNav($skin){
 		global $locate_common;
+/*
 
-		$html .= "<a href='account.php'>".$locate_common->Translate("extension_manager")."</a> | ";
 
-		$html .= "<a href='systemstatus.php'>".$locate_common->Translate("system_status")."</a> | ";
 
-		$html .= "<a href='predictivedialer.php'>".$locate_common->Translate("predictive_dialer")."</a> | ";
-
-		$html .= "<a href='customer.php' >".$locate_common->Translate("customer_manager")."</a> | ";
 	
 		$html .= "<a href='contact.php' >".$locate_common->Translate("contact_manager")."</a> | ";
 		
 		$html .= "<a href='note.php' >".$locate_common->Translate("note_manager")."</a> | ";
 		
 		$html .= "<a href='diallist.php' >".$locate_common->Translate("diallist_manager")."</a> | ";
-		
-		$html .= "<a href='survey.php' >".$locate_common->Translate("survey_manager")."</a> | ";
-		
-		$html .= "<a href='surveyresult.php' >".$locate_common->Translate("survey_reslut")."</a> | ";
 
-		$html .= "<a href='import.php' >".$locate_common->Translate("import")."</a> | ";
+*/		
+		$html = '
+<div class="top_banner">
+	<ul>
+		<li><a href="import.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'import\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/import.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/import_sml.gif" alt="import" name="import" width="71" height="126" border="0" id="import" /></a></li>
+		<li><a href="export.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'export\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/export.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/export_sml.gif" alt="export" name="export" width="71" height="126" border="0" id="export" /></a></li>
+		<li><a href="surveyresult.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'statisic\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/statisic.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/statisic_sml.gif" alt="statisic" name="statisic" width="71" height="126" border="0" id="statisic" /></a></li>
+		<li><a href="account.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'extension\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/extension.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/extension_sml.gif" alt="extension" name="extension" width="71" height="126" border="0" id="extension" /></a></li>
+		<li><a href="customer.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'customer\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/customer.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/customer_sml.gif" alt="customer" name="customer" width="71" height="126" border="0" id="customer" /></a></li>
+		<li><a href="predictivedialer.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'dialer\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/dialer.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/dialer_sml.gif" alt="dialer" name="dialer" width="71" height="126" border="0" id="dialer" /></a></li>
+		<li><a href="systemstatus.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'system\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/system.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/system_sml.gif" alt="system" name="system" width="71" height="126" border="0" id="system" /></a></li>
+		<li><a href="survey.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'survey\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/survey.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/survey_sml.gif" alt="survey" name="survey" width="71" height="126" border="0" id="survey" /></a></li>
+		<li><a href="portal.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'back\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/back.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/back_sml.gif" alt="back" name="back" width="71" height="126" border="0" id="back" /></a></li>
+		<li><a href="login.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'logout\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logout_sml.gif" alt="logout" name="logout" width="71" height="126" border="0" id="logout" /></a></li>
+		<li><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logo_bn.gif"/></li>
+	</ul>
+</div>
+				';
+$html .= '
 
-		$html .= "<a href=# onclick=\"self.location.href='portal.php';return false;\">".$locate_common->Translate("back")."</a> | ";
-
-		$html .= "<a href=# onclick=\"self.location.href='login.php';return false;\">".$locate_common->Translate("log_out")."</a>";
-		
+<SCRIPT country="JavaScript">
+<!--
+	MM_preloadImages(\'skin/default/images_'.$_SESSION['curuser']['country'].'/import.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/export.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/statisic.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/extension.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/customer.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/dialer.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/system.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/survey.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/back.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\'
+//-->
+</SCRIPT>
+		';
 		return $html;
 	}
 

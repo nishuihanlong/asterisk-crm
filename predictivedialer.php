@@ -47,7 +47,6 @@ require_once('predictivedialer.common.php');
 <html>
 	<head>
 		<?php $xajax->printJavascript('include/'); ?>
-		<LINK href="css/style.css" type=text/css rel=stylesheet>
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
@@ -127,9 +126,15 @@ require_once('predictivedialer.common.php');
 			}
 		//-->
 		</SCRIPT>
+		<script language="JavaScript" src="js/astercrm.js"></script>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
+		<br><br><br><br>
 		<div id="divAMIStatus" name="divAMIStatus"></div>
 		<span id="spanTotalRecords" name="spanTotalRecords" align="left"></span><!--&nbsp;&nbsp;records left-->
 		<div id="divActiveCalls" name="divActiveCalls" align="left"> </div>
