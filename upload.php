@@ -1,11 +1,22 @@
 <?php
+/*******************************************************************************
+* upload.php
+* 上传excel文件
+* upload excel file
+* 功能描述
+* Function Desc
+	上传csv、xls格式文件
+* Revision 0.045  2007/10/22 15:25:00  modified by yunshida
+* Desc: page create
+* 描述: 页面建立
+  
+********************************************************************************/
 header("content-type:text/html;charset=utf-8");
-
 session_start();
 require_once ('include/localization.class.php');
 require_once ("include/excel.class.php");
 include_once('config.php');
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'csv');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'import');
 if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$upload_msg = '';
 	$upload_type = $_FILES['excel']['type'];
@@ -57,7 +68,7 @@ else
 	$upload_js_function="";
 
 include("./include/template.php");
-$t=new Template('./template/');
+$t=new Template('./include/');
 $t->caching = false;
 //$t->unknowns = "keep";
 $t->left_delimiter = "[##";

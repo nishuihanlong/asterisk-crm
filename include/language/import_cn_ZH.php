@@ -14,14 +14,13 @@
 	$choose = "浏览";
 	$submit = "提交";
 	$area = "分派给";
-	$cantup = "只能上传excel文档文件";
+	$cantup = "只能上传csv、xls格式文件";
 	$success = "操作成功";
-	$font = "字段超过指定范围";
-	$repeat = "不允许添加重复字段号";
+	$fielderr = "字段超过指定范围";
+	$fieldcountrepeat = "不允许添加重复字段号";
 	$error = "操作失败";
 	$recrod = "条记录";
 	$by = "根据account表的extension字段分派";
 	$submit = "提交";
 	$selecttable = "选择表";
-	//$empty = "空值";
 ?>

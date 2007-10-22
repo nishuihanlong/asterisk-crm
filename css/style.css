@@ -445,6 +445,8 @@ BODY {
 	BACKGROUND: #fff; 
 	MARGIN: 0px; 
 	PADDING-TOP: 8px
+	scrollbar-arrow-color : yellow;
+	scrollbar-base-color : #efefef;
 }
 
 a {
@@ -1094,3 +1096,82 @@ form{
 	height: 14px;
 	width: 461px;
 }
+
+/********************************/
+div{
+	white-space:normal;
+}
+
+hr {
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #CCCCCC;
+}
+
+#des{
+	height:14px;
+	font-weight:bold;
+	text-align:left;
+	border-left:4px solid #CCC;
+	padding:10px;
+}
+#mainform{
+	font-size:12px;
+	font-weight:normal;
+	text-align:left;
+	padding:10px;
+	margin-top:10px;
+	margin-left:auto;
+	margin-right:auto;
+	border:1px double #cccccc;
+	width:60%;
+	text-align:center;
+	margin-bottom:10px;
+}
+#divMessage{
+	padding:5px 0;
+	background-color:#0099cc;
+	width:auto;
+	font-weight:bold;
+	width:100%;
+	margin-left:atuo;
+	margin-right:auto;
+	margin-top:5px;
+	height:30px
+}
+#delform{
+	height:12px;
+	font-size:12px;
+	font-weight:normal;
+	text-align:left;
+	padding:10px;
+	margin-top:20px;
+}
+#maintable tr td{
+	
+	
+	padding: 6px 6px 6px 12px;
+	
+}
+#title{
+	font-weight:bold;
+	padding:10px;
+	border-top: 0;
+	border-left: 0;
+	
+	background: none
+}
+.imagetable{
+	width:100%;
+}
+
+.ulstyle{
+	width:100%;
+	height:20px;
+	line-height:20px;
+	list-style:none;
+	text-align:left;
+	margin-top:0px;
+}
+
+#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}

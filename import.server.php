@@ -1,33 +1,36 @@
 <?php
 /*******************************************************************************
 * import.server.php
-* importº¯ÊıĞÅÏ¢ÎÄ¼ş
+* importå‡½æ•°ä¿¡æ¯æ–‡ä»¶
 * import parameter file
-* ¹¦ÄÜÃèÊö
+* åŠŸèƒ½æè¿°
 * Function Desc
-
+	init()  é¡µé¢åˆå§‹åŒ–
+	selectTable()  é€‰æ‹©è¡¨
+	submitForm()  å°†csvï¼Œxslæ ¼å¼æ–‡ä»¶æ•°æ®æ’å…¥æ•°æ®åº“
 * Revision 0.045  2007/10/18 15:25:00  modified by yunshida
 * Desc: page create
-* ÃèÊö: Ò³Ãæ½¨Á¢
+* æè¿°: é¡µé¢å»ºç«‹
   
 ********************************************************************************/
 require_once ("db_connect.php");
 require_once ("import.common.php");
-
+require_once ('include/excel.class.php');
+/**
+*  function to init import page
+*	
+*  
+*  @return $objResponse
+* 
+*/
 function init(){
-	global $locate;
-	include('config.php');
-	$file_name = $locate->Translate("file_name");
-	$upload = $locate->Translate("upload");
-	$filemanager = $locate->Translate("filemanager");
-	$by = $locate->Translate("by");
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("file_name","innerHTML", $file_name );
-	$objResponse->addAssign("upload","value",$upload);
-	$objResponse->addAssign("spanFileManager","innerHTML", $filemanager );
-	$objResponse->addAssign("alertmsg","value",$by);
-	//************************************************************
-	require_once ('include/excel.class.php');
+	$objResponse->addAssign("divFileName","innerHTML", $locate->Translate("file_name"));
+	$objResponse->addAssign("upload","value",$locate->Translate("upload"));
+	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("filemanager"));
+	$objResponse->addAssign("alertmsg","value",$locate->Translate("by"));
+
 	$show_msg = "";
 	$i=0;
 	$row = 0;
@@ -109,7 +112,6 @@ function init(){
 	$show_msg .= "</tr>";
 	$show_msg .= "</table></div></td>";
 	fclose($handle);
-	//*************************************************************
 	if($show_msg == "") 
 	{
 		$show_msg = $locate->Translate("nofilechoose");
@@ -122,7 +124,7 @@ function init(){
 					<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
 						<tr>
 							<td>
-								<input type='checkbox' value='1' name='myCheckBox' id=name='myCheckBox' onclick='btnOnClick();'/> 
+								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/> 
 								&nbsp;&nbsp; ".$locate->Translate('add')."  
 								<select name='dialListField' id='dialListField' disabled>
 									<option value=''></option>";
@@ -130,26 +132,34 @@ function init(){
 		$show_msg .= "<option value='$c'>$c</option>";
 	}
 	$show_msg .= "
-				</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp; 
-				<input type='checkbox' value='1' name='myCheckBox2' id=name='myCheckBox2' onclick='btnOnClick2();' disabled/> ".$locate->Translate('area')."  
-				<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
-						</td>
-					</tr>
-				</table>";
+								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp; 
+								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."  
+								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
+							</td>
+						</tr>
+					</table>";
 	$show_msg .= "
 				<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
 					<tr>
 						<td>
-							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;' onclick='confirmMsg();'/>
+							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;' onclick='submitFormOnSubmit();'/>
 						</td>
 					</tr>
 				</table>
 			</form>";
-	
-	//************************************************************
-	$objResponse->addAssign("iframeShowExcel", "innerHTML", $show_msg);
+	$objResponse->addAssign("divShowExcel", "innerHTML", $show_msg);
 	return $objResponse;
 }
+
+/**
+*  function to show table div
+*	
+*  	@param $table form select
+															customer
+															contact
+*  @return $objResponse
+*  
+*/
 
 function selectTable($table){
 	global $locate,$db;
@@ -160,11 +170,15 @@ function selectTable($table){
 	$show_msg .= "<ul class='ulstyle'>";
 	$i = 0;
 	foreach($tableInfo as $tablename){
+		$type_arr = explode(' ',$tablename['flags']);
 		$i++;
 		$num = $i-1;
-		$show_msg .= "<li height='20px'>";
-		$show_msg .= $num.":&nbsp;&nbsp;".$tablename['name'];
-		$show_msg .= "</li>";
+		if(!in_array('auto_increment',$type_arr))
+		{
+			$show_msg .= "<li height='20px'>";
+			$show_msg .= $num.":&nbsp;&nbsp;".$tablename['name'];
+			$show_msg .= "</li>";
+		}
 		$_SESSION['MAX_NUM'] = $num;
 	}
 	$show_msg .= "</ul>";
@@ -173,28 +187,40 @@ function selectTable($table){
 	return $objResponse;
 }
 
+/**
+*  function to insert data to database from excel
+*	
+*  	@param $aFormValues	(array)			insert form excel
+															$aFormValues['chkAdd']
+															$aFormValues['chkAssign']
+															$aFormValues['assign']
+															$aFormValues['dialListField']
+*	@return $objResponse
+*  
+*/
+
 function submitForm($aFormValues){
-	global $locate,$db;
-	require_once ("include/excel.class.php");
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$file_name = $_SESSION['filename'];
 	$type = substr($file_name,-3);
 	$table = $_SESSION['table'];
 	$order = $aFormValues['order'];
+	//å¯¹æäº¤çš„æ•°æ®è¿›è¡Œæ ¡éªŒ
 	for($j=0;$j<count($order);$j++){
 		if(trim($order[$j]) != ''){
 			if(trim($order[$j]) > $_SESSION['MAX_NUM']){
-				$objResponse->addAlert($locate->Translate('font'));
+				$objResponse->addAlert($locate->Translate('fielderr'));
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
 			if (!ereg("[0-9]+",trim($order[$j]))){
-				$objResponse->addAlert($locate->Translate('font'));
+				$objResponse->addAlert($locate->Translate('fielderr'));
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
 			if($_SESSION['edq'] == $order[$j]){
-				$objResponse->addAlert($locate->Translate('repeat'));
+				$objResponse->addAlert($locate->Translate('fieldcountrepeat'));
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}else{
@@ -202,23 +228,23 @@ function submitForm($aFormValues){
 			} 
 		}
 	}
-	$sql = "select * from $table";
+	$sql = "SELECT * FROM $table LIMIT 0,2 ";
 	$res =& $db->query($sql);
 	$tableInfo = $db->tableInfo($res); 
-	$file_path = './upload/'.$_SESSION['filename'];
+	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
 	$handle = fopen($file_path,"r");
 	$v = 0;
 	$date = date('Y-m-d H:i:s');
-	//********************************
-	if($aFormValues['myCheckBox'] != '' && $aFormValues['myCheckBox'] == '1'){
-		$mytext = trim($aFormValues['dialListField']); //Êı×Ö
+	
+	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){
+		$mytext = trim($aFormValues['dialListField']); //æ•°å­—
 	}
-	if($aFormValues['myCheckBox2'] != '' && $aFormValues['myCheckBox2'] == '1'){
-		$mytext2 = trim($aFormValues['assign']); //·ÖÇø,ÒÔ','ºÅ·Ö¸ôµÄ×Ö·û´®
+	if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){
+		$mytext2 = trim($aFormValues['assign']); //åˆ†åŒº,ä»¥','å·åˆ†éš”çš„å­—ç¬¦ä¸²
 		$area_array = explode(',',$mytext2);
-		$area_num = count($area_array);//µÃµ½·ÖÇøÊı
+		$area_num = count($area_array);//å¾—åˆ°åˆ†åŒºæ•°
 	}
-	//********************************
+	
 	if($type == 'csv'){
 		while($data = fgetcsv($handle, 1000, ",")){
 			$row_num_csv = count($data);  
@@ -228,7 +254,7 @@ function submitForm($aFormValues){
 			for($i=0;$i<$row_num_csv;$i++){
 				if ($data[$i] != mb_convert_encoding($data[$i],"UTF-8","UTF-8"))
 					$data[$i]=mb_convert_encoding($data[$i],"UTF-8","GB2312");
-				$field_order = trim($order[$i]);//×Ö¶ÎË³ĞòºÅ
+				$field_order = trim($order[$i]);//å­—æ®µé¡ºåºå·
 				if($field_order != ''){
 					$mysql_field_name .= $tableInfo[$field_order]['name'].',';
 					$data_str .= '"'.$data[$i].'"'.',';
@@ -240,15 +266,15 @@ function submitForm($aFormValues){
 			}
 			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
 			$data_str = substr($data_str,0,strlen($data_str)-1);
-			$sql_str = "insert into $table ($mysql_field_name,cretime,creby) values ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
+			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
 
 			if(isset($mytext) && trim($mytext) != ''){
 				if($mytext2 != '' && isset($mytext2)){
 					$random_num = rand(0,$area_num-1);
 					$random_area = $area_array[$random_num];
-					$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
+					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}else{
-					$sql_account = "select extension from account";
+					$sql_account = "SELECT extension FROM account";
 					$res = & $db->query($sql_account);
 					while ($row = $res->fetchRow()) { 
 						$array_extension[] = $row['extension']; 
@@ -256,11 +282,11 @@ function submitForm($aFormValues){
 					$extension_num = count($array_extension);
 					$random_num = rand(0,$extension_num-1);
 					$random_area = $array_extension[$random_num];
-					$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
+					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}
 			}
-			$rs = & $db->query($sql_str);
-			$rs2 = & $db->query($sql_string);
+			$rs = & $db->query($sql_str);  //æ’å…¥customeræˆ–contactè¡¨
+			$rs2 = & $db->query($sql_string);  // æ’å…¥diallistè¡¨
 		}
 	}elseif($type == 'xls'){
 		Read_Excel_File($file_path,$return);
@@ -268,12 +294,12 @@ function submitForm($aFormValues){
 		{
 			$mysql_field_name = '';
 			$data_str = '';
-			$row_num_xls = count($return[Sheet1][$i]);  //ÁĞÊı
+			$row_num_xls = count($return[Sheet1][$i]);  //åˆ—æ•°
 			for ($j=0;$j<$row_num_xls;$j++)
 			{
 				if ($return[Sheet1][$i][$j] != mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","UTF-8"))
 					$return[Sheet1][$i][$j]=mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","GB2312");
-				$field_order = trim($order[$j]);//µÃµ½×Ö¶ÎË³ĞòºÅ
+				$field_order = trim($order[$j]);//å¾—åˆ°å­—æ®µé¡ºåºå·
 				if($field_order != ''){
 					$mysql_field_name .= $tableInfo[$field_order]['name'].',';
 					$data_str .= '"'.$return[Sheet1][$i][$j].'"'.',';
@@ -285,15 +311,15 @@ function submitForm($aFormValues){
 			}
 			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
 			$data_str = substr($data_str,0,strlen($data_str)-1);
-			$sql_str = "insert into $table ($mysql_field_name,cretime,creby) values ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
+			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
 
 			if(isset($mytext) && trim($mytext) != ''){
 				if($mytext2 != '' && isset($mytext2)){
 					$random_num = rand(0,$area_num-1);
 					$random_area = $area_array[$random_num];
-					$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
+					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}else{
-					$sql_account = "select extension from account";
+					$sql_account = "SELECT extension FROM account";
 					$res = & $db->query($sql_account);
 					while ($row = $res->fetchRow()) { 
 						$array_extension[] = $row['extension']; 
@@ -301,13 +327,15 @@ function submitForm($aFormValues){
 					$extension_num = count($array_extension);
 					$random_num = rand(0,$extension_num-1);
 					$random_area = $array_extension[$random_num];
-					$sql_string = "insert into diallist (dialnumber,assign) values ('".$array."','".$random_area."')";
+					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}
 			}
-			$rs = & $db->query($sql_str);
-			$rs2 = & $db->query($sql_string);
+			$rs = & $db->query($sql_str);  //æ’å…¥customeræˆ–contactè¡¨
+			$rs2 = & $db->query($sql_string);  // æ’å…¥diallistè¡¨
 		}
 	}
+	//åˆ é™¤ä¸Šä¼ æ–‡ä»¶
+	//@ unlink($file_path);
 	unset($_SESSION['filename']);
 	$objResponse->addAlert($locate->Translate('success'));
 	$objResponse->addScript("init();");

@@ -14,10 +14,10 @@
 	$choose = "choose file";
 	$submit = "submit";
 	$area = "assign";
-	$cantup = "excel only";
+	$cantup = "xls,csv only";
 	$success = "success";
-	$font = "number error ";
-	$repeat = "number repeat";
+	$fielderr = "number error ";
+	$fieldcountrepeat = "number repeat";
 	$error = "failed";
 	$recrod = " records";
 	$by = "import by account extension";
