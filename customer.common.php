@@ -35,9 +35,14 @@ registed function:
 	showCustomer		show customer information
 	showNote			show note information 
 	export				download contact data csv file
+	surveyAdd			show survey add form
+	saveSurvey			save survey result
+
+* Revision 0.0451  2007/10/23 21:50:00  modified by solo
+* Desc: add surveyAdd,saveSurvey function
 
 * Revision 0.045  2007/10/22 16:45:00  modified by solo
-* Desc: delete importCSV function
+* Desc: delete importCSV,export function
 
 * Revision 0.045  2007/10/18 14:16:00  modified by solo
 * Desc: change localization file to astercrm
@@ -85,8 +90,8 @@ $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("showContact");
 $xajax->registerFunction("showNote");
-$xajax->registerFunction("export");
-$xajax->registerFunction("importCsv");
+$xajax->registerFunction("saveSurvey");
+$xajax->registerFunction("surveyAdd");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
