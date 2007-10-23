@@ -66,6 +66,7 @@ class common{
 		$html = '
 <div class="top_banner">
 	<ul>
+		<li><img src="skin/default/images/top_bg.gif" width="20px" height="126"px/></li>
 		<li><a href="import.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'import\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/import.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/import_sml.gif" alt="import" name="import" width="71" height="126" border="0" id="import" /></a></li>
 		<li><a href="export.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'export\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/export.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/export_sml.gif" alt="export" name="export" width="71" height="126" border="0" id="export" /></a></li>
 		<li><a href="surveyresult.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'statisic\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/statisic.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/statisic_sml.gif" alt="statisic" name="statisic" width="71" height="126" border="0" id="statisic" /></a></li>
