@@ -8,7 +8,10 @@
 	init()  页面初始化
 	selectTable()  选择表
 	submitForm()  将csv，xsl格式文件数据插入数据库
-
+	showDivMainRight() 显示csv，xsl格式文件数据
+	showCsv()  显示csv格式文件数据
+	showXls()  显示xls格式文件数据
+	showDivSubmitForm() 显示divSubmitForm
 
 * Revision 0.045  2007/10/22 13:39:00  modified by yunshida
 * Desc: 
@@ -39,26 +42,7 @@ function init(){
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("filemanager"));
 	$objResponse->addAssign("alertmsg","value",$locate->Translate("by"));
 
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
-	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-
-	$show_msg = "";
-	$i=0;
-	$row = 0;
-	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
-	$file_name = $_SESSION['filename'];
-	$type = substr($file_name,-3);
-	$handle = fopen($file_path,"r");
-
-	//需要检查文件是否存在
-
-
-	$show_msg .= "<form method='post' name='formImport' id='formImport'>
-					<input type='hidden' name='CHECK' value='1'/>
-					<table class='imagetable'>
-						<tr>";
-	$show_msg .= "<td style='border:0;width:25%;height:400px;' align='left' valign='top'>
-					<ul style='list-style:none;'>
+	$showtable = "<ul style='list-style:none;'>
 						<li>
 							<select name='table' id='table' onchange='selectTable(this.value);' >
 								<option value=''>".$locate->Translate("selecttable")."</option>
@@ -67,102 +51,68 @@ function init(){
 							</select>
 						</li>
 					</ul>
-					<div id='tablefield' name='tablefield'></div>
-				  </td>";
-	$show_msg .= "<td style='border:0;' valign='top' width='75%'>
-					<div style='width:650px;height:auto;margin:0;overflow:scroll;border:1px double #cccccc;'>
+					<div id='tablefield' name='tablefield'></div>";
+
+	$objResponse->addAssign("divShowTable","innerHTML",$showtable);
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+
+	return $objResponse;
+}
+/**
+*  function to show divMainRight
+*	
+*  
+*  @return $objResponse
+* 
+*/
+function showDivMainRight(){
+	global $locate,$config;
+	$objResponse = new xajaxResponse();
+	/*
+	* show divShowExcel
+	*/
+	$show_msg = "";
+	$i=0;
+	$row = 0;
+	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
+	$file_name = $_SESSION['filename'];
+	$type = substr($file_name,-3);
+	//需要检查文件是否存在
+	$show_msg .= "<form method='post' name='formImport' id='formImport'>
+					<input type='hidden' name='CHECK' value='1'/>";
+	$show_msg .= "
+					
 						<table cellspacing='1' cellpadding='0' border='0' width='100%' style='text-align:left'>";
 	if($type == 'csv'){
-		while($data = fgetcsv($handle, 1000, ",")){
-			$num = count($data);
-			$row++;
-			$show_msg .= "<tr>";
-			for ($c=0; $c < $num; $c++) {
-				if ($data[$c] != mb_convert_encoding($data[$c],"UTF-8","UTF-8"))
-						$data[$c]=mb_convert_encoding($data[$c],"UTF-8","GB2312");
-				if($row % 2 != 0){
-					$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".$data[$c]."</td>";
-				}else{
-					$show_msg .= "<td bgcolor='#efefef' height='25px'>&nbsp;".$data[$c]."</td>";
-				}
-			}
-			$show_msg .= "</tr>";
-			if($row == 8)
-				break;
-		}
+		$show_msg .= showCsv($file_path,$show_msg,$row);
 	}elseif($type == 'xls'){
-		Read_Excel_File($file_path,$return);
-		for ($i=0;$i<count($return[Sheet1]);$i++)
-		{
-			$row++;
-			$show_msg .= "<tr>";
-			$num = count($return[Sheet1][$i]);
-			for ($j=0;$j<count($return[Sheet1][$i]);$j++)
-			{
-				if ($return[Sheet1][$i][$j] != mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","UTF-8"))
-						$return[Sheet1][$i][$j]=mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","GB2312");
-				if($row % 2 != 0){
-					$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".$return[Sheet1][$i][$j]."</td>";
-				}else{
-					$show_msg .= "<td bgcolor='#efefef'
-					height='25px'>&nbsp;".$return[Sheet1][$i][$j]."</td>";
-				}
-			}
-			$show_msg .= "</tr>";
-			if($row == 8)
-				break;
-		}
+		$show_msg .= showXls($file_path,$row,$show_msg);
 	}
 	$show_msg .= "<tr>";
-	for ($c=0; $c < $num; $c++) {
+	for ($c=0; $c < $_SESSION['num']; $c++) {
 		$show_msg .= "<td bgcolor='#0099cc' height='25px'>
 						&nbsp;<input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  />
 					  </td>";
 	}
 	$show_msg .= "</tr>";
 	$show_msg .= "<tr>";
-	for ($c=0; $c < $num; $c++) {
+	for ($c=0; $c < $_SESSION['num']; $c++) {
 		$show_msg .= "<td height='20px' align='left'><font color='#000000'><b>$c</b></font></td>";
 	}
 	$show_msg .= "</tr>";
-	$show_msg .= "</table></div></td>";
-	fclose($handle);
-	if($show_msg == "") 
-	{
+	$show_msg .= "</table>";
+
+	if($show_msg == ""){
 		$show_msg = $locate->Translate("nofilechoose");
 	}
-	else 
-	{
-		$show_msg .= "</tr></table>";
-	}
-	$show_msg .= "
-					<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
-						<tr>
-							<td>
-								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/> 
-								&nbsp;&nbsp; ".$locate->Translate('add')."  
-								<select name='dialListField' id='dialListField' disabled>
-									<option value=''></option>";
-	for ($c=0; $c < $num; $c++) {
-		$show_msg .= "<option value='$c'>$c</option>";
-	}
-	$show_msg .= "
-								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp; 
-								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."  
-								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
-							</td>
-						</tr>
-					</table>";
-	$show_msg .= "
-				<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
-					<tr>
-						<td>
-							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;' onclick='submitFormOnSubmit();'/>
-						</td>
-					</tr>
-				</table>
-			</form>";
+	/*
+	* show divSubmitForm
+	*/
+	$show_submit = showDivSubmitForm($_SESSION['num']);
+
 	$objResponse->addAssign("divShowExcel", "innerHTML", $show_msg);
+	$objResponse->addAssign("divSubmitForm", "innerHTML", $show_submit);
 	return $objResponse;
 }
 
@@ -349,12 +299,103 @@ function submitForm($aFormValues){
 			$rs2 = & $db->query($sql_string);  // 插入diallist表
 		}
 	}
-	//删除上传文件
+	//delete upload file
 	//@ unlink($file_path);
 	unset($_SESSION['filename']);
 	$objResponse->addAlert($locate->Translate('success'));
 	$objResponse->addScript("init();");
+	$objResponse->addScript("showDivMainRight();");
 	return $objResponse;
+}
+/**
+*  function to show csv file data
+*/
+function showCsv($file_path,$show_msg,$row){
+	$handle = fopen($file_path,"r");
+	while($data = fgetcsv($handle, 1000, ",")){
+		$num = count($data);
+		$row++;
+		$show_msg .= "<tr>";
+		for ($c=0; $c < $num; $c++) {
+			if ($data[$c] != mb_convert_encoding($data[$c],"UTF-8","UTF-8"))
+					$data[$c]=mb_convert_encoding($data[$c],"UTF-8","GB2312");
+			if($row % 2 != 0){
+				$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".$data[$c]."</td>";
+			}else{
+				$show_msg .= "<td bgcolor='#efefef' height='25px'>&nbsp;".$data[$c]."</td>";
+			}
+		}
+		$show_msg .= "</tr>";
+		if($row == 8)
+			break;
+	}
+	fclose($handle);
+	$_SESSION['num'] = $num;
+	return $show_msg;
+}
+/**
+*  function to show xls file data
+*/
+function showXls($file_path,$row,$show_msg){
+	Read_Excel_File($file_path,$return);
+	for ($i=0;$i<count($return[Sheet1]);$i++)
+	{
+		$row++;
+		$show_msg .= "<tr>";
+		$num = count($return[Sheet1][$i]);
+		for ($j=0;$j<count($return[Sheet1][$i]);$j++)
+		{
+			if ($return[Sheet1][$i][$j] != mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","UTF-8"))
+					$return[Sheet1][$i][$j]=mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","GB2312");
+			if($row % 2 != 0){
+				$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".$return[Sheet1][$i][$j]."</td>";
+			}else{
+				$show_msg .= "<td bgcolor='#efefef'
+				height='25px'>&nbsp;".$return[Sheet1][$i][$j]."</td>";
+			}
+		}
+		$show_msg .= "</tr>";
+		if($row == 8)
+			break;
+	}
+	$_SESSION['num'] = $num;
+	return $show_msg;
+}
+/**
+*  function to show divSubmitForm
+*/
+function showDivSubmitForm($num){
+	global $locate;
+	$show_submit = "";
+	$show_submit .= "<br />";
+	$show_submit .= "
+					<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
+						<tr>
+							<td>
+								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/> 
+								&nbsp;&nbsp; ".$locate->Translate('add')."  
+								<select name='dialListField' id='dialListField' disabled>
+									<option value=''></option>";
+	for ($c=0; $c < $num; $c++) {
+		$show_submit .= "<option value='$c'>$c</option>";
+	}
+	$show_submit .= "
+								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp; 
+								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."  
+								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
+							</td>
+						</tr>
+					</table>";
+	$show_submit .= "
+				<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
+					<tr>
+						<td>
+							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;' onclick='submitFormOnSubmit();'/>
+						</td>
+					</tr>
+				</table>
+			</form>";
+	return $show_submit;
 }
 
 $xajax->processRequests();

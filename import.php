@@ -13,12 +13,18 @@
 									mainform			-> uploade excel file
 									divMessage			-> show upload message
 									divShowExcel		-> show uploade excel file
+									mainDiv
+									divShowTable
+									divMainRight
+									divSubmitForm
 * javascript function:		
 									init
 									selectTable
 									chkAddOnClick
 									chkAssignOnClick
 									confirmMsg
+									showDivMainRight
+
 
 * Revision 0.045  2007/10/22 13:02:00  modified by yunshida
 * Desc: modified some element id
@@ -92,6 +98,10 @@
 				xajax_submitForm(xajax.getFormValues('formImport'));
 			}
 
+			function showDivMainRight(){
+				xajax_showDivMainRight();
+			}
+
 		</script>
 
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -123,8 +133,17 @@
 
 			<br>
 			<iframe name="iframeShowExcel" id="iframeShowExcel" width="0" height="0" scrolling="no"></iframe>
-			<div name="divShowExcel" id="divShowExcel"></div>
+			<div id="mainDiv" name="mainDiv">
+				<div id="divShowTable" name="divShowTable"></div>
+				<div id="divMainRight" name="divMainRight">
+					<div name="divShowExcel" id="divShowExcel"></div>
+					<div name="divSubmitForm" id="divSubmitForm"></div>
+				</div>
+			</div>
 		</center>
-			<div id="divCopyright"></div>
+		<br />
+		<br />
+		<br />
+		<p><div id="divCopyright"></div></p>
 	</body>
 </html>

@@ -74,5 +74,5 @@ else
 <SCRIPT LANGUAGE="JavaScript">
 	var msg = "<? echo $upload_msg; ?><br />";
 	window.parent.document.getElementById("divMessage").innerHTML = msg;//msg;
-	window.parent.init();
+	window.parent.showDivMainRight();
 </SCRIPT>

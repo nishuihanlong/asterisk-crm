@@ -1146,10 +1146,7 @@ hr {
 	margin-top:20px;
 }
 #maintable tr td{
-	
-	
 	padding: 6px 6px 6px 12px;
-	
 }
 #title{
 	font-weight:bold;
@@ -1182,9 +1179,53 @@ hr {
 	float: left;
 }
 
+
+#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}
+#mainDiv{
+	width:100%;
+	height:auto;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:5px;
+}
+
+#divShowTable{
+	width:200px;
+	height:auto;
+	float:left;
+	margin-top:0px;
+	margin-left:10px;
+}
+
+#divMainRight{
+	width:600px;
+	height:auto;
+	float:left;
+	margin-top:0px;
+	margin-left:10px;
+}
+#divSubmitForm{
+	width:100%;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	margin-top:10px;
+}
+
+#divShowExcel{
+	width:100%;
+	height:auto;
+	margin:0;
+	overflow:scroll;
+	border:1px double #cccccc;
+}
+
+
 #tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}#formDiv #loginForm .login_in .bottom {
 	background-image: url(../images/login_in_03.gif);
 	height: 1px;
 	width: 460px;
 	background-repeat: repeat-x;
 }
+

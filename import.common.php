@@ -8,6 +8,7 @@
 		init()  页面load
 		selectTable()  选择表
 		submitForm()  将csv，xsl格式文件数据插入数据库
+		showDivMainRight() 上传后显示csv，xls格式文件的数据
 
 * Revision 0.045  2007/10/18 15:25:00  modified by yunshida
 * Desc: page create
@@ -38,6 +39,7 @@ $xajax = new xajax("import.server.php");
 $xajax->registerFunction("selectTable");
 $xajax->registerFunction("init");
 $xajax->registerFunction("submitForm");
+$xajax->registerFunction("showDivMainRight");
 
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
