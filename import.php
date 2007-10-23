@@ -133,13 +133,20 @@
 
 			<br>
 			<iframe name="iframeShowExcel" id="iframeShowExcel" width="0" height="0" scrolling="no"></iframe>
-			<div id="mainDiv" name="mainDiv">
-				<div id="divShowTable" name="divShowTable"></div>
-				<div id="divMainRight" name="divMainRight">
-					<div name="divShowExcel" id="divShowExcel"></div>
-					<div name="divSubmitForm" id="divSubmitForm"></div>
-				</div>
-			</div>
+			<table id="mainDiv" name="mainDiv">
+				<tr>
+					<td width="20%" valign="top">
+						<div id="divShowTable" name="divShowTable"></div>
+					</td>
+					<td width="80%" valign="top">
+						<!--<div id="divMainRight" name="divMainRight">-->
+							<div name="divShowExcel" id="divShowExcel"></div>
+							<div name="divSubmitForm" id="divSubmitForm"></div>
+						<!--</div>-->
+					</td>
+				</tr>
+			</table>
+			
 		</center>
 		<br />
 		<br />

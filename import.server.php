@@ -55,6 +55,9 @@ function init(){
 
 	$objResponse->addAssign("divShowTable","innerHTML",$showtable);
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	if(isset($_SESSION['filename']) && $_SESSION['filename'] != ''){
+		$objResponse->addScript("showDivMainRight();");
+	}
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	return $objResponse;
@@ -302,6 +305,9 @@ function submitForm($aFormValues){
 	//delete upload file
 	//@ unlink($file_path);
 	unset($_SESSION['filename']);
+	unset($_SESSION['num']);
+	unset($_SESSION['MAX_NUM']);
+	unset($_SESSION['edq']);
 	$objResponse->addAlert($locate->Translate('success'));
 	$objResponse->addScript("init();");
 	$objResponse->addScript("showDivMainRight();");
@@ -389,8 +395,8 @@ function showDivSubmitForm($num){
 	$show_submit .= "
 				<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
 					<tr>
-						<td>
-							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;' onclick='submitFormOnSubmit();'/>
+						<td height='30px'>
+							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;width:150px' onclick='submitFormOnSubmit();'/>
 						</td>
 					</tr>
 				</table>

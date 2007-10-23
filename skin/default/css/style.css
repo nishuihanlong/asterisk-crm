@@ -1162,7 +1162,7 @@ hr {
 
 .ulstyle{
 	width:100%;
-	height:20px;
+	height:auto;
 	line-height:20px;
 	list-style:none;
 	text-align:left;
@@ -1180,7 +1180,7 @@ hr {
 }
 
 
-#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}
+/*#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}*/
 #mainDiv{
 	width:100%;
 	height:auto;
@@ -1193,21 +1193,20 @@ hr {
 #divShowTable{
 	width:200px;
 	height:auto;
-	float:left;
 	margin-top:0px;
 	margin-left:10px;
 }
 
-#divMainRight{
+/*#divMainRight{
 	width:600px;
 	height:auto;
 	float:left;
 	margin-top:0px;
 	margin-left:10px;
-}
+}*/
 #divSubmitForm{
 	width:100%;
-	height:30px;
+	height:auto;
 	line-height:30px;
 	text-align:center;
 	margin-top:10px;
