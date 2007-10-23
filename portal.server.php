@@ -371,13 +371,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("customer_name");//"Customer Name";
-	$headers[] = $locate->Translate("category");//"Category";
-	$headers[] = $locate->Translate("contact");//"Contact";
-	$headers[] = $locate->Translate("note");//"Note";
-	$headers[] = $locate->Translate("create_time");//"Create Time";
-	$headers[] = $locate->Translate("create_by");//"Create By";
-	$headers[] = "P";
+	$headers[] = $locate->Translate("customer_name")."<BR>";//"Customer Name";
+	$headers[] = $locate->Translate("category")."<BR>";//"Category";
+	$headers[] = $locate->Translate("contact")."<BR>";//"Contact";
+	$headers[] = $locate->Translate("note")."<BR>";//"Note";
+	$headers[] = $locate->Translate("create_time")."<BR>";//"Create Time";
+	$headers[] = $locate->Translate("create_by")."<BR>";//"Create By";
+	$headers[] = "P<BR>";
 //	$headers[] = "D";
 
 	// HTML table: hearders attributes
@@ -385,10 +385,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="7%"';
-	$attribsHeader[] = 'width="39%"';
+	$attribsHeader[] = 'width="35%"';
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="8%"';
-	$attribsHeader[] = 'width="4%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="7%"';
 //	$attribsHeader[] = 'width="5%"';
 
 	// HTML Table: columns attributes

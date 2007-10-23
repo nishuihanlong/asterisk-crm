@@ -81,14 +81,6 @@ class common{
 	</ul>
 </div>
 				';
-$html .= '
-
-<SCRIPT country="JavaScript">
-<!--
-	MM_preloadImages(\'skin/default/images_'.$_SESSION['curuser']['country'].'/import.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/export.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/statisic.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/extension.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/customer.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/dialer.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/system.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/survey.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/back.gif\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\'
-//-->
-</SCRIPT>
-		';
 		return $html;
 	}
 
