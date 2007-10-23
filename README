@@ -73,9 +73,9 @@ however, multiple servers enhance performance.
 	/var/www/html/astercrm/sql					sql to create astercrm database 
 
 	It is highly advised that the whole eventsdaemon directory be moved to a more secure
-	location like /opt and out of the WEB root directory (see step 4)
+	location like /opt and out of the WEB root directory (in step 2)
 
-2) Create the directories and move eventsdaemo scripts:
+2) Create the directories and move eventsdaemon scripts:
 
 	mkdir /opt/asterisk
 	mkdir /opt/asterisk/scripts
@@ -86,26 +86,11 @@ however, multiple servers enhance performance.
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
 	mysqladmin create asterisk
-	mysql </var/www/html/astercrm/sql/astercrm.sql
+	mysql </var/www/html/astercrm/sql/astercrm.sql -uyourmysqluser -pyourmysqlpasswd
 
-	Note: the astercrm.sql file has the GRANT commands to update MySQL with
-		the desired authority. The settings here must match the userid/password
-		specified in the eventsdaemon.pl script and the astercrm.conf.php script
-		you can modify this script to meet your database
-
-	Update the /var/www/html/astercrm/config.php script for the
-	correct MySQL login userid/password 
-	Make sure it matches what was specified in the astercrm.sql
-	(user: asteriskuser password: asterisk by default)
-	Asterisk Manager login username/password. 
-	Make sure it matches what was specified in the manager.conf file.
-
-	Update the /var/www/html/astercrm/eventsdaemon/eventsdaemon.pl script 
-	for the correct MySQL login userid/password. 
-	Make sure it matches what was specified in the
-	astercrm.sql file. ProxMan.py also needs updated with the Asterisk Manager
-	password and secret (password), documented in the next step.
-
+	Note: the astercrm.sql file will create tables in database named "asterisk"
+		use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
+	
 4) Update /etc/asterisk/manager.conf to enable Manager connections
 	Note: asterisk and astercrm could be on different server
  
@@ -123,11 +108,10 @@ however, multiple servers enhance performance.
 	read = system,call,log,verbose,command,agent,user
 	write = system,call,log,verbose,command,agent,user
 
-	Note: the manager.conf settings for user ([eventmanager] in this example)
-		and secret need to match the /var/www/html/astercrm/eventsdaemon/eventsdaemon.pl
-		variable settings.
+5) modify astercrm.conf.php and eventsdaemon.pl to fit your configration
+	including database setting and AMI setting
 
-5) Start Asterisk and  eventsdaemon.pl
+6) Start Asterisk and  eventsdaemon.pl
 
 	Start eventsdaemon (default settings):
 		/opt/asterisk/scripts/events/eventsdaemon.pl &
@@ -140,7 +124,6 @@ however, multiple servers enhance performance.
 	table. The eventsdaemon is also designed for this.
 	please check eventsdaemon.pl for parameter "log_life"
 
-6) modify astercrm.conf.php to fit your configration
 
 7) set upload folder access to 777
 
