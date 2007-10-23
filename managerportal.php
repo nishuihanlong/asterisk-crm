@@ -31,7 +31,7 @@ require_once('managerportal.common.php');
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-
+	<br>
 	<div id="divCopyright"></div>
 	</body>
 </html>
