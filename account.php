@@ -55,11 +55,20 @@ require_once('account.common.php');
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div>
+		<div id="divNav"></div><br>
+	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
+		<tr>
+			<td style="padding: 0px;">
+				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+
 		<div id="divCopyright"></div>
 	</body>
 </html>
