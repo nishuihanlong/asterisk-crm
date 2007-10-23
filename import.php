@@ -50,6 +50,8 @@
 			function selectTable(tablename){
 				if(tablename != ''){
 					xajax_selectTable(tablename);
+				}else{
+					init();
 				}
 			}
 
