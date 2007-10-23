@@ -115,7 +115,9 @@ function showDivMainRight(){
 	$show_submit = showDivSubmitForm($_SESSION['num']);
 
 	$objResponse->addAssign("divShowExcel", "innerHTML", $show_msg);
-	$objResponse->addAssign("divSubmitForm", "innerHTML", $show_submit);
+	if(isset($_SESSION['filename']) && $_SESSION['filename'] != ''){
+		$objResponse->addAssign("divSubmitForm", "innerHTML", $show_submit);
+	}
 	return $objResponse;
 }
 
@@ -132,7 +134,7 @@ function showDivMainRight(){
 function selectTable($table){
 	global $locate,$db;
 	$_SESSION['table'] = $table;
-	$sql = "select * from $table";
+	$sql = "select * from $table LIMIT 0,2";
 	$res =& $db->query($sql);
 	$tableInfo = $db->tableInfo($res); 
 	$show_msg .= "<ul class='ulstyle'>";
