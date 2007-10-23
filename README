@@ -22,44 +22,33 @@ More information on the function of eventsdaemon can be found in its source comm
 WEB PHP scripts will analyze Asterisk Events in database, and finish call center jobs, 
 such as pop-up, click to dial, call queue ... 
 
-asterCRM scripts require a running WEB and MySQL server (in which stored asterisk events). All of these 
-processes can run on the same server, however, multiple servers enhance performance.
+asterCRM scripts require a running WEB and MySQL server (in which stored asterisk events).
+All of these processes can run on the same server, 
+however, multiple servers enhance performance.
 
 1. Features
 
-	1) pop-up when incoming calls 
-
-	2) pop-up when outbound calls
-
-	3) suggestion when enter business name or contact 
-
-	4) account/extension manager
-
-	5) click to dial
-
-	6) click to transfer
-
-	7) can be integrated with all asterisk based systems, 
+	1).	pop-up when incoming calls 
+	2).	pop-up when outbound calls
+	3).	suggestion when enter business name or contact 
+	4).	account/extension manager
+	5).	click to dial
+	6).	manully dial
+	7).	click to transfer
+	8).	click to monitor
+	9).	can be integrated with all asterisk based systems, 
 			such as Magiclink IP PBX, Trixbox ...
-	
-	8)	multi-language support (Chinese and English for now)
-
-	9)	support external crm
-
-	10)	extension status
-
-	11) show asterisk active channels 
-
-	12) predictive dialer
-
-	13) CRM data import/export
-
-	14) dial manually in agent interface 
-
-	15) survey
-
-	16) monitor control
-
+	10).multi-language support (Chinese, English, German)
+	11).multi-skin support	
+	12).support external crm
+	13).extension status
+	14).show asterisk active channels 
+	15).predictive dialer
+	16).CRM data import/export online
+	17).diallist import online
+	18).survey
+	19).survey result statistics
+	20).distributed solution
 
 2. asterCRM Installation: (assuming your WEB root is /var/www/html)
 
@@ -72,6 +61,7 @@ processes can run on the same server, however, multiple servers enhance performa
 	PHP scripts and several sub-directories. 
 
 	/var/www/html/astercrm						main directory and PHP scripts  
+	/var/www/html/astercrm/astercrm.conf.php	astercrm configration file
 	/var/www/html/astercrm/eventsdaemon 		eventsdaemon file
 	/var/www/html/astercrm/includes 			files needed in php scripts
 	/var/www/html/astercrm/includes/language 	asterCRM language files
@@ -82,17 +72,25 @@ processes can run on the same server, however, multiple servers enhance performa
 	/var/www/html/astercrm/cdr					Asterisk-stat				
 	/var/www/html/astercrm/sql					sql to create astercrm database 
 
-	It is highly advised that the whole proxyman directory be moved to a more secure
+	It is highly advised that the whole eventsdaemon directory be moved to a more secure
 	location like /opt and out of the WEB root directory (see step 4)
 
-2) Create the MySQL database and table, asterCRM need mysql 4.1 or above
+2) Create the directories and move eventsdaemo scripts:
+
+	mkdir /opt/asterisk
+	mkdir /opt/asterisk/scripts
+	mkdir /opt/asterisk/scripts/events
+	mv /var/www/html/events/eventsdaemon/* /opt/asterisk/scripts/events
+	chmod +x /opt/asterisk/scripts/events/eventsdaemon.pl
+
+3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
 	mysqladmin create asterisk
 	mysql </var/www/html/astercrm/sql/astercrm.sql
 
 	Note: the astercrm.sql file has the GRANT commands to update MySQL with
 		the desired authority. The settings here must match the userid/password
-		specified in the ProxyMan.py , delete_events.py script and the config.php script
+		specified in the eventsdaemon.pl script and the astercrm.conf.php script
 		you can modify this script to meet your database
 
 	Update the /var/www/html/astercrm/config.php script for the
@@ -102,14 +100,13 @@ processes can run on the same server, however, multiple servers enhance performa
 	Asterisk Manager login username/password. 
 	Make sure it matches what was specified in the manager.conf file.
 
-	Update the /var/www/html/astercrm/eventsdaemon/eventsdaemon.pl script for the correct MySQL
-	login userid/password. Make sure it matches what was specified in the
+	Update the /var/www/html/astercrm/eventsdaemon/eventsdaemon.pl script 
+	for the correct MySQL login userid/password. 
+	Make sure it matches what was specified in the
 	astercrm.sql file. ProxMan.py also needs updated with the Asterisk Manager
 	password and secret (password), documented in the next step.
-	The proxyman.py script has comments in the source noting the variable names
-	and their functions.
 
-3) Update /etc/asterisk/manager.conf to enable Manager connections
+4) Update /etc/asterisk/manager.conf to enable Manager connections
 	Note: asterisk and astercrm could be on different server
  
 	Add something like this to the manager.conf file:
@@ -127,20 +124,10 @@ processes can run on the same server, however, multiple servers enhance performa
 	write = system,call,log,verbose,command,agent,user
 
 	Note: the manager.conf settings for user ([eventmanager] in this example)
-		and secret need to match the /var/www/html/ProxyMan.py variable settings.
-		The ProxyMan.py script has comments in the source noting the variable
-		names and their functions.
-
-4) Create the directories and move proxyman scripts:
-
-	mkdir /opt/asterisk
-	mkdir /opt/asterisk/scripts
-	mkdir /opt/asterisk/scripts/events
-	mv /var/www/html/events/eventsdaemon/* /opt/asterisk/scripts/events
-	chmod +x /opt/asterisk/scripts/events/eventsdaemon.pl
+		and secret need to match the /var/www/html/astercrm/eventsdaemon/eventsdaemon.pl
+		variable settings.
 
 5) Start Asterisk and  eventsdaemon.pl
-
 
 	Start eventsdaemon (default settings):
 		/opt/asterisk/scripts/events/eventsdaemon.pl &
@@ -164,26 +151,6 @@ processes can run on the same server, however, multiple servers enhance performa
 	or http://YOUR-WEB-SERVER-ADDRESS/astercrm
 		
 	login with admin/admin
-
-9) Manager interface
-   
-	click "Manager" on top right, then
-
-	click "Extension Manager" to setup extension username and password
-
-	click "System Monitor" to monitor system status
-
-	click "Active Channels" to monitor active channels in asterisk
-
-	click "Predictive Dialer" to enter predictive dialer section
-
-	click "Customer Manager" to enter customer information management section
-
-	click "Contact Manager" to enter contact information management section
-
-	click "Note Manager" to enter note information management section
-
-	click "Back" to return to agent interface
 
 3. How to use confirm button
 
@@ -209,7 +176,10 @@ processes can run on the same server, however, multiple servers enhance performa
 
 Manager Interface 
 
-1. Extension Manager
+1. Import
+2. Export
+3. Statisic
+4. Extension
 
 Binding astercrm account and asterisk extension here, 
 also manager could grant privileges to astercrm account.
@@ -227,24 +197,9 @@ extension:		a extension would be binding to this user,
 extensions:		which extensions the user could see status, and use click to transfer
 				put several extensions here, use comma to seperate
 				(e.g. 8000,8001,8002,8003)
+5. Customer
 
-2. System Monitor
-
-	You could see sip peer status here, 
-	such as which peer is calling, 
-		    which peer is online or offline
-
-	Notice:
-		some peer may not appear here, because system monitor read data from database
-		so usually we can not read all sip peer status here
-
-3. Active Channels
-
-	this page shows the result of cli command:
-		sip show channels verbose
-	the result refresh every one second.
-
-4. Predictive Dialer
+6. Predictive Dialer
 
 Administrator could upload a phone list to table "diallist", so that astercrm know 
 which number could be dialed.
@@ -278,9 +233,22 @@ this progress manger could stop/start the dialer or change max channels number.
 In config.php you could set where the call would be sent to when answered, 
 such as a IVR, a queue or whatever you need.
 
+7. System 
 
-5. Customer Manager
+7.1
+	You could see sip peer status here, 
+	such as which peer is calling, 
+		    which peer is online or offline
 
-6. Contact Manager
+	Notice:
+		some peer may not appear here, because system monitor read data from database
+		so usually we can not read all sip peer status here
 
-7. Note Manager
+7.2 you coudl see the result of cli command:
+		sip show channels verbose
+	this result refresh every one second.
+
+
+
+8. Survey
+

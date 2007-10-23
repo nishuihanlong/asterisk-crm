@@ -32,7 +32,7 @@
 
 * Revision 0.045  2007/10/17 20:55:00  modified by solo
 * Desc: change callerid match method to like '%callerid'
-* 描述: 将电话号码匹配方式修改为前端模糊
+* 描述: 将电话号码匹配方式修改为前端模糊式检索
 
 * Revision 0.045  2007/10/17 12:55:00  modified by solo
 * Desc: fix bugs in search, ordering
@@ -48,12 +48,25 @@ require_once ("portal.common.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('portal.grid.inc.php');
 
-function showDetail($recordId){
+/**
+*  show customer contact detail based on
+*  @param	noteid		int			noteid
+*  @return	object					xajax response object
+*/
+
+function showDetail($noteid){
 	$objResponse = new xajaxResponse();
-	$objResponse->addScript('xajax_showContact(\''.$recordId.'\',\'note\');');
-	$objResponse->addScript('xajax_showCustomer(\''.$recordId.'\',\'note\');');
+	$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'note\');');
+	$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'note\');');
 	return $objResponse;
 }
+
+/**
+*  show phone numbers and dial button if there are phone numbers assigned to this agent
+*  in diallist table
+*  @param	extension		int			extension
+*  @return	object						xajax response object
+*/
 
 function getPrivateDialListNumber($extension = null){
 	global $locate,$db;
@@ -113,13 +126,15 @@ function init(){
 
 //	echo $_SESSION['curuser']['usertype'];
 //	exit;
+
 	if ($_SESSION['curuser']['usertype'] == "admin"){
 		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
 	}
+
 	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a>";
 	$objResponse->addAssign("divPanel","innerHTML", $panelHTML);
 
-	if ($config['system']['enable_external_crm'] == false){
+	if ($config['system']['enable_external_crm'] == false){	//use internal crm
 		$objResponse->addIncludeScript("js/astercrm.js");
 		$objResponse->addIncludeScript("js/ajax.js");
 		$objResponse->addIncludeScript("js/ajax-dynamic-list.js");
@@ -642,9 +657,11 @@ function getContact($callerid){
 	$res = $db->query($query);
 
 	if ($res->numRows() == 0){	//no match
+//	print 'no match in contact list';
+
 		//try get customer
 		$customerid = Customer::getCustomerByCallerid($mycallerid);
-//		print 'no match in contact';
+
 		if ($customerid == ''){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
 		}else{
