@@ -346,7 +346,7 @@ WBR:unknown {
 	MARGIN-LEFT: 20px
 }
 .paginator .count {
-	FONT-SIZE: 11px; MARGIN-LEFT: 20px
+	FONT-SIZE: 12px; MARGIN-LEFT: 20px
 }
 .rlnk {
 	CURSOR: pointer; COLOR: #336699; TEXT-DECORATION: underline
@@ -482,20 +482,20 @@ table#toolbar a.toolbar:active {
 	color : #FF9900;
 }
 .pagenav {
-	font-size : 10px;
+	font-size : 12px;
 }
 a.pagenav {
 	color : #808080;
-	font-size : 10px;
+	font-size : 12px;
 	text-decoration : underline;
 }
 a.pagenav:hover {
 	color : #FFF;
-	font-size : 10px;
+	font-size : 12px;
 }
 a.pagenav:active {
 	color : #333;
-	font-size : 10px;
+	font-size : 12px;
 }
 .sectionname {
 	color : #FF9900;
@@ -513,30 +513,30 @@ a.pagenav:active {
 }
 .inputbox {
         z-index: -3;
-        font-size: 11px;
+        font-size: 12px;
 }
 .text_area {
         border : 1px solid ccc;
         z-index: -3;
-        font-size: 11px
+        font-size: 12px
 }
 INPUT, TEXTAREA, SELECT {
 	z-index : -3;
-	font-size: 11px;
+	font-size: 12px;
 }
 .small {
 	color : #FF9900;
 	font-family : Arial, Helvetica, sans-serif;
-	font-size : 10px;
+	font-size : 12px;
 	text-decoration : none;
 }
 .smallgrey {
 	color : #999;
-	font-size : 10px;
+	font-size : 12px;
 }
 .error {
 	color : #C40000;
-	font-size : 11px;
+	font-size : 12px;
 	font-weight : bold;
 }
 .contentheading, .componentheading, .moduleheading {
@@ -548,7 +548,7 @@ table.menubar {
 	
 }
 td {
-	font-size: 11px;
+	font-size: 12px;
 }
 /* header block */
 table.adminheading {
@@ -670,7 +670,7 @@ table.adminlist th {
 	height: 25px;
 	background: url(images/background.jpg);
 	background-repeat: repeat;
-	font-size: 11px;
+	font-size: 12px;
 	color: #000;
 	
 }
@@ -707,10 +707,10 @@ table.adminlist tr.row1:hover {
 }
 table.adminlist td.options {
 	background-color: #ffffff;
-	font-size: 8px;
+	font-size: 12px;
 }
 select.options, input.options {
-	font-size: 8px;
+	font-size: 12px;
 	font-weight: normal;
 	border: 1px solid #999999;
 }
@@ -729,7 +729,7 @@ table.adminform tr.row1 {
 	background-color: #eeeeee;
 }
 table.adminform th {
-	font-size: 11px;
+	font-size: 12px;
 	padding-top: 6px;
 	padding-bottom: 2px;
 	padding-left: 4px;
@@ -745,7 +745,7 @@ table.adminform td {
 	text-align: left;
 }
 table.adminform td.editor {
-	font-size: 9px;
+	font-size: 12px;
 }
 
 table.cpanel td {
@@ -781,7 +781,7 @@ form {
 .tabheading {
 	background-color: #FFAE00;
 	color: #FFF;
-	font-size: 10px;
+	font-size: 12px;
 	text-align: left;
 }
 .pagetext {
@@ -969,7 +969,7 @@ div.main {
 	border:1px solid #317082;	/* Dark green border */
 	background-color:#FFF;	/* White background color */
 	text-align:left;
-	font-size:0.9em;
+	font-size:12px;
 	z-index:100;
 }
 
@@ -977,7 +977,7 @@ div.main {
 	margin:1px;		
 	padding:1px;
 	cursor:pointer;
-	font-size:0.9em;
+	font-size:12px;
 }
 
 #ajax_listOfOptions .optionDiv{	/* Div for each item in list */
