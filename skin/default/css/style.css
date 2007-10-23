@@ -1182,4 +1182,9 @@ hr {
 	float: left;
 }
 
-#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}
+#tablefield{width:auto;height:auto;text-align:right;margin-top:0px;}#formDiv #loginForm .login_in .bottom {
+	background-image: url(../images/login_in_03.gif);
+	height: 1px;
+	width: 460px;
+	background-repeat: repeat-x;
+}
