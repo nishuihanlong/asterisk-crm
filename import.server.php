@@ -94,7 +94,7 @@ function showDivMainRight(){
 	}
 	$show_msg .= "<tr>";
 	for ($c=0; $c < $_SESSION['num']; $c++) {
-		$show_msg .= "<td bgcolor='#0099cc' height='25px'>
+		$show_msg .= "<td bgcolor='#F0F8FF' height='25px'>
 						&nbsp;<input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  />
 					  </td>";
 	}

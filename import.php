@@ -139,10 +139,8 @@
 						<div id="divShowTable" name="divShowTable"></div>
 					</td>
 					<td width="80%" valign="top">
-						<!--<div id="divMainRight" name="divMainRight">-->
 							<div name="divShowExcel" id="divShowExcel"></div>
 							<div name="divSubmitForm" id="divSubmitForm"></div>
-						<!--</div>-->
 					</td>
 				</tr>
 			</table>

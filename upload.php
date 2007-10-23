@@ -42,17 +42,17 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 				   $row++;
 				}
 				if($row > 8){
-					$upload_msg .= " <font color='#ffffff'>".$locate->Translate('have').' '.$row.' '.$locate->Translate('default')."</font>";
+					$upload_msg .= " <font>".$locate->Translate('have').' '.$row.' '.$locate->Translate('default')."</font>";
 				}else{
-					$upload_msg .= " <font color='#ffffff'>".$locate->Translate('have').' '.$row.' '.$locate->Translate('recrod')."</font>";
+					$upload_msg .= " <font>".$locate->Translate('have').' '.$row.' '.$locate->Translate('recrod')."</font>";
 				}
 			}elseif($type == '.xls'){
 				Read_Excel_File($config['system']['upload_excel_path'] . $_FILES['excel']['name'],$return);
 				$xlsrow = count($return[Sheet1]);
 				if($xlsrow > 8){
-					$upload_msg .= " <font color='#ffffff'>".$locate->Translate('have').' '.$xlsrow.' '.$locate->Translate('default')."</font>";
+					$upload_msg .= " <font>".$locate->Translate('have').' '.$xlsrow.' '.$locate->Translate('default')."</font>";
 				}else{
-					$upload_msg .= " <font color='#ffffff'>".$locate->Translate('have').' '.$xlsrow.' '.$locate->Translate('recrod')."</font>";
+					$upload_msg .= " <font>".$locate->Translate('have').' '.$xlsrow.' '.$locate->Translate('recrod')."</font>";
 				}
 			}
 				$_SESSION['filename'] = $_FILES['excel']['name'];  //新传的文件名做为session
