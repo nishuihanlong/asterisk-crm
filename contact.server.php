@@ -13,11 +13,9 @@
 
 * Function Desc
 
-	export				提交表单, 导出contact数据
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	showDetail			显示contact信息
-	importCsv			转到数据导入页面
 
 * Revision 0.045  2007/10/22 16:45:00  last modified by solo
 * Desc: remove function "importCSV", "export"

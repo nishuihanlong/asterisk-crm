@@ -38,7 +38,7 @@ registed function:
 	surveyAdd			show survey add form
 	saveSurvey			save survey result
 
-* Revision 0.0451  2007/10/23 21:50:00  modified by solo
+* Revision 0.045  2007/10/23 21:50:00  modified by solo
 * Desc: add surveyAdd,saveSurvey function
 
 * Revision 0.045  2007/10/22 16:45:00  modified by solo
