@@ -27,6 +27,9 @@
 	addWithPhoneNumber
 
 
+* Revision 0.0455  2007/10/24 20:37:00  last modified by solo
+* Desc: use another dial method: sendCall() to replace Originate
+
 * Revision 0.045  2007/10/18 14:19:00  modified by solo
 * Desc: comment added
 
@@ -569,7 +572,7 @@ function dial($phoneNum,$first = 'caller'){
 								'MaxRetries'=>0,
 								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->Originate($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 		}
 	}else{
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
@@ -585,7 +588,7 @@ function dial($phoneNum,$first = 'caller'){
 								'MaxRetries'=>0,
 								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->Originate($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
 		}
 	}
 	$myAsterisk->disconnect();

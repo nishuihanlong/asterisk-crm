@@ -82,12 +82,14 @@ v0.045
 v0.0456
 
 2007-10-24	customer 表内增加了 fax, mobile, email三个字段
-
+2007-10-24	在asterisk类中增加了sendCall方法,这样就可以在任意机器上使用astercrm得预拨号功能了
 
 -----------------------------------------------------------------------------------------
 可以控制 contact 信息是否有效
 
+电话会议功能
 
+可以通过uniqueid从cdr中读取预拨号器的呼叫结果
 需要php的mbstring模块
 增强导出模块
 need to add queue status
@@ -95,14 +97,13 @@ need to add CDR to user
 增加div移动的代码
 多css类型支持
 增加agent之间的im功能
-
+增强customer和contact的搜索功能
 CDR和predictive dialer的关联
 need to add phone spy
 增加对sqlite的支持
 增加对config.php的管理为web模式
 关闭数据库
 voicemail check
-电话会议功能
 增加SMS模块
 
 #为什么在系统监视里面看到的分机不全？

@@ -1,5 +1,13 @@
 <?php
+/*******************************************************************************
+* asterisk.server.php
+* astercrm asterisk class
 
+
+* Revision 0.0455  2007/10/24 20:33:00  modified by solo
+* Desc: add function sendCall
+
+********************************************************************************/
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'phpagi-asmanager.php');
 
 class Asterisk extends AGI_AsteriskManager{
@@ -31,6 +39,35 @@ class Asterisk extends AGI_AsteriskManager{
 		@chmod   ($filename,   0777);
 		system("mv $filename /var/spool/asterisk/outgoing/");
 		return $callfile;
+	}
+
+	function sendCall($channel,
+                       $exten=NULL, $context=NULL, $priority=NULL,
+                       $application=NULL, $data=NULL,
+                       $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL){
+		
+      $req = "Action: Originate\r\n";
+      $parameters = array('Channel'=>$channel);
+
+      if($exten) $parameters['Exten'] = $exten;
+      if($context) $parameters['Context'] = $context;
+      if($priority) $parameters['Priority'] = $priority;
+
+      if($application) $parameters['Application'] = $application;
+      if($data) $parameters['Data'] = $data;
+
+      if($timeout) $parameters['WaitTime'] = $timeout;
+      if($callerid) $parameters['CallerID'] = $callerid;
+      if($variable) $parameters['Variable'] = $variable;
+      if($account) $parameters['Account'] = $account;
+      if(!is_null($async)) $parameters['Async'] = ($async) ? 'true' : 'false';
+      if($actionid) $parameters['ActionID'] = $actionid;
+
+
+      foreach($parameters as $var=>$val)
+        $req .= "$var: $val\r\n";
+      $req .= "\r\n";
+      fwrite($this->socket, $req);
 	}
 
 	function getSipChannels(){

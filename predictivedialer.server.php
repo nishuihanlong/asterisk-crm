@@ -17,6 +17,9 @@
 		showPredictiveDialer
 		predictiveDialer
 
+* Revision 0.0455  2007/10/24 20:37:00  last modified by solo
+* Desc: add another dial method: sendCall()
+
 * Revision 0.045  2007/10/18 20:10:00  last modified by solo
 * Desc: comment added
 
@@ -79,10 +82,12 @@ function showPredictiveDialer($preDictiveDialerStatus){
 	global $db,$locate,$config;
 
 	$objResponse = new xajaxResponse();
+	/*
 	if ($config['system']['allow_dropcall'] == false){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("cannot_use_predictive_dialer"));
 		return $objResponse;
 	}
+	*/
 
 	//从数据库读取预拨号的总数
 	$query = '
@@ -187,6 +192,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 		$res = $db->query($query);
 		*/
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+		if ($config['system']['allow_dropcall'] == true){
 
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
@@ -196,7 +202,12 @@ function predictiveDialer($maxChannels,$totalRecords){
 									'Priority'=>1,
 									'MaxRetries'=>0,
 									'CallerID'=>$phoneNum));
+		}else{
+			$myAsterisk->config['asmanager'] = $config['asterisk'];
+			$res = $myAsterisk->connect();
 
+			$myAsterisk->sendCall($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
+		}
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");
 		$totalRecords = $totalRecords-1;
 		if ($totalRecords < 0 )
