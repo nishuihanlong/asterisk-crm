@@ -1015,60 +1015,57 @@ form{
     font-size: large;
 	z-index:100;
 }
-#ButtonB  { width: 120px; height: 25px; 
-            white-space: nowrap;
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 16px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#000099;    color:white;   }
+#ButtonB  {
+	width: 120px;
+	height: 25px;
+	white-space: nowrap;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	border: none;
+	color:#003399;
+}
 #ButtonF  { width: 120px; height: 25px; 
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 12px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#993300;    color:white;   }
+            text-align: center; border: none;    color:#993300;   }
 #ButtonR  { width: 120px; height: 25px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 16px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#CC0033;    color:white;   }
+            text-align: center; border: none;    color:#CC0033;   }
 #ButtonY  { width: 120px; height: 25px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 12px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#FFFF00;    color:black;   }
+            text-align: center; border: none;    color:#FFFF00;   }
 #ButtonG  { width: 120px; height: 25px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 16px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#006600;    color:white;   }
+            text-align: center; border: none;    color:#009966;   }
 #ButtonU  { width: 120px; height: 25px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 16px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#CC3399;    color:white;   }
+            text-align: center; border: none;    color:#993300;   }
 #Sel      { width: 120px; height: 25px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 12px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#0033CC;    color:white;   }
+            text-align: center; border: none;    color:#0033CC;   }
 #ButtonA  { width: 85px; height: 20px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 10px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#993300;    color:white;   }
+            text-align: center; border: none;    color:#993300;   }
 #ButtonYA { width: 85px; height: 20px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 10px; font-weight: bold;
-            text-align: center; border: none;
-            background-color:#FFFF00;    color:black;   }
+            text-align: center; border: none;    color:#FFFF00;   }
 .login_in .login_in_logo {
 	background-image: url(../images/login_in_01.gif);
 	background-repeat: no-repeat;

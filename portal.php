@@ -214,10 +214,8 @@ require_once('portal.common.php');
 
 	<div id="divExtension" name="divExtension" 
 		class="divExtension drsElement drsMoveHandle" 
-		style="left: 750px; top: 20px;	width: 220px; 
-				border: thin solid #767676; 
+		style="left: 750px; top: 20px;	width: 300px;
 				position: absolute; 
-				background-color: #F1F1F1;
 				overflow: auto;
 				z-index:0;"></div>
 	<div id="divCopyright"></div>
