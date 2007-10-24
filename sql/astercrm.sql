@@ -43,6 +43,9 @@ CREATE TABLE customer (
   city	varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   state varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   phone varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
+  fax	varchar(50) NOT NULL default '',	#add 2007-10-24 by solo
+  mobile varchar(50) NOT NULL default '',	#add 2007-10-24 by solo
+  email varchar(50) NOT NULL default '',	#add 2007-10-24 by solo
   contact varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
   contactgender varchar(10) NOT NULL default 'unknown',	#add 2007-10-5 by solo
   bankname		varchar(100) NOT NULL default '',	#add 2007-10-15 by solo
