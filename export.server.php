@@ -16,12 +16,15 @@
 	export				提交表单, 导出数据
 	init				初始化页面元素
 
+* Revision 0.045  2007/10/24 14:02:00  last modified by solo
+* Desc: bug fixed, change require_once("customer.common.php") to "export.common.php"
+
 * Revision 0.045  2007/10/22 16:33:00  last modified by solo
 * Desc: page created
 
 ********************************************************************************/
 require_once ("db_connect.php");
-require_once ("customer.common.php");
+require_once ("export.common.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
 
