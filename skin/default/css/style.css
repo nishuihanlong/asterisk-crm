@@ -1024,7 +1024,7 @@ form{
 	font-weight: bold;
 	text-align: center;
 	border: none;
-	color:#003399;
+	color:#999999;
 }
 #ButtonF  { width: 120px; height: 25px; 
             white-space: nowrap;
@@ -1055,7 +1055,7 @@ form{
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 12px; font-weight: bold;
-            text-align: center; border: none;    color:#0033CC;   }
+            text-align: center; border: none;    color:#999999;   }
 #ButtonA  { width: 85px; height: 20px;
             white-space: nowrap;
             font-family: Helvetica, Arial, sans-serif;
