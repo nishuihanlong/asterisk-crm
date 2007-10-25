@@ -1104,7 +1104,7 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr id="bankAccountNameTR" name="bankAccountNameTR">
 						<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
-						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="50"></td>
+						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="50" value="' . $customer['bankaccountname'] . '"></td>
 					</tr>
 					<tr id="bankAccountTR" name="bankAccountTR">
 						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
