@@ -107,6 +107,11 @@ firstring				= "caller"
 enable_external_crm		= "0"
 
 ;
+; astercrm will show contact
+;
+enable_contact		= "0"
+
+;
 ; asterCRM will open a new browser window when need popup
 ;
 open_new_window			= "0"

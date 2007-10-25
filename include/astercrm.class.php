@@ -83,6 +83,9 @@ Class astercrm extends PEAR{
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
 				."bankaccount='".$f['bankaccount']."', "
+				."fax='".$f['fax']."', "
+				."mobile='".$f['mobile']."', "
+				."email='".$f['email']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);
@@ -208,6 +211,9 @@ Class astercrm extends PEAR{
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
+				."fax='".$f['fax']."', "
+				."mobile='".$f['mobile']."', "
+				."email='".$f['email']."', "
 				."bankaccount='".$f['bankaccount']."' "
 				."WHERE id='".$f['customerid']."'";
 
@@ -634,6 +640,9 @@ Class astercrm extends PEAR{
 							xajax.$(\'bankAccountTR\').style.display = \'\';
 							xajax.$(\'bankZipTR\').style.display = \'\';
 							xajax.$(\'customerDetial\').value = \'ON\';
+							xajax.$(\'mobileTR\').style.display = \'\';
+							xajax.$(\'faxTR\').style.display = \'\';
+							xajax.$(\'emailTR\').style.display = \'\';
 						}else{
 							xajax.$(\'websiteTR\').style.display = \'none\';
 							xajax.$(\'stateTR\').style.display = \'none\';
@@ -647,6 +656,9 @@ Class astercrm extends PEAR{
 							xajax.$(\'bankAccountTR\').style.display = \'none\';
 							xajax.$(\'bankZipTR\').style.display = \'none\';
 							xajax.$(\'customerDetial\').value = \'OFF\';
+							xajax.$(\'mobileTR\').style.display = \'none\';
+							xajax.$(\'faxTR\').style.display = \'none\';
+							xajax.$(\'emailTR\').style.display = \'none\';
 						};
 						return false;">
 						'.$locate->Translate("detail").'
@@ -673,6 +685,20 @@ Class astercrm extends PEAR{
 					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 					<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
 				</tr>
+				<!--*********************************************************-->
+				<tr name="mobileTR" id="mobileTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
+					<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
+				</tr>
+				<tr name="faxTR" id="faxTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("fax").'</td>
+					<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
+				</tr>
+				<tr name="emailTR" id="emailTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("email").'</td>
+					<td align="left"><input type="text" id="email" name="email" size="35"></td>
+				</tr>				
+				<!--*********************************************************-->
 				<tr id="customerContactTR" name="customerContactTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 					<td align="left">
@@ -713,88 +739,89 @@ Class astercrm extends PEAR{
 				</tr>
 				';
 	}
+	if(ENABLE_CONTACT != '0'){
+		if ($contactid == null){
+				$html .='
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("contact").'</td>
+						<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input id="btnConfirmContact" name="btnConfirmContact" type="button" onclick="btnConfirmContactOnClick();return false;" value="'.$locate->Translate("confirm").'"><input type="hidden" id="contactid" name="contactid" value="">
+						<input type="hidden" id="contactDetial" name="contactDetial" value="OFF">
+						[<a href=? onclick="
+							if (xajax.$(\'contactDetial\').value == \'OFF\'){
+								xajax.$(\'genderTR\').style.display = \'\';
+								xajax.$(\'positionTR\').style.display = \'\';
+								xajax.$(\'phoneTR\').style.display = \'\';
+								xajax.$(\'phone1TR\').style.display = \'\';
+								xajax.$(\'phone2TR\').style.display = \'\';
+								xajax.$(\'mobileTR\').style.display = \'\';
+								xajax.$(\'faxTR\').style.display = \'\';
+								xajax.$(\'emailTR\').style.display = \'\';
+								xajax.$(\'contactDetial\').value = \'ON\';
+							}else{
+								xajax.$(\'genderTR\').style.display = \'none\';
+								xajax.$(\'positionTR\').style.display = \'none\';
+								xajax.$(\'phoneTR\').style.display = \'none\';
+								xajax.$(\'phone1TR\').style.display = \'none\';
+								xajax.$(\'phone2TR\').style.display = \'none\';
+								xajax.$(\'mobileTR\').style.display = \'none\';
+								xajax.$(\'faxTR\').style.display = \'none\';
+								xajax.$(\'emailTR\').style.display = \'none\';
+								xajax.$(\'contactDetial\').value = \'OFF\';
+							};
+							return false;">
+							'.$locate->Translate("detail").'
+						</a>]
+						</td>
+					</tr>
+					<tr name="genderTR" id="genderTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("gender").'</td>
+						<td align="left">
+							<select id="contactGender" name="contactGender">
+								<option value="male">'.$locate->Translate("male").'</option>
+								<option value="female">'.$locate->Translate("female").'</option>
+								<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
+							</select>
+						</td>
+					</tr>
+					<tr name="positionTR" id="positionTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("position").'</td>
+						<td align="left"><input type="text" id="position" name="position" size="35"></td>
+					</tr>
+					<tr name="phoneTR" id="phoneTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("phone").'</td>
+						<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value=""></td>
+					</tr>
+					<tr name="phone1TR" id="phone1TR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("phone1").'</td>
+						<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value=""></td>
+					</tr>
+					<tr name="phone2TR" id="phone2TR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("phone2").'</td>
+						<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
+					</tr>
+					<tr name="mobileTR" id="mobileTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
+						<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
+					</tr>
+					<tr name="faxTR" id="faxTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("fax").'</td>
+						<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
+					</tr>
+					<tr name="emailTR" id="emailTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("email").'</td>
+						<td align="left"><input type="text" id="email" name="email" size="35"></td>
+					</tr>					
+					';
+		}else{
+			$contact =& astercrm::getContactByID($contactid);
 
-	if ($contactid == null){
-			$html .='
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("contact").'</td>
-					<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><input id="btnConfirmContact" name="btnConfirmContact" type="button" onclick="btnConfirmContactOnClick();return false;" value="'.$locate->Translate("confirm").'"><input type="hidden" id="contactid" name="contactid" value="">
-					<input type="hidden" id="contactDetial" name="contactDetial" value="OFF">
-					[<a href=? onclick="
-						if (xajax.$(\'contactDetial\').value == \'OFF\'){
-							xajax.$(\'genderTR\').style.display = \'\';
-							xajax.$(\'positionTR\').style.display = \'\';
-							xajax.$(\'phoneTR\').style.display = \'\';
-							xajax.$(\'phone1TR\').style.display = \'\';
-							xajax.$(\'phone2TR\').style.display = \'\';
-							xajax.$(\'mobileTR\').style.display = \'\';
-							xajax.$(\'faxTR\').style.display = \'\';
-							xajax.$(\'emailTR\').style.display = \'\';
-							xajax.$(\'contactDetial\').value = \'ON\';
-						}else{
-							xajax.$(\'genderTR\').style.display = \'none\';
-							xajax.$(\'positionTR\').style.display = \'none\';
-							xajax.$(\'phoneTR\').style.display = \'none\';
-							xajax.$(\'phone1TR\').style.display = \'none\';
-							xajax.$(\'phone2TR\').style.display = \'none\';
-							xajax.$(\'mobileTR\').style.display = \'none\';
-							xajax.$(\'faxTR\').style.display = \'none\';
-							xajax.$(\'emailTR\').style.display = \'none\';
-							xajax.$(\'contactDetial\').value = \'OFF\';
-						};
-						return false;">
-						'.$locate->Translate("detail").'
-					</a>]
-					</td>
-				</tr>
-				<tr name="genderTR" id="genderTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("gender").'</td>
-					<td align="left">
-						<select id="contactGender" name="contactGender">
-							<option value="male">'.$locate->Translate("male").'</option>
-							<option value="female">'.$locate->Translate("female").'</option>
-							<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
-						</select>
-					</td>
-				</tr>
-				<tr name="positionTR" id="positionTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("position").'</td>
-					<td align="left"><input type="text" id="position" name="position" size="35"></td>
-				</tr>
-				<tr name="phoneTR" id="phoneTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("phone").'</td>
-					<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value=""></td>
-				</tr>
-				<tr name="phone1TR" id="phone1TR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-					<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value=""></td>
-				</tr>
-				<tr name="phone2TR" id="phone2TR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-					<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
-				</tr>
-				<tr name="mobileTR" id="mobileTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
-				</tr>
-				<tr name="faxTR" id="faxTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
-				</tr>
-				<tr name="emailTR" id="emailTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("email").'</td>
-					<td align="left"><input type="text" id="email" name="email" size="35"></td>
-				</tr>					
-				';
-	}else{
-		$contact =& astercrm::getContactByID($contactid);
-
-			$html .='
-				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
-					<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
-				</tr>
-				';
+				$html .='
+					<tr>
+						<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
+						<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
+					</tr>
+					';
+		}
 	}
 
 	//add survey html
@@ -1014,6 +1041,20 @@ Class astercrm extends PEAR{
 						<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 						<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10" value="' . $customer['zipcode'] . '"></td>
 					</tr>
+					<!--*********************************************************-->
+					<tr name="mobileTR" id="mobileTR">
+						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
+						<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="' . $customer['mobile'] . '"></td>
+					</tr>
+					<tr name="faxTR" id="faxTR" >
+						<td nowrap align="left">'.$locate->Translate("fax").'</td>
+						<td align="left"><input type="text" id="fax" name="fax" size="35" value="' . $customer['fax'] . '"></td>
+					</tr>
+					<tr name="emailTR" id="emailTR">
+						<td nowrap align="left">'.$locate->Translate("email").'</td>
+						<td align="left"><input type="text" id="email" name="email" size="35" value="' . $customer['email'] . '"></td>
+					</tr>				
+					<!--*********************************************************-->
 					<tr id="customerContactTR" name="customerContactTR">
 						<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 						<td align="left"><input type="text" id="customerContact" name="customerContact" size="35" maxlength="35" value="' . $customer['contact'] . '">
