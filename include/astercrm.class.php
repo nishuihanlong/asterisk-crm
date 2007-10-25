@@ -68,7 +68,7 @@ Class astercrm extends PEAR{
 	
 	function insertNewCustomer($f){
 		global $db;
-		
+
 		$sql= "INSERT INTO customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
@@ -84,9 +84,9 @@ Class astercrm extends PEAR{
 				."bankzip='".$f['bankzip']."', "
 				."bankaccount='".$f['bankaccount']."', "
 				."bankaccountname='".$f['bankaccountname']."', "
-				."fax='".$f['fax']."', "
-				."mobile='".$f['mobile']."', "
-				."email='".$f['email']."', "
+				."fax='".$f['mainFax']."', "
+				."mobile='".$f['mainMobile']."', "
+				."email='".$f['mainEmail']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);
@@ -212,11 +212,11 @@ Class astercrm extends PEAR{
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
-				."fax='".$f['fax']."', "
-				."mobile='".$f['mobile']."', "
-				."email='".$f['email']."', "
-				."bankaccount='".$f['bankaccount']."' "
-				."bankaccountname='".$f['bankaccountname']."', "
+				."fax='".$f['mainFax']."', "
+				."mobile='".$f['mainMobile']."', "
+				."email='".$f['mainEmail']."', "
+				."bankaccount='".$f['bankaccount']."', "
+				."bankaccountname='".$f['bankaccountname']."' "
 				."WHERE id='".$f['customerid']."'";
 
 		astercrm::events($sql);
@@ -641,9 +641,9 @@ Class astercrm extends PEAR{
 							xajax.$(\'categoryTR\').style.display = \'\';
 							
 							xajax.$(\'customerDetial\').value = \'ON\';
-							xajax.$(\'mobileTR\').style.display = \'\';
-							xajax.$(\'faxTR\').style.display = \'\';
-							xajax.$(\'emailTR\').style.display = \'\';
+							xajax.$(\'mainMobileTR\').style.display = \'\';
+							xajax.$(\'mainFaxTR\').style.display = \'\';
+							xajax.$(\'mainEmailTR\').style.display = \'\';
 						}else{
 							xajax.$(\'websiteTR\').style.display = \'none\';
 							xajax.$(\'stateTR\').style.display = \'none\';
@@ -655,9 +655,9 @@ Class astercrm extends PEAR{
 							xajax.$(\'categoryTR\').style.display = \'none\';
 							
 							xajax.$(\'customerDetial\').value = \'OFF\';
-							xajax.$(\'mobileTR\').style.display = \'none\';
-							xajax.$(\'faxTR\').style.display = \'none\';
-							xajax.$(\'emailTR\').style.display = \'none\';
+							xajax.$(\'mainMobileTR\').style.display = \'none\';
+							xajax.$(\'mainFaxTR\').style.display = \'none\';
+							xajax.$(\'mainEmailTR\').style.display = \'none\';
 						};
 						return false;">
 						'.$locate->Translate("detail").'
@@ -714,17 +714,17 @@ Class astercrm extends PEAR{
 					<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
 				</tr>-->
 				<!--******新增的3个字段*****-->
-				<tr name="mobileTR" id="mobileTR" style="display:none">
+				<tr name="mainMobileTR" id="mainMobileTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
+					<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35"></td>
 				</tr>
-				<tr name="faxTR" id="faxTR" style="display:none">
+				<tr name="mainFaxTR" id="mainFaxTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
+					<td align="left"><input type="text" id="mainFax" name="mainFax" size="35"></td>
 				</tr>
-				<tr name="emailTR" id="emailTR" style="display:none">
+				<tr name="mainEmailTR" id="mainEmailTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
-					<td align="left"><input type="text" id="email" name="email" size="35"></td>
+					<td align="left"><input type="text" id="mainEmail" name="mainEmail" size="35"></td>
 				</tr>				
 				<!--*********************************************************-->
 				<tr id="categoryTR" name="categoryTR" style="display:none">
@@ -1069,17 +1069,17 @@ Class astercrm extends PEAR{
 						<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10" value="' . $customer['zipcode'] . '"></td>
 					</tr>
 					<!--*********************************************************-->
-					<tr name="mobileTR" id="mobileTR">
+					<tr name="mainMobileTR" id="mainMobileTR">
 						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-						<td align="left"><input type="text" id="mobile" name="mobile" size="35" value="' . $customer['mobile'] . '"></td>
+						<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35" value="' . $customer['mobile'] . '"></td>
 					</tr>
-					<tr name="faxTR" id="faxTR" >
+					<tr name="mainFaxTR" id="mainFaxTR" >
 						<td nowrap align="left">'.$locate->Translate("fax").'</td>
-						<td align="left"><input type="text" id="fax" name="fax" size="35" value="' . $customer['fax'] . '"></td>
+						<td align="left"><input type="text" id="mainFax" name="mainFax" size="35" value="' . $customer['fax'] . '"></td>
 					</tr>
-					<tr name="emailTR" id="emailTR">
+					<tr name="mainEmailTR" id="mainEmailTR">
 						<td nowrap align="left">'.$locate->Translate("email").'</td>
-						<td align="left"><input type="text" id="email" name="email" size="35" value="' . $customer['email'] . '"></td>
+						<td align="left"><input type="text" id="mainEmail" name="mainEmail" size="35" value="' . $customer['email'] . '"></td>
 					</tr>				
 					<!--*********************************************************-->
 					<tr id="customerContactTR" name="customerContactTR">
@@ -1224,6 +1224,20 @@ Class astercrm extends PEAR{
 					<td nowrap align="left">'.$locate->Translate("address").'</td>
 					<td align="left">'.$customer['address'].'</td>
 				</tr>
+				<!--**********************-->
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
+					<td align="left">'.$customer['mobile'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("fax").'</td>
+					<td align="left">'.$customer['fax'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("email").'</td>
+					<td align="left">'.$customer['email'].'</td>
+				</tr>	
+				<!--**********************-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 					<td align="left">'.$customer['zipcode'].'</td>
@@ -1243,6 +1257,10 @@ Class astercrm extends PEAR{
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
 					<td align="left">'.$customer['bankzip'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
+					<td align="left">'.$customer['bankaccountname'].'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
