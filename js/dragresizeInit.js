@@ -4,8 +4,12 @@
 // You first declare a new DragResize() object, passing its own name and an object
 // whose keys constitute optional parameters/settings:
 
+//  window.screen.height;   
+//  window.screen.width;   
+
+
 var dragresize = new DragResize('dragresize',
- { minWidth: 50, minHeight: 50, minLeft: 20, minTop: 20, maxLeft: 1024, maxTop: 1600 });
+ { minWidth: 50, minHeight: 50, minLeft: 20, minTop: 20, maxLeft: window.screen.width-50, maxTop: window.screen.height + 300 });
 
 // Optional settings/properties of the DragResize object are:
 //  enabled: Toggle whether the object is active.

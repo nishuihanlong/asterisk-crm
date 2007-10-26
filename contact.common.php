@@ -35,6 +35,11 @@ registed function:
 	showNote			show note information 
 	surveyAdd			show survey add form
 	saveSurvey			save survey result
+	confirmCustomer
+	confirmContact
+
+* Revision 0.0456  2007/10/25 15:20:00  modified by solo
+* Desc: add confirmCustomer,confirmContact function
 
 * Revision 0.045  2007/10/23 21:50:00  modified by solo
 * Desc: add surveyAdd,saveSurvey function
@@ -90,6 +95,8 @@ $xajax->registerFunction("showCustomer");
 $xajax->registerFunction("showNote");
 $xajax->registerFunction("saveSurvey");
 $xajax->registerFunction("surveyAdd");
+$xajax->registerFunction("confirmCustomer");
+$xajax->registerFunction("confirmContact");
 
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin

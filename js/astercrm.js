@@ -17,20 +17,22 @@ function contactCopy(contactid){
 }
 
 function btnConfirmCustomerOnClick(){
-//	alert (xajax.$('contactid').value);
-
-	if (xajax.$('customer').readOnly  == true)
+	//alert (xajax.$('customer').readOnly);
+	if (document.f.customer.readOnly  == true)
 	{
-//		alert('true');
 		xajax_add(xajax.$('iptcallerid').value,0,xajax.$('contactid').value);
 	}else{
-//		alert('false');
-		if (xajax.$('customer').value == '')
+		if (document.f.customer.value == '')
 		{
 			return false;
 		}
-		xajax_confirmCustomer(xajax.$('customer').value,xajax.$('iptcallerid').value,xajax.$('contactid').value);
+		xajax_confirmCustomer(document.f.customer.value,xajax.$('iptcallerid').value,xajax.$('contactid').value);
 	}
+//	alert (xajax.$('customer').value);
+//	alert (xajax.$('iptcallerid').value);
+//	alert (xajax.$('contactid').value);
+
+	
 }
 
 function openWindow(url){

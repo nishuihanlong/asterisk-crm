@@ -64,9 +64,12 @@ require_once('customer.common.php');
 		//-->
 		</SCRIPT>
 
-		<script language="JavaScript" src="js/astercrm.js"></script>
+		<script type="text/javascript" src="js/astercrm.js"></script>
 		<script type="text/javascript" src="js/dragresize.js"></script>
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
+
+		<script type="text/javascript" src="js/ajax.js"></script>
+		<script type="text/javascript" src="js/ajax-dynamic-list.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>

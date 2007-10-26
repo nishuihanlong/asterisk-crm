@@ -37,6 +37,11 @@ registed function:
 	export				download contact data csv file
 	surveyAdd			show survey add form
 	saveSurvey			save survey result
+	confirmCustomer
+	confirmContact
+
+* Revision 0.0456  2007/10/25 15:20:00  modified by solo
+* Desc: add confirmCustomer,confirmContact,showCustomer function
 
 * Revision 0.045  2007/10/23 21:50:00  modified by solo
 * Desc: add surveyAdd,saveSurvey function
@@ -92,6 +97,9 @@ $xajax->registerFunction("showContact");
 $xajax->registerFunction("showNote");
 $xajax->registerFunction("saveSurvey");
 $xajax->registerFunction("surveyAdd");
+$xajax->registerFunction("confirmCustomer");
+$xajax->registerFunction("confirmContact");
+$xajax->registerFunction("showCustomer");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.

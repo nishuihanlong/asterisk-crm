@@ -50,7 +50,8 @@ CREATE TABLE customer (
   contactgender varchar(10) NOT NULL default 'unknown',	#add 2007-10-5 by solo
   bankname		varchar(100) NOT NULL default '',	#add 2007-10-15 by solo
   bankaccount	varchar(100) NOT NULL default '',	#add 2007-10-15 by solo
-  bankaccountname	varchar(100) NOT NULL default '',	#add 2007-10-15 by solo
+  bankzip		varchar(100) NOT NULL default '',	#add 2007-10-26 by solo
+  bankaccountname	varchar(100) NOT NULL default '',	#add 2007-10-25 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(30) NOT NULL default '',
   UNIQUE KEY id (id)

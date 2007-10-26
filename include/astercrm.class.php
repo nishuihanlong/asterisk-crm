@@ -1043,7 +1043,7 @@ Class astercrm extends PEAR{
 			$html = '
 					<form method="post" name="frmCustomerEdit" id="frmCustomerEdit">
 					<table border="0" width="100%">
-					<tr id="customer" name="customer">
+					<tr id="customerTR" name="customerTR">
 						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
 						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"><input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
 </td>

@@ -27,7 +27,59 @@
 			showGrid				显示grid表格
 			delete					从数据库中删除一条记录
 			edit
+			confirmCustomer
+			confirmContact
+
+* Revision 0.0455  2007/10/25 15:21:00  last modified by solo
+* Desc: add confirmCustomer,confirmContact
+
 */
+
+// 判断是否存在$customerName, 如果存在就显示
+function confirmCustomer($customerName,$callerID = null,$contactID){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if (trim($customerName) == '')
+		return $objResponse;
+
+	$customerID = Customer::checkValues("customer","customer",$customerName); 
+	if ($customerID && $customerID !=0){//存在
+		$html = Table::Top($locate->Translate("add_record"),"formDiv");
+		$html .= Customer::formAdd($callerID,$customerID,$contactID);
+		$html .= Table::Footer();
+		$objResponse->addAssign("formDiv", "style.visibility", "visible");
+		$objResponse->addAssign("formDiv", "innerHTML", $html);
+		$objResponse->addScript("xajax_showCustomer($customerID)");
+	} //else
+	//		$objResponse->addAlert("不存在" );
+
+	return $objResponse;
+}
+
+//判断是否存在$contactName
+function confirmContact($contactName,$customerID,$callerID){
+	global $locate;
+
+	$objResponse = new xajaxResponse();
+	$contactID = Customer::checkValues("contact","contact",$contactName,"string","customerid",$customerID,"int"); 
+	if ($contactID){//存在
+
+		$html = Table::Top($locate->Translate("add_record"),"formDiv"); 
+		$html .= Customer::formAdd($callerID,$customerID,$contactID);
+		$html .= Table::Footer();
+		$objResponse->addAssign("formDiv", "style.visibility", "visible");
+		$objResponse->addAssign("formDiv", "innerHTML", $html);
+		//显示customer信息
+		if ($customerID !=0)
+			$objResponse->addScript("xajax_showCustomer($customerID)");
+
+		//显示contact信息
+		$objResponse->addScript("xajax_showContact($contactID)");
+
+	} 
+
+	return $objResponse;
+}
 
 function noteAdd($customerid,$contactid){
 	global $locate;

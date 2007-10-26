@@ -206,7 +206,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 			$myAsterisk->config['asmanager'] = $config['asterisk'];
 			$res = $myAsterisk->connect();
 
-			$myAsterisk->sendCall($strChannel,$config['system']['preDialer_extension'],$config['system']['incontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
+			$myAsterisk->sendCall($strChannel,$config['system']['preDialer_extension'],$config['system']['preDialer_context'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
 		}
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");
 		$totalRecords = $totalRecords-1;
