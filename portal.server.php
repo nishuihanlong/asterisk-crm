@@ -541,9 +541,9 @@ function dial($phoneNum,$first = ''){
 								'Variable'=>"$strVariable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
-								'CallerID'=>$phoneNum));
+								'CallerID'=>$_SESSION['curuser']['extension']));
 		}else{
-			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,NULL);
 		}
 	}
 	$myAsterisk->disconnect();
