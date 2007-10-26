@@ -144,6 +144,7 @@ Class astercrm extends PEAR{
 		
 		$sql= "INSERT INTO note SET "
 				."note='".$f['note']."', "
+				."attitude='".$f['attitude']."', "
 				."priority=".$f['priority'].", "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
@@ -270,16 +271,19 @@ Class astercrm extends PEAR{
 
 			$sql= "UPDATE note SET "
 					."note='".$f['note']."', "
-					."priority=".$f['priority']." "
+					."priority=".$f['priority']." ,"
+					."attitude='".$f['attitude']."' "
 					."WHERE id='".$f['noteid']."'";
 		else
 			if (empty($f['note']))
 				$sql= "UPDATE note SET "
+						."attitude='".$f['attitude']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
 			else
 				$sql= "UPDATE note SET "
 						."note=CONCAT(note,'<br>',now(),'  ".$f['note']." by " .$_SESSION['curuser']['username']. "'), "
+						."attitude='".$f['attitude']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
 
@@ -586,6 +590,11 @@ Class astercrm extends PEAR{
 								<option value=9>9</option>
 								<option value=10>10</option>
 							</select> 
+
+							&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/2.gif" width="18px" height="18px" border="0" /> 
+							<input type="radio" name="attitude" value="5"/><img src="skin/default/images/3.gif" width="18px" height="18px" border="0" /> 
+							<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/1.gif" width="18px" height="18px" border="0" />
+							<input type="radio" name="attitude"  value="0" checked/> ?
 						</td>
 					</tr>
 					<tr>
@@ -857,7 +866,7 @@ Class astercrm extends PEAR{
 	$html .= $surveyHTML;
 
 	$html .= '</tr></td>';
-
+	//if(!defined('HOME_DIR')) define('HOME_DIR',dirname(dirname(__FILE__)));
 	//add note html
 	$html .='
 			<tr>
@@ -880,6 +889,10 @@ Class astercrm extends PEAR{
 						<option value=9>9</option>
 						<option value=10>10</option>
 					</select> 
+					&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/2.gif" width="18px" height="18px" border="0" /> 
+					<input type="radio" name="attitude" value="5"/><img src="skin/default/images/3.gif" width="18px" height="18px" border="0" /> 
+					<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/1.gif" width="18px" height="18px" border="0" />
+					<input type="radio" name="attitude"  value="0" checked/> ?
 				</td>
 			</tr>
 			<tr>
@@ -1020,6 +1033,29 @@ Class astercrm extends PEAR{
 						<td nowrap align="left">'.$locate->Translate("priority").'</td>
 						<td align="left">
 							<select id="priority" name="priority">'.$options.'</select>
+
+							&nbsp;  <input type="radio" name="attitude"   value="10" ';
+							if($note['attitude'] == '10'){
+								$html .= 'checked';
+							}
+							$html .= '/><img src="skin/default/images/2.gif" width="18px" height="18px" border="0" /> 
+							<input type="radio" name="attitude"  value="5" ';
+							if($note['attitude'] == '5'){
+								$html .= 'checked';
+							}
+							$html .= ' /><img src="skin/default/images/3.gif" width="18px" height="18px" border="0" /> 
+							<input type="radio" name="attitude"  value="-1" ';
+							if($note['attitude'] == '-1'){
+								$html .= 'checked';
+							}
+							$html .= ' 
+							/><img src="skin/default/images/1.gif" width="18px" height="18px" border="0" />
+							<input type="radio" name="attitude"  value="0" ';
+							if($note['attitude'] == '0'){
+								$html .= 'checked';
+							}
+							$html .= ' 
+							/> ?
 						</td>
 					</tr>
 					<tr>
