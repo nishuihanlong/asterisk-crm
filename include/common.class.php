@@ -40,7 +40,7 @@ class common{
 					<tr>
 						<td>
 							©2007 asterCRM - <a href="http://www.astercrm.org" target="_blank">asterCRM home</a><br>
-							version: 0.045
+							version: 0.0456 alpha
 						</td>
 					</tr>
 					</table>
