@@ -25,10 +25,10 @@
 	addWithPhoneNumber
 
 
-* Revision 0.0455  2007/10/25 15:21:00  last modified by solo
+* Revision 0.0451  2007/10/25 15:21:00  last modified by solo
 * Desc: remove confirmCustomer,confirmContact to common file
 
-* Revision 0.0455  2007/10/24 20:37:00  last modified by solo
+* Revision 0.0451  2007/10/24 20:37:00  last modified by solo
 * Desc: use another dial method: sendCall() to replace Originate
 
 * Revision 0.045  2007/10/18 14:19:00  modified by solo
@@ -221,7 +221,7 @@ function incomingCalls($myValue){
 
 				$transfer .= '
 							</SELECT>
-							<INPUT type="BUTTON" value="'.$locate->Translate(spanTransfer).'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
+							<INPUT type="BUTTON" value="'.$locate->Translate("transfer").'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
 							';
 				$objResponse->addAssign(spanTransfer,"innerHTML", $transfer );
 			}
@@ -397,13 +397,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'nowrap style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -500,10 +500,13 @@ function addWithPhoneNumber(){
 # $phoneNum	phone to call
 # $first	which phone will ring first, caller or callee
 
-function dial($phoneNum,$first = 'caller'){
+function dial($phoneNum,$first = ''){
 	global $config;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
+	if ($first == ''){
+		$first = $config['system']['firstring'];
+	}
 
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
@@ -511,7 +514,7 @@ function dial($phoneNum,$first = 'caller'){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 
-	if ($config['system']['firstring'] == 'caller'){	//caller will ring first
+	if ($first == 'caller'){	//caller will ring first
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
 
 		if ($config['system']['allow_dropcall'] == true){

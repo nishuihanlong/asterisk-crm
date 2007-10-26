@@ -25,6 +25,10 @@
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
+* Revision 0.041  2007/10/26 13:46:00  modified by solo
+* Desc: 
+* 描述: 修改了 listStatus和tableStatus, 增加了点击分机上的列表拨号功能
+
 
 * Revision 0.045  2007/10/15 10:55:00  modified by solo
 * Desc: 
@@ -198,7 +202,7 @@ class asterEvent extends PEAR
 		foreach ($phones as $key => $value) {
 			//$value = "SIP/".$value;
 			if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
-			$action .= "<td align=center><button name='" . substr($value,4) . "' ";
+			$action .= "<td align=center><button onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" name='" . substr($value,4) . "' ";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {
 					$action .= "  id='ButtonU'>\n";
@@ -229,7 +233,7 @@ class asterEvent extends PEAR
 		foreach ($phones as $key => $value) {
 			if (!strstr($value,'SIP/'))
 				$value = "SIP/".$value;
-			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
+			$action .= "<tr><td align=center><button onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" name='" . substr($value,4)."'";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {
 					$action .= "  id='ButtonU'>\n";

@@ -112,11 +112,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("username");
-	$headers[] = $locate->Translate("password");
-	$headers[] = $locate->Translate("extension");
-	$headers[] = $locate->Translate("extensions").','.$locate->Translate("extensions_note");
-	$headers[] = $locate->Translate("usertype").'&nbsp;'.$locate->Translate("usertype_note");
+	$headers[] = $locate->Translate("username")."<BR \>";
+	$headers[] = $locate->Translate("password")."<BR \>";
+	$headers[] = $locate->Translate("extension")."<BR \>";
+	$headers[] = $locate->Translate("extensions").','.$locate->Translate("extensions_note")."<BR \>";
+	$headers[] = $locate->Translate("usertype").'<BR \>'.$locate->Translate("usertype_note")."";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();

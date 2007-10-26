@@ -18,6 +18,9 @@
 	createGrid			生成grid的HTML代码
 	showDetail			显示contact信息
 
+* Revision 0.0451  2007/10/22 16:45:00  last modified by solo
+* Desc: remove Edit and Detail tab in xajaxGrid
+
 * Revision 0.045  2007/10/22 16:45:00  last modified by solo
 * Desc: remove function "importCSV" and "export"
 
@@ -97,27 +100,27 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("customer_name");//"Customer Name";
-	$headers[] = $locate->Translate("state");//"Customer Name";
-	$headers[] = $locate->Translate("city");//"Category";
-	$headers[] = $locate->Translate("phone");//"Contact";
-	$headers[] = $locate->Translate("contact");//"Category";
-	$headers[] = $locate->Translate("website");//"Note";
-	$headers[] = $locate->Translate("category");//"Create Time";
-	$headers[] = $locate->Translate("create_time");//"Create By";
-	$headers[] = $locate->Translate("create_by");
+	$headers[] = $locate->Translate("customer_name")."<BR \>";//"Customer Name";
+	$headers[] = $locate->Translate("state")."<BR \>";//"Customer Name";
+	$headers[] = $locate->Translate("city")."<BR \>";//"Category";
+	$headers[] = $locate->Translate("phone")."<BR \>";//"Contact";
+	$headers[] = $locate->Translate("contact")."<BR \>";//"Category";
+	$headers[] = $locate->Translate("website")."<BR \>";//"Note";
+	$headers[] = $locate->Translate("category")."<BR \>";//"Create Time";
+	$headers[] = $locate->Translate("create_time")."<BR \>";//"Create By";
+	$headers[] = $locate->Translate("create_by")."<BR \>";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="17%"';
 	$attribsHeader[] = 'width="7%"';
 	$attribsHeader[] = 'width="8%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="8%"';
-	$attribsHeader[] = 'width="7%"';
 //	$attribsHeader[] = 'width="5%"';
 
 	// HTML Table: columns attributes
@@ -171,7 +174,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearch("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
@@ -179,7 +182,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['customer'];
+		$rowc[] = '<a href=? onclick="xajax_showDetail(\''.$row['id'].'\');return false;">'.$row['customer'].'</a>';
 		$rowc[] = $row['state'];
 		$rowc[] = $row['city'];
 		$rowc[] = $row['phone'];
@@ -189,7 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
-		$table->addRow("customer",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("customer",$rowc,0,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone

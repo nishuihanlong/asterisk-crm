@@ -79,7 +79,7 @@ v0.045
 2007-10-19	允许移动层
 2007-10-22	使用ini类型的文件代替原来的php格式 增加astercrm.conf.php保存系统参数
 -----------------------------------------------------------------------------------------
-v0.0456
+v0.0451
 
 2007-10-24	customer 表内增加了 fax, mobile, email三个字段
 2007-10-24	在asterisk类中增加了sendCall方法,这样就可以在任意机器上使用astercrm得预拨号功能了
@@ -88,26 +88,28 @@ v0.0456
 2007-10-25      修改了form可移动的范围, div可移动的范围可以根据屏幕的变化自适应
 2007-10-25      修正了管理界面customer和contact管理不能自动完成, 以及confirm按钮的bug
 2007-10-25      在note表中增加了 attitude 字段
+2007-10-25      自动完成时 设置成当输入字符长度超过2时才相应
+2007-10-25      增加了点击分机拨号功能
 
 
 -----------------------------------------------------------------------------------------
 
-点击divExtension上的分机能够自动呼叫
+增加对config.php的管理为web模式
+
+增强导出模块
+增强customer和contact的搜索功能
+
 
 电话会议功能
 可以通过uniqueid从cdr中读取预拨号器的呼叫结果
 需要php的mbstring模块
-增强导出模块
+
 need to add queue status
 need to add CDR to user
-增加div移动的代码
-多css类型支持
 增加agent之间的im功能
-增强customer和contact的搜索功能
 CDR和predictive dialer的关联
 need to add phone spy
 增加对sqlite的支持
-增加对config.php的管理为web模式
 关闭数据库
 voicemail check
 增加SMS模块

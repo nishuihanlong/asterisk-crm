@@ -17,6 +17,9 @@
 	createGrid			生成grid的HTML代码
 	showDetail			显示contact信息
 
+* Revision 0.0451  2007/10/22 16:45:00  last modified by solo
+* Desc: remove Edit and Detail tab in xajaxGrid
+
 * Revision 0.045  2007/10/22 16:45:00  last modified by solo
 * Desc: remove function "importCSV", "export"
 
@@ -159,7 +162,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearch("contact",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
@@ -167,7 +170,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['contact'];
+		$rowc[] = '<a href=? onclick="xajax_showContact(\''.$row['id'].'\');return false;">'.$row['contact'].'</a>';
 		$rowc[] = $row['gender'];
 		$rowc[] = $row['position'];
 		$rowc[] = $row['phone'];
@@ -179,7 +182,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."','customer');return false;\"
 		>".$row['customer']."</a>";
 
-		$table->addRow("contact",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("contact",$rowc,0,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
