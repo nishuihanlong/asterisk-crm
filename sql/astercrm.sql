@@ -72,6 +72,7 @@ CREATE TABLE note (
   id int(11) NOT NULL auto_increment,
   note text NOT NULL,
   priority int(11) NOT NULL default '0',
+  attitude INT NOT NULL DEFAULT '0',	#add 2007-10-26 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(30) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
