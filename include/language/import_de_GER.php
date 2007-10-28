@@ -1,16 +1,16 @@
 <?
-	$file_name = "Exel-CSV Datei ausw鋒len";
+	$file_name = "Exel-CSV Datei auswählen";
 	$upload = "Importieren";
 	$filemanager = "Datei Manager";
-	$nofilechoose = "Es wurde keine Datei ausgew鋒lt";
-	$add = "Hinzuf黦en";
-	$todiallist = "zu Anrufliste/Daillist Hinzuf黦en";
+	$add = "Hinzufügen";
+	$nofilechoose = "Es wurde keine Datei ausgewählt";
+	$todiallist = "zu Anrufliste/Daillist Hinzufügen";
 	$file = "Datei";
 	$uploadsuccess = "Excel Liste wurde erfolgreich importiert";
 	$have = "haben";
 	$default = "Abfrage ,zeige 8 Abfragen";
 	$failed = "Der Import der CSV Liste ist fehlgeschlagen";
-	$choose = "Datei ausw鋒len";
+	$choose = "Datei auswählen";
 	$submit = "zusenden";
 	$area = "zuweisen";
 	$cantup = "Import von Exel-CSV Datei";

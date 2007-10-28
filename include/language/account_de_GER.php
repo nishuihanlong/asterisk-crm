@@ -1,8 +1,8 @@
 <?
-$add_account = "Ein neues Benutzerkonto wurde hinzugef黦t";
+$add_account = "Ein neues Benutzerkonto wurde hinzugefügt";
 $update_rec = "Eintrag wurde aktualisiert";
 $rec_cannot_update = "Der Eintrag konnte nicht aktualisiert werden";
-$rec_cannot_insert = "";
+$rec_cannot_insert = "Ihr Eintrag konnte nicht hinzugefügt werden";
 $delete_rec = "Eintrag gelöscht";
 $rec_cannot_delete = "Der Eintrag kann nicht gelöscht werden";
 $username = "Benutzer Name ";
@@ -12,8 +12,8 @@ $extensions = "Erweiterung";
 $extensions_note	= "bitte benutzen Sie ein Komma zwischen den Erweiterungen";
 $continue = "Weiter";
 $obligatory_fields = "* Obligatorische Felder";
-$adding_account = "Benutzerkonto hinzuf黦en";
-$edit_account = "";
+$adding_account = "Benutzerkonto hinzufügen";
+$edit_account = "Zugang ändern";
 $usertype = "Benutzer Type";
 $usertype_note = "Nutzung nur durch Admin";
 ?>

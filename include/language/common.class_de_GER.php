@@ -10,7 +10,7 @@ $diallist_manager		= "Diallist Verwaltung";
 $survey_manager			= "Abfrage Verwaltung";
 $survey_reslut			= "Abrage Ergebnis";
 $log_out				= "Logout";
-$import					= "";
-$export					= "";
+$import					= "Importieren ";
+$export					= "Exportieren";
 $back					= "zurück";
 ?>

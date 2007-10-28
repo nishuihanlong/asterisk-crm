@@ -686,22 +686,6 @@ Class astercrm extends PEAR{
 							return false;">'.$locate->Translate("bank").'</a>]
 					</td>
 				</tr>
-				<tr id="websiteTR" name="websiteTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("website").'</td>
-					<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
-				</tr>
-				<tr id="stateTR" name="stateTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("state").'</td>
-					<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50"></td>
-				</tr>
-				<tr id="cityTR" name="cityTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("zipcode").'/'.$locate->Translate("city").'</td>
-					<td align="left"> <input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"> <input type="text" id="city" name="city" size="50" maxlength="50"></td>
-				</tr>
-				<tr id="addressTR" name="addressTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("address").'</td>
-					<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200"></td>
-				</tr>
 				<tr id="customerContactTR" name="customerContactTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 					<td align="left">
@@ -713,27 +697,43 @@ Class astercrm extends PEAR{
 						</select>
 					</td>
 				</tr>
+				<tr id="addressTR" name="addressTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("address").'</td>
+					<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200"></td>
+				</tr>
+				<tr id="cityTR" name="cityTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("zipcode").'/'.$locate->Translate("city").'</td>
+					<td align="left"> <input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"> <input type="text" id="city" name="city" size="50" maxlength="50"></td>
+				</tr>
+				<tr id="stateTR" name="stateTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("state").'</td>
+					<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50"></td>
+				</tr>
 				<tr id="customerPhoneTR" name="customerPhoneTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
 					<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"></td>
+				</tr>
+				<tr name="mainMobileTR" id="mainMobileTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
+					<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35"></td>
+				</tr>
+				<tr name="mainEmailTR" id="mainEmailTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("email").'</td>
+					<td align="left"><input type="text" id="mainEmail" name="mainEmail" size="35"></td>
+				</tr>				
+				<tr id="websiteTR" name="websiteTR" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("website").'</td>
+					<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 				</tr>
 				<!--<tr id="zipcodeTR" name="zipcodeTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
 					<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
 				</tr>-->
 				<!--******新增的3个字段*****-->
-				<tr name="mainMobileTR" id="mainMobileTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35"></td>
-				</tr>
 				<tr name="mainFaxTR" id="mainFaxTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
 					<td align="left"><input type="text" id="mainFax" name="mainFax" size="35"></td>
 				</tr>
-				<tr name="mainEmailTR" id="mainEmailTR" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("email").'</td>
-					<td align="left"><input type="text" id="mainEmail" name="mainEmail" size="35"></td>
-				</tr>				
 				<!--*********************************************************-->
 				<tr id="categoryTR" name="categoryTR" style="display:none">
 					<td nowrap align="left" style="border-bottom:1px double orange;">'.$locate->Translate("category").'</td>
@@ -747,6 +747,10 @@ Class astercrm extends PEAR{
 						<input type="hidden" id="bankDetial" name="bankDetial" value="OFF">
 					<!--********************-->
 					
+					<tr id="bankAccountNameTR" name="bankAccountNameTR" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
+						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="50"></td>
+					</tr>
 					<tr id="bankNameTR" name="bankNameTR" style="display:none">
 					<td nowrap align="left" style="border-top:1px double orange;">'.$locate->Translate("bank_name").'</td>
 					<td align="left" style="border-top:1px double orange"><input type="text" id="bankname" name="bankname" size="50"></td>
@@ -754,10 +758,6 @@ Class astercrm extends PEAR{
 					<tr id="bankZipTR" name="bankZipTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
 						<td align="left"><input type="text" id="bankzip" name="bankzip" size="50"></td>
-					</tr>
-					<tr id="bankAccountNameTR" name="bankAccountNameTR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
-						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="50"></td>
 					</tr>
 					<tr id="bankAccountTR" name="bankAccountTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>

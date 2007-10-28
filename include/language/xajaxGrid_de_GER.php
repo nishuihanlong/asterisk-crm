@@ -1,9 +1,9 @@
 <?
-$edit = "膎dern";
+$edit = "ändern";
 $detail = "Detail";
 $delete = "löschen";
 $select_field ="- Feld  auswählen - ";
-$add_record = "Eintrag hinzuf黦en";
+$add_record = "Eintrag hinzufuegen";
 $table = "Schreibtisch";
 $search = "Suche";
 $by = "Nach";
@@ -14,5 +14,5 @@ $total = "Alles";
 $next = "nächste  >";
 $last = "Letzete Seite >>";
 $show_all = "Zeige Alle";
-$delete_confirm	= "Sind Sie sicher, da?Sie den Eintrag l鰏chen wollen?";
+$delete_confirm	= "Sind Sie sicher, daß Sie den Eintrag löschen wollen?";
 ?>
