@@ -181,7 +181,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
+
+	$table->addRowSearch("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
+
+//	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table

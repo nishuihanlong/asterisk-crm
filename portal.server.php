@@ -401,19 +401,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML Table: columns attributes
 	$attribsCols = array();
 	$attribsCols[] = 'nowrap style="text-align: left"';
-<<<<<<< .mine
-	$attribsCols[] = 'style="text-align: left"';  //face
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-=======
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
->>>>>>> .r168
+
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -462,18 +456,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['category'];
 		$rowc[] = $row['contact'];
 		$rowc[] = $row['note'];
-		if($row['attitude'] == 10){
-			$rowc[] = '<img src="skin/default/images/1.gif" width="25px" height="25px" border="0" />';
-		}
-		if($row['attitude'] == 5){
-			$rowc[] = '<img src="skin/default/images/2.gif" width="25px" height="25px" border="0" />';
-		}
-		if($row['attitude'] == -1){
-			$rowc[] = '<img src="skin/default/images/3.gif" width="25px" height="25px" border="0" />';
-		}
-		if($row['attitude'] == 0){
-			$rowc[] = '<img src="skin/default/images/4.gif" width="25px" height="25px" border="0" />';
-		}
+		$rowc[] = '<img src="skin/default/images/'.$row['attitude'].'.gif" width="25px" height="25px" border="0" />';
+
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['priority'];

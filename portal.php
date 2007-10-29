@@ -216,7 +216,6 @@ require_once('portal.common.php');
 		class="divExtension drsElement drsMoveHandle" 
 		style="left: 750px; top: 20px;	width: 160px;
 				position: absolute; 
-				overflow: auto;
 				z-index:0;text-align: center; border: 1px dashed #EAEAEA;    color:#006600; "></div>
 	<div id="divCopyright"></div>
 	</body>
