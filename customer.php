@@ -61,6 +61,37 @@ require_once('customer.common.php');
 		function importCsv(){
 			xajax_importCsv();
 		}
+
+		function addSearth()
+		{
+			alert('vvvvvvvvvvvv');
+			oldidvalue =frmDownload.oldid.value;
+			oldidvalue++;
+			str=document.getElementsByName('addSearth')[0].innerHTML;
+			str = str.replace('<TBODY>',' ');
+			str = str.replace('</TBODY>',' ');
+			alert(str);
+			i=frmDownload.oldid.value;
+			for (i;i<oldidvalue;i++)
+			{
+				str=str+"<tr><td>searth: &nbsp;<input type='text' size='30' id=searchContent"+i+ "    name=searchContent"+i+">&nbsp;&nbsp;searthby &nbsp;"+
+					"<select id=searchField"+i+" name=searchField"+i+">"+
+						"<option value=''> </option>"+
+						"<option value='customer'>customer name</option>"+
+						"<option value='state'>shengfen</option>"+
+						"<option value='city'>city</option>"+
+						"<option value='phone'>phone</option>"+
+						"<option value='contact'>contact</option>"+
+						"<option value='website'>www</option>"+
+						"<option value='category'>type</option>"+
+						"<option value='cretime'>create time</option>"+
+						"<option value='creby'>creater</option>"+
+					"</select></td></tr>";
+			}
+			alert(str);
+			frmDownload.oldid.value = oldidvalue;
+			document.getElementsByName('addSearth')[0].innerHTML = str;
+		}
 		//-->
 		</SCRIPT>
 
@@ -104,6 +135,11 @@ require_once('customer.common.php');
 	</table>
 	<form name="frmDownload" id="frmDownload" action="download.php">
 		<input type="hidden" value="" id="type" name="type">
+		<!--*********************-->
+		<input type="hidden" value="" id="search" name="search" />
+		<input type="hidden" value="" id="by" name="by" />
+		<INPUT TYPE="hidden" NAME="oldid" value="1"> <!--基数1-->
+		<!--*********************-->
 	</form>
 	<div id="divCopyright"></div>
 	</body>

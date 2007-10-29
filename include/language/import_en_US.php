@@ -22,4 +22,5 @@
 	$by = "assign to account automaticly";
 	$submit = "submit";
 	$selecttable = "select table";
+	$feifa = "error";
 ?>

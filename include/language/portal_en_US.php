@@ -19,4 +19,5 @@ $start_record	= "Start record";
 $stop_record	= "Stop record";
 $monitor	= "Monitor";
 $recording	= "Recording";
+$attitude	= "At";
 ?>

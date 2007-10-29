@@ -104,8 +104,8 @@
 				xajax_showDivMainRight();
 			}
 
+			
 		</script>
-
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
@@ -117,9 +117,9 @@
 		<center>
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel">
-					<input type="hidden" name="MAX_FILE_SIZE" value="300000" />
+					<input type="hidden" name="MAX_FILE_SIZE" value="30000000" />
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="divFileName"></span>:<input type="file" name="excel"><br />
+					<span id="divFileName"></span>:<input type="file" name="excel" /><br />
 					<input type="submit" value="" id="btnUpload" name="btnUpload" />
 					<input type="hidden" value="" id="alertmsg" />
 				</form>

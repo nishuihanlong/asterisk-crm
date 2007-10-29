@@ -56,6 +56,11 @@ function init(){
 	$objResponse->addAssign("btnContact","value",$locate->Translate("contact"));
 	$objResponse->addAssign("btnNote","value",$locate->Translate("note"));
 
+	//*******
+	$objResponse->addAssign("by","value",$locate->Translate("by"));  //搜索条件
+	$objResponse->addAssign("search","value",$locate->Translate("search")); //搜索内容
+	//*******
+
 	return $objResponse;
 }
 
@@ -176,7 +181,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table

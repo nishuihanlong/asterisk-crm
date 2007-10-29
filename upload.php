@@ -28,14 +28,14 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$upload_msg = '';
 	$upload_type = $_FILES['excel']['type'];
 	$is_vaild = 0;
-	if ( "application/vnd.ms-excel" == $upload_type)
+	$file_name = $_FILES['excel']['name'];
+	$type = substr($file_name,-3);
+	if ( "xls" == $type || "csv" == $type)
 	{
-		$file_name = $_FILES['excel']['name'];
-		$type = substr($file_name,-4);
 		if (move_uploaded_file($_FILES['excel']['tmp_name'], $config['system']['upload_excel_path'] . $_FILES['excel']['name'])) 
 		{
 			$upload_msg =$locate->Translate('file').' '.$_FILES['excel']['name'].' '.$locate->Translate('uploadsuccess')."!<br />";
-			if($type == '.csv'){
+			if($type == 'csv'){
 				$handleup = fopen($config['system']['upload_excel_path'] . $_FILES['excel']['name'],"r");
 				$row = 0;
 				while($data = fgetcsv($handleup, 1000, ",")){
@@ -46,7 +46,7 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 				}else{
 					$upload_msg .= " <font>".$locate->Translate('have').' '.$row.' '.$locate->Translate('recrod')."</font>";
 				}
-			}elseif($type == '.xls'){
+			}elseif($type == 'xls'){
 				Read_Excel_File($config['system']['upload_excel_path'] . $_FILES['excel']['name'],$return);
 				$xlsrow = count($return[Sheet1]);
 				if($xlsrow > 8){
@@ -67,7 +67,7 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 }
 else
 {
-	$upload_msg = $locate->Translate('failed');
+	$upload_msg = $locate->Translate('feifa');
 }
 
 ?>

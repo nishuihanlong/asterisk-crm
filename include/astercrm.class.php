@@ -591,10 +591,10 @@ Class astercrm extends PEAR{
 								<option value=10>10</option>
 							</select> 
 
-							&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/2.gif" width="18px" height="18px" border="0" /> 
-							<input type="radio" name="attitude" value="5"/><img src="skin/default/images/3.gif" width="18px" height="18px" border="0" /> 
-							<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/1.gif" width="18px" height="18px" border="0" />
-							<input type="radio" name="attitude"  value="0" checked/> ?
+							&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/1.gif" width="25px" height="25px" border="0" /> 
+							<input type="radio" name="attitude" value="5"/><img src="skin/default/images/2.gif" width="25px" height="25px" border="0" /> 
+							<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/3.gif" width="25px" height="25px" border="0" />
+							<input type="radio" name="attitude"  value="0" checked/> <img src="skin/default/images/4.gif" width="25px" height="25px" border="0" />
 						</td>
 					</tr>
 					<tr>
@@ -889,10 +889,10 @@ Class astercrm extends PEAR{
 						<option value=9>9</option>
 						<option value=10>10</option>
 					</select> 
-					&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/2.gif" width="18px" height="18px" border="0" /> 
-					<input type="radio" name="attitude" value="5"/><img src="skin/default/images/3.gif" width="18px" height="18px" border="0" /> 
-					<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/1.gif" width="18px" height="18px" border="0" />
-					<input type="radio" name="attitude"  value="0" checked/> ?
+					&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/1.gif" width="25px" height="25px" border="0" /> 
+					<input type="radio" name="attitude" value="5"/><img src="skin/default/images/2.gif" width="25px" height="25px" border="0" /> 
+					<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/3.gif" width="25px" height="25px" border="0" />
+					<input type="radio" name="attitude"  value="0" checked/> <img src="skin/default/images/4.gif" width="25px" height="25px" border="0" />
 				</td>
 			</tr>
 			<tr>
@@ -1038,24 +1038,24 @@ Class astercrm extends PEAR{
 							if($note['attitude'] == '10'){
 								$html .= 'checked';
 							}
-							$html .= '/><img src="skin/default/images/2.gif" width="18px" height="18px" border="0" /> 
+							$html .= '/><img src="skin/default/images/1.gif" width="25px" height="25px" border="0" /> 
 							<input type="radio" name="attitude"  value="5" ';
 							if($note['attitude'] == '5'){
 								$html .= 'checked';
 							}
-							$html .= ' /><img src="skin/default/images/3.gif" width="18px" height="18px" border="0" /> 
+							$html .= ' /><img src="skin/default/images/2.gif" width="25px" height="25px" border="0" /> 
 							<input type="radio" name="attitude"  value="-1" ';
 							if($note['attitude'] == '-1'){
 								$html .= 'checked';
 							}
 							$html .= ' 
-							/><img src="skin/default/images/1.gif" width="18px" height="18px" border="0" />
+							/><img src="skin/default/images/3.gif" width="25px" height="25px" border="0" />
 							<input type="radio" name="attitude"  value="0" ';
 							if($note['attitude'] == '0'){
 								$html .= 'checked';
 							}
 							$html .= ' 
-							/> ?
+							/> <img src="skin/default/images/4.gif" width="25px" height="25px" border="0" />
 						</td>
 					</tr>
 					<tr>
