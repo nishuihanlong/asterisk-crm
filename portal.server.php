@@ -391,8 +391,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="7%"';
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="10%"'; //face
+	$attribsHeader[] = 'width="30%"';
+	$attribsHeader[] = 'width="5%"'; //face
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="7%"';
