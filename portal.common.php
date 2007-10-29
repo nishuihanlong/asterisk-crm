@@ -48,6 +48,10 @@ astercrm functions
 	surveyAdd
 	saveNote
 	saveSurvey
+	getContact
+
+* Revision 0.0456  2007/10/29 21:26:00  modified by solo
+* Desc: add function getContact
 
 * Revision 0.045  2007/10/18 14:42:00  modified by solo
 * Desc: comment added
@@ -107,6 +111,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("surveyAdd");
 	$xajax->registerFunction("saveNote");
 	$xajax->registerFunction("saveSurvey");
+	$xajax->registerFunction("getContact");
 }
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin

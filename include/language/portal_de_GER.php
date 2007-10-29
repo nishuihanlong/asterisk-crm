@@ -10,6 +10,7 @@ $transfer="Transfer";
 $talking_to	=	"Talking to ";
 $manager	=	"Manager";
 $dial			= "Dial";
+$search			= "Search";
 $stand_by="Bitte warten Sie";
 $incoming="Eingehender Anruf von";
 $dial_out="Abgehender Ruf";

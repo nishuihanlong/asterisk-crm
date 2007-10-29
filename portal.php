@@ -62,6 +62,9 @@
 				updateEvents					check database for asterisk events
 
 
+* Revision 0.0456  2007/10/29 21:31:00  last modified by solo
+* Desc: add div divSearchContact
+
 
 * Revision 0.045  2007/10/19 15:05:00  last modified by solo
 * Desc: make the following div draggable:
@@ -177,10 +180,11 @@ require_once('portal.common.php');
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
-	<div id="divDialList" name="divDialList"></div>
+	<div id="divDialList" name="divDialList"></div><br/>
 	<div id="processingMessage" name="processingMessage"></div>
-	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber"><input type="button" id="btnDial" name="btnDial" value="Dial" onclick="dial(xajax.$('iptDestnationNumber').value)"></div>
+	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="" onclick="dial(xajax.$('iptDestnationNumber').value)"></div><br/>
 	<?if ($config['system']['enable_external_crm'] == false){?>
+		<div id="divSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)"></div><br/>
 		<br><br><br><br><br><br>
 		<br><br><br><br><br><br>
 		<br><br><br><br><br><br>

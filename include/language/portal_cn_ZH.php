@@ -10,6 +10,7 @@ $transfer="转接";
 $talking_to	=	"正在通话";
 $manager	=	"管理";
 $dial			= "拨号";
+$search			= "查找";
 $stand_by="请稍候";
 $incoming="你有新的来电";
 $dial_out="正在拨号";
