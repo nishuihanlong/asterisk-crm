@@ -369,6 +369,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'category';
 	$fields[] = 'contact';
 	$fields[] = 'note';
+	$fields[] = 'attitude';   //face
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 	$fields[] = 'priority';
@@ -379,6 +380,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("category")."<BR>";//"Category";
 	$headers[] = $locate->Translate("contact")."<BR>";//"Contact";
 	$headers[] = $locate->Translate("note")."<BR>";//"Note";
+	$headers[] = $locate->Translate("attitude")."<BR>";//"face";
 	$headers[] = $locate->Translate("create_time")."<BR>";//"Create Time";
 	$headers[] = $locate->Translate("create_by")."<BR>";//"Create By";
 	$headers[] = "P<BR>";
@@ -389,7 +391,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="7%"';
-	$attribsHeader[] = 'width="35%"';
+	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="10%"'; //face
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="7%"';
@@ -398,12 +401,19 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML Table: columns attributes
 	$attribsCols = array();
 	$attribsCols[] = 'nowrap style="text-align: left"';
+<<<<<<< .mine
+	$attribsCols[] = 'style="text-align: left"';  //face
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+=======
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
+>>>>>>> .r168
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -411,6 +421,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","attitude","'.$divName.'","ORDERING");return false;\'';  //face
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
@@ -421,6 +432,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'category';
 	$fieldsFromSearch[] = 'contact.contact';
 	$fieldsFromSearch[] = 'note';
+	$fieldsFromSearch[] = 'attitude';  //face
 	$fieldsFromSearch[] = 'priority';
 	$fieldsFromSearch[] = 'note.cretime';
 
@@ -430,6 +442,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("category");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("note");
+	$fieldsFromSearchShowAs[] = $locate->Translate("attitude"); //face
 	$fieldsFromSearchShowAs[] = $locate->Translate("priority");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 
@@ -449,6 +462,18 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['category'];
 		$rowc[] = $row['contact'];
 		$rowc[] = $row['note'];
+		if($row['attitude'] == 10){
+			$rowc[] = '<img src="skin/default/images/1.gif" width="25px" height="25px" border="0" />';
+		}
+		if($row['attitude'] == 5){
+			$rowc[] = '<img src="skin/default/images/2.gif" width="25px" height="25px" border="0" />';
+		}
+		if($row['attitude'] == -1){
+			$rowc[] = '<img src="skin/default/images/3.gif" width="25px" height="25px" border="0" />';
+		}
+		if($row['attitude'] == 0){
+			$rowc[] = '<img src="skin/default/images/4.gif" width="25px" height="25px" border="0" />';
+		}
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['priority'];
