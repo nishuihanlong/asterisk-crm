@@ -49,6 +49,10 @@ astercrm functions
 	saveNote
 	saveSurvey
 	getContact
+	invite
+
+* Revision 0.0456  2007/10/30 8:49:00  modified by solo
+* Desc: add function invite
 
 * Revision 0.0456  2007/10/29 21:26:00  modified by solo
 * Desc: add function getContact
@@ -90,6 +94,7 @@ $xajax->registerFunction("transfer");
 $xajax->registerFunction("init");
 $xajax->registerFunction("addWithPhoneNumber");
 $xajax->registerFunction("monitor");
+$xajax->registerFunction("invite");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

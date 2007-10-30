@@ -33,14 +33,19 @@
 			formAdd					生成添加综合信息(包括customer, contact, survey, note)的HTML语法
 			formEdit				生成综合信息编辑的HTML语法, 包括编辑customer, contact以及添加note
 			getOptions				读取survey的所有option
+
 			showCustomerRecord		生成显示customer信息的HTML语法
 			showContactRecord		生成显示contact信息的HTML语法
+
 			exportCSV				生成csv文件内容, 目前支持导出customer, contact
 			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
 
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
 			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
+
+* Revision 0.0456  2007/10/30 13:30:00  last modified by solo
+* Desc: modified function insertNewAccount,updateAccountRecord
 
 * Revision 0.045  2007/10/18 13:30:00  last modified by solo
 * Desc: add function insertNewDiallist
@@ -170,6 +175,7 @@ Class astercrm extends PEAR{
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."',"
+				."channel='".$f['channel']."',"			// added 2007/10/30 by solo
 				."usertype='".$f['usertype']."',"
 				."extensions='".$f['extensions']."'";
 
@@ -307,6 +313,7 @@ Class astercrm extends PEAR{
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."', "
 				."usertype='".$f['usertype']."', "
+				."channel='".$f['channel']."', "	// added 2007/10/30 by solo
 				."extensions='".$f['extensions']."' "
 				."WHERE id='".$f['id']."'";
 
@@ -635,7 +642,7 @@ Class astercrm extends PEAR{
 		$html .= '
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off"><br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
+					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off"><br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
 					<input type="hidden" id="customerDetial" name="customerDetial" value="OFF">
 					[<a href=? onclick="
 						if (xajax.$(\'customerDetial\').value == \'OFF\'){
@@ -689,7 +696,7 @@ Class astercrm extends PEAR{
 				<tr id="customerContactTR" name="customerContactTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 					<td align="left">
-						<input type="text" id="customerContact" name="customerContact" size="35" maxlength="35">
+						<input type="text" id="customerContact" name="customerContact" size="35" maxlength="35"><br>
 						<select id="customerContactGender" name="customerContactGender">
 							<option value="male">'.$locate->Translate("male").'</option>
 							<option value="female">'.$locate->Translate("female").'</option>
@@ -699,15 +706,15 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr id="addressTR" name="addressTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("address").'</td>
-					<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200"></td>
+					<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
 				</tr>
 				<tr id="cityTR" name="cityTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("zipcode").'/'.$locate->Translate("city").'</td>
-					<td align="left"> <input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"> <input type="text" id="city" name="city" size="50" maxlength="50"></td>
+					<td align="left"> <input type="text" id="zipcode" name="zipcode" size="10" maxlength="10">&nbsp;&nbsp;<input type="text" id="city" name="city" size="17" maxlength="50"></td>
 				</tr>
 				<tr id="stateTR" name="stateTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("state").'</td>
-					<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50"></td>
+					<td align="left"><input type="text" id="state" name="state" size="35" maxlength="50"></td>
 				</tr>
 				<tr id="customerPhoneTR" name="customerPhoneTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
@@ -723,7 +730,7 @@ Class astercrm extends PEAR{
 				</tr>				
 				<tr id="websiteTR" name="websiteTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("website").'</td>
-					<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+					<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><br><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
 				</tr>
 				<!--<tr id="zipcodeTR" name="zipcodeTR" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
@@ -749,19 +756,19 @@ Class astercrm extends PEAR{
 					
 					<tr id="bankAccountNameTR" name="bankAccountNameTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
-						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="50"></td>
+						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="35"></td>
 					</tr>
 					<tr id="bankNameTR" name="bankNameTR" style="display:none">
 					<td nowrap align="left" style="border-top:1px double orange;">'.$locate->Translate("bank_name").'</td>
-					<td align="left" style="border-top:1px double orange"><input type="text" id="bankname" name="bankname" size="50"></td>
+					<td align="left" style="border-top:1px double orange"><input type="text" id="bankname" name="bankname" size="35"></td>
 					</tr>
 					<tr id="bankZipTR" name="bankZipTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
-						<td align="left"><input type="text" id="bankzip" name="bankzip" size="50"></td>
+						<td align="left"><input type="text" id="bankzip" name="bankzip" size="35"></td>
 					</tr>
 					<tr id="bankAccountTR" name="bankAccountTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"></td>
+						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="35"></td>
 					</tr>	
 					<!--********************-->
 					';
@@ -770,7 +777,7 @@ Class astercrm extends PEAR{
 		$html .= '
 				<tr>
 					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
-					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
+					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 				</tr>
 				';
 	}
@@ -853,7 +860,7 @@ Class astercrm extends PEAR{
 				$html .='
 					<tr>
 						<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
-						<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="50" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
+						<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
 					</tr>
 					';
 		}
@@ -1080,7 +1087,7 @@ Class astercrm extends PEAR{
 					<table border="0" width="100%">
 					<tr id="customerTR" name="customerTR">
 						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-						<td align="left"><input type="text" id="customer" name="customer" size="50" maxlength="100" value="' . $customer['customer'] . '"><input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
+						<td align="left"><input type="text" id="customer" name="customer" size="35" maxlength="100" value="' . $customer['customer'] . '"><input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'">
 </td>
 					</tr>
 					<tr id="websiteTR" name="websiteTR">
@@ -1089,15 +1096,15 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr id="stateTR" name="stateTR">
 						<td nowrap align="left">'.$locate->Translate("state").'</td>
-						<td align="left"><input type="text" id="state" name="state" size="50" maxlength="50" value="'.$customer['state'].'"></td>
+						<td align="left"><input type="text" id="state" name="state" size="35" maxlength="50" value="'.$customer['state'].'"></td>
 					</tr>
 					<tr id="cityTR" name="cityTR">
 						<td nowrap align="left">'.$locate->Translate("city").'</td>
-						<td align="left"><input type="text" id="city" name="city" size="50" maxlength="50" value="'.$customer['city'].'"></td>
+						<td align="left"><input type="text" id="city" name="city" size="35" maxlength="50" value="'.$customer['city'].'"></td>
 					</tr>
 					<tr id="addressTR" name="addressTR">
 						<td nowrap align="left">'.$locate->Translate("address").'</td>
-						<td align="left"><input type="text" id="address" name="address" size="50" maxlength="200" value="' . $customer['address'] . '"></td>
+						<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200" value="' . $customer['address'] . '"></td>
 					</tr>
 					<tr id="zipcodeTR" name="zipcodeTR">
 						<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
@@ -1131,19 +1138,19 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr id="bankNameTR" name="bankNameTR">
 						<td nowrap align="left">'.$locate->Translate("bank_name").'</td>
-						<td align="left"><input type="text" id="bankname" name="bankname" size="50"  value="' . $customer['bankname'] . '"></td>
+						<td align="left"><input type="text" id="bankname" name="bankname" size="35"  value="' . $customer['bankname'] . '"></td>
 					</tr>
 					<tr id="bankZipTR" name="bankZipTR">
 						<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
-						<td align="left"><input type="text" id="bankzip" name="bankzip" size="50"  value="' . $customer['bankzip'] . '"></td>
+						<td align="left"><input type="text" id="bankzip" name="bankzip" size="35"  value="' . $customer['bankzip'] . '"></td>
 					</tr>
 					<tr id="bankAccountNameTR" name="bankAccountNameTR">
 						<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
-						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="50" value="' . $customer['bankaccountname'] . '"></td>
+						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="35" value="' . $customer['bankaccountname'] . '"></td>
 					</tr>
 					<tr id="bankAccountTR" name="bankAccountTR">
 						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="50"  value="' . $customer['bankaccount'] . '"></td>
+						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="35"  value="' . $customer['bankaccount'] . '"></td>
 					</tr>
 					<tr id="customerPhoneTR" name="customerPhoneTR">
 						<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>

@@ -39,7 +39,7 @@ class Customer extends astercrm
 	*/
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
-		$sql = "SELECT note.id AS id,note.attitude as attitude, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+		$sql = "SELECT note.id AS id,note.contactid AS contactid,note.customerid AS customerid,note.attitude as attitude, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
 
 //		if ($creby != null)
 		$sql .= " WHERE priority>0 AND note.creby = '".$_SESSION['curuser']['username']."' ";

@@ -141,7 +141,29 @@ require_once('portal.common.php');
 //			xajax.loadingFunction = showProcessingMessage;
 //			xajax.doneLoadingFunction = hideProcessingMessage;
 		}
-	
+		
+		function invite(){
+			src = trim(xajax.$('iptSrcNumber').value);
+			dest = trim(xajax.$('iptDestNumber').value);
+			if (src == '' && dest == '')
+				return false;
+			if (src == ''){
+				xajax.$('iptSrcNumber').value = xajax.$('extension').value;
+				src = xajax.$('extension').value;
+			}
+
+			if (dest == ''){
+				xajax.$('iptDestNumber').value = xajax.$('extension').value;
+				dest = xajax.$('extension').value;
+			}
+
+			xajax_invite(src,dest);
+		}
+
+		function trim(stringToTrim) {
+			return stringToTrim.replace(/^\s+|\s+$/g,"");
+		}
+
 		</script>
 
 	<script type="text/javascript" src="js/dragresize.js"></script>
@@ -182,7 +204,13 @@ require_once('portal.common.php');
 	<br>
 	<div id="divDialList" name="divDialList"></div><br/>
 	<div id="processingMessage" name="processingMessage"></div>
-	<div id="click2dial"><input type="text" value="" name="iptDestnationNumber" id="iptDestnationNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="" onclick="dial(xajax.$('iptDestnationNumber').value)"></div><br/>
+
+<!--
+	<div id="click2dial"><input type="text" value="" name="iptDestinationNumber" id="iptDestinationNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="" onclick="dial(xajax.$('iptDestinationNumber').value)"></div><br/>
+-->
+
+	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
+
 	<?if ($config['system']['enable_external_crm'] == false){?>
 		<div id="divSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)"></div><br/>
 		<br><br><br><br><br><br>
@@ -220,7 +248,10 @@ require_once('portal.common.php');
 		class="divExtension drsElement drsMoveHandle" 
 		style="left: 750px; top: 20px;	width: 160px;
 				position: absolute; 
-				z-index:0;text-align: center; border: 1px dashed #EAEAEA;    color:#006600; "></div>
+				z-index:0;
+				text-align: center; 
+				border: 1px dashed #EAEAEA;    
+				color:#006600; "></div>
 	<div id="divCopyright"></div>
 	</body>
 </html>

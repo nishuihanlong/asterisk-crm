@@ -16,4 +16,6 @@ $adding_account = "Benutzerkonto hinzufügen";
 $edit_account = "Zugang ändern";
 $usertype = "Benutzer Type";
 $usertype_note = "Nutzung nur durch Admin";
+$channel	= "Channel";	// added 2007/10/30 by solo
+$account_detail		= "Account Detail";	// added 2007/10/30 by solo
 ?>

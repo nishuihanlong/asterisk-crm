@@ -17,4 +17,6 @@ $adding_account = "添加用户";
 $edit_account = "编辑用户";
 $usertype = "用户类型";
 $usertype_note = "只能使用 admin 或者为空";
+$channel	= "通道";	// added 2007/10/30 by solo
+$account_detail		= "账户信息";	// added 2007/10/30 by solo
 ?>

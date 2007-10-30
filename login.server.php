@@ -10,6 +10,9 @@
 * Private Functions List
 									processAccountData
 
+* Revision 0.0456  2007/10/30 13:49:00  modified by solo
+* Desc: add $_SESSION['curuser']['channel']
+
 * Revision 0.045  2007/10/8 14:21:00  modified by solo
 * Desc: add string check
 
@@ -113,6 +116,7 @@ function init($aFormValue){
 	unset($_SESSION['curuser']['username']);
 	unset($_SESSION['curuser']['extension']);
 	unset($_SESSION['curuser']['extensions']);
+	unset($_SESSION['curuser']['channel']);
 	return $objResponse;
 }
 
@@ -130,6 +134,7 @@ function init($aFormValue){
 															$_SESSION['curuser']['extensions']
 															$_SESSION['curuser']['country']
 															$_SESSION['curuser']['language']
+															$_SESSION['curuser']['channel']
 */
 function processAccountData($aFormValues)
 {
@@ -154,6 +159,9 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
 				$_SESSION['curuser']['usertype'] = $list['usertype'];
+
+				// added by solo 2007-10-90
+				$_SESSION['curuser']['channel'] = $list['channel'];
 
 				if ($list['extensions'] != ''){
 					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);

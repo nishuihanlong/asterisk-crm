@@ -23,7 +23,13 @@
 	dial
 	transfer
 	addWithPhoneNumber
+	invite
 
+* Revision 0.0456  2007/10/30 12:47:00  last modified by solo
+* Desc: add link in customer and contact
+
+* Revision 0.0456  2007/10/30 8:47:00  last modified by solo
+* Desc: add function invite
 
 * Revision 0.0451  2007/10/25 15:21:00  last modified by solo
 * Desc: remove confirmCustomer,confirmContact to common file
@@ -261,8 +267,13 @@ function waitingCalls($myValue){
 	
 	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
 
-	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
-
+	//	modified 2007/10/30 by solo
+	//  start
+	if ($_SESSION['curuser']['channel'] == '')
+		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
+	else
+		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
+	//  end
 
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
@@ -382,7 +393,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("note")."<BR>";//"Note";
 	$headers[] = $locate->Translate("attitude")."<BR>";//"face";
 	$headers[] = $locate->Translate("create_time")."<BR>";//"Create Time";
-	$headers[] = $locate->Translate("create_by")."<BR>";//"Create By";
+//	$headers[] = $locate->Translate("create_by")."<BR>";//"Create By";
 	$headers[] = "P<BR>";
 //	$headers[] = "D";
 
@@ -392,11 +403,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="7%"';
 	$attribsHeader[] = 'width="30%"';
-	$attribsHeader[] = 'width="5%"'; //face
+	$attribsHeader[] = 'width="6%"'; //face
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="7%"';
-//	$attribsHeader[] = 'width="5%"';
+//	$attribsHeader[] = 'width="10%"';
+//	$attribsHeader[] = 'width="7%"';
+	$attribsHeader[] = 'width="6%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -405,7 +416,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'nowrap style="text-align: left"';
+//	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'nowrap style="text-align: left"';
 
 
@@ -417,7 +428,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","attitude","'.$divName.'","ORDERING");return false;\'';  //face
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
@@ -452,14 +463,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['customer'];
+		$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."');return false;\"
+		>".$row['customer']."</a>";
 		$rowc[] = $row['category'];
-		$rowc[] = $row['contact'];
+		$rowc[] = "<a href=? onclick=\"xajax_showContact('".$row['contactid']."');return false;\"
+		>".$row['contact']."</a>";
 		$rowc[] = $row['note'];
 		$rowc[] = '<img src="skin/default/images/'.$row['attitude'].'.gif" width="25px" height="25px" border="0" />';
 
-		$rowc[] = $row['cretime'];
-		$rowc[] = $row['creby'];
+		$rowc[] =  str_replace(" ","<br>",$row['cretime']);
+//		$rowc[] = $row['creby'];
 		$rowc[] = $row['priority'];
 //		$rowc[] = 'Detail';
 		$table->addRow("note",$rowc,1,1,1,$divName,$fields);
@@ -555,6 +568,56 @@ function dial($phoneNum,$first = ''){
 			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,NULL);
 		}
 	}
+	$myAsterisk->disconnect();
+	return $objResponse->getXML();
+}
+
+/**
+*  Originate src and dest extension
+*  @param	src			string			extension
+*  @param	dest		string			extension
+*  @return	object						xajax response object
+*/
+
+function invite($src,$dest){
+	global $config;
+	$src = trim($src);
+	$dest = trim($dest);
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+	
+/*
+	if ($src == '' and $dest == '')
+		return $objResponse;
+
+	if ($src == '')
+		$src = $_SESSION['curuser']['extension'];
+
+	if ($dest == '')
+		$dest = $_SESSION['curuser']['extension'];
+*/
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res)
+		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
+
+
+		$strChannel = "Local/".$src."@".$config['system']['incontext']."/n";
+
+	if ($config['system']['allow_dropcall'] == true){
+		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+							'WaitTime'=>30,
+							'Exten'=>$dest,
+							'Context'=>$config['system']['outcontext'],
+							'Variable'=>"$strVariable",
+							'Priority'=>1,
+							'MaxRetries'=>0,
+							'CallerID'=>$dest));
+	}else{
+		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$dest,NULL,NULL);
+	}
+
 	$myAsterisk->disconnect();
 	return $objResponse->getXML();
 }

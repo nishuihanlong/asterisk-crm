@@ -23,6 +23,10 @@
 		showDetail			显示account详细信息
 							当前返回空值
 
+* Revision 0.0456  2007/10/30 13:47:00  last modified by solo
+* Desc: modify function showDetail, make it show account detail when click detail
+
+
 * Revision 0.045  2007/10/19 10:01:00  last modified by solo
 * Desc: modify extensions description
 
@@ -297,8 +301,15 @@ function delete($accountid = null){
 
 function showDetail($accountid){
 	$objResponse = new xajaxResponse();
+	global $locate;
+	$html = Table::Top( $locate->Translate("account_detail"),"formDiv"); 
+	$html .= Customer::showAccountDetail($accountid);
+	$html .= Table::Footer();
 
-	return $objResponse->getXML();
+	$objResponse->addAssign("formDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formDiv", "innerHTML", $html);
+	return $objResponse;
 }
+
 $xajax->processRequests();
 ?>

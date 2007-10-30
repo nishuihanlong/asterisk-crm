@@ -16,6 +16,9 @@
 	formAdd						生成添加account表单的HTML
 	formEdit					生成编辑account表单的HTML
 
+* Revision 0.0456  2007/10/30 13:15:00  last modified by solo
+* Desc: add channel field 
+
 * Revision 0.045  2007/10/18 13:15:00  last modified by solo
 * Desc: page created
 
@@ -120,19 +123,23 @@ class Customer extends astercrm
 			<table border="1" width="100%" class="adminlist">
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("username").'</td>
-					<td align="left"><input type="text" id="username" name="username" size="25" maxlength="100"></td>
+					<td align="left"><input type="text" id="username" name="username" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("password").'</td>
-					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="100"></td>
+					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'</td>
-					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="100"></td>
+					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
 					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("channel").'</td>
+					<td align="left"><input type="text" id="channel" name="channel" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
@@ -171,23 +178,27 @@ class Customer extends astercrm
 			<table border="1" width="100%" class="adminlist">
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("username").'</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $account['id'].'"><input type="text" id="username" name="username" size="25" maxlength="100" value="'.$account['username'].'"></td>
+					<td align="left"><input type="hidden" id="id" name="id" value="'. $account['id'].'"><input type="text" id="username" name="username" size="25" maxlength="30" value="'.$account['username'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("password").'</td>
-					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="100" value="'.$account['password'].'"></td>
+					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="30" value="'.$account['password'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'</td>
-					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="100" value="'.$account['extension'].'"></td>
+					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="30" value="'.$account['extension'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
 					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100" value="'.$account['extensions'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("channel").'</td>
+					<td align="left"><input type="text" id="channel" name="channel" size="25" maxlength="30" value="'.$account['channel'].'"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
-					<td align="left"><input type="text" id="usertype" name="usertype" size="25" maxlength="100" value="'.$account['usertype'].'"></td>
+					<td align="left"><input type="text" id="usertype" name="usertype" size="25" maxlength="30" value="'.$account['usertype'].'"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
@@ -205,5 +216,50 @@ class Customer extends astercrm
 
 		return $html;
 	}
+
+	/**
+	*  Imprime la forma para editar un nuevo registro sobre el DIV identificado por "formDiv".
+	*
+	*	@param $id		(int)		Identificador del registro a ser editado.
+	*	@return $html	(string) Devuelve una cadena de caracteres que contiene la forma con los datos 
+	*									a extraidos de la base de datos para ser editados 
+	*/
+	
+	function showAccountDetail($id){
+		global $locate;
+		$account =& Customer::getRecordByID($id,'account');
+		$html = '
+			
+			<table border="1" width="100%" class="adminlist">
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("username").'</td>
+					<td align="left">'.$account['username'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("password").'</td>
+					<td align="left">'.$account['password'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("extension").'</td>
+					<td align="left">'.$account['extension'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
+					<td align="left">'.$account['extensions'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("channel").'</td>
+					<td align="left">"'.$account['channel'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
+					<td align="left">'.$account['usertype'].'</td>
+				</tr>
+			 </table>
+			';
+
+		return $html;
+	}
+
 }
 ?>

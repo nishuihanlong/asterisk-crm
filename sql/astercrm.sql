@@ -88,6 +88,7 @@ CREATE TABLE account (
   password varchar(30) NOT NULL default '',
   extension varchar(30) NOT NULL default '',
   extensions varchar(200) NOT NULL default '',
+  channel	varchar(30) NOT NULL default '',	#add 2007-10-30 by solo
   usertype varchar(20) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;

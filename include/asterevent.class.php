@@ -270,6 +270,7 @@ class asterEvent extends PEAR
 		$query = "SELECT * FROM events WHERE id > $curid order by id";
 		asterEvent::events($query);
 		$res = $db->query($query);
+		//$db->disconnect();
 		return $res;
 	}
 
