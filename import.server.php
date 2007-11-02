@@ -41,7 +41,9 @@ function init(){
 	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("filemanager"));
 	$objResponse->addAssign("alertmsg","value",$locate->Translate("by"));
-
+	$objResponse->addAssign("onclickMsg","value",$locate->Translate("onclickMsg"));
+	$objResponse->addAssign("onsubmitMsg","value",$locate->Translate("onsubmitMsg"));
+	
 	$showtable = "<ul style='list-style:none;'>
 						<li>
 							<select name='table' id='table' onchange='selectTable(this.value);' >
@@ -82,7 +84,7 @@ function showDivMainRight(){
 	$file_name = $_SESSION['filename'];
 	$type = substr($file_name,-3);
 	//需要检查文件是否存在
-	$show_msg .= "<form method='post' name='formImport' id='formImport'>
+	$show_msg .= "
 					<input type='hidden' name='CHECK' value='1'/>";
 	$show_msg .= "
 					
@@ -105,6 +107,7 @@ function showDivMainRight(){
 	}
 	$show_msg .= "</tr>";
 	$show_msg .= "</table>";
+	
 
 	if($show_msg == ""){
 		$show_msg = $locate->Translate("nofilechoose");
@@ -115,7 +118,7 @@ function showDivMainRight(){
 	$show_submit = showDivSubmitForm($_SESSION['num']);
 
 	$objResponse->addAssign("divShowExcel", "innerHTML", $show_msg);
-	if(isset($_SESSION['filename']) && $_SESSION['filename'] != ''){
+	if($_SESSION['filename'] != ''){
 		$objResponse->addAssign("divSubmitForm", "innerHTML", $show_submit);
 	}
 	return $objResponse;
@@ -214,11 +217,9 @@ function submitForm($aFormValues){
 		$area_array = explode(',',$mytext2);
 		$area_num = count($area_array);//得到分区数
 	}
-	
 	if($type == 'csv'){
 		while($data = fgetcsv($handle, 1000, ",")){
 			$row_num_csv = count($data);  
-			$v++;
 			$mysql_field_name = '';
 			$data_str = '';
 			for($i=0;$i<$row_num_csv;$i++){
@@ -256,12 +257,14 @@ function submitForm($aFormValues){
 				}
 			}
 			$rs = & $db->query($sql_str);  //插入customer或contact表
+			$v += mysql_affected_rows(); 
 			$rs2 = & $db->query($sql_string);  // 插入diallist表
 		}
 	}elseif($type == 'xls'){
 		Read_Excel_File($file_path,$return);
 		for ($i=0;$i<count($return[Sheet1]);$i++)
 		{
+			$v++;
 			$mysql_field_name = '';
 			$data_str = '';
 			$row_num_xls = count($return[Sheet1][$i]);  //列数
@@ -301,8 +304,12 @@ function submitForm($aFormValues){
 				}
 			}
 			$rs = & $db->query($sql_str);  //插入customer或contact表
+			$v += mysql_affected_rows(); 
 			$rs2 = & $db->query($sql_string);  // 插入diallist表
 		}
+	}
+	if($v < 0){
+		$v = 0;
 	}
 	//delete upload file
 	//@ unlink($file_path);
@@ -312,6 +319,9 @@ function submitForm($aFormValues){
 	unset($_SESSION['edq']);
 	$objResponse->addAlert($locate->Translate('success'));
 	$objResponse->addScript("init();");
+	$objResponse->addAssign("overMsg", "innerHTML", $v.$locate->Translate('data'));
+	$objResponse->addScript("document.getElementById('submitButton').disabled = false;");
+	$objResponse->addAssign("submitButton","value",$locate->Translate("submit"));
 	$objResponse->addScript("showDivMainRight();");
 	return $objResponse;
 }
@@ -380,6 +390,7 @@ function showDivSubmitForm($num){
 					<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
 						<tr>
 							<td>
+								<input type='hidden' value='0000' name='TEST' />
 								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/> 
 								&nbsp;&nbsp; ".$locate->Translate('add')."  
 								<select name='dialListField' id='dialListField' disabled>
@@ -398,7 +409,12 @@ function showDivSubmitForm($num){
 				<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
 					<tr>
 						<td height='30px'>
-							<input type='button' value=".$locate->Translate('submit')." style='border:1px double #cccccc;width:150px' onclick='submitFormOnSubmit();'/>
+							<input type='submit' value=".$locate->Translate('submit')." style='border:1px double #cccccc;width:200px' id='submitButton' name='submitButton'/>
+						</td>
+					</tr>
+					<tr>
+						<td height='30px'>
+							<div style='width:100%;height:auto;lin-height:30px;text-align:center;' id='overMsg' name='overMsg'></div>
 						</td>
 					</tr>
 				</table>

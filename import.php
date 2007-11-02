@@ -93,9 +93,13 @@
 			}
 
 			function submitFormOnSubmit(){
-				if(document.getElementById('assign').value == "")
-				{
-					alert(document.getElementById('alertmsg').value);
+				xajax.$('submitButton').disabled=true;
+				xajax.$('submitButton').value=xajax.$('onsubmitMsg').value;
+				if(document.getElementsByName('chkAdd')[0].checked == true){
+					if(document.getElementById('assign').value == "")
+					{
+						alert(document.getElementById('alertmsg').value);
+					}
 				}
 				xajax_submitForm(xajax.getFormValues('formImport'));
 			}
@@ -103,8 +107,15 @@
 			function showDivMainRight(){
 				xajax_showDivMainRight();
 			}
-
 			
+			function uploadingState()
+			{
+				xajax.$('btnUpload').disabled=true;
+				xajax.$('btnUpload').value=xajax.$('onclickMsg').value;
+				return false;
+			}
+		
+
 		</script>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
@@ -116,11 +127,12 @@
 			<div id="divNav"></div>
 		<center>
 			<div id="mainform">
-				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel">
+				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" action="javascript:void(null);" onsubmit="uploadingState();">
 					<input type="hidden" name="MAX_FILE_SIZE" value="30000000" />
 					<input type="hidden" name="CHECK" value="1" />
 					<span id="divFileName"></span>:<input type="file" name="excel" /><br />
-					<input type="submit" value="" id="btnUpload" name="btnUpload" />
+					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
+					<input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
 					<input type="hidden" value="" id="alertmsg" />
 				</form>
 			</div>
@@ -141,8 +153,11 @@
 						<div id="divShowTable" name="divShowTable"></div>
 					</td>
 					<td width="80%" valign="top">
+						<form method='post' name='formImport' id='formImport' action="javascript:void(null);" onsubmit='submitFormOnSubmit();'>
+						<input id="onsubmitMsg" name="onsubmitMsg" type="hidden" value=""/>
 							<div name="divShowExcel" id="divShowExcel"></div>
 							<div name="divSubmitForm" id="divSubmitForm"></div>
+						</form>
 					</td>
 				</tr>
 			</table>

@@ -23,4 +23,7 @@
 	$submit = "submit";
 	$selecttable = "select table";
 	$feifa = "error";
+	$onclickMsg = "loading¡­¡­";
+	$onsubmitMsg = "excute data loading¡­¡­";
+	$data = 'records insert success';
 ?>

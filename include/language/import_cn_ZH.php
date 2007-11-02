@@ -23,4 +23,7 @@
 	$submit = "提交";
 	$selecttable = "选择表";
 	$feifa = "非法操作";
+	$onclickMsg = "正在上传，请等待……";
+	$onsubmitMsg = "正在执行数据操作，请等待……";
+	$data = '条记录，录入成功';
 ?>
