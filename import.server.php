@@ -202,6 +202,7 @@ function submitForm($aFormValues){
 			} 
 		}
 	}
+
 	$sql = "SELECT * FROM $table LIMIT 0,2 ";
 	$res =& $db->query($sql);
 	$tableInfo = $db->tableInfo($res); 
@@ -210,7 +211,7 @@ function submitForm($aFormValues){
 	$v = 0;
 	$diallist = 0;
 	$date = date('Y-m-d H:i:s');
-	
+
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){
 		$mytext = trim($aFormValues['dialListField']); //数字
 	}
@@ -219,6 +220,13 @@ function submitForm($aFormValues){
 		$area_array = explode(',',$mytext2);
 		$area_num = count($area_array);//得到分区数
 	}
+	$sql_account = "SELECT extension FROM account";
+	$res = & $db->query($sql_account);
+	while ($row = $res->fetchRow()) { 
+		$array_extension[] = $row['extension']; 
+	}
+	$extension_num = count($array_extension);
+	$random_num = rand(0,$extension_num-1);
 	if($type == 'csv'){
 		while($data = fgetcsv($handle, 1000, ",")){
 			$row_num_csv = count($data);  
@@ -241,27 +249,22 @@ function submitForm($aFormValues){
 			$data_str = substr($data_str,0,strlen($data_str)-1);
 			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
 
+
 			if(isset($mytext) && trim($mytext) != ''){
 				if($mytext2 != '' && isset($mytext2)){
 					$random_num = rand(0,$area_num-1);
 					$random_area = $area_array[$random_num];
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}else{
-					$sql_account = "SELECT extension FROM account";
-					$res = & $db->query($sql_account);
-					while ($row = $res->fetchRow()) { 
-						$array_extension[] = $row['extension']; 
-					}
-					$extension_num = count($array_extension);
-					$random_num = rand(0,$extension_num-1);
 					$random_area = $array_extension[$random_num];
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}
+				$rs2 =@ $db->query($sql_string);  // 插入diallist表
 			}
-			$rs = @ $db->query($sql_str);  //插入customer或contact表
-			$v += mysql_affected_rows(); 
-			$rs2 =@ $db->query($sql_string);  // 插入diallist表
-			//$diallist += mysql_affected_rows(); 
+			if($table != ''){
+				$rs = @ $db->query($sql_str);  //插入customer或contact表
+				$v += mysql_affected_rows();
+			}
 		}
 	}elseif($type == 'xls'){
 		Read_Excel_File($file_path,$return);
@@ -295,28 +298,23 @@ function submitForm($aFormValues){
 					$random_area = $area_array[$random_num];
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}else{
-					$sql_account = "SELECT extension FROM account";
-					$res = & $db->query($sql_account);
-					while ($row = $res->fetchRow()) { 
-						$array_extension[] = $row['extension']; 
-					}
-					$extension_num = count($array_extension);
-					$random_num = rand(0,$extension_num-1);
 					$random_area = $array_extension[$random_num];
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}
+				$rs2 =@ $db->query($sql_string);  // 插入diallist表
 			}
-			//$objResponse->addAlert($sql_str);
-			$rs = @ $db->query($sql_str);  //插入customer或contact表
-			$v += mysql_affected_rows(); 
-			$rs2 =@ $db->query($sql_string);  // 插入diallist表
-			//$diallist += mysql_affected_rows(); 
+			if($table != ''){
+				$rs = @ $db->query($sql_str);  //插入customer或contact表
+				$v += mysql_affected_rows();
+			}
 		}
 	}
 	if($v < 0){
 		$v = 0;
 	}
 	$overMsg = $table.' : '.$v.$locate->Translate('data');
+
+
 	//delete upload file
 	//@ unlink($file_path);
 	unset($_SESSION['filename']);
