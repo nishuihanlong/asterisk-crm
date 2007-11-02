@@ -128,9 +128,9 @@
 		<center>
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" action="javascript:void(null);" onsubmit="uploadingState();">
-					<input type="hidden" name="MAX_FILE_SIZE" value="30000000" />
+				
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="divFileName"></span>:<input type="file" name="excel" /><br />
+					<span id="divFileName"></span>:<input type="file" name="excel" id="excel"/><br />
 					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
 					<input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
 					<input type="hidden" value="" id="alertmsg" />

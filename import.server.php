@@ -50,6 +50,7 @@ function init(){
 								<option value=''>".$locate->Translate("selecttable")."</option>
 								<option value='customer'>customer</option>
 								<option value='contact'>contact</option>
+								<option value='bankzip'>bankzip</option>
 							</select>
 						</li>
 					</ul>
@@ -207,6 +208,7 @@ function submitForm($aFormValues){
 	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
 	$handle = fopen($file_path,"r");
 	$v = 0;
+	$diallist = 0;
 	$date = date('Y-m-d H:i:s');
 	
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){
@@ -256,9 +258,10 @@ function submitForm($aFormValues){
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}
 			}
-			$rs = & $db->query($sql_str);  //插入customer或contact表
+			$rs = @ $db->query($sql_str);  //插入customer或contact表
 			$v += mysql_affected_rows(); 
-			$rs2 = & $db->query($sql_string);  // 插入diallist表
+			$rs2 =@ $db->query($sql_string);  // 插入diallist表
+			//$diallist += mysql_affected_rows(); 
 		}
 	}elseif($type == 'xls'){
 		Read_Excel_File($file_path,$return);
@@ -303,14 +306,17 @@ function submitForm($aFormValues){
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
 				}
 			}
-			$rs = & $db->query($sql_str);  //插入customer或contact表
+			//$objResponse->addAlert($sql_str);
+			$rs = @ $db->query($sql_str);  //插入customer或contact表
 			$v += mysql_affected_rows(); 
-			$rs2 = & $db->query($sql_string);  // 插入diallist表
+			$rs2 =@ $db->query($sql_string);  // 插入diallist表
+			//$diallist += mysql_affected_rows(); 
 		}
 	}
 	if($v < 0){
 		$v = 0;
 	}
+	$overMsg = $table.' : '.$v.$locate->Translate('data');
 	//delete upload file
 	//@ unlink($file_path);
 	unset($_SESSION['filename']);
@@ -319,7 +325,7 @@ function submitForm($aFormValues){
 	unset($_SESSION['edq']);
 	$objResponse->addAlert($locate->Translate('success'));
 	$objResponse->addScript("init();");
-	$objResponse->addAssign("overMsg", "innerHTML", $v.$locate->Translate('data'));
+	$objResponse->addAssign("overMsg", "innerHTML",$overMsg);
 	$objResponse->addScript("document.getElementById('submitButton').disabled = false;");
 	$objResponse->addAssign("submitButton","value",$locate->Translate("submit"));
 	$objResponse->addScript("showDivMainRight();");
