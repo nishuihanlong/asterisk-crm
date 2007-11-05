@@ -14,14 +14,14 @@
 	showDivSubmitForm() 显示divSubmitForm
 
 * Revision 0.045  2007/10/22 13:39:00  modified by yunshida
-* Desc: 
+* Desc:
 * 描述: 增加了包含include/common.class.php, 在init函数中增加了初始化对象divNav和divCopyright
 
 
 * Revision 0.045  2007/10/18 15:25:00  modified by yunshida
 * Desc: page create
 * 描述: 页面建立
-  
+
 ********************************************************************************/
 require_once ("db_connect.php");
 require_once ("import.common.php");
@@ -29,10 +29,10 @@ require_once ('include/excel.class.php');
 require_once ('include/common.class.php');
 /**
 *  function to init import page
-*	
-*  
+*
+*
 *  @return $objResponse
-* 
+*
 */
 function init(){
 	global $locate,$config;
@@ -43,7 +43,7 @@ function init(){
 	$objResponse->addAssign("alertmsg","value",$locate->Translate("by"));
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("onclickMsg"));
 	$objResponse->addAssign("onsubmitMsg","value",$locate->Translate("onsubmitMsg"));
-	
+
 	$showtable = "<ul style='list-style:none;'>
 						<li>
 							<select name='table' id='table' onchange='selectTable(this.value);' >
@@ -67,10 +67,10 @@ function init(){
 }
 /**
 *  function to show divMainRight
-*	
-*  
+*
+*
 *  @return $objResponse
-* 
+*
 */
 function showDivMainRight(){
 	global $locate,$config;
@@ -88,7 +88,7 @@ function showDivMainRight(){
 	$show_msg .= "
 					<input type='hidden' name='CHECK' value='1'/>";
 	$show_msg .= "
-					
+
 						<table cellspacing='1' cellpadding='0' border='0' width='100%' style='text-align:left'>";
 	if($type == 'csv'){
 		$show_msg .= showCsv($file_path,$show_msg,$row);
@@ -108,7 +108,7 @@ function showDivMainRight(){
 	}
 	$show_msg .= "</tr>";
 	$show_msg .= "</table>";
-	
+
 
 	if($show_msg == ""){
 		$show_msg = $locate->Translate("nofilechoose");
@@ -127,12 +127,12 @@ function showDivMainRight(){
 
 /**
 *  function to show table div
-*	
+*
 *  	@param $table form select
 															customer
 															contact
 *  @return $objResponse
-*  
+*
 */
 
 function selectTable($table){
@@ -140,7 +140,7 @@ function selectTable($table){
 	$_SESSION['table'] = $table;
 	$sql = "select * from $table LIMIT 0,2";
 	$res =& $db->query($sql);
-	$tableInfo = $db->tableInfo($res); 
+	$tableInfo = $db->tableInfo($res);
 	$show_msg .= "<ul class='ulstyle'>";
 	$i = 0;
 	foreach($tableInfo as $tablename){
@@ -163,14 +163,14 @@ function selectTable($table){
 
 /**
 *  function to insert data to database from excel
-*	
+*
 *  	@param $aFormValues	(array)			insert form excel
 															$aFormValues['chkAdd']
 															$aFormValues['chkAssign']
 															$aFormValues['assign']
 															$aFormValues['dialListField']
 *	@return $objResponse
-*  
+*
 */
 
 function submitForm($aFormValues){
@@ -179,79 +179,79 @@ function submitForm($aFormValues){
 	$file_name = $_SESSION['filename'];
 	$type = substr($file_name,-3);
 	$table = $_SESSION['table'];
-	$order = $aFormValues['order'];
+	$order = $aFormValues['order']; //得到的排序数字，数组形式，要添加到数据库的列
 	//对提交的数据进行校验
 	for($j=0;$j<count($order);$j++){
 		if(trim($order[$j]) != ''){
-			if(trim($order[$j]) > $_SESSION['MAX_NUM']){
+			if(trim($order[$j]) > $_SESSION['MAX_NUM']){  //最大值校验
 				$objResponse->addAlert($locate->Translate('fielderr'));
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
-			if (!ereg("[0-9]+",trim($order[$j]))){
+			if (!ereg("[0-9]+",trim($order[$j]))){ //是否为数字
 				$objResponse->addAlert($locate->Translate('fielderr'));
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
-			if($_SESSION['edq'] == $order[$j]){
+			if($_SESSION['edq'] == $order[$j]){ //是否重复
 				$objResponse->addAlert($locate->Translate('fieldcountrepeat'));
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}else{
 				$_SESSION['edq'] = $order[$j];
-			} 
+			}
 		}
 	}
 
 	$sql = "SELECT * FROM $table LIMIT 0,2 ";
 	$res =& $db->query($sql);
-	$tableInfo = $db->tableInfo($res); 
-	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
-	$handle = fopen($file_path,"r");
-	$v = 0;
+	$tableInfo = $db->tableInfo($res);  //得到要倒入数据的表结构
+	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];//excel文件存放路径
+	$handle = fopen($file_path,"r");  //打开excel文件
+	$v = 0;  //计数变量
 	$diallist = 0;
-	$date = date('Y-m-d H:i:s');
+	$date = date('Y-m-d H:i:s'); //当前时间
 
-	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){
-		$mytext = trim($aFormValues['dialListField']); //数字
+	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
+		$mytext = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
 	}
-	if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){
+	if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){ //是否添加分区assign
 		$mytext2 = trim($aFormValues['assign']); //分区,以','号分隔的字符串
 		$area_array = explode(',',$mytext2);
-		$area_num = count($area_array);//得到分区数
+		$area_num = count($area_array);//得到分区个数
 	}
-	$sql_account = "SELECT extension FROM account";
-	$res = & $db->query($sql_account);
-	while ($row = $res->fetchRow()) { 
-		$array_extension[] = $row['extension']; 
+	$sql_account = "SELECT extension FROM account";  //get extension from account
+	$res = & $db->query($sql_account);  //get result
+	while ($row = $res->fetchRow()) {
+		$array_extension[] = $row['extension']; //$array_extension数组,存放extension数据
 	}
 	$extension_num = count($array_extension);
-	$random_num = rand(0,$extension_num-1);
-	if($type == 'csv'){
+	$random_num = rand(0,$extension_num-1); //$array_extension 数组的下标随机数
+	if($type == 'csv'){  //csv 格式文件
 		while($data = fgetcsv($handle, 1000, ",")){
-			$row_num_csv = count($data);  
-			$mysql_field_name = '';
-			$data_str = '';
+			$row_num_csv = count($data);  //get cols
+			$mysql_field_name = '';  //存放字段的字符串
+			$data_str = '';          //存放对应字段数据的字符串
 			for($i=0;$i<$row_num_csv;$i++){
 				if ($data[$i] != mb_convert_encoding($data[$i],"UTF-8","UTF-8"))
-					$data[$i]=mb_convert_encoding($data[$i],"UTF-8","GB2312");
-				$field_order = trim($order[$i]);//字段顺序号
+					$data[$i]=mb_convert_encoding($data[$i],"UTF-8","GB2312");//单个数据，转换为utf-8
+				$field_order = trim($order[$i]);//字段顺序号,要导入数据库的列的下标号
 				if($field_order != ''){
-					$mysql_field_name .= $tableInfo[$field_order]['name'].',';
-					$data_str .= '"'.$data[$i].'"'.',';
+					$mysql_field_name .= $tableInfo[$field_order]['name'].','; //要导入的字段名
+					$data_str .= '"'.$data[$i].'"'.',';  //对应字段的数据
 				}
-				if(isset($mytext) && $mytext != ''){
+				if(isset($mytext) && $mytext != ''){  //是否存在添加到拨号列表
 					if($mytext == $i)
-						$array = $data[$i];
+						$array = $data[$i];  //要添加到拨号列表的数据封装到一个数组里
 				}
 			}
-			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
-			$data_str = substr($data_str,0,strlen($data_str)-1);
-			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
+			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);//去掉最后逗号
+			$data_str = substr($data_str,0,strlen($data_str)-1);//去掉最后逗号
+			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')"; //得到sql语句
 
 
-			if(isset($mytext) && trim($mytext) != ''){
-				if($mytext2 != '' && isset($mytext2)){
+			if(isset($mytext) && trim($mytext) != ''){  //是否存在添加到拨号列表
+				if($mytext2 != '' && isset($mytext2)){  //是否添加分区assign
 					$random_num = rand(0,$area_num-1);
 					$random_area = $area_array[$random_num];
 					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
@@ -263,10 +263,10 @@ function submitForm($aFormValues){
 			}
 			if($table != ''){
 				$rs = @ $db->query($sql_str);  //插入customer或contact表
-				$v += mysql_affected_rows();
+				$v += mysql_affected_rows();   //得到影响的数据条数
 			}
 		}
-	}elseif($type == 'xls'){
+	}elseif($type == 'xls'){  //xls格式文件
 		Read_Excel_File($file_path,$return);
 		for ($i=0;$i<count($return[Sheet1]);$i++)
 		{
@@ -395,16 +395,16 @@ function showDivSubmitForm($num){
 						<tr>
 							<td>
 								<input type='hidden' value='0000' name='TEST' />
-								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/> 
-								&nbsp;&nbsp; ".$locate->Translate('add')."  
+								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/>
+								&nbsp;&nbsp; ".$locate->Translate('add')."
 								<select name='dialListField' id='dialListField' disabled>
 									<option value=''></option>";
 	for ($c=0; $c < $num; $c++) {
 		$show_submit .= "<option value='$c'>$c</option>";
 	}
 	$show_submit .= "
-								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp; 
-								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."  
+								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp;
+								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."
 								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
 							</td>
 						</tr>
