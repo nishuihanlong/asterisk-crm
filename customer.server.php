@@ -17,6 +17,8 @@
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	showDetail			显示contact信息
+	searchFormSubmit    显示搜索信息
+	addSearchTr         增加搜索条件
 
 * Revision 0.0451  2007/10/22 16:45:00  last modified by solo
 * Desc: remove Edit and Detail tab in xajaxGrid
@@ -79,14 +81,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
-	if(($filter == null) or ($content == null)){
+	if($filter == null or $content == null){
 		
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
 		
-		$numRows =& Customer::getNumRows($filter, $content);
-		$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);	
+		$numRows =& Customer::getNumRowsCustomer($filter, $content);
+		$arreglo =& Customer::getRecordsFilteredCustomer($start, $limit, $filter, $content, $order);	
 	}
 
 	// Editable zone
@@ -182,7 +184,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 
-	$table->addRowSearch("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 
 //	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
@@ -226,6 +228,37 @@ function showDetail($customerid){
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
 	}
+	return $objResponse->getXML();
+}
+
+function addSearchTr($search_str,$search_table){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	//$objResponse->addAlert($search_table);
+	$searth_tr = '<br />'.$locate->Translate("search").' : &nbsp;<input type="text" size="30" id="searchContent"  name="searchContent[]">
+				&nbsp;&nbsp;'.$locate->Translate("by").' &nbsp;
+					<select id="searchField" name="searchField[]">';
+	$searth_tr .= $search_str;				
+	$searth_tr .= '</select>';
+	$add_search_str = $search_table.$searth_tr;
+	$objResponse->addAppend("addSearth","innerHTML",$searth_tr);
+	//$objResponse->addAssign("addSearth", "innerHTML", $add_search_str);	
+	return $objResponse->getXML();
+}
+
+function searchFormSubmit($searchFormValue){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	$searchField = array();
+	$searchContent = array();
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	//print_r($searchFormValue);
+	$divName = "grid";
+	$html = createGrid(0, 5,$searchField, $searchContent, $searchField, $divName, "");
+	$objResponse = new xajaxResponse();
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

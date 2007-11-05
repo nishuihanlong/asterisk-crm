@@ -76,4 +76,7 @@ $enable		= "Aktiv";
 $disable		= "Deaktiv";
 $found_contact_replaced	= "Es wurden identische Kontaktdaten des Kunden gefunden und ersetzt";
 $found_customer_replaced	= "Kunden mit identischen Daten wurden gefunden und ersetzt";
+$search = "Suche";
+$by = "Nach";
+$add_search = "Add Search Object";
 ?>

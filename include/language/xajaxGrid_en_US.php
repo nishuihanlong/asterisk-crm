@@ -15,4 +15,5 @@ $next = "Next >";
 $last = "Last >>";
 $show_all = "Show All";
 $delete_confirm	= "Are you sure you want to delete this record?";
+$add_search = "Add Search Object";
 ?>

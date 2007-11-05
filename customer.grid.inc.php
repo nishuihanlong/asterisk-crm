@@ -81,6 +81,29 @@ class Customer extends astercrm
 		return $res;
 	}
 	
+	function &getRecordsFilteredCustomer($start, $limit, $filter, $content, $order, $ordering = ""){
+		global $db;
+		
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '".$value."' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql='SELECT * FROM customer WHERE '.$joinstr;
+		}else {
+			$sql='SELECT * FROM customer';
+		}
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
@@ -91,13 +114,41 @@ class Customer extends astercrm
 	
 	function &getNumRows($filter = null, $content = null){
 		global $db;
-		
 		$sql = "SELECT COUNT(*) AS numRows FROM customer ";
 		
 		if(($filter != null) and ($content != null)){
 			$sql = 	"SELECT COUNT(*) AS numRows "
 				."FROM customer "
 				."WHERE ".$filter." like '%$content%'";
+		}
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;		
+	}
+
+	function &getNumRowsCustomer($filter = null, $content = null){
+		global $db;
+		//$filter 条件数组
+		//$content 内容数组
+		$sql = "SELECT COUNT(*) AS numRows FROM customer ";
+
+		if((!count($filter) > 0) and (!count($content) > 0)){
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0){
+					$joinstr.="AND $filter[$i] like '".$value."' ";
+				}
+				$i++;
+			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql='SELECT COUNT(*) AS numRows FROM customer WHERE '.$joinstr;
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM customer ";
+			}
+			//////////////////////////////////
 		}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);

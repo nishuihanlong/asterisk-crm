@@ -346,11 +346,14 @@ class ScrollTable{
 	/*
 	* customer addRowSearth
 	*/
-	function addRowSearchCustomer($table,$fieldsFromSearch,$fieldsFromSearchShowAs, $withNewButton = 1){
+	function addRowSearchCustomer($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content, $withNewButton = 1){
 		global $local_grid;
 		$ind = 0;
+		$ind2 = 0;
 		$this->search = '
-			<table width="99%" border="0" >
+		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit();">
+			<table width="99%" border="0" style="line-height:30px;">
+			
 			<tr>
 				<td align="left" width="10%">';
 				if($withNewButton){
@@ -361,31 +364,51 @@ class ScrollTable{
 				<td> '.$local_grid->Translate("table").': '.
 					$table.
 				'</td>
-				<td align="right" width="40%">
-					<table cellspacing="0" cellpadding="0" border="0" width="100%" name="addSearth" id="addSearth">
-						<tr>
-					<td width="100%">
-				'.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30" id="searchContent" name="searchContent">
+				<td align="right" width="50%">
+					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
+		if($filter != null){
+			for($j=0;$j<count($filter);$j++){
+				$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" value="'.$content[$j].'"/>
+						&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
+							<select name="searchField[]">
+								<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
+							foreach ($fieldsFromSearchShowAs as $value) {
+								$this->search .= '<option value="'.$fieldsFromSearch[$ind2].'" ';
+								if($fieldsFromSearch[$ind2] == $filter[$j]){
+									$this->search .= ' selected ';
+								}
+								$this->search .=  '>'.$value.'</option>';
+								$ind2++;
+							}	
+				$this->search .= '</select><br />';
+			}
+		}
+		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="30"  name="searchContent[]"/>
 				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-					<select id="searchField" name="searchField">
+					<select name="searchField[]">
 						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
 					foreach ($fieldsFromSearchShowAs as $value) {
-						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'">'.$value.'</option>';
+						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'" ';
+						$this->search .=  '>'.$value.'</option>';
 						$ind++;
 					}	
-		$this->search .= '
-									</select>
-								</td>
-							</tr>
-						</table>
+		$this->search .= '</select><br />';
+		$this->search .= '</div>
 					</td>
 					<td>
-				&nbsp;&nbsp;<INPUT TYPE="button" onclick="javascript:addSearth()" value="add new">&nbsp;&nbsp;<button id="submitButton" onClick="xajax_showGrid(0,'.$this->numRowsToShow.',document.getElementById(\'searchField\').value,document.getElementById(\'searchContent\').value,document.getElementById(\'searchField\').value);return false;">'.$local_grid->Translate("continue").'</button>
+				&nbsp;&nbsp;
+				<INPUT TYPE="hidden" value="'.$this->numRowsToShow.'" name="numRowsToShow" id="numRowsToShow"/>
+				<!--<INPUT TYPE="button" onClick="xajax_addSearchTr(document.getElementsByName(\'searchField[]\')[0].innerHTML,document.getElementById(\'addSearth\').innerHTML);" value="'.$local_grid->Translate("add_search").'">-->&nbsp;&nbsp;
+				
+				<!--<button id="submitButton" onClick="searchFormSubmit();">'.$local_grid->Translate("continue").'</button>-->
+				<input type="submit" id="submitButton" name="submitButton" value="'.$local_grid->Translate("continue").'"/>
 				</td>
 				
 			</tr>
-		</table>';
+			
+		</table></form>';
 	}
+
 	/**
 	* Add the footer of the table (Grid), that its contains the record information such as number of records, previos, next and final,  totals records, etc. Each one with its link when it is posible.
 	*
