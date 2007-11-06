@@ -82,15 +82,33 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null){
-		
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
-		
-		$numRows =& Customer::getNumRowsCustomer($filter, $content);
-		$arreglo =& Customer::getRecordsFilteredCustomer($start, $limit, $filter, $content, $order);	
+		foreach($content as $value){
+			if(trim($value) != ""){  //搜索内容有值
+				$flag = "1";
+				break;
+			}
+		}
+		foreach($filter as $value){
+			if(trim($value) != ""){  //搜索条件有值
+				$flag2 = "1";
+				break;
+			}
+		}
+		if($flag != "1" || $flag2 != "1"){  //无值
+			//print_r("vvvvvvvvvv");
+			$order = null;
+			$numRows =& Customer::getNumRows();
+			$arreglo =& Customer::getAllRecords($start,$limit,$order);
+			//print_r($arreglo);
+		}else{
+			//print_r("ssssssssssssss");
+			$numRows =& Customer::getNumRowsMore($filter, $content,"customer");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"customer");
+		}
 	}
-
 	// Editable zone
 
 	// Databse Table: fields
@@ -184,7 +202,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 
-	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 
 //	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
@@ -204,11 +222,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //		$rowc[] = 'Detail';
 		$table->addRow("customer",$rowc,0,1,0,$divName,$fields);
  	}
- 	
+
  	// End Editable Zone
- 	
+
  	$html = $table->render();
- 	
+
  	return $html;
 }
 
@@ -222,11 +240,11 @@ function showDetail($customerid){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	if($customerid != null){
-		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-		$html .= Customer::showCustomerRecord($customerid); 		
+		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo");
+		$html .= Customer::showCustomerRecord($customerid);
 		$html .= Table::Footer();
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
+		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);
 	}
 	return $objResponse->getXML();
 }
@@ -238,11 +256,11 @@ function addSearchTr($search_str,$search_table){
 	$searth_tr = '<br />'.$locate->Translate("search").' : &nbsp;<input type="text" size="30" id="searchContent"  name="searchContent[]">
 				&nbsp;&nbsp;'.$locate->Translate("by").' &nbsp;
 					<select id="searchField" name="searchField[]">';
-	$searth_tr .= $search_str;				
+	$searth_tr .= $search_str;
 	$searth_tr .= '</select>';
 	$add_search_str = $search_table.$searth_tr;
 	$objResponse->addAppend("addSearth","innerHTML",$searth_tr);
-	//$objResponse->addAssign("addSearth", "innerHTML", $add_search_str);	
+	//$objResponse->addAssign("addSearth", "innerHTML", $add_search_str);
 	return $objResponse->getXML();
 }
 

@@ -41,7 +41,7 @@ class Customer extends astercrm
 	*/
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
-		
+
 		$sql = "SELECT * FROM customer ";
 
 		if($order == null){
@@ -54,7 +54,7 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
+
 	/**
 	*  Obtiene todos registros de la tabla paginados y aplicando un filtro
 	*
@@ -68,7 +68,7 @@ class Customer extends astercrm
 
 	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
 		global $db;
-		
+
 		if(($filter != null) and ($content != null)){
 			$sql = "SELECT * FROM customer"
 					." WHERE ".$filter." like '%".$content."%' "
@@ -80,24 +80,24 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
-	function &getRecordsFilteredCustomer($start, $limit, $filter, $content, $order, $ordering = ""){
+
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
 		global $db;
-		
+
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
-				$joinstr.="AND $filter[$i] like '".$value."' ";
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
 			}
 			$i++;
 		}
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql='SELECT * FROM customer WHERE '.$joinstr;
+			$sql='SELECT * FROM '.$table.' WHERE '.$joinstr;
 		}else {
-			$sql='SELECT * FROM customer';
+			$sql='SELECT * FROM '.$table.'';
 		}
 		Customer::events($sql);
 		$res =& $db->query($sql);
@@ -111,11 +111,11 @@ class Customer extends astercrm
 	*	@param $order	(string)	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
 	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
 	*/
-	
+
 	function &getNumRows($filter = null, $content = null){
 		global $db;
 		$sql = "SELECT COUNT(*) AS numRows FROM customer ";
-		
+
 		if(($filter != null) and ($content != null)){
 			$sql = 	"SELECT COUNT(*) AS numRows "
 				."FROM customer "
@@ -123,14 +123,14 @@ class Customer extends astercrm
 		}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
-		return $res;		
+		return $res;
 	}
 
-	function &getNumRowsCustomer($filter = null, $content = null){
+	function &getNumRowsMore($filter = null, $content = null,$table){
 		global $db;
 		//$filter 条件数组
 		//$content 内容数组
-		$sql = "SELECT COUNT(*) AS numRows FROM customer ";
+		$sql = "SELECT COUNT(*) AS numRows FROM $table ";
 
 		if((!count($filter) > 0) and (!count($content) > 0)){
 			$i=0;
@@ -144,27 +144,27 @@ class Customer extends astercrm
 			}
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql='SELECT COUNT(*) AS numRows FROM customer WHERE '.$joinstr;
+				$sql='SELECT COUNT(*) AS numRows FROM $table WHERE '.$joinstr;
 			}else {
-				$sql = "SELECT COUNT(*) AS numRows FROM customer ";
+				$sql = "SELECT COUNT(*) AS numRows FROM $table ";
 			}
 			//////////////////////////////////
 		}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
-		return $res;		
+		return $res;
 	}
-	
+
 	/**
 	*  Borra un registro de la tabla.
 	*
 	*	@param $id		(int)	customerid
 	*	@return $res	(object) Devuelve el objeto con la respuesta de la sentencia SQL ejecutada del DELETE.
 	*/
-	
+
 	function deleteRecord($id){
 		global $db;
-		
+
 		//backup all datas
 
 		//delete all customers

@@ -21,11 +21,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * @package XajaxGrid
  * @version $Id: xajaxGrid.inc.php,v 1.2 2006/09/30 17:15:08 jjvema Exp $
  * @copyright Copyright (c) 2006  by Jesus Velazquez
@@ -36,7 +36,7 @@
 /** \brief Class to generate a table dynamically
  *
  * The ScrollTable class generate dynamically a table
- * 
+ *
  * @package XajaxGrid
  */
 
@@ -44,12 +44,9 @@
 require_once ('localization.class.php');
 
 
-
 if (isset($_SESSION['curuser']['country'])){
 	$GLOBALS['local_grid']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'xajaxGrid');
-
 }else
-
 	$GLOBALS['local_grid']=new Localization('en','US','xajaxGrid');
 
 
@@ -57,7 +54,7 @@ class ScrollTable{
 	/**
 	 * <i>integer</i> Number of columns for the table.
 	 */
-	var $n_cols; 
+	var $n_cols;
 	/**
 	 * <i>string</i> Row of table to display the search form.
 	 */
@@ -118,7 +115,7 @@ class ScrollTable{
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param integer $cols: Amount of columns of the table
 	 * @param integer $start: initial record to show
 	 * @param integer $limit: final record to show
@@ -138,12 +135,12 @@ class ScrollTable{
 		$this->filter = $filter;
 		$this->content = $content;
 		$this->order = $order;
-		
-		
+
+
 		$this->setFooter();
 	}
-		
-		
+
+
 	/**
 	* Set a header Table with attributes on the variable "header" of the class.
 	*
@@ -172,22 +169,22 @@ class ScrollTable{
 // 					$this->header .= $value;
 // 				}
 			$this->header .= $value;
-			
+
 			$this->header .= '
 				&nbsp;
 				<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
 				<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
 			</th>';
-			
+
 			$ind++;
 		}
-		
+
 		if($edit)
 			$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
 					'.$local_grid->Translate("edit").'
 				</th>';
-				
+
 		if($delete)
 			$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
@@ -211,11 +208,11 @@ class ScrollTable{
 	* @return none
 	*
 	*/
-	
+
 	function setAttribsCols($attribsCols){
 		$this->colAttrib = $attribsCols;
 	}
-	
+
 	/**
 	* Add each row generates dynamically from database records obtained
 	*
@@ -228,13 +225,13 @@ class ScrollTable{
 	* @return none
 	*
 	*/
-	
+
 	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null){
 		global $local_grid;
 		$nameRow = $divName."Row".$arr[0];
 	   $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
-		$ind = 0; 
-		
+		$ind = 0;
+
 	   foreach ($arr as $key => $value) {
 	   	$nameCell = $nameRow."Col".$ind;
 /*
@@ -242,7 +239,7 @@ class ScrollTable{
    			$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].' onDblClick="xajax_editField(\''.$table.'\',\''.$fields[$ind-1].'\',\''.$nameCell.'\',\''.$value.'\',\''.$arr[0].'\');return false">'.$value.'</td>'."\n";
    		$ind++;
 		}
-*/  
+*/
 	   	if($key != 'id')
    			$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
    		$ind++;
@@ -263,14 +260,14 @@ class ScrollTable{
 					<td align="center" width="5%" nowrap>
 						<a href="?" onClick="xajax_showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
 					</td>';
-					
+
 		$row .= "</tr>\n";
 		$this->rows .= $row;
-		
+
 		if($this->rowStyle == "row0") $this->rowStyle = "row1"; else $this->rowStyle = "row0";
-		
-	}	
-	
+
+	}
+
 
 	/**
 	* Add each row generates dynamically from database records obtained without Edit and Delete columns
@@ -280,24 +277,24 @@ class ScrollTable{
 	* @return none
 	*
 	*/
-	
+
 	function addRow2($table,$arr){
-	
+
 	   $row = '<tr class="'.$this->rowStyle.'" >';
-		$ind = 0; 
-		
+		$ind = 0;
+
 	   foreach ($arr as $key => $value) {
 	   	if($key != 'id')
    			$row .= '<td '.$this->colAttrib[$ind-1].'>'.$value.'</td>';
    		$ind++;
 		}
-		
+
 		$row .= "</tr>";
 		$this->rows .= $row;
-		
+
 		if($this->rowStyle == "row0") $this->rowStyle = "row1"; else $this->rowStyle = "row0";
-		
-	}	
+
+	}
 
 
 	/**
@@ -334,26 +331,26 @@ class ScrollTable{
 					foreach ($fieldsFromSearchShowAs as $value) {
 						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'">'.$value.'</option>';
 						$ind++;
-					}	
+					}
 		$this->search .= '
 					</select>
 				&nbsp;&nbsp;<button id="submitButton" onClick="xajax_showGrid(0,'.$this->numRowsToShow.',document.getElementById(\'searchField\').value,document.getElementById(\'searchContent\').value,document.getElementById(\'searchField\').value);return false;">'.$local_grid->Translate("continue").'</button>
 				</td>
-				
+
 			</tr>
 		</table>';
 	}
 	/*
 	* customer addRowSearth
 	*/
-	function addRowSearchCustomer($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content, $withNewButton = 1){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content, $withNewButton = 1){
 		global $local_grid;
 		$ind = 0;
 		$ind2 = 0;
 		$this->search = '
 		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit();">
 			<table width="99%" border="0" style="line-height:30px;">
-			
+
 			<tr>
 				<td align="left" width="10%">';
 				if($withNewButton){
@@ -368,19 +365,21 @@ class ScrollTable{
 					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
 		if($filter != null){
 			for($j=0;$j<count($filter);$j++){
-				$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" value="'.$content[$j].'"/>
-						&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-							<select name="searchField[]">
-								<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
-							foreach ($fieldsFromSearchShowAs as $value) {
-								$this->search .= '<option value="'.$fieldsFromSearch[$ind2].'" ';
-								if($fieldsFromSearch[$ind2] == $filter[$j]){
-									$this->search .= ' selected ';
+				if(trim($content[$j]) != '' && $filter[$j] != null){
+					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" value="'.$content[$j].'"/>
+							&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
+								<select name="searchField[]">
+									<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
+								foreach ($fieldsFromSearchShowAs as $value) {
+									$this->search .= '<option value="'.$fieldsFromSearch[$ind2].'" ';
+									if($fieldsFromSearch[$ind2] == $filter[$j]){
+										$this->search .= ' selected ';
+									}
+									$this->search .=  '>'.$value.'</option>';
+									$ind2++;
 								}
-								$this->search .=  '>'.$value.'</option>';
-								$ind2++;
-							}	
-				$this->search .= '</select><br />';
+					$this->search .= '</select><br />';
+				}
 			}
 		}
 		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="30"  name="searchContent[]"/>
@@ -391,7 +390,7 @@ class ScrollTable{
 						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'" ';
 						$this->search .=  '>'.$value.'</option>';
 						$ind++;
-					}	
+					}
 		$this->search .= '</select><br />';
 		$this->search .= '</div>
 					</td>
@@ -399,13 +398,13 @@ class ScrollTable{
 				&nbsp;&nbsp;
 				<INPUT TYPE="hidden" value="'.$this->numRowsToShow.'" name="numRowsToShow" id="numRowsToShow"/>
 				<!--<INPUT TYPE="button" onClick="xajax_addSearchTr(document.getElementsByName(\'searchField[]\')[0].innerHTML,document.getElementById(\'addSearth\').innerHTML);" value="'.$local_grid->Translate("add_search").'">-->&nbsp;&nbsp;
-				
+
 				<!--<button id="submitButton" onClick="searchFormSubmit();">'.$local_grid->Translate("continue").'</button>-->
 				<input type="submit" id="submitButton" name="submitButton" value="'.$local_grid->Translate("continue").'"/>
 				</td>
-				
+
 			</tr>
-			
+
 		</table></form>';
 	}
 
@@ -434,7 +433,7 @@ class ScrollTable{
 					}
 					$this->footer .= '</span>
 					<span class="pagenav">';
-					
+
 					if($this->start >0){
 					$this->footer .= '
 						<a href="?" onClick=\'xajax_showGrid('.$previos_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("previous").'</a>';
@@ -444,22 +443,22 @@ class ScrollTable{
 					$this->footer .= '
 					</span>
 					<span class="pagenav">';
-					
+
 					$this->footer .= ' [ ' . ($this->start+1) . ' / ' . $next_rows .$local_grid->Translate("total"). $this->numRows .' ] ';
-					
+
 					$this->footer .= '
 					</span>
 					<span class="pagenav">';
-					
+
 					if($next_rows < $this->numRows){
 						$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.$next_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("next").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("next");
 					}
-					
+
 					$this->footer .= ' </span>
 					<span class="pagenav">';
-					
+
 					if($next_rows < $this->numRows){
 					$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.($this->numRows - $this->limit).','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("last").'</a>';
 					}else{
@@ -479,7 +478,7 @@ class ScrollTable{
 				</td>
 			</tr>
 		</table>';
-		
+
 	}
 
 	/**
@@ -489,17 +488,17 @@ class ScrollTable{
 
 	function render(){
 		$table = $this->search . $this->top . $this->header . $this->rows . $this->footer;
-		
+
 		return $table;
 	}
-	
+
 }
 
 /**
  * Class Table for general intentions
- * 
+ *
  * @package XajaxGrid
- */ 
+ */
 class Table {
 
 	/**
@@ -535,9 +534,9 @@ class Table {
 
 /**
  * Class Table for general intentions
- * 
+ *
  * @package XajaxGrid
- */ 
+ */
 class TableA {
 
 	/**
