@@ -17,7 +17,9 @@
 	insertNewSurvey				保存survey
 	insertNewOption				保存option
 	setSurveyEnable				设定survey的可用情况
-	deleteSurvey				删除survey数据
+
+* Revision 0.0456  2007/11/6 20:30:00  last modified by solo
+* Desc: remove function deleteSurvey
 
 * Revision 0.045  2007/10/18 13:30:00  last modified by solo
 * Desc: page created
@@ -109,7 +111,7 @@ class Customer extends astercrm
 				<!-- No edit the next line -->
 				<form method="post" name="f" id="f">
 				
-				<table border="1" width="100%" class="adminlist">
+				<table border="1" width="100%" class="adminlist" id="tblSurvey">
 				';
 
 		$html .= '<tr><td colspan=2>
@@ -158,7 +160,7 @@ class Customer extends astercrm
 				$html .= '<tr id="'.$nameRow.'" >'."\n";
 
 				$html .= '
-					<tr><td align="left" width="10%">'. $locate->Translate("option") .'
+					<td align="left" width="25%">'. $locate->Translate("option") .'(<a href="?" onclick="xajax_delete(\''.$row['id'].'\',\'surveyoptions\');var myRowIndex = document.getElementById(\''.$nameRow.'\').rowIndex;document.getElementById(\'tblSurvey\').deleteRow(myRowIndex);return false;"><img src="skin/default/images/trash.png"></a>)'.'
 					</td><td id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'surveyoptions\',\'surveyoption\',\''.$nameCell.'\',\''.$row['surveyoption'].'\',\''.$row['id'].'\');return false">'.$row['surveyoption'].'</td></tr>
 					';
 				$ind++;
@@ -223,19 +225,6 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		$optionid = mysql_insert_id();
 		return $optionid;
-	}
-
-	function deleteSurvey($surveyid){
-
-		Customer::deleteRecord($surveyid,'survey');
-		global $db;
-		
-		$sql= "DELETE FROM surveyoptions "
-				." WHERE "
-				."surveyid = " . $surveyid ;
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
 	}
 }
 ?>

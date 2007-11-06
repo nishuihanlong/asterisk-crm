@@ -148,7 +148,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 function delete($id = null, $table_DB = null){
 	global $locate;
-	Customer::deleteSurvey($id); 				// <-- Change by your method
+	Customer::deleteRecord($id,$table_DB); 				// <-- Change by your method
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("grid", "innerHTML", $html);
