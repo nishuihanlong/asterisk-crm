@@ -26,6 +26,9 @@
 									showDivMainRight
 
 
+* Revision 0.0456  2007/11/6 14:17:00  modified by solo
+* Desc: modified function uploadFile
+
 * Revision 0.045  2007/10/22 13:02:00  modified by yunshida
 * Desc: modified some element id
 		upload -> btnUpload
@@ -98,7 +101,7 @@
 				if(document.getElementsByName('chkAdd')[0].checked == true){
 					if(document.getElementById('assign').value == "")
 					{
-						alert(document.getElementById('alertmsg').value);
+						alert(document.getElementById('hidAssignAlertMsg').value);
 					}
 				}
 				xajax_submitForm(xajax.getFormValues('formImport'));
@@ -108,10 +111,14 @@
 				xajax_showDivMainRight();
 			}
 			
-			function uploadingState()
+			function uploadFile()
 			{
-				xajax.$('btnUpload').disabled=true;
-				xajax.$('btnUpload').value=xajax.$('onclickMsg').value;
+				if (document.getElementById('excel').value == '')
+					return false;
+
+				xajax.$('btnUpload').disabled = true;
+				xajax.$('btnUpload').value=xajax.$('hidOnUploadMsg').value;
+				formUpload.submit();
 				return false;
 			}
 		
@@ -124,16 +131,16 @@
 
 	</head>
 	<body onload="init();">
-			<div id="divNav"></div>
+		<div id="divNav"></div>
 		<center>
 			<div id="mainform">
-				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" action="javascript:void(null);" onsubmit="uploadingState();">
-				
+				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="divFileName"></span>:<input type="file" name="excel" id="excel"/><br />
+					<span id="divFileName"></span>:<input type="file" name="excel" id="excel"/>
+					<br />
 					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
-					<input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
-					<input type="hidden" value="" id="alertmsg" />
+					<input id="hidOnUploadMsg" name="hidOnUploadMsg" type="hidden" value=""/>
+					<input id="hidAssignAlertMsg" type="hidden" value=""/>
 				</form>
 			</div>
 
@@ -141,12 +148,13 @@
 
 			<table id="maintable">
 				<tr>
-					<td colspan="2" id="title" align='center'><span id="spanFileManager"></span></td>
+					<td colspan="2" id="title" align='center'>
+						<span id="spanFileManager"></span>
+					</td>
 				</tr>
 			</table>
 
 			<br>
-			<iframe name="iframeShowExcel" id="iframeShowExcel" width="0" height="0" scrolling="no"></iframe>
 			<table id="mainDiv" name="mainDiv">
 				<tr>
 					<td width="20%" valign="top">
@@ -161,6 +169,11 @@
 					</td>
 				</tr>
 			</table>
+
+			<!--
+				use a hidden iframe to handle upload
+			-->
+			<iframe name="iframeShowExcel" id="iframeShowExcel" width="0" height="0" scrolling="no"></iframe>
 			
 		</center>
 		<br />

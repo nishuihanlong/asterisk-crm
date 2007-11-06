@@ -19,11 +19,11 @@
 	$fieldcountrepeat = "number repeat";
 	$error = "failed";
 	$recrod = " records";
-	$by = "assign to account automaticly";
+	$assign_automaticly = "phone number would be assigned to all asterCRM account automaticly";
 	$submit = "submit";
 	$selecttable = "select table";
 	$feifa = "error";
-	$onclickMsg = "uploading……";
+	$uploading = "Uploading..., please wait";
 	$onsubmitMsg = "excute data loading……";
 	$data = 'records insert success';
 ?>

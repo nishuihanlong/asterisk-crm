@@ -23,7 +23,11 @@ require_once ('include/localization.class.php');
 require_once ("include/excel.class.php");
 include_once('config.php');
 
+if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
+	header("Location: portal.php");
+
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'import');
+
 if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$upload_msg = '';
 	$upload_type = $_FILES['excel']['type'];

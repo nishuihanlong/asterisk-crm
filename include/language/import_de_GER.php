@@ -19,7 +19,9 @@
 	$fieldcountrepeat = "Nummer wiederholen";
 	$error = "fehlgeschlagen";
 	$recrod = " records";
+	$assign_automaticly = "phone number would be assigned to all asterCRM account automaticly";
 	$by = "import by account extension";
+	$uploading = "Uploading..., please wait";
 	$submit = "submit";
 	$selecttable = "select table";
 ?>

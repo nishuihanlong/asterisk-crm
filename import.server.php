@@ -40,8 +40,8 @@ function init(){
 	$objResponse->addAssign("divFileName","innerHTML", $locate->Translate("file_name"));
 	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("filemanager"));
-	$objResponse->addAssign("alertmsg","value",$locate->Translate("by"));
-	$objResponse->addAssign("onclickMsg","value",$locate->Translate("onclickMsg"));
+	$objResponse->addAssign("hidAssignAlertMsg","value",$locate->Translate("assign_automaticly"));
+	$objResponse->addAssign("hidOnUploadMsg","value",$locate->Translate("uploading"));
 	$objResponse->addAssign("onsubmitMsg","value",$locate->Translate("onsubmitMsg"));
 
 	$showtable = "<ul style='list-style:none;'>
@@ -50,7 +50,6 @@ function init(){
 								<option value=''>".$locate->Translate("selecttable")."</option>
 								<option value='customer'>customer</option>
 								<option value='contact'>contact</option>
-								<option value='bankzip'>bankzip</option>
 							</select>
 						</li>
 					</ul>
