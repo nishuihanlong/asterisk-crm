@@ -99,9 +99,11 @@
 				xajax.$('submitButton').disabled=true;
 				xajax.$('submitButton').value=xajax.$('onsubmitMsg').value;
 				if(document.getElementsByName('chkAdd')[0].checked == true){
-					if(document.getElementById('assign').value == "")
-					{
-						alert(document.getElementById('hidAssignAlertMsg').value);
+					if(document.getElementsByName('chkAssign')[0].checked == true){
+						if(document.getElementById('assign').value == "")
+						{
+							alert(document.getElementById('hidAssignAlertMsg').value);
+						}
 					}
 				}
 				xajax_submitForm(xajax.getFormValues('formImport'));
