@@ -82,27 +82,46 @@ v0.045
 v0.0451
 
 2007-10-24	customer 表内增加了 fax, mobile, email三个字段
-2007-10-24	在asterisk类中增加了sendCall方法,这样就可以在任意机器上使用astercrm得预拨号功能了
+		add four new field in customer table: fax, mobile, email, bankaccountname
+2007-10-24	在asterisk类中增加了sendCall方法,这样就可以在任意机器上使用astercrm的预拨号功能了
+		add sendCall method in asterisk class, now you could install astercrm on a different server from your asterisk and use predictive dialer function
 2007-10-25	customer 表内增加了 bankaccountname 字段
 2007-10-25      在astercrm.conf.php文件中增加enable_contact = "0"，控制contact的显示与隐藏
+		add parameter : "enable_contact", which can be used to control if contact information is displayed
 2007-10-25      修改了form可移动的范围, div可移动的范围可以根据屏幕的变化自适应
+		modify div movable range, the range could adjust automaticly to the width and height of the screen
 2007-10-25      修正了管理界面customer和contact管理不能自动完成, 以及confirm按钮的bug
+		fix "confirm" button bug in customer manage page and contact manage page
 2007-10-25      在note表中增加了 attitude 字段
-2007-10-25      自动完成时 设置成当输入字符长度超过2时才相应
+		add field attitude in note table, and smile face on agent interface
+2007-10-25      自动完成时 设置成当输入字符长度超过2时才响应
+		when using auto-suggestion, astercrm would only suggest when the length of the string is greater than two
 2007-10-25      增加了点击分机拨号功能
+		add click-call function on extension panel
 2007-10-25      修正了ring=callee时, callerid错误的问题
+		fix callerid bug when first_ring = callee
 -----------------------------------------------------------------------------------------
 v0.0456
 
 2007-10-29      增加了查找电话对应联系人的功能
 2007-10-30      account表增加channel字段, 用于使用zaptel通道的客户
+2007-10-31	增加了hangup方法
+2007-11-1	修正了当使用sendCall方法时不能hangup的问题
+2007-11-1	增加了分机面板上显示入局或出局号码的功能
+2007-11-1	trim_zero修改成trim_prefix, 支持多种前缀消除
+2007-11-6	修正了astercrm.sql, 去掉了insert语句中的表名
+2007-11-6	配置文件中增加了 portal_display_type = "customer" 参数
+		用于控制agent界面客户信息的显示方法
+2007-11-6	修正了astercrm.js, 解决了屏蔽contact是 查找不好用的bug
+2007-11-6	修正了astercrm.class.php, 在mobile和fax域增加了点击拨号功能
 
 -----------------------------------------------------------------------------------------
 
 增加对config.php的管理为web模式
 增强customer和contact的搜索功能
 
-
+增加了显示面板上正在通话分机的通话对象的callerid的功能
+从event表中回收呼叫事件
 增强导出模块
 改善错误提示
 可以通过uniqueid从cdr中读取预拨号器的呼叫结果
@@ -113,11 +132,12 @@ need to add CDR to user
 CDR和predictive dialer的关联
 need to add phone spy
 增加对sqlite的支持
-关闭数据库
 voicemail check
 增加SMS模块
 对1.4版本增加playdtmf功能
 测试1.4版本兼容性
+
+增加用户的权限分机, 班长座席
 
 #为什么在系统监视里面看到的分机不全？
 ----------------------------------------------------------------------------

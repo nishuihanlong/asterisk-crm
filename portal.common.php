@@ -28,6 +28,7 @@ basic functions
 	transfer				click to transfer
 	addWithPhoneNumber
 	monitor					monitor control
+	hangup					hangup a channel
 
 astercrm functions
 	showGrid
@@ -50,6 +51,9 @@ astercrm functions
 	saveSurvey
 	getContact
 	invite
+
+* Revision 0.0456  2007/10/31 10:34:00  modified by solo
+* Desc: add function hangup
 
 * Revision 0.0456  2007/10/30 8:49:00  modified by solo
 * Desc: add function invite
@@ -95,6 +99,7 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("addWithPhoneNumber");
 $xajax->registerFunction("monitor");
 $xajax->registerFunction("invite");
+$xajax->registerFunction("hangup");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

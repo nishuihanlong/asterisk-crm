@@ -13,6 +13,11 @@
 	showXls()  显示xls格式文件数据
 	showDivSubmitForm() 显示divSubmitForm
 
+*
+* 检查SESSION是否必要
+* 导入结束后更新assign和add XX to diallist部分
+*
+
 * Revision 0.045  2007/10/22 13:39:00  modified by yunshida
 * Desc:
 * 描述: 增加了包含include/common.class.php, 在init函数中增加了初始化对象divNav和divCopyright
@@ -189,10 +194,13 @@ function submitForm($aFormValues){
 			$flag = '1';
 		}
 	}
+
+	//如果没有任何选择, 就退出
 	if($flag != 1){
 		$objResponse->addScript("init();");
 		return $objResponse;
 	}
+
 	$file_name = $_SESSION['filename'];
 	$type = substr($file_name,-3);
 	$table = $_SESSION['table'];
@@ -225,18 +233,18 @@ function submitForm($aFormValues){
 	$tableInfo = $db->tableInfo($res);  //得到要倒入数据的表结构
 	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];//excel文件存放路径
 	$handle = fopen($file_path,"r");  //打开excel文件
-	$v = 0;  //计数据库影响结果变量
+	$affectRows= 0;  //计数据库影响结果变量
 	$x = 0;  //计数变量
-	$diallist = 0;
 	$date = date('Y-m-d H:i:s'); //当前时间
 
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
-		$mytext = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
+		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
 	}
+
 	if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){ //是否添加分区assign
-		$mytext2 = trim($aFormValues['assign']); //分区,以','号分隔的字符串
-		if($mytext2 != ''){
-			$area_array = explode(',',$mytext2);
+		$tmpStr = trim($aFormValues['assign']); //分区,以','号分隔的字符串
+		if($tmpStr != ''){
+			$area_array = explode(',',$tmpStr);
 			$area_num = count($area_array);//得到手动添加分区个数
 		}else{
 			$sql_account = "SELECT extension FROM account";  //get extension from account
@@ -246,10 +254,14 @@ function submitForm($aFormValues){
 			}
 			$area_num = count($area_array); //extension数据的个数
 		}
+	}else{
+		$area_num[] = '';
+		$area_num = 1;
 	}
 	
 
 	if($type == 'csv'){  //csv 格式文件
+		//开始读取csv文件
 		while($data = fgetcsv($handle, 1000, ",")){
 			$row_num_csv = count($data);  //get cols
 			$mysql_field_name = '';  //存放字段的字符串
@@ -262,34 +274,32 @@ function submitForm($aFormValues){
 					$mysql_field_name .= $tableInfo[$field_order]['name'].','; //要导入的字段名
 					$data_str .= '"'.$data[$i].'"'.',';  //对应字段的数据
 				}
-				if(isset($mytext) && $mytext != ''){  //是否存在添加到拨号列表
-					if($mytext == $i)
-						$array = $data[$i];  //要添加到拨号列表的数据封装到一个数组里
+				if(isset($dialListField) && $dialListField != ''){  //是否存在添加到拨号列表
+					if($dialListField == $i)
+						$dialListValue = $data[$i];  //要添加到拨号列表的数据封装到一个变量里
 				}
 			}
 			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);//去最后逗号
 			$data_str = substr($data_str,0,strlen($data_str)-1);//去掉最后逗号
 			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')"; //得到sql语句
+		
+			if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
 
-			
-			if(isset($mytext) && trim($mytext) != ''){  //是否存在添加到拨号列表
-				if($aFormValues['chkAssign'] == "1"){ //如果确定选择分派
-					if($x < $area_num){
-						$random_area = $area_array[$x];
-					}else{
-						$x = 0;
-						$random_area = $area_array[$x];
-					}
-					$x++;
-					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
+				if($x < $area_num){
+					$assigned = $area_array[$x];
 				}else{
-					$sql_string = "INSERT INTO diallist (dialnumber) VALUES ('".$array."')";
+					$x = 0;
+					$assigned = $area_array[$x];
 				}
-				$rs2 =@ $db->query($sql_string);  // 插入diallist表
+
+				$x++;
+
+				$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign) VALUES ('".$dialListValue."','".$assigned."')");  // 插入diallist表
 			}
+
 			if($table != ''){
 				$rs = @ $db->query($sql_str);  //插入customer或contact表
-				$v += mysql_affected_rows();   //得到影响的数据条数
+				$affectRows+= mysql_affected_rows();   //得到影响的数据条数
 			}
 			
 		}
@@ -310,8 +320,8 @@ function submitForm($aFormValues){
 					$mysql_field_name .= $tableInfo[$field_order]['name'].',';
 					$data_str .= '"'.$return[Sheet1][$i][$j].'"'.',';
 				}
-				if(isset($mytext) && $mytext != ''){
-					if($mytext == $i)
+				if(isset($dialListField) && $dialListField != ''){
+					if($dialListField == $i)
 						$array = $return[Sheet1][$i][$j];
 				}
 			}
@@ -319,7 +329,7 @@ function submitForm($aFormValues){
 			$data_str = substr($data_str,0,strlen($data_str)-1);
 			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
 
-			if(isset($mytext) && trim($mytext) != ''){  //是否存在添加到拨号列表
+			if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
 				if($aFormValues['chkAssign'] == "1"){ //如果确定选择分派
 					if($x < $area_num){
 						$random_area = $area_array[$x];
@@ -337,12 +347,12 @@ function submitForm($aFormValues){
 			}
 			if($table != ''){  //如果选择了表
 				$rs = @ $db->query($sql_str);  //插入customer或contact表
-				$v += mysql_affected_rows();
+				$affectRows+= mysql_affected_rows();
 			}
 		}
 	}
-	if($v < 0){
-		$v = 0;
+	if($affectRows< 0){
+		$affectRows= 0;
 	}
 	$overMsg = $table.' : '.$v.$locate->Translate('data');
 

@@ -17,22 +17,24 @@ function contactCopy(contactid){
 }
 
 function btnConfirmCustomerOnClick(){
-	//alert (xajax.$('customer').readOnly);
+
+	if (typeof document.getElementById('contactid') == '' || typeof document.getElementById('contactid') == 'undefined'){
+		contactid = document.getElementById('contactid').value;
+	}else{
+		contactid = '';
+	}
+
 	if (document.f.customer.readOnly  == true)
 	{
-		xajax_add(xajax.$('iptcallerid').value,0,xajax.$('contactid').value);
+		xajax_add(xajax.$('iptcallerid').value,0,contactid);
 	}else{
 		if (document.f.customer.value == '')
 		{
 			return false;
 		}
-		xajax_confirmCustomer(document.f.customer.value,xajax.$('iptcallerid').value,xajax.$('contactid').value);
-	}
-//	alert (xajax.$('customer').value);
-//	alert (xajax.$('iptcallerid').value);
-//	alert (xajax.$('contactid').value);
 
-	
+		xajax_confirmCustomer(document.f.customer.value,xajax.$('iptcallerid').value,contactid);
+	}
 }
 
 function openWindow(url){

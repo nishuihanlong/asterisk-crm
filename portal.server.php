@@ -25,8 +25,11 @@
 	addWithPhoneNumber
 	invite
 
+* Revision 0.0456  2007/11/1 9:48:00  last modified by solo
+* Desc: fix bug: when use sendCall method, cant hangup until one party is connected
+
 * Revision 0.0456  2007/10/30 12:47:00  last modified by solo
-* Desc: add link in customer and contact
+* Desc: add link for customer and contact
 
 * Revision 0.0456  2007/10/30 8:47:00  last modified by solo
 * Desc: add function invite
@@ -122,6 +125,7 @@ function init(){
 //	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("extensionStatus","value", 'idle');
 	$objResponse->addAssign("btnDial","value", $locate->Translate("dial") );
+	$objResponse->addAssign("btnHangup","value", $locate->Translate("hangup") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	$objResponse->addAssign("spanMonitorSetting","innerText", $locate->Translate("always_record_when_connected") );
 	$objResponse->addAssign("spanMonitor","innerText", $locate->Translate("monitor") );
@@ -215,6 +219,8 @@ function incomingCalls($myValue){
 					$objResponse->addScript("monitor();");
 //			}
 			
+			$objResponse->addAssign("btnHangup","disabled", false );
+
 			if ($myValue['sltExten'] == ''){
 				$transfer = '
 							<SELECT id="sltExten" name="sltExten">
@@ -246,6 +252,8 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("btnMonitor","disabled", true );
 			$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
 
+			//disable hangup button
+			$objResponse->addAssign("btnHangup","disabled", true );
 
 		}
 //		$objResponse->addAssign("status","innerHTML", $status );
@@ -286,6 +294,9 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
+
+		$objResponse->addAssign("btnHangup","disabled", false );
+
 		if ($config['system']['pop_up_when_dial_in']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
 				if ($myValue['popup'] == 'yes'){
@@ -319,6 +330,10 @@ function waitingCalls($myValue){
 		$status	= 'dialing';
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
+
+		$objResponse->addAssign("btnHangup","disabled", false );
+
+
 		if ($config['system']['pop_up_when_dial_out']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
 				if ($myValue['popup'] == 'yes'){
@@ -351,6 +366,10 @@ function waitingCalls($myValue){
 	$objResponse->addAssign("extensionStatus","value", $stauts );
 	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
 	$objResponse->addAssign("callerid","value", $call['callerid'] );
+
+	$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
+	$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
+
 	$objResponse->addAssign("curid","value", $call['curid'] );
 	$objResponse->addAssign("direction","value", $direction );
 	$objResponse->addAssign("myevents","innerHTML", $info);
@@ -433,13 +452,23 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'customer';
-	$fieldsFromSearch[] = 'category';
-	$fieldsFromSearch[] = 'contact.contact';
-	$fieldsFromSearch[] = 'note';
-	$fieldsFromSearch[] = 'attitude';  //face
-	$fieldsFromSearch[] = 'priority';
-	$fieldsFromSearch[] = 'note.cretime';
+	if ($config['system']['portal_display_type'] == "note"){
+		$fieldsFromSearch[] = 'customer';
+		$fieldsFromSearch[] = 'category';
+		$fieldsFromSearch[] = 'contact.contact';
+		$fieldsFromSearch[] = 'note';
+		$fieldsFromSearch[] = 'attitude';  //face
+		$fieldsFromSearch[] = 'priority';
+		$fieldsFromSearch[] = 'note.cretime';
+	}else{
+		$fieldsFromSearch[] = 'customer.customer';
+		$fieldsFromSearch[] = 'customer.category';
+		$fieldsFromSearch[] = 'customer.contact';
+		$fieldsFromSearch[] = 'note.note';
+		$fieldsFromSearch[] = 'note.attitude';  //face
+		$fieldsFromSearch[] = 'note.priority';
+		$fieldsFromSearch[] = 'customer.cretime';
+	}
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -458,23 +487,32 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
-
+	//print_r($arreglo);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+
 		$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."');return false;\"
 		>".$row['customer']."</a>";
+
 		$rowc[] = $row['category'];
+
 		$rowc[] = "<a href=? onclick=\"xajax_showContact('".$row['contactid']."');return false;\"
 		>".$row['contact']."</a>";
+
 		$rowc[] = $row['note'];
-		$rowc[] = '<img src="skin/default/images/'.$row['attitude'].'.gif" width="25px" height="25px" border="0" />';
+
+		if ($row['attitude'] != '')
+			$rowc[] = '<img src="skin/default/images/'.$row['attitude'].'.gif" width="25px" height="25px" border="0" />';
+		else 
+			$rowc[] = '';
 
 		$rowc[] =  str_replace(" ","<br>",$row['cretime']);
 //		$rowc[] = $row['creby'];
 		$rowc[] = $row['priority'];
 //		$rowc[] = 'Detail';
+
 		$table->addRow("note",$rowc,1,1,1,$divName,$fields);
  	}
  	
@@ -568,7 +606,7 @@ function dial($phoneNum,$first = ''){
 			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,NULL);
 		}
 	}
-	$myAsterisk->disconnect();
+	//$myAsterisk->disconnect();
 	return $objResponse->getXML();
 }
 
@@ -618,11 +656,19 @@ function invite($src,$dest){
 		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$dest,NULL,NULL);
 	}
 
-	$myAsterisk->disconnect();
+	//$myAsterisk->disconnect();	// comment by solo 2007-11-1
+									// if we use disconnect, it would need time waiting for asterisk return handle
 	return $objResponse->getXML();
 }
 
-function monitor($channel,$action = 'start'){
+/**
+*  hangup a channel
+*  @param	channel			string		channel name
+*  @return	object						xajax response object
+*/
+
+
+function hangup($channel){
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
@@ -632,33 +678,8 @@ function monitor($channel,$action = 'start'){
 	if (!$res){
 		return;
 	}
-
-	if ($action == 'start'){
-		$filename = str_replace("/","-",$channel);
-		$filename = $config['asterisk']['monitorpath'].$channel;
-		$filename .= '.'.time();
-
-		$format = $config['asterisk']['monitorformat'];
-		$mix = true;
-		$res = $myAsterisk->Monitor($channel,$filename,$format,$mix);
-		if ($res['Response'] == 'Error'){
-			$objResponse->addAlert($res['Message']);
-			return $objResponse;
-		}
-		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("recording") );
-		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
-
-		$objResponse->addAssign("btnMonitor","value", $locate->Translate("stop_record") );
-	}else{
-		$myAsterisk->StopMontor($channel);
-
-		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
-		$objResponse->addAssign("btnMonitorStatus","value", "idle" );
-
-		$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
-	}
-
-	$objResponse->addAssign("btnMonitor","disabled", false );
+	$myAsterisk->Hangup($channel);
+	//$objResponse->addAssign("btnHangup", "disabled", true);
 	return $objResponse;
 }
 
@@ -667,9 +688,13 @@ function getContact($callerid){
 	$mycallerid = $callerid;
 	$objResponse = new xajaxResponse();
 
-	if ( $config['system']['trim_zreo'] == true){
-		while (substr($mycallerid,0,1) == '0'){
-			$mycallerid = substr($mycallerid,1);
+	if ( $config['system']['trim_prefix'] != ''){
+		$prefix = split(",",$config['system']['trim_prefix']);
+		foreach ($prefix as $myprefix ) {
+			if (substr($mycallerid,0,1) == $myprefix){
+				$mycallerid = substr($mycallerid,1);
+				break;
+			}
 		}
 	}
 			

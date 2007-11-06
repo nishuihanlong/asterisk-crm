@@ -1,17 +1,21 @@
 #!/usr/bin/perl
+#If you restart or reload your asteriks,you must run this file again
 use strict;
 use Socket;
 use DBI;
 
-# Config;
+# Config the time to clean event events table;
+# a bigger number would make your extension status more exactly
+# a smaller would increase system efficiency
 my $log_life = 180;
 
-my	$create_table = qq~CREATE TABLE events(
-`id` INT(16) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-`timestamp` DATETIME,
-`event` TEXT,
-INDEX `timestamp` (`timestamp`)
-) ENGINE = MyISAM;~;
+my $create_table = qq~
+CREATE TABLE IF NOT EXISTS `events` (
+  id int(10) unsigned NOT NULL auto_increment,
+  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  event varchar(255) default NULL,
+  PRIMARY KEY (id)
+)ENGINE=HEAP;~;
 
 
 
@@ -19,8 +23,8 @@ INDEX `timestamp` (`timestamp`)
 $|=1;
 
 #CONFIG FILES
-my $dbhost = '127.0.0.1';
-my $dbname = '';
+my $dbhost = 'localhost';
+my $dbname = 'asterisk';
 my $dbport = '3306';
 my $dbuser = '';
 my $dbpasswd = '';
@@ -39,8 +43,12 @@ my $dbh = &connect_mysql(dbname=>$dbname,
 						dbpasswd=>$dbpasswd);
 # if try to auto create table
 # &auto_create_table();
+   $dbh->do('DROP TABLE IF EXISTS `events`;');
+   $dbh->do($create_table);
+   
 
 #CONNECT
+
 my $SOCK = &connect_ami(host=>$asterisk,
 						port=>$asteriskport,
 						user=>$asteriskuser,

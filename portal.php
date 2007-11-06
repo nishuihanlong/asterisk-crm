@@ -12,7 +12,9 @@
 	点击呼叫
 	主动呼叫
 	电话转接
+	电话挂断
 	来电/去电弹屏
+
 
 * Page elements
 
@@ -62,6 +64,9 @@
 				updateEvents					check database for asterisk events
 
 
+* Revision 0.0456  2007/10/31 9:46:00  last modified by solo
+* Desc: add divHangup
+
 * Revision 0.0456  2007/10/29 21:31:00  last modified by solo
 * Desc: add div divSearchContact
 
@@ -89,6 +94,13 @@ require_once('portal.common.php');
 
 		function dial(phonenum){
 			xajax_dial(phonenum);
+		}
+
+		function hangup(){
+			//alert (xajax.$('callerChannel').value);
+			//alert (xajax.$('calleeChannel').value);
+			xajax_hangup(xajax.$('callerChannel').value);
+			xajax_hangup(xajax.$('calleeChannel').value);
 		}
 
 		function showProcessingMessage(){
@@ -176,9 +188,15 @@ require_once('portal.common.php');
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
-		<div id="divUserMsg" name="divUserMsg"></div>
+		<div id="divUserMsg" name="divUserMsg"></div><br>
+
+		<div id="divHangup" name="divHangup">
+			<input type="button" value="Hangup" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
+		</div><br>
+
 		<span id="spanTransfer" name="spanTransfer"></span>
 		<div id="myevents"></div>
+
 		<br>
 		<span id="spanMonitor" name="spanMonitor"></span><br>
 		<div id="divMonitor">

@@ -19,13 +19,23 @@
 			events					日志记录函数
 			getCallerID				用于外部来电时获取主叫号码
 			getInfoBySrcID			用于呼出时获取主叫号码
-			getInfoByDescID			未使用
+			getInfoByDestID			未使用
 			checkLink				检查呼叫是否连接
 			checkHangup				检查呼叫是否挂断
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
-* Revision 0.041  2007/10/26 13:46:00  modified by solo
+* Revision 0.0456  2007/11/1 11:54:00  modified by solo
+* Desc: add callerid in extension status, when click the callerid, 
+* it could show user information if it's stored before
+
+* Revision 0.0456  2007/10/31 10:54:00  modified by solo
+* Desc: return channel information when there's dialin or dialout events
+
+* Revision 0.0456  2007/10/31 10:13:00  modified by solo
+* Desc: replace DescUniqueID with DestUniqueID 
+
+* Revision 0.0451  2007/10/26 13:46:00  modified by solo
 * Desc: 
 * 描述: 修改了 listStatus和tableStatus, 增加了点击分机上的列表拨号功能
 
@@ -126,10 +136,15 @@ class asterEvent extends PEAR
 			$_SESSION['curuser']['extensions_session'] = array();
 
 		$events =& asterEvent::getEvents($curid);
-		if (!isset($_SESSION['sipstatus']))
+		if (!isset($_SESSION['sipstatus'])){
 			$status = array();
-		else
+			$callerid = array();
+			$direction = array();
+		}else{
 			$status = $_SESSION['sipstatus'];
+			$callerid = $_SESSION['callerid'];
+			$direction = $_SESSION['direction'];
+		}
 
 		if (!isset($_SESSION['curuser']['extensions_session']) or $_SESSION['curuser']['extensions_session'] == '')
 			$phones = array();
@@ -158,10 +173,30 @@ class asterEvent extends PEAR
 				if (!isset($status[$chan_val])) $status[$chan_val] = 0;
 				continue;
 			} 
+
 			if (substr($event_val,0,10) == "Newchannel") {
 				$peer_val = split("-",$chan_val);
 				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
 				$status[$peer_val[0]] = 1;
+				
+				//get unique id
+				//add by solo 2007-11-1
+				$extra = split("  ", $extra);
+				foreach ($extra as $temp){
+					if (preg_match("/^Uniqueid:/",$temp)){
+						$uniqueid = substr($temp,9);
+						$callerid[$peer_val[0]] =& asterEvent::getCallerID($uniqueid);
+						$direction[$peer_val[0]] = "dialin";
+					}
+				}
+
+				if ($callerid[$peer_val[0]] == 0 ){	// it's a dial out
+					$srcInfo = & asterEvent::getInfoBySrcID($uniqueid);
+					$callerid[$peer_val[0]] = $srcInfo['Extension'];
+					$direction[$peer_val[0]] = "dialout";
+				}
+				//**************************
+
 				continue;
 			} 
 			if (substr($event_val,0,8) == "Newstate") {
@@ -174,35 +209,39 @@ class asterEvent extends PEAR
 				$peer_val = split("-",$chan_val);
 				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
 				$status[$peer_val[0]] = 0;
+				$callerid[$peer_val[0]] = "";
 				continue;
 		   } 
 		} 
 		
 		if ($type == 'list'){
-			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == '')
+			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == ''){
 				$phones = array();
-			else
+			}else{
 				$phones = $_SESSION['curuser']['extensions'];
-			$action =& asterEvent::listStatus($phones,$status);
+			}
+			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction);
 		}else{
 			$_SESSION['curuser']['extensions_session'] = $phones;
-			$action =& asterEvent::tableStatus($phones,$status);
+			$action =& asterEvent::tableStatus($phones,$status,$callerid,$direction);
 		}
 
 		$_SESSION['sipstatus'] = $status;
+		$_SESSION['callerid'] = $callerid;
+		$_SESSION['direction'] = $direction;
 
 		$html .= $action;
 		return $html;
 	}
 
-	function &tableStatus($phones,$status){
+	function &tableStatus($phones,$status,$callerid,$direction){
 		//print_r($phones);
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
 		foreach ($phones as $key => $value) {
 			//$value = "SIP/".$value;
 			if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
-			$action .= "<td align=center><button onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" name='" . substr($value,4) . "' ";
+			$action .= "<td align=center ><br><button name='" . substr($value,4) . "' ";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {
 					$action .= "  id='ButtonU'>\n";
@@ -222,13 +261,20 @@ class asterEvent extends PEAR
 			$action .= strtoupper(substr($value,4));
 			$action .= "</button>\n";
 
+			if ($status[$value] == 1) {
+				//$action .= "<span align=left>";
+				$action .= "<BR>".$direction[$value];
+				$action .= "<BR>".$callerid[$value]."";
+				//$action .= "</span>";
+			}
+
 			$action .=  "</td>\n";
 		}
 		$action .= '</tr></table><br>';
 		return $action;
 	}
 
-	function &listStatus($phones,$status){
+	function &listStatus($phones,$status,$callerid,$direction){
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $key => $value) {
 			if (!strstr($value,'SIP/'))
@@ -252,6 +298,12 @@ class asterEvent extends PEAR
 			}
 			$action .= $value;
 			$action .= "</button>\n";
+			if ($status[$value] == 1) {
+				//$action .= "<span align=left>";
+				$action .= "<BR>".$direction[$value];
+				$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$value]."');return false;\">".$callerid[$value]."</a>";
+				//$action .= "</span>";
+			}
 
 			$action .=  "</td></tr>\n";
 		 }
@@ -289,7 +341,10 @@ class asterEvent extends PEAR
 		global $db;
 		// SELECT "1997-12-31 23:59:59" + INTERVAL 1 SECOND; 
 
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $uniqueid. "%' AND id > $curid AND timestamp > (now()-INTERVAL 10 SECOND) order by id desc ";
+//		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $uniqueid. "%' AND id > $curid AND timestamp > (now()-INTERVAL 10 SECOND) order by id desc ";
+
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $uniqueid. "%' AND id > $curid AND timestamp >  '".date ("Y-m-d H:i:s" ,time()-10)."' order by id desc ";
+
 		asterEvent::events($query);
 		$res = $db->query($query);
 
@@ -331,7 +386,10 @@ class asterEvent extends PEAR
 
 	function &checkHangup($curid,$uniqueid){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $uniqueid . "%' AND timestamp > (now()-INTERVAL 10 SECOND) AND id> $curid order by id desc ";
+		//$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $uniqueid . "%' AND timestamp > (now()-INTERVAL 10 SECOND) AND id> $curid order by id desc ";
+
+		$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $uniqueid . "%' AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' AND id> $curid order by id desc ";
+
 		asterEvent::events($query);
 		$res = $db->query($query);
 
@@ -354,17 +412,22 @@ class asterEvent extends PEAR
 			$call['curid']			(int)		current id
 			$call['callerid']		(string)	caller id/callee id
 			$call['uniqueid']		(string)	uniqueid for the new call
+			$call['callerChannel']		(string)	channel who start the call
 */
 
 	function &checkIncoming($curid,$exten){
 		global $db;
 
-		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > (now()-INTERVAL 10 SECOND) AND id > " . $curid . " order by id desc";
+		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' AND id > " . $curid . " order by id desc limit 0,1";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
 
+//		$list = $db->getRow($query);
+//		asterEvent::events("incoming:".$res->numRows());
+
 		if ($res->fetchInto($list)) {
+
 			$id        = $list['id'];
 			$timestamp = $list['timestamp'];
 			$event     = $list['event'];
@@ -374,7 +437,10 @@ class asterEvent extends PEAR
 			$transferid= '';
 
 			if ($flds[3] == 'State: Ringing'){
-				for($i=4;$i<$c;++$i) {
+				for($i=0;$i<$c;++$i) {
+					if (strstr($flds[$i],"Channel:"))	
+						$channel = substr($flds[$i],8);
+
 					if (strstr($flds[$i],"CallerID:"))	
 						$transferid = substr($flds[$i],9);
 
@@ -395,6 +461,7 @@ class asterEvent extends PEAR
 			$call['callerid'] = trim($callerid);
 			$call['uniqueid'] = trim($uniqueid);
 			$call['curid'] = trim($curid);
+			$call['callerChannel'] = trim($channel);
 		} else
 			$call['status'] = '';
 
@@ -410,15 +477,19 @@ class asterEvent extends PEAR
 			$call['curid']			(int)		current id
 			$call['callerid']		(string)	caller id/callee id
 			$call['uniqueid']		(string)	uniqueid for the new call
+			$call['callerChannel']	(string)	source channel
+			$call['calleeChannel']	(string)	destination channel
 */
 
 	function &checkDialout($curid,$exten){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND timestamp > (now()-INTERVAL 10 SECOND) order by id desc";	
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' order by id desc limit 0,1";	
 
 		asterEvent::events($query);
 
 		$res = $db->query($query);
+//		asterEvent::events("dialout:".$res->numRows());
+
 		if ($res->fetchInto($list)) {
 			$id        = $list['id'];
 			$timestamp = $list['timestamp'];
@@ -426,13 +497,25 @@ class asterEvent extends PEAR
 			$flds      = split("  ",$event);
 			$callerid  = '';
 
-
+/*
+Event: Dial  Privilege: call,all
+Source: Local/13909846473@from-sipuser-47d9,2  
+Destination: SIP/trunk1-ec3f  
+CallerID: 8000  
+CallerIDName: <unknown>  
+SrcUniqueID: 1193886661.15682  
+DestUniqueID: 1193886661.15683
+*/
 			if ($flds[0] == 'Event: Dial'){
 				$SrcUniqueID = trim(substr($flds[6],12));
-				$DescUniqueID = trim(substr($flds[7],13));
+				$DestUniqueID = trim(substr($flds[7],13));
+				$SrcChannel = trim(substr($flds[2],7));			//add by solo 2007/10/31
+				$DestChannel = trim(substr($flds[3],12));		//add by solo 2007/10/31
 
 				$srcInfo = & asterEvent::getInfoBySrcID($SrcUniqueID);
-				$callerid = $srcInfo['Extension'] ;
+				$callerid = $srcInfo['Extension'];
+				asterEvent::events("dialout: ".$event);
+
 			}
 
 			if ($id > $curid) 
@@ -442,6 +525,13 @@ class asterEvent extends PEAR
 			$call['callerid'] = trim($callerid);
 			$call['uniqueid'] = $SrcUniqueID;
 			$call['curid'] = trim($curid);
+
+			//add by solo 2007/10/31
+			//******************
+			$call['callerChannel'] = $SrcChannel;
+			$call['calleeChannel'] = $DestChannel;
+			//******************
+
 		} else
 			$call['status'] = '';
 
@@ -449,18 +539,18 @@ class asterEvent extends PEAR
 	}
 
 /*
-	get more information from events table by DescUniqueID
-	@param	$DescUniqueID			(string)	DescUniqueID field in manager event
+	get more information from events table by DestUniqueID
+	@param	$DestUniqueID			(string)	DestUniqueID field in manager event
 	return	$call					(array)	
 			$call['status']			(string)	'','found'
-			$call['Extension']		(string)	extension which unique id is $DescUniqueID
-			$call['Channel']		(string)	channel which unique id is $DescUniqueID
+			$call['Extension']		(string)	extension which unique id is $DestUniqueID
+			$call['Channel']		(string)	channel which unique id is $DestUniqueID
 */
 
-	function &getInfoByDescID($DescUniqueID){
+	function &getInfoByDestID($DestUniqueID){
 		global $db;
-		$DescUniqueID = trim($DescUniqueID);
-		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $DescUniqueID%' AND event LIKE 'Event: Newcallerid%' ORDER BY id DESC";
+		$DestUniqueID = trim($DestUniqueID);
+		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $DestUniqueID%' AND event LIKE 'Event: Newcallerid%' ORDER BY id DESC";
 		asterEvent::events($query);
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){

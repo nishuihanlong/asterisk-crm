@@ -20,4 +20,5 @@ $start_record	= "Aufnahme Starten";
 $stop_record	= "Aufnahme Stopen";
 $monitor	= "Monitor";
 $recording	= "Aufnahme";
+$hangup		= "Hangup";
 ?>

@@ -3,7 +3,6 @@
 * asterisk.server.php
 * astercrm asterisk class
 
-
 * Revision 0.0455  2007/10/24 20:33:00  modified by solo
 * Desc: add function sendCall
 
@@ -68,6 +67,7 @@ class Asterisk extends AGI_AsteriskManager{
         $req .= "$var: $val\r\n";
       $req .= "\r\n";
       fwrite($this->socket, $req);
+	  return;
 	}
 
 	function getSipChannels(){

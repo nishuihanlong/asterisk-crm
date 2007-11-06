@@ -21,4 +21,5 @@ $stop_record	= "Stop record";
 $monitor	= "Monitor";
 $recording	= "Recording";
 $attitude	= "At";
+$hangup		= "Hangup";
 ?>

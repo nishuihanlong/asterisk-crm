@@ -1269,11 +1269,11 @@ Class astercrm extends PEAR{
 				<!--**********************-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left">'.$customer['mobile'].'</td>
+					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['mobile'].'\');return false;">'.$customer['mobile'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left">'.$customer['fax'].'</td>
+					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['fax'].'\');return false;">'.$customer['fax'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>

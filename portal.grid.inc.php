@@ -38,14 +38,29 @@ class Customer extends astercrm
 	*	@return $res 	(object) Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
-		global $db;
-		$sql = "SELECT note.id AS id,note.contactid AS contactid,note.customerid AS customerid,note.attitude as attitude, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+		global $db,$config;
 
-//		if ($creby != null)
-		$sql .= " WHERE priority>0 AND note.creby = '".$_SESSION['curuser']['username']."' ";
+		if ($config['system']['portal_display_type'] == "note"){
+			$sql = "SELECT note.id AS id,note.contactid AS contactid,note.customerid AS customerid,note.attitude as attitude, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+
+			$sql .= " WHERE priority>0 AND note.creby = '".$_SESSION['curuser']['username']."' ";
+
+		}else{
+			$sql = "SELECT customer.id,
+							customer.customer AS customer,
+							note.note AS note,
+							note.priority AS priority,
+							note.attitude AS attitude,
+							customer.category AS category,
+							customer.contact AS contact,
+							customer.cretime as cretime
+							FROM customer LEFT JOIN note ON customer.id = note.customerid";
+
+			$sql .= " WHERE customer.creby = '".$_SESSION['curuser']['username']."' ";
+		}
 
 		if($order == null){
-			$sql .= " ORDER BY priority DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
@@ -67,15 +82,34 @@ class Customer extends astercrm
 	*/
 
 	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
-		global $db;
+		global $db,$config;
 		
 		if(($filter != null) and ($content != null)){
-			$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
+			if ($config['system']['portal_display_type'] == "note"){
+
+				$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
 					." WHERE ".$filter." like '%".$content."%' AND priority>0 "
 					." AND  note.creby = '".$_SESSION['curuser']['username']."' "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
+			}else{
+				$sql = "SELECT customer.id AS id,
+							customer.customer AS customer,
+							customer.category AS category,
+							customer.contact AS contact,
+							customer.cretime as cretime,
+							note.note AS note,
+							note.priority AS priority,
+							note.attitude AS attitude
+						FROM customer
+						LEFT JOIN note ON customer.id = note.customerid"
+					." WHERE ".$filter." like '%".$content."%'"
+					." AND  customer.creby = '".$_SESSION['curuser']['username']."' "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+			}
 		}
 		Customer::events($sql);
 		$res =& $db->query($sql);
@@ -91,14 +125,31 @@ class Customer extends astercrm
 	*/
 	
 	function &getNumRows($filter = null, $content = null){
-		global $db;
-		$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE priority>0  AND note.creby = '".$_SESSION['curuser']['username']."'";
-			
-		if(($filter != null) and ($content != null)){
-			$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				." AND  note.creby = '".$_SESSION['curuser']['username']."' "
-				."WHERE ".$filter." like '%".$content."%'";
+		global $db,$config;
+		if ($config['system']['portal_display_type'] == "note"){
+
+			$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE priority>0  AND note.creby = '".$_SESSION['curuser']['username']."'";
+				
+			if(($filter != null) and ($content != null)){
+				$sql = 	"SELECT COUNT(*) AS numRows "
+					."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+					." AND  note.creby = '".$_SESSION['curuser']['username']."' "
+					."WHERE ".$filter." like '%".$content."%'";
+			}
+		}else{
+
+			$sql = "SELECT COUNT(*) AS numRows FROM customer 
+						LEFT JOIN note ON customer.id = note.customerid  WHERE customer.creby = '".$_SESSION['curuser']['username']."'";
+				
+			if(($filter != null) and ($content != null)){
+				$sql = 	"SELECT COUNT(*) AS numRows "
+					." FROM customer "
+					." WHERE "
+					."customer.creby = '".$_SESSION['curuser']['username']."'"
+					." AND "
+					.$filter." like '%".$content."%'";
+			}
+
 		}
 		
 		Customer::events($sql);

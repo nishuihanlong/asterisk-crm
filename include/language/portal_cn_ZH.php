@@ -21,4 +21,5 @@ $stop_record	= "停止录音";
 $monitor	= "系统录音";
 $recording	= "正在录音";
 $attitude	= "反馈";
+$hangup		= "挂断";
 ?>

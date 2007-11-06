@@ -7,7 +7,7 @@
 #  TO asteriskuser@localhost
 #  IDENTIFIED BY 'asterisk';
 
-USE asterisk;
+#USE asterisk;
 
 DROP TABLE IF EXISTS contact;
 
@@ -154,7 +154,7 @@ CREATE TABLE surveyresult (
 ) ;
 
 
-INSERT INTO `asterisk`.`account` (
+INSERT INTO `account` (
 `id` ,
 `username` ,
 `password` ,

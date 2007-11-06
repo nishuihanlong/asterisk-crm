@@ -60,10 +60,10 @@ preDialer_extension	= "1"
 phone_number_length	= "6"	
 
 ;
-; if astercrm trim the 0 in the phonenumber before search for customer/contact in database
-;
+; if astercrm trim fellowing prefix, use gamma to sperate
+; leave it blank if no prefix need to be removed
 
-trim_zreo			= "1"
+trim_prefix			= "0,9"
 
 ;
 ; if your astercrm work on the same server with asterisk, set to true
@@ -78,6 +78,9 @@ allow_dropcall		= "0"
 
 allow_same_data		= "1"
 
+; define what information would be displayed in portal page
+; customer | note
+portal_display_type = "note"
 
 ;
 ; astercrm wouldnot pop-up when dial out unless this parameter is true
@@ -92,7 +95,7 @@ pop_up_when_dial_in		= "1"
 ;
 ; browser will maximize when pop up
 ;
-maximize_when_pop_up	= "1"
+maximize_when_pop_up	= "0"
 
 ;
 ; which phone ring first when using click to dial
