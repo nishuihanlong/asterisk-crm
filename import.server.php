@@ -9,9 +9,11 @@
 	selectTable()  选择表
 	submitForm()  将csv，xsl格式文件数据插入数据库
 	showDivMainRight() 显示csv，xsl格式文件数据
-	showCsv()  显示csv格式文件数据
-	showXls()  显示xls格式文件数据
+	getGridDatas() 得到显示csv，xsl格式文件数据的HTML语法
 	getDiallistBar() 得到显示diallist导入框的HTML语法
+	getData() 得到要插入表的sql语句，存入数组
+	parseExcelToSql() 得到sql语句和分区，存入数组
+	getRowDataArr()得到excel文件的所有行数据，返回数组
 
 * Revision 0.046  2007/11/8 8:33:00  modified by yunshida
 * 描述: 取消了session的使用, 重新整理了流程
@@ -154,13 +156,13 @@ function submitForm($aFormValues){
 	$tableName = $aFormValues['hidTableName'];
 
 	$flag = 0;
-	foreach($order as $value){
+	foreach($order as $value){  //判断是否有要导入的数据
 		if(trim($value) != ''){
 			$flag = 1;
 			break;
 		}
 	}
-	if($flag != 1){
+	if($flag != 1){  //判断是否要添加分区
 		if(trim($aFormValues['dialListField'])=='' && trim($aFormValues['assign'])==''){
 			$flag = 0;
 		}else{
