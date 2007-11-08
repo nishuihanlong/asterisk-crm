@@ -72,6 +72,7 @@ $xajax->registerFunction("editField");
 $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("setSurvey");
+$xajax->registerFunction("searchFormSubmit");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.

@@ -76,6 +76,34 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = 'SELECT * FROM '.$table.'';
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 	
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
@@ -98,6 +126,31 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
+	}
+
+	function &getNumRowsMore($filter = null, $content = null,$table){
+		global $db;
+		
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0){
+					$joinstr.="AND $filter[$i] like '".$value."' ";
+				}
+				$i++;
+			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql='SELECT COUNT(*) AS numRows FROM '.$table.' WHERE '.$joinstr;
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM '".$table."' ";
+			}
+		
+		
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
 	}
 	
 	/**

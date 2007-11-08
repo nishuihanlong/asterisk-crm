@@ -348,7 +348,7 @@ class ScrollTable{
 		$ind = 0;
 		$ind2 = 0;
 		$this->search = '
-		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit();">
+		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,5);">
 			<table width="99%" border="0" style="line-height:30px;">
 
 			<tr>
@@ -396,10 +396,9 @@ class ScrollTable{
 					</td>
 					<td>
 				&nbsp;&nbsp;
-				<INPUT TYPE="hidden" value="'.$this->numRowsToShow.'" name="numRowsToShow" id="numRowsToShow"/>
-				<!--<INPUT TYPE="button" onClick="xajax_addSearchTr(document.getElementsByName(\'searchField[]\')[0].innerHTML,document.getElementById(\'addSearth\').innerHTML);" value="'.$local_grid->Translate("add_search").'">-->&nbsp;&nbsp;
-
-				<!--<button id="submitButton" onClick="searchFormSubmit();">'.$local_grid->Translate("continue").'</button>-->
+				<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
+				<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
+				&nbsp;&nbsp;
 				<input type="submit" id="submitButton" name="submitButton" value="'.$local_grid->Translate("continue").'"/>
 				</td>
 
@@ -415,6 +414,7 @@ class ScrollTable{
 
 	function setFooter(){
 		global $local_grid;
+		//print_r($_SESSION['curuser']['content']);
 		$next_rows = $this->start + $this->limit;
 		$previos_rows = $this->start - $this->limit;
 		if($next_rows>$this->numRows) $next_rows = $this->numRows;
@@ -427,7 +427,7 @@ class ScrollTable{
 				<th colspan="'.$this->n_cols.'">
 					<span class="pagenav">';
 					if($this->start>0){
-						$this->footer .= '<a href="?" onClick=\'xajax_showGrid(0,'.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("first").'</a>';
+						$this->footer .= '<a href="?" onClick=\'searchFormSubmit(0,'.$this->limit.');return false;\'>'.$local_grid->Translate("first").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("first");
 					}
@@ -436,7 +436,7 @@ class ScrollTable{
 
 					if($this->start >0){
 					$this->footer .= '
-						<a href="?" onClick=\'xajax_showGrid('.$previos_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("previous").'</a>';
+						<a href="?" onClick=\'searchFormSubmit('.$previos_rows.','.$this->limit.');return false;\'>'.$local_grid->Translate("previous").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("previous");
 					}
@@ -451,7 +451,7 @@ class ScrollTable{
 					<span class="pagenav">';
 
 					if($next_rows < $this->numRows){
-						$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.$next_rows.','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("next").'</a>';
+						$this->footer .= '<a href="?" onClick=\'searchFormSubmit('.$next_rows.','.$this->limit.');return false;\'>'.$local_grid->Translate("next").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("next");
 					}
@@ -460,7 +460,7 @@ class ScrollTable{
 					<span class="pagenav">';
 
 					if($next_rows < $this->numRows){
-					$this->footer .= '<a href="?" onClick=\'xajax_showGrid('.($this->numRows - $this->limit).','.$this->limit.',"'.$this->filter.'","'.$this->content.'","'.$this->order.'");return false;\'>'.$local_grid->Translate("last").'</a>';
+					$this->footer .= '<a href="?" onClick=\'searchFormSubmit('.($this->numRows - $this->limit).','.$this->limit.');return false;\'>'.$local_grid->Translate("last").'</a>';
 					}else{
 					$this->footer .= $local_grid->Translate("last").'</span>';
 					}

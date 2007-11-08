@@ -75,14 +75,31 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
-	if(($filter == null) or ($content == null)){
-		
+	if($filter == null or $content == null){
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
-		
-		$numRows =& Customer::getNumRows($filter, $content);
-		$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);	
+		foreach($content as $value){
+			if(trim($value) != ""){  //搜索内容有值
+				$flag = "1";
+				break;
+			}
+		}
+		foreach($filter as $value){
+			if(trim($value) != ""){  //搜索条件有值
+				$flag2 = "1";
+				break;
+			}
+		}
+		if($flag != "1" || $flag2 != "1"){  //无值
+			$order = null;
+			$numRows =& Customer::getNumRows();
+			$arreglo =& Customer::getAllRecords($start,$limit,$order);
+		}else{
+			$order = "id";
+			$numRows =& Customer::getNumRowsMore($filter, $content,"contact");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"contact");
+		}
 	}
 
 	// Editable zone
@@ -164,8 +181,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("contact",$fieldsFromSearch,$fieldsFromSearchShowAs);
-
+	//$table->addRowSearch("contact",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
@@ -209,6 +226,26 @@ function showDetail($contactid){
 		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
 	}
+	return $objResponse->getXML();
+}
+
+function searchFormSubmit($searchFormValue,$numRows,$limit){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	$searchField = array();
+	$searchContent = array();
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	
+	//$limit = $searchFormValue['limit'];  // limit 
+	//$numRowsToShow = $searchFormValue['numRowsToShow']; // start
+
+	$divName = "grid";
+	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	$objResponse = new xajaxResponse();
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign($divName, "innerHTML", $html);
+	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

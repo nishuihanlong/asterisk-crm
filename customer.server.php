@@ -98,13 +98,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			}
 		}
 		if($flag != "1" || $flag2 != "1"){  //无值
-			//print_r("vvvvvvvvvv");
 			$order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
-			//print_r($arreglo);
 		}else{
-			//print_r("ssssssssssssss");
+			$order = "id";
 			$numRows =& Customer::getNumRowsMore($filter, $content,"customer");
 			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"customer");
 		}
@@ -249,7 +247,7 @@ function showDetail($customerid){
 	return $objResponse->getXML();
 }
 
-function addSearchTr($search_str,$search_table){
+/*function addSearchTr($search_str,$search_table){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	//$objResponse->addAlert($search_table);
@@ -262,20 +260,24 @@ function addSearchTr($search_str,$search_table){
 	$objResponse->addAppend("addSearth","innerHTML",$searth_tr);
 	//$objResponse->addAssign("addSearth", "innerHTML", $add_search_str);
 	return $objResponse->getXML();
-}
+}*/
 
-function searchFormSubmit($searchFormValue){
+function searchFormSubmit($searchFormValue,$numRows,$limit){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-	//print_r($searchFormValue);
+	
+	//$limit = $searchFormValue['limit'];  // limit 
+	//$numRowsToShow = $searchFormValue['numRowsToShow']; // start
+
 	$divName = "grid";
-	$html = createGrid(0, 5,$searchField, $searchContent, $searchField, $divName, "");
+	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign($divName, "innerHTML", $html);
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }

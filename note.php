@@ -54,6 +54,10 @@ require_once('note.common.php');
 		function exportCustomer(){
 			xajax_export();
 		}
+		function searchFormSubmit(numRows,limit){
+			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit);
+			return false;
+		}
 		//-->
 		</SCRIPT>
 

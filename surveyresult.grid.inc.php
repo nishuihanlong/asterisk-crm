@@ -76,6 +76,37 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid "
+					." WHERE ".$joinstr." "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 	
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
@@ -98,6 +129,33 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
+	}
+
+	function &getNumRowsMore($filter = null, $content = null,$table){
+		global $db;
+		
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0){
+					$joinstr.="AND $filter[$i] like '".$value."' ";
+				}
+				$i++;
+			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql = 	"SELECT COUNT(*) AS numRows "
+				."FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  "
+				."WHERE ".$joinstr." ";
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ";
+			}
+		
+		
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
 	}
 }
 ?>

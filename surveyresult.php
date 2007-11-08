@@ -37,6 +37,11 @@ require_once('surveyresult.common.php');
 			xajax_init();
 		}
 		
+		function searchFormSubmit(numRows,limit){
+			//alert(xajax.getFormValues("searchForm"));
+			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit);
+			return false;
+		}
 		//-->
 		</SCRIPT>
 

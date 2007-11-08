@@ -95,10 +95,15 @@ class Customer extends astercrm
 		}
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql='SELECT * FROM '.$table.' WHERE '.$joinstr;
+			$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
 		}else {
-			$sql='SELECT * FROM '.$table.'';
+			$sql = 'SELECT * FROM '.$table.'';
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
 		}
+		
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -128,11 +133,7 @@ class Customer extends astercrm
 
 	function &getNumRowsMore($filter = null, $content = null,$table){
 		global $db;
-		//$filter 条件数组
-		//$content 内容数组
-		$sql = "SELECT COUNT(*) AS numRows FROM $table ";
-
-		if((!count($filter) > 0) and (!count($content) > 0)){
+		
 			$i=0;
 			$joinstr='';
 			foreach ($content as $value){
@@ -144,12 +145,12 @@ class Customer extends astercrm
 			}
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql='SELECT COUNT(*) AS numRows FROM $table WHERE '.$joinstr;
+				$sql='SELECT COUNT(*) AS numRows FROM '.$table.' WHERE '.$joinstr;
 			}else {
-				$sql = "SELECT COUNT(*) AS numRows FROM $table ";
+				$sql = "SELECT COUNT(*) AS numRows FROM '".$table."' ";
 			}
-			//////////////////////////////////
-		}
+		
+		
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;

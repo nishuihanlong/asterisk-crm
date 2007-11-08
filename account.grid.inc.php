@@ -87,6 +87,34 @@ class Customer extends astercrm
 		return $res;
 	}
 	
+
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT * FROM account"
+					." WHERE ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = "SELECT * FROM account";
+		}
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
@@ -104,7 +132,30 @@ class Customer extends astercrm
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
-	
+	function &getNumRowsMore($filter = null, $content = null,$table){
+		global $db;
+		
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0){
+					$joinstr.="AND $filter[$i] like '".$value."' ";
+				}
+				$i++;
+			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql = 'SELECT COUNT(*) AS numRows FROM account WHERE '.$joinstr;
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM account";
+			}
+		
+		
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
+	}
 
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".

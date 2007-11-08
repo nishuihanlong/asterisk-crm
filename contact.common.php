@@ -97,6 +97,7 @@ $xajax->registerFunction("saveSurvey");
 $xajax->registerFunction("surveyAdd");
 $xajax->registerFunction("confirmCustomer");
 $xajax->registerFunction("confirmContact");
+$xajax->registerFunction("searchFormSubmit");
 
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin

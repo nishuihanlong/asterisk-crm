@@ -66,6 +66,7 @@ $xajax->registerFunction("update");
 $xajax->registerFunction("delete");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
+$xajax->registerFunction("searchFormSubmit");
 
 define(LOG_ENABLED, $config['system']['log_enabled']);
 define(FILE_LOG, $config['system']['log_file_path']);

@@ -115,6 +115,74 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($config['system']['portal_display_type'] == "note"){
+				if ($joinstr!=''){
+					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+						$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
+						." WHERE ".$joinstr."  AND priority>0 "
+						." AND  note.creby = '".$_SESSION['curuser']['username']."' "
+						." ORDER BY ".$order
+						." ".$_SESSION['ordering']
+						." LIMIT $start, $limit $ordering";
+				}else {
+					$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
+						." ORDER BY ".$order
+						." ".$_SESSION['ordering']
+						." LIMIT $start, $limit $ordering";
+				}
+			}else{
+				if ($joinstr!=''){
+					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+						$sql = "SELECT customer.id AS id,
+							customer.customer AS customer,
+							customer.category AS category,
+							customer.contact AS contact,
+							customer.cretime as cretime,
+							note.note AS note,
+							note.priority AS priority,
+							note.attitude AS attitude
+						FROM customer
+						LEFT JOIN note ON customer.id = note.customerid"
+					." WHERE ".$joinstr." "
+					." AND  customer.creby = '".$_SESSION['curuser']['username']."' "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+				}else {
+					$sql = "SELECT customer.id AS id,
+							customer.customer AS customer,
+							customer.category AS category,
+							customer.contact AS contact,
+							customer.cretime as cretime,
+							note.note AS note,
+							note.priority AS priority,
+							note.attitude AS attitude
+						FROM customer
+						LEFT JOIN note ON customer.id = note.customerid"
+					." AND  customer.creby = '".$_SESSION['curuser']['username']."' "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+				}
+			}
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 	
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
@@ -155,6 +223,49 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
+	}
+
+	function &getNumRowsMore($filter = null, $content = null,$table){
+		global $db;
+		
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0){
+					$joinstr.="AND $filter[$i] like '".$value."' ";
+				}
+				$i++;
+			}
+			if ($config['system']['portal_display_type'] == "note"){
+				if ($joinstr!=''){
+					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+						$sql = 	"SELECT COUNT(*) AS numRows "
+								."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+								." AND  note.creby = '".$_SESSION['curuser']['username']."' "
+								."WHERE ".$joinstr." ";
+				}else {
+					$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE priority>0  AND note.creby = '".$_SESSION['curuser']['username']."'";
+				}
+			}else{
+				if ($joinstr!=''){
+					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+						$sql = 	"SELECT COUNT(*) AS numRows "
+								." FROM customer "
+								." WHERE "
+								."customer.creby = '".$_SESSION['curuser']['username']."'"
+								." AND "
+								.$joinstr." ";
+				}else {
+					$sql = "SELECT COUNT(*) AS numRows FROM customer 
+						LEFT JOIN note ON customer.id = note.customerid  WHERE customer.creby = '".$_SESSION['curuser']['username']."'";
+				}
+			}
+		
+		
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
 	}
 }
 ?>
