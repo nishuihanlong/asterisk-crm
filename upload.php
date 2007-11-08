@@ -59,7 +59,6 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 					$upload_msg .= " <font>".$locate->Translate('have').' '.$xlsrow.' '.$locate->Translate('recrod')."</font>";
 				}
 			}
-				$_SESSION['filename'] = $_FILES['excel']['name'];  //新传的文件名做为session
 		} 
 		else 
 		{
@@ -78,7 +77,8 @@ else
 <SCRIPT LANGUAGE="JavaScript">
 	var msg = "<? echo $upload_msg; ?><br />";
 	window.parent.document.getElementById("divMessage").innerHTML = msg;//msg;
-	window.parent.showDivMainRight();
+	window.parent.showDivMainRight("<?=$_FILES['excel']['name']?>");
 	window.parent.document.getElementById('btnUpload').disabled=false;
 	window.parent.document.getElementById('btnUpload').value="<?=$locate->Translate('upload')?>";
+	window.parent.document.getElementById('FILE_NAME').value="<?=$_FILES['excel']['name']?>";
 </SCRIPT>

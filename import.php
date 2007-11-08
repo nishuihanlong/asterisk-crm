@@ -109,8 +109,8 @@
 				xajax_submitForm(xajax.getFormValues('formImport'));
 			}
 
-			function showDivMainRight(){
-				xajax_showDivMainRight();
+			function showDivMainRight(filename){
+				xajax_showDivMainRight(filename);
 			}
 			
 			function uploadFile()
@@ -143,6 +143,7 @@
 					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
 					<input id="hidOnUploadMsg" name="hidOnUploadMsg" type="hidden" value=""/>
 					<input id="hidAssignAlertMsg" type="hidden" value=""/>
+					
 				</form>
 			</div>
 
@@ -167,6 +168,9 @@
 						<input id="onsubmitMsg" name="onsubmitMsg" type="hidden" value=""/>
 							<div name="divShowExcel" id="divShowExcel"></div>
 							<div name="divSubmitForm" id="divSubmitForm"></div>
+							<input type='hidden' value='' name='FILE_NAME' id='FILE_NAME' />
+							<input type='hidden' value='' name='TABLE_NAME' id='TABLE_NAME' />
+							<input type='hidden' value='' name='MAX_NUM' id='MAX_NUM' />
 						</form>
 					</td>
 				</tr>

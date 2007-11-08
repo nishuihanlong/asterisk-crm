@@ -62,11 +62,9 @@ function init(){
 
 	$objResponse->addAssign("divShowTable","innerHTML",$showtable);
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
-	if(isset($_SESSION['filename']) && $_SESSION['filename'] != ''){
-		$objResponse->addScript("showDivMainRight();");
-	}
+	$objResponse->addAssign("divShowExcel", "innerHTML", '');
+	$objResponse->addAssign("divSubmitForm", "innerHTML", '');
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-
 	return $objResponse;
 }
 /**
@@ -76,7 +74,7 @@ function init(){
 *  @return $objResponse
 *
 */
-function showDivMainRight(){
+function showDivMainRight($filename){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	/*
@@ -84,48 +82,25 @@ function showDivMainRight(){
 	*/
 	$show_msg = "";
 	$i=0;
-	$row = 0;
-	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];
-	$file_name = $_SESSION['filename'];
+	$file_path = $config['system']['upload_excel_path'].$filename;
+	$file_name = $filename;
 	$type = substr($file_name,-3);
-	//需要检查文件是否存在
-	$show_msg .= "
-					<input type='hidden' name='CHECK' value='1'/>";
-	$show_msg .= "
-
-						<table cellspacing='1' cellpadding='0' border='0' width='100%' style='text-align:left'>";
-	if($type == 'csv'){
-		$show_msg .= showCsv($file_path,$show_msg,$row);
-	}elseif($type == 'xls'){
-		$show_msg .= showXls($file_path,$row,$show_msg);
-	}
-	$show_msg .= "<tr>";
-	for ($c=0; $c < $_SESSION['num']; $c++) {
-		$show_msg .= "<td bgcolor='#F0F8FF' height='25px'>
-						&nbsp;<input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  />
-					  </td>";
-	}
-	$show_msg .= "</tr>";
-	$show_msg .= "<tr>";
-	for ($c=0; $c < $_SESSION['num']; $c++) {
-		$show_msg .= "<td height='20px' align='left'><font color='#000000'><b>$c</b></font></td>";
-	}
-	$show_msg .= "</tr>";
-	$show_msg .= "</table>";
-
-
-	if($show_msg == ""){
+	//检查文件是否存在
+	if(file_exists($file_path)){
+		$show_msgAndNum = showDatas($file_path,$type);
+		$show_msgAndNum_arr = explode('&&&&&&',$show_msgAndNum);
+		$show_msg = $show_msgAndNum_arr[0];
+	}else{
+		$show_msg = '';
 		$show_msg = $locate->Translate("nofilechoose");
+		return $objResponse;
 	}
 	/*
 	* show divSubmitForm
 	*/
-	$show_submit = showDivSubmitForm($_SESSION['num']);
-
+	$show_submit = showDivSubmitForm($show_msgAndNum_arr[1]);
 	$objResponse->addAssign("divShowExcel", "innerHTML", $show_msg);
-	if($_SESSION['filename'] != ''){
-		$objResponse->addAssign("divSubmitForm", "innerHTML", $show_submit);
-	}
+	$objResponse->addAssign("divSubmitForm", "innerHTML", $show_submit);
 	return $objResponse;
 }
 
@@ -141,7 +116,6 @@ function showDivMainRight(){
 
 function selectTable($table){
 	global $locate,$db;
-	$_SESSION['table'] = $table;
 	$sql = "select * from $table LIMIT 0,2";
 	$res =& $db->query($sql);
 	$tableInfo = $db->tableInfo($res);
@@ -157,11 +131,12 @@ function selectTable($table){
 			$show_msg .= $num.":&nbsp;&nbsp;".$tablename['name'];
 			$show_msg .= "</li>";
 		}
-		$_SESSION['MAX_NUM'] = $num;
 	}
 	$show_msg .= "</ul>";
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("tablefield", "innerHTML", $show_msg);
+	$objResponse->addAssign("TABLE_NAME","value",$table);
+	$objResponse->addAssign("MAX_NUM","value",$num);
 	return $objResponse;
 }
 
@@ -194,21 +169,30 @@ function submitForm($aFormValues){
 			$flag = '1';
 		}
 	}
-
 	//如果没有任何选择, 就退出
 	if($flag != 1){
 		$objResponse->addScript("init();");
 		return $objResponse;
 	}
 
-	$file_name = $_SESSION['filename'];
+	$file_name = $aFormValues['FILE_NAME'];
 	$type = substr($file_name,-3);
-	$table = $_SESSION['table'];
+	$table = $aFormValues['TABLE_NAME'];
 	
 	//对提交的数据进行校验
-	for($j=0;$j<count($order);$j++){
+	$order_num = count($order);
+	if($order_num!=0)
+	{
+		$order_repeat = array_count_values($order);
+		foreach($order_repeat as $key=>$value){
+			if($key != '' && $value > 1){
+				$repeat_flag = '1';
+			}
+		}
+	}
+	for($j=0;$j<$order_num;$j++){
 		if(trim($order[$j]) != ''){
-			if(trim($order[$j]) > $_SESSION['MAX_NUM']){  //最大值校验
+			if(trim($order[$j]) > $aFormValues['MAX_NUM']){  //最大值校验
 				$objResponse->addAlert($locate->Translate('fielderr'));
 				$objResponse->addScript('init();');
 				return $objResponse;
@@ -218,12 +202,10 @@ function submitForm($aFormValues){
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
-			if($_SESSION['edq'] == $order[$j]){ //是否重复
+			if( $repeat_flag == '1'){ //是否重复
 				$objResponse->addAlert($locate->Translate('fieldcountrepeat'));
 				$objResponse->addScript('init();');
 				return $objResponse;
-			}else{
-				$_SESSION['edq'] = $order[$j];
 			}
 		}
 	}
@@ -231,7 +213,8 @@ function submitForm($aFormValues){
 	$sql = "SELECT * FROM $table LIMIT 0,2 ";
 	$res =& $db->query($sql);
 	$tableInfo = $db->tableInfo($res);  //得到要倒入数据的表结构
-	$file_path = $config['system']['upload_excel_path'].$_SESSION['filename'];//excel文件存放路径
+	$file_path = $config['system']['upload_excel_path'].$file_name;//excel文件存放路径
+	//$objResponse->addAlert($file_path);
 	$handle = fopen($file_path,"r");  //打开excel文件
 	$affectRows= 0;  //计数据库影响结果变量
 	$x = 0;  //计数变量
@@ -255,177 +238,48 @@ function submitForm($aFormValues){
 			$area_num = count($area_array); //extension数据的个数
 		}
 	}else{
-		$area_num[] = '';
+		$area_array[] = '';
 		$area_num = 1;
 	}
-	
 
-	if($type == 'csv'){  //csv 格式文件
-		//开始读取csv文件
-		while($data = fgetcsv($handle, 1000, ",")){
-			$row_num_csv = count($data);  //get cols
-			$mysql_field_name = '';  //存放字段的字符串
-			$data_str = '';          //存放对应字段数据的字符串
-			for($i=0;$i<$row_num_csv;$i++){
-				if ($data[$i] != mb_convert_encoding($data[$i],"UTF-8","UTF-8"))
-					$data[$i]=mb_convert_encoding($data[$i],"UTF-8","GB2312");//单个数据，转换为utf-8
-				$field_order = trim($order[$i]);//字段顺序号,要导入数据库的列的下标号
-				if($field_order != ''){
-					$mysql_field_name .= $tableInfo[$field_order]['name'].','; //要导入的字段名
-					$data_str .= '"'.$data[$i].'"'.',';  //对应字段的数据
-				}
-				if(isset($dialListField) && $dialListField != ''){  //是否存在添加到拨号列表
-					if($dialListField == $i)
-						$dialListValue = $data[$i];  //要添加到拨号列表的数据封装到一个变量里
-				}
-			}
-			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);//去最后逗号
-			$data_str = substr($data_str,0,strlen($data_str)-1);//去掉最后逗号
-			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')"; //得到sql语句
-		
-			if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
-
-				if($x < $area_num){
-					$assigned = $area_array[$x];
-				}else{
-					$x = 0;
-					$assigned = $area_array[$x];
-				}
-
-				$x++;
-
-				$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign) VALUES ('".$dialListValue."','".$assigned."')");  // 插入diallist表
+	$all_data_arr = getData($file_path,$order,$table,$tableInfo,$dialListField,$date,$type);
+	foreach($all_data_arr as $data){
+		$sql_str = $data['sql_str'];  //得到插入选择表的sql语句
+		$dialListValue = $data['dialListValue'];
+		if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
+			if($x < $area_num){
+				$assigned = $area_array[$x];
+			}else{
+				$x = 0;
+				$assigned = $area_array[$x];
 			}
 
-			if($table != ''){
-				$rs = @ $db->query($sql_str);  //插入customer或contact表
-				$affectRows+= mysql_affected_rows();   //得到影响的数据条数
-			}
-			
+			$x++;
+			$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign) VALUES ('".$dialListValue."','".$assigned."')");  // 插入diallist表
+
 		}
-	}elseif($type == 'xls'){  //xls格式文件
-		Read_Excel_File($file_path,$return);
-		for ($i=0;$i<count($return[Sheet1]);$i++)
-		{
-			$v++;
-			$mysql_field_name = '';
-			$data_str = '';
-			$row_num_xls = count($return[Sheet1][$i]);  //列数
-			for ($j=0;$j<$row_num_xls;$j++)
-			{
-				if ($return[Sheet1][$i][$j] != mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","UTF-8"))
-					$return[Sheet1][$i][$j]=mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","GB2312");
-				$field_order = trim($order[$j]);//得到字段顺序号
-				if($field_order != ''){
-					$mysql_field_name .= $tableInfo[$field_order]['name'].',';
-					$data_str .= '"'.$return[Sheet1][$i][$j].'"'.',';
-				}
-				if(isset($dialListField) && $dialListField != ''){
-					if($dialListField == $i)
-						$array = $return[Sheet1][$i][$j];
-				}
-			}
-			$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
-			$data_str = substr($data_str,0,strlen($data_str)-1);
-			$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
-
-			if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
-				if($aFormValues['chkAssign'] == "1"){ //如果确定选择分派
-					if($x < $area_num){
-						$random_area = $area_array[$x];
-					}else{
-						$x = 0;
-						$random_area = $area_array[$x];
-					}
-					$x++;
-					$sql_string = "INSERT INTO diallist (dialnumber,assign) VALUES ('".$array."','".$random_area."')";
-				}else{
-					$sql_string = "INSERT INTO diallist (dialnumber) VALUES ('".$array."')";
-				}
-				$objResponse->addAlert($sql_string);
-				$rs2 =@ $db->query($sql_string);  // 插入diallist表
-			}
-			if($table != ''){  //如果选择了表
-				$rs = @ $db->query($sql_str);  //插入customer或contact表
-				$affectRows+= mysql_affected_rows();
-			}
+		if($table != ''){
+			$rs = @ $db->query($sql_str);  //插入customer或contact表
+			$affectRows+= mysql_affected_rows();   //得到影响的数据条数
 		}
 	}
 	if($affectRows< 0){
 		$affectRows= 0;
 	}
-	$overMsg = $table.' : '.$v.$locate->Translate('data');
-
-
+	$overMsg = $table.' : '.$affectRows.$locate->Translate('data');
 	//delete upload file
-	//@ unlink($file_path);
-	unset($_SESSION['filename']);
-	unset($_SESSION['num']);
-	unset($_SESSION['MAX_NUM']);
-	unset($_SESSION['edq']);
+	@ unlink($file_path);
 	$objResponse->addAlert($locate->Translate('success'));
 	$objResponse->addAssign("divMessage", "innerHTML",'');
 	$objResponse->addAssign("overMsg", "innerHTML",$overMsg);
 	$objResponse->addScript("document.getElementById('submitButton').disabled = false;");
 	$objResponse->addAssign("submitButton","value",$locate->Translate("submit"));
-	$objResponse->addScript("showDivMainRight();");
+	$objResponse->addAssign("divShowExcel", "innerHTML", '');
+	$objResponse->addAssign("divSubmitForm", "innerHTML", '');
 	$objResponse->addScript("init();");
 	return $objResponse;
 }
-/**
-*  function to show csv file data
-*/
-function showCsv($file_path,$show_msg,$row){
-	$handle = fopen($file_path,"r");
-	while($data = fgetcsv($handle, 1000, ",")){
-		$num = count($data);
-		$row++;
-		$show_msg .= "<tr>";
-		for ($c=0; $c < $num; $c++) {
-			if ($data[$c] != mb_convert_encoding($data[$c],"UTF-8","UTF-8"))
-					$data[$c]=mb_convert_encoding($data[$c],"UTF-8","GB2312");
-			if($row % 2 != 0){
-				$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".$data[$c]."</td>";
-			}else{
-				$show_msg .= "<td bgcolor='#efefef' height='25px'>&nbsp;".$data[$c]."</td>";
-			}
-		}
-		$show_msg .= "</tr>";
-		if($row == 8)
-			break;
-	}
-	fclose($handle);
-	$_SESSION['num'] = $num;
-	return $show_msg;
-}
-/**
-*  function to show xls file data
-*/
-function showXls($file_path,$row,$show_msg){
-	Read_Excel_File($file_path,$return);
-	for ($i=0;$i<count($return[Sheet1]);$i++)
-	{
-		$row++;
-		$show_msg .= "<tr>";
-		$num = count($return[Sheet1][$i]);
-		for ($j=0;$j<count($return[Sheet1][$i]);$j++)
-		{
-			if ($return[Sheet1][$i][$j] != mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","UTF-8"))
-					$return[Sheet1][$i][$j]=mb_convert_encoding($return[Sheet1][$i][$j],"UTF-8","GB2312");
-			if($row % 2 != 0){
-				$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".$return[Sheet1][$i][$j]."</td>";
-			}else{
-				$show_msg .= "<td bgcolor='#efefef'
-				height='25px'>&nbsp;".$return[Sheet1][$i][$j]."</td>";
-			}
-		}
-		$show_msg .= "</tr>";
-		if($row == 8)
-			break;
-	}
-	$_SESSION['num'] = $num;
-	return $show_msg;
-}
+
 /**
 *  function to show divSubmitForm
 */
@@ -467,6 +321,97 @@ function showDivSubmitForm($num){
 				</table>
 			</form>";
 	return $show_submit;
+}
+
+
+function getData($file_path,$order,$table,$tableInfo,$dialListField,$date,$type){
+	$data_array = getRowDataArr($type,$file_path);
+	foreach($data_array as $data_arr){
+		$sql_string = parseExcelToSql($data_arr,$order,$dialListField,$tableInfo,$table,$date);
+		$sqlAndDialListValue_arr = explode('&&&&',$sql_string);
+		$all_arr[] = array("sql_str"=>$sqlAndDialListValue_arr[0],"dialListValue"=>$sqlAndDialListValue_arr[1]);
+	}
+	return $all_arr;
+}
+
+function parseExcelToSql($data,$order,$dialListField,$tableInfo,$table,$date){//循环行数据，得到sql
+	$mysql_field_name = '';
+	$data_str = '';
+	$row_num = count($data);  //列数
+	for ($j=0;$j<$row_num;$j++)
+	{
+		if ($data[$j] != mb_convert_encoding($data[$j],"UTF-8","UTF-8"))
+			$data[$j]=mb_convert_encoding($data[$j],"UTF-8","GB2312");
+		$field_order = trim($order[$j]);//得到字段顺序号
+		if($field_order != ''){
+			$mysql_field_name .= $tableInfo[$field_order]['name'].',';
+			$data_str .= '"'.$data[$j].'"'.',';
+		}
+		if(isset($dialListField) && $dialListField != ''){
+			if($dialListField == $j)
+				$dialListValue = $data[$j];
+		}
+	}
+	$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
+	$data_str = substr($data_str,0,strlen($data_str)-1);
+	$sql_str = "INSERT INTO $table ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
+	
+	return $sql_str.'&&&&'.$dialListValue;
+}
+
+function getRowDataArr($type,$file_path){  //得到excel文件的所有行数据，返回数组
+	if($type == 'csv'){  //csv 格式文件
+		$handle = fopen($file_path,"r");  //打开excel文件,得到句柄
+		while($data = fgetcsv($handle, 1000, ",")){
+			$data_array[] = $data;
+		}
+	}elseif($type == 'xls'){  //xls格式文件
+		Read_Excel_File($file_path,$return);
+		for ($i=0;$i<count($return[Sheet1]);$i++){
+			$data_array[] = $return[Sheet1][$i];
+		}
+	}
+	return $data_array;
+}
+
+function showDatas($file_path,$type){
+	$data_array = getRowDataArr($type,$file_path);
+	$row = 0;
+	$show_msg .= "<table cellspacing='1' cellpadding='0' border='0' width='100%'		style='text-align:left'>";
+	foreach($data_array as $data_arr){
+		$num = count($data_arr);
+		$row++;
+		$show_msg .= "<input type='hidden' name='CHECK' value='1'/>";
+		
+		$show_msg .= "<tr>";
+		for ($c=0; $c < $num; $c++)
+		{
+			if ($data_arr[$c] != mb_convert_encoding($data_arr[$c],"UTF-8","UTF-8"))
+					$data_arr[$c]=mb_convert_encoding($data_arr[$c],"UTF-8","GB2312");
+			if($row % 2 != 0){
+				$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
+			}else{
+				$show_msg .= "<td bgcolor='#efefef' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
+			}
+		}
+		$show_msg .= "</tr>";
+		if($row == 8)
+			break;
+	}
+	$show_msg .= "<tr>";
+	for ($c=0; $c < $num; $c++) {
+		$show_msg .= "<td bgcolor='#F0F8FF' height='25px'>
+						&nbsp;<input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  />
+					  </td>";
+	}
+	$show_msg .= "</tr>";
+	$show_msg .= "<tr>";
+	for ($c=0; $c < $num; $c++) {
+		$show_msg .= "<td height='20px' align='left'><font color='#000000'><b>$c</b></font></td>";
+	}
+	$show_msg .= "</tr>";
+	$show_msg .= "</table>";
+	return $show_msg.'&&&&&&'.$num;
 }
 
 $xajax->processRequests();
