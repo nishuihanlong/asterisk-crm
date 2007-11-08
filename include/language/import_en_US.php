@@ -1,8 +1,8 @@
 <?
-	$file_name = "choose csv/xls file";
+	$please_select_file = "choose csv/xls file";
 	$upload = "upload";
-	$filemanager = "file manager";
-	$nofilechoose = "no file was choosen";
+	$file_manager = "file manager";
+	$no_file_choosen = "no file was choosen";
 	$add = "add";
 	$todiallist = "to dial list";
 	$file = "file";
@@ -11,12 +11,13 @@
 	$default = "records ,show the top 8 records";
 	$failed = "upload failed, please check dir purview";
 	$choose = "choose file";
-	$submit = "submit";
+	$import = "Import";
 	$area = "assign";
 	$cantup = "xls,csv only";
 	$success = "success";
-	$fielderr = "number error ";
-	$fieldcountrepeat = "number repeat";
+	$field_overflow	   = "field nubmer overflow";
+	$field_must_digits = "field must be digits ";
+	$field_cant_repeat = "field number cant repeat";
 	$error = "failed";
 	$recrod = " records";
 	$assign_automaticly = "phone number would be assigned to all asterCRM account automaticly";
@@ -24,6 +25,6 @@
 	$selecttable = "select table";
 	$feifa = "error";
 	$uploading = "Uploading..., please wait";
-	$onsubmitMsg = "excute data loading……";
+	$data_importing = "excute data loading……";
 	$data = 'records insert success';
 ?>

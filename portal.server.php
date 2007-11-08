@@ -24,6 +24,13 @@
 	transfer
 	addWithPhoneNumber
 	invite
+	chanspy
+
+* Revision 0.0456  2007/11/7 14:45:00  last modified by solo
+* Desc: add function chanspy
+
+* Revision 0.0456  2007/11/7 11:01:00  last modified by solo
+* Desc: fix table width
 
 * Revision 0.0456  2007/11/1 9:48:00  last modified by solo
 * Desc: fix bug: when use sendCall method, cant hangup until one party is connected
@@ -418,25 +425,25 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="7%"';
-	$attribsHeader[] = 'width="30%"';
-	$attribsHeader[] = 'width="6%"'; //face
-	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="20%" nowrap';
+	$attribsHeader[] = 'width="10%" nowrap';
+	$attribsHeader[] = 'width="8%" nowrap';
+	$attribsHeader[] = 'width="36%" nowrap';//note
+	$attribsHeader[] = 'width="8%" nowrap'; //face
+	$attribsHeader[] = 'width="10% nowrap"';
 //	$attribsHeader[] = 'width="10%"';
 //	$attribsHeader[] = 'width="7%"';
-	$attribsHeader[] = 'width="6%"';
+	$attribsHeader[] = 'width="8%" nowrap';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
-	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left;textarea-layout:fixed;word-break:break-all;"';
+	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'nowrap style="text-align: left"';
-	$attribsCols[] = 'nowrap style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left;"';
 
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
@@ -501,7 +508,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = "<a href=? onclick=\"xajax_showContact('".$row['contactid']."');return false;\"
 		>".$row['contact']."</a>";
 
-		$rowc[] = $row['note'];
+		//$rowc[] = '<textarea readonly="true" style="overflow:auto;width: 240px;height:50px;" wrap="soft">'.str_replace('<br>',chr(13),$row['note']).'</textarea>';
+
+		$rowc[] = ''.$row['note'].'';
 
 		if ($row['attitude'] != '')
 			$rowc[] = '<img src="skin/default/images/'.$row['attitude'].'.gif" width="25px" height="25px" border="0" />';
@@ -759,6 +768,24 @@ function getContact($callerid){
 	}
 
 	return $objResponse;
+}
+
+
+function chanspy($exten,$spyexten){
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+	$myAsterisk->chanSpy($exten,$spyexten);
+	$objResponse->addAlert($exten);
+	$objResponse->addAlert($spyexten);
+	return $objResponse;
+
 }
 
 $xajax->processRequests();

@@ -196,7 +196,6 @@ require_once('portal.common.php');
 
 		<span id="spanTransfer" name="spanTransfer"></span>
 		<div id="myevents"></div>
-
 		<br>
 		<span id="spanMonitor" name="spanMonitor"></span><br>
 		<div id="divMonitor">
@@ -231,9 +230,7 @@ require_once('portal.common.php');
 
 	<?if ($config['system']['enable_external_crm'] == false){?>
 		<div id="divSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)"></div><br/>
-		<br><br><br><br><br><br>
-		<br><br><br><br><br><br>
-		<br><br><br><br><br><br>
+		<br>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>
 				<td style="padding: 0px;">

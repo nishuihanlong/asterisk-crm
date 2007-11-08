@@ -115,30 +115,42 @@ v0.0456
 2007-11-6	修正了astercrm.js, 解决了屏蔽contact是 查找不好用的bug
 2007-11-6	修正了astercrm.class.php, 在mobile和fax域增加了点击拨号功能
 2007-11-6	增加了删除调查问卷选项的功能
-
+2007-11-7	增加了显示面板上正在通话分机的通话对象的callerid的功能
+2007-11-7	修正当note信息过长时 页面被拉长的bug
+2007-11-7	填写note信息时 将使用textarea而不是inputbox
+2007-11-7	修改了填写数据库时, 无法使用单引号的问题
+2007-11-7	增加了chanspy功能
 -----------------------------------------------------------------------------------------
 
 增加对config.php的管理为web模式
-增强customer和contact的搜索功能
+增强customer和contact的搜索功能, 增强导出模块
+增加用户的权限分机, 班长座席
+	主要可以为不同的分组选用不同的context
 
-增加了显示面板上正在通话分机的通话对象的callerid的功能
-从event表中回收呼叫事件
-增强导出模块
+修改结构, 让用户可以自己选择portal中数据的显示方式
+
+
 改善错误提示
-可以通过uniqueid从cdr中读取预拨号器的呼叫结果
+
 需要php的mbstring模块
+
 need to add queue status
-need to add CDR to user
-增加agent之间的im功能
-CDR和predictive dialer的关联
-need to add phone spy
-增加对sqlite的支持
+
 voicemail check
+
 增加SMS模块
+
 对1.4版本增加playdtmf功能
+
 测试1.4版本兼容性
 
-增加用户的权限分机, 班长座席
+增加对sqlite的支持
+增加agent之间的im功能
+从cdr中回收呼叫事件
+	predictive dialer用特殊的accountcode, 通过对cdr的分析获取系统呼叫记录
+	CDR和predictive dialer的关联
+	可以通过uniqueid从cdr中读取预拨号器的呼叫结果
+	need to add CDR to user
 
 #为什么在系统监视里面看到的分机不全？
 ----------------------------------------------------------------------------

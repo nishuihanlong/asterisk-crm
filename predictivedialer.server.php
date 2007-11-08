@@ -2,18 +2,18 @@
 /*******************************************************************************
 * predictivedialer.server.php
 
-* ÕË»§¹ÜÀíÏµÍ³ºóÌ¨ÎÄ¼ş
+* è´¦æˆ·ç®¡ç†ç³»ç»Ÿåå°æ–‡ä»¶
 * predictivedialer management script
 
 * Function Desc
 	predictivedialer management script
 
-* ¹¦ÄÜÃèÊö
-	Ìá¹©ÕÊ»§¹ÜÀí½Å±¾
+* åŠŸèƒ½æè¿°
+	æä¾›å¸æˆ·ç®¡ç†è„šæœ¬
 
 * Function Desc
-		init				³õÊ¼»¯Ò³ÃæÔªËØ
-		showChannelsInfo	ÏÔÊ¾asterisk channels
+		init				åˆå§‹åŒ–é¡µé¢å…ƒç´ 
+		showChannelsInfo	æ˜¾ç¤ºasterisk channels
 		showPredictiveDialer
 		predictiveDialer
 
@@ -89,7 +89,7 @@ function showPredictiveDialer($preDictiveDialerStatus){
 	}
 	*/
 
-	//´ÓÊı¾İ¿â¶ÁÈ¡Ô¤²¦ºÅµÄ×ÜÊı
+	//ä»æ•°æ®åº“è¯»å–é¢„æ‹¨å·çš„æ€»æ•°
 	$query = '
 		SELECT COUNT(*) FROM diallist';
 	$res =& $db->getOne($query);
@@ -136,7 +136,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 	
 	$myAsterisk = new Asterisk();
 
-	//»ñÈ¡Ò»¸öºÅÂë
+	//è·å–ä¸€ä¸ªå·ç 
 	$query = '
 			SELECT id,dialnumber 
 			FROM diallist 

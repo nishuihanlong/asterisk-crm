@@ -29,6 +29,7 @@ basic functions
 	addWithPhoneNumber
 	monitor					monitor control
 	hangup					hangup a channel
+	chanspy					spy on a extension
 
 astercrm functions
 	showGrid
@@ -51,6 +52,9 @@ astercrm functions
 	saveSurvey
 	getContact
 	invite
+
+* Revision 0.0456  2007/11/7 14:45:00  modified by solo
+* Desc: add function chanspy
 
 * Revision 0.0456  2007/10/31 10:34:00  modified by solo
 * Desc: add function hangup
@@ -100,6 +104,7 @@ $xajax->registerFunction("addWithPhoneNumber");
 $xajax->registerFunction("monitor");
 $xajax->registerFunction("invite");
 $xajax->registerFunction("hangup");
+$xajax->registerFunction("chanspy");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

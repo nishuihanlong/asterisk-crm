@@ -12,11 +12,11 @@
 * div:							
 									mainform			-> uploade excel file
 									divMessage			-> show upload message
-									divShowExcel		-> show uploade excel file
+									divGrid		-> show uploade excel file
 									mainDiv
-									divShowTable
+									divTables
 									divMainRight
-									divSubmitForm
+									divDiallistImport
 * javascript function:		
 									init
 									selectTable
@@ -47,7 +47,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<script language='javascript'>
 			function init(){
-				xajax_init();
+				xajax_init(document.getElementById('hidFileName').value);
 			}
 
 			function selectTable(tablename){
@@ -55,6 +55,7 @@
 					xajax_selectTable(tablename);
 				}else{
 					init();
+//					return;
 				}
 			}
 
@@ -96,8 +97,6 @@
 			}
 
 			function submitFormOnSubmit(){
-				xajax.$('submitButton').disabled=true;
-				xajax.$('submitButton').value=xajax.$('onsubmitMsg').value;
 				if(document.getElementsByName('chkAdd')[0].checked == true){
 					if(document.getElementsByName('chkAssign')[0].checked == true){
 						if(document.getElementById('assign').value == "")
@@ -106,6 +105,12 @@
 						}
 					}
 				}
+
+				//alert (document.getElementsById('sltTable').);
+				//return false;
+				alert("ok");
+				xajax.$('btnImportDatas').disabled=true;
+				xajax.$('btnImportDatas').value=xajax.$('hidOnSubmitMsg').value;
 				xajax_submitForm(xajax.getFormValues('formImport'));
 			}
 
@@ -138,7 +143,7 @@
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="divFileName"></span>:<input type="file" name="excel" id="excel"/>
+					<span id="spanSelectFile"></span>: <input type="file" name="excel" id="excel"/>
 					<br />
 					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
 					<input id="hidOnUploadMsg" name="hidOnUploadMsg" type="hidden" value=""/>
@@ -161,16 +166,38 @@
 			<table id="mainDiv" name="mainDiv">
 				<tr>
 					<td width="20%" valign="top">
-						<div id="divShowTable" name="divShowTable"></div>
+							<ul style='list-style:none;'>
+							<li>
+						<div id="divTables" name="divTables" align="left">
+						</div>
+							</li>
+							</ul>
+							<div id='divTableFields' name='divTableFields'>
+							</div>
 					</td>
 					<td width="80%" valign="top">
-						<form method='post' name='formImport' id='formImport' action="javascript:void(null);" onsubmit='submitFormOnSubmit();'>
-						<input id="onsubmitMsg" name="onsubmitMsg" type="hidden" value=""/>
-							<div name="divShowExcel" id="divShowExcel"></div>
-							<div name="divSubmitForm" id="divSubmitForm"></div>
-							<input type='hidden' value='' name='FILE_NAME' id='FILE_NAME' />
-							<input type='hidden' value='' name='TABLE_NAME' id='TABLE_NAME' />
-							<input type='hidden' value='' name='MAX_NUM' id='MAX_NUM' />
+						<form method='post' name='formImport' id='formImport'>
+							<input id="hidOnSubmitMsg" name="hidOnSubmitMsg" type="hidden" value=""/>
+							<input type='hidden' value='' name='hidFileName' id='hidFileName' />
+							<input type='hidden' value='' name='hidTableName' id='hidTableName' />
+							<input type='hidden' value='' name='hidMaxTableColumnNum' id='hidMaxTableColumnNum' />
+
+							<div name="divGrid" id="divGrid"></div>
+							<div name="divDiallistImport" id="divDiallistImport"></div>
+
+
+				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">
+					<tr>
+						<td height="30px">
+							<input type="button" id="btnImportDatas"  name="btnImportDatas" value="Import" style="border:1px double #cccccc;width:200px" disabled="true" onclick="submitFormOnSubmit();return false;"/>
+						</td>
+					</tr>
+					<tr>
+						<td height="30px">
+							<div style="width:100%;height:auto;lin-height:30px;text-align:center;" id="overMsg" name="overMsg"></div>
+						</td>
+					</tr>
+				</table>
 						</form>
 					</td>
 				</tr>

@@ -25,6 +25,9 @@
 			checkIncoming			检查是否有来电
 			checkDialout			检查是否有向外的呼叫
 
+* Revision 0.0456  2007/11/7 14:45:00  modified by solo
+* Desc: add chanspy triger on extension panel 
+
 * Revision 0.0456  2007/11/1 11:54:00  modified by solo
 * Desc: add callerid in extension status, when click the callerid, 
 * it could show user information if it's stored before
@@ -77,9 +80,12 @@ class asterEvent extends PEAR
 {
 
 /*
-	check if there's a new call, could be incoming or dial out
+	check if there's a new call for the extension, 
+	could be incoming or dial out
+
 	@param	$curid					(int)		only check data after index(curid)
 	@param	$exten					(string)	only check data about extension
+
 	return	$call					(array)	
 			$call['status']			(string)	'','incoming','dialout'
 			$call['curid']			(int)		current id
@@ -91,7 +97,6 @@ class asterEvent extends PEAR
 		$call =& asterEvent::checkIncoming($curid,$exten);
 
 		if ($call['status'] == 'incoming' && $call['callerid'] != '' ){
-//		if ($call['status'] == 'incoming' ){
 			return $call;
 		}
 
@@ -117,16 +122,15 @@ class asterEvent extends PEAR
 			return $call;
 
 		$call =& asterEvent::checkLink($curid,$uniqueid);
-		
 	
 		return $call;
 	}
 
 /*
-	check call status
+	check extension status
 	@param	$curid					(int)		only check data after index(curid)
 	@param	$type					(string)	list | table
-	return	$html					(string)	HTML code from extension status
+	return	$html					(string)	HTML code for extension status
 */
 
 	function checkExtensionStatus($curid, $type = 'list'){
@@ -141,6 +145,10 @@ class asterEvent extends PEAR
 			$callerid = array();
 			$direction = array();
 		}else{
+			/*
+			because there could be no full datas in the database
+			we need to inherit status from last time this function get
+			*/
 			$status = $_SESSION['sipstatus'];
 			$callerid = $_SESSION['callerid'];
 			$direction = $_SESSION['direction'];
@@ -213,7 +221,7 @@ class asterEvent extends PEAR
 				continue;
 		   } 
 		} 
-		
+
 		if ($type == 'list'){
 			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == ''){
 				$phones = array();
@@ -233,7 +241,12 @@ class asterEvent extends PEAR
 		$html .= $action;
 		return $html;
 	}
-
+	
+	/*
+	for now this mode could be used in administror interface
+	allow to spy extension
+	but no click-to-call
+	*/
 	function &tableStatus($phones,$status,$callerid,$direction){
 		//print_r($phones);
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
@@ -248,7 +261,7 @@ class asterEvent extends PEAR
 				}
 				else {
 					if ($status[$value] == 1) {
-						$action .= "  id='ButtonR'>\n";
+						$action .= "  onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\" id='ButtonR'>\n";
 					}
 					else {
 						$action .= "  id='ButtonG'>\n";
@@ -274,27 +287,32 @@ class asterEvent extends PEAR
 		return $action;
 	}
 
+	/*
+	for now this mode could be used in extension panel in agent interface
+	allow to spy extension (when busy) and click-to-call (when idle)
+	*/
+
 	function &listStatus($phones,$status,$callerid,$direction){
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $key => $value) {
 			if (!strstr($value,'SIP/'))
 				$value = "SIP/".$value;
-			$action .= "<tr><td align=center><button onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" name='" . substr($value,4)."'";
+			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {
-					$action .= "  id='ButtonU'>\n";
+					$action .= " onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" id='ButtonU'>\n";
 				}
 				else {
 					if ($status[$value] == 1) {
-						$action .= "  id='ButtonR'>\n";
+						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\" id='ButtonR'>\n";
 					}
 					else {
-						$action .= "  id='ButtonG'>\n";
+						$action .= " onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" id='ButtonG'>\n";
 					}
 				}
 			}
 			else {
-				$action .= "  id='ButtonB'>\n";
+				$action .= " onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" id='ButtonB'>\n";
 			}
 			$action .= $value;
 			$action .= "</button>\n";
@@ -357,7 +375,6 @@ class asterEvent extends PEAR
 			$call['callerChannel'] = $call['callerChannel'][0];
 
 			$call['calleeChannel'] = trim(substr($flds[3],9));
-			//检查是否是local事件
 
 			$call['status'] = 'link';
 			$call['curid'] = $list['id'];

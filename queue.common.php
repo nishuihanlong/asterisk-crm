@@ -1,31 +1,14 @@
 <?php
 /*******************************************************************************
-* systemstatus.common.php
-* systemstatus参数信息文件
-* systemstatus parameter file
+* queue.common.php
+* 队列管理
+* queue parameter file
 
 * 功能描述
-	检查用户权限
-	初始化语言变量
-	初始化xajax类
-	预定义xajaxGrid中需要使用的一些参数
-	注册xajax函数
 
 * Function Desc
-	authority
-	initialize localization class
-	initialize xajax class
-	define xajaxGrid parameters
 
-registed function:
-*	call these function by xajax_ + funcionname
-*	such as xajax_init()
-
-	init					init html page
-	showStatus				show sip extension status
-	showChannelsInfo		show asterisk active channels
-
-* Revision 0.045  2007/10/18 15:25:00  modified by solo
+* Revision 0.0456  2007/11/7 16:00:00  modified by solo
 * Desc: page created
 
 ********************************************************************************/
@@ -48,15 +31,13 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'predictivedialer');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'queue');
 
-$xajax = new xajax("systemstatus.server.php");
-$xajax->waitCursorOff();
+$xajax = new xajax("queue.server.php");
 
-$xajax->registerFunction("showStatus");
+//$xajax->waitCursorOff();
+
 $xajax->registerFunction("init");
-$xajax->registerFunction("showChannelsInfo");
-$xajax->registerFunction("chanspy");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.

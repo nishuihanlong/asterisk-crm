@@ -40,9 +40,21 @@
 			exportCSV				生成csv文件内容, 目前支持导出customer, contact
 			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
 
+			variableFiler			用于转译变量, 自动加\
+			
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
 			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
+
+
+* Revision 0.0456  2007/11/8 10:11:00  last modified by solo
+* Desc: add a new function getTableStructure
+
+* Revision 0.0456  2007/11/7 11:30:00  last modified by solo
+* Desc: add a new function variableFiler
+
+* Revision 0.0456  2007/11/7 10:30:00  last modified by solo
+* Desc: replace input with textarea in note field
 
 * Revision 0.0456  2007/10/30 13:30:00  last modified by solo
 * Desc: modified function insertNewAccount,updateAccountRecord
@@ -64,6 +76,41 @@
 
 
 Class astercrm extends PEAR{
+	
+	/**
+	*	get table structure
+	*	
+	*	@param	$table		string	table name
+	*	@return $structure	array	table structure
+	*
+	*/
+	function getTableStructure($tableName){
+		global $db;
+		$query = "select * from $tableName LIMIT 0,2";
+		$res =& $db->query($query);
+		return  $db->tableInfo($res);
+	}
+
+	/**
+	*  filer variables befor mysql query
+	*
+	*
+	*
+	*/
+
+	function variableFiler($var){
+		if (is_array($var)){
+			$newVar = array();
+			foreach ($var as  $key=>$value){
+				$value = addslashes($value);
+				$newVar[$key] = $value;
+			}
+		}else{
+			$newVar = addslashes($var);
+		}
+		return $newVar;
+	}
+
 	/**
 	*  insert a record to customer table
 	*
@@ -73,7 +120,7 @@ Class astercrm extends PEAR{
 	
 	function insertNewCustomer($f){
 		global $db;
-
+		$f = astercrm::variableFiler($f);
 		$sql= "INSERT INTO customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
@@ -111,6 +158,7 @@ Class astercrm extends PEAR{
 	
 	function insertNewContact($f,$customerid){
 		global $db;
+		$f = astercrm::variableFiler($f);
 		
 		$sql= "INSERT INTO contact SET "
 				."contact='".$f['contact']."', "
@@ -146,7 +194,8 @@ Class astercrm extends PEAR{
 	
 	function insertNewNote($f,$customerid,$contactid){
 		global $db;
-		
+		$f = astercrm::variableFiler($f);
+		//print_r($f);
 		$sql= "INSERT INTO note SET "
 				."note='".$f['note']."', "
 				."attitude='".$f['attitude']."', "
@@ -155,7 +204,10 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."customerid=". $customerid . ", "
 				."contactid=". $contactid ;
+		//print $sql;
+		//exit;
 		astercrm::events($sql);
+
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -170,7 +222,7 @@ Class astercrm extends PEAR{
 	
 	function insertNewAccount($f){
 		global $db;
-		
+		$f = astercrm::variableFiler($f);
 		$sql= "INSERT INTO account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
@@ -186,6 +238,7 @@ Class astercrm extends PEAR{
 
 	function insertNewDiallist($f){
 		global $db;
+		$f = astercrm::variableFiler($f);
 		
 		$sql= "INSERT INTO diallist SET "
 				."dialnumber='".$f['dialnumber']."', "
@@ -206,6 +259,7 @@ Class astercrm extends PEAR{
 	
 	function updateCustomerRecord($f){
 		global $db;
+		$f = astercrm::variableFiler($f);
 		$sql= "UPDATE customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
@@ -240,6 +294,7 @@ Class astercrm extends PEAR{
 	
 	function updateContactRecord($f){
 		global $db;
+		$f = astercrm::variableFiler($f);
 		
 		$sql= "UPDATE contact SET "
 				."contact='".$f['contact']."', "
@@ -272,6 +327,7 @@ Class astercrm extends PEAR{
 
 	function updateNoteRecord($f,$type="update"){
 		global $db;
+		$f = astercrm::variableFiler($f);
 		
 		if ($type == 'update')
 
@@ -307,6 +363,7 @@ Class astercrm extends PEAR{
 	
 	function updateAccountRecord($f){
 		global $db;
+		$f = astercrm::variableFiler($f);
 		
 		$sql= "UPDATE account SET "
 				."username='".$f['username']."', "
@@ -353,6 +410,7 @@ Class astercrm extends PEAR{
 	function updateField($table,$field,$value,$id){
 
 		global $db;
+		$f = astercrm::variableFiler($f);
 
 		$sql = "UPDATE $table SET $field='$value' WHERE id='$id'";
 		astercrm::events($sql);
@@ -431,7 +489,7 @@ Class astercrm extends PEAR{
 		while	($noteList->fetchInto($row)){
 			$html .= '
 				<tr><td align="left" width="25">'. $row['creby'] .'
-				</td><td>'.$row['note'].'</td><td>'.$row['cretime'].'</td></tr>
+				</td><td>'.nl2br($row['note']).'</td><td>'.$row['cretime'].'</td></tr>
 				';
 		}
 		$html .= '</table>';
@@ -576,7 +634,7 @@ Class astercrm extends PEAR{
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("note").'</td>
 						<td align="left">
-							<input type="text" id="note" name="note" size="35">
+							<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto"></textarea>
 							<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
 							<input type="hidden" value="'.$contactid.'" name="contactid" id="contactid">
 						</td>
@@ -878,7 +936,9 @@ Class astercrm extends PEAR{
 	$html .='
 			<tr>
 				<td nowrap align="left">'.$locate->Translate("note").'</td>
-				<td align="left"><input type="text" id="note" name="note" size="35"></td>
+				<td align="left">
+					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;"></textarea>
+				</td>
 			</tr>
 			<tr>
 				<td nowrap align="left">'.$locate->Translate("priority").'</td>
@@ -1030,11 +1090,11 @@ Class astercrm extends PEAR{
 					<table border="0" width="100%">
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("note").'</td>
-						<td align="left">'.$note['note']. '</td>
+						<td align="left">'.nl2br($note['note']). '</td>
 					</tr>
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("append").'</td>
-						<td align="left"><input type="text" value="" name="note" id="note" length="35"></td>
+						<td align="left"><textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto"></textarea></td>
 					</tr>
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("priority").'</td>

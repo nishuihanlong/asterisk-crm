@@ -105,5 +105,23 @@ function showChannelsInfo(){
 	return $objResponse;
 }
 
+function chanspy($exten,$spyexten){
+	//print $spyexten;
+	//exit;
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+	$myAsterisk->chanSpy($exten,$spyExten);
+	$objResponse->addAlert($spyexten);
+	return $objResponse;
+
+}
+
 $xajax->processRequests();
 ?>

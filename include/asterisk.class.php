@@ -124,5 +124,31 @@ class Asterisk extends AGI_AsteriskManager{
 		return $peer[37];
 	}
 
+	/*
+	*	$spy:		监听方
+	*	$exten:		被监听方
+	*/
+	function chanSpy($spy, $exten){
+/*
+Action: originate 
+Channel: Local/300 
+WaitTime: 30 
+CallerId: "Web Call" <8881> 
+Application: ChanSpy 
+Data: IAX2/100|q
+Async: yes 
+*/
+/*
+$channel,
+                       $exten=NULL, $context=NULL, $priority=NULL,
+                       $application=NULL, $data=NULL,
+                       $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL
+*/
+		Asterisk::sendCall("Local/$spy",null,null,null,"ChanSpy",$exten."|q",30);
+	}
+
+	function zapSpy(){
+	}
+
 }
 ?>

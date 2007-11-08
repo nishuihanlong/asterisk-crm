@@ -1,8 +1,8 @@
 <?
-	$file_name = "选择要上传的csv/xls文件";
+	$please_select_file = "选择要上传的csv/xls文件";
 	$upload = "上传";
-	$filemanager = "文件管理";
-	$nofilechoose = "没有选择csv/xls文件";
+	$file_manager = "文件管理";
+	$no_file_choosen = "没有选择csv/xls文件";
 	$add = "添加";
 	$todiallist = "到拨号列表";
 	$file = "文件";
@@ -11,12 +11,13 @@
 	$default = "条记录，显示前8条";
 	$failed = "上传失败,请检查目录是否存在或者权限是否正确";
 	$choose = "浏览";
-	$submit = "提交";
+	$import = "导入";
 	$area = "分派给";
 	$cantup = "只能上传csv、xls格式文件";
 	$success = "操作成功";
-	$fielderr = "字段超过指定范围";
-	$fieldcountrepeat = "不允许添加重复字段号";
+	$field_overflow	   = "字段超过指定范围";
+	$field_must_digits = "字段必须为数字";
+	$field_cant_repeat = "不允许添加重复字段号";
 	$error = "操作失败";
 	$recrod = "条记录";
 	$assign_automaticly = "号码将自动分派到不同的asterCRM账户";
@@ -24,6 +25,6 @@
 	$selecttable = "选择表";
 	$feifa = "非法操作";
 	$uploading = "正在上传，请等待……";
-	$onsubmitMsg = "正在执行数据操作，请等待……";
+	$data_importing = "正在执行数据操作，请等待……";
 	$data = '条记录，录入成功';
 ?>
