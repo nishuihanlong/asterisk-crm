@@ -802,8 +802,8 @@ function chanspy($exten,$spyexten){
 		return;
 	}
 	$myAsterisk->chanSpy($exten,$spyexten);
-	$objResponse->addAlert($exten);
-	$objResponse->addAlert($spyexten);
+	//$objResponse->addAlert($exten);
+	//$objResponse->addAlert($spyexten);
 	return $objResponse;
 
 }

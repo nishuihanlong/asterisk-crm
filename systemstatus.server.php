@@ -117,7 +117,7 @@ function chanspy($exten,$spyexten){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,$spyExten);
+	$myAsterisk->chanSpy($exten,$spyexten);
 	$objResponse->addAlert($spyexten);
 	return $objResponse;
 

@@ -26,7 +26,7 @@ require_once('queue.common.php');
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
 		function init(){
-
+			xajax_init();
 		}
 		//-->
 		</SCRIPT>
@@ -38,9 +38,11 @@ require_once('queue.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
+		<div id="divAMIStatus"></div>
 		<div>
-			<input type="button" value="queue" onclick="">
+			<input type="button" value="queue" onclick="xajax_showQueuesStatus();">
 		</div>
+		<div id="divQueue" name="divQueue">123456</div>
 		<div id="divCopyright"></div>
 	</body>
 </html>
