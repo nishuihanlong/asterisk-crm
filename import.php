@@ -108,9 +108,9 @@
 
 				//alert (document.getElementsById('sltTable').);
 				//return false;
-				alert("ok");
-				xajax.$('btnImportDatas').disabled=true;
-				xajax.$('btnImportDatas').value=xajax.$('hidOnSubmitMsg').value;
+				//alert("ok");
+				xajax.$('btnImportData').disabled=true;
+				xajax.$('btnImportData').value=xajax.$('hidOnSubmitMsg').value;
 				xajax_submitForm(xajax.getFormValues('formImport'));
 			}
 
@@ -189,12 +189,12 @@
 				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">
 					<tr>
 						<td height="30px">
-							<input type="button" id="btnImportDatas"  name="btnImportDatas" value="Import" style="border:1px double #cccccc;width:200px" disabled="true" onclick="submitFormOnSubmit();return false;"/>
+							<input type="button" id="btnImportData"  name="btnImportData" value="Import" style="border:1px double #cccccc;width:200px" disabled="true" onclick="submitFormOnSubmit();return false;"/>
 						</td>
 					</tr>
 					<tr>
 						<td height="30px">
-							<div style="width:100%;height:auto;lin-height:30px;text-align:center;" id="overMsg" name="overMsg"></div>
+							<div style="width:100%;height:auto;lin-height:30px;text-align:left;" id="divResultMsg" name="divResultMsg"></div>
 						</td>
 					</tr>
 				</table>

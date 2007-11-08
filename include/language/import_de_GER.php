@@ -26,4 +26,5 @@
 	$data_importing = "excute data loading……";
 	$submit = "submit";
 	$selecttable = "select table";
+	$records_inserted = 'records insert success';
 ?>

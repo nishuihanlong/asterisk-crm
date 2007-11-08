@@ -78,7 +78,7 @@ else
 	var msg = "<? echo $upload_msg; ?><br />";
 	window.parent.document.getElementById("divMessage").innerHTML = msg;//msg;
 	window.parent.showDivMainRight("<?=$_FILES['excel']['name']?>");
-	window.parent.document.getElementById('btnUpload').disabled=false;
+	window.parent.document.getElementById('btnUpload').disabled = false;
 	window.parent.document.getElementById('btnUpload').value="<?=$locate->Translate('upload')?>";
 	window.parent.document.getElementById('hidFileName').value="<?=$_FILES['excel']['name']?>";
 </SCRIPT>

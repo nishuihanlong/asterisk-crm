@@ -9,11 +9,11 @@
 	selectTable()  选择表
 	submitForm()  将csv，xsl格式文件数据插入数据库
 	showDivMainRight() 显示csv，xsl格式文件数据
-	getGridDatas() 得到显示csv，xsl格式文件数据的HTML语法
+	getGridData() 得到显示csv，xsl格式文件数据的HTML语法
 	getDiallistBar() 得到显示diallist导入框的HTML语法
-	getData() 得到要插入表的sql语句，存入数组
-	parseExcelToSql() 得到sql语句和分区，存入数组
-	getRowDataArr()得到excel文件的所有行数据，返回数组
+	getImportResource() 得到要插入表的sql语句，存入数组
+	parseRowToSql() 得到sql语句和分区，存入数组
+	getSourceData()得到excel文件的所有行数据，返回数组
 
 * Revision 0.046  2007/11/8 8:33:00  modified by yunshida
 * 描述: 取消了session的使用, 重新整理了流程
@@ -46,7 +46,7 @@ function init($fileName){
 	$objResponse->addAssign("spanSelectFile","innerHTML", $locate->Translate("please_select_file"));
 
 	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
-	$objResponse->addAssign("btnImportDatas","value",$locate->Translate("import"));
+	$objResponse->addAssign("btnImportData","value",$locate->Translate("import"));
 
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("file_manager"));
 
@@ -64,10 +64,12 @@ function init($fileName){
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divGrid", "innerHTML", '');
 	//$objResponse->addScript("xajax_showDivMainRight(document.getElementById('hidFileName').value);");
-	$objResponse->loadXML(showDivMainRight($fileName));
 	//$objResponse->loadXML(showDivMainRight($fileName));
 	//$objResponse->addAssign("divDiallistImport", "innerHTML", '');
+
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+	$objResponse->loadXML(showDivMainRight($fileName));
+
 	return $objResponse;
 }
 /**
@@ -84,14 +86,14 @@ function showDivMainRight($filename){
 	$filePath = $config['system']['upload_excel_path'].$filename;
 
 	if(is_file($filePath)){	//check if file exsits
-//		print ($filePath);
-//		exit;
-		$dataContent = getGridDatas($filePath);
+
+		$dataContent = getGridHTML($filePath);
 		$objResponse->addAssign("divGrid", "innerHTML", $dataContent['gridHTML']);
 
 		$diallistBar = getDiallistBar($dataContent['columnNumber']);
 		$objResponse->addAssign("divDiallistImport", "innerHTML", $diallistBar);
-		$objResponse->addAssign("btnImportDatas", "disabled", false);
+
+		$objResponse->addAssign("btnImportData", "disabled", false);
 	}else{
 		$objResponse->addAssign("divDiallistImport", "innerHTML", '');
 		$objResponse->addAssign("divGrid", "innerHTML", '');
@@ -140,10 +142,10 @@ function selectTable($tableName){
 *  function to insert data to database from excel
 *
 *  	@param $aFormValues	(array)			insert form excel
-															$aFormValues['chkAdd']
-															$aFormValues['chkAssign']
-															$aFormValues['assign']
-															$aFormValues['dialListField']
+	if import datas to diallist					$aFormValues['chkAdd']
+	if assign extnesion to phone numbers		$aFormValues['chkAssign']
+	assign which extensions to phone numbers	$aFormValues['assign']
+	import which field							$aFormValues['dialListField']
 *	@return $objResponse
 *
 */
@@ -172,38 +174,31 @@ function submitForm($aFormValues){
 	//如果没有任何选择, 就退出
 	if($flag != 1){
 		$objResponse->addScript('init();');
-//$objResponse->addAssign("btnImportDatas","disabled",false);
 		return $objResponse;
 	}
 	
-//	if ($fileName == '' )
-	
 	//对提交的数据进行校验
-	$repeat_flag = 0;
-	$order_num = count($order);
-	if($order_num != 0)
+	$orderNum = count($order);
+	if($orderNum > 0)			//如果要导入表
 	{
-		$order_repeat = array_count_values($order);
-		foreach($order_repeat as $key=>$value){
+		$arrRepeat = array_count_values($order);
+		foreach($arrRepeat as $key=>$value){
 			if($key != '' && $value > 1){	//数据重复
 				$objResponse->addAlert($locate->Translate('field_cant_repeat'));
-				//$objResponse->addAssign("btnImportDatas","disabled",false);
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
 		}
 	}
-	for($j=0;$j<$order_num;$j++){
+	for($j=0;$j<$orderNum;$j++){
 		if(trim($order[$j]) != ''){
 			if(trim($order[$j]) > $aFormValues['hidMaxTableColumnNum']){  //最大值校验
 				$objResponse->addAlert($locate->Translate('field_overflow'));
-				//$objResponse->addAssign("btnImportDatas","disabled",false);
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
 			if (!ereg("[0-9]+",trim($order[$j]))){ //是否为数字
 				$objResponse->addAlert($locate->Translate('field_must_digits'));
-				//$objResponse->addAssign("btnImportDatas","disabled",false);
 				$objResponse->addScript('init();');
 				return $objResponse;
 			}
@@ -211,8 +206,7 @@ function submitForm($aFormValues){
 	}
 
 	$tableStructure = astercrm::getTableStructure($tableName);
-//	print_r($tableStructure);
-	$filePath = $config['system']['upload_excel_path'].$fileName;//excel文件存放路径
+	$filePath = $config['system']['upload_excel_path'].$fileName;//数据文件存放路径
 
 	$affectRows= 0;  //计数据库影响结果变量
 	$x = 0;  //计数变量
@@ -224,58 +218,65 @@ function submitForm($aFormValues){
 		if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){ //是否添加分区assign
 			$tmpStr = trim($aFormValues['assign']); //分区,以','号分隔的字符串
 			if($tmpStr != ''){
-				$area_array = explode(',',$tmpStr);
-				$area_num = count($area_array);//得到手动添加分区个数
+				$arryAssign = explode(',',$tmpStr);
+				$assignNum = count($arryAssign);//得到手动添加分区个数
 			}else{
-				$sql_account = "SELECT extension FROM account";  //get extension from account
-				$res = & $db->query($sql_account);  //get result
+				$res = astercrm::getAllExtension();
 				while ($row = $res->fetchRow()) {
-					$area_array[] = $row['extension']; //$array_extension数组,存放extension数据
+					$arryAssign[] = $row['extension']; //$array_extension数组,存放extension数据
 				}
-				$area_num = count($area_array); //extension数据的个数
+				$assignNum = count($arryAssign); //extension数据的个数
 			}
 		}else{
-			$area_array[] = '';
-			$area_num = 1;
+			$arryAssign[] = '';
+			$assignNum = 1;
 		}
 	}
 
-	$all_data_arr = getData($filePath,$order,$tableName,$tableStructure,$dialListField,$date);
-	foreach($all_data_arr as $data){
-		$sql_str = $data['sql_str'];  //得到插入选择表的sql语句
-		$dialListValue = $data['dialListValue'];
+	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date);
+	
+	foreach($arrData as $data){
+		$strSql = $data['strSql'];					//得到插入选择表的sql语句
+		//print $strSql;
+		//exit;
+		$dialListValue = $data['dialListValue'];	//以及要导入diallist的sql语句
 		if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
-			if($x < $area_num){
-				$assigned = $area_array[$x];
+			if($x < $assignNum){
+				$assigned = $arryAssign[$x];
 			}else{
 				$x = 0;
-				$assigned = $area_array[$x];
+				$assigned = $arryAssign[$x];
 			}
 
 			$x++;
 			$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign) VALUES ('".$dialListValue."','".$assigned."')");  // 插入diallist表
 
+			$diallistAffectRows += $db->affectedRows();
+
 		}
+
 		if($tableName != ''){
-//			print $sql_str;
-//			exit;
-			$rs = @ $db->query($sql_str);  //插入customer或contact表
-			$affectRows+= mysql_affected_rows();   //得到影响的数据条数
+			$res = @ $db->query($strSql);  //插入customer或contact表
+			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
 		}
 	}
-	if($affectRows< 0){
-		$affectRows= 0;
+	if($tableAffectRows< 0){
+		$tableAffectRows= 0;
 	}
-	$overMsg = $tableName.' : '.$affectRows.' '.$locate->Translate('data');
+
+	if($diallistAffectRows< 0){
+		$diallistAffectRows= 0;
+	}
+
+	$resultMsg = $tableName.' : '.$tableAffectRows.' '.$locate->Translate('records_inserted')."<br>";
+	$resultMsg .= 'diallist : '.$diallistAffectRows.' '.$locate->Translate('records_inserted');
+
 	//delete upload file
 	//@ unlink($filePath);
+
 	$objResponse->addAlert($locate->Translate('success'));
-	$objResponse->addScript("document.getElementById('btnImportDatas').disabled = false;");
-	//$objResponse->addAssign("submitButton","value",$locate->Translate("submit"));
-	$objResponse->addAssign("overMsg", "innerHTML",$overMsg);
-	//$objResponse->addAssign("divGrid", "innerHTML", '');
-	//$objResponse->addAssign("divMessage", "innerHTML",'');
-	//$objResponse->addAssign("divDiallistImport", "innerHTML", '');
+	$objResponse->addScript("document.getElementById('btnImportData').disabled = false;");
+	$objResponse->addAssign("divResultMsg", "innerHTML",$resultMsg);
 	$objResponse->addScript("init();");
 	return $objResponse;
 }
@@ -283,11 +284,11 @@ function submitForm($aFormValues){
 /**
 *  function to show divDiallistImport
 */
-function getDiallistBar($num){
+function getDiallistBar($columnNum){
 	global $locate;
-	$show_submit = "";
-	$show_submit .= "<br />";
-	$show_submit .= "
+	$HTML = "";
+	$HTML .= "<br />";
+	$HTML .= "
 					<table cellspacing='0' cellpadding='0' border='0' width='100%' style='text-align:center;'>
 						<tr>
 							<td>
@@ -295,111 +296,131 @@ function getDiallistBar($num){
 								&nbsp;&nbsp; ".$locate->Translate('add')."
 								<select name='dialListField' id='dialListField' disabled>
 									<option value=''></option>";
-	for ($c=0; $c < $num; $c++) {
-		$show_submit .= "<option value='$c'>$c</option>";
+	for ($c=0; $c < $columnNum; $c++) {
+		$HTML .= "<option value='$c'>$c</option>";
 	}
-	$show_submit .= "
+	$HTML .= "
 								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp;
 								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."
 								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
 							</td>
 						</tr>
 					</table>";
-	return $show_submit;
+	return $HTML;
 }
 
 
-function getData($filePath,$order,$tableName,$tableStructure,$dialListField,$date){
-	$data_array = getRowDataArr($filePath);
-	foreach($data_array as $data_arr){
-		$sql_string = parseExcelToSql($data_arr,$order,$dialListField,$tableStructure,$tableName,$date);
-		$sqlAndDialListValue_arr = explode('&&&&',$sql_string);
-		$all_arr[] = array("sql_str"=>$sqlAndDialListValue_arr[0],"dialListValue"=>$sqlAndDialListValue_arr[1]);
+function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date){
+	$arrData = getSourceData($filePath);
+	foreach($arrData as $arrRow){
+		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date);
 	}
-	return $all_arr;
+	return $arrAll;
 }
 
-function parseExcelToSql($data,$order,$dialListField,$tableStructure,$tableName,$date){//循环行数据，得到sql
-	$mysql_field_name = '';
-	$data_str = '';
-	$row_num = count($data);  //列数
-	for ($j=0;$j<$row_num;$j++)
+//循环列数据，得到sql
+function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date){
+	$fieldName = '';
+	$strData = '';
+	//print_r($tableStructure);
+	//exit;
+	for ($j=0;$j<count($arrRow);$j++)
 	{
-		if ($data[$j] != mb_convert_encoding($data[$j],"UTF-8","UTF-8"))
-			$data[$j]=mb_convert_encoding($data[$j],"UTF-8","GB2312");
-		$field_order = trim($order[$j]);//得到字段顺序号
-		if($field_order != ''){
-			$mysql_field_name .= $tableStructure[$field_order]['name'].',';
-			$data_str .= '"'.$data[$j].'"'.',';
+		if ($arrRow[$j] != mb_convert_encoding($arrRow[$j],"UTF-8","UTF-8"))
+			$arrRow[$j]=mb_convert_encoding($arrRow[$j],"UTF-8","GB2312");
+
+		$fieldOrder = trim($order[$j]);//得到字段顺序号
+
+		if($fieldOrder != ''){
+			//print $filedOrder;
+			$fieldName .= $tableStructure[$fieldOrder]['name'].',';
+			$strData .= '"'.$arrRow[$j].'"'.',';
 		}
 		if(isset($dialListField) && $dialListField != ''){
 			if($dialListField == $j)
-				$dialListValue = $data[$j];
+				$dialListValue = $arrRow[$j];
 		}
 	}
-	$mysql_field_name = substr($mysql_field_name,0,strlen($mysql_field_name)-1);
-	$data_str = substr($data_str,0,strlen($data_str)-1);
-	$sql_str = "INSERT INTO $tableName ($mysql_field_name,cretime,creby) VALUES ($data_str,'".$date."','".$_SESSION['curuser']['username']."')";
-	
-	return $sql_str.'&&&&'.$dialListValue;
+	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
+	$strData = substr($strData,0,strlen($strData)-1);
+	$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby) VALUES ($strData,'".$date."','".$_SESSION['curuser']['username']."')";
+	//print $strSql;
+	//exit;
+	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);
 }
 
-function getRowDataArr($filePath){  //得到excel文件的所有行数据，返回数组
+//得到excel文件的所有行数据，返回数组结构的数据
+
+/**
+*	get file data from a file
+*	@param		$filePath			filepath, could be a csv file or a xsl file
+*	@return		$arrData			data in the file
+**/
+function getSourceData($filePath){  
 	$type = substr($filePath,-3);
 	if($type == 'csv'){  //csv 格式文件
-		$handle = fopen($filePath,"r");  //打开excel文件,得到句柄
+		$handle = fopen($filePath,"r");  //打开csc文件,得到句柄
 		while($data = fgetcsv($handle, 1000, ",")){
-			$data_array[] = $data;
+			$arrData[] = $data;
 		}
 	}elseif($type == 'xls'){  //xls格式文件
 		Read_Excel_File($filePath,$return);
 		for ($i=0;$i<count($return[Sheet1]);$i++){
-			$data_array[] = $return[Sheet1][$i];
+			$arrData[] = $return[Sheet1][$i];
 		}
 	}
-	return $data_array;
+	return $arrData;
 }
 
-function getGridDatas($filePath){
-	$data_array = getRowDataArr($filePath);
+
+/**
+*	get HTML codes for a file
+*	@param		$filePath		string		filepath, could be a csv file or a xsl file
+*	@return		$HTML			array		
+*								array['gridHTML']		HTML code to display a grid table
+*								array['columnNumber']	columnNumber of the data
+**/
+
+function getGridHTML($filePath){
+	$data_array = getSourceData($filePath);
 	$row = 0;
-	$show_msg .= "<table cellspacing='1' cellpadding='0' border='0' width='100%'		style='text-align:left'>";
+	$HTML .= "<table cellspacing='1' cellpadding='0' border='0' width='100%'		style='text-align:left'>";
 	foreach($data_array as $data_arr){
 		$num = count($data_arr);
 		$row++;
-		$show_msg .= "<input type='hidden' name='CHECK' value='1'/>";
+		$HTML .= "<input type='hidden' name='CHECK' value='1'/>";
 		
-		$show_msg .= "<tr>";
+		$HTML .= "<tr>";
 		for ($c=0; $c < $num; $c++)
 		{
 			if ($data_arr[$c] != mb_convert_encoding($data_arr[$c],"UTF-8","UTF-8"))
 					$data_arr[$c]=mb_convert_encoding($data_arr[$c],"UTF-8","GB2312");
 			if($row % 2 != 0){
-				$show_msg .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
+				$HTML .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
 			}else{
-				$show_msg .= "<td bgcolor='#efefef' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
+				$HTML .= "<td bgcolor='#efefef' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
 			}
 		}
-		$show_msg .= "</tr>";
+		$HTML .= "</tr>";
 		if($row == 8)
 			break;
 	}
-	$show_msg .= "<tr>";
+	$HTML .= "<tr>";
 	for ($c=0; $c < $num; $c++) {
-		$show_msg .= "<td bgcolor='#F0F8FF' height='25px'>
+		$HTML .= "<td bgcolor='#F0F8FF' height='25px'>
 						&nbsp;<input type='text' style='width:20px;border:1px double #cccccc;height:12px;' name='order[]'  />
-					  </td>";
+					</td>";
 	}
-	$show_msg .= "</tr>";
-	$show_msg .= "<tr>";
+	$HTML .= "</tr>";
+	$HTML .= "<tr>";
 	for ($c=0; $c < $num; $c++) {
-		$show_msg .= "<td height='20px' align='left'><font color='#000000'><b>$c</b></font></td>";
+		$HTML .= "<td height='20px' align='left'><font color='#000000'><b>$c</b></font></td>";
 	}
-	$show_msg .= "</tr>";
-	$show_msg .= "</table>";
+	$HTML .= "</tr>";
+	$HTML .= "</table>";
 
 	
-	return array('gridHTML'=>$show_msg,'columnNumber'=>$num);
+	return array('gridHTML'=>$HTML,'columnNumber'=>$num);
 }
 
 $xajax->processRequests();

@@ -31,7 +31,8 @@
 			surveyAdd				生成添加survey的HTML语法
 			noteAdd					生成添加note的HTML语法
 			formAdd					生成添加综合信息(包括customer, contact, survey, note)的HTML语法
-			formEdit				生成综合信息编辑的HTML语法, 包括编辑customer, contact以及添加note
+			formEdit				生成综合信息编辑的HTML语法, 
+									包括编辑customer, contact以及添加note
 			getOptions				读取survey的所有option
 
 			showCustomerRecord		生成显示customer信息的HTML语法
@@ -77,6 +78,12 @@
 
 Class astercrm extends PEAR{
 	
+	function getAllExtension(){
+		global $db;
+		$query = "select extension from account";
+		$res =& $db->query($query);
+		return  $res;
+	}
 	/**
 	*	get table structure
 	*	

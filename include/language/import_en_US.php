@@ -26,5 +26,5 @@
 	$feifa = "error";
 	$uploading = "Uploading..., please wait";
 	$data_importing = "excute data loading……";
-	$data = 'records insert success';
+	$records_inserted = 'records insert success';
 ?>
