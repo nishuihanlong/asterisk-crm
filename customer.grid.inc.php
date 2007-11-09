@@ -88,7 +88,7 @@ class Customer extends astercrm
 		$joinstr='';
 		foreach ($content as $value){
 			$value=trim($value);
-			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+			if (strlen($value)!=0 && $filter[$i] != null){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
 			}
 			$i++;
@@ -103,7 +103,7 @@ class Customer extends astercrm
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-		
+		//print_r($sql)
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -138,8 +138,8 @@ class Customer extends astercrm
 			$joinstr='';
 			foreach ($content as $value){
 				$value=trim($value);
-				if (strlen($value)!=0){
-					$joinstr.="AND $filter[$i] like '".$value."' ";
+				if (strlen($value)!=0 && $filter[$i]!=null){
+					$joinstr.="AND $filter[$i] like '%".$value."%' ";
 				}
 				$i++;
 			}

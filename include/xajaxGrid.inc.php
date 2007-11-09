@@ -346,7 +346,7 @@ class ScrollTable{
 	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content, $withNewButton = 1){
 		global $local_grid;
 		$ind = 0;
-		$ind2 = 0;
+		$ind_selected = 0;
 		$this->search = '
 		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,5);">
 			<table width="99%" border="0" style="line-height:30px;">
@@ -365,26 +365,30 @@ class ScrollTable{
 					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
 		if($filter != null){
 			for($j=0;$j<count($filter);$j++){
-				if(trim($content[$j]) != '' && $filter[$j] != null){
-					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" value="'.$content[$j].'"/>
+				if(trim($content[$j]) != '' && trim($filter[$j]) != ''){
+					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/>
 							&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-								<select name="searchField[]">
+								<select name="searchField[]" id="searchField[]">
 									<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
-								foreach ($fieldsFromSearchShowAs as $value) {
-									$this->search .= '<option value="'.$fieldsFromSearch[$ind2].'" ';
-									if($fieldsFromSearch[$ind2] == $filter[$j]){
+								foreach ($fieldsFromSearchShowAs as $value_arr) {
+									if($ind_selected > count($fieldsFromSearch)-1)
+									{
+										$ind_selected = 0;
+									}
+									$this->search .= '<option value="'.$fieldsFromSearch[$ind_selected].'" ';
+									if($fieldsFromSearch[$ind_selected] == $filter[$j]){
 										$this->search .= ' selected ';
 									}
-									$this->search .=  '>'.$value.'</option>';
-									$ind2++;
+									$this->search .=  '>'.$value_arr.'</option>';
+									$ind_selected++;
 								}
 					$this->search .= '</select><br />';
 				}
 			}
 		}
-		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="30"  name="searchContent[]"/>
+		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="30"  name="searchContent[]" id="searchContent[]"/>
 				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-					<select name="searchField[]">
+					<select name="searchField[]" id="searchField[]">
 						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
 					foreach ($fieldsFromSearchShowAs as $value) {
 						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'" ';

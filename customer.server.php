@@ -269,10 +269,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-	
-	//$limit = $searchFormValue['limit'];  // limit 
-	//$numRowsToShow = $searchFormValue['numRowsToShow']; // start
-
 	$divName = "grid";
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
 	$objResponse = new xajaxResponse();
