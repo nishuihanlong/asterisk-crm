@@ -242,7 +242,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
-	$objResponse->addAssign($divName, "innerHTML", $html);
+	
 	return $objResponse->getXML();
 }
 
