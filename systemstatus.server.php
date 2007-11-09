@@ -117,7 +117,7 @@ function chanspy($exten,$spyexten){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,$spyexten);
+	$myAsterisk->chanSpy($exten,"SIP/".$spyexten);
 	$objResponse->addAlert($spyexten);
 	return $objResponse;
 

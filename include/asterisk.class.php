@@ -3,7 +3,10 @@
 * asterisk.server.php
 * astercrm asterisk class
 
-* Revision 0.0455  2007/10/24 20:33:00  modified by solo
+* Revision 0.0456  2007/11/9 10:33:00  modified by solo
+* Desc: change .abc to .call
+
+* Revision 0.0451  2007/10/24 20:33:00  modified by solo
 * Desc: add function sendCall
 
 ********************************************************************************/
@@ -25,12 +28,19 @@ class Asterisk extends AGI_AsteriskManager{
 		$callfile = $callfile."CallerID:".$arrayPara['CallerID']."\r\n";
 		$callfile = $callfile."ActionID:".$arrayPara['ActionID']."\r\n";
 
+		// send accountcode	added by solo 2007-11-9
+		if (isset($arrayPara['Account']))
+			$callfile = $callfile."Account:".$arrayPara['Account']."\r\n";
+		else
+			$callfile = $callfile."Account:".$arrayPara['CallerID']."\r\n";	
+
+
 		if ($arrayPara['Variable'] != '')
 			foreach ( split("\|",$arrayPara['Variable']) as $strVar)
 				$callfile = $callfile."SetVar: $strVar\r\n";
 
 
-		$filename="/tmp/$sID.abc";
+		$filename="/tmp/$sID.call";
 		$handle=fopen($filename,"w+");
 		fwrite($handle,$callfile);
 
@@ -49,6 +59,9 @@ class Asterisk extends AGI_AsteriskManager{
       $parameters = array('Channel'=>$channel);
 
       if($exten) $parameters['Exten'] = $exten;
+	
+	  //$parameters['Accountcode'] = $exten;
+
       if($context) $parameters['Context'] = $context;
       if($priority) $parameters['Priority'] = $priority;
 
@@ -58,14 +71,21 @@ class Asterisk extends AGI_AsteriskManager{
       if($timeout) $parameters['WaitTime'] = $timeout;
       if($callerid) $parameters['CallerID'] = $callerid;
       if($variable) $parameters['Variable'] = $variable;
-      if($account) $parameters['Account'] = $account;
+      
+	  if($account) 
+		  $parameters['Account'] = "8701";
+	  else
+		  $parameters['Account'] = $callerid;
+
+
       if(!is_null($async)) $parameters['Async'] = ($async) ? 'true' : 'false';
       if($actionid) $parameters['ActionID'] = $actionid;
-
 
       foreach($parameters as $var=>$val)
         $req .= "$var: $val\r\n";
       $req .= "\r\n";
+	  print $req;
+	  //exit;
       fwrite($this->socket, $req);
 	  return;
 	}
