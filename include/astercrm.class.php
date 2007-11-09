@@ -1314,7 +1314,7 @@ Class astercrm extends PEAR{
     	global $locate;
 		$customer =& astercrm::getCustomerByID($id,$type);
 		$contactList =& astercrm::getContactListByID($customer['id']);
-
+		print_r($contactList);
 		$html = '
 				<table border="0" width="100%">
 				<tr>

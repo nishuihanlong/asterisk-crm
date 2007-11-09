@@ -22,6 +22,7 @@
 		delete				删除account信息
 		showDetail			显示account详细信息
 							当前返回空值
+		searchFormSubmit    根据提交的搜索信息重构显示页面
 
 * Revision 0.0456  2007/10/30 13:47:00  last modified by solo
 * Desc: modify function showDetail, make it show account detail when click detail
@@ -166,7 +167,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'username';
-	$fieldsFromSearch[] = 'passowrd';
+	$fieldsFromSearch[] = 'password';
 	$fieldsFromSearch[] = 'extension';
 	$fieldsFromSearch[] = 'extensions';
 
@@ -335,10 +336,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-	
-	//$limit = $searchFormValue['limit'];  // limit 
-	//$numRowsToShow = $searchFormValue['numRowsToShow']; // start
-
 	$divName = "grid";
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
 	$objResponse = new xajaxResponse();

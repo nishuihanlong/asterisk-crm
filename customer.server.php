@@ -17,7 +17,7 @@
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	showDetail			显示contact信息
-	searchFormSubmit    显示搜索信息
+	searchFormSubmit    根据提交的搜索信息重构显示页面
 	addSearchTr         增加搜索条件
 
 * Revision 0.0451  2007/10/22 16:45:00  last modified by solo
@@ -246,21 +246,6 @@ function showDetail($customerid){
 	}
 	return $objResponse->getXML();
 }
-
-/*function addSearchTr($search_str,$search_table){
-	global $locate;
-	$objResponse = new xajaxResponse();
-	//$objResponse->addAlert($search_table);
-	$searth_tr = '<br />'.$locate->Translate("search").' : &nbsp;<input type="text" size="30" id="searchContent"  name="searchContent[]">
-				&nbsp;&nbsp;'.$locate->Translate("by").' &nbsp;
-					<select id="searchField" name="searchField[]">';
-	$searth_tr .= $search_str;
-	$searth_tr .= '</select>';
-	$add_search_str = $search_table.$searth_tr;
-	$objResponse->addAppend("addSearth","innerHTML",$searth_tr);
-	//$objResponse->addAssign("addSearth", "innerHTML", $add_search_str);
-	return $objResponse->getXML();
-}*/
 
 function searchFormSubmit($searchFormValue,$numRows,$limit){
 	global $locate,$db;

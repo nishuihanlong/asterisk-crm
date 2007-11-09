@@ -16,6 +16,7 @@
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	showDetail			显示contact信息
+	searchFormSubmit    根据提交的搜索信息重构显示页面
 
 * Revision 0.0451  2007/10/22 16:45:00  last modified by solo
 * Desc: remove Edit and Detail tab in xajaxGrid
@@ -236,10 +237,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-	
-	//$limit = $searchFormValue['limit'];  // limit 
-	//$numRowsToShow = $searchFormValue['numRowsToShow']; // start
-
 	$divName = "grid";
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
 	$objResponse = new xajaxResponse();

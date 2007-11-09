@@ -13,6 +13,8 @@
 	getAllRecords				获取所有记录
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
+	新增getRecordsFilteredMore  用于获得多条件搜索记录集
+	新增getNumRowsMore          用于获得多条件搜索记录条数
 
 * Revision 0.045  2007/10/18 13:30:00  last modified by solo
 * Desc: page created

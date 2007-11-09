@@ -31,7 +31,9 @@
  * @copyright Copyright (c) 2006  by Jesus Velazquez
  * @license http://www.gnu.org/copyleft/lesser.html#SEC3 LGPL License
  */
-
+ /*
+ * 2007-11-9 增加addRowSearchMore()函数,增加搜索选项
+ */
 
 /** \brief Class to generate a table dynamically
  *
@@ -343,6 +345,7 @@ class ScrollTable{
 	/*
 	* customer addRowSearth
 	*/
+    //增加搜索选项
 	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content, $withNewButton = 1){
 		global $local_grid;
 		$ind = 0;
@@ -358,9 +361,9 @@ class ScrollTable{
 				}
 		$this->search .= '
 				</td>
-				<td> '.$local_grid->Translate("table").': '.
-					$table.
-				'</td>
+				<td> '.$local_grid->Translate("table").': ';
+		$this->search .= $table ;
+		$this->search .= '</td>
 				<td align="right" width="50%">
 					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
 		if($filter != null){

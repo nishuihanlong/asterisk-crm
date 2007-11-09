@@ -13,6 +13,8 @@
 	getAllRecords				获取所有记录
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
+	新增getRecordsFilteredMore  用于获得多条件搜索记录集
+	新增getNumRowsMore          用于获得多条件搜索记录条数
 
 * Revision 0.045  2007/10/18 15:11:00  last modified by solo
 * Desc: deleted function getRecordByID
@@ -131,12 +133,15 @@ class Customer extends astercrm
 		if ($config['system']['portal_display_type'] == "note"){
 				if ($joinstr!=''){
 					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+					
 						$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
 						." WHERE ".$joinstr."  AND priority>0 "
 						." AND  note.creby = '".$_SESSION['curuser']['username']."' "
 						." ORDER BY ".$order
 						." ".$_SESSION['ordering']
 						." LIMIT $start, $limit $ordering";
+						
+
 				}else {
 					$sql = "SELECT note.id AS id, note, priority,customer.customer AS customer,contact.contact AS contact,customer.category AS category,note.cretime AS cretime,note.creby AS creby FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid"
 						." ORDER BY ".$order
@@ -146,6 +151,7 @@ class Customer extends astercrm
 			}else{
 				if ($joinstr!=''){
 					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+						
 						$sql = "SELECT customer.id AS id,
 							customer.customer AS customer,
 							customer.category AS category,
@@ -161,6 +167,7 @@ class Customer extends astercrm
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
+					
 				}else {
 					$sql = "SELECT customer.id AS id,
 							customer.customer AS customer,
@@ -178,9 +185,10 @@ class Customer extends astercrm
 					." LIMIT $start, $limit $ordering";
 				}
 			}
-		echo $sql;
+		//echo $sql;
 		Customer::events($sql);
 		$res =& $db->query($sql);
+		//print_r($res);
 		return $res;
 	}
 	
@@ -251,11 +259,9 @@ class Customer extends astercrm
 				if ($joinstr!=''){
 					$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 						$sql = 	"SELECT COUNT(*) AS numRows "
-								." FROM customer "
-								." WHERE "
-								."customer.creby = '".$_SESSION['curuser']['username']."'"
-								." AND "
-								.$joinstr." ";
+								."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+								." AND  note.creby = '".$_SESSION['curuser']['username']."' "
+								."WHERE ".$joinstr." ";
 				}else {
 					$sql = "SELECT COUNT(*) AS numRows FROM customer 
 						LEFT JOIN note ON customer.id = note.customerid  WHERE customer.creby = '".$_SESSION['curuser']['username']."'";

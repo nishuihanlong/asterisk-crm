@@ -14,6 +14,8 @@
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
 	deleteRecord				删除customer记录, 同时删除与之相关的contact和note
+	新增getRecordsFilteredMore  用于获得多条件搜索记录集
+	新增getNumRowsMore          用于获得多条件搜索记录条数
 
 * Revision 0.045  2007/10/18 14:04:00  last modified by solo
 * Desc: delete function getRecordByID

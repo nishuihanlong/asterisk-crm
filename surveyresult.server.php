@@ -14,6 +14,7 @@
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	delete				删除一条问卷结果
+	searchFormSubmit    根据提交的搜索信息重构显示页面
 	add					null
 	showDetail			null
 

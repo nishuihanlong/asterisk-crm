@@ -76,8 +76,13 @@ require_once ('portal.grid.inc.php');
 
 function showDetail($noteid){
 	$objResponse = new xajaxResponse();
-	$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'note\');');
-	$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'note\');');
+	if ($config['system']['portal_display_type'] == "note"){
+		$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'note\');');
+		$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'note\');');
+	}else{
+		$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'customer\');');
+		$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'customer\');');
+	}
 	return $objResponse;
 }
 
@@ -512,7 +517,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
-	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	if ($config['system']['portal_display_type'] == "note"){
+		$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	}else{
+		$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	}
 
 	//print_r($arreglo);
 	while ($arreglo->fetchInto($row)) {
