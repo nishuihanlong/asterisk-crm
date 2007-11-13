@@ -19,4 +19,5 @@ $usertype = "User Type";
 $usertype_note = "support admin only";
 $channel	= "Channel";	// added 2007/10/30 by solo
 $account_detail		= "Account Detail";	// added 2007/10/30 by solo
+$account_code		= "Account Code";	// added 2007/11/12 by solo
 ?>

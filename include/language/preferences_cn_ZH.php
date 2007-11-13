@@ -1,0 +1,33 @@
+<?php
+$db_account = '数据库配置';
+$db_port = '端口号：';
+$db_host = '数据库主机：';
+$as_host = 'asterisk主机：';
+$db_name = '数据库名：';
+$db_user = '用户名：';
+$db_pass = '密码：';
+$admin_account = 'asterisk配置';
+$admin_name = '管理员姓名：';
+$admin_password = '登录密码：';
+$admin_password2 = '密码确认：';
+$admin_email = '电子邮箱：';
+$mix_sys = '系统配置';
+$select_lang_package = '选择语言包：';
+$simplified_chinese = '简体中文';
+$traditional_chinese = '繁体中文';
+$americanese = 'English';
+$setting_title='astrcrm';
+$ly_path='录音文件路径';
+$ly_format='录音文件格式';
+$log_enabled='启用日志';
+$log_file_path='日志文件的路径';
+$outcontext='拨入方案';
+$incontext='拨出方案';
+$db_type='数据类型';
+$dbsub='提交';
+$loginfo='1启用日志,2禁止日志';
+$logen = '启用日志';
+$logde = '禁用日志';
+$inok = '修改成功';
+$inno = '提交失败';
+?>

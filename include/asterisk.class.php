@@ -73,7 +73,7 @@ class Asterisk extends AGI_AsteriskManager{
       if($variable) $parameters['Variable'] = $variable;
       
 	  if($account) 
-		  $parameters['Account'] = "8701";
+		  $parameters['Account'] = $account;
 	  else
 		  $parameters['Account'] = $callerid;
 

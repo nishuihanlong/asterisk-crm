@@ -237,7 +237,8 @@ Class astercrm extends PEAR{
 				."extension='".$f['extension']."',"
 				."channel='".$f['channel']."',"			// added 2007/10/30 by solo
 				."usertype='".$f['usertype']."',"
-				."extensions='".$f['extensions']."'";
+				."extensions='".$f['extensions']."', "	// added 2007/11/12 by solo
+				."accountcode='".$f['accountcode']."'";
 
 		Customer::events($sql);
 		$res =& $db->query($sql);
@@ -379,7 +380,8 @@ Class astercrm extends PEAR{
 				."extension='".$f['extension']."', "
 				."usertype='".$f['usertype']."', "
 				."channel='".$f['channel']."', "	// added 2007/10/30 by solo
-				."extensions='".$f['extensions']."' "
+				."extensions='".$f['extensions']."', "
+				."accountcode='".$f['accountcode']."' "	// added 2007/11/12 by solo
 				."WHERE id='".$f['id']."'";
 
 		astercrm::events($sql);

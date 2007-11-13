@@ -48,8 +48,8 @@ incontext		= "from-internal"
 ; when predictive dialer connect the call
 ; 
 
-preDialer_context	= "from-trunk"
-preDialer_extension	= "1"
+predialer_context	= "from-trunk"
+predialer_extension	= "1"
 
 
 ;
@@ -95,7 +95,7 @@ pop_up_when_dial_in		= "1"
 ;
 ; browser will maximize when pop up
 ;
-maximize_when_pop_up	= "0"
+browser_maximize_when_pop_up	= "0"
 
 ;
 ; which phone ring first when using click to dial

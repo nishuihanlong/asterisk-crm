@@ -10,8 +10,8 @@
 * Private Functions List
 									processAccountData
 
-* Revision 0.0456  2007/10/30 13:49:00  modified by solo
-* Desc: add $_SESSION['curuser']['channel']
+* Revision 0.0456  2007/11/12 10:49:00  modified by solo
+* Desc: add $_SESSION['curuser']['channel'], $_SESSION['curuser']['accountcode']
 
 * Revision 0.045  2007/10/8 14:21:00  modified by solo
 * Desc: add string check
@@ -135,6 +135,7 @@ function init($aFormValue){
 															$_SESSION['curuser']['country']
 															$_SESSION['curuser']['language']
 															$_SESSION['curuser']['channel']
+															$_SESSION['curuser']['accountcode']
 */
 function processAccountData($aFormValues)
 {
@@ -159,6 +160,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $list['extension'];
 				$_SESSION['curuser']['usertype'] = $list['usertype'];
+				$_SESSION['curuser']['accountcode'] = $list['accountcode'];
 
 				// added by solo 2007-10-90
 				$_SESSION['curuser']['channel'] = $list['channel'];

@@ -314,7 +314,7 @@ function waitingCalls($myValue){
 				if ($myValue['popup'] == 'yes'){
 					if ($config['system']['enable_external_crm'] == false){
 							$objResponse->loadXML(getContact($call['callerid']));
-							if ( $config['system']['maximize_when_pop_up'] == true ){
+							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
 								$objResponse->addScript('maximizeWin();');
 							}
 					}else{
@@ -351,7 +351,7 @@ function waitingCalls($myValue){
 				if ($myValue['popup'] == 'yes'){
 					if ($config['system']['enable_external_crm'] == false ){
 							$objResponse->loadXML(getContact($call['callerid']));
-							if ( $config['system']['maximize_when_pop_up'] == true ){
+							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
 								$objResponse->addScript('maximizeWin();');
 							}
 					}else{
@@ -620,12 +620,13 @@ function dial($phoneNum,$first = ''){
 								'WaitTime'=>30,
 								'Exten'=>$phoneNum,
 								'Context'=>$config['system']['outcontext'],
+								'Account'=>$_SESSION['curuser']['accountcode'],
 								'Variable'=>"$strVariable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
 								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
@@ -636,6 +637,7 @@ function dial($phoneNum,$first = ''){
 								'WaitTime'=>30,
 								'Exten'=>$_SESSION['curuser']['extension'],
 								'Context'=>$config['system']['incontext'],
+								'Account'=>$_SESSION['curuser']['accountcode'],
 								'Variable'=>"$strVariable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
@@ -686,6 +688,7 @@ function invite($src,$dest){
 							'WaitTime'=>30,
 							'Exten'=>$dest,
 							'Context'=>$config['system']['outcontext'],
+							'Account'=>$_SESSION['curuser']['accountcode'],
 							'Variable'=>"$strVariable",
 							'Priority'=>1,
 							'MaxRetries'=>0,

@@ -89,9 +89,21 @@ CREATE TABLE account (
   extension varchar(30) NOT NULL default '',
   extensions varchar(200) NOT NULL default '',
   channel	varchar(30) NOT NULL default '',	#add 2007-10-30 by solo
+  accountcode	varchar(30) NOT NULL default '',#add 2007-11-12 by solo
+  groupid	int NOT NULL default '0',    #add 2007-11-13 by solo
   usertype varchar(20) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;
+
+CREATE TABLE `group` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`groupname` VARCHAR( 100 ) NOT NULL ,
+`groupid` INT NOT NULL ,
+UNIQUE (
+`groupid` 
+)
+) ENGINE = MYISAM ;
+
 
 DROP TABLE IF EXISTS diallist;
 
