@@ -104,7 +104,7 @@ $xajax->registerFunction("showCustomer");
 $xajax->registerFunction("addSearchTr");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("importTOExcel");
-$xajax->registerFunction("changSubmitBtnToImport");
+//$xajax->registerFunction("changSubmitBtnToImport");
 
 define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.

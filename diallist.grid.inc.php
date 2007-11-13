@@ -14,6 +14,8 @@
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
 	formAdd
+	getRecordsFiltered          获取多条件搜索的所有记录
+	getNumRowsMore              获取多条件搜索的所有记录条数
 
 
 * Revision 0.045  2007/10/18 19:53:00  last modified by solo
@@ -81,6 +83,37 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && $filter[$i] != null){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT * FROM diallist"
+					." WHERE ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = "SELECT * FROM diallist"
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+		//print_r($sql)
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 	
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
@@ -103,6 +136,33 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
+	}
+
+	function &getNumRowsMore($filter = null, $content = null,$table){
+		global $db;
+		
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0 && $filter[$i]!=null){
+					$joinstr.="AND $filter[$i] like '%".$value."%' ";
+				}
+				$i++;
+			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql = 	"SELECT COUNT(*) AS numRows "
+				."FROM diallist "
+				."WHERE ".$joinstr." ";
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM diallist ";
+			}
+		
+		
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
 	}
 
 	function formAdd(){

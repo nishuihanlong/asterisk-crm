@@ -18,6 +18,8 @@
 		add
 		save
 		delete
+		searchFormSubmit    多条件搜索
+		getSql              得到要导出数据的sql语句
 
 * Revision 0.045  2007/10/18 20:43:00  last modified by solo
 * Desc: add function add, showGrid, save, delete
@@ -62,15 +64,33 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
-	if(($filter == null) or ($content == null)){
-		
+	if($filter == null or $content == null){
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
-		
-		$numRows =& Customer::getNumRows($filter, $content);
-		$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);	
+		foreach($content as $value){
+			if(trim($value) != ""){  //搜索内容有值
+				$flag = "1";
+				break;
+			}
+		}
+		foreach($filter as $value){
+			if(trim($value) != ""){  //搜索条件有值
+				$flag2 = "1";
+				break;
+			}
+		}
+		if($flag != "1" || $flag2 != "1"){  //无值
+			$order = null;
+			$numRows =& Customer::getNumRows();
+			$arreglo =& Customer::getAllRecords($start,$limit,$order);
+		}else{
+			$order = "id";
+			$numRows =& Customer::getNumRowsMore($filter, $content,"diallist");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"diallist");
+		}
 	}
+
 
 	// Editable zone
 
@@ -119,7 +139,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	//$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	
+	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -172,6 +195,50 @@ function delete($id = null, $table_DB = null){
 	$objResponse->addAssign("grid", "innerHTML", $html);
 	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
 	return $objResponse->getXML();
+}
+
+function searchFormSubmit($searchFormValue,$numRows,$limit){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	$searchField = array();
+	$searchContent = array();
+	$exportFlag = $searchFormValue['exportFlag'];
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$divName = "grid";
+	if($exportFlag == "1"){
+		$sql = getSql($searchContent,$searchField,'diallist'); //得到要导出的sql语句
+		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
+			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$exportFlag);
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
+	}
+	return $objResponse->getXML();
+}
+
+function getSql($searchContent,$searchField,$table){
+	global $db;
+	$i=0;
+	$joinstr='';
+	foreach ($searchContent as $value){
+		$value=trim($value);
+		if (strlen($value)!=0 && $searchField[$i] != null){
+			$joinstr.="AND $searchField[$i] like '%".$value."%' ";
+		}
+		$i++;
+	}
+	if ($joinstr!=''){
+		$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+		$sql = "SELECT * FROM '".$table."'"
+					." WHERE ".$joinstr."  ";
+	}else {
+		$sql = 'SELECT * FROM '.$table.'';
+	}
+	return $sql;
 }
 
 $xajax->processRequests();

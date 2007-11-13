@@ -16,6 +16,7 @@
 				formContactInfo		show contact detail
 				formNoteInfo		show note detail
 				formEditInfo		show export button
+				exportForm          记录要导出的sql语句
 
 * button
 				btnExport
@@ -98,6 +99,9 @@ require_once('note.common.php');
 	</table>
 	<form name="frmDownload" id="frmDownload" action="download.php">
 		<input type="hidden" value="" id="type" name="type">
+	</form>
+	<form name="exportForm" id="exportForm" action="dataexport.php">
+		<input type="hidden" value="" id="hidSql" name="hidSql" />
 	</form>
 	<div id="divCopyright"></div>
 	</body>

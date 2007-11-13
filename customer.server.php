@@ -19,6 +19,7 @@
 	showDetail			显示contact信息
 	searchFormSubmit    根据提交的搜索信息重构显示页面
 	addSearchTr         增加搜索条件
+	getSql              得到要导出数据的sql语句
 
 * Revision 0.0451  2007/10/22 16:45:00  last modified by solo
 * Desc: remove Edit and Detail tab in xajaxGrid
@@ -202,8 +203,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-
-//	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table

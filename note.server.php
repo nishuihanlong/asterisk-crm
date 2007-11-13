@@ -14,6 +14,7 @@
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	searchFormSubmit    根据提交的搜索信息重构显示页面
+	getSql              得到要导出csv格式的sql语句
 
 * Revision 0.045  2007/10/22 16:45:00  last modified by solo
 * Desc: remove function "export"
@@ -163,6 +164,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
+	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 
 	while ($arreglo->fetchInto($row)) {
@@ -188,18 +190,46 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 function searchFormSubmit($searchFormValue,$numRows,$limit){
 	global $locate,$db;
-
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
-	$objResponse = new xajaxResponse();
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
+	if($exportFlag == "1"){
+		$sql = getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
+		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
+			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$exportFlag);
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
+	}
 	return $objResponse->getXML();
+}
+
+function getSql($searchContent,$searchField,$table){
+	global $db;
+	$i=0;
+	$joinstr='';
+	foreach ($searchContent as $value){
+		$value=trim($value);
+		if (strlen($value)!=0 && strlen($searchField[$i]) != 0){
+			$joinstr.="AND $searchField[$i] like '%".$value."%' ";
+		}
+		$i++;
+	}
+	if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+				." WHERE ".$joinstr." ";
+		}else {
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+		}
+	return $sql;
 }
 
 $xajax->processRequests();

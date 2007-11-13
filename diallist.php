@@ -14,6 +14,7 @@
 									formDiv			-> add/edit form div in xgrid
 									grid				-> main div
 									msgZone		-> message from xgrid class
+									exportForm   记录导出数据的sql语句
 * javascript function:		
 									init	
 
@@ -46,6 +47,11 @@ require_once('diallist.common.php');
 		function importCsv(){
 			xajax_importCsv();
 		}
+		function searchFormSubmit(numRows,limit){
+			//alert(xajax.getFormValues("searchForm"));
+			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit);
+			return false;
+		}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -70,6 +76,9 @@ require_once('diallist.common.php');
 			</td>
 		</tr>
 	</table>
+	<form name="exportForm" id="exportForm" action="dataexport.php">
+		<input type="hidden" value="" id="hidSql" name="hidSql" />
+	</form>
 	<div id="divCopyright"></div>
 	</body>
 </html>

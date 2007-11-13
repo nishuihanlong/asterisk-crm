@@ -22,13 +22,6 @@ ob_start();
 header('Content-type:  application/force-download');
 header('Content-Transfer-Encoding:  Binary');
 header('Content-disposition:  attachment; filename=astercrm.csv');
-
-define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
-define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
-define(ROWSXPAGE, 5); // Number of rows show it per page.
-define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
-
-//echo astercrm::exportCSV($type);
 echo astercrm::exportDataToCSV($sql);
 ob_end_flush();
 
