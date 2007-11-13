@@ -1228,3 +1228,10 @@ hr {
 .top_banner ul {
 	padding:0; margin:0; list-style:inside decimal; 
 }
+.td{
+	background-image: url(images/background.jpg);
+	background-repeat: repeat-x;
+}.font {
+	font-size: 14px;
+	font-weight: bold;
+}
