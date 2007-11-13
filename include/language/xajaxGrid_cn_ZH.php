@@ -16,4 +16,5 @@ $last = "尾页 >>";
 $show_all = "全部显示";
 $delete_confirm	= "确定要删除该项目么?";
 $add_search = "增加选项";
+$export = "导出";
 ?>

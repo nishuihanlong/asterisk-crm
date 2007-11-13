@@ -84,6 +84,7 @@ Class astercrm extends PEAR{
 		$res =& $db->query($query);
 		return  $res;
 	}
+
 	/**
 	*	get table structure
 	*	
@@ -1573,6 +1574,22 @@ Class astercrm extends PEAR{
 						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
 				
 				$txtstr .= '"'.$val.'"';
+			}
+			$txtstr .= "\n";
+		}
+		return $txtstr;
+	}
+
+	function exportDataToCSV($sql){
+		global $db;
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		while ($res->fetchInto($row)) {
+			foreach ($row as $val){
+				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
+						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
+				
+				$txtstr .= '"'.$val.'"'.',';
 			}
 			$txtstr .= "\n";
 		}

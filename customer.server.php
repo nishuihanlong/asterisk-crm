@@ -39,6 +39,7 @@ require_once ('customer.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('astercrm.server.common.php');
 require_once ('include/common.class.php');
+require_once ('include/astercrm.class.php');
 
 /**
 *  initialize page elements
@@ -77,7 +78,7 @@ function init(){
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$exportFlag=""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
@@ -199,7 +200,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-
+	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 
 //	$table->addRowSearchCustomer("customer",$fieldsFromSearch,$fieldsFromSearchShowAs);
@@ -218,14 +219,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
-		$table->addRow("customer",$rowc,0,1,0,$divName,$fields);
+		
+		$table->addRow("customer",$rowc,0,1,0,$divName,$fields);	
+		
  	}
+	
+	$html = $table->render();
 
+	return $html;
+	 
  	// End Editable Zone
-
- 	$html = $table->render();
-
- 	return $html;
 }
 
 /**
@@ -252,14 +255,42 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
-	$objResponse = new xajaxResponse();
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
+	if($exportFlag == "1"){
+		$sql = getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
+			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$exportFlag);
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
+	}
 	return $objResponse->getXML();
+}
+
+function getSql($searchContent,$searchField,$table){
+	global $db;
+	$i=0;
+	$joinstr='';
+	foreach ($searchContent as $value){
+		$value=trim($value);
+		if (strlen($value)!=0 && $searchField[$i] != null){
+			$joinstr.="AND $searchField[$i] like '%".$value."%' ";
+		}
+		$i++;
+	}
+	if ($joinstr!=''){
+		$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+		$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+	}else {
+		$sql = 'SELECT * FROM '.$table.'';
+	}
+	return $sql;
 }
 
 $xajax->processRequests();

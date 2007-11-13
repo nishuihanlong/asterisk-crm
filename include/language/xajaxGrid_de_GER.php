@@ -16,4 +16,5 @@ $last = "Letzete Seite >>";
 $show_all = "Zeige Alle";
 $delete_confirm	= "Sind Sie sicher, daß Sie den Eintrag löschen wollen?";
 $add_search = "Add Search Object";
+$export = "import";
 ?>

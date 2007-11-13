@@ -43,6 +43,7 @@ require_once('customer.common.php');
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
 		function init(){
+			
 			xajax_init();
 			//make div draggable
 			dragresize.apply(document);
@@ -93,6 +94,9 @@ require_once('customer.common.php');
 			</td>
 		</tr>
 	</table>
+	<form name="exportForm" id="exportForm" action="dataexport.php">
+		<input type="hidden" value="" id="hidSql" name="hidSql" />
+	</form>
 	<div id="divCopyright"></div>
 	</body>
 </html>

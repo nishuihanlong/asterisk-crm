@@ -114,6 +114,8 @@ class ScrollTable{
 	 */
 	var $order;
 
+	var $exportFlag;
+
 
 	/**
 	 * Constructor.
@@ -407,9 +409,14 @@ class ScrollTable{
 				<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
 				&nbsp;&nbsp;
 				<input type="submit" id="submitButton" name="submitButton" value="'.$local_grid->Translate("continue").'"/>
-				</td>
-
-			</tr>
+				</td>';
+		if($this->exportFlag != ''){
+			$this->search .='<td>
+								<input type="checkbox" value="1" name="exportFlag" id="exportFlag" onclick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("export").'\';"/>
+						'.$local_grid->Translate("export").'
+					         </td>';
+		}
+		$this->search .='</tr>
 
 		</table></form>';
 	}
