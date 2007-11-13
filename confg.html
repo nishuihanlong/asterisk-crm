@@ -2,24 +2,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<script type="text/javascript">
+
+    function display(id){
+
+        var traget=document.getElementById(id);
+         if(traget.style.display=="none"){
+                 traget.style.display="";
+         }else{
+                 traget.style.display="none";
+       }
+    }
+</script>
 <LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 <LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 <title>无标题文档</title>
 </head>
 
 <body>
-<table width="90%%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
+<table border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
   <tr>
-    <td width="180" height="39" class="td font" id="DataBase" name="DataBase"><div align="center">DateBase +</div></td>
+    <td width="180" height="39" class="td font" id="DataBase" name="DataBase"><div align="center">DateBase 
+        <input type="button" onclick="display('menu')"  value="+"/>
+    </div></td>
     <td width="150" height="39" class="td">&nbsp;</td>
     <td width="600" height="39" class="td">&nbsp;</td>
   </tr>
-  <tr>
+    <tr>
     <td width="180" height="10" class="td"></td>
     <td width="150" height="10" class="td"></td>
     <td width="600" height="10" class="td"></td>
   </tr>
-  <tr>
+</table>
+<table border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0" id="menu">
+  <tr id="menu">
     <td width="180" height="50" align="center" valign="top" id="DbDbType" name="DbDbType">dbtype</td>
     <td width="150" height="50" align="left" valign="top">
 <label>
@@ -29,12 +45,12 @@
     </td>
     <td width="600" height="50" align="left" valign="top"><div id="divDbDbType" name="divDbDbType">&nbsp;</div></td>
   </tr>
-  <tr>
+  <tr id="menu">
     <td width="180" height="50" align="center" valign="top" bgcolor="#F7F7F7" id="DbDbHost" name="DbDbHost">dbhost</td>
     <td width="150" height="50" align="left" valign="top" bgcolor="#F7F7F7"><input type="text" id="iptDbDbHost" name="iptDbDbHost" /></td>
     <td width="600" height="50" align="left" valign="top" bgcolor="#F7F7F7"><div id="divDbDbHost" name="divDbDbHost">&nbsp;</div></td>
   </tr>
-  <tr>
+  <tr id="menu">
     <td width="180" height="50" align="center" valign="top" id="DbDbName" name="DbDbName">dbname</td>
     <td width="150" height="50" align="left" valign="top"><input type="text" id="iptDbDbName" name="iptDbDbName" /></td>
     <td width="600" height="50" align="left" valign="top"><div id="divDbDbName" name="divDbDbName">&nbsp;</div></td>
@@ -52,9 +68,11 @@
 </table>
 
 
-<table width="90%%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
+<table border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
   <tr>
-    <td width="180" height="39" class="td font" id="Asterisk" name="Asterisk"><div align="center">Asterisk</div></td>
+    <td width="180" height="39" class="td font" id="Asterisk" name="Asterisk"><div align="center">Asterisk 
+      <input type="button" onclick="display('menu1')"  value="+"/>
+    </div></td>
     <td width="150" height="39" class="td">&nbsp;</td>
     <td width="600" height="39" class="td">&nbsp;</td>
   </tr>
@@ -63,6 +81,8 @@
     <td width="150" height="10" class="td"></td>
     <td width="600" height="10" class="td"></td>
   </tr>
+</table>
+<table border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0" id="menu1">
   <tr>
     <td width="180" height="50" align="center" valign="top" id="AsServer" name="AsServer">server</td>
     <td width="150" height="50" align="left" valign="top"><label>
@@ -96,9 +116,11 @@
     <td width="600" height="50" align="left" valign="top" bgcolor="#F7F7F7"><div id="divAsMonitorFormat" name="divAsMonitorFormat">&nbsp;</div></td>
   </tr>
 </table>
-<table width="90%%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
+<table border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
   <tr>
-    <td width="176" height="39" class="td font" id="System" name="System"><div align="center">System</div></td>
+    <td width="179" height="39" class="td font" id="System" name="System"><div align="center">System 
+      <input type="button" onclick="display('menu2')"  value="+"/>
+    </div></td>
     <td width="150" height="39" class="td">&nbsp;</td>
     <td width="600" height="39" class="td">&nbsp;</td>
   </tr>
@@ -107,8 +129,10 @@
     <td width="150" height="10" class="td"></td>
     <td width="600" height="10" class="td"></td>
   </tr>
+</table>
+<table border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0" id="menu2">
   <tr>
-    <td width="176" height="50" align="center" valign="top" id="SysLogEnabled" name="SysLogEnabled">log_enabled</td>
+    <td width="179" height="50" align="center" valign="top" id="SysLogEnabled" name="SysLogEnabled">log_enabled</td>
     <td width="150" height="50" align="left" valign="top"><form id="form1" name="form1" method="post" action="">
       <label>
         <select name="iptSysLogEnabled" id="iptSysLogEnabled">
