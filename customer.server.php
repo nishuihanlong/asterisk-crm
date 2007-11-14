@@ -19,7 +19,6 @@
 	showDetail			显示contact信息
 	searchFormSubmit    根据提交的搜索信息重构显示页面
 	addSearchTr         增加搜索条件
-	getSql              得到要导出数据的sql语句
 
 * Revision 0.0451  2007/10/22 16:45:00  last modified by solo
 * Desc: remove Edit and Detail tab in xajaxGrid
@@ -259,7 +258,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($exportFlag == "1"){
-		$sql = getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
 		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
 			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
@@ -270,26 +269,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
 	return $objResponse->getXML();
-}
-
-function getSql($searchContent,$searchField,$table){
-	global $db;
-	$i=0;
-	$joinstr='';
-	foreach ($searchContent as $value){
-		$value=trim($value);
-		if (strlen($value)!=0 && $searchField[$i] != null){
-			$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-		}
-		$i++;
-	}
-	if ($joinstr!=''){
-		$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-		$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
-	}else {
-		$sql = 'SELECT * FROM '.$table.'';
-	}
-	return $sql;
 }
 
 $xajax->processRequests();

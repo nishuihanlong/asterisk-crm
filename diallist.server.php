@@ -19,7 +19,6 @@
 		save
 		delete
 		searchFormSubmit    多条件搜索
-		getSql              得到要导出数据的sql语句
 
 * Revision 0.045  2007/10/18 20:43:00  last modified by solo
 * Desc: add function add, showGrid, save, delete
@@ -207,7 +206,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($exportFlag == "1"){
-		$sql = getSql($searchContent,$searchField,'diallist'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,'diallist'); //得到要导出的sql语句
 		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
 			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
@@ -218,27 +217,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
 	return $objResponse->getXML();
-}
-
-function getSql($searchContent,$searchField,$table){
-	global $db;
-	$i=0;
-	$joinstr='';
-	foreach ($searchContent as $value){
-		$value=trim($value);
-		if (strlen($value)!=0 && $searchField[$i] != null){
-			$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-		}
-		$i++;
-	}
-	if ($joinstr!=''){
-		$joinstr=ltrim($joinstr,'AND'); 
-		$sql = "SELECT * FROM '".$table."'"
-					." WHERE ".$joinstr."  ";
-	}else {
-		$sql = 'SELECT * FROM '.$table.'';
-	}
-	return $sql;
 }
 
 $xajax->processRequests();

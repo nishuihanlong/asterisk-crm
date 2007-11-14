@@ -14,7 +14,6 @@
 	init				初始化页面元素
 	createGrid			生成grid的HTML代码
 	searchFormSubmit    根据提交的搜索信息重构显示页面
-	getSql              得到要导出csv格式的sql语句
 
 * Revision 0.045  2007/10/22 16:45:00  last modified by solo
 * Desc: remove function "export"
@@ -198,7 +197,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($exportFlag == "1"){
-		$sql = getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
+		$sql =& Customer::getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
 		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
 			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
@@ -211,26 +210,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	return $objResponse->getXML();
 }
 
-function getSql($searchContent,$searchField,$table){
-	global $db;
-	$i=0;
-	$joinstr='';
-	foreach ($searchContent as $value){
-		$value=trim($value);
-		if (strlen($value)!=0 && strlen($searchField[$i]) != 0){
-			$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-		}
-		$i++;
-	}
-	if ($joinstr!=''){
-			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				." WHERE ".$joinstr." ";
-		}else {
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
-		}
-	return $sql;
-}
+
 
 $xajax->processRequests();
 

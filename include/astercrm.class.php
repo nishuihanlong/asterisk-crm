@@ -42,10 +42,13 @@
 			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
 
 			variableFiler			用于转译变量, 自动加\
+			新增exportDataToCSV     得到要导出的sql语句的结果集，转换为符合csv格式的文本字符串
+			新增getSql              得到多条件搜索的sql语句
 			
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
 			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
+
 
 
 * Revision 0.0456  2007/11/8 10:11:00  last modified by solo
@@ -1584,9 +1587,12 @@ Class astercrm extends PEAR{
 
 	function exportDataToCSV($sql){
 		global $db;
+		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
+			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
 		astercrm::events($sql);
 		$res =& $db->query($sql);
-		while ($res->fetchInto($row)) {
+		//echo $sql;
+		while (@$res->fetchInto($row)) {
 			foreach ($row as $val){
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
 						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
@@ -1611,6 +1617,28 @@ Class astercrm extends PEAR{
 		$customerid =& $db->getOne($sql);
 		astercrm::events($sql);
 		return $customerid;
+	}
+
+	function getSql($searchContent,$searchField,$table){
+		global $db;
+		$i=0;
+		$joinstr='';
+		foreach ($searchContent as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && $searchField[$i] != null){
+				$joinstr.="AND $searchField[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND');
+			$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+		}else {
+			$sql = 'SELECT * FROM '.$table.'';
+		}
+		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
+			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		return $sql;
 	}
 }
 ?>

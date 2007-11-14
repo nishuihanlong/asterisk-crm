@@ -15,6 +15,7 @@
 	getNumRows					获取记录集条数
 	新增getRecordsFilteredMore  用于获得多条件搜索记录集
 	新增getNumRowsMore          用于获得多条件搜索记录条数
+	getSql                      获取多条件搜索sql语句
 
 * Revision 0.045  2007/10/18 13:30:00  last modified by solo
 * Desc: page created
@@ -155,6 +156,27 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;
+	}
+
+	function getSql($searchContent,$searchField,$table){
+		global $db;
+		$i=0;
+		$joinstr='';
+		foreach ($searchContent as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($searchField[$i]) != 0){
+				$joinstr.="AND $searchField[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); 
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+					." WHERE ".$joinstr." ";
+		}else {
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+		}
+		return $sql;
 	}
 }
 ?>
