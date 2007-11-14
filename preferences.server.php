@@ -30,6 +30,9 @@ require_once ("preferences.common.php");
 
 function init(){
 	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+	$objResponse->loadXML(initLocate());
 	return $objResponse;
 }
 
@@ -45,9 +48,6 @@ function initLocate(){
 
 	$objResponse = new xajaxResponse();
 
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
-	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-
 	//database section
 	$objResponse->addAssign("divDbDbtype","innerHTML",$locate->Translate('db_dbtype'));
 	$objResponse->addAssign("divDbDbhost","innerHTML",$locate->Translate('db_dbhost'));
@@ -59,9 +59,16 @@ function initLocate(){
 	$objResponse->addAssign("divAsServer","innerHTML",$locate->Translate('as_server'));
 	$objResponse->addAssign("divAsPort","innerHTML",$locate->Translate('as_port'));
 	$objResponse->addAssign("divAsUsername","innerHTML",$locate->Translate('as_username'));
-	$objResponse->addAssign("divAsSecret","innerHTML",$locate->Translate('us_secret'));
-	$objResponse->addAssign("divAsMonitorpath","innerHTML",$locate->Translate('db_account'));
-	$objResponse->addAssign("divAsMonitorformat","innerHTML",$locate->Translate('db_account'));
+	$objResponse->addAssign("divAsSecret","innerHTML",$locate->Translate('as_secret'));
+	$objResponse->addAssign(
+				"divAsMonitorpath",
+				"innerHTML",
+				$locate->Translate('as_monitorpath'));
+	$objResponse->addAssign(
+				"divAsMonitorformat",
+				"innerHTML",
+				$locate->Translate('as_monitorformat'));
+
 
 	//system section
 	$objResponse->addAssign("divSysLogEnabled","innerHTML",$locate->Translate('sys_log_enabled'));
@@ -89,7 +96,7 @@ function initLocate(){
 			"innerHTML",
 			$locate->Translate('sys_trim_prefix'));
 	$objResponse->addAssign("divSysAllowDropcall","innerHTML",$locate->Translate('sys_allow_dropcall'));
-	$objResponse->addAssign("divSysAllowDropcall","innerHTML",$locate->Translate('sys_allow_same_data'));
+	$objResponse->addAssign("divSysAllowSameData","innerHTML",$locate->Translate('sys_allow_same_data'));
 
 	$objResponse->addAssign("divSysPortalDisplayType","innerHTML",$locate->Translate('sys_portal_display_type'));
 

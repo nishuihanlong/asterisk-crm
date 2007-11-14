@@ -234,9 +234,11 @@ require_once('portal.common.php');
 
 	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 
-	<?if ($config['system']['enable_external_crm'] == false){?>
-		<div id="divSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)"></div><br/>
-		<br>
+
+		<br/>
+		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
+			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
+		</div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>
 				<td style="padding: 0px;">
@@ -257,11 +259,7 @@ require_once('portal.common.php');
 				</td>
 			</tr>
 		</table>
-	<?}else{?>
 	<div id="divCrm" name="divCrm"></div>
-	<?
-	}
-	?>
 
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 

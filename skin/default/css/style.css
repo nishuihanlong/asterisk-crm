@@ -945,6 +945,11 @@ div.main {
 	z-index: 85;
 }
 
+.divSearchContact {
+	visibility: hidden; 
+}
+
+
 .divPanel {
 	/*width: 100px; */
 	/* height: 400px;  */

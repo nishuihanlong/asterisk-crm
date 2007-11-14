@@ -95,10 +95,14 @@ CREATE TABLE account (
   UNIQUE KEY id (id)
 ) ;
 
-CREATE TABLE `group` (
+DROP TABLE IF EXISTS accountgroup;
+
+CREATE TABLE `accountgroup` (
 `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `groupname` VARCHAR( 100 ) NOT NULL ,
 `groupid` INT NOT NULL ,
+`pdcontext` VARCHAR( 30 ) NOT NULL  ,
+`pdextension` VARCHAR( 30 ) NOT NULL  ,
 UNIQUE (
 `groupid` 
 )
