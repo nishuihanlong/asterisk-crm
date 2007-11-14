@@ -16,6 +16,7 @@
 				formContactInfo		show contact detail
 				formNoteInfo		show note detail
 				divActive			show import and export button
+				exportForm          记录导出数据的sql语句
 
 * button
 				btnImport

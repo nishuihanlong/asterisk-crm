@@ -239,7 +239,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
-	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	

@@ -232,7 +232,7 @@ function getSql($searchContent,$searchField,$table){
 		$i++;
 	}
 	if ($joinstr!=''){
-		$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+		$joinstr=ltrim($joinstr,'AND'); 
 		$sql = "SELECT * FROM '".$table."'"
 					." WHERE ".$joinstr."  ";
 	}else {

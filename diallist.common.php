@@ -25,6 +25,7 @@ registed function:
 	delete				delete a contact
 	add					null
 	save
+	searchFormSubmit    多条件搜索
 
 
 * Revision 0.045  2007/10/18 20:38:00  modified by solo

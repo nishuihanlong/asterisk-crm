@@ -25,6 +25,7 @@
 	addWithPhoneNumber
 	invite
 	chanspy
+	searchFormSubmit   多条件搜索，重构显示页面
 
 * Revision 0.0456  2007/11/7 14:45:00  last modified by solo
 * Desc: add function chanspy
@@ -827,13 +828,8 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-	
-	//$limit = $searchFormValue['limit'];  // limit 
-	//$numRowsToShow = $searchFormValue['numRowsToShow']; // start
-
 	$divName = "grid";
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
-	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();

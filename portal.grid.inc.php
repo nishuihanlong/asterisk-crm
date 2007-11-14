@@ -13,6 +13,8 @@
 	getAllRecords				获取所有记录
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
+	getRecordsFilteredMore      获取多条件搜索结果记录集
+	getNumRowsMore              获取多条件搜索结果记录条数
 
 * Revision 0.045  2007/10/18 15:11:00  last modified by solo
 * Desc: deleted function getRecordByID
