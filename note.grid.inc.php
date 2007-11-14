@@ -92,15 +92,15 @@ class Customer extends astercrm
 			$i++;
 		}
 		if ($joinstr!=''){
-				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-					." WHERE ".$joinstr." "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-			}else {
-				$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
-			}
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+				." WHERE ".$joinstr." "
+				." ORDER BY ".$order
+				." ".$_SESSION['ordering']
+				." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+		}
 		
 		Customer::events($sql);
 		$res =& $db->query($sql);

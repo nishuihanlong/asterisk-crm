@@ -1587,12 +1587,9 @@ Class astercrm extends PEAR{
 
 	function exportDataToCSV($sql){
 		global $db;
-		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
-			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
 		astercrm::events($sql);
 		$res =& $db->query($sql);
-		//echo $sql;
-		while (@$res->fetchInto($row)) {
+		while ($res->fetchInto($row)) {
 			foreach ($row as $val){
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
 						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
@@ -1626,6 +1623,8 @@ Class astercrm extends PEAR{
 		foreach ($searchContent as $value){
 			$value=trim($value);
 			if (strlen($value)!=0 && $searchField[$i] != null){
+				//if ($value != mb_convert_encoding($value,"UTF-8","UTF-8"))
+				//	$value='"'.mb_convert_encoding($value,"UTF-8","GB2312").'"';
 				$joinstr.="AND $searchField[$i] like '%".$value."%' ";
 			}
 			$i++;
@@ -1636,8 +1635,9 @@ Class astercrm extends PEAR{
 		}else {
 			$sql = 'SELECT * FROM '.$table.'';
 		}
-		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
-			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		//if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8")){
+		//	$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		//}		
 		return $sql;
 	}
 }

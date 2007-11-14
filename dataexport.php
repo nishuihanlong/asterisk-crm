@@ -15,9 +15,8 @@ if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype']
 
 require_once ("db_connect.php");
 require_once ('include/astercrm.class.php');
-$sql = $_REQUEST['hidSql'];
-if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
-	$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+//$sql = $_REQUEST['hidSql'];
+$sql = $_SESSION['export_sql'];
 ob_start();
 header("charset=uft-8");   
 header('Content-type:  application/force-download');

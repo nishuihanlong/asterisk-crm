@@ -198,8 +198,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$divName = "grid";
 	if($exportFlag == "1"){
 		$sql =& Customer::getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
-		if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8"))
-			$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}else{
