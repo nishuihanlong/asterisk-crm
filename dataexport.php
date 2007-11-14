@@ -26,4 +26,5 @@ define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
 define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
 echo astercrm::exportDataToCSV($sql);
 ob_end_flush();
+unset($_SESSION['export_sql']);
 ?>
