@@ -176,10 +176,10 @@ require_once('portal.common.php');
 			return stringToTrim.replace(/^\s+|\s+$/g,"");
 		}
 
-		function searchFormSubmit(numRows,limit){
-			//alert(xajax.getFormValues("searchForm"));
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit);
-			return false;
+		function searchFormSubmit(numRows,limit,id,type){
+		//alert(xajax.getFormValues("searchForm"));
+		xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
+		return false;
 		}
 
 		</script>

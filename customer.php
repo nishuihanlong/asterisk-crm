@@ -49,9 +49,9 @@ require_once('customer.common.php');
 			//make div draggable
 			dragresize.apply(document);
 		}
-		function searchFormSubmit(numRows,limit){
+		function searchFormSubmit(numRows,limit,id,type){
 			//alert(xajax.getFormValues("searchForm"));
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit);
+			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
 			return false;
 		}
 		//-->

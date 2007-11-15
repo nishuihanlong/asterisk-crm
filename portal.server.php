@@ -523,9 +523,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	if ($config['system']['portal_display_type'] == "note"){
-		$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+		//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+		$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 	}else{
-		$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+		$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 	}
 
 	//print_r($arreglo);
@@ -833,7 +834,7 @@ function chanspy($exten,$spyexten){
 
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit){
+function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
@@ -841,7 +842,22 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	if($type == "delete"){
+		if ($config['system']['portal_display_type'] == "note"){
+			$res = Customer::deleteRecord($id,'note');
+		}else{
+			$res = Customer::deleteRecord($id,'customer');
+		}
+		if ($res){
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();

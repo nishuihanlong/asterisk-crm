@@ -202,7 +202,13 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
-					<td align="left"><input type="text" id="usertype" name="usertype" size="25" maxlength="100"></td>
+					<td align="left">
+					<select id="usertype" name="usertype">
+						<option value=""></option>
+						<option value="agent">agent</option>
+						<option value="groupadmin">groupadmin</option>
+						<option value="admin">admin</option>
+					</select></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("accountcode").'</td>
@@ -274,7 +280,30 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
-					<td align="left"><input type="text" id="usertype" name="usertype" size="25" maxlength="30" value="'.$account['usertype'].'"></td>
+					<td align="left">
+					<select id="usertype" name="usertype">
+						<option value="" ';
+						if($account['usertype'] == ''){
+							$html .= ' selected ';
+						}
+				$html .= '></option>
+						<option value="agent"';
+						if($account['usertype'] == 'agent'){
+							$html .= ' selected ';
+						}
+				$html .=' >agent</option>
+						<option value="groupadmin"';
+						if($account['usertype'] == 'groupadmin'){
+							$html .= ' selected ';
+						}
+				$html .='>groupadmin</option>
+						<option value="admin"';
+						if($account['usertype'] == 'admin'){
+							$html .= ' selected ';
+						}
+				$html .='>admin</option>
+					</select>
+					<!--<input type="text" id="usertype" name="usertype" size="25" maxlength="30" value="'.$account['usertype'].'">--></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("accountcode").'</td>

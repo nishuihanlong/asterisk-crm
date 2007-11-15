@@ -183,8 +183,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-
+	$table->addRowSearchMore("account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -329,7 +328,7 @@ function showDetail($accountid){
 	return $objResponse;
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit){
+function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
@@ -337,7 +336,18 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	if($type == "delete"){
+		$res = Customer::deleteRecord($id,'account');
+		if ($res){
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();

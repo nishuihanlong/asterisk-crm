@@ -180,7 +180,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	//echo 'ggggggggggggg';
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("accountgroup",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	$table->addRowSearchMore("accountgroup",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -299,7 +299,11 @@ function delete($accountid = null){
 	global $locate;
 	$res = Customer::deleteRecord($accountid,'accountgroup');
 	if ($res){
-		$html = createGrid(0,ROWSXPAGE);
+		$numRows = $_SESSION['numRows'];
+		$limit = $_SESSION['limit'];
+		$html = createGrid($numRows,$limit);
+		unset($_SESSION['numRows']);
+		unset($_SESSION['limit']);
 		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
@@ -327,7 +331,7 @@ function showDetail($accountid){
 	return $objResponse;
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit){
+function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
@@ -335,7 +339,18 @@ function searchFormSubmit($searchFormValue,$numRows,$limit){
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	if($type == "delete"){
+		$res = Customer::deleteRecord($id,'accountgroup');
+		if ($res){
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
