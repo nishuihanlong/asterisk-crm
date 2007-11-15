@@ -148,7 +148,7 @@ function init(){
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
-	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
@@ -519,7 +519,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
+	if ($config['system']['portal_display_type'] == "note"){
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
+	}else{
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=true,$delete=false,$detail=true);
+	}
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	if ($config['system']['portal_display_type'] == "note"){
@@ -564,8 +568,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //		$rowc[] = $row['creby'];
 		$rowc[] = $row['priority'];
 //		$rowc[] = 'Detail';
-
-		$table->addRow("note",$rowc,1,1,1,$divName,$fields);
+		if ($config['system']['portal_display_type'] == "note"){
+			$table->addRow("note",$rowc,1,1,1,$divName,$fields);
+		}else{
+			$table->addRow("note",$rowc,1,0,1,$divName,$fields);
+		}
  	}
  	
  	// End Editable Zone

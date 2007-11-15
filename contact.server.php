@@ -182,8 +182,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	//$table->addRowSearch("contact",$fieldsFromSearch,$fieldsFromSearchShowAs);
-	//$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -236,24 +235,32 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$exportFlag = $searchFormValue['exportFlag'];  //导出标记
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	if($type == "delete"){
-		$res = Customer::deleteRecord($id,'contact');
-		if ($res){
-			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
-			$objResponse = new xajaxResponse();
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
-		}else{
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
-		}
+	if($exportFlag == "1"){
+		$sql = astercrm::getSql($searchContent,$searchField,'contact'); //得到要导出的sql语句
+		$_SESSION['export_sql'] = $sql;
+		//echo $sql;
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		if($type == "delete"){
+			$res = Customer::deleteRecord($id,'contact');
+			if ($res){
+				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+				$objResponse = new xajaxResponse();
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			}else{
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+			}
+		}else{
+			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		}
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
-	
 	return $objResponse->getXML();
 }
 

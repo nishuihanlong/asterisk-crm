@@ -108,6 +108,9 @@ require_once('contact.common.php');
 	<form name="frmDownload" id="frmDownload" action="download.php">
 		<input type="hidden" value="" id="type" name="type">
 	</form>
+	<form name="exportForm" id="exportForm" action="dataexport.php" >
+		<input type="hidden" value="" id="hidSql" name="hidSql" />
+	</form>
 	<div id="divCopyright"></div>
 	</body>
 </html>

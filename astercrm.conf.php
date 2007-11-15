@@ -1,135 +1,135 @@
 [database]
 ;
-; Database connection parameter 
+; Database connection parameter
 
-dbtype		= "mysql"	;Database type 
+dbtype = mysql
 
-dbhost		= "localhost"
-dbname		= "asterisk"	
-username	= ""
-password	= ""
+dbhost = 127.0.0.1
+dbname = asterisk
+username = asteriskuser
+password = movingon
 
 [asterisk]
 ;
-; Asterisk connection parameter 
- 
-server		= "127.0.0.1"	
+; Asterisk connection parameter
+
+server = 210.83.203.100
 ;should be matched in manager.conf
-port		= ""	
-username	= ""
-secret		= ""	
+port = 7998
+username = solo
+secret = 123654
 
 ; Recorded file path
-monitorpath	= "/var/spool/asterisk/monitor/"	
+monitorpath = /var/spool/asterisk/monitor/
 
-; gsm,wav,wav49 
-monitorformat	= "gsm"
+; gsm,wav,wav49
+monitorformat = gsm
 
 
 [system]
 
-log_enabled		= "1"
+log_enabled = 1
 ;Log file path
-log_file_path	= "/tmp/astercrmDebug.log"	
+log_file_path = /tmp/astercrmDebug.log
 
-; 
+;
 ; Asterisk context parameter, use which context when dial in or dial out
-; 
+;
 
 ;context when dial out, in trixbox this could be from-internal
-outcontext		= "from-internal"
+outcontext = from-sipuser
 
 ;context when dial in, in trixbox this could be from-trunk
-incontext		= "from-internal"	
+incontext = from-sipuser
 
 
 
-; Asterisk context parameter, use which context and extenstion 
+; Asterisk context parameter, use which context and extenstion
 ; when predictive dialer connect the call
-; 
+;
 
-predialer_context	= "from-trunk"
-predialer_extension	= "1"
+predialer_context = from-siptrunk
+predialer_extension = 1
 
 
 ;
-; astercrm wouldnot pop-up unless the length of callerid is greater than 
+; astercrm wouldnot pop-up unless the length of callerid is greater than
 ; this number
 ;
 
-phone_number_length	= "6"	
+phone_number_length = 6
 
 ;
 ; if astercrm trim fellowing prefix, use gamma to sperate
 ; leave it blank if no prefix need to be removed
 
-trim_prefix			= "0,9"
+trim_prefix = 0,9
 
 ;
 ; if your astercrm work on the same server with asterisk, set to true
-; when astercrm start a call, it would drop a .call file to asterisk spool 
+; when astercrm start a call, it would drop a .call file to asterisk spool
 ; or else astercrm would use AMI command: Originate to start a call
 ;
-allow_dropcall		= "0"
+allow_dropcall = 0
 
 ;
 ; if astercrm allow same customer name
 ;
 
-allow_same_data		= "1"
+allow_same_data = 0
 
 ; define what information would be displayed in portal page
 ; customer | note
-portal_display_type = "note"
+portal_display_type = note
 
 ;
 ; astercrm wouldnot pop-up when dial out unless this parameter is true
 ;
-pop_up_when_dial_out	= "1"
+pop_up_when_dial_out = 1
 
 ;
 ; astercrm wouldnot pop-up when dial in unless this parameter is true
 ;
-pop_up_when_dial_in		= "1"
+pop_up_when_dial_in = 1
 
 ;
 ; browser will maximize when pop up
 ;
-browser_maximize_when_pop_up	= "0"
+browser_maximize_when_pop_up = 0
 
 ;
 ; which phone ring first when using click to dial
 ;
 
 ;caller | callee
-firstring				= "caller"
+firstring = caller
 
 ;
 ; astercrm will use external crm software if this parameter is true
 ;
-enable_external_crm		= "0"
+enable_external_crm = 0
 
 ;
 ; astercrm will show contact
 ;
-enable_contact		= "0"
+enable_contact = 0
 
 ;
 ; asterCRM will open a new browser window when need popup
 ;
-open_new_window			= "0"
+open_new_window = 0
 
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url	= "http://www.magiclink.cn"
+external_crm_default_url = http://www.magiclink.cn
 
 ;
 ; when using external crm, put pop up page here
-; %callerid		callerid				
-; %calleeid		calleeid				
-; %method		dialout or dialin	
+; %callerid		callerid
+; %calleeid		calleeid
+; %method		dialout or dialin
 ;
-external_crm_url = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method"
+external_crm_url = http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method
 
-upload_file_path = "./upload/"
+upload_file_path = ./upload/
