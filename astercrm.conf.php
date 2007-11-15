@@ -6,8 +6,8 @@ dbtype		= "mysql"	;Database type
 
 dbhost		= "localhost"
 dbname		= "asterisk"	
-username	= "asteriskuser"
-password	= "movingon"
+username	= ""
+password	= ""
 
 [asterisk]
 ;
@@ -132,4 +132,4 @@ external_crm_default_url	= "http://www.magiclink.cn"
 ;
 external_crm_url = "http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method"
 
-upload_excel_path = "./upload/"
+upload_file_path = "./upload/"

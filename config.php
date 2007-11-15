@@ -1,3 +1,4 @@
 <?php
-$config = parse_ini_file("astercrm.conf.php",true);
+require_once ('include/common.class.php');
+Common::read_ini_file("astercrm.conf.php",$config);
 ?>

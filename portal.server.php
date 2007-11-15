@@ -63,7 +63,6 @@
 require_once ("db_connect.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
-require_once ('include/common.class.php');
 require_once ('astercrm.server.common.php');
 require_once ("portal.common.php");
 require_once ('include/xajaxGrid.inc.php');
@@ -76,7 +75,9 @@ require_once ('portal.grid.inc.php');
 */
 
 function showDetail($noteid){
+	global $config;
 	$objResponse = new xajaxResponse();
+
 	if ($config['system']['portal_display_type'] == "note"){
 		$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'note\');');
 		$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'note\');');
@@ -533,13 +534,21 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc = array();
 		$rowc[] = $row['id'];
 
-		$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."');return false;\"
-		>".$row['customer']."</a>";
+	if ($config['system']['portal_display_type'] == "note"){
+		$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."');return false;\">".$row['customer']."</a>";
+	}else{
+		$rowc[] = $row['customer'];
+	}
+
 
 		$rowc[] = $row['category'];
 
-		$rowc[] = "<a href=? onclick=\"xajax_showContact('".$row['contactid']."');return false;\"
-		>".$row['contact']."</a>";
+	if ($config['system']['portal_display_type'] == "note"){
+		$rowc[] = "<a href=? onclick=\"xajax_showContact('".$row['contactid']."');return false;\">".$row['contact']."</a>";
+	}else{
+		$rowc[] = $row['contact'];
+	}
+
 
 		//$rowc[] = '<textarea readonly="true" style="overflow:auto;width: 240px;height:50px;" wrap="soft">'.str_replace('<br>',chr(13),$row['note']).'</textarea>';
 

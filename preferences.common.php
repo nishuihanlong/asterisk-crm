@@ -45,5 +45,9 @@ $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['c
 $xajax = new xajax("preferences.server.php");
 
 $xajax->registerFunction("init");
+$xajax->registerFunction("savePreferences");
+$xajax->registerFunction("checkDb");
+$xajax->registerFunction("checkAMI");
+$xajax->registerFunction("checkSys");
 
 ?>

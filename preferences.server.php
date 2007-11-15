@@ -13,15 +13,21 @@
 
 * Function Desc
 		init				初始化页面元素
+		initIni				从配置文件中读取信息填充页面上的input对象
+		initLocate			初始化页面上的说明信息
+		savePreferences		保存配置文件
+		checkDb				检查数据库是否能正确连接
+		checkAMI			检查AMI是否能正确连接
+		checkSys			检查系统参数是否正确
+							目前仅检查了上传目录是否可写
 
 * Revision 0.0456  2007/11/12 15:47:00  last modified by solo
 * Desc: page created
 ********************************************************************************/
 
 require_once ("db_connect.php");
-//require_once ('include/xajaxGrid.inc.php');
-require_once ('include/common.class.php');
 require_once ("preferences.common.php");
+require_once ("include/asterisk.class.php");
 
 /**
 *  initialize page elements
@@ -33,12 +39,82 @@ function init(){
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->loadXML(initLocate());
+	$objResponse->loadXML(initIni());
 	return $objResponse;
 }
 
 function initIni(){
 	global $config;
+
 	$objResponse = new xajaxResponse();
+
+	//database section
+	$objResponse->addAssign("iptDbDbtype","value",$config["database"]["dbtype"]);
+	$objResponse->addAssign("iptDbDbhost","value",$config["database"]["dbhost"]);
+	$objResponse->addAssign("iptDbDbname","value",$config["database"]["dbname"]);
+	$objResponse->addAssign("iptDbUsername","value",$config["database"]["username"]);
+	$objResponse->addAssign("iptDbPassword","value",$config["database"]["password"]);
+	
+	//asterisk section
+	$objResponse->addAssign("iptAsServer","value",$config["asterisk"]["server"]);
+	$objResponse->addAssign("iptAsPort","value",$config["asterisk"]["port"]);
+	$objResponse->addAssign("iptAsUsername","value",$config["asterisk"]["username"]);
+	$objResponse->addAssign("iptAsSecret","value",$config["asterisk"]["secret"]);
+	$objResponse->addAssign("iptAsMonitorpath","value",$config["asterisk"]["monitorpath"]);
+	$objResponse->addAssign("iptAsMonitorformat","value",$config["asterisk"]["monitorformat"]);
+
+	//system section
+	$objResponse->addAssign("iptSysLogEnabled","value",$config["system"]["log_enabled"]);
+
+	//print $config["system"]["log_enabled"];
+	//exit;
+	$objResponse->addAssign("iptSysLogFilePath","value",$config["system"]["log_file_path"]);
+	$objResponse->addAssign("iptSysOutcontext","value",$config["system"]["outcontext"]);
+	$objResponse->addAssign("iptSysIncontext","value",$config["system"]['incontext']);
+
+	$objResponse->addAssign(
+			"iptSysPredialerContext",
+			"value",
+			$config["system"]["predialer_context"]);
+
+	$objResponse->addAssign(
+			"iptSysPredialerExtension",
+			"value",
+			$config["system"]["predialer_extension"]);
+
+	$objResponse->addAssign(
+			"iptSysPhoneNumberLength",
+			"value",
+			$config["system"]["phone_number_length"]);
+
+	$objResponse->addAssign(
+			"iptSysTrimPrefix",
+			"value",
+			$config["system"]["trim_prefix"]);
+	$objResponse->addAssign("iptSysAllowDropcall","value",$config["system"]["allow_dropcall"]);
+	$objResponse->addAssign("iptSysAllowSameData","value",$config["system"]["allow_same_data"]);
+
+	$objResponse->addAssign("iptSysPortalDisplayType","value",$config["system"]["portal_display_type"]);
+
+	$objResponse->addAssign("iptSysPopUpWhenDialOut","value",$config["system"]["pop_up_when_dial_out"]);
+
+	$objResponse->addAssign("iptSysPopUpWhenDialIn","value",$config["system"]["pop_up_when_dial_in"]);
+
+	$objResponse->addAssign("iptSysBrowserMaximizeWhenPopUp","value",$config["system"]["browser_maximize_when_pop_up"]);
+
+	$objResponse->addAssign("iptSysFirstring","value",$config["system"]["firstring"]);
+	$objResponse->addAssign("iptSysEnableExternalCrm","value",$config["system"]["enable_external_crm"]);
+
+	$objResponse->addAssign("iptSysEnableContact","value",$config["system"]["enable_contact"]);
+
+	$objResponse->addAssign("iptSysOpenNewWindow","value",$config["system"]["open_new_window"]);
+
+	$objResponse->addAssign("iptSysExternalCrmDefaultUrl","value",$config["system"]["external_crm_default_url"]);
+
+	$objResponse->addAssign("iptSysExternalCrmUrl","value",$config["system"]["external_crm_url"]);
+
+	$objResponse->addAssign("iptSysUploadFilePath","value",$config["system"]["upload_file_path"]);
+
 
 	return $objResponse;
 }
@@ -104,7 +180,7 @@ function initLocate(){
 
 	$objResponse->addAssign("divSysPopUpWhenDialIn","innerHTML",$locate->Translate('sys_pop_up_when_dial_in'));
 
-	$objResponse->addAssign("divSysMaximizeWhenPopUp","innerHTML",$locate->Translate('sys_maximize_when_pop_up'));
+	$objResponse->addAssign("divSysBrowserMaximizeWhenPopUp","innerHTML",$locate->Translate('sys_browser_maximize_when_pop_up'));
 
 	$objResponse->addAssign("divSysFirstring","innerHTML",$locate->Translate('sys_firstring'));
 	$objResponse->addAssign("divSysEnableExternalCrm","innerHTML",$locate->Translate('sys_enable_external_crm'));
@@ -122,45 +198,114 @@ function initLocate(){
 	return $objResponse;
 }
 
-function saveIniFile($aFormValues){
-
+function savePreferences($aFormValues){
+	global $config,$locate;
+	//print_r($aFormValues);
+	//exit;
+	$objResponse = new xajaxResponse();
+	//Common::read_ini_file("astercrm.conf.php",$myPreferences);
+	$myPreferences = $config;
 	//database section
-	$myIni['database']['dbtype'] = $aFormValues['iptDbDbtype'];
-	$myIni['database']['dbhost'] = $aFormValues['iptDbDbhost'];
-	$myIni['database']['dbname'] = $aFormValues['iptDbDbname'];
-	$myIni['database']['username'] = $aFormValues['iptDbUsername'];
-	$myIni['database']['password'] = $aFormValues['iptDbPassword'];
+	$myPreferences['database']['dbtype'] = $aFormValues['iptDbDbtype'];
+	$myPreferences['database']['dbhost'] = $aFormValues['iptDbDbhost'];
+	//print $aFormValues['iptDbDbhost'];
+	$myPreferences['database']['dbname'] = $aFormValues['iptDbDbname'];
+	$myPreferences['database']['username'] = $aFormValues['iptDbUsername'];
+	$myPreferences['database']['password'] = $aFormValues['iptDbPassword'];
 
 	//asterisk section
-	$myIni['asterisk']['server'] = $aFormValues['iptAsServer'];
-	$myIni['asterisk']['port'] = $aFormValues['iptAsPort'];
-	$myIni['asterisk']['username'] = $aFormValues['iptAsUsername'];
-	$myIni['asterisk']['secret'] = $aFormValues['iptAsSecret'];
-	$myIni['asterisk']['monitorpath'] = $aFormValues['iptAsMonitorpath'];
-	$myIni['asterisk']['monitorformat'] = $aFormValues['iptAsMornitformat'];
-
+	$myPreferences['asterisk']['server'] = $aFormValues['iptAsServer'];
+	$myPreferences['asterisk']['port'] = $aFormValues['iptAsPort'];
+	$myPreferences['asterisk']['username'] = $aFormValues['iptAsUsername'];
+	$myPreferences['asterisk']['secret'] = $aFormValues['iptAsSecret'];
+	$myPreferences['asterisk']['monitorpath'] = $aFormValues['iptAsMonitorpath'];
+	$myPreferences['asterisk']['monitorformat'] = $aFormValues['iptAsMonitorformat'];
 	//system section
-	$myIni['system']['log_enabled'] = $aFormValues['iptSysLogEnabled'];
-	$myIni['system']['log_file_path'] = $aFormValues['iptSysLogFilePath'];
-	$myIni['system']['outcontext'] = $aFormValues['iptSysOutcontext'];
-	$myIni['system']['incontext'] = $aFormValues['iptSysIncontext'];
-	$myIni['system']['predialer_context'] = $aFormValues['iptSysPredialerContext'];
-	$myIni['system']['predialer_extension'] = $aFormValues['iptSysPredialerExtension'];
-	$myIni['system']['phone_number_length'] = $aFormValues['iptSysPhoneNumberLength'];
-	$myIni['system']['trim_prefix'] = $aFormValues['iptSysTrimPrefix'];
-	$myIni['system']['allow_dropcall'] = $aFormValues['iptSysAllowDropcall'];
-	$myIni['system']['allow_same_data'] = $aFormValues['iptAllowSameData'];
-	$myIni['system']['portal_display_type'] = $aFormValues['iptPortalDisplayType'];
-	$myIni['system']['pop_up_when_dial_out'] = $aFormValues['iptPopUpWhenDialOut'];
-	$myIni['system']['pop_up_when_dial_in'] = $aFormValues['iptPopUpWhenDialIn'];
-	$myIni['system']['browser_maximize_when_pop_up'] = $aFormValues['iptBrowserMaximizeWhenPopUp'];
-	$myIni['system']['firstring'] = $aFormValues['iptFirstring'];
-	$myIni['system']['enable_external_crm'] = $aFormValues['iptEnableExternalCrm'];
-	$myIni['system']['enable_contact'] = $aFormValues['iptEnableContact'];
-	$myIni['system']['open_new_window'] = $aFormValues['iptOpenNewWindow'];
-	$myIni['system']['external_crm_default_url'] = $aFormValues['iptExternalCrmDefaultUrl'];
-	$myIni['system']['external_crm_url'] = $aFormValues['iptExternalCrmUrl'];
-	$myIni['system']['upload_excel_path'] = $aFormValues['iptUploadExcelPath'];
+	$myPreferences['system']['log_enabled'] = $aFormValues['iptSysLogEnabled'];
+	$myPreferences['system']['log_file_path'] = $aFormValues['iptSysLogFilePath'];
+	$myPreferences['system']['outcontext'] = $aFormValues['iptSysOutcontext'];
+	$myPreferences['system']['incontext'] = $aFormValues['iptSysIncontext'];
+	$myPreferences['system']['predialer_context'] = $aFormValues['iptSysPredialerContext'];
+	$myPreferences['system']['predialer_extension'] = $aFormValues['iptSysPredialerExtension'];
+
+
+
+	$myPreferences['system']['phone_number_length'] = $aFormValues['iptSysPhoneNumberLength'];
+	$myPreferences['system']['trim_prefix'] = $aFormValues['iptSysTrimPrefix'];
+	$myPreferences['system']['allow_dropcall'] = $aFormValues['iptSysAllowDropcall'];
+	$myPreferences['system']['allow_same_data'] = $aFormValues['iptSysAllowSameData'];
+	$myPreferences['system']['portal_display_type'] = $aFormValues['iptSysPortalDisplayType'];
+	$myPreferences['system']['pop_up_when_dial_out'] = $aFormValues['iptSysPopUpWhenDialOut'];
+	$myPreferences['system']['pop_up_when_dial_in'] = $aFormValues['iptSysPopUpWhenDialIn'];
+	$myPreferences['system']['browser_maximize_when_pop_up'] = $aFormValues['iptSysBrowserMaximizeWhenPopUp'];
+	$myPreferences['system']['firstring'] = $aFormValues['iptSysFirstring'];
+	$myPreferences['system']['enable_external_crm'] = $aFormValues['iptSysEnableExternalCrm'];
+	$myPreferences['system']['enable_contact'] = $aFormValues['iptSysEnableContact'];
+	$myPreferences['system']['open_new_window'] = $aFormValues['iptSysOpenNewWindow'];
+	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
+	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
+	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
+	Common::write_ini_file("astercrm.conf.php",$myPreferences);
+	$objResponse->addAlert($locate->Translate('save_success'));
+	return $objResponse;
+}
+
+//检查数据库连接
+function checkDb($aFormValues){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$sqlc = $aFormValues['iptDbDbtype']."://".$aFormValues['iptDbUsername'].":".$aFormValues['iptDbPassword']."@".$aFormValues['iptDbDbhost']."/".$aFormValues['iptDbDbname']."";
+
+	// set a global variable to save database connection
+	$dbtest = DB::connect($sqlc);
+
+	// need to check if db connected
+	if (DB::iserror($dbtest)){
+		$objResponse->addAssign("divDbMsg","innerHTML","<span class='failed'>".$locate->Translate('db_connect_failed')."</span>");
+	}else{
+		$objResponse->addAssign("divDbMsg","innerHTML","<span class='passed'>".$locate->Translate('db_connect_success')."</span>");
+	}
+	return $objResponse;
+
+}
+
+//检查AMI连接
+function checkAMI($aFormValues){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$myAsterisk = new Asterisk();
+	
+	$myConfig['server'] = $aFormValues["iptAsServer"];
+	$myConfig['port'] = $aFormValues["iptAsPort"];
+	$myConfig['username'] = $aFormValues["iptAsUsername"];
+	$myConfig['secret'] =  $aFormValues["iptAsSecret"];
+
+	$myAsterisk->config['asmanager'] = $myConfig;
+
+	$res = $myAsterisk->connect();
+	if ($res){
+		$objResponse->addAssign("divAsMsg","innerHTML","<span class='passed'>".$locate->Translate('AMI_connect_success')."</span");
+	}else{
+		$objResponse->addAssign("divAsMsg","innerHTML","<span class='failed'>".$locate->Translate('AMI_connect_failed')."</span>");
+	}
+
+	return $objResponse;
+}
+
+
+function checkSys($aFormValues){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	//check directory permittion
+	if (is_writable($aFormValues['iptSysUploadFilePath'])){
+		$objResponse->addAssign("divSysMsg","innerHTML","<span class='passed'>".$locate->Translate('sys_check_success')."</span");
+
+	}else{
+		$objResponse->addAssign("divSysMsg","innerHTML","<span class='failed'>".$locate->Translate('permission_error')."</span");
+	}
+		
+	return $objResponse;
 }
 
 $xajax->processRequests();

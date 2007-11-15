@@ -435,6 +435,8 @@ UL.user-list LI {
 }
 
 BODY {
+	/*text-align: center; */
+	/*text-align: -moz-center; */
 	margin: 0px 0px 0px 0px;
 	color : #333;
 	background-color: #FFF;
@@ -1252,4 +1254,14 @@ hr {
 }.font {
 	font-size: 14px;
 	font-weight: bold;
+}
+
+.failed {
+	font-weight: bold;
+	color : red;
+}
+
+.passed {
+	font-weight: bold;
+	color : green;
 }

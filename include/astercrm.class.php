@@ -711,10 +711,10 @@ Class astercrm extends PEAR{
 								<option value=10>10</option>
 							</select> 
 
-							&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/1.gif" width="25px" height="25px" border="0" /> 
-							<input type="radio" name="attitude" value="5"/><img src="skin/default/images/2.gif" width="25px" height="25px" border="0" /> 
-							<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/3.gif" width="25px" height="25px" border="0" />
-							<input type="radio" name="attitude"  value="0" checked/> <img src="skin/default/images/4.gif" width="25px" height="25px" border="0" />
+							&nbsp;  <input type="radio" name="attitude"   value="10"/><img src="skin/default/images/10.gif" width="25px" height="25px" border="0" /> 
+							<input type="radio" name="attitude" value="5"/><img src="skin/default/images/5.gif" width="25px" height="25px" border="0" /> 
+							<input type="radio" name="attitude"  value="-1"/><img src="skin/default/images/-1.gif" width="25px" height="25px" border="0" />
+							<input type="radio" name="attitude"  value="0" checked/> <img src="skin/default/images/0.gif" width="25px" height="25px" border="0" />
 						</td>
 					</tr>
 					<tr>
