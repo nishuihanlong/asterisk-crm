@@ -32,7 +32,7 @@
  * @license http://www.gnu.org/copyleft/lesser.html#SEC3 LGPL License
  */
  /*
- * 2007-11-9 增加addRowSearchMore()函数,增加搜索选项
+ * 2007-11-9 澧炲姞addRowSearchMore()鍑芥暟,澧炲姞鎼滅储閫夐」
  */
 
 /** \brief Class to generate a table dynamically
@@ -347,7 +347,7 @@ class ScrollTable{
 	/*
 	* customer addRowSearth
 	*/
-    //增加搜索选项
+    //澧炲姞鎼滅储閫夐」
 	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content, $withNewButton = 1){
 		global $local_grid;
 		$ind = 0;

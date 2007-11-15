@@ -6,8 +6,8 @@ dbtype		= "mysql"	;Database type
 
 dbhost		= "localhost"
 dbname		= "asterisk"	
-username	= ""
-password	= ""
+username	= "asteriskuser"
+password	= "movingon"
 
 [asterisk]
 ;

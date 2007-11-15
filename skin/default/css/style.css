@@ -664,6 +664,19 @@ table.adminlist {
 	border-collapse: collapse;
 }
 
+table.memberlist {
+	background-color: #FFFFFF;
+	margin: 4px;
+	padding: 0px;
+	border-spacing: 0px;
+	width: 98%;
+	border-collapse: collapse;
+}
+
+table.memberlist td{
+	width: 25%;
+}
+
 table.adminlist th {
 	margin: 0px;
 	padding: 6px 4px 2px 4px;

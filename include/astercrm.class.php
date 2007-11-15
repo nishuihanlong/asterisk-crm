@@ -12,11 +12,13 @@
 			insertNewSurveyResult	向surveyresult表插入数据
 			insertNewAccount
 			insertNewDiallist
+			insertNewAccountgroup    向accountgroup表插入数据
 
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
 			updateNoteRecord		更新note表数据
 			updateAccountRecord
+			updateAccountgroupRecord  更新accountgroup表数据
 
 			deleteRecord			从表中删除数据(以id作为标识)
 			getRecord				从表中读取数据(以id作为标识)
@@ -44,6 +46,7 @@
 			variableFiler			用于转译变量, 自动加\
 			新增exportDataToCSV     得到要导出的sql语句的结果集，转换为符合csv格式的文本字符串
 			新增getSql              得到多条件搜索的sql语句
+			新增getGroupMemberListByID 得到组成员 
 			
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
@@ -241,8 +244,22 @@ Class astercrm extends PEAR{
 				."channel='".$f['channel']."',"			// added 2007/10/30 by solo
 				."usertype='".$f['usertype']."',"
 				."extensions='".$f['extensions']."', "	// added 2007/11/12 by solo
+				."groupid='".$f['groupid']."', "	// added 2007/11/12 by solo
 				."accountcode='".$f['accountcode']."'";
 
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function insertNewAccountgroup($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$sql= "INSERT INTO accountgroup SET "
+				."groupname='".$f['groupname']."', "
+				."groupid='".$f['groupid']."', "
+				."pdcontext='".$f['pdcontext']."',"
+				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -384,9 +401,26 @@ Class astercrm extends PEAR{
 				."usertype='".$f['usertype']."', "
 				."channel='".$f['channel']."', "	// added 2007/10/30 by solo
 				."extensions='".$f['extensions']."', "
+				."groupid='".$f['groupid']."', "     // new add 2007-11-15
 				."accountcode='".$f['accountcode']."' "	// added 2007/11/12 by solo
 				."WHERE id='".$f['id']."'";
 
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function updateAccountgroupRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$sql= "UPDATE accountgroup SET "
+				."groupname='".$f['groupname']."', "
+				."groupid='".$f['groupid']."', "
+				."pdcontext='".$f['pdcontext']."', "
+				."pdextension='".$f['pdextensions']."' "
+				."WHERE id='".$f['id']."'";
+		
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -578,6 +612,14 @@ Class astercrm extends PEAR{
 		global $db;
 		$sql = "SELECT id,contact FROM contact WHERE customerid=$customerid";
 		
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getGroupMemberListByID($groupid){
+		global $db;
+		$sql = "SELECT id,username FROM account WHERE groupid =$groupid";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
