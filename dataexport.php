@@ -22,8 +22,6 @@ header("charset=uft-8");
 header('Content-type:  application/force-download');
 header('Content-Transfer-Encoding:  Binary');
 header('Content-disposition:  attachment; filename=astercrm.csv');
-define(LOG_ENABLED, $config['system']['log_enabled']); // Enable debuggin
-define(FILE_LOG, $config['system']['log_file_path']);  // File to debug.
 echo astercrm::exportDataToCSV($sql);
 ob_end_flush();
 unset($_SESSION['export_sql']);

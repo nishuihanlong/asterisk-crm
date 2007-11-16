@@ -22,7 +22,7 @@
 
 ********************************************************************************/
 require_once 'db_connect.php';
-require_once 'survey.common.php';
+require_once 'surveyresult.common.php';
 require_once 'include/astercrm.class.php';
 
 

@@ -68,8 +68,6 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
 
-define(LOG_ENABLED, $config['system']['log_enabled']);
-define(FILE_LOG, $config['system']['log_file_path']);
 define(ROWSXPAGE, 5); // Number of rows show it per page.
 define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 

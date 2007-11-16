@@ -90,6 +90,14 @@ require_once('portal.common.php');
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<?php $xajax->printJavascript('include/'); ?>
+
+	<script type="text/javascript" src="js/dragresize.js"></script>
+	<script type="text/javascript" src="js/dragresizeInit.js"></script>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
+
 		<script type="text/javascript">
 
 		function dial(phonenum){
@@ -183,14 +191,6 @@ require_once('portal.common.php');
 		}
 
 		</script>
-
-	<script type="text/javascript" src="js/dragresize.js"></script>
-	<script type="text/javascript" src="js/dragresizeInit.js"></script>
-
-	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
-	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
-
-	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
@@ -234,7 +234,6 @@ require_once('portal.common.php');
 
 	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 
-
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
 			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
@@ -260,7 +259,6 @@ require_once('portal.common.php');
 			</tr>
 		</table>
 	<div id="divCrm" name="divCrm"></div>
-
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 
 	<div id="divExtension" name="divExtension" 

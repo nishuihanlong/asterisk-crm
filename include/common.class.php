@@ -9,9 +9,14 @@
 			generateCopyright	生成版权信息HTML代码
 			generateManageNav	生成管理界面导航HTML代码
 			generateTabelHtml	生成表格HTML代码
+			read_ini_file
+			write_ini_file
 
 * Private Functions List
 
+
+* Revision 0.0456  2007/11/15  modified by solo
+* Desc: add two new function to operate ini file
 
 * Revision 0.045  2007/10/18  modified by solo
 * Desc: page created
