@@ -406,7 +406,6 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 
 function edit($id = null, $type = "note"){
 	global $locate;
-
 	// Edit zone
 	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
 	$html .= Customer::formEdit($id, $type);

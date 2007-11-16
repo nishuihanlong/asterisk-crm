@@ -139,3 +139,18 @@ function MM_swapImage() { //v3.0
 }
 
 titlebar(0);
+
+function hideObj(objname) {
+	var obj = document.getElementsByName(objname);
+
+	for(i=0;i<obj.length;i++) {
+		obj[i].style.display="none";
+	}
+}
+
+function showObj(objname) {
+	var obj = document.getElementsByName(objname);
+	for(i=0;i<obj.length;i++) {
+		obj[i].style.display="block";
+	}
+}

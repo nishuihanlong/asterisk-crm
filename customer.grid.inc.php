@@ -106,6 +106,9 @@ class Customer extends astercrm
 					." LIMIT $start, $limit $ordering";
 		}
 		//print_r($sql)
+//		print $sql;
+//		exit;
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -152,7 +155,8 @@ class Customer extends astercrm
 				$sql = "SELECT COUNT(*) AS numRows FROM '".$table."' ";
 			}
 		
-		
+//		print $sql;
+//		exit;
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;

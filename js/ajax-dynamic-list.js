@@ -64,6 +64,14 @@
 		ajax_list_activeInput.value = tmpValue;
 		if(document.getElementById(ajax_list_activeInput.name + '_hidden'))document.getElementById(ajax_list_activeInput.name + '_hidden').value = inputObj.id; 
 		ajax_options_hide();
+		if (ajax_list_activeInput.name == "customer")
+		{
+			btnConfirmCustomerOnClick();
+		}else if(ajax_list_activeInput.name == "contact"){
+			btnConfirmContactOnClick();
+		}
+//		alert(ajax_list_activeInput.name);
+//		alert(inputObj.id);
 	}
 	
 	function ajax_options_hide()

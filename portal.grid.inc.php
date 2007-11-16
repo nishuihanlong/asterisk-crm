@@ -118,7 +118,7 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order, $ordering = ""){
 		global $db;
 
 		$i=0;
@@ -233,7 +233,7 @@ class Customer extends astercrm
 		return $res;		
 	}
 
-	function &getNumRowsMore($filter = null, $content = null,$table){
+	function &getNumRowsMore($filter = null, $content = null){
 		global $db;
 		
 			$i=0;

@@ -422,8 +422,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"customer");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"customer");
+			$numRows =& Customer::getNumRowsMore($filter, $content);
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order);
 		}
 	}
 
@@ -496,7 +496,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$fieldsFromSearch[] = 'attitude';  //face
 		$fieldsFromSearch[] = 'priority';
 		$fieldsFromSearch[] = 'note.cretime';
-	}else{
+	}elseif ($config['system']['portal_display_type'] == "customer"){
 		$fieldsFromSearch[] = 'customer.customer';
 		$fieldsFromSearch[] = 'customer.category';
 		$fieldsFromSearch[] = 'customer.contact';
@@ -526,12 +526,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	}
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
-	if ($config['system']['portal_display_type'] == "note"){
-		//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-		$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
-	}else{
-		$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
-	}
+	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	$table->addRowSearchMore($config['system']['portal_display_type'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	//print_r($arreglo);
 	while ($arreglo->fetchInto($row)) {
@@ -571,7 +567,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		if ($config['system']['portal_display_type'] == "note"){
 			$table->addRow("note",$rowc,1,1,1,$divName,$fields);
 		}else{
-			$table->addRow("note",$rowc,1,0,1,$divName,$fields);
+			$table->addRow("customer",$rowc,1,0,1,$divName,$fields);
 		}
  	}
  	
