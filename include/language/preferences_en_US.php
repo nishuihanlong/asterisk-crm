@@ -34,6 +34,7 @@ $sys_external_crm_default_url = 'when using external CRM, the default page to be
 $sys_external_crm_url		= 'when asterCRM need to pop up, which url would recevie the event,  %callerid: %calleeid:  %method	dialout or dialin';
 $sys_upload_file_path		= 'the upload directory, such as "./upload/", it need a writable permission, ';
 $save_success				= 'Save success';
+$save_failed				= 'Save config file failed, please check permission';
 $db_connect_failed			= 'database connection test failed, please check the parameters';
 $db_connect_success			= 'database connection test passed';
 $AMI_connect_failed			= 'AMI connection test failed, please check the parameters';

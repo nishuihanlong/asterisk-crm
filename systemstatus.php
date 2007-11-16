@@ -40,6 +40,7 @@ require_once('systemstatus.common.php');
 
 			function init(){
 				xajax_init();
+				//xajax_listCommands();
 				showStatus();
 				showChannelsInfo();
 			}
@@ -55,6 +56,15 @@ require_once('systemstatus.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
+
+		<!--
+		<div id="divCommandList" name="divCommandList">
+			<select id="sltCommandList" name="sltCommandList">
+			</select>
+			<input type="button" value="Execute" onclick="" id="btnExecuteCommand" name="btnExecuteCommand">
+		</div>
+		-->
+
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
 		<div id="divStatus" align="center"> </div>
 		<div id="divActiveCalls" name="divActiveCalls" align="left"> </div>

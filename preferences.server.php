@@ -245,8 +245,11 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
-	Common::write_ini_file("astercrm.conf.php",$myPreferences);
-	$objResponse->addAlert($locate->Translate('save_success'));
+	if (Common::write_ini_file("astercrm.conf.php",$myPreferences))
+		$objResponse->addAlert($locate->Translate('save_success'));
+	else
+		$objResponse->addAlert($locate->Translate('save_failed
+	'));
 	return $objResponse;
 }
 

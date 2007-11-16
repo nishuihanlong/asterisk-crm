@@ -6,18 +6,18 @@ dbtype = mysql
 
 dbhost = 127.0.0.1
 dbname = asterisk
-username = asteriskuser
-password = movingon
+username = 
+password = 
 
 [asterisk]
 ;
 ; Asterisk connection parameter
 
-server = 210.83.203.100
+server = 127.0.0.1
 ;should be matched in manager.conf
-port = 7998
-username = solo
-secret = 123654
+port = 5038
+username = 
+secret = 
 
 ; Recorded file path
 monitorpath = /var/spool/asterisk/monitor/

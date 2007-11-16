@@ -49,8 +49,25 @@ function init(){
 	return $objResponse;
 }
 
+
+function listCommands(){
+	global $config;
+
+	$objResponse = new xajaxResponse();
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI_connection_failed"));
+	}else{
+		print_r($myAsterisk->ListCommands());
+	}
+
+	return $objResponse;
+}
+
 /**
-*  initialize page elements
+*  show extension status
 *  @return	objResponse		object		xajax response object
 */
 

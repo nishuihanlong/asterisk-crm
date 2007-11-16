@@ -126,11 +126,19 @@ v0.0456
 2007-11-14	修正了使用第三方crm并通过frame显示时的bug
 2007-11-15	upload_excel_path -> upload_file_path
 2007-11-15	增强customer和contact的搜索功能, 增强导出模块
-2007-11-15	修改结构, 让用户可以自己选择portal中数据的显示方式
+2007-11-15	修改结构, 用户可以自己选择portal中数据的显示方式
 2007-11-15	增加对config.php的管理为web模式
 -----------------------------------------------------------------------------------------
 增加用户的权限分机, 班长座席
 	主要可以为不同的分组选用不同的context
+
+admin:
+	最大权限
+agent	
+	最小权限
+groupadmin
+	组内最大权限
+
 
 改善错误提示
 
@@ -139,6 +147,8 @@ v0.0456
 需要php的mbstring模块
 
 need to add queue status
+
+定时提醒功能
 
 voicemail check
 
@@ -157,7 +167,6 @@ voicemail check
 	need to add CDR to user
 在predictivedialer里将show sip verbose这个命令改为手动执行
 system里增加执行cli命令的部分
-定时提醒功能
 
 #为什么在系统监视里面看到的分机不全？
 ----------------------------------------------------------------------------

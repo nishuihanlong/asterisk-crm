@@ -112,7 +112,7 @@ function init($aFormValue){
 	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
-	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 	unset($_SESSION['curuser']['username']);
 	unset($_SESSION['curuser']['extension']);
 	unset($_SESSION['curuser']['extensions']);

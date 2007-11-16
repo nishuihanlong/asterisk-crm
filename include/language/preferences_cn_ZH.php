@@ -34,6 +34,7 @@ $sys_external_crm_default_url = '当使用第三方CRM时, 默认启动的页面
 $sys_external_crm_url		= '当有弹屏事件发生时, 要调用的外部CRM页面, %callerid: 主叫号码, %calleeid: 被叫号码, %method	拨出(dialout)或者拨入(dialin)';
 $sys_upload_file_path		= '上传文件的路径, 如 ./upload/ , 此目录需要有写权限';
 $save_success				= '保存成功';
+$save_failed				= '保存失败, 请检查配置文件权限';
 $db_connect_failed			= '数据库连接失败, 请检查系统配置';
 $db_connect_success			= '数据库连接成功';
 $AMI_connect_failed			= 'AMI连接失败, 请检查系统配置';

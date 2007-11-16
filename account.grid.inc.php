@@ -211,7 +211,7 @@ class Customer extends astercrm
 					</select></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("accountcode").'</td>
+					<td nowrap align="left">'.$locate->Translate("account_code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="20" maxlength="20"></td>
 				</tr>
 				<tr>
