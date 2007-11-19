@@ -1246,7 +1246,10 @@ hr {
 }
 
 .top_banner ul {
-	padding:0; margin:0; list-style:inside decimal; 
+	padding:0;
+	margin:0;
+	list-style:inside decimal;
+	width: 980px;
 }
 .td{
 	background-image: url(images/background.jpg);
