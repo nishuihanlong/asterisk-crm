@@ -181,3 +181,20 @@ INSERT INTO `account` (
 VALUES (
 NULL , 'admin', 'admin', '0000', '', 'admin'
 );
+
+
+CREATE TABLE remind (
+  id int(11) NOT NULL auto_increment,
+  title varchar(100) NOT NULL default '', #标题
+  content text NOT NULL default '',       #内容
+  remindtime  datetime NOT NULL default '0000-00-00 00:00:00', #提醒时间
+  remindtype int(10) not null default 0 , #提醒类别，0为发给自己，1为发给别人
+  priority int(10) NOT NULL default 0, #紧急程度,0为普通,1为紧急 
+  username varchar(50) not  null default '' , #用户名
+  remindabout varchar(255) not  null default '',      #提醒的相关内容
+  readed  int(10) not null default 0 , #是否读取，0为未读，1为已读
+  touser  varchar(50) not null default '', #发给谁
+  creby  varchar(50) NOT NULL default '',
+  cretime datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY id (id)
+) ;

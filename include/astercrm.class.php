@@ -1669,5 +1669,59 @@ Class astercrm extends PEAR{
 		//}		
 		return $sql;
 	}
+
+	function addNewRemind($f){ //增加提醒
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$remindtime_date = $f['remindtime_date']; //日期
+		$remindtime_time = $f['remindtime_time']; //时间
+		$remindtime = $remindtime_date.' '.$remindtime_time;
+		$touser = trim($f['touser']);
+		if($touser == ''){
+			$touser = $_SESSION['curuser']['username'];
+		}
+		$sql= "INSERT INTO remind SET "
+				."title='".$f['remindtitle']."', "
+				."content='".$f['content']."', "
+				."remindtime='".$remindtime."',"   //提醒时间
+				."remindtype='".$f['remindtype']."',"	//提醒类别
+				."priority='".$f['priority']."',"       //紧急程度
+				."username='".$f['username']."', "	// 归属人
+				."remindabout='".$f['remindabout']."', "	// 相关内容
+				."readed=0, "	// added 2007/11/12 by solo
+				."touser='".$touser."', "	// added 2007/11/12 by solo
+				."creby='".$_SESSION['curuser']['username']."', "
+				."cretime=now() ";
+
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function updateRemind($f){  //修改提醒
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$remindtime_date = $f['remindtime_date']; //日期
+		$remindtime_time = $f['remindtime_time']; //时间
+		$remindtime = $remindtime_date.' '.$remindtime_time;
+		$touser = trim($f['touser']);
+		if($touser == ''){
+			$touser = $_SESSION['curuser']['username'];
+		}
+		$sql= "UPDATE remind SET "
+				."title='".$f['remindtitle']."', "
+				."content='".$f['content']."', "
+				."remindtime='".$remindtime."',"   //提醒时间
+				."remindtype='".$f['remindtype']."',"	//提醒类别
+				."priority='".$f['priority']."',"       //紧急程度
+				."username='".$f['username']."', "	// 归属人
+				."remindabout='".$f['remindabout']."', "	// 相关内容
+				."touser='".$touser."'  "	// added 2007/11/12 by solo
+				."WHERE id='".$f['id']."'";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 }
 ?>

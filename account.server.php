@@ -230,9 +230,15 @@ function add(){
 */
 
 function save($f){
-	global $locate;
+	global $locate,$db;
 	$objResponse = new xajaxResponse();
-
+	$username = $f['username'];
+	$sql = "SELECT id FROM account WHERE username = '".$username."'";
+	$res =& $db->query($sql);
+	if($res->numRows() > 0){
+		$objResponse->addAlert($locate->Translate("username_repeat"));
+		return $objResponse->getXML();
+	}
 	$respOk = Customer::insertNewAccount($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);

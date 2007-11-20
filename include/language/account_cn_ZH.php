@@ -20,4 +20,5 @@ $usertype_note = "只能使用 admin 或者为空";
 $channel	= "通道";	// added 2007/10/30 by solo
 $account_detail		= "账户信息";	// added 2007/10/30 by solo
 $account_code		= "账户标识";	// added 2007/11/12 by solo
+$username_repeat = "用户名重复";
 ?>
