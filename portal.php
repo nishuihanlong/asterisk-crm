@@ -124,7 +124,6 @@ require_once('portal.common.php');
 		}
 
 		function updateEvents(){
-
 			myFormValue = xajax.getFormValues("myForm");
 			xajax_listenCalls(myFormValue);
 				if (xajax.$('formDiv') != null){
@@ -135,7 +134,6 @@ require_once('portal.common.php');
 				}else{
 					xajax.$('popup').value = 'yes';
 				}
-			setTimeout("updateEvents()", 1000);
 		}
 
 		function monitor(){
@@ -217,7 +215,7 @@ require_once('portal.common.php');
 		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
 		<input type="hidden" name="callerid" id="callerid" value=""/>
-		<input type="hidden" name="curid" id="curid" value="0"/>
+		<input type="text" name="curid" id="curid" value="0"/>
 		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>

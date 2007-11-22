@@ -1242,7 +1242,7 @@ Class astercrm extends PEAR{
 						<td align="left"><input type="text" id="category" name="category" size="35"  value="' . $customer['category'] . '"></td>
 					</tr>
 
-					<tr name="trEditBankDetails" id="trEditBankDetails" >
+					<tr name="trEditCustomerDetails" id="trEditCustomerDetails" >
 						<td nowrap align="left">'.$locate->Translate("fax").'</td>
 						<td align="left"><input type="text" id="mainFax" name="mainFax" size="35" value="' . $customer['fax'] . '"></td>
 					</tr>

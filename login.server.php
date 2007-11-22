@@ -117,6 +117,7 @@ function init($aFormValue){
 	unset($_SESSION['curuser']['extension']);
 	unset($_SESSION['curuser']['extensions']);
 	unset($_SESSION['curuser']['channel']);
+	unset($_SESSION['status']);
 	return $objResponse;
 }
 

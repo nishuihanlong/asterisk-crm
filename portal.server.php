@@ -185,11 +185,14 @@ function init(){
 }
 
 function listenCalls($aFormValues){
+	$objResponse = new xajaxResponse();
 	if ($aFormValues['uniqueid'] == ''){
-		return waitingCalls($aFormValues);
+		$objResponse->loadXML(waitingCalls($aFormValues));
 	} else{
-		return incomingCalls($aFormValues);
+		$objResponse->loadXML(incomingCalls($aFormValues));
 	}
+	$objResponse->addScript('setTimeout("updateEvents()", 1000);');
+	return $objResponse;
 }
 
 //transfer
@@ -288,9 +291,12 @@ function waitingCalls($myValue){
 	$objResponse = new xajaxResponse();
 	$curid = trim($myValue['curid']);
 
-	$phone_html = asterEvent::checkExtensionStatus($curid);
-	
-	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
+// to improve system efficiency
+/**************************
+//	$phone_html = asterEvent::checkExtensionStatus($curid);
+//	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
+**************************/
+
 
 	//	modified 2007/10/30 by solo
 	//  start
@@ -300,10 +306,11 @@ function waitingCalls($myValue){
 		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
 	//  end
 
+	//print_r($call);
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
 		$status	= 'idle';
-		$call['curid'] = $curid;
+		//$call['curid'] = $curid;
 		$direction	= '';
 		$info	= $locate->Translate("stand_by");
 	} elseif ($call['status'] == 'incoming'){	//incoming calls here
@@ -386,7 +393,6 @@ function waitingCalls($myValue){
 
 	$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 	$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
-
 	$objResponse->addAssign("curid","value", $call['curid'] );
 	$objResponse->addAssign("direction","value", $direction );
 	$objResponse->addAssign("myevents","innerHTML", $info);

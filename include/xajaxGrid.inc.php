@@ -32,7 +32,7 @@
  * @license http://www.gnu.org/copyleft/lesser.html#SEC3 LGPL License
  */
  /*
- * 2007-11-9 增加addRowSearchMore()函数,增加搜索选项
+ * 2007-11-9 增加addRowSearchMore()函数,增加搜索选项	by solo
  */
 
 /** \brief Class to generate a table dynamically
@@ -499,7 +499,7 @@ class ScrollTable{
 		$this->footer .= $this->search = '
 			<table width="99%" border="0">
 			<tr>
-				<td width="25%" align="left"><a href="http://jvelazqu.glo.org.mx/xajaxGrid/">XajaxGrid V 1.2.1</a></td>
+				<td width="25%" align="left">&nbsp;</td>
 				<td width="50%" align="center"><div id="msgZone">&nbsp;</div></td>
 				<td width="25%" align="right">
 					<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$local_grid->Translate("show_all").'</button>

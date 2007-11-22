@@ -99,9 +99,13 @@ class asterEvent extends PEAR
 		if ($call['status'] == 'incoming' && $call['callerid'] != '' ){
 			return $call;
 		}
+	
+//		print_r($call);
+		
+		$call =& asterEvent::checkDialout($curid,$exten,$call['curid']);
 
-		$call =& asterEvent::checkDialout($curid,$exten);
-
+//		print_r($call);
+//		exit;
 		return $call;
 	}
 
@@ -365,7 +369,7 @@ class asterEvent extends PEAR
 
 		asterEvent::events($query);
 		$res = $db->query($query);
-
+		
 		if ($res->fetchInto($list)) {
 			$flds	= split("  ",$list['event']);
 //			print_r($flds);
@@ -435,7 +439,18 @@ class asterEvent extends PEAR
 	function &checkIncoming($curid,$exten){
 		global $db;
 
-		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' AND id > " . $curid . " order by id desc limit 0,1";
+		//$pasttime = date ("Y-m-d H:i:s" ,time() - 10);
+		$query = "SELECT id FROM events ORDER BY timestamp desc limit 0,1";
+		asterEvent::events($query);
+		$maxid = $db->getOne($query);
+		if (!$maxid){
+			$call['curid'] = 0;
+			return $call;
+		}
+
+		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp < '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
+
+//		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND id > " . $curid . " AND id <= ".$maxid." order by id desc limit 0,1";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
@@ -479,8 +494,10 @@ class asterEvent extends PEAR
 			$call['uniqueid'] = trim($uniqueid);
 			$call['curid'] = trim($curid);
 			$call['callerChannel'] = trim($channel);
-		} else
+		} else{
 			$call['status'] = '';
+			$call['curid'] = $maxid;
+		}
 
 		return $call;
 	}
@@ -498,15 +515,16 @@ class asterEvent extends PEAR
 			$call['calleeChannel']	(string)	destination channel
 */
 
-	function &checkDialout($curid,$exten){
+	function &checkDialout($curid,$exten,$maxid){
 		global $db;
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' order by id desc limit 0,1";	
+//		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND id < ".$maxid." AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' order by id desc limit 0,1";	
 
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND id <= ".$maxid." order by id desc limit 0,1";	
 		asterEvent::events($query);
 
 		$res = $db->query($query);
 //		asterEvent::events("dialout:".$res->numRows());
-
+//		print_r($res);
 		if ($res->fetchInto($list)) {
 			$id        = $list['id'];
 			$timestamp = $list['timestamp'];
@@ -549,8 +567,10 @@ DestUniqueID: 1193886661.15683
 			$call['calleeChannel'] = $DestChannel;
 			//******************
 
-		} else
+		} else{
 			$call['status'] = '';
+			$call['curid'] = $maxid;
+		}
 
 		return $call;
 	}
