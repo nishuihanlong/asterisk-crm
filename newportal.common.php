@@ -113,6 +113,7 @@ $xajax->registerFunction("showRemindByTime"); //根据时间显示提醒
 $xajax->registerFunction("alertRemind");      //每隔一秒，搜索数据库，弹出定时的提醒信息
 $xajax->registerFunction("showDetailRemind"); //显示可修改的remind详细信息
 $xajax->registerFunction("updateRemind");     //修改remind详细信息
+$xajax->registerFunction("showDateIframe");   //显示增加日期div
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

@@ -1673,13 +1673,11 @@ Class astercrm extends PEAR{
 	function addNewRemind($f){ //增加提醒
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$remindtime_date = $f['remindtime_date']; //日期
-		$remindtime_time = $f['remindtime_time']; //时间
-		$remindtime = $remindtime_date.' '.$remindtime_time;
+		$remindtime = $f['remindtime'];
 		$touser = trim($f['touser']);
-		if($touser == ''){
-			$touser = $_SESSION['curuser']['username'];
-		}
+		//if($touser == ''){
+		$touser = $_SESSION['curuser']['username'];
+		//}
 		$sql= "INSERT INTO remind SET "
 				."title='".$f['remindtitle']."', "
 				."content='".$f['content']."', "
@@ -1701,13 +1699,11 @@ Class astercrm extends PEAR{
 	function updateRemind($f){  //修改提醒
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$remindtime_date = $f['remindtime_date']; //日期
-		$remindtime_time = $f['remindtime_time']; //时间
-		$remindtime = $remindtime_date.' '.$remindtime_time;
+		$remindtime = $f['remindtime'];
 		$touser = trim($f['touser']);
-		if($touser == ''){
-			$touser = $_SESSION['curuser']['username'];
-		}
+		//if($touser == ''){
+		$touser = $_SESSION['curuser']['username'];
+		//}
 		$sql= "UPDATE remind SET "
 				."title='".$f['remindtitle']."', "
 				."content='".$f['content']."', "

@@ -144,7 +144,7 @@ function init(){
 	$easyremindhtml = getEasyRemindHtml(); //滚动提醒的html
 	$remindhtml = showRemindDiv();  //提醒的html
 	$objResponse->addAssign("remind","innerHTML",$remindhtml);
-	$objResponse->addAssign("easyShow","innerHTML",$easyremindhtml);
+	$objResponse->addAssign("showEasyRemind","innerHTML",$easyremindhtml);
 
 	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
 	$html .= $locate->Translate("extension").$_SESSION['curuser']['extension'];
@@ -885,51 +885,56 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
-//***********************提醒部分
-function showAddRemind(){  //构建增加提醒的html代码
+//********************************************************************************提醒部分
+function showAddRemindHtml(){  //构建增加提醒的html代码
 	global $locate,$db;
-	$objResponse = new xajaxResponse();
+	//$objResponse = new xajaxResponse();
 	$HTML = '
 			<form name="remindForm" id="remindForm" onsubmit="addNewRemind();return false;">
 			<table cellspacing="0" cellpadding="0" border="0" class="adminlist">
 				
 				<tr>
-					<td>'.$locate->Translate("remind_title").'</td>
+					<td align="right">'.$locate->Translate("remind_title").'</td>
 					<td><input type="text" name="remindtitle" id="remindtitle" /></td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_content").'</td>
-					<td><textarea name="content" id="content"></textarea></td>
+					<td align="right">'.$locate->Translate("remind_content").'</td>
+					<td><textarea name="content" id="content" cols="50"></textarea></td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_time").'</td>
-					<td><input type="text" name="remindtime_date" id="remindtime_date" onfocus="showDateIframe();"/> <input type="text" name="remindtime_time" id="remindtime_time" onfocus="showDateIframe();"/></td>
+					<td align="right">'.$locate->Translate("remind_time").'</td>
+					<td><input type="text" name="remindtime" id="remindtime" onfocus="showDateIframe();"/></td>
 				</tr>
-				<tr id="showDateTr" name="showDateTr" style="display:none">
+				<!--<tr id="showDateTr" name="showDateTr" style="display:none">
 					<td colspan="2">
 						<iframe width="100%" height="240px" name=dateIframe frameborder=0 src="./date.html"></iframe>
 					</td>
-				</tr>
-				<tr>
-					<td>'.$locate->Translate("remind_priority").'</td>
-					<td>
-						<input type="radio" name="priority" id="priority" value="0"/>'.$locate->Translate("common").'
-						<input type="radio" name="priority" id="priority" value="1"/>'.$locate->Translate("priority").'
+				</tr>-->
+				<tr id="showDateTr" name="showDateTr">
+					<td colspan="2">
+						<div id="remind_date" name="remind_date" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:hidden;"></div>
 					</td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_type").'</td>
+					<td align="right">'.$locate->Translate("remind_priority").'</td>
+					<td>
+						<input type="radio" name="priority" id="priority" value="5"/>'.$locate->Translate("common").'
+						<input type="radio" name="priority" id="priority" value="10"/>'.$locate->Translate("priority").'
+					</td>
+				</tr>
+				<!--<tr>
+					<td align="right">'.$locate->Translate("remind_type").'</td>
 					<td>
 						<input type="radio" name="remindtype" id="remindtype" value="0" checked onclick="hiddenToUser();"/>'.$locate->Translate("to_self").'
 						<input type="radio" name="remindtype" id="remindtype" value="1" onclick="showToUser();"/>'.$locate->Translate("to_other").'
 					</td>
-				</tr>
+				</tr>-->
 				<tr id="touser" name="touser" style="display:none">
 					<td>'.$locate->Translate("remind_user_name").'</td>
 					<td><input type="text" name="touser" id="touser" /></td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_about").'</td>
+					<td align="right">'.$locate->Translate("remind_about").'</td>
 					<td><input type="text" name="remindabout" id="remindabout" /></td>
 				</tr>
 				<tr>
@@ -937,32 +942,36 @@ function showAddRemind(){  //构建增加提醒的html代码
 				</tr>
 				
 			 </table></form>';
-	$objResponse->addAssign("divSHowRemind", "innerHTML", $HTML); 
-	return $objResponse->getXML();
+	//$objResponse->addAssign("divSHowRemind", "innerHTML", $HTML); 
+	//$htmldate = showRemindDateDiv(); //得到提醒日期的代码
+	//$objResponse->addAssign("remind_date","innerHTML",$htmldate);
+	//return $objResponse->getXML();
+	return $HTML;
 }
 
 function showRemind(){ //构建显示整体提醒页面的html代码
-	global $locate;
+	global $locate,$db;
 	$HTML = '
 				<div id="divRemindTop" name="divRemindTop" style="width:100%;border:1px double #cccccc;height:30px;">
 					<table cellspacing="0" cellpadding="0" border="0" width="100%" height="30px">
 						<tr>
 							<td valign="top">
-								<div id="easyShow" name="easyShow" class="easyShow">
-									<div>
-										<p> </p>
-									</div>
+								<div id="showEasyRemind" name="showEasyRemind"
+								  style="width:400px;height:20px;overflow:hidden;line-height:20px;border:1px double #cccccc;">
 								</div>
 							</td>
 							<td width="15%" onclick="showRemind();" style="cursor:hand;cursor:pointer;">'.$locate->Translate("show_all_remind").'</td>
 						</tr>
 					</table>
+					<div id="divAddRemind" name="divAddRemind" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:hidden;"></div>
 				</div>
 				<div id="divRemind" name="divRemind" style="width:100%;height:200px;border:1px double #cccccc;display:none;">
+
+
 					<div style="width:100%;height:175px;margin-top:0px;overflow:auto;" name="divSHowRemind" id="divSHowRemind">
 					</div>
 					<div style="width:100%;height:25px;margin-top:0px;line-height:25px;text-align:center;">
-						<input type="button" name="btnShowRemind" id="btnShowRemind" value="'.$locate->Translate("show_all_remind").'" onclick="showRemindData();"/>
+						<!--<input type="button" name="btnShowRemind" id="btnShowRemind" value="'.$locate->Translate("show_all_remind").'" onclick="showRemindData();"/>-->
 						<input type="button" name="addRemind" id="addRemind" value="'.$locate->Translate("add_remind").'" onclick="showAddRemind();"/>
 						'.$locate->Translate("show_remind_by_time").':
 						<select name="selectTime" id="selectTime" onchange="showRemindByTime();">
@@ -983,11 +992,70 @@ function showRemind(){ //构建显示整体提醒页面的html代码
 
 function showRemindDiv(){ //显示提醒的可移动的div层
 	global $locate;
-	$html = Table::Top($locate->Translate("remind"),"remindMainDiv");
+	$html = Table::Top($locate->Translate("remind"),"remind");
 	$html .= showRemind();
 	$html .= Table::Footer();
 	return $html;
 }
+
+function showAddRemindDiv(){ //显示增加提醒的可移动的div层
+	global $locate;
+	$html = Table::Top($locate->Translate("remind"),"divAddRemind");
+	$html .= showAddRemindHtml();
+	$html .= Table::Footer();
+	return $html;
+}
+
+function showUpdateRemindDiv($id){ //显示修改提醒的可移动的div层
+	global $locate;
+	$html = Table::Top($locate->Translate("remind"),"divAddRemind");
+	$html .= showDetailRemindHtml($id);
+	$html .= Table::Footer();
+	return $html;
+}
+
+function showAddRemind(){ //弹出可移动的增加提醒的div层
+	$objResponse = new xajaxResponse();
+	$html = showAddRemindDiv();
+	$objResponse->addAssign("divAddRemind","innerHTML",$html);
+	$htmldate = showRemindDateDiv();   //得到提醒日期的代码
+	$objResponse->addAssign("remind_date","innerHTML",$htmldate);
+	return $objResponse->getXML();
+}
+
+function showDetailRemind($id){//弹出可移动的修改提醒的div层
+	$objResponse = new xajaxResponse();
+	$html = showUpdateRemindDiv($id);
+	$objResponse->addAssign("divAddRemind","innerHTML",$html);
+	$htmldate = showRemindDateDiv();   //得到提醒日期的代码
+	$objResponse->addAssign("remind_date","innerHTML",$htmldate);
+	return $objResponse->getXML();
+}
+
+function showRemindDateDiv(){ //显示增加日期的可移动的div层的html代码
+	global $locate;
+	$html = Table::Top($locate->Translate("remind"),"remind_date");
+	$html .= showDate();
+	$html .= Table::Footer();
+	return $html;
+}
+
+function showDate(){ //显示增加日期的html代码
+	$HTML = '
+			<div style="width:100%;height:auto;">
+				<iframe width="100%" height="240px" name=dateIframe frameborder=0 src="./date.html"></iframe>
+			</div>
+			';
+	return $HTML;
+}
+
+function showDateIframe(){ //显示增加日期的可移动的div层
+	$objResponse = new xajaxResponse();
+	$html = showRemindDateDiv();
+	$objResponse->addAssign("remind_date","innerHTML",$html);
+	return $objResponse->getXML();
+}
+
 
 function showRemindData(){ //显示无限制条件下所有提醒数据
 	global $locate,$db;
@@ -1028,7 +1096,8 @@ function addNewRemind($f){ //增加提醒的执行动作
 		$objResponse->addAlert($locate->Translate("remind_add_success")); 
 		$objResponse->addScript("showRemindData();");
 		$easyremindhtml = getEasyRemindHtml(); //滚动提醒的html
-		$objResponse->addAssign("easyShow","innerHTML",$easyremindhtml);
+		$objResponse->addAssign("showEasyRemind","innerHTML",$easyremindhtml);
+		$objResponse->addScript("document.getElementById('divAddRemind').style.visibility='hidden'");
 	}
 	return $objResponse->getXML();
 }
@@ -1070,7 +1139,7 @@ function showRemindByTime($time){ //根据时间显示提醒页面
 function alertRemind(){ //按时提示提醒
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
-	$sql = 'select * from remind where remindtime = now() and touser = "'.$_SESSION['curuser']['username'].'"';
+	$sql = 'select * from remind where remindtime = now() and touser = "'.$_SESSION['curuser']['username'].'" and priority = 10 and readed = 0 ';
 	$res = & $db->query($sql);
 	if($res->numRows() > 0){
 		while ($res->fetchInto($row)) {
@@ -1083,50 +1152,56 @@ function alertRemind(){ //按时提示提醒
 	return $objResponse->getXML();
 }
 
-function showDetailRemind($id){ //显示修改remind页面
+function showDetailRemindHtml($id){ //显示修改remind页面的html
 	global $locate,$db;
 
 	$sql = 'select * from remind where id = '.$id.'';
 	$res = & $db->query($sql);
 	while ($row =& $res->fetchRow()) { 
-		$remind_time = explode(' ',$row['remindtime']);
+		//$remind_time = explode(' ',$row['remindtime']);
 		$HTML = '
 			<form name="updateRemindForm" id="updateRemindForm" onsubmit="updateRemind();return false;">
 			<input type="hidden" value="'.$row['id'].'" name="id" id="id"/>
 			<table cellspacing="0" cellpadding="0" border="0" class="adminlist">
 				
 				<tr>
-					<td>'.$locate->Translate("remind_title").'</td>
+					<td align="right">'.$locate->Translate("remind_title").'</td>
 					<td><input type="text" name="remindtitle" id="remindtitle" value="'.$row['title'].'"/></td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_content").'</td>
-					<td><textarea name="content" id="content">'.$row['content'].'</textarea></td>
+					<td align="right">'.$locate->Translate("remind_content").'</td>
+					<td><textarea name="content" id="content" cols="50">'.$row['content'].'</textarea></td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_time").'</td>
-					<td><input type="text" name="remindtime_date" id="remindtime_date" onfocus="showDateIframe();" value="'.$remind_time[0].'"/> <input type="text" name="remindtime_time" id="remindtime_time" onfocus="showDateIframe();" value="'.$remind_time[1].'"/></td>
+					<td align="right">'.$locate->Translate("remind_time").'</td>
+					<td><input type="text" name="remindtime" id="remindtime" onfocus="showDateIframe();" value="'.$row['remindtime'].'"/> </td>
 				</tr>
-				<tr id="showDateTr" name="showDateTr" style="display:none">
+				<tr id="showDateTr" name="showDateTr">
+					<td colspan="2">
+						<div id="remind_date" name="remind_date" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:hidden;"></div>
+					</td>
+				</tr>
+				<!--<tr id="showDateTr" name="showDateTr" style="display:none">
 					<td colspan="2">
 						<iframe width="100%" height="240px" name=dateIframe frameborder=0 src="./date.html"></iframe>
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
-					<td>'.$locate->Translate("remind_priority").'</td>
+					<td align="right">'.$locate->Translate("remind_priority").'</td>
 					<td>
-						<input type="radio" name="priority" id="priority" value="0" ';
-		if($row['priority'] == '0' ){
+						<input type="radio" name="priority" id="priority" value="5" ';
+		if($row['priority'] == '5' ){
 			$HTML .= 'checked';
 		}
 		$HTML .= '		/>'.$locate->Translate("common").'
-						<input type="radio" name="priority" id="priority" value="1" ';
-		if($row['priority'] == '1' ){
+						<input type="radio" name="priority" id="priority" value="10" ';
+		if($row['priority'] == '10' ){
 			$HTML .= 'checked';
 		}
 		$HTML .= '		/>'.$locate->Translate("priority").'
 					</td>
 				</tr>
+				<!--
 				<tr>
 					<td>'.$locate->Translate("remind_type").'</td>
 					<td>
@@ -1141,13 +1216,14 @@ function showDetailRemind($id){ //显示修改remind页面
 		}
 		$HTML .= '/>'.$locate->Translate("to_other").'
 					</td>
-				</tr>
+				</tr>-->
+
 				<tr id="touser" name="touser" style="display:none">
 					<td>'.$locate->Translate("remind_user_name").'</td>
 					<td><input type="text" name="touser" id="touser" value="'.$row['touser'].'"/></td>
 				</tr>
 				<tr>
-					<td>'.$locate->Translate("remind_about").'</td>
+					<td align="right">'.$locate->Translate("remind_about").'</td>
 					<td><input type="text" name="remindabout" id="remindabout" value="'.$row['remindabout'].'"/></td>
 				</tr>
 				<tr>
@@ -1156,9 +1232,10 @@ function showDetailRemind($id){ //显示修改remind页面
 				
 			 </table></form>';
 	} 
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("divSHowRemind", "innerHTML", $HTML); 
-	return $objResponse->getXML();
+	//$objResponse = new xajaxResponse();
+	//$objResponse->addAssign("divSHowRemind", "innerHTML", $HTML); 
+	//return $objResponse->getXML();
+	return $HTML;
 }
 
 function updateRemind($f){  //执行修改remind
@@ -1168,24 +1245,23 @@ function updateRemind($f){  //执行修改remind
 	if($res){
 		$objResponse->addAlert($locate->Translate("update_success")); 
 		$objResponse->addScript("showRemindData();");
+		$objResponse->addScript("document.getElementById('divAddRemind').style.visibility='hidden'");
 	}
 	return $objResponse->getXML();
 }
 
-function getEasyRemindHtml(){ //得到显示所有提醒的html代码
+function getEasyRemindHtml(){ //得到顶部显示所有提醒的html代码
 	global $locate,$db;
-	$HTML = '<div><p>';
-	$sql = 'select * from remind where touser = "'.$_SESSION['curuser']['username'].'" order by id desc limit 0,4 ';
+	$HTML = '<marquee onMouseOver=this.stop() onMouseOut=this.start() scrollamount=1 scrolldelay=60 direction=left width=400 height=20>';
+	$sql = 'select * from remind where touser = "'.$_SESSION['curuser']['username'].'" order by id desc';
 	$res = & $db->query($sql);
 	while ($res->fetchInto($row)) {
-		$HTML .= '
-					 &nbsp;
-						<a onclick="showDetailRemind('.$row['id'].');" style="cursor:hand;cursor:pointer;">';
+		$HTML .= '&nbsp;<a onclick="showDetailRemind('.$row['id'].');" style="cursor:hand;cursor:pointer;">';
 		$HTML .= $row['title'];
-		$HTML .= '		</a></p></div>
-					
-				  ';
+		$HTML .= '</a> ';
 	}
+	$HTML .= '</marquee>';
+	
 	return $HTML;
 }
 

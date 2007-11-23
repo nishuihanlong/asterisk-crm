@@ -90,7 +90,6 @@ require_once('newportal.common.php');
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<?php $xajax->printJavascript('include/'); ?>
-		<script type="text/javascript" src="js/marquee.js" ></script>
 		<script type="text/javascript">
 
 		function dial(phonenum){
@@ -149,7 +148,7 @@ require_once('newportal.common.php');
 			xajax_init();
 			updateEvents();
 			alertRemind(); //提醒提示,定时执行
-			marqueeRemind();
+			//marqueeRemind();
 			//make div draggable
 			dragresize.apply(document);
 //			xajax.loadingFunction = showProcessingMessage;
@@ -204,6 +203,9 @@ require_once('newportal.common.php');
 		}
 
 		function showAddRemind(){
+			if(document.getElementById("divAddRemind").style.visibility=="hidden"){
+				document.getElementById("divAddRemind").style.visibility="visible"
+			}
 			xajax_showAddRemind();
 		}
 
@@ -224,51 +226,29 @@ require_once('newportal.common.php');
 			setTimeout("alertRemind()", 1000);
 		}
 		function showDetailRemind(id){
+			if(document.getElementById("divAddRemind").style.visibility=="hidden"){
+				document.getElementById("divAddRemind").style.visibility="visible"
+			}
 			xajax_showDetailRemind(id);
 		}
 		function updateRemind(){
 			xajax_updateRemind(xajax.getFormValues("updateRemindForm"));
 			return false;
 		}
-		function marqueeRemind(){
-			var mar = new Marquee("easyShow");
-			mar.Direction = 0;
-			mar.Width = 270;
-			mar.Height = 16;
-			mar.Speed = 20;
-			mar.Space = 0;
-			mar.Start();
-			
-			MarqueeStart("marquee1",1,70,16,30,0,"p");
-			MarqueeStart("marquee2",2,150,100,30,1,"p");
-			MarqueeStart("marquee3",3,20,62,30,0,"p");
-			
-			MarqueeStart("marquee4",0,70,50,30,0,"ul");
-			
-		}
 
 		function showDateIframe(){
-			if(document.getElementById("showDateTr").style.display=="none"){
-				document.getElementById("showDateTr").style.display="";
-			}else{
-				document.getElementById("showDateTr").style.display="none";
+			
+			if(document.getElementById("remind_date").style.visibility=="hidden"){
+				document.getElementById("remind_date").style.visibility="visible"
 			}
+			xajax_showDateIframe();
 		}
 		</script>
-	
-	
 	<script type="text/javascript" src="js/dragresize.js"></script>
 	<script type="text/javascript" src="js/dragresizeInit.js"></script>
 	
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
-	<style>
-		/*.easyShow {border:1px solid #999999;}*/
-		.easyShow div{width:1000%;}
-		.easyShow div p{display:block; float:left; margin:0px;}
-		.easyShow div ul{display:block; float:left; margin:0px;padding:0px;}
-		.easyShow div ul li{float:left; display:block; border:solid 1px #666666; padding:14px 21px 14px 21px; margin:1px 10px 1px 10px; list-style:none;}
-	</style>
 	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
@@ -313,6 +293,7 @@ require_once('newportal.common.php');
 	<!--show remind div begin-->
 	<div id="remind" name="remind" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:visible;"></div>
 	<!--show remind div end-->
+	
 	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 
 
@@ -355,3 +336,4 @@ require_once('newportal.common.php');
 	<div id="divCopyright"></div>
 	</body>
 </html>
+

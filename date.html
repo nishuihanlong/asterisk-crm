@@ -1,6 +1,7 @@
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
 <style type="text/css">  
 body {  
-        background-color: #D4D0C8;  
+        background-color: #ffffff;  
 }  
 .m_fieldset {  
         padding: 0,10,5,10;  
@@ -156,7 +157,7 @@ function minute(name,fName)
 
 <style type="text/css">  
 body {  
-        background-color: #D4D0C8;  
+        background-color: #ffffff;  
 }  
 .c_fieldset {  
         padding: 0,10,5,10;  
@@ -370,8 +371,8 @@ document.write(m);
 </td></tr>  
 <tr>  
 <td colspan="2">  
-<button onclick="window.parent.document.getElementById('remindtime_date').value=c.getDate();" style="font:12px Webdings;width:150px;height:25px;line-height:25px;">add date</button>  
-<button onclick="window.parent.document.getElementById('remindtime_time').value=m.getTime();" style="font:12px Webdings;width:150px;height:25px;line-height:25px;">add time</button>  
+	<input type="button" onclick="window.parent.document.getElementById('remindtime').value=c.getDate()+' '+m.getTime();window.parent.document.getElementById('remind_date').style.visibility='hidden';" style="font:12px Webdings;width:150px;height:25px;line-height:25px;" value="add"/>
+
 </td>  
 </tr>  
 </table>
