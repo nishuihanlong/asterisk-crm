@@ -15,7 +15,7 @@
 	电话挂断
 	来电/去电弹屏
 
-    
+
 * Page elements
 
 * div:							
@@ -90,6 +90,14 @@ require_once('newportal.common.php');
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<?php $xajax->printJavascript('include/'); ?>
+
+	<script type="text/javascript" src="js/dragresize.js"></script>
+	<script type="text/javascript" src="js/dragresizeInit.js"></script>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+
+
 		<script type="text/javascript">
 
 		function dial(phonenum){
@@ -116,7 +124,6 @@ require_once('newportal.common.php');
 		}
 
 		function updateEvents(){
-
 			myFormValue = xajax.getFormValues("myForm");
 			xajax_listenCalls(myFormValue);
 				if (xajax.$('formDiv') != null){
@@ -127,7 +134,6 @@ require_once('newportal.common.php');
 				}else{
 					xajax.$('popup').value = 'yes';
 				}
-			setTimeout("updateEvents()", 1000);
 		}
 
 		function monitor(){
@@ -147,8 +153,7 @@ require_once('newportal.common.php');
 		function init(){
 			xajax_init();
 			updateEvents();
-			alertRemind(); //提醒提示,定时执行
-			//marqueeRemind();
+			//alertRemind(); //提醒提示,定时执行
 			//make div draggable
 			dragresize.apply(document);
 //			xajax.loadingFunction = showProcessingMessage;
@@ -178,8 +183,9 @@ require_once('newportal.common.php');
 		}
 
 		function searchFormSubmit(numRows,limit,id,type){
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
-			return false;
+		//alert(xajax.getFormValues("searchForm"));
+		xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
+		return false;
 		}
 		//**************remind
 		function showRemind()
@@ -209,9 +215,9 @@ require_once('newportal.common.php');
 			xajax_showAddRemind();
 		}
 
-		function showToUser(){
-			document.getElementById("touser").style.display="";
-		}
+		//function showToUser(){
+		///	document.getElementById("touser").style.display="";
+		//}
 		function hiddenToUser(){
 			document.getElementById("touser").style.display="none";
 		}
@@ -223,7 +229,7 @@ require_once('newportal.common.php');
 		function alertRemind(){
 			xajax_alertRemind();
 
-			setTimeout("alertRemind()", 1000);
+			//setTimeout("alertRemind()", 1000);
 		}
 		function showDetailRemind(id){
 			if(document.getElementById("divAddRemind").style.visibility=="hidden"){
@@ -244,12 +250,6 @@ require_once('newportal.common.php');
 			xajax_showDateIframe();
 		}
 		</script>
-	<script type="text/javascript" src="js/dragresize.js"></script>
-	<script type="text/javascript" src="js/dragresizeInit.js"></script>
-	
-	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
-	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
-	<meta http-equiv="Content-Language" content="utf-8" />
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
@@ -276,7 +276,7 @@ require_once('newportal.common.php');
 		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
 		<input type="hidden" name="callerid" id="callerid" value=""/>
-		<input type="hidden" name="curid" id="curid" value="0"/>
+		<input type="text" name="curid" id="curid" value="0"/>
 		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>
@@ -291,11 +291,54 @@ require_once('newportal.common.php');
 	<div id="click2dial"><input type="text" value="" name="iptDestinationNumber" id="iptDestinationNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="" onclick="dial(xajax.$('iptDestinationNumber').value)"></div><br/>
 -->
 	<!--show remind div begin-->
-	<div id="remind" name="remind" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:visible;"></div>
+	<div id="remindMainDiv" name="remindMainDiv" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:visible;background-color:#ffffff;">
+		<table width="100%" border="1" align="center" class="adminlist" >
+			<tr class="drsMoveHandle">
+				<th align="right" valign="center" >
+					<img src="skin/default/images/close.png" onClick="javascript: document.getElementById('remindMainDiv').style.visibility='hidden';document.getElementById('remindMainDiv').innerHTML = '';return false;" title="Close Window" style="cursor: pointer; height: 16px;">
+				</th>
+			</tr>
+			<tr ><td><fieldset><legend><input type="text" name="spanRemind" id="spanRemind" value="" style="border:1px double #ffffff;width:30px;" readonly/>:</legend>
+				<div id="remind" name="remind" style="background-color:#ffffff;">
+					<div id="divRemindTop" name="divRemindTop" style="width:100%;height:30px;">
+						<table cellspacing="0" cellpadding="0" border="0" width="100%" height="30px">
+							<tr>
+								<td><div id="showEasyRemind" name="showEasyRemind"
+									  style="width:400px;height:20px;overflow:hidden;line-height:20px;border:1px double #cccccc;margin-left:3px;">
+									</div>
+								</td>
+								<td width="15%" onclick="showRemind();" style="cursor:hand;cursor:pointer;"><div id="spanShowAllRemind" name="spanShowAllRemind"></div></td>
+							</tr>
+						</table>
+					</div>
+					<div id="divRemind" name="divRemind" style="width:100%;height:200px;border:1px double #cccccc;display:none;">
+						<div style="width:100%;height:170px;margin-top:0px;overflow:auto;" name="divSHowRemind" id="divSHowRemind">
+						</div>
+						<div style="width:100%;height:30px;margin-top:0px;line-height:30px;text-align:center;">
+							<input type="button" name="addRemind" id="addRemind" value="" onclick="showAddRemind();"/>
+							<input type="text" name="spanShowRemindByTime" id="spanShowRemindByTime" value="" style="border:1px double #ffffff;width:60px;" readonly/>:
+							<select name="selectTime" id="selectTime" onchange="showRemindByTime();">
+								<option value=""><?=$locate->Translate("no_time_limit")?></option>
+								<option value="300"><?=$locate->Translate("five_minute")?></option>
+								<option value="600"><?=$locate->Translate("ten_minute")?></option>
+								<option value="1200"><?=$locate->Translate("twenty_minute")?></option>
+								<option value="1800"><?=$locate->Translate("thirty_minute")?></option>
+								<option value="3600"><?=$locate->Translate("one_hour")?></option>
+								<option value="86400"><?=$locate->Translate("one_day")?></option>
+								<option value="604800"><?=$locate->Translate("one_week")?></option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+				</td></tr>
+			</table>
+	</div>
+	<br>
+	<div id="divAddRemind" name="divAddRemind" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:hidden;z-index:400;"></div><!--增加或者显示详细提醒的div-->
 	<!--show remind div end-->
-	
-	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 
+	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
@@ -322,9 +365,8 @@ require_once('newportal.common.php');
 			</tr>
 		</table>
 	<div id="divCrm" name="divCrm"></div>
-
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
-	
+
 	<div id="divExtension" name="divExtension" 
 		class="divExtension drsElement drsMoveHandle" 
 		style="left: 750px; top: 20px;	width: 160px;
@@ -336,4 +378,3 @@ require_once('newportal.common.php');
 	<div id="divCopyright"></div>
 	</body>
 </html>
-

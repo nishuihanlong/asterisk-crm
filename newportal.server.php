@@ -142,8 +142,8 @@ function init(){
 
 	$objResponse = new xajaxResponse();
 	$easyremindhtml = getEasyRemindHtml(); //滚动提醒的html
-	$remindhtml = showRemindDiv();  //提醒的html
-	$objResponse->addAssign("remind","innerHTML",$remindhtml);
+	//$remindhtml = showRemindDiv();  //提醒的html
+	//$objResponse->addAssign("remind","innerHTML",$remindhtml);
 	$objResponse->addAssign("showEasyRemind","innerHTML",$easyremindhtml);
 
 	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
@@ -160,6 +160,11 @@ function init(){
 	$objResponse->addAssign("spanMonitorSetting","innerText", $locate->Translate("always_record_when_connected") );
 	$objResponse->addAssign("spanMonitor","innerText", $locate->Translate("monitor") );
 
+	$objResponse->addAssign("spanShowAllRemind","innerHTML",$locate->Translate("show_all_remind") );
+	$objResponse->addAssign("addRemind","value", $locate->Translate("add_remind") );
+	$objResponse->addAssign("spanShowRemindByTime","value",$locate->Translate("show_remind_by_time") );
+	$objResponse->addAssign("spanRemind","value", $locate->Translate("remind") );
+	
 	$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
@@ -942,13 +947,9 @@ function showAddRemindHtml(){  //构建增加提醒的html代码
 				</tr>
 				
 			 </table></form>';
-	//$objResponse->addAssign("divSHowRemind", "innerHTML", $HTML); 
-	//$htmldate = showRemindDateDiv(); //得到提醒日期的代码
-	//$objResponse->addAssign("remind_date","innerHTML",$htmldate);
-	//return $objResponse->getXML();
 	return $HTML;
 }
-
+/*
 function showRemind(){ //构建显示整体提醒页面的html代码
 	global $locate,$db;
 	$HTML = '
@@ -963,8 +964,10 @@ function showRemind(){ //构建显示整体提醒页面的html代码
 							<td width="15%" onclick="showRemind();" style="cursor:hand;cursor:pointer;">'.$locate->Translate("show_all_remind").'</td>
 						</tr>
 					</table>
+
 					<div id="divAddRemind" name="divAddRemind" class="formDiv drsElement" style="left: 200px; top: 20px;visibility:hidden;"></div>
 				</div>
+
 				<div id="divRemind" name="divRemind" style="width:100%;height:200px;border:1px double #cccccc;display:none;">
 
 
@@ -997,7 +1000,7 @@ function showRemindDiv(){ //显示提醒的可移动的div层
 	$html .= Table::Footer();
 	return $html;
 }
-
+*/
 function showAddRemindDiv(){ //显示增加提醒的可移动的div层
 	global $locate;
 	$html = Table::Top($locate->Translate("remind"),"divAddRemind");
