@@ -36,11 +36,11 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 	$type = substr($file_name,-3);
 	if ( "xls" == $type || "csv" == $type)
 	{
-		if (move_uploaded_file($_FILES['excel']['tmp_name'], $config['system']['upload_excel_path'] . $_FILES['excel']['name'])) 
+		if (move_uploaded_file($_FILES['excel']['tmp_name'], $config['system']['upload_file_path'] . $_FILES['excel']['name'])) 
 		{
 			$upload_msg =$locate->Translate('file').' '.$_FILES['excel']['name'].' '.$locate->Translate('uploadsuccess')."!<br />";
 			if($type == 'csv'){
-				$handleup = fopen($config['system']['upload_excel_path'] . $_FILES['excel']['name'],"r");
+				$handleup = fopen($config['system']['upload_file_path'] . $_FILES['excel']['name'],"r");
 				$row = 0;
 				while($data = fgetcsv($handleup, 1000, ",")){
 				   $row++;
@@ -51,7 +51,7 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 					$upload_msg .= " <font>".$locate->Translate('have').' '.$row.' '.$locate->Translate('recrod')."</font>";
 				}
 			}elseif($type == 'xls'){
-				Read_Excel_File($config['system']['upload_excel_path'] . $_FILES['excel']['name'],$return);
+				Read_Excel_File($config['system']['upload_file_path'] . $_FILES['excel']['name'],$return);
 				$xlsrow = count($return[Sheet1]);
 				if($xlsrow > 8){
 					$upload_msg .= " <font>".$locate->Translate('have').' '.$xlsrow.' '.$locate->Translate('default')."</font>";
@@ -77,6 +77,7 @@ else
 <SCRIPT LANGUAGE="JavaScript">
 	var msg = "<? echo $upload_msg; ?><br />";
 	window.parent.document.getElementById("divMessage").innerHTML = msg;//msg;
+	//alert ("<?=$_FILES['excel']['name']?>");
 	window.parent.showDivMainRight("<?=$_FILES['excel']['name']?>");
 	window.parent.document.getElementById('btnUpload').disabled = false;
 	window.parent.document.getElementById('btnUpload').value="<?=$locate->Translate('upload')?>";

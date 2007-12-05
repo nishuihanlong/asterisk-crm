@@ -83,7 +83,7 @@ function showDivMainRight($filename){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
 
-	$filePath = $config['system']['upload_excel_path'].$filename;
+	$filePath = $config['system']['upload_file_path'].$filename;
 
 	if(is_file($filePath)){	//check if file exsits
 
@@ -206,7 +206,7 @@ function submitForm($aFormValues){
 	}
 
 	$tableStructure = astercrm::getTableStructure($tableName);
-	$filePath = $config['system']['upload_excel_path'].$fileName;//数据文件存放路径
+	$filePath = $config['system']['upload_file_path'].$fileName;//数据文件存放路径
 
 	$affectRows= 0;  //计数据库影响结果变量
 	$x = 0;  //计数变量
