@@ -133,3 +133,7 @@ external_crm_default_url = http://www.magiclink.cn
 external_crm_url = http://www.magiclink.cn/index.html?callerid=%callerid&calleeid=%calleeid&method=%method
 
 upload_file_path = ./upload/
+
+[google-map]
+
+key = 

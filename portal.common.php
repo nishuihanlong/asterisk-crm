@@ -106,6 +106,7 @@ $xajax->registerFunction("invite");
 $xajax->registerFunction("hangup");
 $xajax->registerFunction("chanspy");
 $xajax->registerFunction("searchFormSubmit");
+$xajax->registerFunction("displayMap");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

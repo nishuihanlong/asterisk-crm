@@ -16,6 +16,12 @@ function contactCopy(contactid){
 	return false;
 }
 
+function showMap(address){
+	document.getElementById('divMap').style.visibility = 'visible';
+	document.getElementById('map').innerHTML = 'loading ...';
+	xajax_displayMap(address);
+}
+
 function btnConfirmCustomerOnClick(){
 
 	if (typeof document.getElementById('contactid') == '' || typeof document.getElementById('contactid') == 'undefined'){

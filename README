@@ -80,7 +80,7 @@ however, multiple servers enhance performance.
 	mkdir /opt/asterisk
 	mkdir /opt/asterisk/scripts
 	mkdir /opt/asterisk/scripts/events
-	mv /var/www/html/events/eventsdaemon/* /opt/asterisk/scripts/events
+	mv /var/www/html/astercrm/eventsdaemon/* /opt/asterisk/scripts/events
 	chmod +x /opt/asterisk/scripts/events/eventsdaemon.pl
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above

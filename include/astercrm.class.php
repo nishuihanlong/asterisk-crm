@@ -1368,7 +1368,10 @@ Class astercrm extends PEAR{
 					<td align="left">'.$customer['city'].'/'.$customer['state'].'['.$customer['zipcode'].']'.'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("address").'</td>
+					<td nowrap align="left">'.$locate->Translate("address").
+						' | <a href="?" onclick="showMap(\''.$customer['city'].' '.$customer['state'].
+						' '.$customer['zipcode'].' '.$customer['address'].'\');return false;">Map</a>'.
+					'</td>
 					<td align="left">'.$customer['address'].'</td>
 				</tr>
 				<!--**********************-->

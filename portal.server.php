@@ -67,6 +67,7 @@ require_once ('astercrm.server.common.php');
 require_once ("portal.common.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('portal.grid.inc.php');
+require_once ('include/phoogle.php');
 
 /**
 *  show customer contact detail based on
@@ -276,8 +277,8 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("btnHangup","disabled", true );
 
 		}
-//		$objResponse->addAssign("status","innerHTML", $status );
-		$objResponse->addAssign("extensionStatus","value", $status );
+		$objResponse->addAssign("status","innerHTML", $status );
+//		$objResponse->addAssign("extensionStatus","value", $status );
 		$objResponse->addAssign("myevents","innerHTML", $info );
 	}
 
@@ -293,9 +294,9 @@ function waitingCalls($myValue){
 
 // to improve system efficiency
 /**************************
-//	$phone_html = asterEvent::checkExtensionStatus($curid);
-//	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
 **************************/
+	$phone_html = asterEvent::checkExtensionStatus($curid);
+	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
 
 
 	//	modified 2007/10/30 by solo
@@ -384,7 +385,6 @@ function waitingCalls($myValue){
 			}
 		}
 	}
-
 //	$objResponse->addScript('document.title='.$title.';');
 //	$objResponse->addAssign("status","innerHTML", $stauts );
 	$objResponse->addAssign("extensionStatus","value", $stauts );
@@ -825,6 +825,21 @@ function getContact($callerid){
 	return $objResponse;
 }
 
+function displayMap($address){
+	global $config;
+	$objResponse = new xajaxResponse();
+	if ($address == '')
+		return $objResponse;
+	$map = new PhoogleMap();
+	$map->setAPIKey($config['google-map']['key']);
+	$map->addAddress($address);
+	$js = $map->generateJs();
+
+	$objResponse->addAssign("divMap","style.visibility","visible");
+	$objResponse->addScript("alert('".$js."')");
+	$objResponse->addScript($js);
+	return $objResponse;
+}
 
 function chanspy($exten,$spyexten){
 	global $config,$locate;

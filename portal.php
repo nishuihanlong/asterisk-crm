@@ -84,6 +84,7 @@
 
 ********************************************************************************/
 require_once('portal.common.php');
+require_once('config.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -189,6 +190,7 @@ require_once('portal.common.php');
 		}
 
 		</script>
+<script src="http://maps.google.com/maps?file=api&v=2&key=<?echo $config['google-map']['key'];?>" type="text/javascript"></script>
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
@@ -215,7 +217,7 @@ require_once('portal.common.php');
 		<input type="hidden" name="extension" id="extension" value=""/>
 		<input type="hidden" name="uniqueid" id="uniqueid" value=""/>
 		<input type="hidden" name="callerid" id="callerid" value=""/>
-		<input type="text" name="curid" id="curid" value="0"/>
+		<input type="hidden" name="curid" id="curid" value="0"/>
 		<input type="hidden" name="callerChannel" id="callerChannel" value=""/>
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>
@@ -267,6 +269,30 @@ require_once('portal.common.php');
 				text-align: center; 
 				border: 1px dashed #EAEAEA;    
 				color:#006600; "></div>
+
+	<div id="divMap" class="drsElement" 
+		style="left: 450px; top: 20px;	width: 300px;height: 340px;
+					position: absolute; 
+					z-index:0;
+					text-align: center; 
+					border: 1px dashed #EAEAEA;    
+					color:#006600;
+					visibility:hidden;">
+		<table width="100%" border="1" align="center" class="adminlist" >
+			<tr class="drsMoveHandle">
+				<th align="right" valign="center" >
+					<img src="skin/default/images/close.png" onClick='javascript: document.getElementById("divMap").style.visibility="hidden";return false;' title="Close Window" style="cursor: pointer; height: 16px;">
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<fieldset><legend>Map</legend>
+					<div id="map" style="width: 300px;height: 300px;"></div>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<div id="divCopyright"></div>
 	</body>
 </html>

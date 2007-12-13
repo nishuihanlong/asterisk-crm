@@ -1,6 +1,6 @@
 <?php
 /*******************************************************************************
-* asterisk.server.php
+* asterisk.class.php
 * astercrm asterisk class
 
 * Revision 0.0456  2007/11/9 10:33:00  modified by solo
