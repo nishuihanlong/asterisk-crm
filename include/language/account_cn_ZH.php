@@ -21,4 +21,6 @@ $channel	= "通道";	// added 2007/10/30 by solo
 $account_detail		= "账户信息";	// added 2007/10/30 by solo
 $account_code		= "账户标识";	// added 2007/11/12 by solo
 $username_repeat = "用户名重复";
+$group_name = "分组名称";
+$group_manage = "分组管理";
 ?>

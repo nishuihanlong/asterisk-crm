@@ -1,13 +1,13 @@
 <?php
 /*******************************************************************************
-* customer.php
-* 客户信息管理界面//
-* cutomer information management interface
+* diallist.php
+* 拨号列表管理界面//
+* diallist  management interface
 * 功能描述
-	 提供客户信息管理的功能
+	 提供拨号列表信息管理的功能
 
 * Function Desc
-	customer management
+	diallist management
 
 * Page elements
 * div:							
@@ -47,10 +47,9 @@ require_once('diallist.common.php');
 		function importCsv(){
 			xajax_importCsv();
 		}
-		function searchFormSubmit(numRows,limit){
-			//alert(xajax.getFormValues("searchForm"));
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit);
-			return false;
+		function searchFormSubmit(numRows,limit,id,type){
+			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
+		return false;
 		}
 		//-->
 		</SCRIPT>

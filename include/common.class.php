@@ -73,7 +73,6 @@ class Common{
 	<ul>
 		<li><img src="skin/default/images/top_bg.gif" width="20px" height="126"px/></li>
 		<li><a href="import.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'import\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/import.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/import_sml.gif" alt="import" name="import" width="71" height="126" border="0" id="import" /></a></li>
-		<li><a href="export.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'export\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/export.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/export_sml.gif" alt="export" name="export" width="71" height="126" border="0" id="export" /></a></li>
 		<li><a href="surveyresult.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'statisic\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/statisic.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/statisic_sml.gif" alt="statisic" name="statisic" width="71" height="126" border="0" id="statisic" /></a></li>
 		<li><a href="account.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'extension\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/extension.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/extension_sml.gif" alt="extension" name="extension" width="71" height="126" border="0" id="extension" /></a></li>
 		<li><a href="customer.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'customer\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/customer.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/customer_sml.gif" alt="customer" name="customer" width="71" height="126" border="0" id="customer" /></a></li>
@@ -84,6 +83,9 @@ class Common{
 		<li><a href="login.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'logout\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logout_sml.gif" alt="logout" name="logout" width="71" height="126" border="0" id="logout" /></a></li>
 		<li><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logo_bn.gif"/></li>
 	</ul>
+	<div align="right">
+		[<a href="diallist.php">diallist</a>] | [<a href="preferences.php">perference</a>]
+	</div>
 </div>
 				';
 		return $html;

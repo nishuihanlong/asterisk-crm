@@ -115,6 +115,7 @@ function initIni(){
 
 	$objResponse->addAssign("iptSysUploadFilePath","value",$config["system"]["upload_file_path"]);
 
+	$objResponse->addAssign("iptGooglemapkey","value",$config["google-map"]["key"]);
 
 	return $objResponse;
 }
@@ -245,6 +246,7 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
+	$myPreferences['google-map']['key'] = $aFormValues['iptGooglemapkey'];
 	if (Common::write_ini_file("astercrm.conf.php",$myPreferences))
 		$objResponse->addAlert($locate->Translate('save_success'));
 	else

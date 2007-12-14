@@ -13,7 +13,7 @@
 
 * Function Desc
 		init				初始化页面元素
-		createGrid			生成grid的HTML代码
+		createGrid
 		showGrid
 		add
 		save
@@ -54,7 +54,6 @@ function init(){
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
-
 	return $objResponse;
 }
 
@@ -141,7 +140,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	//$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	
 	$table->exportFlag = '1';//对导出标记进行赋值
-	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
+	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -196,25 +195,28 @@ function delete($id = null, $table_DB = null){
 	return $objResponse->getXML();
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit){
+function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
-	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	if($exportFlag == "1"){
-		$sql = astercrm::getSql($searchContent,$searchField,'diallist'); //得到要导出的sql语句
-		$_SESSION['export_sql'] = $sql;
-		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
-		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	if($type == "delete"){
+		$res = Customer::deleteRecord($id,'diallist');
+		if ($res){
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$exportFlag);
-		$objResponse->addClear("msgZone", "innerHTML");
-		$objResponse->addAssign($divName, "innerHTML", $html);
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
 	}
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

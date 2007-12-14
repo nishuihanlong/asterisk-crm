@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************
-* account.server.php
+* group.server.php
 
-* 账户管理系统后台文件
-* account background management script
+* 账户组管理系统后台文件
+* group background management script
 
 * Function Desc
-	provide account management script
+	provide group management script
 
 * 功能描述
 	提供帐户管理脚本
@@ -15,18 +15,17 @@
 		init				初始化页面元素
 		showGrid			显示grid
 		createGrid			生成grid的HTML代码
-		add					显示添加account的表单
-		save				保存account信息
-		update				更新account信息
-		edit				显示修改account的表单
-		delete				删除account信息
-		showDetail			显示account详细信息
+		add					显示添加group的表单
+		save				保存group信息
+		update				更新group信息
+		edit				显示修改group的表单
+		delete				删除group信息
+		showDetail			显示group详细信息
 							当前返回空值
 		searchFormSubmit    根据提交的搜索信息重构显示页面
 
 * Revision 0.0456  2007/10/30 13:47:00  last modified by solo
-* Desc: modify function showDetail, make it show account detail when click detail
-
+* Desc: modify function showDetail, make it show group detail when click detail
 
 * Revision 0.045  2007/10/19 10:01:00  last modified by solo
 * Desc: modify extensions description
@@ -209,7 +208,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top($locate->Translate("adding_account"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("adding_group"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -220,8 +219,8 @@ function add(){
 }
 
 /**
-*  save account record
-*  @param	f			array		account record
+*  save group record
+*  @param	f			array		group record
 *  @return	objResponse	object		xajax response object
 */
 
@@ -236,7 +235,7 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_account"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_group"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
@@ -247,8 +246,8 @@ function save($f){
 }
 
 /**
-*  update account record
-*  @param	f			array		account record
+*  update group record
+*  @param	f			array		group record
 *  @return	objResponse	object		xajax response object
 */
 
@@ -271,14 +270,14 @@ function update($f){
 }
 
 /**
-*  show account edit form
-*  @param	id			int			account id
+*  show group edit form
+*  @param	id			int			group id
 *  @return	objResponse	object		xajax response object
 */
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_account"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("edit_group"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
@@ -290,14 +289,14 @@ function edit($id){
 }
 
 /**
-*  update account record
-*  @param	accountid	int			account id
+*  update group record
+*  @param	groupid	int			group id
 *  @return	objResponse	object		xajax response object
 */
 
-function delete($accountid = null){
+function delete($groupid = null){
 	global $locate;
-	$res = Customer::deleteRecord($accountid,'accountgroup');
+	$res = Customer::deleteRecord($groupid,'accountgroup');
 	if ($res){
 		$numRows = $_SESSION['numRows'];
 		$limit = $_SESSION['limit'];
@@ -314,16 +313,16 @@ function delete($accountid = null){
 }
 
 /**
-*  show account record detail
-*  @param	accountid	int			account id
+*  show group record detail
+*  @param	groupid	int			group id
 *  @return	objResponse	object		xajax response object
 */
 
-function showDetail($accountid){
+function showDetail($groupid){
 	$objResponse = new xajaxResponse();
 	global $locate;
-	$html = Table::Top( $locate->Translate("account_detail"),"formDiv"); 
-	$html .= Customer::showAccountgroupDetail($accountid);
+	$html = Table::Top( $locate->Translate("group_detail"),"formDiv"); 
+	$html .= Customer::showAccountgroupDetail($groupid);
 	$html .= Table::Footer();
 
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");

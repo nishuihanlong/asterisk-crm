@@ -1,9 +1,9 @@
 <?php
 /*******************************************************************************
-* account.common.php
-* account参数信息文件
+* group.common.php
+* groupt参数信息文件
 
-* account parameter file
+* group parameter file
 
 * 功能描述
 	检查用户权限
@@ -68,7 +68,7 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
 
-define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(ROWSXPAGE, 10); // Number of rows show it per page.
 define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
 
 ?>

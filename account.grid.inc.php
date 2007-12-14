@@ -165,11 +165,19 @@ class Customer extends astercrm
 	*							un nuevo registro.
 	*/
 	
-	function getGroupId(){
+	function getGroups(){
 		global $db;
 		$sql = "SELECT *  FROM accountgroup";
 		Customer::events($sql);
 		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function getGroupById($groupid){
+		global $db;
+		$sql = "SELECT groupname  FROM accountgroup WHERE id = $groupid";
+		Customer::events($sql);
+		$res =& $db->getRow($sql);
 		return $res;
 	}
 
@@ -215,13 +223,13 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="20" maxlength="20"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">groupId</td>
+					<td nowrap align="left">'.$locate->Translate("group_name").'</td>
 					<td align="left">
 						<select name="groupid" id="groupid">
 							<option value=""></option>';
-							$res = Customer::getGroupId();
+							$res = Customer::getGroups();
 							while ($row = $res->fetchRow()) {
-								$html .= '<option value="'.$row['groupid'].'">'.$row['groupid'].'</option>';
+								$html .= '<option value="'.$row['groupid'].'">'.$row['groupname'].'</option>';
 							}
 
 			$html .= '</select>
@@ -306,21 +314,21 @@ class Customer extends astercrm
 					<!--<input type="text" id="usertype" name="usertype" size="25" maxlength="30" value="'.$account['usertype'].'">--></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("accountcode").'</td>
+					<td nowrap align="left">'.$locate->Translate("account_code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="20" maxlength="20" value="'.$account['accountcode'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">groupId</td>
+					<td nowrap align="left">'.$locate->Translate("group_name").'</td>
 					<td align="left">
 						<select name="groupid" id="groupid">
 							<option value=""></option>';
-							$res = Customer::getGroupId();
+							$res = Customer::getGroups();
 							while ($row = $res->fetchRow()) {
 								$html .= '<option value="'.$row['groupid'].'"';
 								if($row['groupid'] == $account['groupid']){
 									$html .= ' selected ';
 								}
-								$html .= '>'.$row['groupid'].'</option>';
+								$html .= '>'.$row['groupname'].'</option>';
 							}
 
 			$html .= '</select>
@@ -354,6 +362,7 @@ class Customer extends astercrm
 	function showAccountDetail($id){
 		global $locate;
 		$account =& Customer::getRecordByID($id,'account');
+		$group = & Customer::getGroupByID($account['groupid']);
 		$html = '
 			
 			<table border="1" width="100%" class="adminlist">
@@ -382,8 +391,12 @@ class Customer extends astercrm
 					<td align="left">'.$account['usertype'].'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("accountcode").'</td>
+					<td nowrap align="left">'.$locate->Translate("account_code").'</td>
 					<td align="left">'.$account['accountcode'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("group_name").'</td>
+					<td align="left">'.$group['groupname'].'</td>
 				</tr>
 			 </table>
 			';

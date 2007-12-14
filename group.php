@@ -1,15 +1,15 @@
 <?php
 /*******************************************************************************
-* account.php
+* group.php
 
-* 账户管理界面文件
+* 账户组管理界面文件
 * account management interface
 
 * Function Desc
 	provide an account management interface
 
 * 功能描述
-	提供帐户管理界面
+	提供账户组管理界面
 
 * Page elements
 

@@ -257,7 +257,7 @@ class ScrollTable{
 		if($delete)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\'))  searchFormSubmit(0,5,\''.$arr[0].'\',\'delete\');return false;"><img src="skin/default/images/trash.png" border="0"></a>
+						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  searchFormSubmit(0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
 					</td>';
 		if($detail)
 			$row .= '
@@ -414,7 +414,7 @@ class ScrollTable{
 				</td>';
 		if($this->exportFlag != ''){
 			$this->search .='<td>
-								<input type="checkbox" value="1" name="exportFlag" id="exportFlag" onclick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("export").'\';"/>
+								<input type="checkbox" value="1" name="exportFlag" id="exportFlag"/>
 						'.$local_grid->Translate("export").'
 					         </td>';
 		}

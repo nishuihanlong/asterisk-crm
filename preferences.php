@@ -487,7 +487,30 @@ require_once('preferences.common.php');
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
-    <td height="39" class="td font" id="ExternalCRM" name="ExternalCRM"  align="left">
+    <td height="39" class="td font" id="others" name="others"  align="left">
+		&nbsp;&nbsp;&nbsp;Others 
+      <input type="button" onclick="display('menu4')"  value="+"/>
+    </td>
+  </tr>
+  <tr>
+    <td height="10" class="td"></td>
+  </tr>
+</table>
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu4" width="780">
+  <tr>
+    <td width="230" align="left" valign="top" id="googlemapkey" name="googlemapkey">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;google map key</td>
+    <td width="200" align="left" valign="top" >
+			<input type="text" size="30" id="iptGooglemapkey" name="iptGooglemapkey" />
+		</td>
+    <td align="left" valign="top" >
+		<div id="divGooglemapkey" name="divGooglemapkey">&nbsp;</div>
+	</td>
+  </tr>
+</table>
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+  <tr>
+    <td height="39" class="td font" align="left">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSave" id="btnSave"  value="Save" onclick="savePreferences();return false;"/>
     </td>
   </tr>

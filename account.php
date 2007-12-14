@@ -62,6 +62,9 @@ require_once('account.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div><br>
+	<div id="divActive" name="divActive">
+		<input type="button" value="Group" id="btnGroup" name="btnGroup" onClick="window.location='group.php';" />
+	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">

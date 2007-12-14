@@ -53,6 +53,7 @@ function init(){
 
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("btnGroup","value",$locate->Translate("group_manage"));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
