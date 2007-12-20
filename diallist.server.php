@@ -199,7 +199,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($exportFlag == "1"){
-		$sql = astercrm::getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,'diallist'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
