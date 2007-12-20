@@ -34,6 +34,7 @@
 require_once ("login.common.php");
 require_once ("db_connect.php");
 require_once ('include/asterisk.class.php');
+require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
 /**
@@ -48,17 +49,17 @@ require_once ('include/common.class.php');
 
 function processForm($aFormValues)
 {
-	$objResponse = new xajaxResponse();
 	global $locate;
+	$objResponse = new xajaxResponse();
 	if (trim($aFormValues['username']) == "")
 	{
-		$objResponse->addAlert($locate->Translate("username_cannot_be_blank"));
+		$objResponse->addAlert($locate->Translate("Username cannot be blank"));
 		$objResponse->addScript('init();');
 		return $objResponse;
 	}
 	if (trim($aFormValues['password']) == "")
 	{
-		$objResponse->addAlert($locate->Translate("password_cannot_be_blank"));
+		$objResponse->addAlert($locate->Translate("Password cannot be blank"));
 		$objResponse->addScript('init();');
 		return $objResponse;
 	}
@@ -71,7 +72,7 @@ function processForm($aFormValues)
 			return processAccountData($aFormValues);
 		}else{
 		  // error
-			$objResponse->addAlert($locate->Translate("invalid_string"));
+			$objResponse->addAlert($locate->Translate("Invalid string"));
 			$objResponse->addScript('init();');
 			return $objResponse;
 		}
@@ -102,21 +103,20 @@ function init($aFormValue){
 	
 	global $locate,$config;
 
-	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);	//get locate parameter
-
+	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);	
+	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
+
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("title"));
-	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
-	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
-	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("Username"));
+	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("Password"));
+	$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
-	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
+	$objResponse->addAssign("onclickMsg","value",$locate->Translate("Please waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
-	unset($_SESSION['curuser']['username']);
-	unset($_SESSION['curuser']['extension']);
-	unset($_SESSION['curuser']['extensions']);
-	unset($_SESSION['curuser']['channel']);
+
+	unset($_SESSION['curuser']);
 	unset($_SESSION['status']);
 	return $objResponse;
 }
@@ -151,34 +151,45 @@ function processAccountData($aFormValues)
 
 	if (!$bError)
 	{
-		$query = "SELECT * FROM account WHERE username='" . $aFormValues['username'] . "'";
-		$res = $db->query($query);
-
-		if ($res->fetchInto($list)){
-			if ($list['password'] == $aFormValues['password'])
+		//$query = "SELECT * FROM account WHERE username='" . $aFormValues['username'] . "'";
+		//$res = $db->query($query);
+		
+		$row = astercrm::getRecordByField("username",$aFormValues['username'],"account");
+		if ($row['id'] != '' ){
+			if ($row['password'] == $aFormValues['password'])
 			{
 				$_SESSION = array();
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
-				$_SESSION['curuser']['extension'] = $list['extension'];
-				$_SESSION['curuser']['usertype'] = $list['usertype'];
-				$_SESSION['curuser']['accountcode'] = $list['accountcode'];
+				$_SESSION['curuser']['extension'] = $row['extension'];
+				$_SESSION['curuser']['usertype'] = $row['usertype'];
+				$_SESSION['curuser']['accountcode'] = $row['accountcode'];
 
 				// added by solo 2007-10-90
-				$_SESSION['curuser']['channel'] = $list['channel'];
+				$_SESSION['curuser']['channel'] = $row['channel'];
+				$_SESSION['curuser']['extensions'] = array();
 
-				if ($list['extensions'] != ''){
-					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);
-				}
-				else{
-					$_SESSION['curuser']['extensions'] = array();
+				if ($row['extensions'] != ''){
+					$_SESSION['curuser']['extensions'] = split(',',$row['extensions']);
 				}
 
+				// if it's a group admin, then add all group extension to it
+				if ($row['usertype'] == 'groupadmin'){
+					$_SESSION['curuser']['groupid'] = $row['groupid'];
+					$_SESSION['curuser']['memberExtens'] = array();
+					$groupList = astercrm::getGroupMemberListByID($row['groupid']);
+					while	($groupList->fetchInto($groupRow)){
+						$_SESSION['curuser']['memberExtens'][] = $groupRow['extension'];
+					}
+				}
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
+
+				// get group information
+				$_SESSION['curuser']['group'] = astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
 /*
 	if you dont want check manager status and show device status when user login 
 	please uncomment these three line
 */
-				$objResponse->addAlert($locate->Translate("login_success"));
+				$objResponse->addAlert($locate->Translate("Login success"));
 				$objResponse->addScript('window.location.href="portal.php";');
 				return $objResponse;
 
@@ -214,12 +225,12 @@ function processAccountData($aFormValues)
 			return $objResponse;
 		} else {
 			$objResponse->addAlert($locate->Translate("login_failed"));
-			$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+			$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
 			$objResponse->addAssign("loginButton","disabled",false);
 			return $objResponse;
 		}
 	} else {
-		$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+		$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
 		$objResponse->addAssign("loginButton","disabled",false);
 	}
 	

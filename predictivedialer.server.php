@@ -27,8 +27,8 @@
 require_once ("predictivedialer.common.php");
 require_once ("db_connect.php");
 require_once ('include/xajaxGrid.inc.php');
-require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
+require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
 function init(){
@@ -90,8 +90,11 @@ function showPredictiveDialer($preDictiveDialerStatus){
 	*/
 
 	//从数据库读取预拨号的总数
-	$query = '
-		SELECT COUNT(*) FROM diallist';
+	if ($_SESSION['curuser']['usertype']  == "groupadmin")
+		$query = "SELECT COUNT(*) FROM diallist WHERE groupid =".$_SESSION['curuser']['groupid'];
+	else
+		$query = "SELECT COUNT(*) FROM diallist ";
+
 	$res =& $db->getOne($query);
 
 	if ($res == 0 || $res == "0"){
@@ -137,23 +140,24 @@ function predictiveDialer($maxChannels,$totalRecords){
 	$myAsterisk = new Asterisk();
 
 	//获取一个号码
-	$query = '
-			SELECT id,dialnumber 
-			FROM diallist 
-			ORDER BY id DESC
-			LIMIT 0,1 
-			 ' ;
+	if ($_SESSION['curuser']['usertype']  == "admin"){
+		$row =& astercrm::getDialNumber();
+		$grouprow = & astercrm::getgetRecordByField("groupid",$row['groupid'],"accountgroup");
+		$pdextension = $grouprow['pdextension'];
+		$pdcontext = $grouprow['pdcontext'];
+	}else{
+		$row =& astercrm::getDialNumber($_SESSION['curuser']['groupid']);
+		$pdextension = $_SESSION['curuser']['group']['pdextension'];
+		$pdcontext = $_SESSION['curuser']['group']['pdcontext'];
+	}
 	
-	$res = $db->query($query);
-	if ($res->numRows() == 0){
+	if ($row['id'] == ''){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
 		$objResponse->addScript("stopDial();");
 		return $objResponse;
 	} else {
-		$res->fetchInto($list);
-
-		$id = $list['id'];
-		$phoneNum = $list['dialnumber'];
+		$id = $row['id'];
+		$phoneNum = $row['dialnumber'];
 
 		// get active channel
 		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
@@ -171,14 +175,11 @@ function predictiveDialer($maxChannels,$totalRecords){
 			return $objResponse;
 		}
 
+		$res = astercrm::deleteRecord($id,"diallist");
+		$f['dialnumber'] = $phoneNum;
+		$f['dialedby'] = $_SESSION['curuser']['username'];
 
-		$query = '
-			DELETE FROM diallist
-			WHERE id = '.$id;
-		$res = $db->query($query);
-
-		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime) VALUES ("'.$phoneNum.'","predictivedialer",now())';
-		$res = $db->query($query);
+		$res = astercrm::insertNewDialedlist($f);
 
 		$sid=md5(uniqid(""));
 		/*
@@ -191,13 +192,13 @@ function predictiveDialer($maxChannels,$totalRecords){
 			';
 		$res = $db->query($query);
 		*/
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+		$strChannel = "Local/".$phoneNum."@".$pdcontext."/n";
 		if ($config['system']['allow_dropcall'] == true){
 
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,
-									'Exten'=>$config['system']['predialer_extension'],
-									'Context'=>$config['system']['predialer_context'],
+									'Exten'=>$pdextension,
+									'Context'=>$pdcontext,
 									'Variable'=>"$strVariable",
 									'Priority'=>1,
 									'MaxRetries'=>0,
@@ -206,7 +207,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 			$myAsterisk->config['asmanager'] = $config['asterisk'];
 			$res = $myAsterisk->connect();
 
-			$myAsterisk->sendCall($strChannel,$config['system']['predialer_extension'],$config['system']['predialer_context'],1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
+			$myAsterisk->sendCall($strChannel,$pdextension,$pdcontext,1,NULL,NULL,30,$phoneNum,NULL,NULL,NULL,$actionid);
 		}
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("dialing")." $phoneNum");
 		$totalRecords = $totalRecords-1;

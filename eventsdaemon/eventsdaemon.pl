@@ -4,14 +4,14 @@ use Socket;
 use DBI;
 use POSIX 'setsid';
 
-my $asterisk = 'localhost';
+my $asterisk = '';
 my $asteriskport = 5038;
 my $asteriskuser = '';
 my $asterisksecret = '';
 
-my $dbhost = '';
+my $dbhost = '127.0.0.1';
 my $dbname = '';
-my $dbport = '';
+my $dbport = 3306;
 my $dbuser = '';
 my $dbpasswd = '';
 

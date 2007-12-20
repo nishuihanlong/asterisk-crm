@@ -1,21 +1,25 @@
 <?
-class Localization
-	{
-	var $country;
-	var $language;
-	var $page;
+class Localization{
+	var $filePath;
 
-	function Localization($language,$country,$page)
-		{
-		$this->country=$country;
-		$this->language=$language;
-		$this->page = $page;
-		}
-	 
-	function Translate($str)
-		{
-		include ('language/'.($this->page)."_".($this->language)."_".($this->country).".php");
-		return $$str;
+	function Localization($language,$country,$page){
+		$this->filePath = "language/".$page."_".$language."_".$country.".php";
+	}
+	
+
+	function Translate($str){
+		$source = $str;
+		$filePath = dirname(dirname(__FILE__))."/include/".$this->filePath;
+		if (file_exists($filePath)){
+			require $this->filePath;
+			$str =str_replace(" ","_",strtolower($str));
+			if ($$str != "")
+				return $$str;
+			else
+				return $source;
+		}else{
+			return $str;
 		}
 	}
+}
 ?>

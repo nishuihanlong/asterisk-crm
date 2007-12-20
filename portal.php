@@ -127,6 +127,7 @@ require_once('config.php');
 		function updateEvents(){
 			myFormValue = xajax.getFormValues("myForm");
 			xajax_listenCalls(myFormValue);
+				// dont pop new window when there already a window exsits
 				if (xajax.$('formDiv') != null){
 					if (xajax.$('formDiv').style.visibility == 'visible')
 						xajax.$('popup').value = 'no';
@@ -184,13 +185,19 @@ require_once('config.php');
 		}
 
 		function searchFormSubmit(numRows,limit,id,type){
-		//alert(xajax.getFormValues("searchForm"));
-		xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
-		return false;
+			//alert(xajax.getFormValues("searchForm"));
+			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
+			return false;
 		}
 
 		</script>
-<script src="http://maps.google.com/maps?file=api&v=2&key=<?echo $config['google-map']['key'];?>" type="text/javascript"></script>
+<?
+if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
+?>
+	<script src="http://maps.google.com/maps?file=api&v=2&key=<?echo $config['google-map']['key'];?>" type="text/javascript"></script>
+<?
+}
+?>
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">

@@ -413,7 +413,9 @@ class asterEvent extends PEAR
 
 		asterEvent::events($query);
 		$res = $db->query($query);
-
+//		print $res->numRows();
+//		print "ok";
+//		exit;
 		if ($res->fetchInto($list)) {
 			$flds	= split("  ",$list['event']);
 			$call['status'] = 'hangup';
@@ -448,7 +450,7 @@ class asterEvent extends PEAR
 			return $call;
 		}
 
-		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp < '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
+		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
 
 //		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND id > " . $curid . " AND id <= ".$maxid." order by id desc limit 0,1";
 
@@ -519,11 +521,13 @@ class asterEvent extends PEAR
 		global $db;
 //		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND id < ".$maxid." AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' order by id desc limit 0,1";	
 
-		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND id <= ".$maxid." order by id desc limit 0,1";	
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Source: %".$exten."%' AND id > " . $curid . " AND id <= ".$maxid." AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' ORDER BY id desc limit 0,1";	
 		asterEvent::events($query);
 
 		$res = $db->query($query);
 //		asterEvent::events("dialout:".$res->numRows());
+//		print $query;
+//		exit;
 //		print_r($res);
 		if ($res->fetchInto($list)) {
 			$id        = $list['id'];

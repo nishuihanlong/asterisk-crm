@@ -116,6 +116,7 @@ CREATE TABLE diallist (
   id int(11) NOT NULL auto_increment,
   dialnumber varchar(30) NOT NULL default '',
   assign varchar(30) NOT NULL default '',
+  groupid INT NOT NULL DEFAULT '0';		#added by solo 2007-12-17
   UNIQUE KEY id (id)
 ) ;
 

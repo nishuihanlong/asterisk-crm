@@ -156,7 +156,6 @@ function submitForm($aFormValues){
 	$order = $aFormValues['order']; //得到的排序数字，数组形式，要添加到数据库的列
 	$fileName = $aFormValues['hidFileName'];
 	$tableName = $aFormValues['hidTableName'];
-
 	$flag = 0;
 	foreach($order as $value){  //判断是否有要导入的数据
 		if(trim($value) != ''){
@@ -218,40 +217,57 @@ function submitForm($aFormValues){
 		if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){ //是否添加分区assign
 			$tmpStr = trim($aFormValues['assign']); //分区,以','号分隔的字符串
 			if($tmpStr != ''){
+
 				$arryAssign = explode(',',$tmpStr);
-				$assignNum = count($arryAssign);//得到手动添加分区个数
-			}else{
-				$res = astercrm::getAllExtension();
-				while ($row = $res->fetchRow()) {
-					$arryAssign[] = $row['extension']; //$array_extension数组,存放extension数据
+				//判断这些分机是否在该组管理范围内
+				if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+					foreach ($arryAssign as $key => $myAssign){
+						if ( ! in_array(trim($myAssign), $_SESSION['curuser']['memberExtens'])){ //该组不包含该分机
+							unset($arryAssign[$key]);
+						}
+					}
 				}
-				$assignNum = count($arryAssign); //extension数据的个数
+				//exit;
+				$assignNum = count($arryAssign);//得到手动添加分区个数
+				//print_r($arryAssign);
+				//print $assignNum;
+			}else{
+				if ($_SESSION['curuser']['usertype'] == 'admin'){
+					$res = astercrm::getGroupMemberListByID();
+					while ($row = $res->fetchRow()) {
+						$arryAssign[] = $row['extension']; //$array_extension数组,存放extension数据
+					}
+					$assignNum = count($arryAssign); //extension数据的个数
+				}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+					$arryAssign = $_SESSION['curuser']['memberExtens'];
+					$assignNum = count($arryAssign); //extension数据的个数
+				}
 			}
 		}else{
 			$arryAssign[] = '';
-			$assignNum = 1;
+			$assignNum = 0;
 		}
 	}
-
+	$x =0;
 	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date);
-	
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句
 		//print $strSql;
 		//exit;
 		$dialListValue = $data['dialListValue'];	//以及要导入diallist的sql语句
-		if(isset($dialListField) && trim($dialListField) != ''){  //是否存在添加到拨号列表
-			if($x < $assignNum){
-				$assigned = $arryAssign[$x];
-			}else{
-				$x = 0;
-				$assigned = $arryAssign[$x];
+		if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
+			while ($arryAssign[$x] == ''){
+				if($x >$assignNum){
+					$x = 0;
+				}else{
+					$x ++;
+				}
 			}
-
-			$x++;
-			$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign) VALUES ('".$dialListValue."','".$assigned."')");  // 插入diallist表
-
+			$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign,groupid) VALUES ('".$dialListValue."','".$arryAssign[$x]."','".$_SESSION['curuser']['groupid']."')");  // 插入diallist表
+		
 			$diallistAffectRows += $db->affectedRows();
+			
+			$x++;
 
 		}
 

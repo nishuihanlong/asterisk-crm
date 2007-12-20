@@ -10,7 +10,7 @@
 
 * Revision 0.0442  2007/09/14 07:55:00  last modified by solo
 * Desc: modify session scripts to be compatible with trixbox
-* 描述: 改进了对session的处理以兼容trixbox2.0
+* 描述: 改进了对session的处理以兼容trixbox2.0, php5
 
 * Revision 0.044  2007/09/7 17:55:00  last modified by solo
 * Desc: add some comments
@@ -39,6 +39,6 @@ else
 
 
 $xajax = new xajax("login.server.php");
-$xajax->registerFunction("processForm");	 //registe xajax_processForm
-$xajax->registerFunction("init");				//registe xajax_init
+$xajax->registerFunction("processForm");	 //register xajax_processForm
+$xajax->registerFunction("init");				//register xajax_init
 ?>

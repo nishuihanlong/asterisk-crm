@@ -12,6 +12,7 @@
 			insertNewSurveyResult	向surveyresult表插入数据
 			insertNewAccount
 			insertNewDiallist
+			insertNewDialedlist
 			insertNewAccountgroup    向accountgroup表插入数据
 
 			updateCustomerRecord	更新customer表数据
@@ -19,38 +20,48 @@
 			updateNoteRecord		更新note表数据
 			updateAccountRecord
 			updateAccountgroupRecord  更新accountgroup表数据
+			updateRecords		更新数据
 
 			deleteRecord			从表中删除数据(以id作为标识)
-			getRecord				从表中读取数据(以id作为标识)
 			updateField				更新表中的数据(以id作为标识)
 			events					日志记录
 			checkValues				根据条件从数据库中检索是否有符合条件的记录
 			showNoteList			生成note列表的HTML文件
+
 			getCustomerByID			根据customerid获取customer记录信息或者根据noteid获取与之相关的customer信息
 			getContactByID			根据contactid获取contact记录信息或者根据noteid获取与之相关的contact信息
 			getContactListByID		根据customerid获取与之邦定的contact记录
+
+			getRecord				从表中读取数据(以id作为标识)
 			getRecordByID			根据id获取记录
+			getRecordByField($field,$value,$table)
+					根据某一条件获得记录
+			getCountByField($field,$value,$table)
+					根据某一条件获得记录数目
+			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
+
+			getTableRecords				从表中读取数据
+			getSql              得到多条件搜索的sql语句
+			getGroupMemberListByID 得到组成员 
+			getOptions				读取survey的所有option
+			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
+
 			surveyAdd				生成添加survey的HTML语法
 			noteAdd					生成添加note的HTML语法
 			formAdd					生成添加综合信息(包括customer, contact, survey, note)的HTML语法
 			formEdit				生成综合信息编辑的HTML语法, 
 									包括编辑customer, contact以及添加note
-			getOptions				读取survey的所有option
 
 			showCustomerRecord		生成显示customer信息的HTML语法
 			showContactRecord		生成显示contact信息的HTML语法
 
 			exportCSV				生成csv文件内容, 目前支持导出customer, contact
-			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
 
 			variableFiler			用于转译变量, 自动加\
-			新增exportDataToCSV     得到要导出的sql语句的结果集，转换为符合csv格式的文本字符串
-			新增getSql              得到多条件搜索的sql语句
-			新增getGroupMemberListByID 得到组成员 
+			exportDataToCSV     得到要导出的sql语句的结果集，转换为符合csv格式的文本字符串
 			
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
-			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
 
 
 
@@ -83,13 +94,25 @@
 
 
 Class astercrm extends PEAR{
-	
-	function getAllExtension(){
+
+	/**
+	* update table values
+	*	
+	*	@param	$table				string	table name
+	*	@param	$field					string	field name
+	*	@param	$old_val		string	old value
+	*	@param	$new_val		string	new value
+	*
+	$res = astercrm::updateRecords('accountgroup','groupid',$id,0);
+
+	*/
+	function updateRecords($table,$field,$old_val,$new_val){
 		global $db;
-		$query = "select extension from account";
+		$query = "UPDATE $table SET $field = '$new_val' WHERE $field = '$old_val'";
 		$res =& $db->query($query);
 		return  $res;
 	}
+
 
 	/**
 	*	get table structure
@@ -101,6 +124,13 @@ Class astercrm extends PEAR{
 	function getTableStructure($tableName){
 		global $db;
 		$query = "select * from $tableName LIMIT 0,2";
+		$res =& $db->query($query);
+		return  $db->tableInfo($res);
+	}
+
+	function getTableRecords($tableName){
+		global $db;
+		$query = "select * from $tableName";
 		$res =& $db->query($query);
 		return  $db->tableInfo($res);
 	}
@@ -247,7 +277,7 @@ Class astercrm extends PEAR{
 				."groupid='".$f['groupid']."', "	// added 2007/11/12 by solo
 				."accountcode='".$f['accountcode']."'";
 
-		Customer::events($sql);
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -260,7 +290,7 @@ Class astercrm extends PEAR{
 				."groupid='".$f['groupid']."', "
 				."pdcontext='".$f['pdcontext']."',"
 				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
-		Customer::events($sql);
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -271,9 +301,21 @@ Class astercrm extends PEAR{
 		
 		$sql= "INSERT INTO diallist SET "
 				."dialnumber='".$f['dialnumber']."', "
+				."groupid='".$f['groupid']."', "
 				."assign='".$f['assign']."'";
 
-		Customer::events($sql);
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function insertNewDialedlist($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now())';
+
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -555,7 +597,7 @@ Class astercrm extends PEAR{
 	function &getCustomerByID($id,$type="customer"){
 		global $db;
 		if ($type == 'customer')
-			return astercrm::getRecord($id,'customer');//$sql = "SELECT * FROM customer WHERE id = $id";
+			return astercrm::getRecordById($id,'customer');//$sql = "SELECT * FROM customer WHERE id = $id";
 		elseif ($type == 'contact')
 			$sql = "SELECT * FROM customer RIGHT JOIN (SELECT customerid FROM contact WHERE id = $id ) g ON customer.id = g.customerid";
 		else
@@ -587,20 +629,6 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
-	function &getDialByID($id,$type="diallist"){
-		global $db;
-		if ($type == 'diallist')
-			return astercrm::getRecord($id,'diallist');//$sql = "SELECT * FROM customer WHERE id = $id";
-		elseif ($type == 'contact')
-			$sql = "SELECT * FROM diallist RIGHT JOIN (SELECT customerid FROM contact WHERE id = $id ) g ON customer.id = g.customerid";
-		else
-			$sql = "SELECT * FROM diallist RIGHT JOIN (SELECT customerid FROM note WHERE id = $id ) g ON customer.id = g.customerid";
-		
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
-		return $row;
-	}
-
 	/**
 	*	get contact list which are binding to a specific customer
 	*
@@ -617,9 +645,12 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function &getGroupMemberListByID($groupid){
+	function getGroupMemberListByID($groupid = null){
 		global $db;
-		$sql = "SELECT id,username FROM account WHERE groupid =$groupid";
+		if ($groupid == null)
+			$sql = "SELECT id,username,extension FROM account";
+		else
+			$sql = "SELECT id,username,extension FROM account WHERE groupid =$groupid";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -740,7 +771,7 @@ Class astercrm extends PEAR{
 	*/
 
 	function formAdd($callerid = null,$customerid = null, $contactid = null){
-	global $locate;
+	global $locate,$config;
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -864,7 +895,7 @@ Class astercrm extends PEAR{
 				</tr>
 				';
 	}
-	if(ENABLE_CONTACT != '0'){ //控制contact模块的显示与隐藏
+	if($config['system']['enable_contact'] != '0'){ //控制contact模块的显示与隐藏
 		if ($contactid == null){
 				$html .='
 					<tr>
@@ -1012,11 +1043,37 @@ Class astercrm extends PEAR{
 		
 		$sql = "SELECT * FROM $table "
 				." WHERE id = $id";
-		Customer::events($sql);
+		astercrm::events($sql);
 		$row =& $db->getRow($sql);
 		return $row;
 	}
 
+	function getRecordByField($field,$value,$table){
+		global $db;
+		if (is_numeric($value)){
+			$sql = "SELECT * FROM $table WHERE $field = $value LIMIT 0,1";
+		}else{
+			$sql = "SELECT * FROM $table WHERE $field = '$value'  LIMIT 0,1";
+		}
+		astercrm::events($sql);
+		$row =& $db->getRow($sql);
+		return $row;
+	}
+
+	function getCountByField($field,$value,$table){
+		global $db;
+		if (is_numeric($value)){
+			$sql = "SELECT count(*) FROM $table WHERE $field = $value";
+		}else{
+			if ($value == null)
+				$sql = "SELECT count(*) FROM $table ";
+			else
+				$sql = "SELECT count(*) FROM $table WHERE $field = '$value'";
+		}
+		astercrm::events($sql);
+		$row =& $db->getOne($sql);
+		return $row;
+	}
 
 	function getOptions($surveyid){
 
@@ -1097,7 +1154,7 @@ Class astercrm extends PEAR{
 	function formEdit($id , $type){
 		global $locate;
 		if ($type == 'note'){
-			$note =& astercrm::getRecord($id,'note');
+			$note =& astercrm::getRecordById($id,'note');
 			for ($i=0;$i<11;$i++){
 				$options .= "<option value='$i' ";
 				if (trim($note['priority']) == $i)
@@ -1470,6 +1527,19 @@ Class astercrm extends PEAR{
 
 	}
 
+	function getDialNumber($groupid = null){
+		global $db;
+
+		if ($groupid == null){
+			$query = "SELECT id,dialnumber,groupid FROM diallist ORDER BY id DESC	LIMIT 0,1" ;
+		}else{
+			$query = "SELECT id,dialnumber	FROM diallist 	 WHERE groupid = $groupid ORDER BY id DESC	LIMIT 0,1";
+		}
+		$row =& $db->getRow($query);
+
+		return $row;
+	}
+
 	/**
 	*  delete a record form a table
 	*
@@ -1642,10 +1712,18 @@ Class astercrm extends PEAR{
 
 	function getCustomerByCallerid($callerid){
 		global $db;
-		$sql = "SELECT id FROM customer WHERE phone LIKE '%$callerid'";
-		$customerid =& $db->getOne($sql);
-		astercrm::events($sql);
+		$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' ";
+		astercrm::events($query);
+		$customerid =& $db->getOne($query);
 		return $customerid;
+	}
+
+	function getContactByCallerid($callerid){
+		global $db;
+		$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' LIMIT 0,1";
+		astercrm::events($query);
+		$row =& $db->getRow($query);
+		return $row;
 	}
 
 	function getSql($searchContent,$searchField,$table){
@@ -1694,7 +1772,7 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime=now() ";
 
-		Customer::events($sql);
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}

@@ -23,7 +23,7 @@ require_once ('include/localization.class.php');
 require_once ("include/excel.class.php");
 include_once('config.php');
 
-if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
+if ($_SESSION['curuser']['usertype'] == 'agent') 
 	header("Location: portal.php");
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'import');

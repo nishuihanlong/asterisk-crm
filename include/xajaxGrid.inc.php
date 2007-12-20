@@ -140,7 +140,6 @@ class ScrollTable{
 		$this->content = $content;
 		$this->order = $order;
 
-
 		$this->setFooter();
 	}
 
@@ -429,8 +428,8 @@ class ScrollTable{
 	*/
 
 	function setFooter(){
+		
 		global $local_grid;
-		//print_r($_SESSION['curuser']['content']);
 		$next_rows = $this->start + $this->limit;
 		$previos_rows = $this->start - $this->limit;
 		if($next_rows>$this->numRows) $next_rows = $this->numRows;
@@ -485,12 +484,13 @@ class ScrollTable{
 					<span class="pagenav">';
 
 					if($next_rows < $this->numRows){
-					$this->footer .= '<a href="?" onClick=\'
-					document.getElementById("numRows").value = '.($this->numRows - $this->limit).';
-					document.getElementById("limit").value='.$this->limit.';
-					searchFormSubmit('.($this->numRows - $this->limit).','.$this->limit.');return false;\'>'.$local_grid->Translate("last").'</a>';
+						$this->footer .= '<a href="?" onClick=\'
+						document.getElementById("numRows").value = '.($this->numRows - $this->limit).';
+						document.getElementById("limit").value='.$this->limit.';
+						searchFormSubmit('.($this->numRows - $this->limit).','.$this->limit.');return false;\'>'.$local_grid->Translate("last").'</a>';
 					}else{
-					$this->footer .= $local_grid->Translate("last").'</span>';
+
+						$this->footer .= $local_grid->Translate("last").'</span>';
 					}
 				$this->footer .= '
 				</th>

@@ -70,9 +70,9 @@ require_once ('portal.grid.inc.php');
 require_once ('include/phoogle.php');
 
 /**
-*  show customer contact detail based on
-*  @param	noteid		int			noteid
-*  @return	object					xajax response object
+*  show customer contact detail
+*  @param			noteid		int			noteid
+*  @return			object		xajax response object
 */
 
 function showDetail($noteid){
@@ -80,34 +80,29 @@ function showDetail($noteid){
 	$objResponse = new xajaxResponse();
 
 	if ($config['system']['portal_display_type'] == "note"){
-		$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'note\');');
-		$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'note\');');
-	}else{
-		$objResponse->addScript('xajax_showContact(\''.$noteid.'\',\'customer\');');
-		$objResponse->addScript('xajax_showCustomer(\''.$noteid.'\',\'customer\');');
+		$objResponse->addScript("xajax_showContact('$noteid','note');");
+		$objResponse->addScript("xajax_showCustomer('$noteid','note');");
+	}elseif ($config['system']['portal_display_type'] == "customer"){
+		$objResponse->addScript("xajax_showContact('$noteid','customer');");
+		$objResponse->addScript("xajax_showCustomer('$noteid','customer');");
 	}
+
 	return $objResponse;
 }
 
 /**
 *  show phone numbers and dial button if there are phone numbers assigned to this agent
 *  in diallist table
-*  @param	extension		int			extension
-*  @return	object						xajax response object
+*  @param	extension		string			extension
+*  @return	object				xajax response object
 */
 
 function getPrivateDialListNumber($extension = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
-	// get dial list
-	if ($extension == null)
-		$query = 'SELECT COUNT(*) FROM diallist';
-	else
-		$query = 'SELECT COUNT(*) FROM diallist WHERE assign = "'.$extension.'"';
 
-	$res =& $db->getOne($query);
-
-	if ($res == 0 || $res == "0"){
+	$count = astercrm::getCountByField("assign",$extension,"diallist");
+	if ($count == 0){
 		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
 	} else{
 		// add div
@@ -115,7 +110,7 @@ function getPrivateDialListNumber($extension = null){
 		$objResponse->addRemove("btnGetAPhoneNumber");
 
 		$objResponse->addCreate("divDialList", "div", "spanDialListRecords");
-		$objResponse->addAssign("spanDialListRecords", "innerHTML", $locate->Translate("records_in_dial_list_table").$res);
+		$objResponse->addAssign("spanDialListRecords", "innerHTML", $locate->Translate("records_in_dial_list_table").$count);
 
 		// add start campaign button
 		$objResponse->addCreateInput("divDialList", "button", "btnGetAPhoneNumber", "btnGetAPhoneNumber");
@@ -126,6 +121,11 @@ function getPrivateDialListNumber($extension = null){
 	return $objResponse;
 }
 
+/**
+*  init page
+*  @return	object				xajax response object
+*/
+
 function init(){
 	global $locate,$config,$db;
 
@@ -134,6 +134,7 @@ function init(){
 	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
 	$html .= $locate->Translate("extension").$_SESSION['curuser']['extension'];
 	$objResponse->addAssign("divUserMsg","innerHTML", $html );
+
 	$objResponse->addAssign("username","value", $_SESSION['curuser']['username'] );
 	$objResponse->addAssign("extension","value", $_SESSION['curuser']['extension'] );
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
@@ -156,7 +157,7 @@ function init(){
 //	echo $_SESSION['curuser']['usertype'];
 //	exit;
 
-	if ($_SESSION['curuser']['usertype'] == "admin"){
+	if ($_SESSION['curuser']['usertype'] != "agent"  ){
 		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
 	}
 
@@ -171,8 +172,6 @@ function init(){
 		$objResponse->addAssign("divSearchContact", "style.visibility", "visible");
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");
-
-
 		if ($config['system']['open_new_window'] == false){
 			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
@@ -185,6 +184,10 @@ function init(){
 	return $objResponse;
 }
 
+/**
+*	 check if there's new event happen
+*
+*/
 function listenCalls($aFormValues){
 	$objResponse = new xajaxResponse();
 	if ($aFormValues['uniqueid'] == ''){
@@ -196,7 +199,10 @@ function listenCalls($aFormValues){
 	return $objResponse;
 }
 
-//transfer
+/**
+*	 check if there's new event happen
+*
+*/
 function transfer($aFormValues){
 	global $config;
 	$myAsterisk = new Asterisk();
@@ -428,8 +434,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content);
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order);
+			$numRows =& Customer::getNumRows($filter, $content);
+			$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);
 		}
 	}
 
@@ -587,29 +593,18 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 function addWithPhoneNumber(){
 	$objResponse = new xajaxResponse();
 	global $db;
-	//get a phone number from database
 	
-	$query = '
-		SELECT id,dialnumber 
-		FROM diallist
-		WHERE assign = '.$_SESSION['curuser']['extension'].'
-		ORDER BY id DESC
-		LIMIT 0,1 
-		 ' ;
-	
-	$res = $db->query($query);
-	if ($res->numRows() == 0){
+	$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
+
+	if ($row['id'] == ''){
 
 	} else {
-		$res->fetchInto($list);
-		$phoneNum = $list['dialnumber'];
+		$phoneNum = $row['dialnumber'];
 		$objResponse->loadXML(getContact($phoneNum));
-		$id = $list['id'];
-		$query = 'DELETE FROM diallist WHERE id ='.$id ;
-		$res = $db->query($query);
-
-		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime) VALUES ("'.$phoneNum.'","'.$_SESSION['curuser']['extension'].'",now())';
-		$res = $db->query($query);
+		astercrm::deleteRecord($row['id'],"diallist");
+		$f['dialnumber'] = $phoneNum;
+		$f['dialedby'] = $_SESSION['curuser']['extension'];
+		insertNewDialedlist($f);
 	}
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
@@ -633,7 +628,6 @@ function dial($phoneNum,$first = ''){
 	$res = $myAsterisk->connect();
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
-
 
 	if ($first == 'caller'){	//caller will ring first
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
@@ -687,17 +681,6 @@ function invite($src,$dest){
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
 	
-/*
-	if ($src == '' and $dest == '')
-		return $objResponse;
-
-	if ($src == '')
-		$src = $_SESSION['curuser']['extension'];
-
-	if ($dest == '')
-		$dest = $_SESSION['curuser']['extension'];
-*/
-
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	if (!$res)
@@ -705,7 +688,6 @@ function invite($src,$dest){
 
 
 		$strChannel = "Local/".$src."@".$config['system']['incontext']."/n";
-
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 							'WaitTime'=>30,
@@ -717,11 +699,9 @@ function invite($src,$dest){
 							'MaxRetries'=>0,
 							'CallerID'=>$dest));
 	}else{
-		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$dest,NULL,NULL);
+		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$dest,NULL,$_SESSION['curuser']['accountcode']);
 	}
 
-	//$myAsterisk->disconnect();	// comment by solo 2007-11-1
-									// if we use disconnect, it would need time waiting for asterisk return handle
 	return $objResponse->getXML();
 }
 
@@ -764,22 +744,12 @@ function getContact($callerid){
 			
 
 	//check contact table first
-	$query = '
-			SELECT id,customerid 
-			FROM contact
-			WHERE phone LIKE \'%'. $mycallerid . '\'
-			OR phone1 LIKE \'%'. $mycallerid . '\'
-			OR phone2 LIKE \'%'. $mycallerid . '\'
-			OR mobile LIKE \'%'. $mycallerid . '\'
-			 ' ;
-//	print $query;
-	$res = $db->query($query);
-
-	if ($res->numRows() == 0){	//no match
-//	print 'no match in contact list';
+	$row = astercrm::getContactByCallerid($mycallerid);
+	if ($row['id'] == ''){	//no match
+		//	print 'no match in contact list';
 
 		//try get customer
-		$customerid = Customer::getCustomerByCallerid($mycallerid);
+		$customerid = astercrm::getCustomerByCallerid($mycallerid);
 
 		if ($customerid == ''){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
@@ -791,11 +761,10 @@ function getContact($callerid){
 			$objResponse->addAssign("formDiv", "innerHTML", $html);
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
 		}
-	} elseif ($res->numRows() == 1) { // one match
+	} else{ // one match
 
-		$res->fetchInto($list);
-		$customerid = $list['customerid'];
-		$contactid = $list['id'];
+		$customerid = $row['customerid'];
+		$contactid = $row['id'];
 		
 		$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
@@ -807,19 +776,6 @@ function getContact($callerid){
 		if ($customerid != 0)
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
 
-	}else {	//match a lot records... [only display the first one for now]
-		$res->fetchInto($list);
-		$customerid = $list['customerid'];
-		$contactid = $list['id'];
-		
-		$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
-		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
-		$html .= Table::Footer();
-		$objResponse->addAssign("formDiv", "style.visibility", "visible");
-		$objResponse->addAssign("formDiv", "innerHTML", $html);
-
-		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
-		$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
 	}
 
 	return $objResponse;

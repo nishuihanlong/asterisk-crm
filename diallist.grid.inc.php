@@ -179,9 +179,15 @@ class Customer extends astercrm
 						</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("assign_to").'</td>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Group ID").'</td>
+						<td align="left">
+							<input type="text" id="groupid" name="groupid" size="10">
 						</td>
 					</tr>
 					<tr>

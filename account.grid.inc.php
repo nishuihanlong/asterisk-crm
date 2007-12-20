@@ -42,13 +42,13 @@ class Customer extends astercrm
 	*	@param $order 	(string) Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
 	*	@return $res 	(object) Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
-	function &getAllRecords($start, $limit, $order = null, $creby = null){
+	function &getAllRecords($start, $limit, $order = null, $groupid = null){
 		global $db;
 		
 		$sql = "SELECT * FROM account ";
 
-//		if ($creby != null)
-//			$sql .= " WHERE note.creby = '".$_SESSION['curuser']['username']."' ";
+		if ($groupid != null)
+			$sql .= " WHERE groupid = $groupid ";
 			
 
 		if($order == null){
@@ -125,15 +125,17 @@ class Customer extends astercrm
 	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
 	*/
 	
-	function &getNumRows($filter = null, $content = null){
+	function &getNumRows($groupid = null){
 		global $db;
 		
 		$sql = "SELECT COUNT(*) AS numRows FROM account";
-		
+		if ($groupid != null)
+			$sql .= " WHERE groupid = $groupid";
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
+
 	function &getNumRowsMore($filter = null, $content = null,$table){
 		global $db;
 		

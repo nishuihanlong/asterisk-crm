@@ -97,8 +97,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null){
-		$numRows =& Customer::getNumRows();
-		$arreglo =& Customer::getAllRecords($start,$limit,$order);
+		$numRows =& Customer::getNumRows($_SESSION['curuser']['groupid']);
+		$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
 	}else{
 		foreach($content as $value){
 			if(trim($value) != ""){  //搜索内容有值
@@ -114,8 +114,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		}
 		if($flag != "1" || $flag2 != "1"){  //无值
 			$order = null;
-			$numRows =& Customer::getNumRows();
-			$arreglo =& Customer::getAllRecords($start,$limit,$order);
+			$numRows =& Customer::getNumRows($_SESSION['curuser']['groupid']);
+			$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
 		}else{
 			$order = "id";
 			$numRows =& Customer::getNumRowsMore($filter, $content,"account");

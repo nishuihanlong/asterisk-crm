@@ -96,41 +96,45 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'dialnumber';
 	$fields[] = 'assign';
-	//$fields[] = 'assign';
+	$fields[] = 'groupid';
 	
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("number");
 	$headers[] = $locate->Translate("assign_to");
+	$headers[] = $locate->Translate("Group ID");
 	
 	// HTML table: hearders attributes
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="50%"';
-	$attribsHeader[] = 'width="50%"';
-	//$attribsHeader[] = 'width="5%"';
+	$attribsHeader[] = 'width="30%"';
+	$attribsHeader[] = 'width="20%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	//$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","assign","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupid","'.$divName.'","ORDERING");return false;\'';
 	
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'dialnumber';
 	$fieldsFromSearch[] = 'assign';
-	
+	$fieldsFromSearch[] = 'groupid';
+
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("assign_to");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group ID");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -148,8 +152,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['dialnumber'];
 		$rowc[] = $row['assign'];
+		$rowc[] = $row['groupid'];
 		
-//		$rowc[] = 'Detail';
 		$table->addRow("diallist",$rowc,0,1,0,$divName,$fields);
  	}
  	
@@ -165,7 +169,7 @@ function add(){
 	$objResponse = new xajaxResponse();
 
 	$html = Table::Top($locate->Translate("add_diallist"),"formDiv");  
-	$html .= Customer::formAdd($surveyid);
+	$html .= Customer::formAdd();
 	$html .= Table::Footer();
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
@@ -182,16 +186,6 @@ function save($f){
 	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("diallist_added"));
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addClear("formDiv", "innerHTML");
-	return $objResponse->getXML();
-}
-
-function delete($id = null, $table_DB = null){
-	global $locate;
-	Customer::deleteRecord($id,$table_DB);
-	$html = createGrid(0,ROWSXPAGE);
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
 	return $objResponse->getXML();
 }
 

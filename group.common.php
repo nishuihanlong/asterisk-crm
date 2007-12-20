@@ -26,7 +26,6 @@ registed function:
 	save				save account information
 	edit				show account edit form
 	update				update account information
-	delete				delete an account
 	showDetail			show detail information about an account
 						return null for now
 	init				init html page
@@ -63,7 +62,6 @@ $xajax->registerFunction("add");
 $xajax->registerFunction("save");
 $xajax->registerFunction("edit");
 $xajax->registerFunction("update");
-$xajax->registerFunction("delete");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");

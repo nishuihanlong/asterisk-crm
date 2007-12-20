@@ -289,30 +289,6 @@ function edit($id){
 }
 
 /**
-*  update group record
-*  @param	groupid	int			group id
-*  @return	objResponse	object		xajax response object
-*/
-
-function delete($groupid = null){
-	global $locate;
-	$res = Customer::deleteRecord($groupid,'accountgroup');
-	if ($res){
-		$numRows = $_SESSION['numRows'];
-		$limit = $_SESSION['limit'];
-		$html = createGrid($numRows,$limit);
-		unset($_SESSION['numRows']);
-		unset($_SESSION['limit']);
-		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
-	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
-	}
-	return $objResponse->getXML();
-}
-
-/**
 *  show group record detail
 *  @param	groupid	int			group id
 *  @return	objResponse	object		xajax response object

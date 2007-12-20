@@ -63,7 +63,6 @@ $xajax = new xajax("diallist.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
-$xajax->registerFunction("delete");
 $xajax->registerFunction("add");
 $xajax->registerFunction("save");
 $xajax->registerFunction("searchFormSubmit"); //多条件搜索
