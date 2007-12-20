@@ -194,23 +194,31 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	if($type == "delete"){
-		$res = Customer::deleteRecord($id,'diallist');
-		if ($res){
-			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
-			$objResponse = new xajaxResponse();
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
-		}else{
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
-		}
+	if($exportFlag == "1"){
+		$sql = astercrm::getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+		$_SESSION['export_sql'] = $sql;
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		if($type == "delete"){
+			$res = Customer::deleteRecord($id,'cdr_horoscope');
+			if ($res){
+				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+				$objResponse = new xajaxResponse();
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			}else{
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+			}
+		}else{
+			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		}
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 
