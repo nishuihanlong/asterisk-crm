@@ -94,6 +94,7 @@ require_once('config.php');
 
 	<script type="text/javascript" src="js/dragresize.js"></script>
 	<script type="text/javascript" src="js/dragresizeInit.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
@@ -207,7 +208,11 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<input type="button" value="Hangup" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
 		</div><br>
 
-		<span id="spanTransfer" name="spanTransfer"></span>
+		<span id="spanTransfer" name="spanTransfer">
+			<SELECT id="sltExten" name="sltExten">
+			</SELECT>
+			<INPUT type="BUTTON" value="Transfer" id="btnTransfer" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
+		</span>
 		<div id="myevents"></div>
 		<br>
 		<span id="spanMonitor" name="spanMonitor"></span><br>
@@ -234,10 +239,6 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	<br>
 	<div id="divDialList" name="divDialList"></div><br/>
 	<div id="processingMessage" name="processingMessage"></div>
-
-<!--
-	<div id="click2dial"><input type="text" value="" name="iptDestinationNumber" id="iptDestinationNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="" onclick="dial(xajax.$('iptDestinationNumber').value)"></div><br/>
--->
 
 	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 

@@ -149,6 +149,7 @@ DROP TABLE IF EXISTS surveyoptions;
 CREATE TABLE surveyoptions (
   id int(11) NOT NULL auto_increment,
   surveyoption varchar(50) NOT NULL default '',
+  optionnote TEXT NOT NULL,
   surveyid int(11) NOT NULL default '0',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby  varchar(50) NOT NULL default '',

@@ -154,8 +154,15 @@ function init(){
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
-//	echo $_SESSION['curuser']['usertype'];
-//	exit;
+	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
+
+	$objResponse->addAssign("btnTransfer","value",$locate->Translate("transfer"));
+	$objResponse->addAssign("btnTransfer","disabled",true);
+
+	foreach ($_SESSION['curuser']['extensions'] as $extension){
+		$extension = trim($extension);
+		$objResponse->addScript("addOption('sltExten','$extension','$extension');");
+	}
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
 		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
@@ -230,7 +237,7 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
-			if ($myValue['extensionStatus'] == 'link')
+			if ($myValue['extensionStatus'] == 'link')	 //already get link event
 				return $objResponse;
 //			if ($call['callerChannel'] == '' or $call['calleeChannel'] == '')
 //				return $objResponse;
@@ -238,33 +245,13 @@ function incomingCalls($myValue){
 			$info	= $locate->Translate("talking_to").$myValue['callerid'];
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
-//			if  ($call['callerChannel'] != '' and $call['calleeChannel']!=''){
-				//enable monitor
-				$objResponse->addAssign("btnMonitor","disabled", false );
-				$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
-				if ($myValue['chkMonitor'] == 'on') //always recording
-					$objResponse->addScript("monitor();");
-//			}
+			$objResponse->addAssign("btnMonitor","disabled", false );
+			$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+			if ($myValue['chkMonitor'] == 'on') 
+				$objResponse->addScript("monitor();");
 			
-			$objResponse->addAssign("btnHangup","disabled", false );
-
-			if ($myValue['sltExten'] == ''){
-				$transfer = '
-							<SELECT id="sltExten" name="sltExten">
-							';
-				foreach ($_SESSION['curuser']['extensions'] as $extension){
-					$transfer .= '
-									<option value="'.trim($extension).'">'.trim($extension).'</option>
-								';
-				}
-
-				$transfer .= '
-							</SELECT>
-							<INPUT type="BUTTON" value="'.$locate->Translate("transfer").'" onclick="xajax_transfer(xajax.getFormValues(\'myForm\'));return false;">
-							';
-				$objResponse->addAssign(spanTransfer,"innerHTML", $transfer );
-			}
-
+				$objResponse->addAssign("btnHangup","disabled", false );
+				$objResponse->addAssign("btnTransfer","disabled", false );
 		} elseif ($call['status'] =='hangup'){
 			$status	= 'hang up';
 			$info	= "Hang up call from " . $myValue['callerid'];
@@ -273,7 +260,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerid","value", "" );
 			$objResponse->addAssign("callerChannel","value", '');
 			$objResponse->addAssign("calleeChannel","value", '');
-			$objResponse->addAssign(spanTransfer,"innerHTML", '');
+			$objResponse->addAssign("btnTransfer","disabled", true );
 
 			//disable monitor
 			$objResponse->addAssign("btnMonitor","disabled", true );
@@ -604,7 +591,7 @@ function addWithPhoneNumber(){
 		astercrm::deleteRecord($row['id'],"diallist");
 		$f['dialnumber'] = $phoneNum;
 		$f['dialedby'] = $_SESSION['curuser']['extension'];
-		insertNewDialedlist($f);
+		astercrm::insertNewDialedlist($f);
 	}
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));

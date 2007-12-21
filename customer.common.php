@@ -107,6 +107,6 @@ $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("importTOExcel");
 
 //define(ENABLE_CONTACT, $config['system']['enable_contact']);  // Enable contact
-define(ROWSXPAGE, 5); // Number of rows show it per page.
-define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
+define(ROWSXPAGE, 15); // Number of rows show it per page.
+define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.
 ?>

@@ -119,7 +119,7 @@ require_once('login.common.php');
 				</div>
 				<div class="right"></div><div id="outputDiv"></div>
                 <div align="center">
-					<img src="skin/default/images/login_in_03.gif" width="100%"></div>
+					<img src="skin/default/images/login_in_03.gif" width="277" height="7"></div>
 		  </div></form></div>
 
 	    </div>

@@ -165,7 +165,7 @@ Class astercrm extends PEAR{
 	function insertNewCustomer($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$sql= "INSERT INTO customer SET "
+		$query= "INSERT INTO customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
 				."address='".$f['address']."', "
@@ -185,8 +185,8 @@ Class astercrm extends PEAR{
 				."email='".$f['mainEmail']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		$customerid = mysql_insert_id();
 		return $customerid;
 	}
@@ -204,7 +204,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$sql= "INSERT INTO contact SET "
+		$query= "INSERT INTO contact SET "
 				."contact='".$f['contact']."', "
 				."gender='".$f['gender']."', "
 				."position='".$f['position']."', "
@@ -220,8 +220,8 @@ Class astercrm extends PEAR{
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."customerid=". $customerid ;
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		$contactid = mysql_insert_id();
 		return $contactid;
 	}
@@ -240,7 +240,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		//print_r($f);
-		$sql= "INSERT INTO note SET "
+		$query= "INSERT INTO note SET "
 				."note='".$f['note']."', "
 				."attitude='".$f['attitude']."', "
 				."priority=".$f['priority'].", "
@@ -248,11 +248,11 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."customerid=". $customerid . ", "
 				."contactid=". $contactid ;
-		//print $sql;
+		//print $query;
 		//exit;
-		astercrm::events($sql);
+		astercrm::events($query);
 
-		$res =& $db->query($sql);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -267,7 +267,7 @@ Class astercrm extends PEAR{
 	function insertNewAccount($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$sql= "INSERT INTO account SET "
+		$query= "INSERT INTO account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."',"
@@ -277,21 +277,21 @@ Class astercrm extends PEAR{
 				."groupid='".$f['groupid']."', "	// added 2007/11/12 by solo
 				."accountcode='".$f['accountcode']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
 	function insertNewAccountgroup($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$sql= "INSERT INTO accountgroup SET "
+		$query= "INSERT INTO accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
 				."pdcontext='".$f['pdcontext']."',"
 				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -299,13 +299,13 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$sql= "INSERT INTO diallist SET "
+		$query= "INSERT INTO diallist SET "
 				."dialnumber='".$f['dialnumber']."', "
 				."groupid='".$f['groupid']."', "
 				."assign='".$f['assign']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -314,9 +314,8 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		
 		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now())';
-
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -331,7 +330,7 @@ Class astercrm extends PEAR{
 	function updateCustomerRecord($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$sql= "UPDATE customer SET "
+		$query= "UPDATE customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
 				."address='".$f['address']."', "
@@ -351,8 +350,8 @@ Class astercrm extends PEAR{
 				."bankaccountname='".$f['bankaccountname']."' "
 				."WHERE id='".$f['customerid']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -367,7 +366,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$sql= "UPDATE contact SET "
+		$query= "UPDATE contact SET "
 				."contact='".$f['contact']."', "
 				."gender='".$f['contactGender']."', "
 				."position='".$f['position']."', "
@@ -381,8 +380,8 @@ Class astercrm extends PEAR{
 				."fax='".$f['fax']."', "
 				."email='".$f['email']."' "
 				."WHERE id='".$f['contactid']."'";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -402,26 +401,26 @@ Class astercrm extends PEAR{
 		
 		if ($type == 'update')
 
-			$sql= "UPDATE note SET "
+			$query= "UPDATE note SET "
 					."note='".$f['note']."', "
 					."priority=".$f['priority']." ,"
 					."attitude='".$f['attitude']."' "
 					."WHERE id='".$f['noteid']."'";
 		else
 			if (empty($f['note']))
-				$sql= "UPDATE note SET "
+				$query= "UPDATE note SET "
 						."attitude='".$f['attitude']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
 			else
-				$sql= "UPDATE note SET "
+				$query= "UPDATE note SET "
 						."note=CONCAT(note,'<br>',now(),'  ".$f['note']." by " .$_SESSION['curuser']['username']. "'), "
 						."attitude='".$f['attitude']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -436,7 +435,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$sql= "UPDATE account SET "
+		$query= "UPDATE account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."', "
@@ -447,8 +446,8 @@ Class astercrm extends PEAR{
 				."accountcode='".$f['accountcode']."' "	// added 2007/11/12 by solo
 				."WHERE id='".$f['id']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -456,15 +455,15 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$sql= "UPDATE accountgroup SET "
+		$query= "UPDATE accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
 				."pdcontext='".$f['pdcontext']."', "
 				."pdextension='".$f['pdextensions']."' "
 				."WHERE id='".$f['id']."'";
 		
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -480,9 +479,9 @@ Class astercrm extends PEAR{
 	function &getRecord($id,$table){
 		global $db;
 		
-		$sql = "SELECT * FROM $table WHERE id = $id";
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
+		$query = "SELECT * FROM $table WHERE id = $id";
+		astercrm::events($query);
+		$row =& $db->getRow($query);
 		return $row;
 	}
 
@@ -501,9 +500,9 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 
-		$sql = "UPDATE $table SET $field='$value' WHERE id='$id'";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		$query = "UPDATE $table SET $field='$value' WHERE id='$id'";
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 		
 	}
@@ -545,19 +544,19 @@ Class astercrm extends PEAR{
 		global $db;
 
 		if ($type == "string")
-			$sql = "SELECT id FROM $tblName WHERE $fldName='$myValue'";
+			$query = "SELECT id FROM $tblName WHERE $fldName='$myValue'";
 		else
-			$sql = "SELECT id FROM $tblName WHERE $fldName=$myValue";
+			$query = "SELECT id FROM $tblName WHERE $fldName=$myValue";
 		
 		if ($fldName1 != null)
 			if ($type1 == "string")
-				$sql .= "AND $fldName1='$myValue1'";
+				$query .= "AND $fldName1='$myValue1'";
 			else
-				$sql .= "AND $fldName1=$myValue1";
+				$query .= "AND $fldName1=$myValue1";
 
 		
-		astercrm::events($sql);
-		$id =& $db->getOne($sql);
+		astercrm::events($query);
+		$id =& $db->getOne($query);
 		return $id;		
 	}
 
@@ -597,14 +596,14 @@ Class astercrm extends PEAR{
 	function &getCustomerByID($id,$type="customer"){
 		global $db;
 		if ($type == 'customer')
-			return astercrm::getRecordById($id,'customer');//$sql = "SELECT * FROM customer WHERE id = $id";
+			return astercrm::getRecordById($id,'customer');//$query = "SELECT * FROM customer WHERE id = $id";
 		elseif ($type == 'contact')
-			$sql = "SELECT * FROM customer RIGHT JOIN (SELECT customerid FROM contact WHERE id = $id ) g ON customer.id = g.customerid";
+			$query = "SELECT * FROM customer RIGHT JOIN (SELECT customerid FROM contact WHERE id = $id ) g ON customer.id = g.customerid";
 		else
-			$sql = "SELECT * FROM customer RIGHT JOIN (SELECT customerid FROM note WHERE id = $id ) g ON customer.id = g.customerid";
+			$query = "SELECT * FROM customer RIGHT JOIN (SELECT customerid FROM note WHERE id = $id ) g ON customer.id = g.customerid";
 		
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
+		astercrm::events($query);
+		$row =& $db->getRow($query);
 		return $row;
 	}
 
@@ -620,12 +619,12 @@ Class astercrm extends PEAR{
 		global $db;
 		
 		if ($type == 'contact')
-			$sql = "SELECT * FROM contact WHERE id = $id";
+			$query = "SELECT * FROM contact WHERE id = $id";
 		elseif ($type == 'note')
-			$sql = "SELECT * FROM contact RIGHT JOIN (SELECT contactid FROM note WHERE id = $id ) g ON contact.id = g.contactid";
+			$query = "SELECT * FROM contact RIGHT JOIN (SELECT contactid FROM note WHERE id = $id ) g ON contact.id = g.contactid";
 
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
+		astercrm::events($query);
+		$row =& $db->getRow($query);
 		return $row;
 	}
 
@@ -638,21 +637,21 @@ Class astercrm extends PEAR{
 
 	function &getContactListByID($customerid){
 		global $db;
-		$sql = "SELECT id,contact FROM contact WHERE customerid=$customerid";
+		$query = "SELECT id,contact FROM contact WHERE customerid=$customerid";
 		
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
 	function getGroupMemberListByID($groupid = null){
 		global $db;
 		if ($groupid == null)
-			$sql = "SELECT id,username,extension FROM account";
+			$query = "SELECT id,username,extension FROM account";
 		else
-			$sql = "SELECT id,username,extension FROM account WHERE groupid =$groupid";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+			$query = "SELECT id,username,extension FROM account WHERE groupid =$groupid";
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -668,12 +667,12 @@ Class astercrm extends PEAR{
 		global $db;
 		
 		if($type == "customer")
-			$sql = "SELECT * FROM note WHERE customerid = '$id' ORDER BY cretime DESC";
+			$query = "SELECT * FROM note WHERE customerid = '$id' ORDER BY cretime DESC";
 		else
-			$sql = "SELECT * FROM note WHERE contactid = '$id' ORDER BY cretime DESC";
+			$query = "SELECT * FROM note WHERE contactid = '$id' ORDER BY cretime DESC";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -1041,37 +1040,37 @@ Class astercrm extends PEAR{
 	function &getRecordByID($id,$table){
 		global $db;
 		
-		$sql = "SELECT * FROM $table "
+		$query = "SELECT * FROM $table "
 				." WHERE id = $id";
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
+		astercrm::events($query);
+		$row =& $db->getRow($query);
 		return $row;
 	}
 
 	function getRecordByField($field,$value,$table){
 		global $db;
 		if (is_numeric($value)){
-			$sql = "SELECT * FROM $table WHERE $field = $value LIMIT 0,1";
+			$query = "SELECT * FROM $table WHERE $field = $value LIMIT 0,1";
 		}else{
-			$sql = "SELECT * FROM $table WHERE $field = '$value'  LIMIT 0,1";
+			$query = "SELECT * FROM $table WHERE $field = '$value'  LIMIT 0,1";
 		}
-		astercrm::events($sql);
-		$row =& $db->getRow($sql);
+		astercrm::events($query);
+		$row =& $db->getRow($query);
 		return $row;
 	}
 
 	function getCountByField($field,$value,$table){
 		global $db;
 		if (is_numeric($value)){
-			$sql = "SELECT count(*) FROM $table WHERE $field = $value";
+			$query = "SELECT count(*) FROM $table WHERE $field = $value";
 		}else{
 			if ($value == null)
-				$sql = "SELECT count(*) FROM $table ";
+				$query = "SELECT count(*) FROM $table ";
 			else
-				$sql = "SELECT count(*) FROM $table WHERE $field = '$value'";
+				$query = "SELECT count(*) FROM $table WHERE $field = '$value'";
 		}
-		astercrm::events($sql);
-		$row =& $db->getOne($sql);
+		astercrm::events($query);
+		$row =& $db->getOne($query);
 		return $row;
 	}
 
@@ -1079,20 +1078,20 @@ Class astercrm extends PEAR{
 
 		global $db;
 		
-		$sql= "SELECT * FROM surveyoptions "
+		$query= "SELECT * FROM surveyoptions "
 				." WHERE "
 				."surveyid = " . $surveyid 
 				." ORDER BY cretime ASC";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
 	function insertNewSurveyResult($surveyid,$surveyoption,$surveynote,$customerID,$contactID){
 		global $db;
 		
-		$sql= "INSERT INTO surveyresult SET "
+		$query= "INSERT INTO surveyresult SET "
 				."surveyid='".$surveyid."', "
 				."surveyoption='".$surveyoption."', "
 				."surveynote='".$surveynote."', "
@@ -1100,8 +1099,8 @@ Class astercrm extends PEAR{
 				."contactid='".$contactID."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -1115,9 +1114,9 @@ Class astercrm extends PEAR{
 	function &generateSurvey(){
 		global $db;
 
-		$sql = "SELECT * FROM survey WHERE enable=1 ORDER BY cretime DESC LIMIT 0,1";
-		astercrm::events($sql);
-		$res =& $db->getRow($sql);
+		$query = "SELECT * FROM survey WHERE enable=1 ORDER BY cretime DESC LIMIT 0,1";
+		astercrm::events($query);
+		$res =& $db->getRow($query);
 		if (!$res)
 			return '';
 
@@ -1554,9 +1553,9 @@ Class astercrm extends PEAR{
 		//backup all datas
 
 		//delete all note
-		$sql = "DELETE FROM $table WHERE id = $id";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		$query = "DELETE FROM $table WHERE id = $id";
+		astercrm::events($query);
+		$res =& $db->query($query);
 
 		return $res;
 	}
@@ -1666,14 +1665,14 @@ Class astercrm extends PEAR{
 		global $db;
 
 		if ($type == 'customer')
-			$sql = 'SELECT * FROM customer';
+			$query = 'SELECT * FROM customer';
 		elseif ($type == 'contact')
-			$sql = 'SELECT contact.*,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid';
+			$query = 'SELECT contact.*,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid';
 		else
-			$sql = 'SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid';
+			$query = 'SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid';
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		while ($res->fetchInto($row)) {
 			foreach ($row as $val){
 				$val .= ',';
@@ -1687,10 +1686,10 @@ Class astercrm extends PEAR{
 		return $txtstr;
 	}
 
-	function exportDataToCSV($sql){
+	function exportDataToCSV($query){
 		global $db;
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		while ($res->fetchInto($row)) {
 			foreach ($row as $val){
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
@@ -1741,14 +1740,14 @@ Class astercrm extends PEAR{
 		}
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
-			$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
 		}else {
-			$sql = 'SELECT * FROM '.$table.'';
+			$query = 'SELECT * FROM '.$table.'';
 		}
-		//if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8")){
-		//	$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
+		//if ($query != mb_convert_encoding($query,"UTF-8","UTF-8")){
+		//	$query='"'.mb_convert_encoding($query,"UTF-8","GB2312").'"';
 		//}		
-		return $sql;
+		return $query;
 	}
 
 	function addNewRemind($f){ //增加提醒
@@ -1759,7 +1758,7 @@ Class astercrm extends PEAR{
 		//if($touser == ''){
 		$touser = $_SESSION['curuser']['username'];
 		//}
-		$sql= "INSERT INTO remind SET "
+		$query= "INSERT INTO remind SET "
 				."title='".$f['remindtitle']."', "
 				."content='".$f['content']."', "
 				."remindtime='".$remindtime."',"   //提醒时间
@@ -1772,8 +1771,8 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime=now() ";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 
@@ -1785,7 +1784,7 @@ Class astercrm extends PEAR{
 		//if($touser == ''){
 		$touser = $_SESSION['curuser']['username'];
 		//}
-		$sql= "UPDATE remind SET "
+		$query= "UPDATE remind SET "
 				."title='".$f['remindtitle']."', "
 				."content='".$f['content']."', "
 				."remindtime='".$remindtime."',"   //提醒时间
@@ -1796,8 +1795,8 @@ Class astercrm extends PEAR{
 				."touser='".$touser."'  "	// added 2007/11/12 by solo
 				."WHERE id='".$f['id']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
 		return $res;
 	}
 }

@@ -138,6 +138,7 @@ v0.0456 beta
 2007-12-19	修改了localization类, 当语言文件不存在时将返回原字符串而不会报错
 2007-12-19	改进了根据callerid查找联系人的方法
 2007-12-19	修改了asterevent.class中的一个bug, 该bug导致当刷新页面时旧有的呼叫事件不会被hangup
+2007-12-19	surveyoption 表增加了 optionnote字段
 
 
 定时提醒功能

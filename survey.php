@@ -62,6 +62,8 @@ require_once('survey.common.php');
 				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
+		<div id="optionDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 80px;"></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 					<div id="divSurveyStatistc" align="divSurveyStatistc"> </div>

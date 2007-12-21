@@ -84,6 +84,7 @@ setcookie('PHPSESSID', session_id());
 
 if ($_SESSION['curuser']['extension'] == '') 
 	header("Location: login.php");
+
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;
 
 require_once ("include/xajax.inc.php");
