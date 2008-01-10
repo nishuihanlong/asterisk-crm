@@ -187,7 +187,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	return $html;
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
+function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();

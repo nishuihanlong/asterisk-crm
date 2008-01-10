@@ -81,7 +81,58 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
+
+function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT * FROM survey"
+					." WHERE ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = "SELECT * FROM survey";
+		}
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getNumRowsMore($filter = null, $content = null,$table){
+		global $db;
+		
+			$i=0;
+			$joinstr='';
+			foreach ($content as $value){
+				$value=trim($value);
+				if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+					$joinstr.="AND $filter[$i] like '%".$value."%' ";
+				}
+				$i++;
+			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql = 'SELECT COUNT(*) AS numRows FROM survey WHERE '.$joinstr;
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM survey";
+			}
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
+	}
+
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
@@ -122,6 +173,12 @@ class Customer extends astercrm
 			$html .= '<tr><td colspan=2>
 						<input type="text" size="50" maxlangth="100" id="surveyname" name="surveyname"/>
 					 </td></tr>';
+			$html .= '<tr><td colspan=2>
+						'. $locate->Translate("Survey Note") .'
+					</td></tr>';
+			$html .= '<tr><td colspan=2>
+						<textarea id="surveynote" name="surveynote" wrap="soft" style="overflow:auto;" rows="4" cols="70"></textarea>
+					 </td></tr>';
 			$enable_html = '<tr>
 								<td colspan=2>
 								<input type="radio" value="1" id="radEnable" name="radEnable" checked>'.$locate->Translate("enable").'
@@ -130,9 +187,15 @@ class Customer extends astercrm
 							 </tr>';
 		}else{
 			$survey = Customer::getRecord($surveyid,'survey');
-		   	$nameCell = "TitleCol";
+	   	$nameCell = "TitleCol";
 
 			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'survey\',\'surveyname\',\''.$nameCell.'\',\''.$survey['surveyname'].'\',\''.$survey['id'].'\');return false">'.$survey['surveyname'].'<input type="hidden" id="surveyid" name="surveyid" value="'.$surveyid.'"/></td></tr>';
+
+	   	$nameCell = "NoteCol";
+			$html .= '<tr><td colspan=2>
+						'. $locate->Translate("Survey Note") .'
+					</td></tr>';
+			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editTextareaField(\'survey\',\'surveynote\',\''.$nameCell.'\',\''.$survey['surveynote'].'\',\''.$survey['id'].'\');return false">'.$survey['surveynote'].'</td></tr>';
 			if ($survey['enable'] == 1)
 				$enable_html = '<tr>
 								<td colspan=2>
@@ -186,13 +249,14 @@ class Customer extends astercrm
 		return $html;
 	}
 
-	function insertNewSurvey($surveyname,$enable){
+	function insertNewSurvey($surveyname,$enable,$surveynote){
 		global $db;
 		if ($enable == 1)
 			Customer::setSurveyEnable(0);
 		$sql= "INSERT INTO survey SET "
 				."surveyname='".$surveyname."', "
 				."enable='".$enable."', "
+				."surveynote='".$surveynote."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);

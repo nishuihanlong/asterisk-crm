@@ -64,16 +64,32 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
-	if(($filter == null) or ($content == null)){
-		
-		$numRows =& Customer::getNumRows();
-		$arreglo =& Customer::getAllRecords($start,$limit,$order);
+	if($filter == null or $content == null){
+		$numRows =& Customer::getNumRows($_SESSION['curuser']['groupid']);
+		$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
 	}else{
-		
-		$numRows =& Customer::getNumRows($filter, $content);
-		$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);	
+		foreach($content as $value){
+			if(trim($value) != ""){  //搜索内容有值
+				$flag = "1";
+				break;
+			}
+		}
+		foreach($filter as $value){
+			if(trim($value) != ""){  //搜索条件有值
+				$flag2 = "1";
+				break;
+			}
+		}
+		if($flag != "1" || $flag2 != "1"){  //无值
+			$order = null;
+			$numRows =& Customer::getNumRows($_SESSION['curuser']['groupid']);
+			$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
+		}else{
+			$order = "id";
+			$numRows =& Customer::getNumRowsMore($filter, $content,"survey");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"survey");
+		}
 	}
-
 	// Editable zone
 
 	// Databse Table: fields
@@ -123,7 +139,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,1);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearch("survey",$fieldsFromSearch,$fieldsFromSearchShowAs);
+	$table->addRowSearchMore("survey",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -144,16 +160,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	$html = $table->render();
  	
  	return $html;
-}
-
-function delete($id = null, $table_DB = null){
-	global $locate;
-	Customer::deleteRecord($id,$table_DB); 				// <-- Change by your method
-	$html = createGrid(0,ROWSXPAGE);
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("grid", "innerHTML", $html);
-	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record_deleted")); 
-	return $objResponse->getXML();
 }
 
 function edit($surveyid = 0){
@@ -177,6 +183,17 @@ function editField($table, $field, $cell, $value, $id){
 	$html =' <input type="text" id="input'.$cell.'" value="'.$value.'" size="'.(strlen($value)+5).'"'
 			.' onBlur="xajax_updateField(\''.$table.'\',\''.$field.'\',\''.$cell.'\',document.getElementById(\'input'.$cell.'\').value,\''.$id.'\');"'
 			.' style="background-color: #CCCCCC; border: 1px solid #666666;">';
+	$objResponse->addAssign($cell, "innerHTML", $html);
+	$objResponse->addScript("document.getElementById('input$cell').focus();");
+	return $objResponse->getXML();
+}
+
+function editTextareaField($table, $field, $cell, $value, $id){
+	$objResponse = new xajaxResponse();
+	
+	$html =' <textarea id="input'.$cell.'" wrap="soft" style="overflow:auto;" rows="4" cols="70"'
+			.' onBlur="xajax_updateField(\''.$table.'\',\''.$field.'\',\''.$cell.'\',document.getElementById(\'input'.$cell.'\').value,\''.$id.'\');"'
+			.' style="background-color: #CCCCCC; border: 1px solid #666666;">'.$value.'</textarea>';
 	$objResponse->addAssign($cell, "innerHTML", $html);
 	$objResponse->addScript("document.getElementById('input$cell').focus();");
 	return $objResponse->getXML();
@@ -236,6 +253,31 @@ function setSurvey($survey){
 
 //	$objResponse->addAlert($locate->Translate("survey_updated"));
 	return $objResponse;
+}
+
+function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	$searchField = array();
+	$searchContent = array();
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$divName = "grid";
+	if($type == "delete"){
+		$res = Customer::deleteRecord($id,'survey');
+		if ($res){
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
+	}else{
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+	}
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign($divName, "innerHTML", $html);
+	return $objResponse->getXML();
 }
 
 function showDetail($surveyid){
@@ -329,7 +371,7 @@ function showDetail($surveyid){
 				$objResponse->addScript("xajax.$('surveyname').focus();");
 				return $objResponse;
 			}else{
-				$surveyid = Customer::insertNewSurvey($f['surveyname'],$f['radEnable']); 
+				$surveyid = Customer::insertNewSurvey($f['surveyname'],$f['radEnable'],$f['surveynote']); 
 				$html = createGrid(0,ROWSXPAGE);
 				$objResponse->addAssign("grid", "innerHTML", $html);
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_added"));
@@ -353,6 +395,7 @@ function showDetail($surveyid){
 
 		return $objResponse->getXML();
 	}
+
 
 $xajax->processRequests();
 

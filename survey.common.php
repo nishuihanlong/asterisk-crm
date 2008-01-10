@@ -65,16 +65,16 @@ $xajax = new xajax("survey.server.php");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("add");
+$xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("save");
-$xajax->registerFunction("delete");
 $xajax->registerFunction("edit");
 $xajax->registerFunction("editField");
+$xajax->registerFunction("editTextareaField");
 $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("setSurvey");
-$xajax->registerFunction("searchFormSubmit");
 
-define(ROWSXPAGE, 5); // Number of rows show it per page.
+define(ROWSXPAGE, 10); // Number of rows show it per page.
 // Total number of rows show it when click on "Show All" button.
 define(MAXROWSXPAGE, 25);
 ?>

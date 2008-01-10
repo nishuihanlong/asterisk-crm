@@ -256,7 +256,7 @@ class ScrollTable{
 		if($delete)
 			$row .= '
 					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  searchFormSubmit(0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
+						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
 					</td>';
 		if($detail)
 			$row .= '
@@ -352,7 +352,7 @@ class ScrollTable{
 		$ind = 0;
 		$ind_selected = 0;
 		$this->search = '
-		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,5);">
+		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5);">
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<table width="99%" border="0" style="line-height:30px;">

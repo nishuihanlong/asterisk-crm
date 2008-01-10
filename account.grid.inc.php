@@ -15,8 +15,8 @@
 	getNumRows					获取记录集条数
 	formAdd						生成添加account表单的HTML
 	formEdit					生成编辑account表单的HTML
-	新增getRecordsFilteredMore  用于获得多条件搜索记录集
-	新增getNumRowsMore          用于获得多条件搜索记录条数
+	新增 getRecordsFilteredMore  用于获得多条件搜索记录集
+	新增 getNumRowsMore          用于获得多条件搜索记录条数
 
 * Revision 0.0456  2007/10/30 13:15:00  last modified by solo
 * Desc: add channel field 

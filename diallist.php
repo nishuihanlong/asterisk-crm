@@ -47,10 +47,6 @@ require_once('diallist.common.php');
 		function importCsv(){
 			xajax_importCsv();
 		}
-		function searchFormSubmit(numRows,limit,id,type){
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
-		return false;
-		}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>

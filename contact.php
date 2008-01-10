@@ -60,11 +60,6 @@ require_once('contact.common.php');
 		function importCsv(){
 			xajax_importCsv();
 		}
-		function searchFormSubmit(numRows,limit,id,type){
-			//alert(xajax.getFormValues("searchForm"));
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
-			return false;
-		}
 		//-->
 		</SCRIPT>
 

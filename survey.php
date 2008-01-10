@@ -42,7 +42,6 @@ require_once('survey.common.php');
 			xajax_save(xajax.getFormValues(formName));
 		}
 
-
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>

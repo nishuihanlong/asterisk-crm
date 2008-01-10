@@ -185,12 +185,6 @@ require_once('config.php');
 			return stringToTrim.replace(/^\s+|\s+$/g,"");
 		}
 
-		function searchFormSubmit(numRows,limit,id,type){
-			//alert(xajax.getFormValues("searchForm"));
-			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
-			return false;
-		}
-
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){

@@ -801,7 +801,7 @@ function chanspy($exten,$spyexten){
 
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
+function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
