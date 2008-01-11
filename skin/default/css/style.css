@@ -22,20 +22,20 @@ A IMG {
 	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px
 }
 TD {
-	FONT: 12px/150% Arial, Helvetica, sans-serif
+	FONT: 12px/150% Arial, Helvetica, sans-serif;
 }
 TH {
-	FONT: 12px/150% Arial, Helvetica, sans-serif
+	FONT: 12px/150% Arial, Helvetica, sans-serif;
 }
 
 .myTable TH {
-	FONT: 12px/150% Arial, Helvetica, sans-serif
+	FONT: 12px/150% Arial, Helvetica, sans-serif;
 	HEIGHT: 30px;
 	FONT-WEIGHT: bold;
 	WIDTH: 120px;
 }
 .myTable TD {
-	FONT: 12px/150% Arial, Helvetica, sans-serif
+	FONT: 12px/150% Arial, Helvetica, sans-serif;
 	HEIGHT: 30px;
 }
 
@@ -76,7 +76,15 @@ H1 {
 	COLOR: #518ebe
 }
 .mdiv {
-	BORDER-RIGHT: 0px; PADDING-RIGHT: 0px; BORDER-TOP: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: 0px; PADDING-TOP: 0px; BORDER-BOTTOM: 0px; align: top
+	BORDER-RIGHT: 0px; 
+	PADDING-RIGHT: 0px; 
+	BORDER-TOP: 0px; 
+	PADDING-LEFT: 0px; 
+	PADDING-BOTTOM: 0px; 
+	MARGIN: 0px; 
+	BORDER-LEFT: 0px; 
+	PADDING-TOP: 0px; 
+	BORDER-BOTTOM: 0px; 
 }
 .spanel {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 8px; MARGIN: 0px; PADDING-TOP: 5px; BORDER-BOTTOM: #dddddd 1px dotted
@@ -88,7 +96,12 @@ H1 {
 	VERTICAL-ALIGN: top; BORDER-LEFT: #dddfdd 2px solid; HEIGHT: 100%
 }
 .sbct {
-	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN-LEFT: 2%; WIDTH: 96%; PADDING-TOP: 0px; align: right
+	PADDING-RIGHT: 0px; 
+	PADDING-LEFT: 0px; 
+	PADDING-BOTTOM: 0px; 
+	MARGIN-LEFT: 2%; 
+	WIDTH: 96%; 
+	PADDING-TOP: 0px;
 }
 .ptttd2 {
 	FLOAT: right; COLOR: #006600
@@ -182,7 +195,7 @@ H1 {
 	BORDER-RIGHT: #eeeeee 1px solid; BORDER-TOP: #eeeeee 1px solid; MARGIN-BOTTOM: 5px; VERTICAL-ALIGN: top; BORDER-LEFT: #eeeeee 1px solid; MARGIN-RIGHT: 10px; BORDER-BOTTOM: #eeeeee 1px solid
 }
 .m_sub_img {
-	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; PADDING-TOP: 10px; align: left
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; PADDING-TOP: 10px;
 }
 .fil {
 	PADDING-RIGHT: 15px; FLOAT: left; PADDING-BOTTOM: 15px
@@ -316,9 +329,6 @@ TABLE.rbox TD.xbl {
 TABLE.rbox TD.xbr {
 	FONT-SIZE: 4px; BACKGROUND-IMAGE: url(/pics/boxbr.gif); BACKGROUND-REPEAT: no-repeat
 }
-WBR:unknown {
-	content: "?"
-}
 .paginator {
 	MARGIN-TOP: 10px; MARGIN-BOTTOM: 5px; FONT: 14px/150% normal Arial, Helvetica, sans-serif; COLOR: #666666; BACKGROUND-COLOR: #eeffee; TEXT-ALIGN: center
 }
@@ -334,7 +344,6 @@ WBR:unknown {
 	border-right: 1px none #999999;
 	border-bottom: 1px none #999999;
 	border-left: 1px none #999999;
-	align: right;
 }
 .break {
 	PADDING-RIGHT: 4px; PADDING-LEFT: 4px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px
@@ -383,9 +392,6 @@ WBR:unknown {
 }
 .read-entry A:visited {
 	COLOR: #666666; TEXT-DECORATION: underline
-}
-.read-entry IMG {
-	FILTER: progid:DXImageTransform.Microsoft.Alpha(opacity=50); moz-opacity: 0.5; opacity: 0.5
 }
 UL.user-list {
 	PADDING-LEFT: 0px; WIDTH: 95%; LIST-STYLE-TYPE: none
@@ -445,8 +451,6 @@ BODY {
 	BACKGROUND: #fff; 
 	MARGIN: 0px; 
 	PADDING-TOP: 8px
-	scrollbar-arrow-color : yellow;
-	scrollbar-base-color : #efefef;
 }
 
 a {
@@ -518,7 +522,7 @@ a.pagenav:active {
         font-size: 12px;
 }
 .text_area {
-        border : 1px solid ccc;
+        border : 1px solid #ccc;
         z-index: -3;
         font-size: 12px
 }
@@ -777,7 +781,7 @@ form {
 	border: 1px solid #cccccc;
 	width: 14%;
 	text-align: center;
-	cursor: hand;
+	cursor: pointer;
 	font-weight: bold;
 	color: #FFFFFF;
 }
@@ -787,7 +791,7 @@ form {
 	border: 1px solid #cccccc;
 	width: 14%;
 	text-align: center;
-	cursor: hand;
+	cursor: pointer;
 	font-weight: normal;
 }
 .tabpadding {
@@ -1149,7 +1153,7 @@ hr {
 	width:auto;
 	font-weight:bold;
 	width:100%;
-	margin-left:atuo;
+	margin-left:auto;
 	margin-right:auto;
 	margin-top:5px;
 	height:30px

@@ -398,9 +398,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	$_SESSION['ordering'] = $ordering;
 
-	if($filter == null or $content == null){
+	if($filter == null or $content == null or $content == 'Array' or $filter == 'Array'){
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
+		$content = null;
+		$filter = null;
 	}else{
 		foreach($content as $value){
 			if(trim($value) != ""){  //搜索内容有值
@@ -467,7 +469,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left;textarea-layout:fixed;word-break:break-all;"';
+	$attribsCols[] = 'style="text-align: left; textarea-layout:fixed; word-break:break-all;"';
 	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left;"';

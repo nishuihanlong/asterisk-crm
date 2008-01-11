@@ -64,9 +64,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
-	if($filter == null or $content == null){
-		$numRows =& Customer::getNumRows($_SESSION['curuser']['groupid']);
-		$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
+	if($filter == null or $content == null or $content == 'Array' or $filter == 'Array'){
+		$numRows =& Customer::getNumRows();
+		$arreglo =& Customer::getAllRecords($start,$limit,$order);
+		$content = null;
+		$filter = null;
 	}else{
 		foreach($content as $value){
 			if(trim($value) != ""){  //搜索内容有值
