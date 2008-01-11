@@ -116,7 +116,7 @@ CREATE TABLE diallist (
   id int(11) NOT NULL auto_increment,
   dialnumber varchar(30) NOT NULL default '',
   assign varchar(30) NOT NULL default '',
-  groupid INT NOT NULL DEFAULT '0';		#added by solo 2007-12-17
+  groupid INT NOT NULL DEFAULT '0',		#added by solo 2007-12-17
   UNIQUE KEY id (id)
 ) ;
 
@@ -139,6 +139,7 @@ CREATE TABLE survey (
   surveyname varchar(50) NOT NULL default '',
   enable int	NOT NULL default '0',	#add 2007-10-15 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
+  optionnote varchar(255) NOT NULL, #add 2008-1-11 by solo
   creby  varchar(50) NOT NULL default '',
   UNIQUE KEY id (id)
 ) ;

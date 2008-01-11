@@ -1,10 +1,15 @@
 #!/usr/bin/perl
+
+# last update by solo 2008-1-8
+# add debug mode
+
 use strict;
 use Socket;
 use DBI;
 use POSIX 'setsid';
+use FindBin qw($Bin);
 
-my $asterisk = '';
+my $asterisk = '127.0.0.1';
 my $asteriskport = 5038;
 my $asteriskuser = '';
 my $asterisksecret = '';
@@ -14,6 +19,22 @@ my $dbname = '';
 my $dbport = 3306;
 my $dbuser = '';
 my $dbpasswd = '';
+
+my %astInfo = (
+        asterisk => $asterisk,
+        asteriskport => $asteriskport,
+        asteriskuser => $asteriskuser,
+		asterisksecret  => $asterisksecret,
+   );
+
+my %dbInfo = (
+        dbtype => 'mysql',
+        dbhost => $dbhost,
+        dbname => $dbname,
+		dbport  => $dbport,
+ 		dbuser  => $dbuser,
+ 		dbpasswd  => $dbpasswd
+   );
 
 my $log_life = 180;
 
@@ -26,6 +47,12 @@ $|=1;
 my $pid_file="/tmp/$asterisk.pid";
 my $pid=$$;
 my $daemon=0;
+
+if (!&connection_test){
+	print("Connection failed, please check the log file for detail.\n");
+	exit;
+}
+
 if ($ARGV[0] eq '-d'){
 	  $daemon=1;
       $pid=&become_daemon;
@@ -54,7 +81,7 @@ my	$response;
 while (my $line = <$SOCK>) {
 	#LAST LINE
 	if ($line eq "\r\n") {
-		#warn "RECEIVE : $response-----------\n" if ($ARGV[0] eq '-v');
+		print "RECEIVE : $response-----------\n" if ($ARGV[0] ne '-d');
 		&putdb($response);
 		undef($response);
 	} else {
@@ -101,11 +128,10 @@ return($SOCK);
 }
 ##############################################
 
-sub connect_mysql
-{
-my	%info = @_;
-my	$dbh = DBI->connect("DBI:mysql:database=$info{'dbname'};host=$info{'dbhost'};port=$info{'dbport'}",$info{'dbuser'},$info{'dbpasswd'}) or die "Can't Connect Database Server: $!";
-return($dbh);
+sub connect_mysql{
+	my	%info = @_;
+	my	$dbh = DBI->connect("DBI:mysql:database=$info{'dbname'};host=$info{'dbhost'};port=$info{'dbport'}",$info{'dbuser'},$info{'dbpasswd'}) or die "Can't Connect Database Server: $!";
+	return($dbh);
 }
 
 ###############################################
@@ -174,26 +200,92 @@ sub become_daemon {
 }
 
 #############################################
-sub log_die
-{
-my $message =shift;
-my $time=scalar localtime;
-open (HDW,'>>log.txt');
-print HDW $time," ",$message;
-close HDW;
-exit;
+sub log_die{
+	my $message =shift;
+	my $time=scalar localtime;
+	open (HDW,">>$Bin/eventsdaemonlog.txt");
+	print HDW $time," ",$message;
+	close HDW;
+	exit;
 #die @_;
 }
 
 ###############################################
 sub log_warn
 {
-my $message =shift;
-print $message;
-my $time=scalar localtime;
-open (HDW,'>>log.txt');
-print HDW $time," ",$message;
-close HDW;
+	my $message =shift;
+	print $message;
+	my $time=scalar localtime;
+	open (HDW,">>$Bin/eventsdaemonlog.txt");
+	print HDW $time," ",$message;
+	close HDW;
+}
+###############################################
+sub connection_test{
+	my $result = 1;
+
+	&debug("Connecting to $dbInfo{'dbtype'} database on $dbInfo{'dbhost'}:");
+	my $dbh = &connect_mysql(%dbInfo);
+	if( !$dbh ){
+		&debug("Database connection unsuccessful. Please check your login detials. ".$DBI::errstr);
+		$result = 0;
+	}else{
+		&debug("Database connection successful.");
+	}
+	&debug("Connecting to asterisk on $astInfo{'asterisk'} port $astInfo{'asteriskport'}:");
+	$SOCK = &connect_sock(%astInfo);
+	if( !$SOCK ){
+		&debug("Asterisk connection failed. Please check your connect parameter.");
+		$result = 0;
+	}else{
+		my $msg = <$SOCK>;
+		if ($msg !~ /Asterisk Call Manager/) {
+			&debug("Asterisk connection failed!");
+			$result = 0;
+		}else{
+			&debug("Asterisk socket connection successful.");
+			# check username and password
+			&debug("Check asterisk username & secret:");
+			send($SOCK, "ACTION: LOGIN\r\nUSERNAME: $astInfo{'asteriskuser'}\r\nSECRET: $astInfo{'asterisksecret'}\r\n\r\n", 0);
+			my $msg = <$SOCK>;
+			if ($msg =~ /Response: Success/) {
+				&debug("Success");
+			}else{
+				&debug("Failed");
+				$result = 0;
+			}
+		}
+	}
+	return $result;
+}
+############################
+sub debug{
+	my $message = shift;
+	my $time=scalar localtime;
+	if ($ARGV[0] eq '-d'){		# output to file
+		open (HDW,">>$Bin/eventsdaemonlog.txt");
+		print HDW $time," ",$message,"\n";
+		close HDW;
+	}else{
+		print $time," ",$message,"\n";
+	}
+}
+############################
+sub connect_sock{
+	my	%info = @_;
+
+	#CONNECT
+	my	($SOCK,$host,$addr,$msg);
+	$host = inet_aton($info{'asterisk'});
+	socket($SOCK, AF_INET, SOCK_STREAM, getprotobyname('tcp'));
+	$addr = sockaddr_in(@info{'asteriskport'},$host);
+
+	my $test = connect($SOCK,$addr);
+	if ($test) {
+		return $SOCK;
+	}
+
+	return 0;
 }
 
 ############################
@@ -203,6 +295,6 @@ END{
 		warn('eventsdaemon will in daemon start!');
 		}
 	else{
-		warn('eventsdaemon is exit now !');
+		print "Thanks for using, eventsdaemon stopped!\n";
 		}
 	}

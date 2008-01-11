@@ -177,7 +177,7 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 						'. $locate->Translate("Survey Note") .'
 					</td></tr>';
 			$html .= '<tr><td colspan=2>
-						<textarea id="surveynote" name="surveynote" wrap="soft" style="overflow:auto;" rows="4" cols="70"></textarea>
+						<input type="text" size="254" maxlangth="100" id="surveynote" name="surveynote"/></textarea>
 					 </td></tr>';
 			$enable_html = '<tr>
 								<td colspan=2>
@@ -195,7 +195,7 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 			$html .= '<tr><td colspan=2>
 						'. $locate->Translate("Survey Note") .'
 					</td></tr>';
-			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editTextareaField(\'survey\',\'surveynote\',\''.$nameCell.'\',\''.$survey['surveynote'].'\',\''.$survey['id'].'\');return false">'.$survey['surveynote'].'</td></tr>';
+			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'survey\',\'surveynote\',\''.$nameCell.'\',\''.$survey['surveynote'].'\',\''.$survey['id'].'\');return false">'.$survey['surveynote'].'&nbsp;</td></tr>';
 			if ($survey['enable'] == 1)
 				$enable_html = '<tr>
 								<td colspan=2>

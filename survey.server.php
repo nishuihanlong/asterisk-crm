@@ -188,17 +188,6 @@ function editField($table, $field, $cell, $value, $id){
 	return $objResponse->getXML();
 }
 
-function editTextareaField($table, $field, $cell, $value, $id){
-	$objResponse = new xajaxResponse();
-	
-	$html =' <textarea id="input'.$cell.'" wrap="soft" style="overflow:auto;" rows="4" cols="70"'
-			.' onBlur="xajax_updateField(\''.$table.'\',\''.$field.'\',\''.$cell.'\',document.getElementById(\'input'.$cell.'\').value,\''.$id.'\');"'
-			.' style="background-color: #CCCCCC; border: 1px solid #666666;">'.$value.'</textarea>';
-	$objResponse->addAssign($cell, "innerHTML", $html);
-	$objResponse->addScript("document.getElementById('input$cell').focus();");
-	return $objResponse->getXML();
-}
-
 function updateField($table, $field, $cell, $value, $id){
 	global $locate;
 	$objResponse = new xajaxResponse();
@@ -396,6 +385,19 @@ function showDetail($surveyid){
 		return $objResponse->getXML();
 	}
 
+function delete($id = null, $table){
+	global $locate;
+	$res = Customer::deleteRecord($id,$table);
+	if ($res){
+		$html = createGrid(0,ROWSXPAGE);
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("grid", "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+	}else{
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+	}
+	return $objResponse->getXML();
+}
 
 $xajax->processRequests();
 

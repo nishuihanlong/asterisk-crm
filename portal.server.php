@@ -221,7 +221,6 @@ function transfer($aFormValues){
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
 	else
 		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
-	$myAsterisk->disconnect();
 	return $objResponse;
 }
 
@@ -794,11 +793,10 @@ function chanspy($exten,$spyexten){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,$spyexten);
+	$myAsterisk->chanSpy($exten,"SIP/".$spyexten);
 	//$objResponse->addAlert($exten);
 	//$objResponse->addAlert($spyexten);
 	return $objResponse;
-
 }
 
 function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
