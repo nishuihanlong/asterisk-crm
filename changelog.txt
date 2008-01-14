@@ -150,6 +150,7 @@ v0.0456 beta
 
 TO-DO:
 
+点击呼叫弹屏的问题 先弹出来的是分机号码
 remove surveyoption 时, 应该把 optionnote 也移除
 * [fixed]surveynote添加时 如果note里有空格, 双击编辑时会出现js错误
 

@@ -450,7 +450,7 @@ class asterEvent extends PEAR
 			return $call;
 		}
 
-		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
+		$query = "SELECT * FROM events WHERE (event LIKE 'Event: Newchannel % Channel: %".$exten."% % State: Ring%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
 
 //		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND id > " . $curid . " AND id <= ".$maxid." order by id desc limit 0,1";
 
