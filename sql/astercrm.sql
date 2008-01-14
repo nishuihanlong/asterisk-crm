@@ -166,7 +166,7 @@ CREATE TABLE surveyresult (
   contactid int(11) NOT NULL default '0',
   surveyid  int(11)  NOT NULL default '0',
   surveyoption varchar(50) NOT NULL default '',
-  surveynote text NOT NULL,
+  surveynote varchar(255) NOT NULL,
   creby  varchar(50) NOT NULL default '',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY id (id)

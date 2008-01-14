@@ -97,18 +97,21 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Databse Table: fields
 	$fields = array();
 	$fields[] = 'surveyname';
+	$fields[] = 'groupname';
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("survey_title");
+	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("create_time");
 	$headers[] = $locate->Translate("create_by");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="65%"';
+	$attribsHeader[] = 'width="45%"';
+	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="15%"';
 
@@ -117,22 +120,26 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveyname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","create_time","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","create_by","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'surveyname';
+	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'cretime';
 	$fieldsFromSearch[] = 'creby';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_title");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
@@ -151,6 +158,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$rowc[] = $row['surveyname'];
 		else
 			$rowc[] = "<font color=gray>".$row['surveyname']."</font>";
+		$rowc[] = $row['groupname'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
@@ -231,9 +239,11 @@ function setSurvey($survey){
 //	exit;
 	$objResponse = new xajaxResponse();
 	if ($survey['radEnable'] == 1)
-		Customer::setSurveyEnable(0);
+		Customer::setSurveyEnable(0,1,$survey['groupid']);
 
 	Customer::setSurveyEnable($survey['surveyid'],$survey['radEnable']);
+	Customer::updateField('survey','groupid',$survey['groupid'],$survey['surveyid']);
+
 //	print $surveyenable;
 
 	$html = createGrid(0,ROWSXPAGE);
@@ -362,7 +372,7 @@ function showDetail($surveyid){
 				$objResponse->addScript("xajax.$('surveyname').focus();");
 				return $objResponse;
 			}else{
-				$surveyid = Customer::insertNewSurvey($f['surveyname'],$f['radEnable'],$f['surveynote']); 
+				$surveyid = Customer::insertNewSurvey($f); 
 				$html = createGrid(0,ROWSXPAGE);
 				$objResponse->addAssign("grid", "innerHTML", $html);
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_added"));
@@ -377,7 +387,7 @@ function showDetail($surveyid){
 			return $objResponse;
 		}else{
 			if ($f['surveyoption'] != ''){
-				$surveyoptionid = Customer::insertNewOption($f['surveyoption'],$surveyid);
+				$surveyoptionid = Customer::insertNewOption($f,$surveyid);
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("option_added"));
 //				$objResponse->addAlert($locate->Translate("option_added"));
 			}

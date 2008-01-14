@@ -42,8 +42,14 @@ class Customer extends astercrm
 	*/
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
-		
-		$sql = "SELECT * FROM survey";
+
+		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN accountgroup ON accountgroup.groupid = survey.groupid ";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " WHERE survey.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
 
 		if($order == null){
 			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
@@ -67,22 +73,7 @@ class Customer extends astercrm
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
 
-	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
-		global $db;
-		
-		if(($filter != null) and ($content != null)){
-			$sql = "SELECT * FROM survey "
-					." WHERE ".$filter." like '%".$content."%' "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}
-		Customer::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-
-function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
 		global $db;
 
 		$i=0;
@@ -94,17 +85,21 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 			}
 			$i++;
 		}
+
+		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid WHERE ";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1 ";
+		}else{
+			$sql .= " survey.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql = "SELECT * FROM survey"
-					." WHERE ".$joinstr."  "
+			$sql .= " AND ".$joinstr."  "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
-		}else {
-			$sql = "SELECT * FROM survey";
 		}
-		
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -122,16 +117,29 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 				}
 				$i++;
 			}
+
+			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid WHERE ";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " ";
+			}else{
+				$sql .= " survey.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+			}
+
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql = 'SELECT COUNT(*) AS numRows FROM survey WHERE '.$joinstr;
+				$sql .= " ".$joinstr;
 			}else {
-				$sql = "SELECT COUNT(*) AS numRows FROM survey";
+				$sql .= " 1";
 			}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
+//		print $sql;
+//		print "\n";
+//		print $res;
+//		exit;
 		return $res;
 	}
+
 
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
@@ -144,13 +152,12 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 	function &getNumRows($filter = null, $content = null){
 		global $db;
 		
-		$sql = "SELECT COUNT(*) AS numRows FROM survey ";
-		
-		if(($filter != null) and ($content != null)){
-			$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM survey "
-				."WHERE ".$filter." like '%$content%'";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql = " SELECT COUNT(*) FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid";
+		}else{
+			$sql = " SELECT COUNT(*) FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid WHERE survey.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
@@ -177,7 +184,7 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 						'. $locate->Translate("Survey Note") .'
 					</td></tr>';
 			$html .= '<tr><td colspan=2>
-						<input type="text" size="254" maxlangth="100" id="surveynote" name="surveynote"/></textarea>
+						<input type="text" size="50" maxlangth="254" id="surveynote" name="surveynote"/></textarea>
 					 </td></tr>';
 			$enable_html = '<tr>
 								<td colspan=2>
@@ -223,8 +230,13 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 				$html .= '<tr id="'.$nameRow.'" >'."\n";
 
 				$html .= '
-					<td align="left" width="25%">'. $locate->Translate("option") .'(<a href="?" onclick="xajax_delete(\''.$row['id'].'\',\'surveyoptions\');var myRowIndex = document.getElementById(\''.$nameRow.'\').rowIndex;document.getElementById(\'tblSurvey\').deleteRow(myRowIndex);return false;"><img src="skin/default/images/trash.png"></a>)'.'
+					<td align="left" width="25%">'. $locate->Translate("option") .'(<a href="?" onclick="xajax_delete(\''.$row['id'].'\',\'surveyoptions\');var myRowIndex = document.getElementById(\''.$nameRow.'\').rowIndex;document.getElementById(\'tblSurvey\').deleteRow(myRowIndex+1);document.getElementById(\'tblSurvey\').deleteRow(myRowIndex);return false;"><img src="skin/default/images/trash.png"></a>)'.'
 					</td><td id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'surveyoptions\',\'surveyoption\',\''.$nameCell.'\',\''.$row['surveyoption'].'\',\''.$row['id'].'\');return false">'.$row['surveyoption'].'</td></tr>
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Option Note").'</td>
+						<td id="'.$nameCell.'_note" style="cursor: pointer;"  onDblClick="xajax_editField(\'surveyoptions\',\'optionnote\',\''.$nameCell.'_note\',\''.$row['optionnote'].'\',\''.$row['id'].'\');return false">'.$row['optionnote'].'</td>
+					</tr>
+					<tr><td colspan="2" height="1" bgcolor="#ccc"></td></tr>
 					';
 				$ind++;
 
@@ -235,13 +247,36 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 					'.$locate->Translate("option").'
 				 </td></tr>';
 
-		$html .= '<tr><td colspan=2>
-					<input type="text" size="50" maxlength="100" id="surveyoption" name="surveyoption"/>
+		$html .= '<tr><td colspan=2>'.$locate->Translate("Title").': 
+					<input type="text" size="50" maxlength="50" id="surveyoption" name="surveyoption"/>
+				 </td></tr>';
+		$html .= '<tr><td colspan=2>'.$locate->Translate("Note").': 
+					<input type="text" size="50" maxlength="254" id="optionnote" name="optionnote"/>
 					<input type="button" value="'.$locate->Translate("add_record").'" onclick="addOption(\'f\');return false;">
 				 </td></tr>';
 
 		$html .= $enable_html;
 
+if ($_SESSION['curuser']['usertype'] == 'admin'){
+		$res = Customer::getGroups();
+		$groupoptions .= '<select name="groupid" id="groupid">';
+		while ($row = $res->fetchRow()) {
+				$groupoptions .= '<option value="'.$row['groupid'].'"';
+				if ($survey['groupid']  == $row['groupid'])
+					$groupoptions .= ' selected';
+				$groupoptions .='>'.$row['groupname'].'</option>';
+		}
+		$groupoptions .= '</select>';
+}else{
+		$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+}
+
+
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>';
 		$html .= '
 				</table>
 				</form>
@@ -249,14 +284,15 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 		return $html;
 	}
 
-	function insertNewSurvey($surveyname,$enable,$surveynote){
+	function insertNewSurvey($f){
 		global $db;
-		if ($enable == 1)
-			Customer::setSurveyEnable(0);
+		if ($f['radEnable'] == 1)
+			Customer::setSurveyEnable(0,1,$f['groupid']);
 		$sql= "INSERT INTO survey SET "
-				."surveyname='".$surveyname."', "
-				."enable='".$enable."', "
-				."surveynote='".$surveynote."', "
+				."surveyname='".$f['surveyname']."', "
+				."enable='".$f['radEnable']."', "
+				."surveynote='".$f['surveynote']."', "
+				."groupid='".$f['groupid']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);
@@ -265,11 +301,11 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 		return $surveyid;
 	}
 
-	function setSurveyEnable($surveyid,$surveyenable = 1){
+	function setSurveyEnable($surveyid,$surveyenable = 1,$groupid = 0){
 		//$table,$field,$value,$id
 		if ($surveyid == 0){
 			global $db;
-			$sql = 'UPDATE survey SET enable = 0';
+			$sql = "UPDATE survey SET enable = 0 WHERE groupid = $groupid";
 			$res = $db->query($sql);
 		}else{
 			$res = astercrm::updateField('survey','enable',$surveyenable,$surveyid);
@@ -277,11 +313,12 @@ function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$tabl
 		return;
 	}
 	
-	function insertNewOption($option,$surveyid){
+	function insertNewOption($f,$surveyid){
 		global $db;
 		
 		$sql= "INSERT INTO surveyoptions SET "
-				."surveyoption='".$option."', "
+				."surveyoption='".$f['surveyoption']."', "
+				."optionnote='".$f['optionnote']."', "
 				."surveyid='".$surveyid."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";

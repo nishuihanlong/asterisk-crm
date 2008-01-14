@@ -146,10 +146,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'note';
 	$fieldsFromSearch[] = 'priority';
-	$fieldsFromSearch[] = 'contact';
-	$fieldsFromSearch[] = 'customer';
-	$fieldsFromSearch[] = 'cretime';
-	$fieldsFromSearch[] = 'creby';
+	$fieldsFromSearch[] = 'contact.contact';
+	$fieldsFromSearch[] = 'customer.customer';
+	$fieldsFromSearch[] = 'note.cretime';
+	$fieldsFromSearch[] = 'note.creby';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();

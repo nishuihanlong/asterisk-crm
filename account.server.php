@@ -134,6 +134,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'extension';
 	$fields[] = 'extensions';
 	$fields[] = 'usertype';
+	$fields[] = 'groupname';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -142,17 +143,20 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("extension")."<BR \>";
 	$headers[] = $locate->Translate("extensions").','.$locate->Translate("extensions_note")."<BR \>";
 	$headers[] = $locate->Translate("usertype").'<BR \>'.$locate->Translate("usertype_note")."";
+	$headers[] = $locate->Translate("Group Name")."<BR \>";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="35%"';
 	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -166,6 +170,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extension","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -173,6 +178,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'password';
 	$fieldsFromSearch[] = 'extension';
 	$fieldsFromSearch[] = 'extensions';
+	$fieldsFromSearch[] = 'groupname';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -180,6 +186,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("password");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extension");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extensions");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -197,6 +204,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['extension'];
 		$rowc[] = $row['extensions'];
 		$rowc[] = $row['usertype'];
+		$rowc[] = $row['groupname'];
 		$table->addRow("account",$rowc,1,1,1,$divName,$fields);
  	}
  	

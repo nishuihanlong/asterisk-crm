@@ -40,7 +40,13 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid";
+		$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " WHERE note.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
 
 		if($order == null){
 			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
@@ -64,21 +70,6 @@ class Customer extends astercrm
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
 
-	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
-		global $db;
-		
-		if(($filter != null) and ($content != null)){
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-					." WHERE ".$filter." like '%".$content."%' "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}
-		Customer::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-
 	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
 		global $db;
 
@@ -91,21 +82,26 @@ class Customer extends astercrm
 			}
 			$i++;
 		}
+
+		$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE ";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1 ";
+		}else{
+			$sql .= " note.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				." WHERE ".$joinstr." "
-				." ORDER BY ".$order
-				." ".$_SESSION['ordering']
-				." LIMIT $start, $limit $ordering";
-		}else {
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+			$sql .= " AND ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
 		}
-		
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
+
 	
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
@@ -117,14 +113,14 @@ class Customer extends astercrm
 	
 	function &getNumRows($filter = null, $content = null){
 		global $db;
+
 		
-		$sql = "SELECT COUNT(*) AS numRows FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid";
-		
-		if(($filter != null) and ($content != null)){
-			$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				."WHERE ".$filter." like '%$content%'";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql = " SELECT COUNT(*)  FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+		}else{
+			$sql = " SELECT COUNT(*) FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid WHERE note.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
@@ -142,17 +138,20 @@ class Customer extends astercrm
 				}
 				$i++;
 			}
+
+			$sql = "SELECT COUNT(*) FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid  WHERE ";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " ";
+			}else{
+				$sql .= " note.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+			}
+
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
-				."WHERE ".$joinstr."";
+				$sql .= " ".$joinstr;
 			}else {
-				$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+				$sql .= " 1";
 			}
-		
-		
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;

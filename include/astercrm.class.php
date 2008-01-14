@@ -95,6 +95,22 @@
 
 Class astercrm extends PEAR{
 
+	function getGroups(){
+		global $db;
+		$sql = "SELECT *  FROM accountgroup";
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function getGroupById($groupid){
+		global $db;
+		$sql = "SELECT groupname  FROM accountgroup WHERE id = $groupid";
+		Customer::events($sql);
+		$res =& $db->getRow($sql);
+		return $res;
+	}
+
 	/**
 	* update table values
 	*	
@@ -184,6 +200,7 @@ Class astercrm extends PEAR{
 				."mobile='".$f['mainMobile']."', "
 				."email='".$f['mainEmail']."', "
 				."cretime=now(), "
+				."groupid = ".$_SESSION['curuser']['groupid'].", "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
@@ -219,6 +236,7 @@ Class astercrm extends PEAR{
 				."email='".$f['email']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
+				."groupid = ".$_SESSION['curuser']['groupid'].", "
 				."customerid=". $customerid ;
 		astercrm::events($query);
 		$res =& $db->query($query);
@@ -246,6 +264,7 @@ Class astercrm extends PEAR{
 				."priority=".$f['priority'].", "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
+				."groupid = ".$_SESSION['curuser']['groupid'].", "
 				."customerid=". $customerid . ", "
 				."contactid=". $contactid ;
 		//print $query;
@@ -1114,7 +1133,7 @@ Class astercrm extends PEAR{
 	function &generateSurvey(){
 		global $db;
 
-		$query = "SELECT * FROM survey WHERE enable=1 ORDER BY cretime DESC LIMIT 0,1";
+		$query = "SELECT * FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime DESC LIMIT 0,1";
 		astercrm::events($query);
 		$res =& $db->getRow($query);
 		if (!$res)

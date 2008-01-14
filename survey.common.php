@@ -52,7 +52,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
+if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') 
 	header("Location: portal.php");
 
 require_once ("include/xajax.inc.php");
@@ -74,7 +74,7 @@ $xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("setSurvey");
 
-define(ROWSXPAGE, 10); // Number of rows show it per page.
+define(ROWSXPAGE, 25); // Number of rows show it per page.
 // Total number of rows show it when click on "Show All" button.
-define(MAXROWSXPAGE, 25);
+define(MAXROWSXPAGE, 50);
 ?>

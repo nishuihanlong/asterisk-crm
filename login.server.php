@@ -167,6 +167,7 @@ function processAccountData($aFormValues)
 				// added by solo 2007-10-90
 				$_SESSION['curuser']['channel'] = $row['channel'];
 				$_SESSION['curuser']['extensions'] = array();
+				$_SESSION['curuser']['groupid'] = $row['groupid'];
 
 				if ($row['extensions'] != ''){
 					$_SESSION['curuser']['extensions'] = split(',',$row['extensions']);
@@ -174,7 +175,6 @@ function processAccountData($aFormValues)
 
 				// if it's a group admin, then add all group extension to it
 				if ($row['usertype'] == 'groupadmin'){
-					$_SESSION['curuser']['groupid'] = $row['groupid'];
 					$_SESSION['curuser']['memberExtens'] = array();
 					$groupList = astercrm::getGroupMemberListByID($row['groupid']);
 					while	($groupList->fetchInto($groupRow)){

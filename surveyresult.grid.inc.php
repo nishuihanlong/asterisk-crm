@@ -42,6 +42,12 @@ class Customer extends astercrm
 		
 		$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid";
 
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " WHERE surveyresult.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
 		if($order == null){
 			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
@@ -63,22 +69,6 @@ class Customer extends astercrm
 	*	@param $order		(string) 	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
-
-	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
-		global $db;
-
-		if(($filter != null) and ($content != null)){
-			$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid "
-					." WHERE ".$filter." like '%".$content."%' "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}
-		Customer::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-
 	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
 		global $db;
 
@@ -91,25 +81,27 @@ class Customer extends astercrm
 			}
 			$i++;
 		}
+
+		$sql = "SELECT  surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid WHERE ";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1 ";
+		}else{
+			$sql .= " surveyresult.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid "
-					." WHERE ".$joinstr." "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}else {
-			$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid "
+			$sql .= " AND ".$joinstr."  "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-		
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
+
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
@@ -118,16 +110,15 @@ class Customer extends astercrm
 	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
 	*/
 	
-	function &getNumRows($filter = null, $content = null){
+	function &getNumRows(){
 		global $db;
 		
-		$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ";
-		
-		if(($filter != null) and ($content != null)){
-			$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  "
-				."WHERE ".$filter." like '%$content%'";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql = " SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid";
+		}else{
+			$sql = " SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid WHERE surveyresult.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
@@ -145,18 +136,26 @@ class Customer extends astercrm
 				}
 				$i++;
 			}
+
+			$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  WHERE ";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " ";
+			}else{
+				$sql .= " surveyresult.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+			}
+
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  "
-				."WHERE ".$joinstr." ";
+				$sql .= " ".$joinstr;
 			}else {
-				$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ";
+				$sql .= " 1";
 			}
-		
-		
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
+//		print $sql;
+//		print "\n";
+//		print $res;
+//		exit;
 		return $res;
 	}
 }
