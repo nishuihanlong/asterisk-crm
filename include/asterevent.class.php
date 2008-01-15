@@ -367,7 +367,7 @@ class asterEvent extends PEAR
 
 		$query = "SELECT * FROM events WHERE event LIKE 'Event: Link%' AND event LIKE '%" . $uniqueid. "%' AND id > $curid AND timestamp >  '".date ("Y-m-d H:i:s" ,time()-10)."' order by id desc ";
 
-		asterEvent::events($query);
+		//asterEvent::events($query);
 		$res = $db->query($query);
 		
 		if ($res->fetchInto($list)) {
@@ -411,7 +411,7 @@ class asterEvent extends PEAR
 
 		$query = "SELECT * FROM events WHERE event LIKE '%Hangup%' AND event LIKE '%" . $uniqueid . "%' AND timestamp > '".date ("Y-m-d H:i:s" ,time()-10)."' AND id> $curid order by id desc ";
 
-		asterEvent::events($query);
+		//asterEvent::events($query);
 		$res = $db->query($query);
 //		print $res->numRows();
 //		print "ok";
@@ -443,25 +443,27 @@ class asterEvent extends PEAR
 
 		//$pasttime = date ("Y-m-d H:i:s" ,time() - 10);
 		$query = "SELECT id FROM events ORDER BY timestamp desc limit 0,1";
-		asterEvent::events($query);
+		//asterEvent::events($query);
 		$maxid = $db->getOne($query);
 		if (!$maxid){
 			$call['curid'] = 0;
 			return $call;
 		}
 
-		$query = "SELECT * FROM events WHERE (event LIKE 'Event: Newchannel % Channel: %".$exten."% % State: Ring%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
+		//$query = "SELECT * FROM events WHERE (event LIKE 'Event: Newchannel % Channel: %".$exten."% % State: Ringing%' ) AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' AND id > " . $curid . "  AND id < ".$maxid." order by id desc limit 0,1";
+
+		$query = "SELECT * FROM events WHERE event LIKE 'Event: Dial% Destination: %".$exten."%' AND id > " . $curid . " AND id <= ".$maxid." AND timestamp > '".date ("Y-m-d H:i:s" ,time() - 10)."' ORDER BY id desc limit 0,1";	
+		asterEvent::events($query);
+
 
 //		$query = "SELECT * FROM events WHERE (event LIKE 'Event: New% % Channel: %".$exten."% % State: Ring%' ) AND id > " . $curid . " AND id <= ".$maxid." order by id desc limit 0,1";
 
-		asterEvent::events($query);
+//		asterEvent::events($query);
 		$res = $db->query($query);
-
 //		$list = $db->getRow($query);
 //		asterEvent::events("incoming:".$res->numRows());
 
 		if ($res->fetchInto($list)) {
-
 			$id        = $list['id'];
 			$timestamp = $list['timestamp'];
 			$event     = $list['event'];
@@ -470,32 +472,41 @@ class asterEvent extends PEAR
 			$callerid  = '';
 			$transferid= '';
 
-			if ($flds[3] == 'State: Ringing'){
-				for($i=0;$i<$c;++$i) {
-					if (strstr($flds[$i],"Channel:"))	
-						$channel = substr($flds[$i],8);
+			//if ($flds[3] == 'State: Ringing'){
+				//for($i=0;$i<$c;++$i) {
+					//if (strstr($flds[$i],"Channel:"))	
+					//	$channel = substr($flds[$i],8);
 
-					if (strstr($flds[$i],"CallerID:"))	
-						$transferid = substr($flds[$i],9);
+					//if (strstr($flds[$i],"CallerID:"))	
+					//	$callerid = substr($flds[$i],9);
 
-					if (strstr($flds[$i],"Uniqueid:")){	
-							$uniqueid = substr($flds[$i],9);
-							$callerid =& asterEvent::getCallerID($uniqueid);
-					}
-				}
-			}
+					//if (strstr($flds[$i],"Uniqueid:")){	
+					//		$uniqueid = substr($flds[$i],9);
+					//		$callerid =& asterEvent::getCallerID($uniqueid);
+				//	}
+			//	}
+			//}
 			
-			if ($callerid == '')	//	if $callerid is null, the call should be transfered
-				$callerid = $transferid;
+			//if ($callerid == '')	//	if $callerid is null, the call should be transfered
+			//	$callerid = $transferid;
+			$SrcChannel = trim(substr($flds[2],7));			//add by solo 2007/10/31
+			$DestChannel = trim(substr($flds[3],12));		//add by solo 2007/10/31
+			$call['callerChannel'] = $SrcChannel;
+			$call['calleeChannel'] = $DestChannel;
+			$SrcUniqueID = trim(substr($flds[6],12));
+			$DestUniqueID = trim(substr($flds[7],13));
+			$callerid = trim(substr($flds[4],9));
+
+			asterEvent::events("incoming from:".$callerid);
+
 
 			if ($id > $curid) 
 				$curid = $id;
 
 			$call['status'] = 'incoming';
 			$call['callerid'] = trim($callerid);
-			$call['uniqueid'] = trim($uniqueid);
+			$call['uniqueid'] = trim($SrcUniqueID);
 			$call['curid'] = trim($curid);
-			$call['callerChannel'] = trim($channel);
 		} else{
 			$call['status'] = '';
 			$call['curid'] = $maxid;
@@ -592,7 +603,7 @@ DestUniqueID: 1193886661.15683
 		global $db;
 		$DestUniqueID = trim($DestUniqueID);
 		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $DestUniqueID%' AND event LIKE 'Event: Newcallerid%' ORDER BY id DESC";
-		asterEvent::events($query);
+		//asterEvent::events($query);
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){
 			$event = $list['event'];
@@ -627,7 +638,7 @@ DestUniqueID: 1193886661.15683
 		global $db;
 		$SrcUniqueID = trim($SrcUniqueID);
 		$query  = "SELECT * FROM events WHERE event LIKE '%Uniqueid: $SrcUniqueID%' AND event LIKE 'Event: Newexten%' ORDER BY id ASC";
-		asterEvent::events($query);
+		//asterEvent::events($query);
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){
 			$event = $list['event'];
@@ -681,14 +692,14 @@ DestUniqueID: 1193886661.15683
 	return	null								nothing to be returned
 */
 	function events($event = null){
-		if(LOG_ENABLED){
+		//if(LOG_ENABLED){
 			$now = date("Y-M-d H:i:s");
    		
-			$fd = fopen (FILE_LOG,'a');
+			$fd = fopen ("/tmp/asterEvent.log",'a');
 			$log = $now." ".$_SERVER["REMOTE_ADDR"] ." - $event \n";
 	   		fwrite($fd,$log);
    			fclose($fd);
-		}
+		//}
 	}
 
 }
