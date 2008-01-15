@@ -732,12 +732,19 @@ function getContact($callerid){
 			
 
 	//check contact table first
-	$row = astercrm::getContactByCallerid($mycallerid);
+	if ($config['system']['detail_level'] == 'all')
+		$row = astercrm::getContactByCallerid($mycallerid);
+	else
+		$row = astercrm::getContactByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
+
 	if ($row['id'] == ''){	//no match
 		//	print 'no match in contact list';
 
 		//try get customer
-		$customerid = astercrm::getCustomerByCallerid($mycallerid);
+	if ($config['system']['detail_level'] == 'all')
+		$row = astercrm::getCustomerByCallerid($mycallerid);
+	else
+		$row = astercrm::getCustomerByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
 
 		if ($customerid == ''){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');

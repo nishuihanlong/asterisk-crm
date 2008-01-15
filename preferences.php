@@ -352,16 +352,17 @@ require_once('preferences.common.php');
   </tr>
   <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysEnableContact" name="SysEnableContact">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_contact
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;detail_level
 	</td>
     <td width="200" align="left" valign="top" >
-		<select name="iptSysEnableContact" id="iptSysEnableContact">
-			<option value="0">0</option>
-			<option value="1">1</option>
-		</select></td>
+			<select name="iptSysDetailLevel" id="iptSysDetailLevel">
+				<option value="all">all</option>
+				<option value="group">group</option>
+			</select>
+		</td>
     <td align="left" valign="top" >
-		<div id="divSysEnableContact" name="divSysEnableContact"></div>
-	</td>
+			<div id="divSysDetailLevel" name="divSysDetailLevel"></div>
+		</td>
   </tr>
   <tr>
     <td width="230" align="left" valign="top"  id="SysPopUpWhenDialIn" name="SysPopUpWhenDialIn">

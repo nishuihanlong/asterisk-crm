@@ -248,7 +248,7 @@ function submitForm($aFormValues){
 			$assignNum = 0;
 		}
 	}
-	$x =0;
+	$x = 0;
 	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date);
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句
@@ -263,7 +263,8 @@ function submitForm($aFormValues){
 					$x ++;
 				}
 			}
-			$tmpRs =@ $db->query("INSERT INTO diallist (dialnumber,assign,groupid) VALUES ('".$dialListValue."','".$arryAssign[$x]."','".$_SESSION['curuser']['groupid']."')");  // 插入diallist表
+			$query = "INSERT INTO diallist (dialnumber,assign,groupid,cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$_SESSION['curuser']['groupid'].", now(),'".$_SESSION['curuser']['username']."')";
+			$tmpRs =@ $db->query($query);  // 插入diallist表
 		
 			$diallistAffectRows += $db->affectedRows();
 			
@@ -359,7 +360,7 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	}
 	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
 	$strData = substr($strData,0,strlen($strData)-1);
-	$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby) VALUES ($strData,'".$date."','".$_SESSION['curuser']['username']."')";
+	$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$_SESSION['curuser']['groupid'].")";
 	//print $strSql;
 	//exit;
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);

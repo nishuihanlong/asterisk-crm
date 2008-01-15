@@ -174,6 +174,20 @@ class Customer extends astercrm
 	
 	function formAdd(){
 			global $locate;
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$res = Customer::getGroups();
+				$groupoptions .= '<select name="groupid" id="groupid">';
+				while ($row = $res->fetchRow()) {
+						$groupoptions .= '<option value="'.$row['groupid'].'"';
+						if ($survey['groupid']  == $row['groupid'])
+							$groupoptions .= ' selected';
+						$groupoptions .='>'.$row['groupname'].'</option>';
+				}
+				$groupoptions .= '</select>';
+		}else{
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+		}
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -205,27 +219,23 @@ class Customer extends astercrm
 					<select id="usertype" name="usertype">
 						<option value=""></option>
 						<option value="agent">agent</option>
-						<option value="groupadmin">groupadmin</option>
-						<option value="admin">admin</option>
+						<option value="groupadmin">groupadmin</option>';
+						if ($_SESSION['curuser']['usertype'] == 'admin') {
+							$html .='<option value="admin">admin</option>';
+						}
+			$html .='
 					</select></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("account_code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="20" maxlength="20"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("group_name").'</td>
-					<td align="left">
-						<select name="groupid" id="groupid">
-							<option value=""></option>';
-							$res = Customer::getGroups();
-							while ($row = $res->fetchRow()) {
-								$html .= '<option value="'.$row['groupid'].'">'.$row['groupname'].'</option>';
-							}
-
-			$html .= '</select>
-					</td>
-				</tr>
+				</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>';
+		$html .= '
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
@@ -267,7 +277,7 @@ class Customer extends astercrm
 			$grouphtml .= '</select>';
 	}else{
 			
-			$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input type="hidden" name="groupid" id="groupid" value="'.$row['groupid'].'"';
+			$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input type="hidden" name="groupid" id="groupid" value="'.$_SESSION['curuser']['groupid'].'">';
 	}
 
 

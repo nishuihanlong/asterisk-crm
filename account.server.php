@@ -250,6 +250,29 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
 	}
+	
+	// check if the assign number belong to this group
+	if ($_SESSION['curuser']['usertype'] != 'admin'){
+		$myextensions = split(",",$f['extensions']);
+		$newextensions = "";
+
+		foreach ($myextensions as $myextension){
+			foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+				if ($extension == $myextension){
+					$newextensions .= ",$myextension";
+					break;
+				}
+			}
+		}
+
+		if ($newextensions != ''){
+			$newextensions = substr($newextensions,1);
+		}
+
+		$f['extensions'] = $newextensions;
+	}
+	// check over
+
 	$respOk = Customer::insertNewAccount($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -274,6 +297,27 @@ function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
+	if ($_SESSION['curuser']['usertype'] != 'admin'){
+		// check if the assign number belong to this group
+		$myextensions = split(",",$f['extensions']);
+		$newextensions = "";
+
+		foreach ($myextensions as $myextension){
+			foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+				if ($extension == $myextension){
+					$newextensions .= ",$myextension";
+					break;
+				}
+			}
+		}
+
+		if ($newextensions != ''){
+			$newextensions = substr($newextensions,1);
+		}
+
+		$f['extensions'] = $newextensions;
+	}
+	// check over
 	$respOk = Customer::updateAccountRecord($f);
 
 	if($respOk){

@@ -321,6 +321,8 @@ Class astercrm extends PEAR{
 		$query= "INSERT INTO diallist SET "
 				."dialnumber='".$f['dialnumber']."', "
 				."groupid='".$f['groupid']."', "
+				."creby='".$_SESSION['curuser']['username']."', "
+				."cretime= now(), "
 				."assign='".$f['assign']."'";
 
 		astercrm::events($query);
@@ -1728,7 +1730,7 @@ Class astercrm extends PEAR{
 	*	@return $txtstr		(string) 		csv format datas
 	*/
 
-	function getCustomerByCallerid($callerid){
+	function getCustomerByCallerid($callerid,$groupid = ''){
 		global $db;
 		$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' ";
 		astercrm::events($query);
@@ -1736,9 +1738,13 @@ Class astercrm extends PEAR{
 		return $customerid;
 	}
 
-	function getContactByCallerid($callerid){
+	function getContactByCallerid($callerid,$groupid = ''){
 		global $db;
-		$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' LIMIT 0,1";
+		if ($groupid == '')
+			$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' LIMIT 0,1";
+		else
+			$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' AND groupid=$groupid LIMIT 0,1";
+
 		astercrm::events($query);
 		$row =& $db->getRow($query);
 		return $row;

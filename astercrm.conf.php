@@ -134,6 +134,8 @@ external_crm_url = http://www.magiclink.cn/index.html?callerid=%callerid&calleei
 
 upload_file_path = ./upload/
 
+detail_level = all
+
 [google-map]
 
 key = 

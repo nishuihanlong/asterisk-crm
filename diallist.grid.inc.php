@@ -45,7 +45,13 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT * FROM diallist ";
+		$sql = "SELECT diallist.*, groupname  FROM diallist LEFT JOIN accountgroup ON accountgroup.groupid = diallist.groupid";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " WHERE diallist.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
 
 		if($order == null){
 			$sql .= " ORDER BY id DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
@@ -69,21 +75,6 @@ class Customer extends astercrm
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
 
-	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
-		global $db;
-		
-		if(($filter != null) and ($content != null)){
-			$sql = "SELECT * FROM diallist"
-					." WHERE ".$filter." like '%".$content."%' "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}
-		Customer::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-
 	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
 		global $db;
 
@@ -91,30 +82,32 @@ class Customer extends astercrm
 		$joinstr='';
 		foreach ($content as $value){
 			$value=trim($value);
-			if (strlen($value)!=0 && $filter[$i] != null){
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
 			}
 			$i++;
 		}
+
+		$sql = "SELECT diallist.*, groupname FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid WHERE ";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1 ";
+		}else{
+			$sql .= " diallist.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql = "SELECT * FROM diallist"
-					." WHERE ".$joinstr."  "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}else {
-			$sql = "SELECT * FROM diallist"
+			$sql .= " AND ".$joinstr."  "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-		//print_r($sql)
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
+
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
@@ -127,12 +120,13 @@ class Customer extends astercrm
 		global $db;
 		
 		$sql = "SELECT COUNT(*) AS numRows FROM diallist ";
-		
-		if(($filter != null) and ($content != null)){
-			$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM diallist "
-				."WHERE ".$filter." like '%$content%'";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql = " SELECT COUNT(*) FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid";
+		}else{
+			$sql = " SELECT COUNT(*) FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid WHERE diallist.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
@@ -145,28 +139,50 @@ class Customer extends astercrm
 			$joinstr='';
 			foreach ($content as $value){
 				$value=trim($value);
-				if (strlen($value)!=0 && $filter[$i]!=null){
+				if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 					$joinstr.="AND $filter[$i] like '%".$value."%' ";
 				}
 				$i++;
 			}
+
+			$sql = "SELECT COUNT(*) FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid WHERE ";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " ";
+			}else{
+				$sql .= " diallist.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+			}
+
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql = 	"SELECT COUNT(*) AS numRows "
-				."FROM diallist "
-				."WHERE ".$joinstr." ";
+				$sql .= " ".$joinstr;
 			}else {
-				$sql = "SELECT COUNT(*) AS numRows FROM diallist ";
+				$sql .= " 1";
 			}
-		
-		
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
+//		print $sql;
+//		print "\n";
+//		print $res;
+//		exit;
 		return $res;
 	}
 
 	function formAdd(){
 		global $locate;
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$res = Customer::getGroups();
+				$groupoptions .= '<select name="groupid" id="groupid">';
+				while ($row = $res->fetchRow()) {
+						$groupoptions .= '<option value="'.$row['groupid'].'"';
+						if ($survey['groupid']  == $row['groupid'])
+							$groupoptions .= ' selected';
+						$groupoptions .='>'.$row['groupname'].'</option>';
+				}
+				$groupoptions .= '</select>';
+		}else{
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+		}
+
 		$html = '
 				<!-- No edit the next line -->
 				<form method="post" name="formDiallist" id="formDiallist">
@@ -183,13 +199,13 @@ class Customer extends astercrm
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35">
 						</td>
-					</tr>
+					</tr>';
+		$html .= '
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Group ID").'</td>
-						<td align="left">
-							<input type="text" id="groupid" name="groupid" size="10">
-						</td>
-					</tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>';
+		$html .= '
 					<tr>
 						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_save(xajax.getFormValues(\'formDiallist\'));return false;"></td>
 					</tr>

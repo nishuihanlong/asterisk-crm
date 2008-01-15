@@ -98,22 +98,30 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'dialnumber';
 	$fields[] = 'assign';
-	$fields[] = 'groupid';
+	$fields[] = 'groupname';
+	$fields[] = 'cretime';
+	$fields[] = 'creby';
 	
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("number");
 	$headers[] = $locate->Translate("assign_to");
-	$headers[] = $locate->Translate("Group ID");
+	$headers[] = $locate->Translate("Group Name");
+	$headers[] = $locate->Translate("Create time");
+	$headers[] = $locate->Translate("Create by");
 	
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="50%"';
-	$attribsHeader[] = 'width="30%"';
 	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -122,21 +130,27 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","assign","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupid","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'dialnumber';
-	$fieldsFromSearch[] = 'assign';
-	$fieldsFromSearch[] = 'groupid';
+	$fieldsFromSearch[] = 'diallist.dialnumber';
+	$fieldsFromSearch[] = 'diallist.assign';
+	$fieldsFromSearch[] = 'groupname';
+	$fieldsFromSearch[] = 'diallist.cretime';
+	$fieldsFromSearch[] = 'diallist.creby';
 
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("assign_to");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Group ID");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Create Time");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Create By");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -154,8 +168,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['dialnumber'];
 		$rowc[] = $row['assign'];
-		$rowc[] = $row['groupid'];
-		
+		$rowc[] = $row['groupname'];
+		$rowc[] = $row['cretime'];
+		$rowc[] = $row['creby'];
+
 		$table->addRow("diallist",$rowc,0,1,0,$divName,$fields);
  	}
  	
@@ -182,6 +198,25 @@ function add(){
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+
+	// check if the assign number belong to this group
+	if ($_SESSION['curuser']['usertype'] != 'admin'){
+		$flag = false;
+		foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+			if ($extension == $f['assign']){
+				$flag = true; 
+				break;
+			}
+		}
+
+		if (!$flag){
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Cant insert, please confirm the assign number is in your group"));
+			return $objResponse;
+		}
+	}
+
+	// check over
+
 	$surveyid = Customer::insertNewDiallist($f); 
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse->addAssign("grid", "innerHTML", $html);
@@ -207,7 +242,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}else{
 		if($type == "delete"){
-			$res = Customer::deleteRecord($id,'cdr_horoscope');
+			$res = Customer::deleteRecord($id,'diallist');
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
 				$objResponse = new xajaxResponse();

@@ -106,6 +106,7 @@ function initIni(){
 	$objResponse->addAssign("iptSysEnableExternalCrm","value",$config["system"]["enable_external_crm"]);
 
 	$objResponse->addAssign("iptSysEnableContact","value",$config["system"]["enable_contact"]);
+	$objResponse->addAssign("iptSysDetailLevel","value",$config["system"]["detail_level"]);
 
 	$objResponse->addAssign("iptSysOpenNewWindow","value",$config["system"]["open_new_window"]);
 
@@ -188,6 +189,8 @@ function initLocate(){
 
 	$objResponse->addAssign("divSysEnableContact","innerHTML",$locate->Translate('sys_enable_contact'));
 
+	$objResponse->addAssign("divSysDetailLevel","innerHTML",$locate->Translate('read group database or system database'));
+
 	$objResponse->addAssign("divSysOpenNewWindow","innerHTML",$locate->Translate('sys_open_new_window'));
 
 	$objResponse->addAssign("divSysExternalCrmDefaultUrl","innerHTML",$locate->Translate('sys_external_crm_default_url'));
@@ -242,6 +245,7 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['firstring'] = $aFormValues['iptSysFirstring'];
 	$myPreferences['system']['enable_external_crm'] = $aFormValues['iptSysEnableExternalCrm'];
 	$myPreferences['system']['enable_contact'] = $aFormValues['iptSysEnableContact'];
+	$myPreferences['system']['detail_level'] = $aFormValues['iptSysDetailLevel'];
 	$myPreferences['system']['open_new_window'] = $aFormValues['iptSysOpenNewWindow'];
 	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
