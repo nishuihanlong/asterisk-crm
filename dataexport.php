@@ -10,13 +10,23 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
+if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype'] != 'groupadmin') 
 	header("Location: portal.php");
 
 require_once ("db_connect.php");
 require_once ('include/astercrm.class.php');
 //$sql = $_REQUEST['hidSql'];
 $sql = $_SESSION['export_sql'];
+
+if ($sql == '') exit;
+	
+if ($_SESSION['curuser']['usertype'] != 'admin'){
+	if (strpos(strtolower($sql),'where'))
+		$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
+	else
+		$sql .= " where groupid = ".$_SESSION['curuser']['groupid'];
+}
+
 ob_start();
 header("charset=uft-8");   
 header('Content-type:  application/force-download');

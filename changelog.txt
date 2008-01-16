@@ -149,6 +149,7 @@ v0.0456 beta
 2007-1-15		diallist 表增加了 cretime, creby 字段
 2007-1-15		完善了分组模块
 2007-1-15		astercrm.conf.php 添加了新的参数 detail_level , 取值有 all 或者 group, 控制当显示来电信息时信息系统信息是否共享
+2007-1-15		改进了 asterEvent 类的 checkIncoming 函数的方法, 增强了系统效率和兼容性
 
 
 TO-DO:

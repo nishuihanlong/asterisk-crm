@@ -28,6 +28,7 @@ CREATE TABLE contact (
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(40) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
+  groupid INT NOT NULL ,
   UNIQUE KEY id (id)
 ) ;
 
@@ -54,6 +55,7 @@ CREATE TABLE customer (
   bankaccountname	varchar(100) NOT NULL default '',	#add 2007-10-25 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby varchar(30) NOT NULL default '',
+  groupid INT NOT NULL ,
   UNIQUE KEY id (id)
 ) ;
 
@@ -77,6 +79,7 @@ CREATE TABLE note (
   creby varchar(30) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   contactid int(11) NOT NULL default '0',
+  groupid INT NOT NULL ,
   UNIQUE KEY id (id)
 ) ;
 
@@ -117,6 +120,8 @@ CREATE TABLE diallist (
   dialnumber varchar(30) NOT NULL default '',
   assign varchar(30) NOT NULL default '',
   groupid INT NOT NULL DEFAULT '0',		#added by solo 2007-12-17
+  dialedby	varchar(30) NOT NULL default '', #added by solo 2008-1-15
+  dialedtime	datetime NOT NULL default '0000-00-00 00:00:00', #added by solo 2008-1-15
   UNIQUE KEY id (id)
 ) ;
 
@@ -139,8 +144,8 @@ CREATE TABLE survey (
   surveyname varchar(50) NOT NULL default '',
   enable int	NOT NULL default '0',	#add 2007-10-15 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  optionnote varchar(255) NOT NULL, #add 2008-1-11 by solo
-  creby  varchar(50) NOT NULL default '',
+  surveynote varchar(255) NOT NULL, #add 2008-1-11 by solo
+  groupid INT NOT NULL DEFAULT '0',		#added by solo 2008-1-15
   UNIQUE KEY id (id)
 ) ;
 
@@ -150,7 +155,7 @@ DROP TABLE IF EXISTS surveyoptions;
 CREATE TABLE surveyoptions (
   id int(11) NOT NULL auto_increment,
   surveyoption varchar(50) NOT NULL default '',
-  optionnote TEXT NOT NULL,
+  optionnote varchar(255) NOT NULL,	#added by solo 2008-1-14
   surveyid int(11) NOT NULL default '0',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   creby  varchar(50) NOT NULL default '',
@@ -169,22 +174,9 @@ CREATE TABLE surveyresult (
   surveynote varchar(255) NOT NULL,
   creby  varchar(50) NOT NULL default '',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
+  groupid INT NOT NULL ,
   UNIQUE KEY id (id)
 ) ;
-
-
-INSERT INTO `account` (
-`id` ,
-`username` ,
-`password` ,
-`extension` ,
-`extensions` ,
-`usertype` 
-)
-VALUES (
-NULL , 'admin', 'admin', '0000', '', 'admin'
-);
-
 
 CREATE TABLE remind (
   id int(11) NOT NULL auto_increment,
@@ -201,3 +193,15 @@ CREATE TABLE remind (
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY id (id)
 ) ;
+
+INSERT INTO `account` (
+`id` ,
+`username` ,
+`password` ,
+`extension` ,
+`extensions` ,
+`usertype` 
+)
+VALUES (
+NULL , 'admin', 'admin', '0000', '', 'admin'
+);
