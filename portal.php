@@ -64,6 +64,9 @@
 				updateEvents					check database for asterisk events
 
 
+* Revision 0.0456  2007/1/16 14:16:00  last modified by solo
+* Desc: when there's aleady a call, dial and invite function would be disabled
+
 * Revision 0.0456  2007/10/31 9:46:00  last modified by solo
 * Desc: add divHangup
 
@@ -103,6 +106,8 @@ require_once('config.php');
 		<script type="text/javascript">
 
 		function dial(phonenum){
+			if (document.getElementById("uniqueid").value != '')
+				return false;
 			xajax_dial(phonenum);
 		}
 
@@ -164,6 +169,8 @@ require_once('config.php');
 		}
 		
 		function invite(){
+			if (document.getElementById("uniqueid").value != '')
+				return false;
 			src = trim(xajax.$('iptSrcNumber').value);
 			dest = trim(xajax.$('iptDestNumber').value);
 			if (src == '' && dest == '')

@@ -638,6 +638,11 @@ function dial($phoneNum,$first = ''){
 
 		if ($config['system']['allow_dropcall'] == true){
 
+/*
+	coz after we use new method to capture dial event
+	there's no good method to make both leg display correct clid for now
+	so we comment these lines
+*/
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 								'WaitTime'=>30,
 								'Exten'=>$_SESSION['curuser']['extension'],
@@ -666,8 +671,16 @@ function invite($src,$dest){
 	global $config;
 	$src = trim($src);
 	$dest = trim($dest);
-	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
+
+	if ($src == $_SESSION['curuser']['extension'])
+		$callerid = $dest;
+	else if ($dest == $_SESSION['curuser']['extension'])
+		$callerid = $src;
+	else
+		return $objResponse;
+
+	$myAsterisk = new Asterisk();
 	
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
@@ -675,7 +688,7 @@ function invite($src,$dest){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 
-		$strChannel = "Local/".$src."@".$config['system']['incontext']."/n";
+	$strChannel = "Local/".$src."@".$config['system']['incontext']."/n";
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 							'WaitTime'=>30,
@@ -685,9 +698,9 @@ function invite($src,$dest){
 							'Variable'=>"$strVariable",
 							'Priority'=>1,
 							'MaxRetries'=>0,
-							'CallerID'=>$dest));
+							'CallerID'=>$callerid));
 	}else{
-		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$dest,NULL,$_SESSION['curuser']['accountcode']);
+		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
 	}
 
 	return $objResponse->getXML();

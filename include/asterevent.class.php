@@ -491,12 +491,16 @@ class asterEvent extends PEAR
 			//	$callerid = $transferid;
 			$SrcChannel = trim(substr($flds[2],7));			//add by solo 2007/10/31
 			$DestChannel = trim(substr($flds[3],12));		//add by solo 2007/10/31
+
 			$call['callerChannel'] = $SrcChannel;
 			$call['calleeChannel'] = $DestChannel;
 			$SrcUniqueID = trim(substr($flds[6],12));
 			$DestUniqueID = trim(substr($flds[7],13));
 			$callerid = trim(substr($flds[4],9));
 
+			if (preg_match_all("/^Local\/(.*)\@/",$SrcChannel,$match) && $callerid == $_SESSION['curuser']['extension'])
+				$callerid = trim($match[1][0]);
+			
 			asterEvent::events("incoming from:".$callerid);
 
 
@@ -556,17 +560,18 @@ CallerIDName: <unknown>
 SrcUniqueID: 1193886661.15682  
 DestUniqueID: 1193886661.15683
 */
-			if ($flds[0] == 'Event: Dial'){
-				$SrcUniqueID = trim(substr($flds[6],12));
-				$DestUniqueID = trim(substr($flds[7],13));
-				$SrcChannel = trim(substr($flds[2],7));			//add by solo 2007/10/31
-				$DestChannel = trim(substr($flds[3],12));		//add by solo 2007/10/31
+			$SrcUniqueID = trim(substr($flds[6],12));
+			$DestUniqueID = trim(substr($flds[7],13));
+			$SrcChannel = trim(substr($flds[2],7));			//add by solo 2007/10/31
+			$DestChannel = trim(substr($flds[3],12));		//add by solo 2007/10/31
 
-				$srcInfo = & asterEvent::getInfoBySrcID($SrcUniqueID);
-				$callerid = $srcInfo['Extension'];
-				asterEvent::events("dialout: ".$event);
+			$srcInfo = & asterEvent::getInfoBySrcID($SrcUniqueID);
+			$callerid = $srcInfo['Extension'];
+			asterEvent::events("dialout: ".$event);
 
-			}
+			if (preg_match_all("/^Local\/(.*)\@/",$SrcChannel,$match))
+				$callerid = trim($match[1][0]);
+
 
 			if ($id > $curid) 
 				$curid = $id;
