@@ -60,15 +60,14 @@ however, multiple servers enhance performance.
 	Note: this creates the /var/www/html/astercrm directory which contains the
 	PHP scripts and several sub-directories. 
 
-	/var/www/html/astercrm						main directory and PHP scripts  
-	/var/www/html/astercrm/astercrm.conf.php	astercrm configration file
-	/var/www/html/astercrm/eventsdaemon 		eventsdaemon file
-	/var/www/html/astercrm/includes 			files needed in php scripts
-	/var/www/html/astercrm/includes/language 	asterCRM language files
-	/var/www/html/astercrm/images				image files used via the PHP scripts
-	/var/www/html/astercrm/css					style files used via the PHP scripts
-	/var/www/html/astercrm/js					auto-complete java scripts
-	/var/www/html/astercrm/upload				
+	/var/www/html/astercrm									main directory and PHP scripts  
+	/var/www/html/astercrm/astercrm.conf.php		astercrm configration file
+	/var/www/html/astercrm/eventsdaemon 			eventsdaemon file
+	/var/www/html/astercrm/includes 					files needed in php scripts
+	/var/www/html/astercrm/includes/language 		asterCRM language files
+	/var/www/html/astercrm/skin							image/style files used by astercrm
+	/var/www/html/astercrm/js								auto-complete java scripts
+	/var/www/html/astercrm/upload				upload folder, make sure it get write permission
 	/var/www/html/astercrm/cdr					Asterisk-stat				
 	/var/www/html/astercrm/sql					sql to create astercrm database 
 
@@ -77,19 +76,18 @@ however, multiple servers enhance performance.
 
 2) Create the directories and move eventsdaemon scripts:
 
-	mkdir /opt/asterisk
-	mkdir /opt/asterisk/scripts
-	mkdir /opt/asterisk/scripts/events
-	mv /var/www/html/astercrm/eventsdaemon/* /opt/asterisk/scripts/events
-	chmod +x /opt/asterisk/scripts/events/eventsdaemon.pl
+	mkdir -p /opt/asterisk/scripts/eventsdaemon 
+	mv /var/www/html/astercrm/eventsdaemon/* /opt/asterisk/scripts/eventsdaemon
+	chmod +x /opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl
+	chmod +x /opt/asterisk/scripts/eventsdaemon/eventdog.sh
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
-	mysqladmin create asterisk
-	mysql </var/www/html/astercrm/sql/astercrm.sql -uyourmysqluser -pyourmysqlpasswd
+	mysqladmin --uyourmysqluser -pyourmysqlpasswd create astercrm
+	mysql -uyourmysqluser -pyourmysqlpasswd astercrm </var/www/html/astercrm/sql/astercrm.sql 
 
-	Note: the astercrm.sql file will create tables in database named "asterisk"
-		use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
+	Note: here we create the database named astercrm, you could use whatever db name you want
+			use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
 	
 4) Update /etc/asterisk/manager.conf to enable Manager connections
 	Note: asterisk and astercrm could be on different server
@@ -102,32 +100,44 @@ however, multiple servers enhance performance.
 	bindaddr = 0.0.0.0
 	;displayconnects = yes
 
-	;the following line could be changed by your selft
-	[eventmanager]
-	secret = asterisksecret
+	;the following line could be changed by yourself
+	[eventsdaemon]
+	secret = myeventsdaemon
 	read = system,call,log,verbose,command,agent,user
 	write = system,call,log,verbose,command,agent,user
-
+	deny=0.0.0.0/0.0.0.0
+	; only allow local access, if you want to run astercrm on another server
+	; use your astercrm ip to replace 127.0.0.1 or add a new line
+	permit=127.0.0.1/255.255.255.0	 
+	
 5) modify astercrm.conf.php and eventsdaemon.pl to fit your configration
-	including database setting and AMI setting
+	mainly database setting and AMI setting, the other parameters could be set in astercrm page
 
 6) Start Asterisk and  eventsdaemon.pl
 
+	try start eventsdaemon:
+
+		/opt/asterisk/scripts/events/eventsdaemon.pl 
+	
+	if you could read:
+
+		"Message: Authentication accepted"
+
+	congratulations, your eventsdaemon works
+	use ctrl + c to exit
+	or else, please check your database/AMI configration in eventsdaemon.pl
+
 	Start eventsdaemon (default settings):
-		/opt/asterisk/scripts/events/eventsdaemon.pl &
-
-	OR Start eventsdaemon (debug settings):
-
-		/opt/asterisk/scripts/events/eventsdaemon.pl debug 
+		/opt/asterisk/scripts/events/eventsdaemon.pl -d
 
 	At some point it may be desirable to delete unwanted events from the database
 	table. The eventsdaemon is also designed for this.
 	please check eventsdaemon.pl for parameter "log_life"
 
-
-7) set upload folder access to 777
+7) set file&folder access 
 
 	chmod 777 /var/www/html/astercrm/upload
+	chmod 777 /var/www/html/astercrm/astercrm.conf.php
 
 8) Testing: browse to http://localhost/astercrm
 
@@ -135,19 +145,9 @@ however, multiple servers enhance performance.
 		
 	login with admin/admin
 
-3. How to use confirm button
-
-	Customer field support auto-complete, which means it will list all items in 
-	customer database matched with your entered. if you find the customer  already exsited, 
-	select the item and then click "confirm" button, then all information for the customer 
-	will be filled automaticly. (screenshot/1,2,3) Click "Cancel" button will clear all 
-	information, you can enter another customer .
-
-	Contact field is almost same with customer field, but it only list contacts belongs 
-	to the customer above.
-
 ====================================================================================
 
+2008-1-18	Version 0.45 Released (GPL)
 2007-10-9	Version 0.445 Released (GPL)
 2007-10-22	Version 0.45  Released (GPL)
 
