@@ -45,7 +45,7 @@ class Common{
 					<tr>
 						<td>
 							©2007 asterCRM - <a href="http://www.astercrm.org" target="_blank">asterCRM home</a><br>
-							version: 0.0456 beta
+							version: 0.046
 						</td>
 					</tr>
 					</table>
