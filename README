@@ -134,6 +134,11 @@ however, multiple servers enhance performance.
 	table. The eventsdaemon is also designed for this.
 	please check eventsdaemon.pl for parameter "log_life"
 
+	also we provide a "watch dog", it would help you restart eventsdaemon when it shutdown
+	add this shell to your start-up file
+		/opt/asterisk/scripts/events/eventdog.sh
+	so that everytime your server start, eventsdaemon would be loaded
+
 7) set file&folder access 
 
 	chmod 777 /var/www/html/astercrm/upload
