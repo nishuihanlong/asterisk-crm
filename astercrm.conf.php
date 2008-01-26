@@ -5,7 +5,7 @@
 dbtype = mysql
 
 dbhost = 127.0.0.1
-dbname = asterisk
+dbname = astercrm
 username = 
 password = 
 
