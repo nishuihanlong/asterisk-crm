@@ -260,10 +260,8 @@ class asterEvent extends PEAR
 	allow to spy extension
 	but no click-to-call
 
-	@param	$phones					(array)		phone list
-	@param	$status					(array)		status list for phones
-	@param	$callerid				(array)		callerid list for phones
-	@param	$direction				(array)		direction list for phones
+	@param	$phones					(array)		
+	@param	$type					(string)	list | table
 	return	$html					(string)	HTML code for extension status
 
 	*/
