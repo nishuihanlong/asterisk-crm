@@ -120,8 +120,8 @@ CREATE TABLE diallist (
   dialnumber varchar(30) NOT NULL default '',
   assign varchar(30) NOT NULL default '',
   groupid INT NOT NULL DEFAULT '0',		#added by solo 2007-12-17
-  dialedby	varchar(30) NOT NULL default '', #added by solo 2008-1-15
-  dialedtime	datetime NOT NULL default '0000-00-00 00:00:00', #added by solo 2008-1-15
+  creby	varchar(20) NOT NULL default '', #added by solo 2008-1-15
+  cretime	datetime NOT NULL default '0000-00-00 00:00:00', #added by solo 2008-1-15
   UNIQUE KEY id (id)
 ) ;
 

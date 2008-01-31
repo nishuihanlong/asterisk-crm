@@ -142,7 +142,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 	//获取一个号码
 	if ($_SESSION['curuser']['usertype']  == "admin"){
 		$row =& astercrm::getDialNumber();
-		$grouprow = & astercrm::getgetRecordByField("groupid",$row['groupid'],"accountgroup");
+		$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
 		$pdextension = $grouprow['pdextension'];
 		$pdcontext = $grouprow['pdcontext'];
 	}else{

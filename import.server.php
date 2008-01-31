@@ -270,9 +270,14 @@ function submitForm($aFormValues){
 			
 			$x++;
 
+		}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
+			$query = "INSERT INTO diallist (dialnumber,groupid,cretime,creby) VALUES ('".$dialListValue."',".$_SESSION['curuser']['groupid'].", now(),'".$_SESSION['curuser']['username']."')";
+			$tmpRs =@ $db->query($query);  // 插入diallist表
+		
+			$diallistAffectRows += $db->affectedRows();
 		}
 
-		if($tableName != ''){
+		if($tableName != '' && $strSql != '' ){
 			$res = @ $db->query($strSql);  //插入customer或contact表
 			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
 		}
@@ -360,7 +365,8 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	}
 	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
 	$strData = substr($strData,0,strlen($strData)-1);
-	$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$_SESSION['curuser']['groupid'].")";
+	if ($fieldName != "")
+		$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$_SESSION['curuser']['groupid'].")";
 	//print $strSql;
 	//exit;
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);

@@ -125,7 +125,7 @@
 
 				xajax.$('btnUpload').disabled = true;
 				xajax.$('btnUpload').value=xajax.$('hidOnUploadMsg').value;
-				formUpload.submit();
+				xajax.$('formUpload').submit();
 				return false;
 			}
 		
