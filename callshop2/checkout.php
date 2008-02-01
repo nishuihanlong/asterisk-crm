@@ -24,7 +24,7 @@ require_once('checkout.common.php');
 function init(){
 	curpeer = document.getElementById("hidCurpeer").value;
 	xajax_init(curpeer);
-	listCDR(curpeer);
+	listCDR();
 }
 
 function  addOption(objId,optionVal,optionText)  {
@@ -92,10 +92,6 @@ function ckbAllOnClick(objCkb){
 	}
 }
 
-function checkOut(){
-	xajax_checkOut(xajax.getFormValues("f"));
-}
-
 	//-->
 		</SCRIPT>
 
@@ -113,9 +109,11 @@ function checkOut(){
 			<select id="sltBooth" name="sltBooth" onchange="listCDR();">
 				<option value="">All</option>
 			</select>
+			
 			From: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i:s",time()-86400);?>">
 			To:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i:s",time());?>">
-			<input type="button" onclick="listCDR(document.getElementById('sltBooth').value);return false;" value="List">
+					<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail">List Detail
+			<input type="button" onclick="listCDR();return false;" value="List">
 		</div>
 		</form>
 		<div id="divUnbilledList" name="divUnbilledList">
@@ -126,7 +124,7 @@ function checkOut(){
 			<div style="display:none;">Total: <span id="spanTotal" name="spanTotal">0</span> Callshop Cost: <span id="spanCallshopCost" name="spanCallshopCost">0</span></div>
 			Total: <span id="spanCurrencyTotal" name="spanCurrencyTotal">0</span><br />
 			Callshop Cost: <span id="spanCurrencyCallshopCost" name="spanCurrencyCallshopCost">0</span><br />
-			<input type="button" value="Check Out" name="btnCheckOut" id="btnCheckOut" onclick="checkOut();return false;">
+			<input type="button" value="Check Out" name="btnCheckOut" id="btnCheckOut" onclick="xajax_checkOut(xajax.getFormValues('f'));">
 		</div>
 		</center>
 

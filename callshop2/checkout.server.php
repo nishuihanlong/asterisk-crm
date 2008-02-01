@@ -53,6 +53,7 @@ function init($curpeer){
 
 function listCDR($aFormValues){
 	$objResponse = new xajaxResponse();
+
 	if ($_SESSION['curuser']['usertype'] == 'admin')
 		$records = astercc::readAll($aFormValues['sltBooth'], -1,$aFormValues['sdate'],$aFormValues['edate']);
 	else
@@ -110,6 +111,14 @@ function listCDR($aFormValues){
 
 		$callshop_cost = astercc::creditDigits(round(($cs_price)*100)/100);
 		if ($_SESSION['curuser']['usertype'] == 'operator') $callshop_cost = 0;
+
+		if ($aFormValues['ckbDetail'] == ""){
+			// only get amount
+			$calls ++;
+			$amount += $mycdr['credit'];
+			$cost += $callshop_cost;
+		}
+
 		
 		$html .= '	<tr align="left" id="tr-'.$mycdr['id'].'">
 						<td align="right">
@@ -164,6 +173,12 @@ function listCDR($aFormValues){
 			</tr>';
 	$html .= '</table>';
 	$html .= '</form>';
+	if ($aFormValues['ckbDetail'] == ""){
+		$html = "Calls: $calls"."<br>";
+		$html .= "Amount: $amount"."<br>";
+		$html .= "Cost: $cost"."<br>";
+	}
+
 	$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 	$objResponse->addAssign("spanTotal","innerHTML",0);
 	return $objResponse;
@@ -175,7 +190,7 @@ function checkOut($aFormValues){
 		foreach ($aFormValues['ckb'] as $id){
 			$res =  astercc::setBilled($id);
 		}
-		$objResponse->addScript("listCDR(document.getElementById('sltBooth').value)");
+		$objResponse->addScript("listCDR();");
 	}
 	return $objResponse;
 }

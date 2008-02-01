@@ -17,6 +17,9 @@
 		showPredictiveDialer
 		predictiveDialer
 
+* Revision 0.0461  2008/2/1 20:37:00  last modified by solo
+* Desc: fix predictive dialer bug
+
 * Revision 0.0455  2007/10/24 20:37:00  last modified by solo
 * Desc: add another dial method: sendCall()
 
@@ -192,7 +195,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 			';
 		$res = $db->query($query);
 		*/
-		$strChannel = "Local/".$phoneNum."@".$pdcontext."/n";
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
 		if ($config['system']['allow_dropcall'] == true){
 
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",

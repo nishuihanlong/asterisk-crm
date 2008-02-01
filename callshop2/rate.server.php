@@ -201,9 +201,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
+	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin')
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
+	else
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+
+
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin')
+		$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	else
+		$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -218,8 +226,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['billingblock'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['addtime'];
-		$table->addRow("myrate",$rowc,1,1,0,$divName,$fields);
- 	}
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin')
+			$table->addRow("myrate",$rowc,1,1,0,$divName,$fields);
+		else
+			$table->addRow("myrate",$rowc,0,0,0,$divName,$fields);
+		}
  	
  	// End Editable Zone
  	

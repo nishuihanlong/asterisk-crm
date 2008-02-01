@@ -129,11 +129,16 @@ DROP TABLE IF EXISTS dialedlist;
 
 #store dialed number (from diallist table)
 CREATE TABLE dialedlist (
-  id int(11) NOT NULL auto_increment,
-  dialnumber	varchar(30) NOT NULL default '',
-  dialedby	varchar(30) NOT NULL default '',
-  dialedtime	datetime NOT NULL default '0000-00-00 00:00:00',
-  UNIQUE KEY id (id)
+
+  `id` int(11) NOT NULL auto_increment,
+  `dialnumber` varchar(30) NOT NULL default '',
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-2-1
+  `duration` int(11) NOT NULL default '0',						#added by solo 2008-2-1
+  `response` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
+  `uniqueid` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
+  `dialedby` varchar(30) NOT NULL default '',
+  `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
 ) ;
 
 DROP TABLE IF EXISTS survey;

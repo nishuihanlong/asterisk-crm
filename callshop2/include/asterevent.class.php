@@ -190,11 +190,24 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 	return $res;
 }
 
-	function readAmount($groupid){
+	function readAmount($groupid,$peer = null, $sdate = null, $edate = null){
 		global $db;
 		$curYear = Date("Y");
 		$curMonth = Date("m");
-		$query = "SELECT SUM(credit) FROM mycdr WHERE groupid = $groupid AND calldate >= '$curYear-$curMonth-01 00:00:00' AND calldate <= '$curYear-$curMonth-31 23:59:59'";
+
+		if ($sdate == null){
+			$sdate = "$curYear-$curMonth-01 00:00:00";
+		}
+
+		if ($edate == null){
+			$edate = "$curYear-$curMonth-31 23:59:59";
+		}
+
+		if ($peer == null)
+			$query = "SELECT SUM(credit) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
+		else
+			$query = "SELECT SUM(credit) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
+
 		astercc::events($query);
 		$one = $db->getOne($query);
 		return $one;

@@ -154,6 +154,11 @@ v0.046
 -----------------------------------------------------------------------------------------
 v0.0461
 2007-1-31		修正了当没有选择指派时, 不能导入diallist的bug
+2007-2-1		修正了predictivedialer拨号时context错误的bug
+2007-2-1		修正sql文件里的错误 (diallist 表字段名称错误)
+2007-2-1		dialedlist表增加了  answertime， duration, response, uniqueid 四个字段
+
+
 
 
 TO-DO:

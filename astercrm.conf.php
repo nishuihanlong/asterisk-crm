@@ -48,8 +48,8 @@ incontext = from-sipuser
 ; when predictive dialer connect the call
 ;
 
-predialer_context = from-siptrunk
-predialer_extension = 1
+;predialer_context = from-siptrunk
+;predialer_extension = 1
 
 
 ;

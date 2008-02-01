@@ -48,7 +48,7 @@ setcookie('PHPSESSID', session_id());
 
 
 if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
-	header("Location: login.php");
+	header("Location: systemstatus.php");
 }
 
 

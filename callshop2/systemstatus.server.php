@@ -70,7 +70,9 @@ if (!isset($_SESSION['callbacks']))
 	$objResponse->addScript("checkHangup()");
 
 	$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
-	$objResponse->addAssign("spanAmount","innerHTML",astercc::readAmount($_SESSION['curuser']['groupid']));
+	$amount = astercc::readAmount($_SESSION['curuser']['groupid']);
+	if ($amount == '') $amount = 0;
+	$objResponse->addAssign("spanAmount","innerHTML",$amount);
 
 	return $objResponse;
 }
