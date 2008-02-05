@@ -45,7 +45,7 @@ class Common{
 					<tr>
 						<td>
 							©2007 asterCRM - <a href="http://www.astercrm.org" target="_blank">asterCRM home</a><br>
-							version: 0.046
+							version: 0.0461
 						</td>
 					</tr>
 					</table>
@@ -84,7 +84,9 @@ class Common{
 		<li><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logo_bn.gif"/></li>
 	</ul>
 	<div align="right">
-		[<a href="diallist.php">diallist</a>] | [<a href="preferences.php">perference</a>]
+		[<a href="diallist.php">diallist</a>]<BR>
+		[<a href="dialedlist.php">dialed list</a>]<BR>
+		[<a href="preferences.php">perference</a>]
 	</div>
 </div>
 				';

@@ -160,8 +160,9 @@ function predictiveDialer($maxChannels,$totalRecords){
 		return $objResponse;
 	} else {
 		$id = $row['id'];
+		$groupid = $row['groupid'];
 		$phoneNum = $row['dialnumber'];
-
+		$assign = $row['assign'];
 		// get active channel
 		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
 		$channels = split(chr(10),$channels[1]);
@@ -181,10 +182,14 @@ function predictiveDialer($maxChannels,$totalRecords){
 		$res = astercrm::deleteRecord($id,"diallist");
 		$f['dialnumber'] = $phoneNum;
 		$f['dialedby'] = $_SESSION['curuser']['username'];
-
+		$f['groupid'] = $groupid;
+		$f['assign'] = $assign;
 		$res = astercrm::insertNewDialedlist($f);
 
 		$sid=md5(uniqid(""));
+		// if we didnt set pdextension, we use send phone number to pdcontext
+		if ($pdextension == '') $pdextension = $phoneNum;
+
 		/*
 		$query = '
 			INSERT INTO dialresult SET

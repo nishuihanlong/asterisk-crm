@@ -70,6 +70,17 @@ function init($fileName){
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->loadXML(showDivMainRight($fileName));
 
+	if ($_SESSION['curuser']['usertype'] == 'admin') {
+		// add all group
+		$res = astercrm::getGroups();
+		while ($row = $res->fetchRow()) {
+			$objResponse->addScript("addOption('sltGroupid','".$row['groupid']."','".$row['groupname']."');");
+		}
+	}else{
+		// add self
+		$objResponse->addScript("addOption('sltGroupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
+	}
+
 	return $objResponse;
 }
 /**
@@ -210,7 +221,7 @@ function submitForm($aFormValues){
 	$affectRows= 0;  //计数据库影响结果变量
 	$x = 0;  //计数变量
 	$date = date('Y-m-d H:i:s'); //当前时间
-
+	$groupid = $aFormValues['sltGroupid'];
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
 		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
 
@@ -249,7 +260,7 @@ function submitForm($aFormValues){
 		}
 	}
 	$x = 0;
-	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date);
+	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid);
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句
 		//print $strSql;
@@ -263,19 +274,15 @@ function submitForm($aFormValues){
 					$x ++;
 				}
 			}
-			$query = "INSERT INTO diallist (dialnumber,assign,groupid,cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$_SESSION['curuser']['groupid'].", now(),'".$_SESSION['curuser']['username']."')";
-			$tmpRs =@ $db->query($query);  // 插入diallist表
-		
-			$diallistAffectRows += $db->affectedRows();
+			$query = "INSERT INTO diallist (dialnumber,assign,groupid,cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$groupid.", now(),'".$_SESSION['curuser']['username']."')";
 			
 			$x++;
 
 		}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
-			$query = "INSERT INTO diallist (dialnumber,groupid,cretime,creby) VALUES ('".$dialListValue."',".$_SESSION['curuser']['groupid'].", now(),'".$_SESSION['curuser']['username']."')";
-			$tmpRs =@ $db->query($query);  // 插入diallist表
-		
-			$diallistAffectRows += $db->affectedRows();
+			$query = "INSERT INTO diallist (dialnumber,groupid,cretime,creby) VALUES ('".$dialListValue."',".$groupid.", now(),'".$_SESSION['curuser']['username']."')";
 		}
+		$tmpRs =@ $db->query($query);  // 插入diallist表
+		$diallistAffectRows += $db->affectedRows();
 
 		if($tableName != '' && $strSql != '' ){
 			$res = @ $db->query($strSql);  //插入customer或contact表
@@ -332,16 +339,16 @@ function getDiallistBar($columnNum){
 }
 
 
-function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date){
+function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid){
 	$arrData = getSourceData($filePath);
 	foreach($arrData as $arrRow){
-		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date);
+		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid);
 	}
 	return $arrAll;
 }
 
 //循环列数据，得到sql
-function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date){
+function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid){
 	$fieldName = '';
 	$strData = '';
 	//print_r($tableStructure);

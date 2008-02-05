@@ -34,9 +34,10 @@ setcookie('PHPSESSID', session_id());
 
 
 if ($_SESSION['curuser']['usertype'] == '') 
-	header("Location: login.php");
+	header("Location: systemstatus.php");
 
 require_once ("include/xajax.inc.php");
+require_once ('include/localization.class.php');
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'rate');
 

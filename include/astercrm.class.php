@@ -98,7 +98,7 @@ Class astercrm extends PEAR{
 	function getGroups(){
 		global $db;
 		$sql = "SELECT *  FROM accountgroup";
-		Customer::events($sql);
+		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
@@ -106,7 +106,7 @@ Class astercrm extends PEAR{
 	function getGroupById($groupid){
 		global $db;
 		$sql = "SELECT groupname  FROM accountgroup WHERE id = $groupid";
-		Customer::events($sql);
+		astercrm::events($sql);
 		$res =& $db->getRow($sql);
 		return $res;
 	}
@@ -334,7 +334,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now())';
+		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime,groupid,assign) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['assign'].')';
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -1551,9 +1551,9 @@ Class astercrm extends PEAR{
 		global $db;
 
 		if ($groupid == null){
-			$query = "SELECT id,dialnumber,groupid FROM diallist ORDER BY id DESC	LIMIT 0,1" ;
+			$query = "SELECT * FROM diallist ORDER BY id DESC	LIMIT 0,1" ;
 		}else{
-			$query = "SELECT id,dialnumber	FROM diallist 	 WHERE groupid = $groupid ORDER BY id DESC	LIMIT 0,1";
+			$query = "SELECT * FROM diallist WHERE groupid = $groupid ORDER BY id DESC	LIMIT 0,1";
 		}
 		$row =& $db->getRow($query);
 

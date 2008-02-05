@@ -119,9 +119,9 @@ CREATE TABLE diallist (
   id int(11) NOT NULL auto_increment,
   dialnumber varchar(30) NOT NULL default '',
   assign varchar(30) NOT NULL default '',
-  groupid INT NOT NULL DEFAULT '0',		#added by solo 2007-12-17
-  creby	varchar(20) NOT NULL default '', #added by solo 2008-1-15
-  cretime	datetime NOT NULL default '0000-00-00 00:00:00', #added by solo 2008-1-15
+  groupid INT NOT NULL DEFAULT '0',						#added by solo 2007-12-17
+  creby	varchar(20) NOT NULL default '',					#added by solo 2008-1-15
+  cretime	datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-1-15
   UNIQUE KEY id (id)
 ) ;
 
@@ -136,6 +136,7 @@ CREATE TABLE dialedlist (
   `duration` int(11) NOT NULL default '0',						#added by solo 2008-2-1
   `response` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
   `uniqueid` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
+  `groupid` INT NOT NULL DEFAULT '0',						#added by solo 2008-2-3
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)

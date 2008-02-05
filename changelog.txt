@@ -140,30 +140,30 @@ v0.046
 2007-12-19	修改了asterevent.class中的一个bug, 该bug导致当刷新页面时旧有的呼叫事件不会被hangup
 2007-12-19	surveyoption 表增加了 optionnote 字段
 2008-1-8		修改了 eventsdaemon.pl 默认启动时为debug模式, 增加了shell脚本 eventdog.sh
-2007-1-10		survey 表增加了 groupid 字段
-2007-1-10		survey 表增加了 surveynote 字段
-2007-1-10		对 survey 增加了备注说明功能
-2007-1-14		对 surveyoptions 增加了备注说明功能
-2007-1-14		account, survey界面增加了用户组的显示
-2007-1-14		surveyresult, customer, contact, note 表增加了 groupid 字段
-2007-1-15		diallist 表增加了 cretime, creby 字段
-2007-1-15		完善了分组模块
-2007-1-15		astercrm.conf.php 添加了新的参数 detail_level , 取值有 all 或者 group, 控制当显示来电信息时信息系统信息是否共享
-2007-1-15		改进了 asterEvent 类的 checkIncoming 函数的方法, 增强了系统效率和兼容性
-2007-1-16		当分机正在通话, 点击呼叫功能将被禁用
+2008-1-10		survey 表增加了 groupid 字段
+2008-1-10		survey 表增加了 surveynote 字段
+2008-1-10		对 survey 增加了备注说明功能
+2008-1-14		对 surveyoptions 增加了备注说明功能
+2008-1-14		account, survey界面增加了用户组的显示
+2008-1-14		surveyresult, customer, contact, note 表增加了 groupid 字段
+2008-1-15		diallist 表增加了 cretime, creby 字段
+2008-1-15		完善了分组模块
+2008-1-15		astercrm.conf.php 添加了新的参数 detail_level , 取值有 all 或者 group, 控制当显示来电信息时信息系统信息是否共享
+2008-1-15		改进了 asterEvent 类的 checkIncoming 函数的方法, 增强了系统效率和兼容性
+2008-1-16		当分机正在通话, 点击呼叫功能将被禁用
 -----------------------------------------------------------------------------------------
 v0.0461
-2007-1-31		修正了当没有选择指派时, 不能导入diallist的bug
-2007-2-1		修正了predictivedialer拨号时context错误的bug
-2007-2-1		修正sql文件里的错误 (diallist 表字段名称错误)
-2007-2-1		dialedlist表增加了  answertime， duration, response, uniqueid 四个字段
-
+2008-1-31		修正了当没有选择指派时, 也能导入diallist
+2008-2-1		修正了predictivedialer拨号时context错误的bug
+2008-2-1		修正sql文件里的错误 (diallist 表字段名称错误)
+2008-2-1		dialedlist表增加了  answertime， duration, response, uniqueid, assign, groupid 字段
+2008-2-4		管理员使用import功能时允许选择导入到哪个组
 
 
 
 TO-DO:
 
-
+允许对diallist进行分组管理
 当点击呼叫时, 如果 lega 设置了语音信箱, 那么当lega被hangup 那么legb仍然会接通并进入voicemail
 ********************************************************
 

@@ -112,6 +112,11 @@ function ckbAllOnClick(objCkb){
 			
 			From: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i:s",time()-86400);?>">
 			To:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i:s",time());?>">
+			<select id="sltDate" name="sltDate" onchange="">
+				<option value="month">this month</option>
+				<option value="week">this week</option>
+				<option value="day">today</option>
+			</select>
 					<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail">List Detail
 			<input type="button" onclick="listCDR();return false;" value="List">
 		</div>

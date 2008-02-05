@@ -129,6 +129,14 @@
 				return false;
 			}
 		
+			function  addOption(objId,optionVal,optionText)  {
+				objSelect = document.getElementById(objId);
+				var _o = document.createElement("OPTION");
+				_o.text = optionText;
+				_o.value = optionVal;
+			//	alert(objSelect.length);
+				objSelect.options.add(_o);
+			} 
 
 		</script>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -187,6 +195,13 @@
 
 
 				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">
+					<tr>
+						<td height="30px">
+							<SELECT id="sltGroupid" name="sltGroupid">
+							
+							</SELECT>
+						</td>
+					</tr>
 					<tr>
 						<td height="30px">
 							<input type="button" id="btnImportData"  name="btnImportData" value="Import" style="border:1px double #cccccc;width:200px" disabled="true" onclick="submitFormOnSubmit();return false;"/>
