@@ -99,27 +99,31 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'dialnumber';
 	$fields[] = 'assign';
 	$fields[] = 'groupname';
+	$fields[] = 'campaignname';
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 	
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("number");
-	$headers[] = $locate->Translate("assign_to");
+	$headers[] = $locate->Translate("assign to");
 	$headers[] = $locate->Translate("Group Name");
+	$headers[] = $locate->Translate("Campaign Name");
 	$headers[] = $locate->Translate("Create time");
 	$headers[] = $locate->Translate("Create by");
 	
 	// HTML table: hearders attributes
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="25%"';
 	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -131,6 +135,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","assign","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	
@@ -140,6 +145,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'diallist.dialnumber';
 	$fieldsFromSearch[] = 'diallist.assign';
 	$fieldsFromSearch[] = 'groupname';
+	$fieldsFromSearch[] = 'campaignname';
 	$fieldsFromSearch[] = 'diallist.cretime';
 	$fieldsFromSearch[] = 'diallist.creby';
 
@@ -149,6 +155,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("assign_to");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create Time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create By");
 
@@ -169,6 +176,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialnumber'];
 		$rowc[] = $row['assign'];
 		$rowc[] = $row['groupname'];
+		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 
@@ -191,8 +199,20 @@ function add(){
 	$html .= Table::Footer();
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
+	//增加读取campaign的js函数
+	$objResponse->addScript("setCampaign();");
 
 	return $objResponse->getXML();
+}
+
+function setCampaign($groupid){
+	$objResponse = new xajaxResponse();
+	$res = Customer::getRecordsByGroupid($groupid,"campaign");
+	//添加option
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('campaignid','".$row['id']."','".$row['campaignname']."');");
+	}
+	return $objResponse;
 }
 
 function save($f){

@@ -85,7 +85,7 @@ class Customer extends astercrm
 		$i = 0;
 		//get phone numbers
 
-		$sql = "SELECT id,dialnumber,groupid,assign FROM dialedlist WHERE answertime ='0000-00-00 00:00:00' ";
+		$sql = "SELECT * FROM dialedlist WHERE answertime ='0000-00-00 00:00:00' ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -99,7 +99,8 @@ class Customer extends astercrm
 			$number = $row["dialnumber"];
 			$groupid = $row["groupid"];
 			$assign = $row["assign"];
-			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, creby =  '$creby', assign = '$assign' ";
+			$campaignid = $row["campaignid"];
+			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby =  '$creby', assign = '$assign' ";
 			$db->query($query);
 			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 			$db->query($query);

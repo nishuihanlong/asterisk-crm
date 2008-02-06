@@ -86,6 +86,7 @@ class Common{
 	<div align="right">
 		[<a href="diallist.php">diallist</a>]<BR>
 		[<a href="dialedlist.php">dialed list</a>]<BR>
+		[<a href="campaign.php">campaign</a>]<BR>
 		[<a href="preferences.php">perference</a>]
 	</div>
 </div>

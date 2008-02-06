@@ -180,8 +180,6 @@ class Customer extends astercrm
 				$groupoptions .= '<select name="groupid" id="groupid">';
 				while ($row = $res->fetchRow()) {
 						$groupoptions .= '<option value="'.$row['groupid'].'"';
-						if ($survey['groupid']  == $row['groupid'])
-							$groupoptions .= ' selected';
 						$groupoptions .='>'.$row['groupname'].'</option>';
 				}
 				$groupoptions .= '</select>';

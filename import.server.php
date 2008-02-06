@@ -81,8 +81,22 @@ function init($fileName){
 		$objResponse->addScript("addOption('sltGroupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
 	}
 
+	$objResponse->addScript("setCampaign();");
+
 	return $objResponse;
 }
+
+function setCampaign($groupid){
+	$objResponse = new xajaxResponse();
+	$res = astercrm::getRecordsByGroupid($groupid,"campaign");
+	//添加option
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('sltCampaignid','".$row['id']."','".$row['campaignname']."');");
+	}
+	return $objResponse;
+}
+
+
 /**
 *  function to show divMainRight
 *
@@ -222,6 +236,7 @@ function submitForm($aFormValues){
 	$x = 0;  //计数变量
 	$date = date('Y-m-d H:i:s'); //当前时间
 	$groupid = $aFormValues['sltGroupid'];
+	$campaignid = $aFormValues['sltCampaignid'];
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
 		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
 
@@ -274,7 +289,7 @@ function submitForm($aFormValues){
 					$x ++;
 				}
 			}
-			$query = "INSERT INTO diallist (dialnumber,assign,groupid,cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$groupid.", now(),'".$_SESSION['curuser']['username']."')";
+			$query = "INSERT INTO diallist (dialnumber,assign,groupid,campaignid, cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
 			
 			$x++;
 

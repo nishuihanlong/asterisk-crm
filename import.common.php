@@ -40,6 +40,7 @@ $xajax->registerFunction("selectTable");
 $xajax->registerFunction("init");
 $xajax->registerFunction("submitForm");
 $xajax->registerFunction("showDivMainRight");
+$xajax->registerFunction("setCampaign");
 
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.

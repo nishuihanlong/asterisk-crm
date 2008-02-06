@@ -134,9 +134,17 @@
 				var _o = document.createElement("OPTION");
 				_o.text = optionText;
 				_o.value = optionVal;
-			//	alert(objSelect.length);
 				objSelect.options.add(_o);
 			} 
+
+			function setCampaign(){
+				groupid = document.getElementById("sltGroupid").value;
+				if (groupid == '')
+					return;
+				//清空campaignid
+				document.getElementById("sltCampaignid").options.length=0
+				xajax_setCampaign(groupid);
+			}
 
 		</script>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -197,8 +205,9 @@
 				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">
 					<tr>
 						<td height="30px">
-							<SELECT id="sltGroupid" name="sltGroupid">
-							
+							<SELECT id="sltGroupid" name="sltGroupid" onchange="setCampaign();">
+							</SELECT>
+							<SELECT id="sltCampaignid" name="sltCampaignid">
 							</SELECT>
 						</td>
 					</tr>

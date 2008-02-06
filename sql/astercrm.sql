@@ -26,7 +26,7 @@ CREATE TABLE contact (
   fax varchar(50) NOT NULL default '',
   email varchar(100) NOT NULL default '',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby varchar(40) NOT NULL default '',
+  creby varchar(50) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   groupid INT NOT NULL ,
   UNIQUE KEY id (id)
@@ -54,7 +54,7 @@ CREATE TABLE customer (
   bankzip		varchar(100) NOT NULL default '',	#add 2007-10-26 by solo
   bankaccountname	varchar(100) NOT NULL default '',	#add 2007-10-25 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby varchar(30) NOT NULL default '',
+  creby varchar(50) NOT NULL default '',
   groupid INT NOT NULL ,
   UNIQUE KEY id (id)
 ) ;
@@ -76,7 +76,7 @@ CREATE TABLE note (
   priority int(11) NOT NULL default '0',
   attitude INT NOT NULL DEFAULT '0',	#add 2007-10-26 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby varchar(30) NOT NULL default '',
+  creby varchar(50) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   contactid int(11) NOT NULL default '0',
   groupid INT NOT NULL ,
@@ -106,6 +106,8 @@ CREATE TABLE `accountgroup` (
 `groupid` INT NOT NULL ,
 `pdcontext` VARCHAR( 30 ) NOT NULL  ,
 `pdextension` VARCHAR( 30 ) NOT NULL  ,
+`cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+`creby` varchar(50) NOT NULL default '',
 UNIQUE (
 `groupid` 
 )
@@ -120,7 +122,8 @@ CREATE TABLE diallist (
   dialnumber varchar(30) NOT NULL default '',
   assign varchar(30) NOT NULL default '',
   groupid INT NOT NULL DEFAULT '0',						#added by solo 2007-12-17
-  creby	varchar(20) NOT NULL default '',					#added by solo 2008-1-15
+ `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008-2-5
+  creby	varchar(50) NOT NULL default '',					#added by solo 2008-1-15
   cretime	datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-1-15
   UNIQUE KEY id (id)
 ) ;
@@ -137,6 +140,7 @@ CREATE TABLE dialedlist (
   `response` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
   `uniqueid` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
   `groupid` INT NOT NULL DEFAULT '0',						#added by solo 2008-2-3
+  `campaignid` INT NOT NULL DEFAULT 0,						#added by solo 2008-2-5
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
@@ -199,6 +203,16 @@ CREATE TABLE remind (
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY id (id)
 ) ;
+
+CREATE TABLE `campaign` (	#added by solo 2008-2-5
+`id` INT NOT NULL ,
+`groupid` INT NOT NULL DEFAULT 0,
+`campaignname` VARCHAR( 60 ) NOT NULL ,
+`campaignnote` VARCHAR( 255 ) NOT NULL ,
+`cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+`creby` varchar(50) NOT NULL default '',
+) ENGINE = MYISAM ;
+
 
 INSERT INTO `account` (
 `id` ,

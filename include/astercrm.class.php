@@ -14,6 +14,7 @@
 			insertNewDiallist
 			insertNewDialedlist
 			insertNewAccountgroup    向accountgroup表插入数据
+			insertNewCampaign
 
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
@@ -21,6 +22,7 @@
 			updateAccountRecord
 			updateAccountgroupRecord  更新accountgroup表数据
 			updateRecords		更新数据
+			updateCampaignRecord
 
 			deleteRecord			从表中删除数据(以id作为标识)
 			updateField				更新表中的数据(以id作为标识)
@@ -39,6 +41,7 @@
 			getCountByField($field,$value,$table)
 					根据某一条件获得记录数目
 			getCustomerByCallerid	根据callerid查找customer表看是否有匹配的id
+			getRecordsByGroupid
 
 			getTableRecords				从表中读取数据
 			getSql              得到多条件搜索的sql语句
@@ -307,8 +310,24 @@ Class astercrm extends PEAR{
 		$query= "INSERT INTO accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
+				."creby = '".$_SESSION['curuser']['username']."',"
+				."cretime = now(),"
 				."pdcontext='".$f['pdcontext']."',"
 				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
+	function insertNewCampaign($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$query= "INSERT INTO campaign SET "
+				."campaignname='".$f['campaignname']."', "
+				."campaignnote='".$f['campaignnote']."', "
+				."groupid='".$f['groupid']."', "
+				."creby = '".$_SESSION['curuser']['username']."',"
+				."cretime = now()";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -334,7 +353,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime,groupid,assign) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['assign'].')';
+		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime,groupid,campaignid,assign) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].',"'.$f['assign'].'")';
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -488,6 +507,19 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function updateCampaignRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query= "UPDATE campaign SET "
+				."campaignname='".$f['campaignname']."', "
+				."campaignnote='".$f['campaignnote']."', "
+				."groupid='".$f['groupid']."' "
+				."WHERE id=".$f['id'];
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
 
 	/**
 	*  select a record form a table
@@ -1545,6 +1577,18 @@ Class astercrm extends PEAR{
 
 		return $html;
 
+	}
+
+	function getRecordsByGroupid($groupid = null, $table){
+		global $db;
+
+		if ($groupid == null){
+			$query = "SELECT * FROM $table ORDER BY id" ;
+		}else{
+			$query = "SELECT * FROM $table WHERE groupid = $groupid ORDER BY id";
+		}
+		$row =& $db->query($query);
+		return $row;
 	}
 
 	function getDialNumber($groupid = null){

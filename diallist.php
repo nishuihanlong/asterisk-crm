@@ -44,9 +44,28 @@ require_once('diallist.common.php');
 			xajax_export();
 		}
 
+		function  addOption(objId,optionVal,optionText)  {
+			objSelect = document.getElementById(objId);
+			var _o = document.createElement("OPTION");
+			_o.text = optionText;
+			_o.value = optionVal;
+		//	alert(objSelect.length);
+			objSelect.options.add(_o);
+		} 
+
 		function importCsv(){
 			xajax_importCsv();
 		}
+
+		function setCampaign(){
+			groupid = document.getElementById("groupid").value;
+			if (groupid == '')
+				return;
+			//清空campaignid
+			document.getElementById("campaignid").options.length=0
+			xajax_setCampaign(groupid);
+		}
+
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>

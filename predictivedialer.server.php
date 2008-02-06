@@ -161,6 +161,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 	} else {
 		$id = $row['id'];
 		$groupid = $row['groupid'];
+		$campaignid = $row['campaignid'];
 		$phoneNum = $row['dialnumber'];
 		$assign = $row['assign'];
 		// get active channel
@@ -184,6 +185,7 @@ function predictiveDialer($maxChannels,$totalRecords){
 		$f['dialedby'] = $_SESSION['curuser']['username'];
 		$f['groupid'] = $groupid;
 		$f['assign'] = $assign;
+		$f['campaignid'] = $campaignid;
 		$res = astercrm::insertNewDialedlist($f);
 
 		$sid=md5(uniqid(""));

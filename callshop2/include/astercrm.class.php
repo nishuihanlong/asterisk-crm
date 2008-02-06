@@ -238,6 +238,8 @@ Class astercrm extends PEAR{
 		
 		$sql= "INSERT INTO diallist SET "
 				."dialnumber='".$f['dialnumber']."', "
+				."groupid='".$f['groupid']."', "
+				."campaignid='".$f['campaignid']."', "
 				."assign='".$f['assign']."'";
 
 		astercrm::events($sql);
