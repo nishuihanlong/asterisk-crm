@@ -6,6 +6,13 @@
 * 功能描述
 	 显示分机状态和正在进行的通话
 
+TO-DO
+
+1.增加 print invoice 的button
+2.asterrc 增加一级计费引擎
+3.每个booth可以自定义名称
+4.callshop 可以显示自己的信息
+
 * Function Desc
 
 
