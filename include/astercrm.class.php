@@ -342,6 +342,7 @@ Class astercrm extends PEAR{
 				."groupid='".$f['groupid']."', "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
+				."campaignid= ".$f['campaignid'].", "
 				."assign='".$f['assign']."'";
 
 		astercrm::events($query);

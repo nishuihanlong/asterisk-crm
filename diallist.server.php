@@ -235,8 +235,6 @@ function save($f){
 		}
 	}
 
-	// check over
-
 	$surveyid = Customer::insertNewDiallist($f); 
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse->addAssign("grid", "innerHTML", $html);
