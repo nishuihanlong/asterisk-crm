@@ -1,13 +1,52 @@
-#DROP DATABASE asterisk;
+#version 0.0461
 
-#CREATE DATABASE asterisk;
+#DROP DATABASE astercrm;
 
-#GRANT ALL
-#  ON asterisk.*
-#  TO asteriskuser@localhost
-#  IDENTIFIED BY 'asterisk';
+#CREATE DATABASE astercrm;
 
-#USE asterisk;
+#USE astercrm;
+
+DROP TABLE IF EXISTS account;
+
+CREATE TABLE `account` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(30) NOT NULL default '',
+  `password` varchar(30) NOT NULL default '',
+  `extension` varchar(30) NOT NULL default '',
+  `extensions` varchar(200) NOT NULL default '',
+  `channel` varchar(30) NOT NULL default '',
+  `usertype` varchar(20) NOT NULL default '',
+  `accountcode` varchar(20) NOT NULL default '',
+  `groupid` int(11) NOT NULL default '0',
+  UNIQUE KEY `id` (`id`)
+) ENGINE = MYISAM;
+
+DROP TABLE IF EXISTS accountgroup;
+
+CREATE TABLE `accountgroup` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`groupname` VARCHAR( 100 ) NOT NULL ,
+	`groupid` INT NOT NULL ,
+	`pdcontext` VARCHAR( 30 ) NOT NULL  ,
+	`pdextension` VARCHAR( 30 ) NOT NULL  ,
+	`cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+	`creby` varchar(50) NOT NULL default '',
+	UNIQUE (
+	`groupid` 
+	)
+) ENGINE = MYISAM ;
+
+DROP TABLE IF EXISTS campaign;
+
+CREATE TABLE `campaign` ( #added by solo 2008-2-5
+  `id` int(11) NOT NULL auto_increment,
+  `groupid` int(11) NOT NULL default '0',
+  `campaignname` varchar(60) NOT NULL default '',
+  `campaignnote` varchar(255) NOT NULL default '',
+  `creby` varchar(30) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS contact;
 
@@ -26,11 +65,11 @@ CREATE TABLE contact (
   fax varchar(50) NOT NULL default '',
   email varchar(100) NOT NULL default '',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby varchar(50) NOT NULL default '',
+  creby varchar(30) NOT NULL default '',
   customerid int(11) NOT NULL default '0',
   groupid INT NOT NULL ,
   UNIQUE KEY id (id)
-) ;
+) ENGINE = MYISAM;
 
 DROP TABLE IF EXISTS customer;
 
@@ -54,139 +93,110 @@ CREATE TABLE customer (
   bankzip		varchar(100) NOT NULL default '',	#add 2007-10-26 by solo
   bankaccountname	varchar(100) NOT NULL default '',	#add 2007-10-25 by solo
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby varchar(50) NOT NULL default '',
+  creby varchar(30) NOT NULL default '',
   groupid INT NOT NULL ,
   UNIQUE KEY id (id)
-) ;
+) ENGINE = MYISAM;
 
-DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS dialedlist;
 
-CREATE TABLE events (
-   id int(10) unsigned NOT NULL auto_increment,
-   timestamp datetime NOT NULL default '0000-00-00 00:00:00',
-   event LONGTEXT ,
-   PRIMARY KEY (`id`)
-); 
-
-DROP TABLE IF EXISTS note;
-
-CREATE TABLE note (
-  id int(11) NOT NULL auto_increment,
-  note text NOT NULL,
-  priority int(11) NOT NULL default '0',
-  attitude INT NOT NULL DEFAULT '0',	#add 2007-10-26 by solo
-  cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby varchar(50) NOT NULL default '',
-  customerid int(11) NOT NULL default '0',
-  contactid int(11) NOT NULL default '0',
-  groupid INT NOT NULL ,
-  UNIQUE KEY id (id)
-) ;
-
-DROP TABLE IF EXISTS account;
-
-CREATE TABLE account (
-  id int(11) NOT NULL auto_increment,
-  username varchar(30) NOT NULL default '',
-  password varchar(30) NOT NULL default '',
-  extension varchar(30) NOT NULL default '',
-  extensions varchar(200) NOT NULL default '',
-  channel	varchar(30) NOT NULL default '',	#add 2007-10-30 by solo
-  accountcode	varchar(30) NOT NULL default '',#add 2007-11-12 by solo
-  groupid	int NOT NULL default '0',    #add 2007-11-13 by solo
-  usertype varchar(20) NOT NULL default '',
-  UNIQUE KEY id (id)
-) ;
-
-DROP TABLE IF EXISTS accountgroup;
-
-CREATE TABLE `accountgroup` (
-`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`groupname` VARCHAR( 100 ) NOT NULL ,
-`groupid` INT NOT NULL ,
-`pdcontext` VARCHAR( 30 ) NOT NULL  ,
-`pdextension` VARCHAR( 30 ) NOT NULL  ,
-`cretime` datetime NOT NULL default '0000-00-00 00:00:00',
-`creby` varchar(50) NOT NULL default '',
-UNIQUE (
-`groupid` 
-)
-) ENGINE = MYISAM ;
-
+CREATE TABLE dialedlist (
+  `id` int(11) NOT NULL auto_increment,
+  `dialnumber` varchar(30) NOT NULL default '',
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008-2-1
+  `duration` int(11) NOT NULL default '0',												#added by solo 2008-2-1
+  `response` varchar(20) NOT NULL default '',											#added by solo 2008-2-1
+  `uniqueid` varchar(20) NOT NULL default '',											#added by solo 2008-2-1
+  `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008-2-3
+  `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008-2-5
+  `assign` varchar(20) NOT NULL default '',												#added by solo 2008-2-10
+  `dialedby` varchar(30) NOT NULL default '',
+  `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE = MYISAM;
 
 DROP TABLE IF EXISTS diallist;
 
 #store Predictive dialer phone list
-CREATE TABLE diallist (
-  id int(11) NOT NULL auto_increment,
-  dialnumber varchar(30) NOT NULL default '',
-  assign varchar(30) NOT NULL default '',
-  groupid INT NOT NULL DEFAULT '0',						#added by solo 2007-12-17
- `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008-2-5
-  creby	varchar(50) NOT NULL default '',					#added by solo 2008-1-15
-  cretime	datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-1-15
-  UNIQUE KEY id (id)
-) ;
-
-DROP TABLE IF EXISTS dialedlist;
-
-#store dialed number (from diallist table)
-CREATE TABLE dialedlist (
-
+CREATE TABLE `diallist` (
   `id` int(11) NOT NULL auto_increment,
   `dialnumber` varchar(30) NOT NULL default '',
-  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-2-1
-  `duration` int(11) NOT NULL default '0',						#added by solo 2008-2-1
-  `response` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
-  `uniqueid` varchar(20) NOT NULL default '',					#added by solo 2008-2-1
-  `groupid` INT NOT NULL DEFAULT '0',						#added by solo 2008-2-3
-  `campaignid` INT NOT NULL DEFAULT 0,						#added by solo 2008-2-5
-  `dialedby` varchar(30) NOT NULL default '',
-  `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
-  UNIQUE KEY `id` (`id`)
-) ;
+  `assign` varchar(20) NOT NULL default '',
+  `groupid` INT(11) NOT NULL DEFAULT '0',						#added by solo 2007-12-17
+	`campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008-2-5
+  `creby`	varchar(50) NOT NULL default '',					#added by solo 2008-1-15
+  `cretime`	datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-1-15
+  UNIQUE KEY id (id)
+) ENGINE = MYISAM;
+
+DROP TABLE IF EXISTS events;
+
+CREATE TABLE `events` (
+  `id` int(16) NOT NULL auto_increment,
+  `timestamp` datetime default NULL,
+  `event` varchar(255) default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `timestamp` (`timestamp`),
+  KEY `event` (`event`)
+) ENGINE=HEAP;
+
 
 DROP TABLE IF EXISTS survey;
 
-#store survey
-CREATE TABLE survey (
-  id int(11) NOT NULL auto_increment,
-  surveyname varchar(50) NOT NULL default '',
-  enable int	NOT NULL default '0',	#add 2007-10-15 by solo
-  cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  surveynote varchar(255) NOT NULL, #add 2008-1-11 by solo
-  groupid INT NOT NULL DEFAULT '0',		#added by solo 2008-1-15
-  UNIQUE KEY id (id)
-) ;
+CREATE TABLE `survey` (
+  `id` int(11) NOT NULL auto_increment,
+  `surveyname` varchar(50) NOT NULL default '',
+  `surveynote` varchar(255) NOT NULL default '',							#add 2008-1-11 by solo
+  `enable` smallint(6) NOT NULL default '0',									#add 2007-10-15 by solo
+  `groupid` int(11) NOT NULL default '0',											#added by solo 2008-1-15
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `creby` varchar(50) NOT NULL default '',
+  UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM;
 
 DROP TABLE IF EXISTS surveyoptions;
 
-#store surveyoptions
-CREATE TABLE surveyoptions (
-  id int(11) NOT NULL auto_increment,
-  surveyoption varchar(50) NOT NULL default '',
-  optionnote varchar(255) NOT NULL,	#added by solo 2008-1-14
-  surveyid int(11) NOT NULL default '0',
-  cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  creby  varchar(50) NOT NULL default '',
-  UNIQUE KEY id (id)
-) ;
+CREATE TABLE `surveyoptions` (
+  `id` int(11) NOT NULL auto_increment,
+  `surveyoption` varchar(50) NOT NULL default '',
+  `optionnote` varchar(255) NOT NULL default '',							#added by solo 2008-1-14
+  `surveyid` int(11) NOT NULL default '0',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `creby` varchar(30) NOT NULL default '',
+  UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM;
 
 DROP TABLE IF EXISTS surveyresult;
 
-#store surveyresult
-CREATE TABLE surveyresult (
-  id int(11) NOT NULL auto_increment,
-  customerid int(11) NOT NULL default '0',
-  contactid int(11) NOT NULL default '0',
-  surveyid  int(11)  NOT NULL default '0',
-  surveyoption varchar(50) NOT NULL default '',
-  surveynote varchar(255) NOT NULL,
-  creby  varchar(50) NOT NULL default '',
-  cretime datetime NOT NULL default '0000-00-00 00:00:00',
-  groupid INT NOT NULL ,
-  UNIQUE KEY id (id)
-) ;
+CREATE TABLE `surveyresult` (
+  `id` int(11) NOT NULL auto_increment,
+  `customerid` int(11) NOT NULL default '0',
+  `contactid` int(11) NOT NULL default '0',
+  `surveyid` int(11) NOT NULL default '0',
+  `surveyoption` varchar(50) NOT NULL default '',
+  `surveynote` text NOT NULL,
+  `groupid` int(11) NOT NULL default '0',
+  `creby` varchar(50) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM;
+
+DROP TABLE IF EXISTS note;
+
+CREATE TABLE `note` (
+  `id` int(11) NOT NULL auto_increment,
+  `note` text character set utf8 collate utf8_unicode_ci NOT NULL,
+  `priority` int(11) NOT NULL default '0',
+  `attitude` int(11) NOT NULL default '0',												#add 2007-10-26 by solo
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `creby` varchar(30) NOT NULL default '',
+  `customerid` int(11) NOT NULL default '0',
+  `contactid` int(11) NOT NULL default '0',
+  `groupid` int(11) NOT NULL default '0',
+  UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM;
+
+DROP TABLE IF EXISTS remind;
 
 CREATE TABLE remind (
   id int(11) NOT NULL auto_increment,
@@ -202,17 +212,8 @@ CREATE TABLE remind (
   creby  varchar(50) NOT NULL default '',
   cretime datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY id (id)
-) ;
+)ENGINE = MYISAM;
 
-CREATE TABLE `campaign` (	#added by solo 2008-2-5
-`id` INT NOT NULL auto_increment,
-`groupid` INT NOT NULL DEFAULT 0,
-`campaignname` VARCHAR( 60 ) NOT NULL ,
-`campaignnote` VARCHAR( 255 ) NOT NULL ,
-`cretime` datetime NOT NULL default '0000-00-00 00:00:00',
-`creby` varchar(50) NOT NULL default '',
-  UNIQUE KEY id (id)
-) ENGINE = MYISAM ;
 
 
 INSERT INTO `account` (

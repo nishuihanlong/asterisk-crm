@@ -27,7 +27,7 @@
 ********************************************************************************/
 
 require_once 'db_connect.php';
-require_once 'group.common.php';
+require_once 'campaign.common.php';
 require_once 'include/astercrm.class.php';
 
 

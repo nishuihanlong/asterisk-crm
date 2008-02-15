@@ -153,7 +153,7 @@ v0.046
 2008-1-16		当分机正在通话, 点击呼叫功能将被禁用
 -----------------------------------------------------------------------------------------
 v0.0461
-2008-1-31		修正了当没有选择指派时, 也能导入diallist
+2008-1-31		当没有选择指派时, 也能导入diallist
 2008-2-1		修正了predictivedialer拨号时context错误的bug
 2008-2-1		修正sql文件里的错误 (diallist 表字段名称错误)
 2008-2-1		dialedlist表增加了  answertime， duration, response, uniqueid, assign, groupid 字段
@@ -161,7 +161,10 @@ v0.0461
 2008-2-6		accountgroup 表增加了 creby, cretime 字段
 2008-2-6		增加了campaign表
 2008-2-6		增加了campaignid字段在diallist和dialedlist表
+2008-2-6		增加了dailedlist的回收功能
 2008-2-14		补上了portal.server.php以前丢失的monitor函数
+2008-2-14		导入diallist以及预拨号时可以选择不同的组或是campaign
+2008-2-15		修正了删除suervey时的一个bug
 
 
 

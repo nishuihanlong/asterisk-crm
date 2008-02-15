@@ -43,7 +43,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 
-		$sql = "SELECT dialedlist.*, groupname FROM dialedlist LEFT JOIN accountgroup ON accountgroup.groupid = dialedlist.groupid ";
+		$sql = "SELECT dialedlist.*, groupname, campaignname FROM dialedlist LEFT JOIN accountgroup ON accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -72,7 +72,7 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
-			$sql .= " WHERE dialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " AND dialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
@@ -133,7 +133,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT dialedlist.*, groupname FROM dialedlist LEFT JOIN accountgroup ON accountgroup.id = dialedlist.groupid WHERE ";
+		$sql = "SELECT dialedlist.*, groupname, campaignname FROM dialedlist LEFT JOIN accountgroup ON accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{

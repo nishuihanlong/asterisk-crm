@@ -123,19 +123,22 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Dial by");
 	$headers[] = $locate->Translate("Dial time");
 	$headers[] = $locate->Translate("Group");
+	$headers[] = $locate->Translate("Campaign");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -153,6 +156,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedtime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -163,6 +167,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'dialedby';
 	$fieldsFromSearch[] = 'dialedtime';
 	$fieldsFromSearch[] = 'groupname';
+	$fieldsFromSearch[] = 'campaignname';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -173,6 +178,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dial by");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dial time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -192,6 +198,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialedby'];
 		$rowc[] = $row['dialedtime'];
 		$rowc[] = $row['groupname'];
+		$rowc[] = $row['campaignname'];
 		$table->addRow("dialedlist",$rowc,0,1,0,$divName,$fields);
  	}
  	
