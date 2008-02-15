@@ -205,12 +205,13 @@ CREATE TABLE remind (
 ) ;
 
 CREATE TABLE `campaign` (	#added by solo 2008-2-5
-`id` INT NOT NULL ,
+`id` INT NOT NULL auto_increment,
 `groupid` INT NOT NULL DEFAULT 0,
 `campaignname` VARCHAR( 60 ) NOT NULL ,
 `campaignnote` VARCHAR( 255 ) NOT NULL ,
 `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
 `creby` varchar(50) NOT NULL default '',
+  UNIQUE KEY id (id)
 ) ENGINE = MYISAM ;
 
 

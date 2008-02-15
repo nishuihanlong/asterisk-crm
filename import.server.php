@@ -74,11 +74,11 @@ function init($fileName){
 		// add all group
 		$res = astercrm::getGroups();
 		while ($row = $res->fetchRow()) {
-			$objResponse->addScript("addOption('sltGroupid','".$row['groupid']."','".$row['groupname']."');");
+			$objResponse->addScript("addOption('groupid','".$row['groupid']."','".$row['groupname']."');");
 		}
 	}else{
 		// add self
-		$objResponse->addScript("addOption('sltGroupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
+		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
 	}
 
 	$objResponse->addScript("setCampaign();");
@@ -91,7 +91,7 @@ function setCampaign($groupid){
 	$res = astercrm::getRecordsByGroupid($groupid,"campaign");
 	//添加option
 	while ($res->fetchInto($row)) {
-		$objResponse->addScript("addOption('sltCampaignid','".$row['id']."','".$row['campaignname']."');");
+		$objResponse->addScript("addOption('campaignid','".$row['id']."','".$row['campaignname']."');");
 	}
 	return $objResponse;
 }
@@ -235,8 +235,8 @@ function submitForm($aFormValues){
 	$affectRows= 0;  //计数据库影响结果变量
 	$x = 0;  //计数变量
 	$date = date('Y-m-d H:i:s'); //当前时间
-	$groupid = $aFormValues['sltGroupid'];
-	$campaignid = $aFormValues['sltCampaignid'];
+	$groupid = $aFormValues['groupid'];
+	$campaignid = $aFormValues['campaignid'];
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
 		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
 
@@ -294,7 +294,7 @@ function submitForm($aFormValues){
 			$x++;
 
 		}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
-			$query = "INSERT INTO diallist (dialnumber,groupid,cretime,creby) VALUES ('".$dialListValue."',".$groupid.", now(),'".$_SESSION['curuser']['username']."')";
+			$query = "INSERT INTO diallist (dialnumber,groupid,campaignid,cretime,creby) VALUES ('".$dialListValue."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
 		}
 		$tmpRs =@ $db->query($query);  // 插入diallist表
 		$diallistAffectRows += $db->affectedRows();

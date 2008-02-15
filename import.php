@@ -138,11 +138,11 @@
 			} 
 
 			function setCampaign(){
-				groupid = document.getElementById("sltGroupid").value;
+				groupid = document.getElementById("groupid").value;
 				if (groupid == '')
 					return;
 				//清空campaignid
-				document.getElementById("sltCampaignid").options.length=0
+				document.getElementById("campaignid").options.length=0
 				xajax_setCampaign(groupid);
 			}
 
@@ -205,9 +205,9 @@
 				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">
 					<tr>
 						<td height="30px">
-							<SELECT id="sltGroupid" name="sltGroupid" onchange="setCampaign();">
+							<SELECT id="groupid" name="groupid" onchange="setCampaign();">
 							</SELECT>
-							<SELECT id="sltCampaignid" name="sltCampaignid">
+							<SELECT id="campaignid" name="campaignid">
 							</SELECT>
 						</td>
 					</tr>

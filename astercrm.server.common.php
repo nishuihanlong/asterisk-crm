@@ -104,6 +104,19 @@ function surveyAdd($customerid,$contactid){
 	return $objResponse->getXML();
 }
 
+function showNote($id = '', $type="customer"){
+	global $locate;
+	if($id != ''){
+		$html = Table::Top($locate->Translate("note_detail"),"formNoteInfo"); 			
+		$html .= Customer::showNoteList($id,$type); 		
+		$html .= Table::Footer();
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formNoteInfo", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
+
 function showCustomer($id = 0, $type="customer"){
 	global $locate;
 	$objResponse = new xajaxResponse();
@@ -116,19 +129,6 @@ function showCustomer($id = 0, $type="customer"){
 		return $objResponse->getXML();
 	}else
 		return $objResponse->getXML();
-}
-
-function showNote($id = '', $type="customer"){
-	global $locate;
-	if($id != ''){
-		$html = Table::Top($locate->Translate("note_detail"),"formNoteInfo"); 			
-		$html .= Customer::showNoteList($id,$type); 		
-		$html .= Table::Footer();
-		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formNoteInfo", "innerHTML", $html);	
-		return $objResponse->getXML();
-	}
 }
 
 function showContact($id = null, $type="contact"){

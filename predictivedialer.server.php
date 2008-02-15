@@ -48,9 +48,33 @@ function init(){
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
 
+	// assign group
+
+	$res = Astercrm::getGroups();
+	$objResponse->addScript("addOption('groupid','','".$locate->Translate("All")."');");
+	while ($res->fetchInto($row)){
+		$value=$row['groupid'];
+		$text=$row['groupname'];
+		$objResponse->addScript("addOption('groupid','$value','$text');");
+	}
+
 	return $objResponse;
 }
 
+function setCampaign($groupid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$res = Astercrm::getRecordsByGroupid($groupid,"campaign");
+	//添加option
+	$objResponse->addScript("addOption('campaignid','','".$locate->Translate("All")."');");
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('campaignid','".$row['id']."','".$row['campaignname']."');");
+	}
+	return $objResponse;
+}
+
+function refreshRecords(){
+}
 
 function showChannelsInfo(){
 	global $locate;
@@ -81,7 +105,7 @@ function showChannelsInfo(){
 	return $objResponse;
 }
 
-function showPredictiveDialer($preDictiveDialerStatus){
+function showPredictiveDialer($preDictiveDialerStatus,$groupid,$campaignid){
 	global $db,$locate,$config;
 
 	$objResponse = new xajaxResponse();
@@ -91,68 +115,66 @@ function showPredictiveDialer($preDictiveDialerStatus){
 		return $objResponse;
 	}
 	*/
-
-	//从数据库读取预拨号的总数
-	if ($_SESSION['curuser']['usertype']  == "groupadmin")
-		$query = "SELECT COUNT(*) FROM diallist WHERE groupid =".$_SESSION['curuser']['groupid'];
-	else
-		$query = "SELECT COUNT(*) FROM diallist ";
-
+	if ($campaignid != ''){
+		$query = "SELECT COUNT(*) FROM diallist WHERE campaignid = $campaignid";
+	}elseif ($groupid != ''){
+		$query = "SELECT COUNT(*) FROM diallist WHERE groupid = $groupid";
+	}else{
+		$query = "SELECT COUNT(*) FROM diallist";
+	}
 	$res =& $db->getOne($query);
-
-	if ($res == 0 || $res == "0"){
+	if ($res == 0 || $res == "0" || $res == ""){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
+		$objResponse->addAssign("spanTotalRecords", "innerHTML", "");
+		$objResponse->addAssign("divPredictiveDialer", "style.display", "none");
+
 	} else{
+		$objResponse->addAssign("divPredictiveDialer", "style.display", "block");
+
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("ready_to_dial"));
 		$objResponse->addAssign("spanTotalRecords", "innerHTML", $res.' '.$locate->Translate("records_left"));
 
 		// add dial button
-		$objResponse->addCreateInput("divPredictiveDialer", "button", "btnDial", "btnDial");
-		$objResponse->addAssign("btnDial", "value", $locate->Translate("dial"));
-		$objResponse->addEvent("btnDial", "onclick", "btnDialOnClick();");
+		// $objResponse->addCreateInput("divPredictiveDialer", "button", "btnDial", "btnDial");
+		// $objResponse->addAssign("btnDial", "value", $locate->Translate("dial"));
+		// $objResponse->addEvent("btnDial", "onclick", "btnDialOnClick();");
 
 		// add max active calls field
-		$objResponse->addCreateInput("divPredictiveDialer", "text", "fldMaxActiveCalls", "fldMaxActiveCalls");
-		$objResponse->addAssign("fldMaxActiveCalls", "size", "3");
-		$objResponse->addAssign("fldMaxActiveCalls", "value", "5");
+		// $objResponse->addCreateInput("divPredictiveDialer", "text", "fldMaxActiveCalls", "fldMaxActiveCalls");
+		// $objResponse->addAssign("fldMaxActiveCalls", "size", "3");
+		// $objResponse->addAssign("fldMaxActiveCalls", "value", "5");
 
 		//add dial language
-		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialMsg", "btnDialMsg");
+		//$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialMsg", "btnDialMsg");
 		$objResponse->addAssign("btnDialMsg", "value", $locate->Translate("dial"));
 
 		//add stop language
-		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnStopMsg", "btnStopMsg");
+		//$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnStopMsg", "btnStopMsg");
 		$objResponse->addAssign("btnStopMsg", "value", $locate->Translate("stop"));
 
 		//add number only language
-		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnNumberOnlyMsg", "btnNumberOnlyMsg");
+		//$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnNumberOnlyMsg", "btnNumberOnlyMsg");
 		$objResponse->addAssign("btnNumberOnlyMsg", "value", $locate->Translate("number_only"));
 
 		//add dialer stopped language
-		$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialerStoppedMsg", "btnDialerStoppedMsg");
+		//$objResponse->addCreateInput("divPredictiveDialer", "hidden", "btnDialerStoppedMsg", "btnDialerStoppedMsg");
 		$objResponse->addAssign("btnDialerStoppedMsg", "value", $locate->Translate("dialer_stopped"));
 
 	}
 	return $objResponse;
 }
 
-function predictiveDialer($maxChannels,$totalRecords){
+function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 	global $config,$db,$locate;
 	$objResponse = new xajaxResponse();
 	
 	$myAsterisk = new Asterisk();
 
 	//获取一个号码
-	if ($_SESSION['curuser']['usertype']  == "admin"){
-		$row =& astercrm::getDialNumber();
-		$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
-		$pdextension = $grouprow['pdextension'];
-		$pdcontext = $grouprow['pdcontext'];
-	}else{
-		$row =& astercrm::getDialNumber($_SESSION['curuser']['groupid']);
-		$pdextension = $_SESSION['curuser']['group']['pdextension'];
-		$pdcontext = $_SESSION['curuser']['group']['pdcontext'];
-	}
+	$row =& astercrm::getDialNumber($groupid,$campaignid);
+	$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
+	$pdextension = $grouprow['pdextension'];
+	$pdcontext = $grouprow['pdcontext'];
 	
 	if ($row['id'] == ''){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));

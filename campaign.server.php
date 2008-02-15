@@ -175,8 +175,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'campaignname';
 	$fieldsFromSearch[] = 'campaignnote';
 	$fieldsFromSearch[] = 'groupname';
-	$fieldsFromSearch[] = 'creby';
-	$fieldsFromSearch[] = 'cretime';
+	$fieldsFromSearch[] = 'campaign.creby';
+	$fieldsFromSearch[] = 'campaign.cretime';
 	
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -200,6 +200,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['campaignnote'];
 		$rowc[] = $row['groupname'];
+		$records = astercrm::getCountByField('campaignid',$row['id'],'diallist');
 		$rowc[] = $records;
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];
@@ -322,7 +323,7 @@ function showDetail($groupid){
 	return $objResponse;
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
+function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();

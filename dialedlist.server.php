@@ -177,7 +177,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("dialedlist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
@@ -192,7 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialedby'];
 		$rowc[] = $row['dialedtime'];
 		$rowc[] = $row['groupname'];
-		$table->addRow("dialedlist",$rowc,0,0,0,$divName,$fields);
+		$table->addRow("dialedlist",$rowc,0,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone

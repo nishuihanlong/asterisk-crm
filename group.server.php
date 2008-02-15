@@ -232,15 +232,17 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("digit_only"));
 		return $objResponse->getXML();
 	}
+
+
 	$respOk = Customer::insertNewAccountgroup($f); // add a new account
-	if ($respOk){
+	if ($respOk->message == ''){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_group"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_insert"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_insert").":".$respOk->message);
 	}
 	return $objResponse->getXML();
 	
@@ -258,13 +260,13 @@ function update($f){
 
 	$respOk = Customer::updateAccountgroupRecord($f);
 
-	if($respOk){
+	if ($respOk->message == ''){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("update_rec"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_update"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_update").":".$respOk->message);
 	}
 	
 	return $objResponse->getXML();
@@ -307,7 +309,7 @@ function showDetail($groupid){
 	return $objResponse;
 }
 
-function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
+function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$searchField = array();

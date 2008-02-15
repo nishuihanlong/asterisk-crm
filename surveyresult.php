@@ -35,6 +35,7 @@ require_once('surveyresult.common.php');
 		<!--
 		function init(){
 			xajax_init();
+			dragresize.apply(document);
 		}
 		
 		//-->
@@ -59,10 +60,17 @@ require_once('surveyresult.common.php');
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 					<div id="divSurveyStatistc" align="divSurveyStatistc"> </div>
+					<div id="formCustomerInfo" class="formDiv drsElement"
+						style="left: 20px; top: 50px;"></div>
+					<div id="formContactInfo" class="formDiv drsElement"
+						style="left: 20px; top: 330px;"></div>
 				</fieldset>
 			</td>
 		</tr>
 	</table>
+	<form name="exportForm" id="exportForm" action="dataexport.php" >
+		<input type="hidden" value="" id="hidSql" name="hidSql" />
+	</form>
 	<div id="divCopyright"></div>
 	</body>
 </html>

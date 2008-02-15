@@ -277,6 +277,45 @@ function incomingCalls($myValue){
 	return $objResponse;
 }
 
+function monitor($channel,$action = 'start'){
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+
+	if ($action == 'start'){
+		$filename = str_replace("/","-",$channel);
+		$filename = $config['asterisk']['monitorpath'].$channel;
+		$filename .= '.'.time();
+
+		$format = $config['asterisk']['monitorformat'];
+		$mix = true;
+		$res = $myAsterisk->Monitor($channel,$filename,$format,$mix);
+		if ($res['Response'] == 'Error'){
+			$objResponse->addAlert($res['Message']);
+			return $objResponse;
+		}
+		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("recording") );
+		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
+
+		$objResponse->addAssign("btnMonitor","value", $locate->Translate("stop_record") );
+	}else{
+		$myAsterisk->StopMontor($channel);
+
+		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
+		$objResponse->addAssign("btnMonitorStatus","value", "idle" );
+
+		$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+	}
+
+	$objResponse->addAssign("btnMonitor","disabled", false );
+	return $objResponse;
+}
 
 
 function waitingCalls($myValue){

@@ -29,6 +29,41 @@ require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
 
 
+function showCustomer($id = 0, $type="customer"){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($id != 0 && $id != null ){
+		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
+		$html .= Customer::showCustomerRecord($id,$type); 		
+		$html .= Table::Footer();
+		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}else
+		return $objResponse->getXML();
+}
+
+function showContact($id = null, $type="contact"){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	if($id != null ){
+		$html = Table::Top($locate->Translate("contact_detail"),"formContactInfo"); 
+		$contactHTML .= Customer::showContactRecord($id,$type);
+
+		if ($contactHTML == '')
+			return $objResponse->getXML();
+		else
+			$html .= $contactHTML;
+
+		$html .= Table::Footer();
+		$objResponse->addAssign("formContactInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formContactInfo", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
+
+
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	
 	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
@@ -67,7 +102,7 @@ function init(){
 *  @param	order		string		data order
 *  @return	html		string		grid HTML code
 */
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$exportFlag=""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
@@ -151,7 +186,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'surveyname';
 	$fieldsFromSearch[] = 'surveyoption';
-	$fieldsFromSearch[] = 'surveynote';
+	$fieldsFromSearch[] = 'surveyresult.surveynote';
 	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'contact.contact';
 	$fieldsFromSearch[] = 'surveyresult.cretime';
@@ -170,10 +205,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,1);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	
-	$table->addRowSearchMore("surveyresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->addRowSearchMore("surveyresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -182,11 +217,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['surveyname'];
 		$rowc[] = $row['surveyoption'];
 		$rowc[] = $row['surveynote'];
-		$rowc[] = $row['customer'];
-		$rowc[] = $row['contact'];
+		$rowc[] = "<a href=? onclick='xajax_showCustomer(".$row['customerid'].");return false;'>".$row['customer']."</a>";
+		$rowc[] = "<a href=? onclick='xajax_showContact(".$row['contactid'].");return false;'>".$row['contact']."</a>";
 		$rowc[] = $row['cretime'];
 
-		$table->addRow("surveyresult",$rowc,0,1,1,$divName,$fields);
+		$table->addRow("surveyresult",$rowc,0,1,0,$divName,$fields);
 
  	}
  	
@@ -236,24 +271,32 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
-	if($type == "delete"){
-		$res = Customer::deleteRecord($id,'surveyresult');
-		if ($res){
-			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
-			$objResponse = new xajaxResponse();
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
-		}else{
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
-		}
+	if($exportFlag == "1"){
+		$sql = astercrm::getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+		$_SESSION['export_sql'] = $sql;
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		if($type == "delete"){
+			$res = Customer::deleteRecord($id,'surveyresult');
+			if ($res){
+				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+				$objResponse = new xajaxResponse();
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			}else{
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+			}
+		}else{
+			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		}
+		$objResponse = new xajaxResponse();
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
-	$objResponse = new xajaxResponse();
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

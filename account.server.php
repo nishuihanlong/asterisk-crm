@@ -178,6 +178,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'password';
 	$fieldsFromSearch[] = 'extension';
 	$fieldsFromSearch[] = 'extensions';
+	$fieldsFromSearch[] = 'usertype';
 	$fieldsFromSearch[] = 'groupname';
 
 	// Selecct Box: Labels showed on search select box.
@@ -186,6 +187,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("password");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extension");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extensions");
+	$fieldsFromSearchShowAs[] = $locate->Translate("User Type");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 
 

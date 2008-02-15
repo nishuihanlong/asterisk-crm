@@ -133,8 +133,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'surveyname';
 	$fieldsFromSearch[] = 'groupname';
-	$fieldsFromSearch[] = 'cretime';
-	$fieldsFromSearch[] = 'creby';
+	$fieldsFromSearch[] = 'survey.cretime';
+	$fieldsFromSearch[] = 'survey.creby';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -266,6 +266,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$divName = "grid";
 	if($type == "delete"){
 		$res = Customer::deleteRecord($id,'survey');
+		$res = Customer::deleteRecords("surveyid",$id,'surveyoptions');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
 			$objResponse = new xajaxResponse();

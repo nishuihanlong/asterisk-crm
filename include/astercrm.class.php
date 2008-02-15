@@ -1592,14 +1592,18 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
-	function getDialNumber($groupid = null){
+	function getDialNumber($groupid = '', $campaignid = ''){
 		global $db;
-
-		if ($groupid == null){
-			$query = "SELECT * FROM diallist ORDER BY id DESC	LIMIT 0,1" ;
+		if ($campaignid != ''){
+			$query = "SELECT * FROM diallist WHERE campaignid = $campaignid ";
+		}elseif ($groupid != ''){
+			$query = "SELECT * FROM diallist WHERE groupid = $groupid ";
 		}else{
-			$query = "SELECT * FROM diallist WHERE groupid = $groupid ORDER BY id DESC	LIMIT 0,1";
+			$query = "SELECT * FROM diallist ";
 		}
+
+		$query .=  " ORDER BY id DESC	LIMIT 0,1";
+
 		$row =& $db->getRow($query);
 
 		return $row;
@@ -1620,6 +1624,28 @@ Class astercrm extends PEAR{
 
 		//delete all note
 		$query = "DELETE FROM $table WHERE id = $id";
+		astercrm::events($query);
+		$res =& $db->query($query);
+
+		return $res;
+	}
+
+	/**
+	*  delete records form a table
+	*
+	*	@param  $field			(string)
+	*	@param  $value			(string)
+	*	@param  $table			(string)	table name
+	*	@return $res		(object)	object
+	*/
+	
+	function deleteRecords($field,$value,$table){
+		global $db;
+		
+		//backup all datas
+
+		//delete all note
+		$query = "DELETE FROM $table WHERE $field = '$value'";
 		astercrm::events($query);
 		$res =& $db->query($query);
 
