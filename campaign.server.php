@@ -252,7 +252,7 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_group"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Add Campaign"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{

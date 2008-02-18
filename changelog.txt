@@ -164,7 +164,7 @@ v0.0461
 2008-2-6		增加了dailedlist的回收功能
 2008-2-14		补上了portal.server.php以前丢失的monitor函数
 2008-2-14		导入diallist以及预拨号时可以选择不同的组或是campaign
-2008-2-15		修正了删除suervey时的一个bug
+2008-2-15		修正了删除suerey时的一个bug
 
 
 

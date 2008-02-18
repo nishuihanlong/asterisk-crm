@@ -15,7 +15,7 @@ my $asteriskuser = '';
 my $asterisksecret = '';
 
 my $dbhost = '127.0.0.1';
-my $dbname = '';
+my $dbname = 'astercrm';
 my $dbport = 3306;
 my $dbuser = '';
 my $dbpasswd = '';

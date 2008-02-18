@@ -56,6 +56,7 @@ however, multiple servers enhance performance.
 
 	cd /var/www/html
 	unzip astercrm-X.X-XXXX.zip
+	mv astercrm-0.0461 astercrm
 
 	Note: this creates the /var/www/html/astercrm directory which contains the
 	PHP scripts and several sub-directories. 
@@ -68,7 +69,6 @@ however, multiple servers enhance performance.
 	/var/www/html/astercrm/skin							image/style files used by astercrm
 	/var/www/html/astercrm/js								auto-complete java scripts
 	/var/www/html/astercrm/upload				upload folder, make sure it get write permission
-	/var/www/html/astercrm/cdr					Asterisk-stat				
 	/var/www/html/astercrm/sql					sql to create astercrm database 
 
 	It is highly advised that the whole eventsdaemon directory be moved to a more secure
@@ -83,11 +83,11 @@ however, multiple servers enhance performance.
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
-	mysqladmin --uyourmysqluser -pyourmysqlpasswd create astercrm
+	mysqladmin -uyourmysqluser -pyourmysqlpasswd create astercrm
 	mysql -uyourmysqluser -pyourmysqlpasswd astercrm </var/www/html/astercrm/sql/astercrm.sql 
 
 	Note: here we create the database named astercrm, you could use whatever db name you want
-			use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
+				use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
 	
 4) Update /etc/asterisk/manager.conf to enable Manager connections
 	Note: asterisk and astercrm could be on different server
@@ -117,7 +117,7 @@ however, multiple servers enhance performance.
 
 	try start eventsdaemon:
 
-		/opt/asterisk/scripts/events/eventsdaemon.pl 
+		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl 
 	
 	if you could read:
 
@@ -128,7 +128,7 @@ however, multiple servers enhance performance.
 	or else, please check your database/AMI configration in eventsdaemon.pl
 
 	Start eventsdaemon (default settings):
-		/opt/asterisk/scripts/events/eventsdaemon.pl -d
+		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl -d
 
 	At some point it may be desirable to delete unwanted events from the database
 	table. The eventsdaemon is also designed for this.
@@ -136,7 +136,7 @@ however, multiple servers enhance performance.
 
 	also we provide a "watch dog", it would help you restart eventsdaemon when it shutdown
 	add this shell to your start-up file
-		/opt/asterisk/scripts/events/eventdog.sh
+		/opt/asterisk/scripts/eventsdaemon/eventdog.sh
 	so that everytime your server start, eventsdaemon would be loaded
 
 7) set file&folder access 

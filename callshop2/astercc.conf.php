@@ -23,6 +23,17 @@ licenceto = free demo
 key = 
 channel = 5
 
+[sipbuddy]
+type = friend
+host = dynamic
+insecure = very
+canreinvite = no
+nat = yes
+disallow = all
+allow = g729
+allow = g723.1
+
+
 [system]
 
 log_enabled = 0

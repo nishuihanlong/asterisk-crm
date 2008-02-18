@@ -109,7 +109,8 @@ function listCDR($aFormValues){
 			$cs_price = astercc::calculatePrice($mycdr['billsec'],$cs_rate);
 		}
 
-		$callshop_cost = astercc::creditDigits(round(($cs_price)*100)/100);
+		//$callshop_cost = astercc::creditDigits(round(($cs_price)*100)/100);
+		$callshop_cost = $mycdr['callshopcredit'];
 		if ($_SESSION['curuser']['usertype'] == 'operator') $callshop_cost = 0;
 
 		if ($aFormValues['ckbDetail'] == ""){

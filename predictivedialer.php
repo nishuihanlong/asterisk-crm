@@ -77,6 +77,7 @@ require_once('predictivedialer.common.php');
 			}
 
 			function startDial(){
+
 				maxActiveCalls = xajax.$('fldMaxActiveCalls').value;
 				if (!isNumber(maxActiveCalls)){
 					alert(xajax.$('btnNumberOnlyMsg').value);
@@ -93,9 +94,8 @@ require_once('predictivedialer.common.php');
 					totalRecordsHTMLArray = totalRecordsHTML.split(" ");
 					totalRecords = totalRecordsHTMLArray[0];
 				}
-				groupid = xajax.$('groupid').value;
-				campaignid = xajax.$('campaignid').value;
-
+				var groupid = document.getElementById('groupid').value;
+				var campaignid = document.getElementById('campaignid').value;
 				xajax_predictiveDialer(maxActiveCalls,totalRecords,groupid,campaignid);
 				xajax.$('predictiveDialerStatus').value = "dialing";
 				timerPredictiveDialer = setTimeout("startDial()", 2000);
