@@ -62,27 +62,18 @@ require_once('clid.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div><br>
-		<div id="divPanel" name="divPanel" class="divPanel">
-			<a href="account.php">Account</a><br>
-			<a href="rate.php">Rate</a><br>
-			<a href="callshoprate.php">Rate to Callshop </a><br>
-			<a href="checkout.php">Report</a><br>
-			<a href="clid.php">Clid</a><br>
-			<a href="accountgroup.php">Group</a><br>
-			<a href="login.php">Logout</a>
-		</div>
-	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
-		<tr>
-			<td style="padding: 0px;">
-				<fieldset>
-		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;"></div>
-		<div id="grid" name="grid" align="center"> </div>
-		<div id="msgZone" name="msgZone" align="left"> </div>
-				</fieldset>
-			</td>
-		</tr>
-	</table>
+		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
+			<tr>
+				<td style="padding: 0px;">
+					<fieldset>
+			<div id="formDiv"  class="formDiv drsElement" 
+				style="left: 450px; top: 50px;"></div>
+			<div id="grid" name="grid" align="center"> </div>
+			<div id="msgZone" name="msgZone" align="left"> </div>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
 
 		<div id="divCopyright"></div>
 	</body>

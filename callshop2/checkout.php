@@ -96,8 +96,10 @@ function ckbAllOnClick(objCkb){
 		</SCRIPT>
 
 		<script language="JavaScript" src="js/astercrm.js"></script>
+		<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
 
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+		<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 
 	</head>
 
@@ -110,13 +112,10 @@ function ckbAllOnClick(objCkb){
 				<option value="">All</option>
 			</select>
 			
-			From: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i:s",time()-86400);?>">
-			To:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i:s",time());?>">
-			<select id="sltDate" name="sltDate" onchange="">
-				<option value="month">this month</option>
-				<option value="week">this week</option>
-				<option value="day">today</option>
-			</select>
+			From: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>">
+			<INPUT onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="Cal">
+			To:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>">
+			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="Cal">
 					<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail">List Detail
 			<input type="button" onclick="listCDR();return false;" value="List">
 		</div>
