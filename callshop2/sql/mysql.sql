@@ -132,7 +132,26 @@ CREATE TABLE `myrate` (
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM  ;
 
+CREATE TABLE `resellerrate` (
+  `id` int(11) NOT NULL auto_increment,
+  `dialprefix` varchar(20) NOT NULL default '',
+  `numlen` int(11) NOT NULL default '0',
+  `destination` varchar(100) NOT NULL default '',
+  `rateinitial` double(24,4) NOT NULL default '0.0000',
+  `initblock` int(11) NOT NULL default '0',
+  `billingblock` int(11) NOT NULL default '0',
+  `connectcharge` double(24,4) NOT NULL default '0.0000',
+  `resellerid` int(11) NOT NULL default '0',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`),
+  KEY `dialprefix` (`dialprefix`)
+) ENGINE=MyISAM  ;
 
-ALTER TABLE `callback` CHANGE `credit` `credit` DOUBLE( 24, 4 ) NOT NULL DEFAULT '0.0000' ;
-ALTER TABLE `curcdr` CHANGE `credit` `credit` DOUBLE( 24, 4 ) NOT NULL DEFAULT '0.0000' ;
-ALTER TABLE `curcdr` CHANGE `creditlimit` `creditlimit` DOUBLE( 24, 4 ) NOT NULL DEFAULT '0.0000' ;
+CREATE TABLE `resellergroup` (
+  `id` int(11) NOT NULL auto_increment,
+  `resellername` varchar(20) NOT NULL default '',
+  `allowcallback` varchar(10) NOT NULL default '',
+  `creditlimit` double(24,4) NOT NULL default '0.0000',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM  ;
