@@ -132,6 +132,21 @@ CREATE TABLE `myrate` (
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM  ;
 
+CREATE TABLE `callshoprate` (
+  `id` int(11) NOT NULL auto_increment,
+  `dialprefix` varchar(20) NOT NULL default '',
+  `numlen` int(11) NOT NULL default '0',
+  `destination` varchar(100) NOT NULL default '',
+  `rateinitial` double(24,4) NOT NULL default '0.0000',
+  `initblock` int(11) NOT NULL default '0',
+  `billingblock` int(11) NOT NULL default '0',
+  `connectcharge` double(24,4) NOT NULL default '0.0000',
+  `groupid` int(11) NOT NULL default '0',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`),
+  KEY `dialprefix` (`dialprefix`)
+) ENGINE=MyISAM  ;
+
 CREATE TABLE `resellerrate` (
   `id` int(11) NOT NULL auto_increment,
   `dialprefix` varchar(20) NOT NULL default '',
