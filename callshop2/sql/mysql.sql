@@ -24,6 +24,19 @@ CREATE TABLE `account` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM  ;
 
+INSERT INTO `account` (
+`id` ,
+`username` ,
+`password` ,
+`extension` ,
+`extensions` ,
+`usertype` 
+)
+VALUES (
+NULL , 'admin', 'admin', '0000', '', 'admin'
+);
+
+
 -- --------------------------------------------------------
 
 -- 
