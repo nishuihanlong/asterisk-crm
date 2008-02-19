@@ -1,15 +1,3 @@
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
--- 
--- 数据库: `callshop`
--- 
-
--- --------------------------------------------------------
-
--- 
--- 表的结构 `account`
--- 
-
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` int(11) NOT NULL auto_increment,
@@ -28,19 +16,18 @@ INSERT INTO `account` (
 `id` ,
 `username` ,
 `password` ,
-`extension` ,
-`extensions` ,
-`usertype` 
+`usertype` ,
+`addtime`
 )
 VALUES (
-NULL , 'admin', 'admin', '0000', '', 'admin'
+NULL , 'admin', 'admin', 'admin' , now()
 );
 
 
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `accountgroup`
+--  `accountgroup`
 -- 
 
 DROP TABLE IF EXISTS `accountgroup`;
@@ -57,7 +44,7 @@ CREATE TABLE `accountgroup` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `callback`
+--  `callback`
 -- 
 
 DROP TABLE IF EXISTS `callback`;
@@ -76,7 +63,7 @@ CREATE TABLE `callback` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `callshoprate`
+--  `callshoprate`
 -- 
 
 DROP TABLE IF EXISTS `callshoprate`;
@@ -98,7 +85,7 @@ CREATE TABLE `callshoprate` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `clid`
+--  `clid`
 -- 
 
 DROP TABLE IF EXISTS `clid`;
@@ -115,7 +102,7 @@ CREATE TABLE `clid` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `curcdr`
+--  `curcdr`
 -- 
 
 DROP TABLE IF EXISTS `curcdr`;
@@ -143,7 +130,7 @@ CREATE TABLE `curcdr` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `mycdr`
+--  `mycdr`
 -- 
 
 DROP TABLE IF EXISTS `mycdr`;
@@ -174,7 +161,7 @@ CREATE TABLE `mycdr` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `myrate`
+--  `myrate`
 -- 
 
 DROP TABLE IF EXISTS `myrate`;
@@ -196,7 +183,7 @@ CREATE TABLE `myrate` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `resellergroup`
+--  `resellergroup`
 -- 
 
 DROP TABLE IF EXISTS `resellergroup`;
@@ -212,7 +199,7 @@ CREATE TABLE `resellergroup` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `resellerrate`
+--  `resellerrate`
 -- 
 
 DROP TABLE IF EXISTS `resellerrate`;

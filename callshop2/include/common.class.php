@@ -71,7 +71,7 @@ class Common{
 
 		$html = '
 				<div class="">
-						<a href="account.php">Account</a> | <a href="rate.php" >Rate</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="callshoprate.php">Rate to Callshop </a> | <a href="accountgroup.php">Group</a> | <a href="clid.php">Clid</a> | <a href="login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>
+						<a href="account.php">Account</a> | <a href="rate.php" >Rate to Customer</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="callshoprate.php">Rate to Callshop </a> | <a href="accountgroup.php">Group</a> | <a href="clid.php">Clid</a> | <a href="login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>
 				</div>
 				';
 		return $html;
