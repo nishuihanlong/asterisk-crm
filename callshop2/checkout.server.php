@@ -27,6 +27,7 @@ require_once ('include/common.class.php');
 
 function init($curpeer){
 	$objResponse = new xajaxResponse();
+	$peers = array();
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		$peers = $_SESSION['curuser']['extensions'];
 	}else{
@@ -35,7 +36,7 @@ function init($curpeer){
 			$peers[] = $row['clid'];
 		}
 	}
-
+	
 	foreach ($peers as $peer){
 		$objResponse->addScript("addOption('sltBooth','$peer','$peer');");
 	}

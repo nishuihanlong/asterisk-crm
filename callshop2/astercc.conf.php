@@ -2,9 +2,9 @@
 
 dbtype = mysql
 dbhost = 127.0.0.1
-dbname = callshop
+dbname = astercc
 dbport = 3306
-username = root
+username = 
 password = 
 
 tb_curchan = curcdr
@@ -12,8 +12,8 @@ tb_cdr = mycdr
 
 [asterisk]
 
-server = 
-port = 
+server = 127.0.0.1
+port = 5038
 username = 
 secret = 
 

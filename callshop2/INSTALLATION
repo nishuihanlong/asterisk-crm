@@ -1,0 +1,60 @@
+1) Download and unzip the source
+
+	cd /var/www/html
+	unzip astercc-0.03.zip
+	mv astercc-0.0.03 astercc
+
+2) Create the directories and move astercc daemon scripts:
+
+	mkdir -p /opt/asterisk/scripts/astercc/
+	mv /var/www/html/astercc/daemons/* /opt/asterisk/scripts/astercc/
+	chmod +x /opt/asterisk/scripts/astercc/astercc
+	chmod +x /opt/asterisk/scripts/astercc/asterrc
+
+3) Create the MySQL database and table, asterCC need mysql 4.1 or above
+
+	mysqladmin -uyourmysqluser -pyourmysqlpasswd create astercc
+	mysql -uyourmysqluser -pyourmysqlpasswd astercc </var/www/html/astercc/sql/astercc.sql 
+
+	Note: here we create the database named astercc, you could use whatever db name you want
+				use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
+
+4) Update /etc/asterisk/manager.conf to enable Manager connections
+	Note: asterisk and astercc could be on different server
+ 
+	Add something like this to the manager.conf file:
+
+	[general]
+	enabled = yes
+	port = 5038
+	bindaddr = 0.0.0.0
+	;displayconnects = yes
+
+	;the following line could be changed by yourself
+	[eventsdaemon]
+	secret = myeventsdaemon
+	read = system,call,log,verbose,command,agent,user
+	write = system,call,log,verbose,command,agent,user
+	deny=0.0.0.0/0.0.0.0
+	; only allow local access, if you want to run astercrm on another server
+	; use your astercrm ip to replace 127.0.0.1 or add a new line
+	permit=127.0.0.1/255.255.255.0	 
+
+5) modify /var/www/html/astercc/astercc.conf.php and /opt/asterisk/scripts/astercc/astercc.conf to fit your configration
+		mainly database setting and AMI setting
+
+6) Start astercc daemons
+
+	/opt/asterisk/scripts/astercc/astercc -d
+	/opt/asterisk/scripts/astercc/asterrc -d
+
+7) set folder access 
+
+	chmod 777 /var/www/html/astercc/upload
+
+8) Testing: browse to http://localhost/astercc
+
+	or http://YOUR-WEB-SERVER-ADDRESS/astercc
+		
+	login with admin/admin
+

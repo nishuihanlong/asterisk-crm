@@ -6,7 +6,6 @@ CREATE TABLE `account` (
   `usertype` varchar(20) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `extensions` varchar(100) NOT NULL default '',
   `accountcode` varchar(20) NOT NULL default '',
   `callback` varchar(10) NOT NULL default '',
   UNIQUE KEY `id` (`id`)

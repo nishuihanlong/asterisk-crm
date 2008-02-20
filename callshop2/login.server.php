@@ -189,7 +189,7 @@ function processAccountData($aFormValues)
 				}else{
 					$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
 				}
-				$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'portal.php\';">';
+				$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'systemstatus.php\';">';
 				$objResponse->addAssign("formDiv","innerHTML",$html);
 				$objResponse->addClear("titleDiv","innerHTML");
 				$objResponse->addScript("xajax.$('btnContinue').focus();");
