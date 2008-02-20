@@ -58,3 +58,5 @@
 		
 	login with admin/admin
 
+9) add a new group, add a new account for the group as groupadmin, add clid for the group
+	if you want the extension to be billed, you must set the clid of the extension

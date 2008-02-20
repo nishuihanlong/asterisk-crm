@@ -246,17 +246,14 @@ function save($f){
 	}
 
 	// check if pin duplicate
-
-	$res = astercrm::checkValues("clid","pin",$f['pin'],"string","groupid",$f['groupid']);
-	if ($res != ''){
-		$objResponse->addAlert($locate->Translate("pin duplicate in same group"));
-		return $objResponse->getXML();
+	if ($f['pin'] != ''){
+		$res = astercrm::checkValues("clid","pin",$f['pin'],"string","groupid",$f['groupid']);
+		if ($res != ''){
+			$objResponse->addAlert($locate->Translate("pin duplicate in same group"));
+			return $objResponse->getXML();
+		}
 	}
 
-	if ($res != ''){
-		$objResponse->addAlert($locate->Translate("clid duplicate"));
-		return $objResponse->getXML();
-	}
 
 	$respOk = Customer::insertNewClid($f); // add a new account
 	if ($respOk){
@@ -291,10 +288,12 @@ function update($f){
 	}
 
 	// check if pin duplicate
-	$res = astercrm::checkValuesNon($f['id'],"clid","pin",$f['pin'],"string","groupid",$f['groupid']);
-	if ($res != ''){
-		$objResponse->addAlert($locate->Translate("pin duplicate in same group"));
-		return $objResponse->getXML();
+	if ($f['pin'] != ''){
+		$res = astercrm::checkValuesNon($f['id'],"clid","pin",$f['pin'],"string","groupid",$f['groupid']);
+		if ($res != ''){
+			$objResponse->addAlert($locate->Translate("pin duplicate in same group"));
+			return $objResponse->getXML();
+		}
 	}
 
 
