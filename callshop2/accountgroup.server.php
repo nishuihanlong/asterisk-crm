@@ -206,7 +206,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['allowcallback'];
 		$rowc[] = $row['creditlimit'];
 //		$rowc[] = "100";
-		$rowc[] = astercc::readAmount($row['id']);
+		$rowc[] = astercc::readAmount($row['id'],null,null,null,'callshopcredit');
 		$rowc[] = $row['addtime'];
 		$table->addRow("accountgroup",$rowc,1,1,0,$divName,$fields);
  	}

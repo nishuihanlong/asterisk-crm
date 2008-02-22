@@ -69,10 +69,18 @@ if (!isset($_SESSION['callbacks']))
 	//$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("checkHangup()");
 
-	$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
 	$amount = astercc::readAmount($_SESSION['curuser']['groupid']);
+	$cost = astercc::readAmount($_SESSION['curuser']['groupid'],null,null,null,'callshopcredit');
 	if ($amount == '') $amount = 0;
+	if ($cost == '') $cost = 0;
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
+	$balance = $_SESSION['curuser']['creditlimit'] - $cost;
+	if ($balance <= 50) {
+		$objResponse->addAssign("spanLimitStatus","innerHTML","less than 50");
+	}else{
+		$objResponse->addAssign("spanLimitStatus","innerHTML","Normal");
+	}
+	//$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
 
 	return $objResponse;
 }
@@ -236,6 +244,7 @@ function showStatus(){
 
 	$_SESSION['status'] = $peerstatus;
 	$objResponse->addScript('setTimeout("showStatus()", 2000);');
+	$objResponse->addAssign("spanLastRefresh",'innerHTML',date ("Y-m-d H:i:s",time()));
 	return $objResponse;
 }
 

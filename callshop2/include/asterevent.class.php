@@ -190,7 +190,7 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 	return $res;
 }
 
-	function readAmount($groupid,$peer = null, $sdate = null, $edate = null){
+	function readAmount($groupid,$peer = null, $sdate = null, $edate = null, $field = 'credit'){
 		global $db;
 		$curYear = Date("Y");
 		$curMonth = Date("m");
@@ -204,9 +204,9 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 		}
 
 		if ($peer == null)
-			$query = "SELECT SUM(credit) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
+			$query = "SELECT SUM($field) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
 		else
-			$query = "SELECT SUM(credit) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
+			$query = "SELECT SUM($field) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
 
 		astercc::events($query);
 		$one = $db->getOne($query);

@@ -286,6 +286,7 @@ function btnCDROnClick(divId){
 }
 
 function hangup(channel){
+	alert(channel);
 	xajax_hangup(channel);
 }
 

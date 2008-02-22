@@ -60,7 +60,9 @@ require_once('systemstatus.common.php');
 			<a href="login.php">Logout</a>
 		</div>
 		<div>
+		Limit Status:<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
 		Amount:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit:&nbsp;<span id="spanLimit" name="spanLimit"> </span><br>
+		Last refresh time: <span id="spanLastRefresh" name="spanLastRefresh"></span>
 		</div>
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>
 		<div id="divCallback" name="divCallback" class="formDiv drsElement" style="left: 450px; top: 50px;visibility:visible">
