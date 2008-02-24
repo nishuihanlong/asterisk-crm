@@ -149,11 +149,11 @@ require_once('config.php');
 				channel = xajax.$('callerChannel').value;
 			else
 				channel = xajax.$('calleeChannel').value;
-
+			callerid = xajax.$('callerid').value;
 			if (xajax.$('btnMonitorStatus').value == 'recording')
-				xajax_monitor(channel,'stop');
+				xajax_monitor(channel,callerid,'stop');
 			else
-				xajax_monitor(channel,'start');
+				xajax_monitor(channel,callerid,'start');
 
 			return false;
 		}

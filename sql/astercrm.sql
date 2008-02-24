@@ -214,7 +214,20 @@ CREATE TABLE remind (
   UNIQUE KEY id (id)
 )ENGINE = MYISAM;
 
+DROP TABLE IF EXISTS monitorrecord;
 
+CREATE TABLE `monitorrecord` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`callerid` VARCHAR( 20 ) NOT NULL ,
+`filename` VARCHAR( 60 ) NOT NULL ,
+`groupid` INT NOT NULL ,
+`extension` VARCHAR( 30 ) NOT NULL ,
+`creby` VARCHAR( 30 ) NOT NULL ,
+`cretime` DATETIME NOT NULL ,
+UNIQUE (
+`id`
+)
+) ENGINE = MYISAM ;
 
 INSERT INTO `account` (
 `id` ,

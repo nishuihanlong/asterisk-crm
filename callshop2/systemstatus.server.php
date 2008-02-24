@@ -219,7 +219,7 @@ function showStatus(){
 
 			//**
 				$res->fetchInto($legB);
-					$objResponse->addAssign($localChan.'-legb-phone','innerHTML',astercc::creditDigits($legB['dst']));
+					$objResponse->addAssign($localChan.'-legb-phone','innerHTML',$legB['dst']);
 					$objResponse->addAssign($localChan.'-legb-startat','innerHTML',$legB['starttime']);
 					$objResponse->addAssign($localChan.'-legb-channel','value',$legB['srcchan']);
 					if ($legB['answertime'] != '0000-00-00 00:00:00'){

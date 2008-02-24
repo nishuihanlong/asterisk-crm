@@ -15,6 +15,7 @@
 			insertNewDialedlist
 			insertNewAccountgroup    向accountgroup表插入数据
 			insertNewCampaign
+			insertNewMonitor			向monitorrecord表插入数据
 
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
@@ -67,6 +68,8 @@
 			generateSurvey			生成添加survey的HTML语法
 
 
+* Revision 0.047  2008/2/24 10:11:00  last modified by solo
+* Desc: add a new function insertNewMonitor
 
 * Revision 0.0456  2007/11/8 10:11:00  last modified by solo
 * Desc: add a new function getTableStructure
@@ -97,6 +100,20 @@
 
 
 Class astercrm extends PEAR{
+
+	function insertNewMonitor($callerid,$filename){
+		global $db;
+		$query= "INSERT INTO monitorrecord SET "
+				."callerid='".$callerid."', "
+				."filename='".$filename."', "
+				."cretime=now(), "
+				."groupid = ".$_SESSION['curuser']['groupid'].", "
+				."extension = ".$_SESSION['curuser']['extension'].", "
+				."creby='".$_SESSION['curuser']['username']."'";
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
 
 	function getGroups(){
 		global $db;

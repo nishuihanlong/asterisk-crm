@@ -286,8 +286,9 @@ function btnCDROnClick(divId){
 }
 
 function hangup(channel){
-	alert(channel);
-	xajax_hangup(channel);
+	if (channel != ''){
+		xajax_hangup(channel);
+	}
 }
 
 function setBillsec(trId){

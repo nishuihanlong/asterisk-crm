@@ -138,7 +138,7 @@ class Customer extends astercrm
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql .= " AND ".$joinstr."  AND groupid = '".$_SESSION['curuser']['groupid']."' "
+			$sql .= " AND ".$joinstr." "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
@@ -191,7 +191,7 @@ class Customer extends astercrm
 
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql .= " AND ".$joinstr." AND groupid = '".$_SESSION['curuser']['groupid']."' ";
+				$sql .= " AND ".$joinstr." ";
 			}
 
 		Customer::events($sql);

@@ -27,6 +27,10 @@
 	chanspy
 	searchFormSubmit   多条件搜索，重构显示页面
 
+* Revision 0.047  2008/2/24 14:45:00  last modified by solo
+* Desc: add a new parameter callerid in function monitor
+* when monitor, record the callerid and the filename to database
+
 * Revision 0.0456  2007/11/7 14:45:00  last modified by solo
 * Desc: add function chanspy
 
@@ -277,7 +281,11 @@ function incomingCalls($myValue){
 	return $objResponse;
 }
 
-function monitor($channel,$action = 'start'){
+/*
+	add a new parameter callerid		by solo2008/2/24
+	when monitor, record the callerid and the filename to database
+*/
+function monitor($channel,$callerid,$action = 'start'){
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
@@ -300,6 +308,8 @@ function monitor($channel,$action = 'start'){
 			$objResponse->addAlert($res['Message']);
 			return $objResponse;
 		}
+		// 录音信息保存到数据库
+		astercrm::insertNewMonitor($callerid,$filename);
 		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("recording") );
 		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
 

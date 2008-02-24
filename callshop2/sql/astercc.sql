@@ -49,8 +49,8 @@ CREATE TABLE `accountgroup` (
 DROP TABLE IF EXISTS `callback`;
 CREATE TABLE `callback` (
   `id` int(11) NOT NULL auto_increment,
-  `lega` int(11) NOT NULL default '0',
-  `legb` varchar(100) NOT NULL default '',
+  `lega` varchar(30) NOT NULL default '',
+  `legb` varchar(30) NOT NULL default '',
   `credit` double(24,4) NOT NULL default '0.0000',
   `groupid` int(11) NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
