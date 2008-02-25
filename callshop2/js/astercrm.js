@@ -480,10 +480,12 @@ function invite(){
 		if (creditLimit != ''){
 			document.getElementById(trId + '-ckbCredit').checked = true;
 			document.getElementById(trId + '-iptCredit').value = creditLimit;
+			document.getElementById(trId + '-balance').innerHTML = creditLimit;
 			document.getElementById(trId + '-iptCredit').readOnly = true;
 		} else {
 			document.getElementById(trId + '-ckbCredit').checked = false;
 			document.getElementById(trId + '-iptCredit').value = '';
+			document.getElementById(trId + '-balance').innerHTML = '';
 			document.getElementById(trId + '-iptCredit').readOnly = false;
 		}
 	}

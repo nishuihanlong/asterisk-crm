@@ -141,7 +141,7 @@ function showStatus(){
 
 				// should reload CDR
 				$objResponse->addScript("removeTr('".$peer."');");
-				$objResponse->addScript('setTimeout(xajax_addUnbilled("'.$peer.'"),1000);');
+				$objResponse->addScript('setTimeout(xajax_addUnbilled("'.$peer.'"),2000);');
 			}else{
 				$objResponse->addAssign($peer.'-phone','innerHTML',$peerstatus[$peer]['dst']);
 				$objResponse->addAssign($peer.'-startat','innerHTML',$peerstatus[$peer]['starttime']);
