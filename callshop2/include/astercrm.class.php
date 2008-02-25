@@ -23,6 +23,7 @@
 			deleteRecord			从表中删除数据(以id作为标识)
 			getRecord				从表中读取数据(以id作为标识)
 			updateField				更新表中的数据(以id作为标识)
+
 			events					日志记录
 			checkValues				根据条件从数据库中检索是否有符合条件的记录
 			showNoteList			生成note列表的HTML文件
@@ -83,7 +84,6 @@
 
 
 Class astercrm extends PEAR{
-	
 	function &getCalleridListByID($id){
 		global $db;
 		
@@ -173,6 +173,7 @@ Class astercrm extends PEAR{
 				."clid='".$f['clid']."', "
 				."pin='".$f['pin']."', "
 				."groupid = ".$f['groupid'].", "
+				."status = ".$f['status'].", "
 				."addtime = now() ";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
@@ -281,11 +282,11 @@ Class astercrm extends PEAR{
 	function updateClidRecord($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		
 		$sql= "UPDATE clid SET "
 				."clid='".$f['clid']."', "
 				."pin='".$f['pin']."', "
 				."groupid='".$f['groupid']."', "
+				."status= ".$f['status'].", "
 				."addtime = now() "
 				."WHERE id='".$f['id']."'";
 		astercrm::events($sql);

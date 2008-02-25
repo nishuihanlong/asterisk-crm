@@ -168,8 +168,13 @@ class Customer extends astercrm
 		global $locate;
 		$group = astercrm::getGroupList();
 		while	($group->fetchInto($row)){
-			$options .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
+			$groupoptions .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
 		}
+
+		$statusoptions ='
+							<option value="1">Avaiable</option>
+							<option value="0">Lock</option>
+						';
 
 		$html = '
 			<!-- No edit the next line -->
@@ -188,7 +193,15 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Account Group").'</td>
 					<td align="left">
 						<select id="groupid" name="groupid">'
-						.$options.
+						.$groupoptions.
+						'</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Status").'</td>
+					<td align="left">
+						<select id="status" name="status">'
+						.$statusoptions.
 						'</select>
 					</td>
 				</tr>
@@ -221,25 +234,38 @@ class Customer extends astercrm
 		$group = astercrm::getGroupList();
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$options .= '<select id="groupid" name="groupid">';
+			$groupoptions .= '<select id="groupid" name="groupid">';
 			while	($group->fetchInto($row)){
 				if ($row['id'] == $clid['groupid']){
-					$options .= "<OPTION value='".$row['id']."' selected>".$row['groupname']."</OPTION>";
+					$groupoptions .= "<OPTION value='".$row['id']."' selected>".$row['groupname']."</OPTION>";
 				}else{
-					$options .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
+					$groupoptions .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
 				}
 			}
-			$options .= '</select>';
+			$groupoptions .= '</select>';
 			$readonly = "";
 		}else{
 			while	($group->fetchInto($row)){
 				if ($row['id'] == $clid['groupid']){
-					$options .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
+					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
 					break;
 				}
 			}
 			$readonly = "readonly";
 		}
+
+		if ($clid['status'] == 1){
+			$statusoptions ='
+							<option value="1" selected>Avaiable</option>
+							<option value="0">Lock</option>
+						';
+		}else{
+			$statusoptions ='
+							<option value="1">Avaiable</option>
+							<option value="0" selected>Lock</option>
+						';
+		}
+
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -257,8 +283,16 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Account Group").'</td>
 					<td align="left">
 					'
-						.$options.
+						.$groupoptions.
 					'
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Status").'</td>
+					<td align="left">
+						<select id="status" name="status">'
+						.$statusoptions.
+						'</select>
 					</td>
 				</tr>
 				<tr>

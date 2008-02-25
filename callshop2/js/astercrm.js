@@ -94,6 +94,21 @@ function ckbCreditOnClick(objCkb){
 }
 
 
+function setStatus(trId,status){
+	if (status)
+	{
+		if (confirm("are you sure to lock booth " + trId + "?"))
+		{
+			xajax_setStatus(trId,0);
+		}
+	}else{
+		if (confirm("are you sure to unlock booth " + trId + "?"))
+		{
+			xajax_setStatus(trId,1);
+		}
+	}
+}
+
 function hangupOnClick(trId){
 	if (confirm('are you sure to hang up this call?')){
 		//alert(document.getElementById( trId + '-channel').value);
@@ -119,7 +134,7 @@ function deleteRow(i){
     document.getElementById('tblCallbackTable').deleteRow(i);
 }
 
-function addDiv(containerId,divId,creditLimit,num){
+function addDiv(containerId,divId,creditLimit,num,status){
 	var container = document.getElementById(containerId);
 
 	//检查是否已经存在该id
@@ -215,7 +230,13 @@ function addDiv(containerId,divId,creditLimit,num){
 	//add lock div
 	var div = document.createElement("div");
 	div.className = "lable";
-	div.innerHTML += "<input type=\"checkbox\" id=\"ckbHangup[]\" name=\"ckbHangup[]\" value=\"" + divId + "\"><span id=\"" + divId + "-lock\">Lock</span> ";
+	div.innerHTML += "<input type=\"hidden\" id=\"divList[]\" name=\"divList[]\" value=\"" + divId + "\">";
+	if (status == 0){
+		div.innerHTML += "<input checked type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\"  onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\" style=\"background-color: red;\">Lock</span> ";
+	}else{
+		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\" value=\"" + divId + "\" onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\">Lock</span> ";
+	}
+
 	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-channel\" name=\"" + divId + "-channel\" value=''>";
 	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-legb-channel\" name=\"" + divId + "-legb-channel\" value=''>";
 	div.innerHTML += '<input type="hidden" id="' + divId + '-localanswertime" name="' + divId + '-localanswertime" value="">';
@@ -256,11 +277,19 @@ function setCurrency(s){
 function calculateBalance(divId){
 	credit = document.getElementById(divId + '-iptCredit').value;
 	unbilled = Number(document.getElementById(divId + '-unbilled').innerHTML);
+	if (document.getElementById(divId+'-ckbCredit').checked && document.getElementById('creditlimittype').value == 'balance' && (unbilled - credit)  >= -0.001 )
+	{
+		alert('the credit should be greater than unbilled');
+		document.getElementById(divId+'-ckbCredit').checked = false;
+		document.getElementById(divId+'-iptCredit').readOnly = false;
+	}
+
 	if (credit == ''){
 		credit = 0;
 	}else{
 		credit = Number(credit);
 	}
+
 	document.getElementById(divId + '-balance').innerHTML = setCurrency(parseInt((credit - unbilled)*100)/100);
 }
 
@@ -310,24 +339,29 @@ function setBillsec(trId){
 function checkHangup(){
 //	setTimeout("checkHangup()", 900);
 //	return;
-	oCkbHangup = document.getElementsByName("ckbHangup[]");
-	for(i=0;i<oCkbHangup.length;i++) {
-		trId = oCkbHangup[i].value;
+	oDivList = document.getElementsByName("divList[]");
+	for(i=0;i<oDivList.length;i++) {
+		trId = oDivList[i].value;
 		channel = document.getElementById(trId + '-channel').value;
 
-		if (oCkbHangup[i].checked){	// locked
-			hangup(channel);
-			document.getElementById(trId + '-lock').style.backgroundColor="red";
-		}else{
-			document.getElementById(trId + '-lock').style.backgroundColor="";
-		}
+		//if (odivList[i].checked){	// locked
+		//	hangup(channel);
+		//	document.getElementById(trId + '-lock').style.backgroundColor="red";
+		//}else{
+		//	document.getElementById(trId + '-lock').style.backgroundColor="";
+		//}
 	
 		if (channel != ''){
 			// check if set credit limit
 			if (document.getElementById(trId + "-ckbCredit").checked){
 				if (document.getElementById(trId + "-limitstatus").value == ""){
 						document.getElementById(trId + "-limitstatus").value = "setting";
-						xajax_setCreditLimit(trId,channel,document.getElementById(trId + "-balance").innerHTML);
+						if (document.getElementById("creditlimittype").value == 'balance')
+						{
+							xajax_setCreditLimit(trId,channel,document.getElementById(trId + "-balance").innerHTML);
+						}else{
+							xajax_setCreditLimit(trId,channel,document.getElementById(trId + "-iptCredit").value);
+						}
 						//alert("setting");
 				}
 			}else{

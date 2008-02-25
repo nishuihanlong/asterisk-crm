@@ -27,6 +27,17 @@ class astercc extends PEAR
 		return $db->affectedRows();
 	}
 
+	function setStatus($clid,$status){
+		global $db;
+		$query = "UPDATE clid SET status = $status, addtime = now()  WHERE clid = '$clid'";
+		astercc::events($query);
+		$res = $db->query($query);
+		//print_r($res);
+		//print $query;
+		//exit;
+		return $db->affectedRows();
+	}
+
 	function getCallback($groupid){
 		global $db;
 		$query = "SELECT * FROM curcdr WHERE groupid = $groupid AND LEFT(srcchan,6) = 'Local/'";
@@ -223,6 +234,16 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 			$desc .= floor(($rate['billingblock'] * $rate['rateinitial'] / 60)*100)/100 . ' per ' . $rate['billingblock'] . ' seconds';
 		}
 		return $desc;
+	}
+
+	function readField($table,$field,$identity,$value){
+		global $db;
+		if (is_numeric($value))
+			$query = "SELECT $field FROM $table WHERE $identity = $value";
+		else
+			$query = "SELECT $field FROM $table WHERE $identity = '$value'";
+		$one = $db->getOne($query);
+		return $one;
 	}
 
 	function calculatePrice($billsec,$rate){

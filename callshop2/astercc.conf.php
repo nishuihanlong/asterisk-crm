@@ -51,4 +51,8 @@ outcontext =  callshop
 ;context when dial in, in trixbox this could be from-internal
 incontext = callshop
 
+; individual: set the limit in credit limit field to the call
+; balance: set limit in balance to the call
+creditlimittype = balance
+
 upload_file_path = ./upload/

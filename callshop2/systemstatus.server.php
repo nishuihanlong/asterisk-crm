@@ -34,10 +34,12 @@ function init(){
 
 	foreach ($peers as $peer){
 		$i++;
+		// check if the booth is locked
+		$status = astercc::readField('clid','status','clid',$peer);
 		if ($curchannels[$peer] && $curchannels[$peer]['creditlimit'] > 0){
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'")');
+			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'")');
 		}else{
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'")');
+			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'")');
 		}
 		$objResponse->addScript('xajax_addUnbilled("'.$peer.'");');
 	}
@@ -81,6 +83,24 @@ if (!isset($_SESSION['callbacks']))
 		$objResponse->addAssign("spanLimitStatus","innerHTML","Normal");
 	}
 	//$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
+	$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
+	return $objResponse;
+}
+
+function setStatus($clid,$status){
+	$affectrows = astercc::setStatus($clid,$status);
+	$objResponse = new xajaxResponse();
+	if ($affectrows == 0){
+		//$objResponse->addAssign($peer."-limitstatus","value","");
+		$objResponse->addAlert("lock/unlock failed");
+	}else{
+		if ($status == 1){
+			$objResponse->addAssign($clid."-lock","style.backgroundColor","");
+		}else{
+			$objResponse->addAssign($clid."-lock","style.backgroundColor","red");
+		}
+		//$objResponse->addAlert("lock/unlock success");
+	}
 
 	return $objResponse;
 }

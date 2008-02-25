@@ -128,6 +128,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'pin';
 	$fields[] = 'clid';
+	$fields[] = 'status';
 	$fields[] = 'groupname';
 	$fields[] = 'addtime';
 
@@ -135,6 +136,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("Pin");
 	$headers[] = $locate->Translate("Clid");
+	$headers[] = $locate->Translate("Status");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Last Update");
 
@@ -142,11 +144,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="50%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="40%"';
 	$attribsHeader[] = 'width="20%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -156,6 +160,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","clid","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
 
@@ -163,12 +168,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'pin';
 	$fieldsFromSearch[] = 'clid';
+	$fieldsFromSearch[] = 'status';
 	$fieldsFromSearch[] = 'groupname';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 
 
@@ -193,6 +200,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['pin'];
 		$rowc[] = $row['clid'];
+		$rowc[] = $row['status'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['addtime'];
 	if ($_SESSION['curuser']['usertype'] == 'admin'){

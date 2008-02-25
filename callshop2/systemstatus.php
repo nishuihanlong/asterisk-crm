@@ -107,6 +107,7 @@ require_once('systemstatus.common.php');
 		</form>
 
 		<input type="hidden" name="curid" id="curid" value="0"/>
+		<input type="hidden" name="creditlimittype" id="creditlimittype" value=""/>
 
 		<div id="divCopyright"></div>
 	</body>

@@ -61,4 +61,5 @@ $xajax->registerFunction("invite");
 $xajax->registerFunction("removeLocalChannel");
 $xajax->registerFunction("checkOut");
 $xajax->registerFunction("setCreditLimit");
+$xajax->registerFunction("setStatus");
 ?>
