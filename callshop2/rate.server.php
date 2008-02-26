@@ -212,7 +212,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 	else
 		$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
-
+	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();

@@ -129,7 +129,7 @@ class Customer extends astercrm
 			$i++;
 		}
 		
-		$sql = "SELECT * FROM callshoprate WHERE ";
+		$sql = "SELECT callshoprate.*, groupname FROM callshoprate  LEFT JOIN accountgroup ON accountgroup.id = callshoprate.groupid WHERE ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
@@ -139,7 +139,7 @@ class Customer extends astercrm
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql .= " AND ".$joinstr."  AND groupid = '".$_SESSION['curuser']['groupid']."' "
+			$sql .= " AND ".$joinstr." "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
@@ -161,9 +161,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = "SELECT COUNT(*) AS numRows FROM callshoprate ";
+			$sql = "SELECT COUNT(*) AS numRows FROM callshoprate LEFT JOIN accountgroup ON accountgroup.id = callshoprate.groupid ";
 		}else{
-		$sql = "SELECT COUNT(*) AS numRows FROM callshoprate WHERE groupid = '".$_SESSION['curuser']['groupid']."' ";
+		$sql = "SELECT COUNT(*) AS numRows FROM callshoprate LEFT JOIN accountgroup ON accountgroup.id = callshoprate.groupid WHERE groupid = '".$_SESSION['curuser']['groupid']."' ";
 		}
 
 		Customer::events($sql);
@@ -183,7 +183,7 @@ class Customer extends astercrm
 				}
 				$i++;
 			}
-			$sql = "SELECT COUNT(*) AS numRows FROM callshoprate WHERE";
+			$sql = "SELECT COUNT(*) AS numRows FROM callshoprate LEFT JOIN accountgroup ON accountgroup.id = callshoprate.groupid WHERE";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " 1 ";
 			}else{
@@ -192,7 +192,7 @@ class Customer extends astercrm
 
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql .= " AND ".$joinstr." AND groupid = '".$_SESSION['curuser']['groupid']."' ";
+				$sql .= " AND ".$joinstr." ";
 			}
 
 		Customer::events($sql);

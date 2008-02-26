@@ -128,7 +128,7 @@ class Customer extends astercrm
 			$i++;
 		}
 		
-		$sql = "SELECT * FROM myrate WHERE ";
+		$sql = "SELECT myrate.*, groupname FROM myrate  LEFT JOIN accountgroup ON accountgroup.id = myrate.groupid WHERE ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
@@ -182,7 +182,7 @@ class Customer extends astercrm
 				}
 				$i++;
 			}
-			$sql = "SELECT COUNT(*) AS numRows FROM myrate WHERE";
+			$sql = "SELECT COUNT(*) AS numRows FROM myrate LEFT JOIN accountgroup ON accountgroup.id = myrate.groupid WHERE";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " 1 ";
 			}else{

@@ -129,7 +129,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'username';
 	$fields[] = 'password';
 	$fields[] = 'usertype';
-	$fields[] = 'name';
+	$fields[] = 'groupname';
 	$fields[] = 'addtime';
 
 	// HTML table: Headers showed
@@ -169,7 +169,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'username';
 	$fieldsFromSearch[] = 'password';
 	$fieldsFromSearch[] = 'usertype';
-	$fieldsFromSearch[] = 'name';
+	$fieldsFromSearch[] = 'groupname';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
