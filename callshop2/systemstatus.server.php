@@ -82,7 +82,10 @@ if (!isset($_SESSION['callbacks']))
 	}else{
 		$objResponse->addAssign("spanLimitStatus","innerHTML","Normal");
 	}
-	//$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
+	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$objResponse->addAssign("spanLimitStatus","innerHTML",$balance);
+		$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
+	}
 	$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
 	return $objResponse;
 }
