@@ -430,33 +430,33 @@ function appendTr(tbodyId,aryValues){
 
 	// caller id
     var td = document.createElement("td");
-	td.innerHTML = aryValues["dst"];
-	td.style.width = "90px";
+	td.innerHTML = trim(aryValues["dst"]);
+	td.style.width = "20px";
 	tr.appendChild(td);
 	
  	// duration
    var td = document.createElement("td");
-	td.innerHTML = aryValues["billsec"];
-	td.style.width = "60px";
+	td.innerHTML = trim(aryValues["billsec"]);
+	td.style.width = "20px";
 	tr.appendChild(td);
 
  	// price
    var td = document.createElement("td");
-	td.innerHTML = aryValues["price"];
-	td.style.width = "60px";
+	td.innerHTML = trim(aryValues["price"]);
+	td.style.width = "20px";
 	tr.appendChild(td);
 
 
  	// start at
    var td = document.createElement("td");
-	td.innerHTML = aryValues["startat"];
-	td.style.width = "80px";
+	td.innerHTML = trim(aryValues["startat"]);
+	td.style.width = "20px";
 	tr.appendChild(td);
 
  	// rate
    var td = document.createElement("td");
-	td.innerHTML = aryValues["rate"] + "<input type=\"hidden\" id=\"cdrid[]\" name=\"cdrid[]\" value=\"" + aryValues["id"] + "\">";
-	td.style.width = "160px";
+	td.innerHTML = trim(aryValues["rate"]) + "<input type=\"hidden\" id=\"cdrid[]\" name=\"cdrid[]\" value=\"" + aryValues["id"] + "\">";
+	td.style.width = "150px";
 	tr.appendChild(td);
 
 	tbody.appendChild(tr);

@@ -78,13 +78,13 @@ if (!isset($_SESSION['callbacks']))
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
 	$balance = $_SESSION['curuser']['creditlimit'] - $cost;
 	if ($balance <= 50) {
-		$objResponse->addAssign("spanLimitStatus","innerHTML","less than 50");
+		$objResponse->addAssign("spanLimitStatus","innerHTML","warning: less than 50");
 	}else{
-		$objResponse->addAssign("spanLimitStatus","innerHTML","Normal");
+		$objResponse->addAssign("spanLimitStatus","innerHTML","normal");
 	}
 	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-		$objResponse->addAssign("spanLimitStatus","innerHTML",$balance);
-		$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
+		$objResponse->addAssign("spanLimitStatus","innerHTML"," remain ".$balance."");
+		$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']."(cost: $cost)");
 	}
 	$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
 	return $objResponse;
