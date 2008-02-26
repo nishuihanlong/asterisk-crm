@@ -1,9 +1,12 @@
-search engine bug fixed in "rate to customer"	2008-2-24	by solo
-add new parameter in astercc.conf		2008-2-25	by solo
-	billing 
-	callbackbill
+0.035beta:
+
+fixed some bugs in web script
+add new parameter in astercc.conf
+	billing: support prepaid and postpaid for callshop
+	callbackbill: support bill lega only, legb only or both leg in a callback
 add new parameter in astercc.conf.php
-	creditlimittype
+	creditlimittype: support set creditlimit for each call or each customer
 improved lock function
-
-
+	the booth could be locked even the browser is closed
+----------------------------------------------------------------------------------
+astercc features:
