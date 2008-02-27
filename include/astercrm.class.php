@@ -688,12 +688,12 @@ Class astercrm extends PEAR{
 
 	function &getContactByID($id,$type="contact"){
 		global $db;
-		
+
 		if ($type == 'contact')
 			$query = "SELECT * FROM contact WHERE id = $id";
 		elseif ($type == 'note')
 			$query = "SELECT * FROM contact RIGHT JOIN (SELECT contactid FROM note WHERE id = $id ) g ON contact.id = g.contactid";
-
+		
 		astercrm::events($query);
 		$row =& $db->getRow($query);
 		return $row;

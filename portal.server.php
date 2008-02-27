@@ -87,7 +87,7 @@ function showDetail($noteid){
 		$objResponse->addScript("xajax_showContact('$noteid','note');");
 		$objResponse->addScript("xajax_showCustomer('$noteid','note');");
 	}elseif ($config['system']['portal_display_type'] == "customer"){
-		$objResponse->addScript("xajax_showContact('$noteid','customer');");
+		//$objResponse->addScript("xajax_showContact('$noteid','customer');");
 		$objResponse->addScript("xajax_showCustomer('$noteid','customer');");
 	}
 
