@@ -9,4 +9,9 @@ add new parameter in astercc.conf.php
 improved lock function
 	the booth could be locked even the browser is closed
 ----------------------------------------------------------------------------------
+0.035
+
+add new parameter in astercc.conf.php
+	refreshBalance: astercc will refresh the balance of the group
+----------------------------------------------------------------------------------
 astercc features:

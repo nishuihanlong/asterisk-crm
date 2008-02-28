@@ -71,23 +71,37 @@ if (!isset($_SESSION['callbacks']))
 	//$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("checkHangup()");
 
+	$objResponse->addScript("xajax_setGroupBalance();");
+	$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
+	return $objResponse;
+}
+
+function setGroupBalance(){
+	global $config;
+	$objResponse = new xajaxResponse();
 	$amount = astercc::readAmount($_SESSION['curuser']['groupid']);
 	$cost = astercc::readAmount($_SESSION['curuser']['groupid'],null,null,null,'callshopcredit');
 	if ($amount == '') $amount = 0;
 	if ($cost == '') $cost = 0;
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
 	$balance = $_SESSION['curuser']['creditlimit'] - $cost;
+
 	if ($balance <= 50) {
 		$objResponse->addAssign("spanLimitStatus","innerHTML","warning: less than 50");
 	}else{
 		$objResponse->addAssign("spanLimitStatus","innerHTML","normal");
 	}
+
 	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-		$objResponse->addAssign("spanLimitStatus","innerHTML"," remain ".$balance."");
-		$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']."(cost: $cost)");
+		$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
+		$objResponse->addAssign("spanCost","innerHTML",$cost);
 	}
-	$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
-	return $objResponse;
+	if (is_numeric($config['system']['refreshBalance']) && $config['system']['refreshBalance'] != 0){
+		$refreshtime = $config['system']['refreshBalance'] * 1000;
+		$objResponse->addScript('setTimeout("xajax_setGroupBalance()",'.$refreshtime.');');
+	}
+	//$objResponse->addAlert('balance refreshed');
+	return $objResponse->getXML();
 }
 
 function setStatus($clid,$status){

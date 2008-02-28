@@ -101,6 +101,14 @@ Class astercrm extends PEAR{
 		return  $res;
 	}
 
+	function getGroups(){
+		global $db;
+		$sql = "SELECT *  FROM accountgroup";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	/**
 	*	get table structure
 	*	

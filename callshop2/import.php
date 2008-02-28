@@ -97,6 +97,7 @@
 			}
 
 			function submitFormOnSubmit(){
+				/*
 				if(document.getElementsByName('chkAdd')[0].checked == true){
 					if(document.getElementsByName('chkAssign')[0].checked == true){
 						if(document.getElementById('assign').value == "")
@@ -105,7 +106,7 @@
 						}
 					}
 				}
-
+				*/
 				//alert (document.getElementsById('sltTable').);
 				//return false;
 				//alert("ok");
@@ -125,11 +126,17 @@
 
 				xajax.$('btnUpload').disabled = true;
 				xajax.$('btnUpload').value=xajax.$('hidOnUploadMsg').value;
-				formUpload.submit();
+				xajax.$('formUpload').submit();
 				return false;
 			}
 		
-
+			function  addOption(objId,optionVal,optionText)  {
+				objSelect = document.getElementById(objId);
+				var _o = document.createElement("OPTION");
+				_o.text = optionText;
+				_o.value = optionVal;
+				objSelect.options.add(_o);
+			} 
 		</script>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
@@ -181,9 +188,12 @@
 							<input type='hidden' value='' name='hidFileName' id='hidFileName' />
 							<input type='hidden' value='' name='hidTableName' id='hidTableName' />
 							<input type='hidden' value='' name='hidMaxTableColumnNum' id='hidMaxTableColumnNum' />
-
-							<div name="divGrid" id="divGrid"></div>
+							<!--
 							<div name="divDiallistImport" id="divDiallistImport"></div>
+							-->
+							<div name="divGrid" id="divGrid"></div>
+							<SELECT id="groupid" name="groupid">
+							</SELECT>
 
 
 				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">

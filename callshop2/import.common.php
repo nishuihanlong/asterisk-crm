@@ -27,8 +27,8 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['usertype'] != 'callshop') 
-	header("Location: login.php");
+if ($_SESSION['curuser']['usertype'] != 'admin') 
+	header("Location: systemstatus.php");
 
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
@@ -40,6 +40,7 @@ $xajax->registerFunction("selectTable");
 $xajax->registerFunction("init");
 $xajax->registerFunction("submitForm");
 $xajax->registerFunction("showDivMainRight");
+$xajax->registerFunction("setCampaign");
 
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.
