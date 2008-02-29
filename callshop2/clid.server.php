@@ -40,6 +40,8 @@ require_once ("db_connect.php");
 require_once ('clid.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/astercrm.class.php');
+require_once ('include/asterevent.class.php');
+require_once ('include/asterisk.class.php');
 require_once ('include/common.class.php');
 require_once ("clid.common.php");
 
@@ -56,6 +58,21 @@ function init(){
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
+	return $objResponse;
+}
+
+function generateSip(){
+	$objResponse = new xajaxResponse();
+	astercc::generatePeers();
+	$objResponse->addAlert("sip conf file generated");
+	return $objResponse;
+}
+
+function reloadSip(){
+	$objResponse = new xajaxResponse();
+	$myAsterisk = new Asterisk();
+	$myAsterisk->execute("sip reload");
+	$objResponse->addAlert("sip conf reloaded");
 	return $objResponse;
 }
 

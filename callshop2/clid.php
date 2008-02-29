@@ -74,6 +74,14 @@ require_once('clid.common.php');
 				</td>
 			</tr>
 		</table>
+		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
+			<tr>
+				<td style="padding: 0px;" align="center">
+					<INPUT TYPE="button" VALUE="generate sip peers" ONCLICK="xajax_generateSip();return false;">
+					<INPUT TYPE="button" VALUE="reload sip peers" ONCLICK="xajax_reloadSip();return false;">
+				</td>
+			</tr>
+		</table>
 
 		<div id="divCopyright"></div>
 	</body>

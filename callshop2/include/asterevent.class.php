@@ -6,6 +6,30 @@
 
 class astercc extends PEAR
 {
+	function generatePeers(){
+		global $db,$config;
+		$query = "SELECT * FROM clid ORDER BY clid ASC";
+		$clid_list = $db->query($query);
+		$content = '';
+		while	($clid_list->fetchInto($row)){
+			$content .= "[".$row['clid']."]\n";
+			foreach ($config['sipbuddy'] as  $key=>$value){
+				if ($key != '' && $value != '')
+					$content .= "$key = $value\n";
+			}
+			$content .= "secret = ".$row['pin']."\n\n";
+		}
+
+		$filename = $config['system']['sipfile'];
+
+		$fp=fopen($filename,"w+");
+		if (!$fp){
+			print "file: $filename open failed, please check the file permission";
+			exit;
+		}
+		fwrite($fp,$content);
+	}
+
 	function checkPeerStatus($groupid){
 		$curChans =& astercc::getCurChan($groupid);
 		$status =  array();

@@ -60,3 +60,5 @@ upload_file_path = ./upload/
 ; astercc will refresh the balance of the group
 ; set to 0 if you dont want it refresh automaticly
 refreshBalance = 30
+
+sipfile = /etc/asterisk/sip_astercc.conf

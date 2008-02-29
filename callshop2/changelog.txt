@@ -13,6 +13,11 @@ improved lock function
 
 add new parameter in astercc.conf.php
 	refreshBalance: astercc will refresh the balance of the group
+change the booth order by clid rather than addtime
+add new parameter in astercc.conf.php
+	sipfile: astercc could generate sip peers 
+astercc could generate sip peers from clid
+
 ----------------------------------------------------------------------------------
 astercc features:
 	

@@ -87,7 +87,7 @@ Class astercrm extends PEAR{
 	function &getCalleridListByID($id){
 		global $db;
 		
-		$sql = "SELECT * FROM clid WHERE groupid = $id ORDER BY addtime DESC";
+		$sql = "SELECT * FROM clid WHERE groupid = $id ORDER BY clid ASC";
 
 		astercrm::events($sql);
 		$res =& $db->query($sql);

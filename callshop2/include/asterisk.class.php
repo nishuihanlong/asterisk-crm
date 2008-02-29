@@ -106,6 +106,16 @@ class Asterisk extends AGI_AsteriskManager{
 		return  $channels['data'];
 	}
 
+	function execute($command){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$channels = $myAsterisk->Command($command);	
+		$myAsterisk->disconnect();
+		return  $channels['data'];
+	}
+
 	function getCommandData($command){
 		global $config;
 		$myAsterisk = new Asterisk();
