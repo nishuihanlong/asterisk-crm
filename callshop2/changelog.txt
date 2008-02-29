@@ -15,3 +15,38 @@ add new parameter in astercc.conf.php
 	refreshBalance: astercc will refresh the balance of the group
 ----------------------------------------------------------------------------------
 astercc features:
+	
+	work with all asterisk based system	
+	realtime billing
+	prepaid/postpaid support
+	maximum 240 simultaneous calls support
+	booth lock/unlock
+	booth credit limit
+	mulit-callshop support in one system
+	each callshop could have its own buy rate and sell rate
+	callback with credit limit support (billing lega/legb/both)
+	callshoprate/customerrate two level billing
+	admin/callshop admin/operator three user type 
+	rate import/export
+	hangup calls
+	web script part is open source
+	Grid layout
+	5 free channels license
+
+astercc特点
+
+	兼容所有的asterisk系统
+	实时计费显示
+	预付费/后付费支持
+	可以支持240个并发呼叫
+	话机锁定/解锁
+	话费限额
+	一个系统内支持多个组
+	每个组都能有自己的购买和销售费率
+	支持带话费限制的回拨(计费 主叫/被叫/同时计费)
+	callshoprate/customerrate 两级计费
+	admin/callshop admin/operator 三级权限
+	费率导入/导出
+	强行结束通话
+	网页代码为开源
+	表格型显示方式更加直观
