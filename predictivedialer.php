@@ -136,7 +136,7 @@ require_once('predictivedialer.common.php');
 			}
 
 			function setCampaign(){
-				groupid = document.getElementById("groupid").value;
+				var groupid = xajax.$('groupid').value;
 				if (groupid == '')
 					return;
 				//清空campaignid
