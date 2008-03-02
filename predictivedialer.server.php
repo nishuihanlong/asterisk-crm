@@ -181,11 +181,6 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 		$objResponse->addScript("stopDial();");
 		return $objResponse;
 	} else {
-		$id = $row['id'];
-		$groupid = $row['groupid'];
-		$campaignid = $row['campaignid'];
-		$phoneNum = $row['dialnumber'];
-		$assign = $row['assign'];
 		// get active channel
 		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
 		$channels = split(chr(10),$channels[1]);
@@ -201,6 +196,15 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 			$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("reach_maximum_concurrent_calls"));
 			return $objResponse;
 		}
+		//place calls
+		$placeCallsNumber = $maxCahnnels - $curCalls 
+
+		$id = $row['id'];
+		$groupid = $row['groupid'];
+		$campaignid = $row['campaignid'];
+		$phoneNum = $row['dialnumber'];
+		$assign = $row['assign'];
+
 
 		$res = astercrm::deleteRecord($id,"diallist");
 		$f['dialnumber'] = $phoneNum;

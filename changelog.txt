@@ -173,11 +173,15 @@ v0.047
 
 TO-DO:
 
-[fixed] group管理中groupid 不允许重复, 增加了错误提示
+
 [no fix] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue
 解决办法1 在queue内定义agent时使用 Local/8000@from-internal/n 的方法
 解决办法2 使用老的方法获取事件
+
 [fixed] 部分系统当 allow_dropcall = 1 时 无法发起呼叫, 建议检查asterisk spool目录权限是否正确, 或者修改为 allow_dropcall = 0
+
+加快预拨号器的速度
+channel limit应该增加对zap和iax的支持
 
 导出时, 导出的是id 而不是对应的值
 

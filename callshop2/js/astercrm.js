@@ -99,7 +99,7 @@ function setStatus(trId,status){
 	{
 		if (confirm("are you sure to lock booth " + trId + "?"))
 		{
-			xajax_setStatus(trId,0);
+			xajax_setStatus(trId,-1);
 		}
 	}else{
 		if (confirm("are you sure to unlock booth " + trId + "?"))
@@ -231,7 +231,7 @@ function addDiv(containerId,divId,creditLimit,num,status){
 	var div = document.createElement("div");
 	div.className = "lable";
 	div.innerHTML += "<input type=\"hidden\" id=\"divList[]\" name=\"divList[]\" value=\"" + divId + "\">";
-	if (status == 0){
+	if (status == -1){
 		div.innerHTML += "<input checked type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\"  onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\" style=\"background-color: red;\">Lock</span> ";
 	}else{
 		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\" value=\"" + divId + "\" onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\">Lock</span> ";

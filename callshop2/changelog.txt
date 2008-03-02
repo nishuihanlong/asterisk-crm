@@ -1,4 +1,4 @@
-0.035beta:
+﻿0.035beta:
 
 fixed some bugs in web script
 add new parameter in astercc.conf
@@ -17,8 +17,15 @@ change the booth order by clid rather than addtime
 add new parameter in astercc.conf.php
 	sipfile: astercc could generate sip peers 
 astercc could generate sip peers from clid
-
+fix a bug in asterrc (when there's a clid which doesnt exsit in table clid, it would be error)
+fix a bug in asterrc (some clid could not be loaded)
+change the lock flag to -1
 ----------------------------------------------------------------------------------
+booth用户输入号码后会提示金额和分钟数
+页面上的Amount和Cost设置到隐藏div, 并且不随时间而清空
+删除组时应该把改组的booth也都删除
+
+
 astercc features:
 	
 	work with all asterisk based system	

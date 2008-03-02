@@ -22,7 +22,7 @@ class astercc extends PEAR
 
 		$filename = $config['system']['sipfile'];
 
-		$fp=fopen($filename,"w+");
+		$fp=fopen($filename,"w");
 		if (!$fp){
 			print "file: $filename open failed, please check the file permission";
 			exit;
@@ -231,17 +231,23 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 		$curMonth = Date("m");
 
 		if ($sdate == null){
-			$sdate = "$curYear-$curMonth-01 00:00:00";
+			//$sdate = "$curYear-$curMonth-01 00:00:00";
 		}
 
 		if ($edate == null){
-			$edate = "$curYear-$curMonth-31 23:59:59";
+			//$edate = "$curYear-$curMonth-31 23:59:59";
 		}
 
 		if ($peer == null)
-			$query = "SELECT SUM($field) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
+			$query = "SELECT SUM($field) FROM mycdr WHERE groupid = $groupid ";
 		else
-			$query = "SELECT SUM($field) FROM mycdr WHERE groupid = $groupid AND calldate >= '$sdate' AND calldate <= '$edate' ";
+			$query = "SELECT SUM($field) FROM mycdr WHERE groupid = $groupid ";
+
+		if ($sdate != null)
+			$query .= " AND calldate >= '$sdate' ";
+
+		if ($edate != null)
+			$query .= " AND calldate <= '$edate' ";
 
 		astercc::events($query);
 		$one = $db->getOne($query);
