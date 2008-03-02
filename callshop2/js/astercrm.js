@@ -431,7 +431,7 @@ function appendTr(tbodyId,aryValues){
 	// caller id
     var td = document.createElement("td");
 	td.innerHTML = trim(aryValues["dst"]);
-	td.style.width = "20px";
+	td.style.width = "80px";
 	tr.appendChild(td);
 	
  	// duration
@@ -450,7 +450,7 @@ function appendTr(tbodyId,aryValues){
  	// start at
    var td = document.createElement("td");
 	td.innerHTML = trim(aryValues["startat"]);
-	td.style.width = "20px";
+	td.style.width = "90px";
 	tr.appendChild(td);
 
  	// rate

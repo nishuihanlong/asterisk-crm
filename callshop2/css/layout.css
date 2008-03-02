@@ -28,9 +28,10 @@ div.float {
 }
 
 div.calllog{
-	width:230px;
+	width:200px;
 	height:242px;
 	overflow: auto;
+	word-break:break-all;
 	overflow-x: scroll;
 	overflow-y: scroll;
 }

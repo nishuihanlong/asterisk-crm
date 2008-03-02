@@ -39,6 +39,14 @@ require_once('systemstatus.common.php');
 				showStatus();
 				dragresize.apply(document);
 			}
+			function showCallshopStatus(){
+				var myDiv = document.getElementById("divAmount");
+				if (myDiv.style.display == 'block')
+					myDiv.style.display = 'none';
+				else
+					myDiv.style.display = 'block';
+				return false;
+			}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -59,7 +67,8 @@ require_once('systemstatus.common.php');
 			<a href="clid.php" target="_blank">Clid</a><br>
 			<a href="login.php">Logout</a>
 		</div>
-		<div>
+		<input type="button" value="Callshop Status" onclick="showCallshopStatus();">
+		<div id="divAmount" style="display:none;">
 		&nbsp;Amount:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;Cost:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit:&nbsp;<span id="spanLimit" name="spanLimit"> </span><br>
 		&nbsp;Last refresh time: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit Status:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
 		</div>
