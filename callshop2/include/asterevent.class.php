@@ -250,6 +250,8 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 			$query .= " AND calldate <= '$edate' ";
 
 		astercc::events($query);
+		//print $query;
+		//exit;
 		$one = $db->getOne($query);
 		return $one;
 	}
