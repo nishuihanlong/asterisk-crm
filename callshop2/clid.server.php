@@ -145,6 +145,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'pin';
 	$fields[] = 'clid';
+	$fields[] = 'display';
 	$fields[] = 'status';
 	$fields[] = 'groupname';
 	$fields[] = 'addtime';
@@ -153,6 +154,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("Pin");
 	$headers[] = $locate->Translate("Clid");
+	$headers[] = $locate->Translate("Display");
 	$headers[] = $locate->Translate("Status");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Last Update");
@@ -161,12 +163,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="40%"';
+	$attribsHeader[] = 'width="25%"';
 	$attribsHeader[] = 'width="20%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -177,6 +181,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","clid","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","display","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
@@ -185,6 +190,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'pin';
 	$fieldsFromSearch[] = 'clid';
+	$fieldsFromSearch[] = 'display';
 	$fieldsFromSearch[] = 'status';
 	$fieldsFromSearch[] = 'groupname';
 
@@ -192,6 +198,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Diaplay");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 
@@ -217,6 +224,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['pin'];
 		$rowc[] = $row['clid'];
+		$rowc[] = $row['display'];
 		$rowc[] = $row['status'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['addtime'];
@@ -267,6 +275,7 @@ function save($f){
 		$objResponse->addAlert("clid must be numeric");
 		return $objResponse;
 	}
+	
 
 	// check if clid duplicate
 	$res = astercrm::checkValues("clid","clid",$f['clid']);
@@ -274,6 +283,10 @@ function save($f){
 	if ($res != ''){
 		$objResponse->addAlert($locate->Translate("clid duplicate"));
 		return $objResponse->getXML();
+	}
+
+	if ($f['display'] == '') {
+		$f['display'] = $f['clid'];
 	}
 
 	// check if pin duplicate
@@ -318,6 +331,7 @@ function update($f){
 		return $objResponse->getXML();
 	}
 
+
 	// check if pin duplicate
 	if ($f['pin'] != ''){
 		$res = astercrm::checkValuesNon($f['id'],"clid","pin",$f['pin'],"string","groupid",$f['groupid']);
@@ -327,6 +341,9 @@ function update($f){
 		}
 	}
 
+	if ($f['display'] == '') {
+		$f['display'] = $f['clid'];
+	}
 
 //	$res = astercrm::checkValues("clid","clid",$f['clid']);
 

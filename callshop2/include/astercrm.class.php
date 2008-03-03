@@ -180,6 +180,7 @@ Class astercrm extends PEAR{
 		$sql= "INSERT INTO clid SET "
 				."clid='".$f['clid']."', "
 				."pin='".$f['pin']."', "
+				."display='".$f['display']."', "
 				."groupid = ".$f['groupid'].", "
 				."status = ".$f['status'].", "
 				."addtime = now() ";
@@ -293,6 +294,7 @@ Class astercrm extends PEAR{
 		$sql= "UPDATE clid SET "
 				."clid='".$f['clid']."', "
 				."pin='".$f['pin']."', "
+				."display='".$f['display']."', "
 				."groupid='".$f['groupid']."', "
 				."status= ".$f['status'].", "
 				."addtime = now() "

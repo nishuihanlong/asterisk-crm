@@ -182,12 +182,16 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Caller ID").'</td>
+					<td nowrap align="left">'.$locate->Translate("Caller ID").'*</td>
 					<td align="left"><input type="text" id="clid" name="clid" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Pin Number").'</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Display").'</td>
+					<td align="left"><input type="text" id="display" name="display" size="25" maxlength="20"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Group").'</td>
@@ -257,12 +261,12 @@ class Customer extends astercrm
 		if ($clid['status'] == 1){
 			$statusoptions ='
 							<option value="1" selected>Avaiable</option>
-							<option value="0">Lock</option>
+							<option value="-1">Lock</option>
 						';
 		}else{
 			$statusoptions ='
 							<option value="1">Avaiable</option>
-							<option value="0" selected>Lock</option>
+							<option value="-1" selected>Lock</option>
 						';
 		}
 
@@ -272,12 +276,16 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Caller ID").'</td>
+					<td nowrap align="left">'.$locate->Translate("Caller ID").'*</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $clid['id'].'"><input type="text" id="clid" name="clid" size="25" maxlength="30" value="'.$clid['clid'].'" '.$readonly.'></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Pin Number").'</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30" value="'.$clid['pin'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Display").'</td>
+					<td align="left"><input type="text" id="display" name="display" size="25" maxlength="20" value="'.$clid['display'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Group").'</td>
