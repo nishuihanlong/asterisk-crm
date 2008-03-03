@@ -93,6 +93,7 @@ CREATE TABLE `clid` (
   `clid` varchar(20) NOT NULL default '',
   `pin` varchar(20) NOT NULL default '',
   `status` tinyint(4) NOT NULL default '1',			-- added by solo 2008/2/25
+  `diaplay` varchar(20) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',

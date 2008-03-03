@@ -262,6 +262,12 @@ function add(){
 function save($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
+	//check clid could only be numuric
+	if (!is_numeric($f['clid'])){
+		$objResponse->addAlert("clid must be numeric");
+		return $objResponse;
+	}
+
 	// check if clid duplicate
 	$res = astercrm::checkValues("clid","clid",$f['clid']);
 

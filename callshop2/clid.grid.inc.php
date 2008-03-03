@@ -173,7 +173,7 @@ class Customer extends astercrm
 
 		$statusoptions ='
 							<option value="1">Avaiable</option>
-							<option value="0">Lock</option>
+							<option value="-1">Lock</option>
 						';
 
 		$html = '
