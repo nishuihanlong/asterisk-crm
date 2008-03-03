@@ -35,11 +35,15 @@ function init(){
 	foreach ($peers as $peer){
 		$i++;
 		// check if the booth is locked
-		$status = astercc::readField('clid','status','clid',$peer);
+		$clid = astercc::readRecord('clid','clid',$peer);
+		// read booth display
+		//$display = astercc::readField('clid','display','clid',$peer);
+		$status = $clid['status'];
+		$display = $clid['display'];
 		if ($curchannels[$peer] && $curchannels[$peer]['creditlimit'] > 0){
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'")');
+			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'","'.$display.'")');
 		}else{
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'")');
+			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'","'.$display.'")');
 		}
 		$objResponse->addScript('xajax_addUnbilled("'.$peer.'");');
 	}
@@ -59,9 +63,9 @@ if (!isset($_SESSION['callbacks']))
 	// get callback from session
 	foreach ($_SESSION['callbacks'] as $callback){
 		if ($callback['creditlimit'] > 0)
-			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","")');
+			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","","")');
 		else
-			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","","")');
+			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","","","")');
 
 		$objResponse->addScript('xajax_addUnbilled("'.$callback['legB'].'","'.$callback['legA'].'");');
 	}
@@ -375,11 +379,10 @@ function addUnbilled($peer,$leg = null){
 		$jsscript = "cdr = new Array();";
 
 		if (!empty($rate)){
-
-			$destination = $rate['destination'];
-			$rateinitial = $rate['rateinitial'];
-			$initblock	 = $rate['initblock'];
-			$billingblock = $rate['billingblock'];
+			//$destination = $rate['destination'];
+			//$rateinitial = $rate['rateinitial'];
+			//$initblock	 = $rate['initblock'];
+			//$billingblock = $rate['billingblock'];
 
 			$ratedesc = astercc::readRateDesc($rate);
 			//price = astercc::calculatePrice($mycdr['billsec'],$rate);

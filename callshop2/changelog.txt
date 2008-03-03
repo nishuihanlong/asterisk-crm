@@ -20,9 +20,10 @@ astercc could generate sip peers from clid
 fix a bug in asterrc (when there's a clid which doesnt exsit in table clid, it would be error)
 fix a bug in asterrc (some clid could not be loaded)
 change the lock flag from 0 to -1
+add new field "display" in table clid to store display name of the booth
+add a button so that operator/groupadmin could choose hide/display the callshop status
 ----------------------------------------------------------------------------------
 booth用户输入号码后会提示金额和分钟数
-页面上的Amount和Cost设置到隐藏div, 并且不随时间而清空
 code有时候会出现问题, vista总是不识别
 
 astercc features:

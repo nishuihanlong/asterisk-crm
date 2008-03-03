@@ -157,8 +157,6 @@ class astercc extends PEAR
 		
 
 		if ($secondGroupid != null && $maxprefix == '' && $default ==''){ // did get rate from group
-//			print "123456";
-//			exit;
 			return astercc::readRate($dst,$groupid, $tbl);
 		}
 
@@ -265,6 +263,7 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 		if ($rate['billingblock'] != 0){
 			$desc .= floor(($rate['billingblock'] * $rate['rateinitial'] / 60)*100)/100 . ' per ' . $rate['billingblock'] . ' seconds';
 		}
+		$desc .= "(".$rate['destination'].")";
 		return $desc;
 	}
 
@@ -276,6 +275,16 @@ function readAll($peer,$groupid,$sdate = null , $edate = null){
 			$query = "SELECT $field FROM $table WHERE $identity = '$value'";
 		$one = $db->getOne($query);
 		return $one;
+	}
+
+	function readRecord($table,$identity,$value){
+		global $db;
+		if (is_numeric($value))
+			$query = "SELECT * FROM $table WHERE $identity = $value";
+		else
+			$query = "SELECT * FROM $table WHERE $identity = '$value'";
+		$row = $db->getRow($query);
+		return $row;
 	}
 
 	function calculatePrice($billsec,$rate){

@@ -134,9 +134,13 @@ function deleteRow(i){
     document.getElementById('tblCallbackTable').deleteRow(i);
 }
 
-function addDiv(containerId,divId,creditLimit,num,status){
+function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	var container = document.getElementById(containerId);
 
+	if (displayname == '')
+	{
+		displayname = divId;
+	}
 	//检查是否已经存在该id
 
 	if (document.getElementById(divId + '-divContainer') != null){
@@ -153,7 +157,7 @@ function addDiv(containerId,divId,creditLimit,num,status){
 	div.className = "lable";
 	if (num != '')
 	{
-		div.innerHTML += "&nbsp;No." + num + ":" + divId;
+		div.innerHTML += "&nbsp;No." + num + ":" + displayname;
 	}else{
 		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
 	}

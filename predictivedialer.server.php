@@ -197,7 +197,7 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 			return $objResponse;
 		}
 		//place calls
-		$placeCallsNumber = $maxCahnnels - $curCalls 
+		$placeCallsNumber = $maxCahnnels - $curCalls ;
 
 		$id = $row['id'];
 		$groupid = $row['groupid'];
