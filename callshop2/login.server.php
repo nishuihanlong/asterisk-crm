@@ -19,12 +19,16 @@ require_once ('include/astercrm.class.php');
 
 function processForm($aFormValues)
 {
+	global $config;
+
 	$objResponse = new xajaxResponse();
 	global $locate;
-	if (trim($aFormValues['code']) != $_SESSION["Checknum"]){
-		$objResponse->addAlert('Invalid code');
-		$objResponse->addScript('init();');
-		return $objResponse;
+	if ($config['system']['validcode'] == 'yes'){
+		if (trim($aFormValues['code']) != $_SESSION["Checknum"]){
+			$objResponse->addAlert('Invalid code');
+			$objResponse->addScript('init();');
+			return $objResponse;
+		}
 	}
 
 	if (trim($aFormValues['username']) == "")

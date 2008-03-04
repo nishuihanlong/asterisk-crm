@@ -62,3 +62,6 @@ upload_file_path = ./upload/
 refreshBalance = 30
 
 sipfile = /etc/asterisk/sip_astercc.conf
+
+; if require valid code when login
+validcode = yes

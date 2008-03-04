@@ -22,6 +22,8 @@ fix a bug in asterrc (some clid could not be loaded)
 change the lock flag from 0 to -1
 add new field "display" in table clid to store display name of the booth
 add a button so that operator/groupadmin could choose hide/display the callshop status
+add new parameter in astercc.conf.php
+	validcode: if require valid code when login
 ----------------------------------------------------------------------------------
 booth用户输入号码后会提示金额和分钟数
 code有时候会出现问题, vista总是不识别
