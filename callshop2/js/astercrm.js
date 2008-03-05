@@ -517,7 +517,11 @@ function appendTr(tbodyId,aryValues){
 	
  	// duration
    var td = document.createElement("td");
-	td.innerHTML = trim(aryValues["billsec"]);
+	var hours = parseInt(aryValues["billsec"]/3600);
+	var minutes = parseInt( (aryValues["billsec"] - hours*3600)/60);
+	var seconds = aryValues["billsec"] - hours * 3600 - minutes * 60
+	td.innerHTML = hours + ':' + minutes + ':' + seconds;
+
 	td.style.width = "20px";
 	tr.appendChild(td);
 
