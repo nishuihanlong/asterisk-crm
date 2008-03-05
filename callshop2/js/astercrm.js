@@ -256,6 +256,83 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	container.appendChild(divContainer);
 }
 
+function addSimpleDiv(containerId,divId,creditLimit,num,status,displayname){
+	var container = document.getElementById(containerId);
+
+	if (displayname == '')
+	{
+		displayname = divId;
+	}
+	//检查是否已经存在该id
+
+	if (document.getElementById(divId + '-divContainer') != null){
+		return ;
+	}
+
+
+	var divContainer = document.createElement("div");
+	//divContainer.className="simpleFloat";
+	divContainer.id = divId + '-divContainer';
+
+	// add title div
+	var div = document.createElement("div");
+	div.className = "lable";
+	if (num != '')
+	{
+		div.innerHTML += "&nbsp;No." + num + ":" + displayname;
+	}else{
+		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
+	}
+	div.innerHTML += " <span id=\"" + divId + "-status\"></span>";
+	divContainer.appendChild(div);
+
+	// add cdr div
+	var div = document.createElement("div");
+	div.className = "peerstatus";
+	div.innerHTML += "<table class=\"peerstatus\" width=\"400\" >" +
+																"<tbody id=\"" + divId + "-tbody\">" +
+																"<tr>" +
+																"<th style=\"width:70px;\">Phone</th>" +
+																"<th style=\"width:50px;\">Sec</th>" +
+																"<th style=\"width:100px;\"  nowrap>Start At</th>" +
+																"</tr>" +
+																"<tr id=\"trTitle\" class=\"curchannel\">" +
+																"<td id=\"" + divId + "-phone\">&nbsp;</td>" +
+																"<td id=\"" + divId + "-duration\"> </td>" +
+																"<td id=\"" + divId + "-startat\" nowrap> </td>" +
+																"</tr>" +
+																"</tbody>" +
+															"</table>";
+
+	divContainer.appendChild(div);
+
+
+
+	//add lock div
+	var div = document.createElement("div");
+	div.className = "lable";
+	div.innerHTML += "<input type=\"hidden\" id=\"divList[]\" name=\"divList[]\" value=\"" + divId + "\">";
+	if (status == -1){
+		div.innerHTML += "<input checked type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\"  onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\" style=\"background-color: red;\">Lock</span> ";
+	}else{
+		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\" value=\"" + divId + "\" onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\">Lock</span> ";
+	}
+
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-channel\" name=\"" + divId + "-channel\" value=''>";
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-legb-channel\" name=\"" + divId + "-legb-channel\" value=''>";
+	div.innerHTML += '<input type="hidden" id="' + divId + '-localanswertime" name="' + divId + '-localanswertime" value="">';
+	div.innerHTML += '<input type="hidden" id="' + divId + '-legb-localanswertime" name="' + divId + '-localanswertime" value="">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-billsec" name="' + divId + '-billsec" value="0">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-legb-billsec" name="' + divId + '-billsec" value="0">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-limitstatus" name="' + divId + '-limitstatus" value="">';
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"hangupOnClick('" + divId + "');return false;\">Hangup</a>";
+	//div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "');return false;\">Clear</a>";
+	//div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnCDROnClick('" + divId + "');return false;\">Cdr</a>";
+	divContainer.appendChild(div);
+
+	container.appendChild(divContainer);
+}
+
 function setCurrency(s){
 	isNegative = false;
 	s = String(s);

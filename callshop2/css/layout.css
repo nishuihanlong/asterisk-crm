@@ -36,6 +36,15 @@ div.calllog{
 	overflow-y: scroll;
 }
 
+div.peerstatus{
+	width:320px;
+	height:42px;
+	overflow: auto;
+	word-break:break-all;
+	overflow-x: scroll;
+	overflow-y: scroll;
+}
+
 div.float p {
 	 text-align: center;
 	 }
@@ -75,6 +84,27 @@ table.calllog th{
 }
 
 table.calllog td{
+	border: solid;
+	border-width: 1px 1px 1px 1px;
+	border-color: #ccc;
+	padding: 4px;
+	font-size: 10px;
+}
+
+table.peerstatus th{
+   border: 1px solid;
+    border-color: #fff #333 #333 #fff;
+    background-color: #eeeeee; 
+    padding-right: 2px;
+    padding-left: 2px;
+    padding-bottom: 2px;
+    /*cursor: pointer; */
+    text-align: center;
+    color: black; 
+    font-size: 9px;
+}
+
+table.peerstatus td{
 	border: solid;
 	border-width: 1px 1px 1px 1px;
 	border-color: #ccc;
