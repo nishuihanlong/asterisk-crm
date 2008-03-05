@@ -135,7 +135,7 @@ function processAccountData($aFormValues)
 
 	if (!$bError)
 	{
-		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback, accountgroup.creditlimit FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid  WHERE username='" . $aFormValues['username'] . "'";
+		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid  WHERE username='" . $aFormValues['username'] . "'";
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){
 			if ($list['password'] == $aFormValues['password'])
@@ -146,7 +146,6 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['ipaddress'] = $_SERVER["REMOTE_ADDR"];
  				$_SESSION['curuser']['userid'] = $list['id'];
  				$_SESSION['curuser']['groupid'] = $list['groupid'];
- 				$_SESSION['curuser']['creditlimit'] = $list['creditlimit'];
 				$res = astercrm::getCalleridListByID($list['groupid']);
 				while	($res->fetchInto($row)){
 					$_SESSION['curuser']['extensions'][] = $row['clid'];

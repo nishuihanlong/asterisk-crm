@@ -85,10 +85,12 @@ function setGroupBalance(){
 	$objResponse = new xajaxResponse();
 	$amount = astercc::readAmount($_SESSION['curuser']['groupid']);
 	$cost = astercc::readAmount($_SESSION['curuser']['groupid'],null,null,null,'callshopcredit');
+	$creditlimit = 	astercc::readField('accountgroup','creditlimit','id',$_SESSION['curuser']['groupid']);
+
 	if ($amount == '') $amount = 0;
 	if ($cost == '') $cost = 0;
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
-	$balance = $_SESSION['curuser']['creditlimit'] - $cost;
+	$balance = $creditlimit - $cost;
 
 	if ($balance <= 50) {
 		$objResponse->addAssign("spanLimitStatus","innerHTML","warning: less than 50");
@@ -97,7 +99,7 @@ function setGroupBalance(){
 	}
 
 	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-		$objResponse->addAssign("spanLimit","innerHTML",$_SESSION['curuser']['creditlimit']);
+		$objResponse->addAssign("spanLimit","innerHTML",$creditlimit);
 		$objResponse->addAssign("spanCost","innerHTML",$cost);
 	}
 	if (is_numeric($config['system']['refreshBalance']) && $config['system']['refreshBalance'] != 0){
