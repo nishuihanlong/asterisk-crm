@@ -71,7 +71,6 @@ class Common{
 		$html = '
 <div class="top_banner">
 	<ul>
-		<li><img src="skin/default/images/top_bg.gif" width="20px" height="126"px/></li>
 		<li><a href="import.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'import\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/import.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/import_sml.gif" alt="import" name="import" width="71" height="126" border="0" id="import" /></a></li>
 		<li><a href="surveyresult.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'statisic\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/statisic.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/statisic_sml.gif" alt="statisic" name="statisic" width="71" height="126" border="0" id="statisic" /></a></li>
 		<li><a href="account.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'extension\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/extension.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/extension_sml.gif" alt="extension" name="extension" width="71" height="126" border="0" id="extension" /></a></li>
@@ -79,16 +78,12 @@ class Common{
 		<li><a href="predictivedialer.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'dialer\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/dialer.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/dialer_sml.gif" alt="dialer" name="dialer" width="71" height="126" border="0" id="dialer" /></a></li>
 		<li><a href="systemstatus.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'system\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/system.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/system_sml.gif" alt="system" name="system" width="71" height="126" border="0" id="system" /></a></li>
 		<li><a href="survey.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'survey\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/survey.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/survey_sml.gif" alt="survey" name="survey" width="71" height="126" border="0" id="survey" /></a></li>
+		<li><a href="diallist.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'diallist\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/diallist.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/diallist_sml.gif" alt="diallist" name="diallist" width="71" height="126" border="0" id="diallist" /></a></li>
+		<li><a href="preference.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'preference\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/preference.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/preference_sml.gif" alt="preference" name="preference" width="71" height="126" border="0" id="preference" /></a></li>
 		<li><a href="portal.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'back\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/back.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/back_sml.gif" alt="back" name="back" width="71" height="126" border="0" id="back" /></a></li>
 		<li><a href="login.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'logout\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logout_sml.gif" alt="logout" name="logout" width="71" height="126" border="0" id="logout" /></a></li>
 		<li><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logo_bn.gif"/></li>
 	</ul>
-	<div align="right">
-		[<a href="diallist.php">diallist</a>]<BR>
-		[<a href="dialedlist.php">dialed list</a>]<BR>
-		[<a href="campaign.php">campaign</a>]<BR>
-		[<a href="preferences.php">preference</a>]
-	</div>
 </div>
 				';
 		return $html;

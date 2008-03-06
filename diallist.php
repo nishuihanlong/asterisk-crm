@@ -78,6 +78,10 @@ require_once('diallist.common.php');
 	<body onload="init();">
 	<div id="divNav"></div>
 	<br>
+	<div id="divActive" name="divActive">
+		<input type="button" value="Dialed" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
+		<input type="button" value="Campaign" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
+	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">
