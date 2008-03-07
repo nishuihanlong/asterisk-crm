@@ -1,0 +1,131 @@
+html, body {
+  height: 100%;
+  width:  100%;
+  font-family: Arial, Verdana, sans-serif;
+  font: 12px Tahoma;
+  color: #3c79c8;
+  font-size: 1em;
+  /* overflow: auto; */
+  margin-left: 0px;
+  margin-top:  10px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+}
+
+div.float {
+	float: left;
+	overflow: auto;
+	width: 230px;
+	height: 442px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	border: 1px solid #777;
+	background-color: #efefef;
+	margin-left: 5px;
+	margin-top:  10px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+}
+
+div.calllog{
+	width:200px;
+	height:242px;
+	overflow: auto;
+	word-break:break-all;
+	overflow-x: scroll;
+	overflow-y: scroll;
+}
+
+div.peerstatus{
+	width:320px;
+	height:42px;
+	overflow: auto;
+	word-break:break-all;
+	overflow-x: scroll;
+	overflow-y: scroll;
+}
+
+div.float p {
+	 text-align: center;
+	 }
+
+div.container {
+	border: 2px #333;
+	background-color: #ffe;
+	}
+
+div.spacer {
+	clear: both;
+	}
+
+div.lable{
+	text-align: center;
+	width: 230px;
+	height: 20px;
+	background-color: silver;
+	border: 1px solid #777;
+	MARGIN-RIGHT: auto;
+	MARGIN-LEFT: auto;
+	border-color:#8e8e8e #bebebe #bebebe #bebebe;
+	/*cursor:pointer;*/
+}
+
+table.calllog th{
+   border: 1px solid;
+    border-color: #fff #333 #333 #fff;
+    background-color: #eeeeee; 
+    padding-right: 2px;
+    padding-left: 2px;
+    padding-bottom: 2px;
+    /*cursor: pointer; */
+    text-align: center;
+    color: black; 
+    font-size: 9px;
+}
+
+table.calllog td{
+	border: solid;
+	border-width: 1px 1px 1px 1px;
+	border-color: #ccc;
+	padding: 4px;
+	font-size: 10px;
+}
+
+table.peerstatus th{
+   border: 1px solid;
+    border-color: #fff #333 #333 #fff;
+    background-color: #eeeeee; 
+    padding-right: 2px;
+    padding-left: 2px;
+    padding-bottom: 2px;
+    /*cursor: pointer; */
+    text-align: center;
+    color: black; 
+    font-size: 9px;
+}
+
+table.peerstatus td{
+	border: solid;
+	border-width: 1px 1px 1px 1px;
+	border-color: #ccc;
+	padding: 4px;
+	font-size: 10px;
+}
+
+tr.curchannel{
+	border: solid;
+	border-width: 1px 1px 1px 1px;
+	background-color: #cccccc;
+	padding: 4px;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+input.button{
+	border-color:threeddarkshadow threedhighlight threedhighlight threeddarkshadow;
+	background:#fff;
+	width:45px;
+	height:23px;
+	padding:1px;
+	margin:1px;
+}

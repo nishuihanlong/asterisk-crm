@@ -1,0 +1,69 @@
+﻿0.035beta:
+
+fixed some bugs in web script
+add new parameter in astercc.conf
+	billing: support prepaid and postpaid for callshop
+	callbackbill: support bill lega only, legb only or both leg in a callback
+add new parameter in astercc.conf.php
+	creditlimittype: support set creditlimit for each call or each customer
+improved lock function
+	the booth could be locked even the browser is closed
+----------------------------------------------------------------------------------
+0.035
+
+add new parameter in astercc.conf.php
+	refreshBalance: astercc will refresh the balance of the group
+change the booth order by clid rather than addtime
+add new parameter in astercc.conf.php
+	sipfile: astercc could generate sip peers 
+astercc could generate sip peers from clid
+fix a bug in asterrc (when there's a clid which doesnt exsit in table clid, it would be error)
+fix a bug in asterrc (some clid could not be loaded)
+change the lock flag from 0 to -1
+add new field "display" in table clid to store display name of the booth
+add a button so that operator/groupadmin could choose hide/display the callshop status
+add new parameter in astercc.conf.php
+	validcode: if require valid code when login
+add new field "accountcode" in table resellergroup
+----------------------------------------------------------------------------------
+booth用户输入号码后会提示金额和分钟数
+code有时候会出现问题, vista总是不识别
+没有安装mb_string的用户 导入会有问题
+数据导入时报错
+
+astercc features:
+	
+	work with all asterisk based system	
+	realtime billing
+	prepaid/postpaid support
+	maximum 240 simultaneous calls support
+	booth lock/unlock
+	booth credit limit
+	mulit-callshop support in one system
+	each callshop could have its own buy rate and sell rate
+	callback with credit limit support (billing lega/legb/both)
+	callshoprate/customerrate two level billing
+	admin/callshop admin/operator three user type 
+	rate import/export
+	hangup calls
+	web script part is open source
+	Grid layout
+	5 free channels license
+
+astercc特点
+
+	兼容所有的asterisk系统
+	实时计费显示
+	预付费/后付费支持
+	可以支持240个并发呼叫
+	话机锁定/解锁
+	话费限额
+	一个系统内支持多个组
+	每个组都能有自己的购买和销售费率
+	支持带话费限制的回拨(计费 主叫/被叫/同时计费)
+	callshoprate/customerrate 两级计费
+	admin/callshop admin/operator 三级权限
+	费率导入/导出
+	强行结束通话
+	网页代码为开源
+	表格型显示方式更加直观

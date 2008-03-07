@@ -1,2 +1,1 @@
-new svn has been removed to 
-https://astercc.googlecode.com/svn/trunk
+rename to astercc
