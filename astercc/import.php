@@ -192,6 +192,7 @@
 							<div name="divDiallistImport" id="divDiallistImport"></div>
 							-->
 							<div name="divGrid" id="divGrid"></div>
+							<SELECT id="resellerid" name="resellerid">
 							<SELECT id="groupid" name="groupid">
 							</SELECT>
 

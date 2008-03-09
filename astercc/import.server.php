@@ -54,11 +54,26 @@ function init($fileName){
 	$objResponse->addAssign("hidOnUploadMsg","value",$locate->Translate("uploading"));
 	$objResponse->addAssign("hidOnSubmitMsg","value",$locate->Translate("data_importing"));
 
-	$tableList = "<select name='sltTable' id='sltTable' onchange='selectTable(this.value);' >
-						<option value=''>".$locate->Translate("selecttable")."</option>
-						<option value='callshoprate'>callshoprate</option>
-						<option value='myrate'>myrate</option>
-				  </select>";
+	if ($_SESSION['curuser']['usertype'] == 'admin') {
+		$tableList = "<select name='sltTable' id='sltTable' onchange='selectTable(this.value);' >
+							<option value=''>".$locate->Translate("selecttable")."</option>
+							<option value='resellerrate'>resellerrate</option>
+							<option value='callshoprate'>callshoprate</option>
+							<option value='myrate'>myrate</option>
+						</select>";
+	}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
+		$tableList = "<select name='sltTable' id='sltTable' onchange='selectTable(this.value);' >
+							<option value=''>".$locate->Translate("selecttable")."</option>
+							<option value='callshoprate'>callshoprate</option>
+							<option value='myrate'>myrate</option>
+						</select>";
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$tableList = "<select name='sltTable' id='sltTable' onchange='selectTable(this.value);' >
+							<option value=''>".$locate->Translate("selecttable")."</option>
+							<option value='myrate'>myrate</option>
+						</select>";
+	}
+
 
 	$objResponse->addAssign("divTables","innerHTML",$tableList);
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
@@ -71,12 +86,16 @@ function init($fileName){
 	$objResponse->loadXML(showDivMainRight($fileName));
 
 	if ($_SESSION['curuser']['usertype'] == 'admin') {
-		// add all group
-		$res = astercrm::getAll('accountgroup');
+
+		// add all reseller
+		$res = astercrm::getAll('resellergroup');
 		while ($row = $res->fetchRow()) {
-			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
+			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
 		}
+
 	}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
+		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','reseller");
+
 		$res = astercrm::getAll('accountgroup',"resellerid",$_SESSION['curuser']['resellerid']);
 		while ($row = $res->fetchRow()) {
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
