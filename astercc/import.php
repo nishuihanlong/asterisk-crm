@@ -57,6 +57,11 @@
 					init();
 //					return;
 				}
+				if (tablename == 'resellerrate')
+					document.getElementById('groupid').style.display = "none";
+				else
+					document.getElementById('groupid').style.display = "";
+
 			}
 
 			function chkAddOnClick(){
@@ -136,7 +141,18 @@
 				_o.text = optionText;
 				_o.value = optionVal;
 				objSelect.options.add(_o);
-			} 
+			}
+
+			function setGroup(){
+				var resellerid = xajax.$('resellerid').value;
+				if (resellerid == '')
+					return;
+				//清空campaignid
+				document.getElementById("groupid").options.length = 0;
+				if (resellerid != 0)
+					xajax_setGroup(resellerid);
+			}
+
 		</script>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
@@ -192,7 +208,7 @@
 							<div name="divDiallistImport" id="divDiallistImport"></div>
 							-->
 							<div name="divGrid" id="divGrid"></div>
-							<SELECT id="resellerid" name="resellerid">
+							<SELECT id="resellerid" name="resellerid" onchange="setGroup();">
 							<SELECT id="groupid" name="groupid">
 							</SELECT>
 

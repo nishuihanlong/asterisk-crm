@@ -141,6 +141,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Account Code");
 	$headers[] = $locate->Translate("Callback");
 	$headers[] = $locate->Translate("Credit Limit");
+	$headers[] = $locate->Translate("Limit Status");
 	$headers[] = $locate->Translate("Amount");
 	$headers[] = $locate->Translate("Last Update");
 
@@ -149,13 +150,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -171,6 +174,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","accountcode","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callback","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creditlimit","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","limittype","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
 
@@ -180,6 +184,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'accountcode';
 	$fieldsFromSearch[] = 'callback';
 	$fieldsFromSearch[] = 'creditlimit';
+	$fieldsFromSearch[] = 'limittype';
 	$fieldsFromSearch[] = 'addtime';
 
 	// Selecct Box: Labels showed on search select box.
@@ -188,6 +193,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Account Code");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Callback");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Credit Limit");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Limit Status");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Last Update");
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -205,6 +211,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['accountcode'];
 		$rowc[] = $row['allowcallback'];
 		$rowc[] = $row['creditlimit'];
+		$rowc[] = $row['limittype'];
+
 //		$rowc[] = "100";
 		$rowc[] = astercc::readAmount($row['id'],null,null,null,'resellercredit');
 		$rowc[] = $row['addtime'];

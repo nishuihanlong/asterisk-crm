@@ -231,6 +231,16 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td align="left">
+					<select id="limittype" name="limittype">
+						<option value="" selected>'.$locate->Translate("No limit").'</option>
+						<option value="prepaid">'.$locate->Translate("Prepaid").'</option>
+						<option value="postpaid">'.$locate->Translate("Postpaid").'</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -301,10 +311,6 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Credit Limit").'</td>
-					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="100" value="'.$group['creditlimit'].'"></td>
-				</tr>
-				<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
@@ -319,6 +325,36 @@ class Customer extends astercrm
 
 					$html .='
 					</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Credit Limit").'</td>
+					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="100" value="'.$group['creditlimit'].'"></td>
+				</tr>
+
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td align="left">
+					<select id="limittype" name="limittype">';
+				if ($group['limittype'] == "postpaid"){
+					$html .='
+						<option value="">'.$locate->Translate("No limit").'</option>
+						<option value="prepaid">'.$locate->Translate("Prepaid").'</option>
+						<option value="postpaid" selected>'.$locate->Translate("Postpaid").'</option>';
+				}elseif( $group['limittype'] == "prepaid" ){
+					$html .='
+						<option value="">'.$locate->Translate("No limit").'</option>
+						<option value="prepaid" selected>'.$locate->Translate("Prepaid").'</option>
+						<option value="postpaid">'.$locate->Translate("Postpaid").'</option>';
+				}else{
+					$html .='
+						<option value="" selected>'.$locate->Translate("No limit").'</option>
+						<option value="prepaid">'.$locate->Translate("Prepaid").'</option>
+						<option value="postpaid">'.$locate->Translate("Postpaid").'</option>';
+				}
+
+				$html .=
+					'</select>
 					</td>
 				</tr>
 				<tr>

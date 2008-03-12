@@ -63,7 +63,7 @@ class Customer extends astercrm
 				."billingblock='".$f['billingblock']."',"
 				."addtime= now(),"
 				."connectcharge='".$f['connectcharge']."', "
-				."groupid= ".$f['groupid']." "
+				."groupid= ".$f['groupid'].", "
 				."resellerid= ".$f['resellerid']." "
 				."WHERE id='".$f['id']."'";
 //		print $sql;

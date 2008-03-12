@@ -27,7 +27,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'reseller') 
+if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'reseller' && $_SESSION['curuser']['usertype'] != 'groupadmin') 
 	header("Location: systemstatus.php");
 
 require_once ("include/xajax.inc.php");
@@ -40,7 +40,7 @@ $xajax->registerFunction("selectTable");
 $xajax->registerFunction("init");
 $xajax->registerFunction("submitForm");
 $xajax->registerFunction("showDivMainRight");
-$xajax->registerFunction("setCampaign");
+$xajax->registerFunction("setGroup");
 
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.

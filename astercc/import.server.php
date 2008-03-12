@@ -89,20 +89,24 @@ function init($fileName){
 
 		// add all reseller
 		$res = astercrm::getAll('resellergroup');
+		$objResponse->addScript("addOption('resellerid','0','"."All"."');");
 		while ($row = $res->fetchRow()) {
 			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
 		}
 
 	}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
-		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','reseller");
-
+		// add self
+		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','".""."');");
+		// add groups
+		$objResponse->addScript("addOption('groupid','0','"."All"."');");
 		$res = astercrm::getAll('accountgroup',"resellerid",$_SESSION['curuser']['resellerid']);
 		while ($row = $res->fetchRow()) {
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 		}
 	}else{
 		// add self
-		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
+		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','".""."');");
+		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".""."');");
 	}
 
 
@@ -111,16 +115,17 @@ function init($fileName){
 	return $objResponse;
 }
 
-function setCampaign($groupid){
+function setGroup($resellerid){
+	global $locate;
 	$objResponse = new xajaxResponse();
-	$res = astercrm::getRecordsByGroupid($groupid,"campaign");
+	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
+	$objResponse->addScript("addOption('groupid','0','"."All"."');");
 	//添加option
 	while ($res->fetchInto($row)) {
-		$objResponse->addScript("addOption('campaignid','".$row['id']."','".$row['campaignname']."');");
+		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 	}
 	return $objResponse;
 }
-
 
 /**
 *  function to show divMainRight
@@ -261,6 +266,7 @@ function submitForm($aFormValues){
 	$x = 0;  //计数变量
 	$date = date('Y-m-d H:i:s'); //当前时间
 	$groupid = $aFormValues['groupid'];
+	$resellerid = $aFormValues['resellerid'];
 	//$campaignid = $aFormValues['campaignid'];
 	//print $groupid;
 
@@ -302,7 +308,7 @@ function submitForm($aFormValues){
 		}
 	}
 	$x = 0;
-	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid);
+	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid);
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句
 		//print $strSql;
@@ -381,16 +387,16 @@ function getDiallistBar($columnNum){
 }
 
 
-function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid){
+function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid){
 	$arrData = getSourceData($filePath);
 	foreach($arrData as $arrRow){
-		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid);
+		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid,$resellerid);
 	}
 	return $arrAll;
 }
 
 //循环列数据，得到sql
-function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid){
+function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid,$resellerid){
 	$fieldName = '';
 	$strData = '';
 	//print_r($tableStructure);
@@ -414,8 +420,14 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	}
 	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
 	$strData = substr($strData,0,strlen($strData)-1);
-	if ($fieldName != "")
-		$strSql = "INSERT INTO $tableName ($fieldName,addtime,groupid) VALUES ($strData, now(), $groupid)";
+
+	if ($fieldName != ""){
+		if ($tableName == 'resellerrate'){
+			$strSql = "INSERT INTO $tableName ($fieldName,addtime,resellerid) VALUES ($strData, now(), '$resellerid')";
+		}elseif ($tableName == 'callshoprate' || $tableName == 'myrate'){
+			$strSql = "INSERT INTO $tableName ($fieldName,addtime,resellerid,groupid) VALUES ($strData, now(), '$resellerid', '$groupid')";
+		}
+	}
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);
 }
 
