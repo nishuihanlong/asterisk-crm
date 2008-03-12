@@ -23,11 +23,44 @@ require_once ("checkout.common.php");
 require_once ("db_connect.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
+require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
 function init($curpeer){
 	$objResponse = new xajaxResponse();
 	$peers = array();
+	if ($_SESSION['curuser']['usertype'] == 'admin'){
+		// set all reseller first
+		$reseller = astercrm::getAll('resellergroup');
+		$objResponse->addScript("addOption('resellerid','"."0"."','"."All"."');");
+		while	($reseller->fetchInto($row)){
+			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
+		}
+
+	}else if ($_SESSION['curuser']['usertype'] == 'reseller'){
+		// set one reseller
+		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','".""."');");
+
+		// set all group
+		$group = astercrm::getAll('accountgroup','resellerid',$_SESSION['curuser']['resellerid']);
+		$objResponse->addScript("addOption('groupid','"."0"."','"."All"."');");
+		while	($group->fetchInto($row)){
+			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
+		}
+	}else{
+		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','".""."');");
+		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".""."');");
+
+		$clid = astercrm::getAll('clid','groupid',$_SESSION['curuser']['groupid']);
+		$objResponse->addScript("addOption('sltBooth','"."0"."','"."All"."');");
+
+		while	($clid->fetchInto($row)){
+			$objResponse->addScript("addOption('sltBooth','".$row['id']."','".$row['clid']."');");
+		}
+		$objResponse->addScript("addOption('sltBooth','callback','callback');");
+	}
+	
+	/*
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		$peers = $_SESSION['curuser']['extensions'];
 	}else{
@@ -41,25 +74,50 @@ function init($curpeer){
 		$objResponse->addScript("addOption('sltBooth','$peer','$peer');");
 	}
 
-		$objResponse->addScript("addOption('sltBooth','callback','callback');");
+	$objResponse->addScript("addOption('sltBooth','callback','callback');");
+
 
 	if ($curpeer != ''){
 		$objResponse->addScript("document.getElementById('sltBooth').value = '$curpeer';");
 	}
+	*/
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	return $objResponse;
 }
 
+function setGroup($resellerid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
+	//添加option
+	$objResponse->addScript("addOption('groupid','"."0"."','"."All"."');");
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
+	}
+	return $objResponse;
+}
+
+function setClid($groupid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$res = astercrm::getAll("clid",'groupid',$groupid);
+	//添加option
+	$objResponse->addScript("addOption('sltBooth','"."0"."','"."All"."');");
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
+	}
+	$objResponse->addScript("addOption('sltBooth','callback','callback');");
+	return $objResponse;
+}
+
 function listCDR($aFormValues){
 	$objResponse = new xajaxResponse();
 
-	if ($_SESSION['curuser']['usertype'] == 'admin')
-		$records = astercc::readAll($aFormValues['sltBooth'], -1,$aFormValues['sdate'],$aFormValues['edate']);
-	else
-		$records = astercc::readAll($aFormValues['sltBooth'], $_SESSION['curuser']['groupid'],$aFormValues['sdate'],$aFormValues['edate']);
+	//$records = astercc::readAll($aFormValues['sltBooth'], -1,$aFormValues['sdate'],$aFormValues['edate']);
 
+	$records = astercc::readAll($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 	$html .= '<form action="" name="f" id="f">';
 	$html .= '<table width="99%">';
 	$html .= '<tr>
@@ -112,13 +170,17 @@ function listCDR($aFormValues){
 
 		//$callshop_cost = astercc::creditDigits(round(($cs_price)*100)/100);
 		$callshop_cost = $mycdr['callshopcredit'];
+		$reseller_cost = $mycdr['resellercredit'];
+
 		if ($_SESSION['curuser']['usertype'] == 'operator') $callshop_cost = 0;
+		if ($_SESSION['curuser']['usertype'] == 'groupadmin') $reseller_cost = 0;
 
 		if ($aFormValues['ckbDetail'] == ""){
 			// only get amount
 			$calls ++;
 			$amount += $mycdr['credit'];
-			$cost += $callshop_cost;
+			$total_callshop_cost += $callshop_cost;
+			$total_reseller_cost += $reseller_cost;
 		}
 
 		
@@ -127,6 +189,7 @@ function listCDR($aFormValues){
 							<input type="checkbox" id="ckb[]" name="ckb[]" value="'.$mycdr['id'].'" onclick="ckbOnClick(this);">
 							<input type="hidden" id="price-'.$mycdr['id'].'" name="price-'.$mycdr['id'].'" value="'.$mycdr['credit'].'">
 							<input type="hidden" id="callshop-'.$mycdr['id'].'" name="callshop-'.$mycdr['id'].'" value="'.$callshop_cost.'">
+							<input type="hidden" id="reseller-'.$mycdr['id'].'" name="reseller-'.$mycdr['id'].'" value="'.$reseller_cost.'">
 						</td>
 						<td>'.$mycdr['calldate'].'</td>
 						<td>'.$mycdr['src'].'</td>
@@ -136,7 +199,7 @@ function listCDR($aFormValues){
 						<td>'.$mycdr['billsec'].'</td>
 						<td>'.$rate['destination'].'</td>
 						<td>'.$ratedesc.'</td>
-						<td>'.$mycdr['credit'].'('.$callshop_cost.')</td>';
+						<td>'.$mycdr['credit'].'<br>'.'('.$callshop_cost.')'.'<br>'.'('.$reseller_cost.')</td>';
 		if ($peer == 'callback'){
 			if ($mycdr['dst'] == $mycdr['src']){
 				//lega
@@ -178,7 +241,8 @@ function listCDR($aFormValues){
 	if ($aFormValues['ckbDetail'] == ""){
 		$html = "Calls: $calls"."<br>";
 		$html .= "Amount: $amount"."<br>";
-		$html .= "Cost: $cost"."<br>";
+		$html .= "Callshop Cost: $total_callshop_cost"."<br>";
+		$html .= "Reseller Cost: $total_reseller_cost"."<br>";
 	}
 
 	$objResponse->addAssign("divUnbilledList","innerHTML",$html);

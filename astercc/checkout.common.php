@@ -46,4 +46,6 @@ $xajax->waitCursorOff();
 $xajax->registerFunction("init");
 $xajax->registerFunction("listCDR");
 $xajax->registerFunction("checkOut");
+$xajax->registerFunction("setGroup");
+$xajax->registerFunction("setClid");
 ?>

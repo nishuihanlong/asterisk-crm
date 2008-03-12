@@ -199,23 +199,47 @@ class astercc extends PEAR
 		return $res;
 	}
 
-function readAll($peer,$groupid,$sdate = null , $edate = null){
+function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 	global $db;
+	/*
 	if ($peer == 'callback'){
-		if ($groupid == -1)
+		if ($_SESSION['curuser']['usertype'] == 'admin')
 			$query = "SELECT * FROM mycdr WHERE LEFT(channel,6) = 'Local/' ";
+		else if ( $_SESSION['curuser']['usertype'] == 'reseller' )
+			$query = "SELECT * FROM mycdr WHERE resellerid = ".$_SESSION['curuser']['resellerid']." AND LEFT(channel,6) = 'Local/' ";
 		else
-			$query = "SELECT * FROM mycdr WHERE groupid = $groupid AND LEFT(channel,6) = 'Local/' ";
+			$query = "SELECT * FROM mycdr WHERE groupid = ".$_SESSION['curuser']['groupid']." AND LEFT(channel,6) = 'Local/' ";
 	}else{
-		if ($groupid == -1)
+		if ($_SESSION['curuser']['usertype'] == 'admin')
 			$query = "SELECT * FROM mycdr WHERE src LIKE '$peer%' ";
+		else if ( $_SESSION['curuser']['usertype'] == 'reseller' )
+			$query = "SELECT * FROM mycdr WHERE src LIKE '$peer%' AND resellerid = ".$_SESSION['curuser']['resellerid']." ";
 		else
-			$query = "SELECT * FROM mycdr WHERE src LIKE '$peer%' AND groupid = $groupid ";
+			$query = "SELECT * FROM mycdr WHERE src LIKE '$peer%' AND groupid = ".$_SESSION['curuser']['groupid']." ";
 	}
+	*/
 	
-	if ($sdate != null){
-		$query .= " AND calldate >= '$sdate' ";
-	}
+	$query = "SELECT * FROM mycdr WHERE 1 ";
+
+		if ($resellerid != '' and $resellerid != '0'){
+				$query .= " AND resellerid = $resellerid ";
+		}
+
+		if ($groupid != '' and $groupid != '0'){
+				$query .= " AND groupid = $groupid ";
+		}
+
+		if ($peer != '' and $peer != '0'){
+			if ($peer == 'callback'){
+				$query .= " AND LEFT(channel,6) = 'Local/' ";
+			}else{
+				$query .= " AND src LIKE '$peer%' ";
+			}
+		}
+
+		if ($sdate != null){
+			$query .= " AND calldate >= '$sdate' ";
+		}
 
 	if ($edate != null){
 		$query .= " AND calldate <= '$edate' ";
