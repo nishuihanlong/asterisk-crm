@@ -30,6 +30,9 @@ booth用户输入号码后会提示金额和分钟数
 code有时候会出现问题, vista总是不识别
 没有安装mb_string的用户 导入会有问题
 数据导入时报错
+需要增加statics功能
+增加creditlog功能, 改进为每次只能添加/减小credit
+删除记录之前需要检查权限
 
 astercc features:
 	

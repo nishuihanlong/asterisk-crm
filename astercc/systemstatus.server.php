@@ -92,21 +92,33 @@ function setGroupBalance(){
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
 	$balance = $creditlimit - $cost;
 
-	if ($balance <= 50) {
-		$objResponse->addAssign("spanLimitStatus","innerHTML","warning: less than 50");
+	if ($_SESSION['curuser']['limittype'] == ''){
+			$objResponse->addAssign("spanLimitStatus","innerHTML","no limit");
+			$creditlimit = "no limit";
 	}else{
-		$objResponse->addAssign("spanLimitStatus","innerHTML","normal");
+		if ($_SESSION['curuser']['limittype'] == 'prepaid'){
+			$balance = $creditlimit;
+		}
+		if ($balance <= 50) {
+			if ($balance <= 0)
+				$objResponse->addAssign("spanLimitStatus","innerHTML","no credit left, all booth locked");
+			else
+				$objResponse->addAssign("spanLimitStatus","innerHTML","warning: less than 50");
+		}else{
+			$objResponse->addAssign("spanLimitStatus","innerHTML","normal");
+		}
 	}
 
 	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$objResponse->addAssign("spanLimit","innerHTML",$creditlimit);
 		$objResponse->addAssign("spanCost","innerHTML",$cost);
 	}
+
 	if (is_numeric($config['system']['refreshBalance']) && $config['system']['refreshBalance'] != 0){
 		$refreshtime = $config['system']['refreshBalance'] * 1000;
 		$objResponse->addScript('setTimeout("xajax_setGroupBalance()",'.$refreshtime.');');
 	}
-	//$objResponse->addAlert('balance refreshed');
+	#$objResponse->addAlert('balance refreshed');
 	return $objResponse->getXML();
 }
 

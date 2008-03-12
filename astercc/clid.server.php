@@ -210,6 +210,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'status';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'resellername';
+	$fieldsFromSearch[] = 'clid.addtime';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -219,7 +220,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Reseller");
-
+	$fieldsFromSearchShowAs[] = $locate->Translate("Addtime");
 
 
 	// Create object whit 5 cols and all data arrays set before.

@@ -92,6 +92,7 @@ require_once('clid.common.php');
 				</td>
 			</tr>
 		</table>
+	<?if ($_SESSION['curuser']['usertype'] == 'admin'){?>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>
 				<td style="padding: 0px;" align="center">
@@ -100,7 +101,7 @@ require_once('clid.common.php');
 				</td>
 			</tr>
 		</table>
-
+	<?}?>
 		<div id="divCopyright"></div>
 	</body>
 </html>

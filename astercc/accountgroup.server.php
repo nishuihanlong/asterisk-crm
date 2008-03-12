@@ -178,7 +178,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","accountcode","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callback","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","allowcallback","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creditlimit","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","limittype","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= '';
@@ -188,11 +188,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'resellername';
-	$fieldsFromSearch[] = 'accountcode';
-	$fieldsFromSearch[] = 'callback';
-	$fieldsFromSearch[] = 'creditlimit';
-	$fieldsFromSearch[] = 'limittype';
-	$fieldsFromSearch[] = 'addtime';
+	$fieldsFromSearch[] = 'accountgroup.accountcode';
+	$fieldsFromSearch[] = 'accountgroup.allowcallback';
+	$fieldsFromSearch[] = 'accountgroup.creditlimit';
+	$fieldsFromSearch[] = 'accountgroup.limittype';
+	$fieldsFromSearch[] = 'accountgroup.addtime';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();

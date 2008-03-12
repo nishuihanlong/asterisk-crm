@@ -89,9 +89,9 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-			$sql .= " callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)";
 		}else{
-			$sql .= " callshoprate.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " ((callshoprate.groupid = ".$_SESSION['curuser']['groupid']." OR callshoprate.groupid = 0) AND (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)) ";
 		}
 
 //		if ($creby != null)
@@ -138,9 +138,9 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-			$sql .= " callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)";
 		}else{
-			$sql .= " callshoprate.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " ((callshoprate.groupid = ".$_SESSION['curuser']['groupid']." OR callshoprate.groupid = 0) AND (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)) ";
 		}
 
 		if ($joinstr!=''){
@@ -168,10 +168,10 @@ class Customer extends astercrm
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " SELECT COUNT(*) FROM callshoprate ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-			$sql .= " SELECT COUNT(*) FROM callshoprate WHERE resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}else if ($_SESSION['curuser']['usertype'] == 'reseller'){
+			$sql .= " SELECT COUNT(*) FROM callshoprate WHERE resellerid = ".$_SESSION['curuser']['resellerid']." OR resellerid = 0";
 		}else{
-			$sql .= " SELECT COUNT(*) FROM callshoprate WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " SELECT COUNT(*) FROM callshoprate WHERE (groupid = ".$_SESSION['curuser']['groupid']." OR groupid = 0) AND (resellerid = ".$_SESSION['curuser']['resellerid']." OR resellerid = 0) ";
 		}
 
 
@@ -195,17 +195,17 @@ class Customer extends astercrm
 			$sql = "SELECT COUNT(*) AS numRows FROM callshoprate LEFT JOIN accountgroup ON accountgroup.id = callshoprate.groupid LEFT JOIN resellergroup ON resellergroup.id = callshoprate.resellerid WHERE";
 
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$sql .= " 1 AND ";
+				$sql .= " 1  ";
 			}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-				$sql .= " callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." AND ";
+				$sql .= " (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)";
 			}else{
-				$sql .= " callshoprate.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+				$sql .= " ((callshoprate.groupid = ".$_SESSION['curuser']['groupid']." OR callshoprate.groupid = 0) AND (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)) ";
 			}
 
 
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql .= " ".$joinstr." ";
+				$sql .= " AND ".$joinstr." ";
 			}else {
 				$sql .= " 1 ";
 			}
@@ -288,7 +288,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.'billingblock'.'</td>
-					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="5" value="60"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Reseller").'</td>

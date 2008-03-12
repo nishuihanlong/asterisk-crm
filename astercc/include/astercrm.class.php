@@ -150,6 +150,7 @@ Class astercrm extends PEAR{
 				."accountcode='".$f['accountcode']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
+				."limittype= '".$f['limittype']."', "
 				."resellerid= ".$f['resellerid'].", "
 				."addtime = now() ";
 		astercrm::events($sql);
@@ -172,6 +173,7 @@ Class astercrm extends PEAR{
 				."accountcode='".$f['accountcode']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
+				."limittype= '".$f['limittype']."', "
 				."addtime = now() ";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
@@ -305,6 +307,7 @@ Class astercrm extends PEAR{
 				."groupname='".$f['groupname']."', "
 				."resellerid='".$f['resellerid']."', "
 				."creditlimit='".$f['creditlimit']."', "
+				."limittype='".$f['limittype']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."addtime= now(), "
 				."accountcode='".$f['accountcode']."' "
@@ -329,6 +332,7 @@ Class astercrm extends PEAR{
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
 				."creditlimit='".$f['creditlimit']."', "
+				."limittype='".$f['limittype']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."addtime= now() "
 				."WHERE id='".$f['resellerid']."'";
@@ -504,9 +508,9 @@ Class astercrm extends PEAR{
 		global $db;
 		if ($tblName == 'callshoprate' || $tblName == 'myrate'){
 			if ($action == 'insert'){
-				$query = "SELECT id FROM $tblName WHERE dialprefix = '".$f['dialprefix']."' AND numlen = ".$f['numlen']." AND groupid =".$f['groupid'];
+				$query = "SELECT id FROM $tblName WHERE dialprefix = '".$f['dialprefix']."' AND numlen = ".$f['numlen']." AND resellerid = ".$f['resellerid']." AND groupid =".$f['groupid'];
 			}else{
-				$query = "SELECT id FROM $tblName WHERE dialprefix = '".$f['dialprefix']."' AND numlen = ".$f['numlen']." AND groupid =".$f['groupid']." AND id !=".$f['id'];
+				$query = "SELECT id FROM $tblName WHERE dialprefix = '".$f['dialprefix']."' AND numlen = ".$f['numlen']." AND resellerid = ".$f['resellerid']." AND groupid =".$f['groupid']." AND id !=".$f['id'];
 			}
 		}elseif($tblName == 'resellerrate'){
 			if ($action == 'insert'){

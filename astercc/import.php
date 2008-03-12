@@ -209,10 +209,9 @@
 							-->
 							<div name="divGrid" id="divGrid"></div>
 							<SELECT id="resellerid" name="resellerid" onchange="setGroup();">
+							</SELECT>
 							<SELECT id="groupid" name="groupid">
 							</SELECT>
-
-
 				<table cellspacing="0" cellpadding="0" border="0" width="100%" style="text-align:center;">
 					<tr>
 						<td height="30px">

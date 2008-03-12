@@ -36,7 +36,7 @@ require_once('rate.common.php');
 			if (resellerid == '')
 				return;
 			//清空campaignid
-			document.getElementById("groupid").options.length = 0;
+			document.getElementById("groupid").options.length = 1;
 			if (resellerid != 0)
 				xajax_setGroup(resellerid);
 		}

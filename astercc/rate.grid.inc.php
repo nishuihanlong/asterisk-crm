@@ -87,9 +87,9 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-			$sql .= " myrate.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0)";
 		}else{
-			$sql .= " myrate.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " ( (myrate.groupid = ".$_SESSION['curuser']['groupid']." OR myrate.groupid = 0) AND (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0) )";
 		}
 
 
@@ -137,9 +137,9 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-			$sql .= " myrate.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0) ";
 		}else{
-			$sql .= " myrate.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " ( (myrate.groupid = ".$_SESSION['curuser']['groupid']." OR myrate.groupid = 0) AND (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0) ) ";
 		}
 
 		if ($joinstr!=''){
@@ -169,9 +169,9 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " SELECT COUNT(*) FROM myrate ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-			$sql .= " SELECT COUNT(*) FROM myrate WHERE resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " SELECT COUNT(*) FROM myrate WHERE resellerid = ".$_SESSION['curuser']['resellerid']." OR resellerid = 0 ";
 		}else{
-			$sql .= " SELECT COUNT(*) FROM myrate WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " SELECT COUNT(*) FROM myrate WHERE (groupid = ".$_SESSION['curuser']['groupid']." OR groupid = 0) AND (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0)";
 		}
 
 		Customer::events($sql);
@@ -194,16 +194,16 @@ class Customer extends astercrm
 			$sql = "SELECT COUNT(*) AS numRows FROM myrate LEFT JOIN accountgroup ON accountgroup.id = myrate.groupid LEFT JOIN resellergroup ON resellergroup.id = myrate.resellerid WHERE";
 
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$sql .= " 1 AND ";
+				$sql .= " 1 ";
 			}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-				$sql .= " myrate.resellerid = ".$_SESSION['curuser']['resellerid']." AND ";
+				$sql .= " (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0) ";
 			}else{
-				$sql .= " myrate.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+				$sql .= " ( (myrate.groupid = ".$_SESSION['curuser']['groupid']." OR myrate.groupid = 0) AND (myrate.resellerid = ".$_SESSION['curuser']['resellerid']." OR myrate.resellerid = 0) )";
 			}
 
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql .= " ".$joinstr." ";
+				$sql .= " AND ".$joinstr." ";
 			}else {
 				$sql .= " 1 ";
 			}
@@ -285,7 +285,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.'billingblock'.'</td>
-					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="5" value="60"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Reseller").'</td>

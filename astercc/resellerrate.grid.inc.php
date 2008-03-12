@@ -87,7 +87,7 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
-			$sql .= " resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " (resellerid = ".$_SESSION['curuser']['resellerid']." OR resellerid = 0) ";
 		}
 
 //		if ($creby != null)
@@ -134,7 +134,7 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
-			$sql .= " resellerid = ".$_SESSION['curuser']['resellerid']." ";
+			$sql .= " (resellerid = ".$_SESSION['curuser']['resellerid']." OR resellerid = 0)";
 		}
 
 		if ($joinstr!=''){
@@ -187,7 +187,7 @@ class Customer extends astercrm
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " 1 ";
 			}else{
-				$sql .= " resellerid = ".$_SESSION['curuser']['resellerid']." ";
+				$sql .= " (resellerid = ".$_SESSION['curuser']['resellerid']." OR resellerid = 0)";
 			}
 
 			if ($joinstr!=''){
@@ -242,7 +242,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.'billingblock'.'</td>
-					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="5" value="60"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'."reseller".'</td>

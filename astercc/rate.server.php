@@ -159,10 +159,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialprefix","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","numlen","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","rateinitial","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","initblock","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billingblock","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","connectcharge","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","initblock","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","rateinitial","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billingblock","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
@@ -178,7 +178,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'connectcharge';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'resellername';
-	$fieldsFromSearch[] = 'addtime';
+	$fieldsFromSearch[] = 'myrate.addtime';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -195,10 +195,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin')
+	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
-	else
+	}else{
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+	}
 
 
 	$table->setAttribsCols($attribsCols);
@@ -223,9 +224,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['resellername'];
 		$rowc[] = $row['addtime'];
-		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin')
-			$table->addRow("myrate",$rowc,1,1,0,$divName,$fields);
-		else
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
+			if ( $_SESSION['curuser']['usertype'] == 'reseller' && $row['resellerid'] != $_SESSION['curuser']['resellerid'] ){
+				$table->addRow("myrate",$rowc,0,0,0,$divName,$fields);
+			}else if($_SESSION['curuser']['usertype'] == 'groupadmin' && $row['groupid'] != $_SESSION['curuser']['groupid'] ){
+				$table->addRow("myrate",$rowc,0,0,0,$divName,$fields);
+			}else{
+				$table->addRow("myrate",$rowc,1,1,0,$divName,$fields);
+			}
+		}else
 			$table->addRow("myrate",$rowc,0,0,0,$divName,$fields);
 		}
  	
@@ -240,6 +247,7 @@ function setGroup($resellerid){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
+	$objResponse->addScript("addOption('groupid','0','"."All"."');");
 	//添加option
 	while ($res->fetchInto($row)) {
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");

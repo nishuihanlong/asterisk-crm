@@ -101,7 +101,6 @@ class Customer extends astercrm
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr."  ";
 		}
-
 		$sql .= " ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
@@ -220,10 +219,21 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Callback").'</td>
 					<td align="left">
-					<select id="allowcallback" name="allowcallback">
+					<select id="allowcallback" name="allowcallback">';
+		if ($_SESSION['curuser']['allowcallback'] == 'yes'){
+			$html .=
+						'
 						<option value="yes">'.$locate->Translate("Yes").'</option>
 						<option value="no">'.$locate->Translate("No").'</option>
-					</select>
+						';
+		}else{
+			$html .=
+						'
+						<option value="no">'.$locate->Translate("No").'</option>
+						';
+		}
+		$html .=
+					'</select>
 					</td>
 				</tr>
 				<tr>
@@ -314,7 +324,7 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
-
+		if ($_SESSION['curuser']['allowcallback'] == 'yes'){
 					if ($group['allowcallback'] == "yes"){
 						$html .= '<option value="yes" selected>'.$locate->Translate("Yes").'</option>';
 						$html .= '<option value="no">'.$locate->Translate("No").'</option>';
@@ -322,6 +332,9 @@ class Customer extends astercrm
 						$html .= '<option value="yes">'.$locate->Translate("Yes").'</option>';
 						$html .= '<option value="no" selected>'.$locate->Translate("No").'</option>';
 					}
+		}else{
+			$html .= '<option value="no">'.$locate->Translate("No").'</option>';
+		}
 
 					$html .='
 					</select>

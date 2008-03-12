@@ -95,13 +95,7 @@ function init($aFormValue){
 	$objResponse->addScript("xajax.$('username').focus();");
 	$objResponse->addScript("imgCode = new Image;imgCode.src = 'showimage.php';document.getElementById('imgCode').src = imgCode.src;");
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
-	unset($_SESSION['curuser']['username']);
-	unset($_SESSION['curuser']['extensions']);
-	unset($_SESSION['curuser']['userid']);
-	unset($_SESSION['curuser']['usertype']);
-	unset($_SESSION['curuser']['accountcode']);
-	unset($_SESSION['curuser']['ipaddress']);
-	unset($_SESSION['curuser']['allowcallback']);
+	unset($_SESSION['curuser']);
 	return $objResponse;
 }
 
@@ -135,7 +129,7 @@ function processAccountData($aFormValues)
 
 	if (!$bError)
 	{
-		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid  WHERE username='" . $aFormValues['username'] . "'";
+		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback,accountgroup.limittype FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid  WHERE username='" . $aFormValues['username'] . "'";
 		$res = $db->query($query);
 		if ($res->fetchInto($list)){
 			if ($list['password'] == $aFormValues['password'])
@@ -147,6 +141,8 @@ function processAccountData($aFormValues)
  				$_SESSION['curuser']['userid'] = $list['id'];
  				$_SESSION['curuser']['groupid'] = $list['groupid'];
  				$_SESSION['curuser']['resellerid'] = $list['resellerid'];
+ 				$_SESSION['curuser']['limittype'] = $list['limittype'];
+
 				$res = astercrm::getCalleridListByID($list['groupid']);
 				while	($res->fetchInto($row)){
 					$_SESSION['curuser']['extensions'][] = $row['clid'];
@@ -169,7 +165,7 @@ function processAccountData($aFormValues)
 	if you dont want check manager status and show device status when user login 
 	please uncomment these three line
 */
-				$objResponse->addAlert($locate->Translate("login_success"));
+//				$objResponse->addAlert($locate->Translate("login_success"));
 				if ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')
 					$objResponse->addScript('window.location.href="systemstatus.php";');
 				else
