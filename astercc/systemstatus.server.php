@@ -352,7 +352,7 @@ function invite($src,$dest,$creditLimit){
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 	
-	$strChannel = "Local/".$src."@".$config['system']['incontext']."/n";
+	$strChannel = "Local/".$src."@".$config['system']['outcontext']."/n";
 
 	$_SESSION['callbacks'][$src.$dest] = array('legA' =>$dest,'legB' => $src, 'start' => 0, 'creditLimit' => $creditLimit);
 	if ($config['system']['allow_dropcall'] == true){

@@ -129,9 +129,11 @@ function processAccountData($aFormValues)
 
 	if (!$bError)
 	{
-		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback,accountgroup.limittype FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid  WHERE username='" . $aFormValues['username'] . "'";
+		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback as allowcallbackgroup,resellergroup.allowcallback as allowcallbackreseller,accountgroup.limittype FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid LEFT JOIN resellergroup ON resellergroup.id = account.resellerid WHERE username='" . $aFormValues['username'] . "'";
 		$res = $db->query($query);
+
 		if ($res->fetchInto($list)){
+
 			if ($list['password'] == $aFormValues['password'])
 			{
 				$_SESSION = array();
@@ -150,8 +152,11 @@ function processAccountData($aFormValues)
 				if (!is_array($_SESSION['curuser']['extensions']))
 					$_SESSION['curuser']['extensions'] = array();
 
+				if ($list['usertype'] == 'reseller')
+					$_SESSION['curuser']['allowcallback'] = $list['allowcallbackreseller'];
+				else
+					$_SESSION['curuser']['allowcallback'] = $list['allowcallbackgroup'];
 
-				$_SESSION['curuser']['allowcallback'] = $list['allowcallback'];
 				$_SESSION['curuser']['accountcode'] = $list['accountcode'];
 
 //				if ($list['extensions'] != ''){

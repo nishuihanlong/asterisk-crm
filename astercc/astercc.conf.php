@@ -48,9 +48,6 @@ log_file_path = /tmp/astercrmDebug.log
 ;context when dial out, in trixbox this could be from-internal
 outcontext =  callshop
 
-;context when dial in, in trixbox this could be from-internal
-incontext = callshop
-
 ; individual: set the limit in credit limit field to the call
 ; balance: set limit in balance to the call
 creditlimittype = balance

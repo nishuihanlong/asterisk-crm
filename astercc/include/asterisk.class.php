@@ -82,7 +82,8 @@ class Asterisk extends AGI_AsteriskManager{
       foreach($parameters as $var=>$val)
         $req .= "$var: $val\r\n";
       $req .= "\r\n";
-      fwrite($this->socket, $req);
+
+			fwrite($this->socket, $req);
 	  return;
 	}
 

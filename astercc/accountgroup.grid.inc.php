@@ -214,13 +214,13 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
-					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30">'."(might be useful for callback)".'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
-		if ($_SESSION['curuser']['allowcallback'] == 'yes'){
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['allowcallback'] == 'yes'){
 			$html .=
 						'
 						<option value="yes">'.$locate->Translate("Yes").'</option>
@@ -318,13 +318,13 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
-					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'"></td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'">'."(might be useful for callback)".'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
-		if ($_SESSION['curuser']['allowcallback'] == 'yes'){
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['allowcallback'] == 'yes'){
 					if ($group['allowcallback'] == "yes"){
 						$html .= '<option value="yes" selected>'.$locate->Translate("Yes").'</option>';
 						$html .= '<option value="no">'.$locate->Translate("No").'</option>';
