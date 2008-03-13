@@ -238,7 +238,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="clid" name="clid" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Pin Number").'</td>
+					<td nowrap align="left">'.$locate->Translate("Pin Number").'*</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
@@ -359,7 +359,7 @@ class Customer extends astercrm
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $clid['id'].'"><input type="text" id="clid" name="clid" size="25" maxlength="30" value="'.$clid['clid'].'" '.$readonly.'></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Pin Number").'</td>
+					<td nowrap align="left">'.$locate->Translate("Pin Number").'*</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30" value="'.$clid['pin'].'"></td>
 				</tr>
 				<tr>

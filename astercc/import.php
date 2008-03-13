@@ -47,7 +47,14 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<script language='javascript'>
 			function init(){
+				//清空 resellerid
+				document.getElementById("resellerid").options.length = 0;
+				//清空 groupid
+				document.getElementById("groupid").options.length = 0;
 				xajax_init(document.getElementById('hidFileName').value);
+				//清空 tablefields
+				document.getElementById("divTableFields").innerHTML = '';
+				
 			}
 
 			function selectTable(tablename){

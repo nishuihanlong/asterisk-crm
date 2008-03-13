@@ -6,6 +6,8 @@ ALTER TABLE `clid` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `curcdr` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `mycdr` ADD `resellerid` INT(11) NOT NULL  default '0';
 
+ALTER TABLE `accountgroup` ADD `limittype` varchar(10) NOT NULL default '';
+
 
 CREATE TABLE IF NOT EXISTS `resellergroup` (
   `id` int(11) NOT NULL auto_increment,

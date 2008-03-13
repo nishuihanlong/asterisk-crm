@@ -154,8 +154,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
-	$fields[] = 'pin';
 	$fields[] = 'clid';
+	$fields[] = 'pin';
 	$fields[] = 'display';
 	$fields[] = 'status';
 	$fields[] = 'groupname';
@@ -164,8 +164,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("Pin");
 	$headers[] = $locate->Translate("Clid");
+	$headers[] = $locate->Translate("Pin");
 	$headers[] = $locate->Translate("Display");
 	$headers[] = $locate->Translate("Status");
 	$headers[] = $locate->Translate("Group");
@@ -194,8 +194,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","clid","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","display","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
@@ -204,8 +204,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'pin';
 	$fieldsFromSearch[] = 'clid';
+	$fieldsFromSearch[] = 'pin';
 	$fieldsFromSearch[] = 'display';
 	$fieldsFromSearch[] = 'status';
 	$fieldsFromSearch[] = 'groupname';
@@ -214,8 +214,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Diaplay");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
@@ -241,8 +241,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['pin'];
 		$rowc[] = $row['clid'];
+		$rowc[] = $row['pin'];
 		$rowc[] = $row['display'];
 		$rowc[] = $row['status'];
 		$rowc[] = $row['groupname'];
@@ -295,7 +295,12 @@ function save($f){
 		$objResponse->addAlert("clid must be numeric");
 		return $objResponse;
 	}
-	
+
+	if ( trim($f['pin']) == '' ){
+		$objResponse->addAlert("pin field cant be null");
+		return $objResponse;
+	}
+
 	if ($f['groupid'] == 0 || $f['resellerid'] == 0){
 		$objResponse->addAlert($locate->Translate("Please choose reseller and group"));
 		return $objResponse->getXML();
@@ -349,6 +354,11 @@ function update($f){
 
 	if (!is_numeric($f['clid'])){
 		$objResponse->addAlert("clid must be numeric");
+		return $objResponse;
+	}
+
+	if ( trim($f['pin']) == '' ){
+		$objResponse->addAlert("pin field cant be null");
 		return $objResponse;
 	}
 

@@ -218,13 +218,6 @@ function submitForm($aFormValues){
 			break;
 		}
 	}
-	if($flag != 1){  //判断是否要添加分区
-		if(trim($aFormValues['dialListField'])=='' && trim($aFormValues['assign'])==''){
-			$flag = 0;
-		}else{
-			$flag = 1;
-		}
-	}
 	//如果没有任何选择, 就退出
 	if($flag != 1){
 		$objResponse->addScript('init();');
@@ -270,70 +263,15 @@ function submitForm($aFormValues){
 	//$campaignid = $aFormValues['campaignid'];
 	//print $groupid;
 
-	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
-		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
-
-		if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){ //是否添加分区assign
-			$tmpStr = trim($aFormValues['assign']); //分区,以','号分隔的字符串
-			if($tmpStr != ''){
-
-				$arryAssign = explode(',',$tmpStr);
-				//判断这些分机是否在该组管理范围内
-				if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-					foreach ($arryAssign as $key => $myAssign){
-						if ( ! in_array(trim($myAssign), $_SESSION['curuser']['memberExtens'])){ //该组不包含该分机
-							unset($arryAssign[$key]);
-						}
-					}
-				}
-				//exit;
-				$assignNum = count($arryAssign);//得到手动添加分区个数
-				//print_r($arryAssign);
-				//print $assignNum;
-			}else{
-				if ($_SESSION['curuser']['usertype'] == 'admin'){
-					$res = astercrm::getGroupMemberListByID();
-					while ($row = $res->fetchRow()) {
-						$arryAssign[] = $row['extension']; //$array_extension数组,存放extension数据
-					}
-					$assignNum = count($arryAssign); //extension数据的个数
-				}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-					$arryAssign = $_SESSION['curuser']['memberExtens'];
-					$assignNum = count($arryAssign); //extension数据的个数
-				}
-			}
-		}else{
-			$arryAssign[] = '';
-			$assignNum = 0;
-		}
-	}
 	$x = 0;
 	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid);
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句
 		//print $strSql;
 		//exit;
-		$dialListValue = $data['dialListValue'];	//以及要导入diallist的sql语句
-		if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
-			while ($arryAssign[$x] == ''){
-				if($x >$assignNum){
-					$x = 0;
-				}else{
-					$x ++;
-				}
-			}
-			$query = "INSERT INTO diallist (dialnumber,assign,groupid,campaignid, cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
-			
-			$x++;
-
-		}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
-			$query = "INSERT INTO diallist (dialnumber,groupid,campaignid,cretime,creby) VALUES ('".$dialListValue."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
-		}
-		$tmpRs =@ $db->query($query);  // 插入diallist表
-		$diallistAffectRows += $db->affectedRows();
 
 		if($tableName != '' && $strSql != '' ){
-			$res = @ $db->query($strSql);  //插入customer或contact表
+			$res = $db->query($strSql);  
 			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
 		}
 	}
@@ -341,12 +279,7 @@ function submitForm($aFormValues){
 		$tableAffectRows= 0;
 	}
 
-	if($diallistAffectRows< 0){
-		$diallistAffectRows= 0;
-	}
-
 	$resultMsg = $tableName.' : '.$tableAffectRows.' '.$locate->Translate('records_inserted')."<br>";
-	$resultMsg .= 'diallist : '.$diallistAffectRows.' '.$locate->Translate('records_inserted');
 
 	//delete upload file
 	//@ unlink($filePath);
