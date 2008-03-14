@@ -3,6 +3,7 @@ $edit = "编辑";
 $detail = "详细";
 $delete = "删除";
 $select_field = "- 搜索选项 -";
+$select_type = "- 搜索方式 -";
 $add_record = "添加";
 $table = "数据表";
 $search = "搜索";

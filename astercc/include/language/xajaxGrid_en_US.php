@@ -3,6 +3,7 @@ $edit = "Edit";
 $detail = "Detail";
 $delete = "Delete";
 $select_field ="- Select field - ";
+$select_type ="- Select type -";
 $add_record = "Add";
 $table = "Table";
 $search = "Search";
