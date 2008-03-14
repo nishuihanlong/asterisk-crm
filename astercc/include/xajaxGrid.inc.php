@@ -355,7 +355,7 @@ class ScrollTable{
 		$ind_typeselected = 0;
 		$ind_selected = 0;
 		$this->search = '
-		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,5);">
+		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,25);">
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
