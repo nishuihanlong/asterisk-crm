@@ -128,82 +128,96 @@ function processAccountData($aFormValues)
 	$loginError = false;
 
 	if (!$bError)
-	{
-		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback as allowcallbackgroup,resellergroup.allowcallback as allowcallbackreseller,accountgroup.limittype FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid LEFT JOIN resellergroup ON resellergroup.id = account.resellerid WHERE username='" . $aFormValues['username'] . "'";
+	{	$query = "SELECT * from clid where clid ='".$aFormValues['username']."'";
 		$res = $db->query($query);
-
-		if ($res->fetchInto($list)){
-
-			if ($list['password'] == $aFormValues['password'])
+		if($res->fetchInto($list))
+		{
+			if($list['pin']  == $aFormValues['password'])
 			{
-				$_SESSION = array();
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
-				$_SESSION['curuser']['usertype'] = $list['usertype'];
-				$_SESSION['curuser']['ipaddress'] = $_SERVER["REMOTE_ADDR"];
- 				$_SESSION['curuser']['userid'] = $list['id'];
- 				$_SESSION['curuser']['groupid'] = $list['groupid'];
- 				$_SESSION['curuser']['resellerid'] = $list['resellerid'];
- 				$_SESSION['curuser']['limittype'] = $list['limittype'];
-
-				$res = astercrm::getCalleridListByID($list['groupid']);
-				while	($res->fetchInto($row)){
-					$_SESSION['curuser']['extensions'][] = $row['clid'];
-				}
-				if (!is_array($_SESSION['curuser']['extensions']))
-					$_SESSION['curuser']['extensions'] = array();
-
-				if ($list['usertype'] == 'reseller')
-					$_SESSION['curuser']['allowcallback'] = $list['allowcallbackreseller'];
-				else
-					$_SESSION['curuser']['allowcallback'] = $list['allowcallbackgroup'];
-
-				$_SESSION['curuser']['accountcode'] = $list['accountcode'];
-
-//				if ($list['extensions'] != ''){
-//					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);
-//				}
-//				else{
-//				}
-
+				$_SESSION['curuser']['usertype'] = "clid";
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
-/*
-	if you dont want check manager status and show device status when user login 
-	please uncomment these three line
-*/
-//				$objResponse->addAlert($locate->Translate("login_success"));
-				if ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')
-					$objResponse->addScript('window.location.href="systemstatus.php";');
-				else
-					$objResponse->addScript('window.location.href="account.php";');
-
-				return $objResponse;
-
-
-				//check AMI connection
-				$myAsterisk = new Asterisk();
-				$myAsterisk->config['asmanager'] = $config['asterisk'];
-				$res = $myAsterisk->connect();
-				
-			
-				$html .= $locate->Translate("server_connection_test");
-				if ($res){
-					$html .= '<font color=green>'.$locate->Translate("pass").'</font><br>';
-					$html .= '<b>'.$_SESSION['curuser']['extension'].' '.$locate->Translate("device_status").'</b><br>';
-					$html .= asterisk::getPeerIP($_SESSION['curuser']['extension']).'<br>';
-					$html .= asterisk::getPeerStatus($_SESSION['curuser']['extension']).'<br>';
-				}else{
-					$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
-				}
-				$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'systemstatus.php\';">';
-				$objResponse->addAssign("formDiv","innerHTML",$html);
-				$objResponse->addClear("titleDiv","innerHTML");
-				$objResponse->addScript("xajax.$('btnContinue').focus();");
-			} else{
+				$objResponse->addAlert($locate->Translate("login_success"));
+				$objResponse->addScript('window.location.href="clidcdr.php";');	
+			}else{
 				$loginError = true;
 			}
-		} else{
-				$loginError = true;
-		}
+		}else{
+			$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback as allowcallbackgroup,resellergroup.allowcallback as allowcallbackreseller,accountgroup.limittype FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid LEFT JOIN resellergroup ON resellergroup.id = account.resellerid WHERE username='" . $aFormValues['username'] . "'";
+			$res = $db->query($query);
+
+			if ($res->fetchInto($list)){
+
+				if ($list['password'] == $aFormValues['password'])
+				{
+					$_SESSION = array();
+					$_SESSION['curuser']['username'] = trim($aFormValues['username']);
+					$_SESSION['curuser']['usertype'] = $list['usertype'];
+					$_SESSION['curuser']['ipaddress'] = $_SERVER["REMOTE_ADDR"];
+					$_SESSION['curuser']['userid'] = $list['id'];
+					$_SESSION['curuser']['groupid'] = $list['groupid'];
+					$_SESSION['curuser']['resellerid'] = $list['resellerid'];
+					$_SESSION['curuser']['limittype'] = $list['limittype'];
+
+					$res = astercrm::getCalleridListByID($list['groupid']);
+					while	($res->fetchInto($row)){
+						$_SESSION['curuser']['extensions'][] = $row['clid'];
+					}
+					if (!is_array($_SESSION['curuser']['extensions']))
+						$_SESSION['curuser']['extensions'] = array();
+
+					if ($list['usertype'] == 'reseller')
+						$_SESSION['curuser']['allowcallback'] = $list['allowcallbackreseller'];
+					else
+						$_SESSION['curuser']['allowcallback'] = $list['allowcallbackgroup'];
+
+					$_SESSION['curuser']['accountcode'] = $list['accountcode'];
+
+	//				if ($list['extensions'] != ''){
+	//					$_SESSION['curuser']['extensions'] = split(',',$list['extensions']);
+	//				}
+	//				else{
+	//				}
+
+					list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
+	/*
+		if you dont want check manager status and show device status when user login 
+		please uncomment these three line
+	*/
+	//				$objResponse->addAlert($locate->Translate("login_success"));
+					if ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')
+						$objResponse->addScript('window.location.href="systemstatus.php";');
+					else
+						$objResponse->addScript('window.location.href="account.php";');
+
+					return $objResponse;
+
+
+					//check AMI connection
+					$myAsterisk = new Asterisk();
+					$myAsterisk->config['asmanager'] = $config['asterisk'];
+					$res = $myAsterisk->connect();
+					
+				
+					$html .= $locate->Translate("server_connection_test");
+					if ($res){
+						$html .= '<font color=green>'.$locate->Translate("pass").'</font><br>';
+						$html .= '<b>'.$_SESSION['curuser']['extension'].' '.$locate->Translate("device_status").'</b><br>';
+						$html .= asterisk::getPeerIP($_SESSION['curuser']['extension']).'<br>';
+						$html .= asterisk::getPeerStatus($_SESSION['curuser']['extension']).'<br>';
+					}else{
+						$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
+					}
+					$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'systemstatus.php\';">';
+					$objResponse->addAssign("formDiv","innerHTML",$html);
+					$objResponse->addClear("titleDiv","innerHTML");
+					$objResponse->addScript("xajax.$('btnContinue').focus();");
+				} else{
+					$loginError = true;
+				}
+			} else{
+					$loginError = true;
+			}
 
 
 		if (!$loginError){
