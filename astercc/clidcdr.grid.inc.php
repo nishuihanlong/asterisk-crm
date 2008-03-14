@@ -159,13 +159,13 @@ class Customer extends astercrm
 		$i = 0;
 		$joinstr='';
 		foreach($stype as $type){
-			if($type == "equal"){
+			if($type == "equal" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
-			}elseif($type == "more"){
+			}elseif($type == "more" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
-			}elseif($type == "less"){
+			}elseif($type == "less" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
-			}elseif($type == "like"){
+			}elseif($type == "like" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] like '".trim($content[$i])."' ";
 			}
 			$i++;			
@@ -186,13 +186,13 @@ class Customer extends astercrm
 		$i = 0;
 		$joinstr='';
 		foreach($stype as $type){
-			if($type == "equal"){
+			if($type == "equal" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
-			}elseif($type == "more"){
+			}elseif($type == "more" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
-			}elseif($type == "less"){
+			}elseif($type == "less" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
-			}elseif($type == "like"){
+			}elseif($type == "like" && $filter[$i] != '' && trim($content[$i]) != ''){
 				$joinstr.="AND $filter[$i] like '".trim($content[$i])."' ";
 			}
 			$i++;
