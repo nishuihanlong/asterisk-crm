@@ -8,6 +8,10 @@ ALTER TABLE `mycdr` ADD `resellerid` INT(11) NOT NULL  default '0';
 
 ALTER TABLE `accountgroup` ADD `limittype` varchar(10) NOT NULL default '';
 
+ALTER TABLE `curcdr` ADD `memo` VARCHAR( 100 ) NOT NULL default '';
+ALTER TABLE `curcdr` ADD `destination` VARCHAR( 100 ) NOT NULL default '';
+ALTER TABLE `mycdr` ADD `memo` VARCHAR( 100 ) NOT NULL default '';
+ALTER TABLE `mycdr` ADD `destination` VARCHAR( 100 ) NOT NULL default '';
 
 CREATE TABLE IF NOT EXISTS `resellergroup` (
   `id` int(11) NOT NULL auto_increment,
