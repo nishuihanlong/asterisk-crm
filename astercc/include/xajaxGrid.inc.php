@@ -509,7 +509,7 @@ class ScrollTable{
 					}else{
 						$this->footer .= $local_grid->Translate("next");
 					}
-
+//echo $this->numRows;exit;
 					$this->footer .= ' </span>
 					<span class="pagenav">';
 					if($next_rows < $this->numRows){
