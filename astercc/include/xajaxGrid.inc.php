@@ -233,7 +233,7 @@ class ScrollTable{
 	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null){
 		global $local_grid;
 		$nameRow = $divName."Row".$arr[0];
-	   $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
+	    $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
 		$ind = 0;
 
 	   foreach ($arr as $key => $value) {
@@ -348,12 +348,14 @@ class ScrollTable{
 	* customer addRowSearth
 	*/
     //增加搜索选项
-	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$typeFromSearch,$typeFromSearchShowAs,$stype){
 		global $local_grid;
 		$ind = 0;
+		$ind_type = 0;
+		$ind_typeselected = 0;
 		$ind_selected = 0;
 		$this->search = '
-		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,5);">
+		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="searchFormSubmit(0,25);">
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
@@ -368,12 +370,27 @@ class ScrollTable{
 				<td> '.$local_grid->Translate("table").': ';
 		$this->search .= $table ;
 		$this->search .= '</td>
-				<td align="right" width="50%">
+				<td align="right" width="70%">
 					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
 		if($filter != null){
 			for($j=0;$j<count($filter);$j++){
 				if(trim($content[$j]) != '' && trim($filter[$j]) != ''){
-					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/>
+					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="25"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/> &nbsp;&nbsp;
+						<select name="searchType[]" id="searchType[]">
+							<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
+							foreach ($typeFromSearchShowAs as $value_arr) {
+									if($ind_typeselected > count($typeFromSearch)-1)
+									{
+										$ind_typeselected = 0;
+									}
+									$this->search .= '<option value="'.$typeFromSearch[$ind_typeselected].'" ';
+									if($typeFromSearch[$ind_typeselected] == $stype[$j]){
+										$this->search .= ' selected ';
+									}
+									$this->search .=  '>'.$value_arr.'</option>';
+									$ind_typeselected++;
+								}
+						$this->search .= '</select>
 							&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
 								<select name="searchField[]" id="searchField[]">
 									<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
@@ -393,7 +410,15 @@ class ScrollTable{
 				}
 			}
 		}
-		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="30"  name="searchContent[]" id="searchContent[]"/>
+		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="25"  name="searchContent[]" id="searchContent[]"/>&nbsp;&nbsp;
+					<select name="searchType[]" id="searchType[]">
+						<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
+						foreach ($typeFromSearchShowAs as $value) {
+						$this->search .= '<option value="'.$typeFromSearch[$ind_type].'" ';
+						$this->search .=  '>'.$value.'</option>';
+						$ind_type++;
+					}
+					$this->search .= '</select>
 				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
 					<select name="searchField[]" id="searchField[]">
 						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
@@ -483,7 +508,6 @@ class ScrollTable{
 
 					$this->footer .= ' </span>
 					<span class="pagenav">';
-
 					if($next_rows < $this->numRows){
 					$this->footer .= '<a href="?" onClick=\'
 					document.getElementById("numRows").value = '.($this->numRows - $this->limit).';
