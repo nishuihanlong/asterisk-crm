@@ -45,7 +45,7 @@ class Common{
 					<tr>
 						<td>
 							©2007 astercc - <a href="http://www.astercrm.org" target="_blank">astercc home</a><br>
-							version: 0.035
+							version: 0.04 beta
 						</td>
 					</tr>
 					</table>
@@ -73,13 +73,13 @@ class Common{
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$html .= '
-							<a href="account.php">Account</a> | <a href="resellergroup.php">Reseller</a> | <a href="accountgroup.php">Group</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="rate.php" >Rate to Customer</a> | <a href="callshoprate.php">Rate to Callshop | <a href="resellerrate.php">Rate to Reseller </a> | <a href="clid.php">Clid</a> | <a href="import.php">Import</a>';
+							<a href="account.php">Account</a> | <a href="accountgroup.php">Account Group</a> | <a href="resellergroup.php">Reseller Group</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="rate.php" >Rate to Customer</a> | <a href="callshoprate.php">Rate to Callshop</a> | <a href="resellerrate.php">Rate to Reseller</a> | <a href="clid.php">Clid</a> | <a href="import.php">Import</a>';
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
 			$html .= '
-							<a href="account.php">Account</a> | <a href="accountgroup.php">Group</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="rate.php" >Rate to Customer</a> | <a href="callshoprate.php">Rate to Callshop | <a href="resellerrate.php">Rate to Reseller </a> | <a href="clid.php">Clid</a> | <a href="import.php">Import</a>';
+							<a href="account.php">Account</a> | <a href="accountgroup.php">Account Group</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="rate.php" >Rate to Customer</a> | <a href="callshoprate.php">Rate to Callshop</a> | <a href="resellerrate.php">Rate to Reseller</a> | <a href="clid.php">Clid</a> | <a href="import.php">Import</a>';
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$html .= '
-							<a href="account.php">Account</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="callshoprate.php">Rate to Callshop | <a href="rate.php" >Rate to Customer</a>  | <a href="clid.php">Clid</a> | <a href="import.php">Import</a>';
+							<a href="account.php">Account</a> | <a href="checkout.php" >Report</a> | <a href="statistics.php" >Statistics</a> | <a href="callshoprate.php">Rate to Callshop</a> | <a href="rate.php" >Rate to Customer</a>  | <a href="clid.php">Clid</a> | <a href="import.php">Import</a>';
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$html .= '&nbsp;&nbsp;<strong>Clid CDR</strong>';
 		}else{
