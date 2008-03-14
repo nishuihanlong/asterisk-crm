@@ -115,9 +115,22 @@ function setClid($groupid){
 function listCDR($aFormValues){
 	$objResponse = new xajaxResponse();
 
-	//$records = astercc::readAll($aFormValues['sltBooth'], -1,$aFormValues['sdate'],$aFormValues['edate']);
+	if ($aFormValues['ckbDetail'] == ""){
+		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
+		if ($res->fetchInto($myreport)){
+			$html .= "Amount: ".$myreport['credit']."<br>";
+			$html .= "Callshop ".$myreport['callshopcredit']."<br>";
+			$html .= "Reseller Cost: ".$myreport['resellercredit']."<br>";
+		}
+		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		return $objResponse;
+	}
 
+
+	//$records = astercc::readAll($aFormValues['sltBooth'], -1,$aFormValues['sdate'],$aFormValues['edate']);
+	
 	$records = astercc::readAll($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
+
 	$html .= '<form action="" name="f" id="f">';
 	$html .= '<table width="99%">';
 	$html .= '<tr>

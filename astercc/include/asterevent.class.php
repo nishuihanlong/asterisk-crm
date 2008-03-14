@@ -250,6 +250,28 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 	$res = $db->query($query);
 	return $res;
 }
+	function readReport($resellerid, $groupid, $booth, $sdate, $edate){
+		global $db;
+
+		$query = "SELECT sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+
+		if ($resellerid != 0 && $resellerid != '')
+			$query .= " AND resellerid = $resellerid ";
+
+		if ($groupid != 0 && $groupid != '')
+			$query .= " AND groupid = $groupid ";
+
+		if ($booth != 0 && $booth != ''){
+			if ($booth == 'callback')
+				$query .= " AND LEFT(channel,6) = 'Local/' ";
+			else
+				$query .= " AND src = '$booth' ";
+		}
+
+		astercc::events($query);
+		$res = $db->query($query);
+		return $res;
+	}
 
 	function readAmount($id,$peer = null, $sdate = null, $edate = null, $field = 'credit'){
 		global $db;
