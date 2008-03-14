@@ -230,7 +230,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		}
 
 		if ($peer != '' and $peer != '0'){
-			if ($peer == 'callback'){
+			if ($peer == "-1"){
 				$query .= " AND LEFT(channel,6) = 'Local/' ";
 			}else{
 				$query .= " AND src LIKE '$peer%' ";
@@ -262,12 +262,12 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			$query .= " AND groupid = $groupid ";
 
 		if ($booth != 0 && $booth != ''){
-			if ($booth == 'callback')
+			if ($booth == '-1'){
 				$query .= " AND LEFT(channel,6) = 'Local/' ";
-			else
+			}else{
 				$query .= " AND src = '$booth' ";
+			}
 		}
-
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;

@@ -55,9 +55,9 @@ function init($curpeer){
 		$objResponse->addScript("addOption('sltBooth','"."0"."','"."All"."');");
 
 		while	($clid->fetchInto($row)){
-			$objResponse->addScript("addOption('sltBooth','".$row['id']."','".$row['clid']."');");
+			$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
 		}
-		$objResponse->addScript("addOption('sltBooth','callback','callback');");
+		$objResponse->addScript("addOption('sltBooth','-1','callback');");
 	}
 	
 	/*
@@ -74,7 +74,7 @@ function init($curpeer){
 		$objResponse->addScript("addOption('sltBooth','$peer','$peer');");
 	}
 
-	$objResponse->addScript("addOption('sltBooth','callback','callback');");
+	$objResponse->addScript("addOption('sltBooth','-1','callback');");
 
 
 	if ($curpeer != ''){
@@ -108,7 +108,7 @@ function setClid($groupid){
 	while ($res->fetchInto($row)) {
 		$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
 	}
-	$objResponse->addScript("addOption('sltBooth','callback','callback');");
+	$objResponse->addScript("addOption('sltBooth','-1','callback');");
 	return $objResponse;
 }
 
@@ -118,9 +118,14 @@ function listCDR($aFormValues){
 	if ($aFormValues['ckbDetail'] == ""){
 		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 		if ($res->fetchInto($myreport)){
-			$html .= "Amount: ".$myreport['credit']."<br>";
-			$html .= "Callshop ".$myreport['callshopcredit']."<br>";
-			$html .= "Reseller Cost: ".$myreport['resellercredit']."<br>";
+			if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+				$html .= "Amount: ".$myreport['credit']."<br>";
+				$html .= "Callshop ".$myreport['callshopcredit']."<br>";
+				$html .= "Reseller Cost: ".$myreport['resellercredit']."<br>";
+			}else if ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator'){
+				$html .= "Amount: ".$myreport['credit']."<br>";
+				$html .= "Callshop ".$myreport['callshopcredit']."<br>";
+			}
 		}
 		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		return $objResponse;
@@ -213,7 +218,7 @@ function listCDR($aFormValues){
 						<td>'.$rate['destination'].'</td>
 						<td>'.$ratedesc.'</td>
 						<td>'.$mycdr['credit'].'<br>'.'('.$callshop_cost.')'.'<br>'.'('.$reseller_cost.')</td>';
-		if ($peer == 'callback'){
+		if ($peer == '-1'){
 			if ($mycdr['dst'] == $mycdr['src']){
 				//lega
 				$addon = ' [lega]';
