@@ -31,6 +31,17 @@ CREATE TABLE IF NOT EXISTS `account` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM;
 
+INSERT INTO `account` (
+`id` ,
+`username` ,
+`password` ,
+`usertype` ,
+`addtime`
+)
+VALUES (
+NULL , 'admin', 'admin', 'admin' , now()
+);
+
 -- --------------------------------------------------------
 
 -- 

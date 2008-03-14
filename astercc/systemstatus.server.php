@@ -389,28 +389,21 @@ function addUnbilled($peer,$leg = null){
 	while	($records->fetchInto($mycdr)){
 		$price = '';
 		$ratedesc = '';
-		$rate = astercc::readRate($mycdr['dst'],$_SESSION['curuser']['groupid']);
+		//$rate = astercc::readRate($mycdr['dst'],$_SESSION['curuser']['groupid']);
 		$jsscript = "cdr = new Array();";
 
-		if (!empty($rate)){
-			//$destination = $rate['destination'];
-			//$rateinitial = $rate['rateinitial'];
-			//$initblock	 = $rate['initblock'];
-			//$billingblock = $rate['billingblock'];
-
-			$ratedesc = astercc::readRateDesc($rate);
-			//price = astercc::calculatePrice($mycdr['billsec'],$rate);
-		}
+		$ratedesc = astercc::readRateDesc($mycdr['memo']).'&nbsp;';
 
 		if ($price == '')
 			$price = 0;
-		
+		$mycdr['destination'] .= '&nbsp;';
 		$totalprice += $mycdr['credit'];
 		$jsscript .= "cdr['id'] = '".$mycdr['id']."';";
 		$jsscript .= "cdr['clid'] = '".$mycdr['clid']."';";
 		$jsscript .= "cdr['dst'] = '".$mycdr['dst']."';";
 		$jsscript .= "cdr['startat'] = '".$mycdr['calldate']."';";
 		$jsscript .= "cdr['billsec'] = '".$mycdr['billsec']."';";
+		$jsscript .= "cdr['destination'] = '".$mycdr['destination']."';";
 		$jsscript .= "cdr['rate'] = '".$ratedesc."';";
 		$jsscript .= "cdr['price'] = '".astercc::creditDigits($mycdr['credit'])."';";
 		$jsscript .= "appendTr('".$peer."-calllog-tbody',cdr);";

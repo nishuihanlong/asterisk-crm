@@ -15,7 +15,7 @@ html, body {
 div.float {
 	float: left;
 	overflow: auto;
-	width: 230px;
+	width: 290px;
 	height: 242px;
 	overflow-y: hidden;
 	overflow-x: hidden;
@@ -28,7 +28,7 @@ div.float {
 }
 
 div.calllog{
-	width:230px;
+	width:290px;
 	height:148px;
 	overflow: auto;
 	overflow-x: scroll;
@@ -49,7 +49,7 @@ div.spacer {
 	}
 
 div.lable{
-	width: 230px;
+	width: 290px;
 	height: 20px;
 	background-color: silver;
 	border: 1px solid #777;
@@ -79,7 +79,18 @@ div.divPanel {
 	overflow: auto;
 }
 
-table.calllog th{
+table.calllog {
+}
+
+table.calllog td{
+	border: solid;
+	border-width: 1px 1px 1px 1px;
+	border-color: #ccc;
+	padding: 1px;
+	font-size: 10px;
+}
+
+table.curcall th{
    border: 2px solid;
     border-color: #fff #333 #333 #fff;
     background-color: #eeeeee; 
@@ -92,7 +103,7 @@ table.calllog th{
     font-size: 12px;
 }
 
-table.calllog td{
+table.curcall td{
 	border: solid;
 	border-width: 1px 1px 1px 1px;
 	border-color: #ccc;
@@ -212,3 +223,13 @@ A:hover {
 A:active {
 	BACKGROUND: #ff9933; COLOR: #ffffff; TEXT-DECORATION: none
 }
+
+/**********说明标记CSS开始**********/
+acronym {
+	text-decoration: none;
+	border-bottom: 1px solid #D5D6D7;
+	cursor: help;
+	TEXT-INDENT: 1em;
+	FONT-SIZE: 14px;
+}
+/**********说明标记CSS结束**********/

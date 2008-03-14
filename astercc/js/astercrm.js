@@ -167,7 +167,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	// add cdr div
 	var div = document.createElement("div");
 	div.className = "calllog";
-	div.innerHTML += "<table width=\"500\" class=\"calllog\">" +
+	div.innerHTML += "<table width=\"500\" class=\"curcall\">" +
 																"<tbody id=\"" + divId + "-tbody\">" +
 																"<tr>" +
 																"<th style=\"width:70px;\">Phone</th>" +
@@ -511,8 +511,9 @@ function appendTr(tbodyId,aryValues){
 
 	// caller id
     var td = document.createElement("td");
-	td.innerHTML = trim(aryValues["dst"]);
-	td.style.width = "80px";
+	td.innerHTML = "<acronym title=\"" + "Destination:" + trim(aryValues["destination"]) + "(" + "Rate:" + trim(aryValues["rate"]) + ")" + "\">" + trim(aryValues["dst"]) + "</acronym>";
+//	td.innerHTML = trim(aryValues["dst"]);
+//	td.style.width = "70px";
 	tr.appendChild(td);
 	
  	// duration
@@ -522,26 +523,34 @@ function appendTr(tbodyId,aryValues){
 	var seconds = aryValues["billsec"] - hours * 3600 - minutes * 60
 	td.innerHTML = hours + ':' + minutes + ':' + seconds;
 
-	td.style.width = "20px";
+//	td.style.width = "20px";
 	tr.appendChild(td);
 
  	// price
    var td = document.createElement("td");
 	td.innerHTML = trim(aryValues["price"]);
-	td.style.width = "20px";
+//	td.style.width = "20px";
 	tr.appendChild(td);
 
 
- 	// start at
+	//destination
    var td = document.createElement("td");
-	td.innerHTML = trim(aryValues["startat"]);
-	td.style.width = "90px";
+	td.innerHTML = trim(aryValues["destination"]);
+//	td.style.width = "140px";
 	tr.appendChild(td);
+
+
 
  	// rate
    var td = document.createElement("td");
 	td.innerHTML = trim(aryValues["rate"]) + "<input type=\"hidden\" id=\"cdrid[]\" name=\"cdrid[]\" value=\"" + aryValues["id"] + "\">";
 	td.style.width = "150px";
+	tr.appendChild(td);
+
+ 	// start at
+   var td = document.createElement("td");
+	td.innerHTML = trim(aryValues["startat"]);
+//	td.style.width = "160px";
 	tr.appendChild(td);
 
 	tbody.appendChild(tr);
