@@ -76,7 +76,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
-	if($filter == null or $content == null){
+	if($filter == null or $content == null){	
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
@@ -98,20 +98,20 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 				break;
 			}
 		}
-		if($flag != "1" || $flag2 != "1"){  //无值
+		if($flag != "1" || $flag2 != "1" ){  //无值			
 			$order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
-		}elseif($flag3 != 1){  //是否选择了搜索方式
+		}elseif($flag3 != 1 ){  //未选择搜索方式
 			$order = "id";
 			$numRows =& Customer::getNumRowsMore($filter, $content,"mycdr");
 			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"mycdr");
-		}else{
+		}else{			
 			$order = "id";
 			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,"mycdr");
 			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,"mycdr");
 		}
-	}
+	}	
 
 	// Editable zone
 
@@ -123,6 +123,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	$fields[] = 'duration';
 	$fields[] = 'billsec';
 	$fields[] = 'disposition';
+	$fields[] = 'credit';
+	$fileds[] = 'destination';
+	$fileds[] = 'memo';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -132,18 +135,27 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	$headers[] = $locate->Translate("Duration");
 	$headers[] = $locate->Translate("Billsec");
 	$headers[] = $locate->Translate("Disposition");
+	$headers[] = $locate->Translate("credit");
+	$headers[] = $locate->Translate("destination");
+	$headers[] = $locate->Translate("memo");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="13%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="13%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="12%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="12%"';
+	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -159,6 +171,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	
 	// Select Box: type table.
 	$typeFromSearch = array();
@@ -180,6 +195,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	$fieldsFromSearch[] = 'dst';
 	$fieldsFromSearch[] = 'billsec';
 	$fieldsFromSearch[] = 'disposition';
+	$fieldsFromSearch[] = 'credit';
+	$fieldsFromSearch[] = 'destination';
+	$fieldsFromSearch[] = 'memo';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -187,6 +205,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	$fieldsFromSearchShowAs[] = $locate->Translate("dst");
 	$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 	$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
+	$fieldsFromSearchShowAs[] = $locate->Translate("credit");
+	$fieldsFromSearchShowAs[] = $locate->Translate("destination");
+	$fieldsFromSearchShowAs[] = $locate->Translate("memo");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -205,6 +226,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$rowc[] = $row['duration'];
 		$rowc[] = $row['billsec'];
 		$rowc[] = $row['disposition'];
+		$rowc[] = $row['credit'];
+		$rowc[] = $row['destination'];
+		$rowc[] = $row['memo'];
 		$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
  	}
  	
@@ -226,7 +250,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
-	//echo $searchType."|".$searchField;exit;
 	if($type == "delete"){
 		$res = Customer::deleteRecord($id,'account');
 		if ($res){
