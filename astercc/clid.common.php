@@ -67,7 +67,7 @@ $xajax->registerFunction("update");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
-$xajax->registerFunction("generateSip");
+$xajax->registerFunction("generateSipFile");
 $xajax->registerFunction("reloadSip");
 $xajax->registerFunction("setGroup");
 

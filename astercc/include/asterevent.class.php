@@ -6,21 +6,47 @@
 
 class astercc extends PEAR
 {
-	function generatePeers(){
+	function generateResellerFile(){
 		global $db,$config;
-		$query = "SELECT * FROM clid ORDER BY clid ASC";
-		$clid_list = $db->query($query);
+		$query = "SELECT id FROM resellergroup ";
+		$reseller_list = $db->query($query);
 		$content = '';
-		while	($clid_list->fetchInto($row)){
-			$content .= "[".$row['clid']."]\n";
-			foreach ($config['sipbuddy'] as  $key=>$value){
-				if ($key != '' && $value != '')
-					$content .= "$key = $value\n";
-			}
-			$content .= "secret = ".$row['pin']."\n\n";
+		$filename = $config['system']['sipfile'];
+		while	($reseller_list->fetchInto($reseller)){
+			$content .= "#include ".$filename."_".$reseller['id'].".conf\n";
 		}
 
-		$filename = $config['system']['sipfile'];
+		$filename = $filename.".conf";
+
+		$fp=fopen($filename,"w");
+		if (!$fp){
+			print "file: $filename open failed, please check the file permission";
+			exit;
+		}
+		fwrite($fp,$content);
+	}
+
+	function generatePeersFile(){
+		global $db,$config;
+		$query = "SELECT id FROM accountgroup WHERE resellerid = ".$_SESSION['curuser']['resellerid'];
+		$group_list = $db->query($query);
+		$content = '';
+		while	($group_list->fetchInto($group)){
+
+			$query = "SELECT * FROM clid WHERE groupid = ".$group['id']." ORDER BY clid ASC";
+			$clid_list = $db->query($query);
+
+			while	($clid_list->fetchInto($row)){
+				$content .= "[".$row['clid']."]\n";
+				foreach ($config['sipbuddy'] as  $key=>$value){
+					if ($key != '' && $value != '')
+						$content .= "$key = $value\n";
+				}
+				$content .= "secret = ".$row['pin']."\n\n";
+			}
+		}
+
+		$filename = $config['system']['sipfile']."_".$_SESSION['curuser']['resellerid'].".conf";
 
 		$fp=fopen($filename,"w");
 		if (!$fp){

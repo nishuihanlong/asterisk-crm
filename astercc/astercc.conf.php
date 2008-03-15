@@ -58,7 +58,8 @@ upload_file_path = ./upload/
 ; set to 0 if you dont want it refresh automaticly
 refreshBalance = 30
 
-sipfile = /etc/asterisk/sip_astercc.conf
+; not .conf need
+sipfile = /etc/asterisk/sip_astercc
 
 ; if require valid code when login
 validcode = yes

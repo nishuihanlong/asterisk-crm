@@ -61,9 +61,9 @@ function init(){
 	return $objResponse;
 }
 
-function generateSip(){
+function generateSipFile(){
 	$objResponse = new xajaxResponse();
-	astercc::generatePeers();
+	astercc::generatePeersFile();
 	$objResponse->addAlert("sip conf file generated");
 	return $objResponse;
 }

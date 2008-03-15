@@ -267,6 +267,12 @@ function save($f){
 	}else{
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_insert"));
 	}
+	
+	//generate include file
+	if ($_SESSION['curuser']['usertype'] == 'admin'){
+		astercc::generateResellerFile();
+	}
+
 	return $objResponse->getXML();
 	
 }
