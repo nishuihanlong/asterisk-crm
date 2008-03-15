@@ -231,16 +231,16 @@ class Customer extends astercrm
 					<select id="usertype" name="usertype">
 						<option value=""></option>';
 
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$html .= '<option value="admin">'.$locate->Translate("Admin").'</option>';
-		}
+						if ($_SESSION['curuser']['usertype'] == 'admin'){
+							$html .= '<option value="admin">'.$locate->Translate("Admin").'</option>';
+							$html .= '<option value="reseller">'.$locate->Translate("Reseller").'</option>';
+						}
 
-		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-			$html .= '<option value="reseller">'.$locate->Translate("Reseller").'</option>';
-		}
+						if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+							$html .= '<option value="groupadmin">'.$locate->Translate("Group Admin").'</option>';
+						}
 
 			$html .= '
-						<option value="groupadmin">'.$locate->Translate("Group Admin").'</option>
 						<option value="operator">'.$locate->Translate("Operator").'</option>
 					</select></td>
 				</tr>
@@ -384,9 +384,6 @@ class Customer extends astercrm
 						$html .= ' selected ';
 					}
 					$html .=' >'.$locate->Translate("Admin").'</option>';
-				}
-
-				if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 					$html .= '<option value="reseller"';
 					if($account['usertype'] == 'reseller'){
 						$html .= ' selected ';
@@ -394,13 +391,15 @@ class Customer extends astercrm
 					$html .=' >'.$locate->Translate("Reseller").'</option>';
 				}
 
-				$html .= '
-						<option value="groupadmin"';
-				if($account['usertype'] == 'groupadmin'){
-					$html .= ' selected ';
+				if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+					$html .= '<option value="groupadmin"';
+					if($account['usertype'] == 'groupadmin'){
+						$html .= ' selected ';
+					}
+					$html .=' >'.$locate->Translate("Group Admin").'</option>';
 				}
-				$html .='>'.$locate->Translate("Group Admin").'</option>
-										<option value="operator"';
+
+				$html .= ' <option value="operator"';
 					if($account['usertype'] == 'operator'){
 					$html .= ' selected ';
 				}
