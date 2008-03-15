@@ -138,7 +138,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['usertype'] = "clid";
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 				//$objResponse->addAlert($locate->Translate("login_success"));
-				$objResponse->addScript('window.location.href="clidcdr.php";');	
+				$objResponse->addScript('window.location.href="cdr.php";');	
 			}else{
 				$loginError = true;
 			}
