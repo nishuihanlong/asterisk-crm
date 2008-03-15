@@ -77,6 +77,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	if($filter == null or $content == null){
+		$order = "calldate";
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
@@ -99,19 +100,20 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 			}
 		}
 		if($flag != "1" || $flag2 != "1" ){  //无值	
-			$order = null;
+			$order = "calldate";
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1 ){  //未选择搜索方式
-			$order = "id";
+			$order = "calldate";
 			$numRows =& Customer::getNumRowsMore($filter, $content,"mycdr");
 			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"mycdr");
 		}else{
-			$order = "id";
+			$order = "calldate";
 			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,"mycdr");
 			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,"mycdr");
 		}
 	}	
+
 	// Editable zone
 
 	// Databse Table: fields
@@ -170,9 +172,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-	'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-	'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-	'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	
 	// Select Box: type table.
 	$typeFromSearch = array();
@@ -210,7 +212,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 
 	// Create object whit 5 cols and all data arrays set before.
-	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
+	$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);

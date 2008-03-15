@@ -40,7 +40,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		if($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid > 0 OR clid.resellerid >0";
+			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE (clid.groupid > 0 OR clid.resellerid > '0')";
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
@@ -48,11 +48,11 @@ class Customer extends astercrm
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$sql = "SELECT * FROM mycdr WHERE src = '".$_SESSION['curuser']['username']."'";
 		}
-
-		if($order == null){
+//echo $order[0];echo $order[1];exit;
+		if($order == null || is_array($order)){
 			$sql .= " LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
-			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
 
 		Customer::events($sql);
@@ -85,7 +85,7 @@ class Customer extends astercrm
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid > 0 OR clid.resellerid >0";
+			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE (clid.groupid > 0 OR clid.resellerid > '0')";
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
@@ -120,7 +120,7 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid > 0 OR clid.resellerid >0";
+			$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE (clid.groupid > 0 OR clid.resellerid > '0')";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
@@ -148,7 +148,7 @@ class Customer extends astercrm
 			}
 
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid > 0 OR clid.resellerid >0";
+				$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE (clid.groupid > '0' OR clid.resellerid > '0')";
 			}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 				$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid = '".$_SESSION['curuser']['groupid']."'";
 			}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
@@ -186,7 +186,7 @@ class Customer extends astercrm
 		}
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid > 0 OR clid.resellerid >0";
+				$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE (clid.groupid > '0' OR clid.resellerid > '0')";
 			}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 				$sql .= " SELECT COUNT(*) FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid = '".$_SESSION['curuser']['groupid']."'";
 			}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
@@ -223,7 +223,7 @@ class Customer extends astercrm
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid > 0 OR clid.resellerid >0";
+			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE (clid.groupid > '0' OR clid.resellerid > '0')";
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$sql = "SELECT mycdr.* FROM clid LEFT JOIN mycdr ON clid.clid = mycdr.src WHERE clid.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
