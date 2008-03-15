@@ -35,6 +35,7 @@ code有时候会出现问题, vista总是不识别
 [fixed] 删除记录之前需要检查权限
 [fixed] pin不得为空
 [fixed] import表init时应清空 字段列表
+report里应该加上该用户的limit状态和limit信息
 
 astercc features:
 	
@@ -43,16 +44,19 @@ astercc features:
 	prepaid/postpaid support
 	maximum 240 simultaneous calls support
 	booth lock/unlock
-	booth credit limit
+	booth/callshop/reseller credit limit
 	mulit-callshop support in one system
-	each callshop could have its own buy rate and sell rate
+	mulit-reseller support in one system
+	each customer/callshop/reseller could use a rate template or use specific rate
 	callback with credit limit support (billing lega/legb/both)
-	callshoprate/customerrate two level billing
-	admin/callshop admin/operator three user type 
+	reseller rate/callshop rate/customer rate two level billing
+	admin/reseller/callshop admin/operator four user types
 	rate import/export
 	hangup calls
 	web script part is open source
+	profit calculate
 	Grid layout
+	CDR search/browser
 	5 free channels license
 
 astercc特点
@@ -62,13 +66,17 @@ astercc特点
 	预付费/后付费支持
 	可以支持240个并发呼叫
 	话机锁定/解锁
-	话费限额
-	一个系统内支持多个组
-	每个组都能有自己的购买和销售费率
+	代理商/话吧/特定通话话费限额
+	多计费组支持
+	多代理商支持
+	不同的客户/分组/代理商可以使用相同的费率或是特定的费率
 	支持带话费限制的回拨(计费 主叫/被叫/同时计费)
-	callshoprate/customerrate 两级计费
-	admin/callshop admin/operator 三级权限
+	代理商/分组/客户三级计费
+	系统管理员/代理商/组管理员/操作员四级权限
 	费率导入/导出
 	强行结束通话
 	网页代码为开源
+	收益计算
+	呼叫记录查询查看
 	表格型显示方式更加直观
+	5个免费的通话许可

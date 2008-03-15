@@ -47,6 +47,14 @@ function init($curpeer){
 		while	($group->fetchInto($row)){
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 		}
+
+		// get limit status and creditlimit
+		$reseller = astercc::readRecord("resellergroup","id",$_SESSION['curuser']['resellerid']);
+		if ($reseller){
+			$html = "Limit Type:".$reseller['limittype']."(".$reseller['creditlimit'].")";
+			$objResponse->addAssign("divLimitStatus","innerHTML",$html);
+		}
+
 	}else{
 		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','".""."');");
 		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".""."');");
@@ -58,29 +66,15 @@ function init($curpeer){
 			$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
 		}
 		$objResponse->addScript("addOption('sltBooth','-1','callback');");
-	}
-	
-	/*
-	if ($_SESSION['curuser']['usertype'] != 'admin'){
-		$peers = $_SESSION['curuser']['extensions'];
-	}else{
-		$res = astercc::getAll('clid');
-		while ($res->fetchInto($row)){
-			$peers[] = $row['clid'];
+		// get limit status and creditlimit
+		$accountgroup = astercc::readRecord("accountgroup","id",$_SESSION['curuser']['groupid']);
+		if ($accountgroup){
+			$html = "Limit Type:".$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
+			$objResponse->addAssign("divLimitStatus","innerHTML",$html);
 		}
 	}
-	
-	foreach ($peers as $peer){
-		$objResponse->addScript("addOption('sltBooth','$peer','$peer');");
-	}
-
-	$objResponse->addScript("addOption('sltBooth','-1','callback');");
 
 
-	if ($curpeer != ''){
-		$objResponse->addScript("document.getElementById('sltBooth').value = '$curpeer';");
-	}
-	*/
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 

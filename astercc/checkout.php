@@ -143,6 +143,9 @@ require_once('checkout.common.php');
 	<body onload="init();">
 		<div id="divNav"></div>
 		<br>
+		<div id="divLimitStatus" name="divLimitStatus">
+		</div>
+
 		<form name="frmFilter" id="frmFilter" method="post">
 		<div>
 			<SELECT id="resellerid" name="resellerid" onchange="setGroup();">
@@ -164,6 +167,7 @@ require_once('checkout.common.php');
 			<input type="button" onclick="listCDR();return false;" value="List">
 		</div>
 		</form>
+
 		<div id="divUnbilledList" name="divUnbilledList">
 		</div>
 		

@@ -280,6 +280,14 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		global $db;
 
 		$query = "SELECT sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+		
+		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
+			$groupid = $_SESSION['curuser']['groupid'];
+		}
+
+		if ( ($resellerid == '' || $resellerid == 0) && $_SESSION['curuser']['usertype'] == 'reseller' ){
+			$resellerid = $_SESSION['curuser']['resellerid'];
+		}
 
 		if ($resellerid != 0 && $resellerid != '')
 			$query .= " AND resellerid = $resellerid ";
@@ -294,6 +302,8 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 				$query .= " AND src = '$booth' ";
 			}
 		}
+		#print $query;
+		#exit;
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;
@@ -329,7 +339,6 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 		if ($edate != null)
 			$query .= " AND calldate <= '$edate' ";
-
 		astercc::events($query);
 		$one = $db->getOne($query);
 		return $one;
