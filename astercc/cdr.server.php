@@ -73,7 +73,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "grid", $ordering = "",$ifsearch = false){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	if($filter == null or $content == null){
@@ -213,7 +213,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false,$ifsearch);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
@@ -261,7 +261,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchType, $searchField, $divName, "");
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchType, $searchField, $divName, "",true);
 	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
