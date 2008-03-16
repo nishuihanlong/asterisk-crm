@@ -58,5 +58,12 @@
 		
 	login with admin/admin
 
-9) add a new group, add a new account for the group as groupadmin, add clid for the group
-	if you want the extension to be billed, you must set the clid of the extension
+9) set your first booth
+
+1. go "Reseller" and add a reseller
+2. go "Group" add a group belong to the reseller
+3. go "Clid" add some clid for this group, then the account in asterisk with the clid would be billing as a user in this group
+4. go "Account" add a account, usertype could be "groupadmin" and belongs to the group you just added
+5. go "Rate to Customer" and add some rate for the group, if you dont select reseller or group, the rate could be the default rate all all resellers/groups
+6. login as groupadmin account, then you should see some box as the attachments.
+7. try make a call using the ip phone with the clid, you could see the calling and billing message in the box
