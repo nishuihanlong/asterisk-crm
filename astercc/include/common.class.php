@@ -67,7 +67,12 @@ class Common{
 		
 		$html .= "<a href='diallist.php' >".$locate_common->Translate("diallist_manager")."</a> | ";
 
-*/		
+*/
+		$html .= '<div class="">';
+		$html .= 'Username:'.$_SESSION['curuser']['username'];
+		$html .= '&nbsp;&nbsp;User type:'.$_SESSION['curuser']['usertype'];
+		$html .= '</div>';
+
 		$html .= '<div class="">';
 
 

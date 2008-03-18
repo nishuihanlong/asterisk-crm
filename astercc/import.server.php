@@ -336,8 +336,8 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	//exit;
 	for ($j=0;$j<count($arrRow);$j++)
 	{
-		if ($arrRow[$j] != mb_convert_encoding($arrRow[$j],"UTF-8","UTF-8"))
-			$arrRow[$j]=mb_convert_encoding($arrRow[$j],"UTF-8","GB2312");
+		//if ($arrRow[$j] != mb_convert_encoding($arrRow[$j],"UTF-8","UTF-8"))
+		//	$arrRow[$j]=mb_convert_encoding($arrRow[$j],"UTF-8","GB2312");
 
 		$fieldOrder = trim($order[$j]);//得到字段顺序号
 
@@ -408,8 +408,8 @@ function getGridHTML($filePath){
 		$HTML .= "<tr>";
 		for ($c=0; $c < $num; $c++)
 		{
-			if ($data_arr[$c] != mb_convert_encoding($data_arr[$c],"UTF-8","UTF-8"))
-					$data_arr[$c]=mb_convert_encoding($data_arr[$c],"UTF-8","GB2312");
+			//if ($data_arr[$c] != mb_convert_encoding($data_arr[$c],"UTF-8","UTF-8"))
+			//		$data_arr[$c]=mb_convert_encoding($data_arr[$c],"UTF-8","GB2312");
 			if($row % 2 != 0){
 				$HTML .= "<td bgcolor='#ffffff' height='25px'>&nbsp;".trim($data_arr[$c])."</td>";
 			}else{

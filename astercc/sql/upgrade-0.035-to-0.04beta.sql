@@ -2,7 +2,7 @@ ALTER TABLE `account` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `accountgroup` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `callshoprate` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `myrate` ADD `resellerid` INT(11) NOT NULL  default '0';
-ALTER TABLE `clid` ADD `resellerid` INT(11) NOT NULL  default '0';
+#ALTER TABLE `clid` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `curcdr` ADD `resellerid` INT(11) NOT NULL  default '0';
 ALTER TABLE `mycdr` ADD `resellerid` INT(11) NOT NULL  default '0';
 

@@ -107,7 +107,7 @@ function init($aFormValue){
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
 
-	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("title"));
+	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("Title"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("Username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("Password"));
 	$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));

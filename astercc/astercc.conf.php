@@ -59,6 +59,7 @@ upload_file_path = ./upload/
 refreshBalance = 30
 
 ; not .conf need
+; if you dont want astercc generate the conf for u, just leave this value blank
 sipfile = /etc/asterisk/sip_astercc
 
 ; if require valid code when login

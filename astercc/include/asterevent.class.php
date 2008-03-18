@@ -8,10 +8,14 @@ class astercc extends PEAR
 {
 	function generateResellerFile(){
 		global $db,$config;
-		$query = "SELECT id FROM resellergroup ";
-		$reseller_list = $db->query($query);
+		if ($config['system']['sipfile'] == '')	return;
+
 		$content = '';
 		$filename = $config['system']['sipfile'];
+		
+		$query = "SELECT id FROM resellergroup ";
+		$reseller_list = $db->query($query);
+
 		while	($reseller_list->fetchInto($reseller)){
 			$content .= "#include ".$filename."_".$reseller['id'].".conf\n";
 		}
@@ -28,6 +32,9 @@ class astercc extends PEAR
 
 	function generatePeersFile(){
 		global $db,$config;
+
+		if ($config['system']['sipfile'] == '')	return;
+
 		$query = "SELECT id FROM accountgroup WHERE resellerid = ".$_SESSION['curuser']['resellerid'];
 		$group_list = $db->query($query);
 		$content = '';

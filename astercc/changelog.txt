@@ -35,7 +35,7 @@ code有时候会出现问题, vista总是不识别
 [fixed] 删除记录之前需要检查权限
 [fixed] pin不得为空
 [fixed] import表init时应清空 字段列表
-report里应该加上该用户的limit状态和limit信息
+[fixed] report里应该加上该用户的limit状态和limit信息
 
 astercc features:
 	
@@ -49,7 +49,7 @@ astercc features:
 	mulit-reseller support in one system
 	each customer/callshop/reseller could use a rate template or use specific rate
 	callback with credit limit support (billing lega/legb/both)
-	reseller rate/callshop rate/customer rate two level billing
+	reseller rate/callshop rate/customer rate three level billing
 	admin/reseller/callshop admin/operator four user types
 	rate import/export
 	hangup calls
