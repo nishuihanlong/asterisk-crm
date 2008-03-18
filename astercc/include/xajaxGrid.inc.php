@@ -158,7 +158,7 @@ class ScrollTable{
 	*
 	*/
 
-	function setHeader($class,$headers,$attribs,$events,$edit=true,$delete=true,$detail=true,$ifsearch = false){
+	function setHeader($class,$headers,$attribs,$events,$edit=true,$delete=true,$detail=true){
 	
 		global $local_grid;
 		$ind = 0;
@@ -174,19 +174,11 @@ class ScrollTable{
 // 				}
 			$this->header .= $value;
 
-			if($ifsearch){
-				$this->header .= '
+			$this->header .= '
 				&nbsp;
-				<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" >
-				<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" >
-			</th>';
-			}else{
-				$this->header .= '
-					&nbsp;
-					<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
-					<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
+				<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
+				<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
 				</th>';
-			}
 
 			$ind++;
 		}
@@ -378,13 +370,13 @@ class ScrollTable{
 				<td> '.$local_grid->Translate("table").': ';
 		$this->search .= $table ;
 		$this->search .= '</td>
-				<td align="right" width="50%">
+				<td align="right" width="60%">
 					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
 		if($filter != null){
 			for($j=0;$j<count($filter);$j++){
 				if(trim($content[$j]) != '' && trim($filter[$j]) != ''){
 					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="25"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/> &nbsp;&nbsp;';
-					if(is_array($typeFromSearchShowAs)){
+					if(is_array($typeFromSearchShowAs) ){
 						$this->search .='<select name="searchType[]" id="searchType[]">
 							<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
 							foreach ($typeFromSearchShowAs as $value_arr) {
@@ -517,7 +509,6 @@ class ScrollTable{
 					}else{
 						$this->footer .= $local_grid->Translate("next");
 					}
-//echo $this->numRows;exit;
 					$this->footer .= ' </span>
 					<span class="pagenav">';
 					if($next_rows < $this->numRows){
