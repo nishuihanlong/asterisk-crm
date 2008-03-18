@@ -73,11 +73,12 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "grid", $ordering = "",$ifsearch = false){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "grid", $ordering = ""){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
-	if($filter == null or $content == null){
-		$order = "calldate";
+	if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
+		$content = null;
+		$filter = null;
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
 	}else{
@@ -100,11 +101,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 			}
 		}
 		if($flag != "1" || $flag2 != "1" ){  //无值	
-			$order = "calldate";
+			$order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1 ){  //未选择搜索方式
-			$order = "calldate";
 			$numRows =& Customer::getNumRowsMore($filter, $content,"mycdr");
 			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"mycdr");
 		}else{
@@ -192,6 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
+	$fieldsFromSearch[] = 'src';
 	$fieldsFromSearch[] = 'calldate';
 	$fieldsFromSearch[] = 'dst';
 	$fieldsFromSearch[] = 'billsec';
@@ -202,6 +203,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
+	$fieldsFromSearchShowAs[] = $locate->Translate("src");
 	$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
 	$fieldsFromSearchShowAs[] = $locate->Translate("dst");
 	$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
@@ -213,7 +215,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false,$ifsearch);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
@@ -261,7 +263,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchType, $searchField, $divName, "",true);
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "",true);
 	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);

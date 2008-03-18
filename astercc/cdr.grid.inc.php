@@ -48,9 +48,8 @@ class Customer extends astercrm
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$sql = "SELECT * FROM mycdr WHERE src = '".$_SESSION['curuser']['username']."'";
 		}
-//echo $order[0];echo $order[1];exit;
 		if($order == null || is_array($order)){
-			$sql .= " LIMIT $start, $limit";//.$_SESSION['ordering'];
+			$sql .= "ORDER by calldate ASC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
@@ -158,7 +157,6 @@ class Customer extends astercrm
 			}
 
 			if ($joinstr!=''){
-				//$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 				$sql .= " ".$joinstr;
 			}else {
 				$sql .= " 1";
@@ -194,10 +192,8 @@ class Customer extends astercrm
 			}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 				$sql .= " SELECT COUNT(*) FROM mycdr WHERE src = '".$_SESSION['curuser']['username']."'";
 			}
-			//$sql = "SELECT COUNT(*) FROM mycdr WHERE src = '".$_SESSION['curuser']['username']."'";
 
 			if ($joinstr!=''){
-				//$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 				$sql .= " ".$joinstr;
 			}
 		Customer::events($sql);
@@ -231,7 +227,6 @@ class Customer extends astercrm
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$sql = "SELECT * FROM mycdr WHERE src = '".$_SESSION['curuser']['username']."'";
 		}
-		//$sql = "SELECT * FROM mycdr WHERE src = '".$_SESSION['curuser']['username']."'";
 		
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
