@@ -165,16 +165,12 @@ class astercc extends PEAR
 		global $db;
 		$dst = trim($dst);
 		if ($groupid == '' || $groupid == '-1') {
-			print "invalid identity";
+			#print "invalid identity";
 			return;
 		}
-		print $groupid."\n";
-		print $resellerid."\n";
-		//exit;
 
 
 		$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid";
-		print $sql."\n";;
 		
 		astercc::events($sql);
 		$rates = & $db->query($sql);
@@ -182,12 +178,9 @@ class astercc extends PEAR
 		$maxprefix = '';
 		$myrate = array();
 		$default = '';
-		if ($groupid == "0"){
-			print "jelo-123123";
-			exit;
-		}
 
 		while ($rates->fetchInto($list)) {
+			#print "start\n";
 			if ($list['dialprefix'] == 'default'){
 				$default = $list;
 				continue;
@@ -201,25 +194,24 @@ class astercc extends PEAR
 				}
 			}
 		}
-		
-			print $groupid."\n";
-			print $resellerid."\n";
-			print "-----------"."\n";
-		if ($maxprefix == '' && $default == ''){ // did get rate from group
-			print $groupid."\n";
-			print $resellerid."\n";
 
-			if ($groupid == 0 && $resellerid == 0) {
+
+		if ($maxprefix == '' && $default == ''){ // did get rate from group
+
+			if ($groupid == "0" && $resellerid == "0") {
+				//print "done\n";
+				//exit;
 				return;
 			}
 			
 			if ($groupid != "0" && $resellerid != "0") {
-				print "here";
+				//print "here\n";
 				return astercc::searchRate($dst,"0",$resellerid,$tbl);		
 			}
 
 			if ($groupid == 0 && $resellerid != 0) {
-				print "ok";
+				//print "ok";
+				//exit;
 				return astercc::searchRate($dst,"0","0",$tbl);		
 			}
 

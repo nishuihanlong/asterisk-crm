@@ -51,6 +51,8 @@ require_once('systemstatus.common.php');
 				var objDialprefix = document.getElementById("iptDialprefix");
 				if (objDialprefix.value != '')
 					xajax_searchRate(objDialprefix.value);
+				else
+					document.getElementById("divRate").innerHTML = '';
 			}
 		//-->
 		</SCRIPT>
@@ -79,7 +81,7 @@ require_once('systemstatus.common.php');
 		</div>
 		<div>
 				<input type="text" size="10" name="iptDialprefix" id="iptDialprefix"><input type="button" value="Search Rate" onclick="searchRate();">
-				<div id="spanRate" name="spanRate"></div>	
+				<div id="divRate" name="divRate"></div>	
 		</div>
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>
 		<div id="divCallback" name="divCallback" class="formDiv drsElement" style="left: 450px; top: 50px;visibility:visible">
