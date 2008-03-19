@@ -47,6 +47,11 @@ require_once('systemstatus.common.php');
 					myDiv.style.display = 'block';
 				return false;
 			}
+			function searchRate(){
+				var objDialprefix = document.getElementById("iptDialprefix");
+				if (objDialprefix.value != '')
+					xajax_searchRate(objDialprefix.value);
+			}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -71,6 +76,10 @@ require_once('systemstatus.common.php');
 		<div id="divAmount" style="display:none;">
 		&nbsp;Amount:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;Cost:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit:&nbsp;<span id="spanLimit" name="spanLimit"> </span><br>
 		&nbsp;Last refresh time: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit Status:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
+		</div>
+		<div>
+				<input type="text" size="10" name="iptDialprefix" id="iptDialprefix"><input type="button" value="Search Rate" onclick="searchRate();">
+				<div id="spanRate" name="spanRate"></div>	
 		</div>
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>
 		<div id="divCallback" name="divCallback" class="formDiv drsElement" style="left: 450px; top: 50px;visibility:visible">

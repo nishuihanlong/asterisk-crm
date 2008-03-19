@@ -63,7 +63,10 @@ function init($curpeer){
 		$objResponse->addScript("addOption('sltBooth','"."0"."','"."All"."');");
 
 		while	($clid->fetchInto($row)){
-			$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
+			if ($curpeer == $row['clid'])
+				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."',true);");
+			else
+				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
 		}
 		$objResponse->addScript("addOption('sltBooth','-1','callback');");
 		// get limit status and creditlimit
@@ -108,7 +111,9 @@ function setClid($groupid){
 
 function listCDR($aFormValues){
 	$objResponse = new xajaxResponse();
-
+	if ($aFormValues['sltBooth'] == '' && $aFormValues['hidCurpeer'] != ''){
+		$aFormValues['sltBooth'] = $aFormValues['hidCurpeer'];
+	}
 	if ($aFormValues['ckbDetail'] == ""){
 		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 		if ($res->fetchInto($myreport)){
@@ -164,23 +169,8 @@ function listCDR($aFormValues){
 	while	($records->fetchInto($mycdr)){
 		$price = '';
 		$ratedesc = '';
-		$rate = astercc::readRate($mycdr['dst'],$mycdr['groupid']);
-		if (!empty($rate)){
+		$ratedesc = astercc::readRateDesc($mycdr['memo']);
 
-			$destination = $rate['destination'];
-			$rateinitial = $rate['rateinitial'];
-			$initblock	 = $rate['initblock'];
-			$billingblock = $rate['billingblock'];
-
-			$ratedesc = astercc::readRateDesc($rate);
-			//$price = astercc::calculatePrice($mycdr['billsec'],$rate);
-		}
-		$cs_rate = astercc::readRate($mycdr['dst'],0, "callshoprate", $_SESSION['curuser']['groupid']);
-		if (!empty($cs_rate)){
-			$cs_price = astercc::calculatePrice($mycdr['billsec'],$cs_rate);
-		}
-
-		//$callshop_cost = astercc::creditDigits(round(($cs_price)*100)/100);
 		$callshop_cost = $mycdr['callshopcredit'];
 		$reseller_cost = $mycdr['resellercredit'];
 

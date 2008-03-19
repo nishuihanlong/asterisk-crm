@@ -161,14 +161,20 @@ class astercc extends PEAR
 		}
 	}
 
-	function readRate($dst,$groupid, $tbl = 'myrate', $secondGroupid = null){
+	function searchRate($dst,$groupid, $resellerid, $tbl = 'myrate'){
 		global $db;
 		$dst = trim($dst);
-		if ($secondGroupid != null){
-			$sql = "SELECT * FROM $tbl WHERE groupid = $secondGroupid";
-		}else{
-			$sql = "SELECT * FROM $tbl WHERE groupid = $groupid";
+		if ($groupid == '' || $groupid == '-1') {
+			print "invalid identity";
+			return;
 		}
+		print $groupid."\n";
+		print $resellerid."\n";
+		//exit;
+
+
+		$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid";
+		print $sql."\n";;
 		
 		astercc::events($sql);
 		$rates = & $db->query($sql);
@@ -176,6 +182,10 @@ class astercc extends PEAR
 		$maxprefix = '';
 		$myrate = array();
 		$default = '';
+		if ($groupid == "0"){
+			print "jelo-123123";
+			exit;
+		}
 
 		while ($rates->fetchInto($list)) {
 			if ($list['dialprefix'] == 'default'){
@@ -192,11 +202,30 @@ class astercc extends PEAR
 			}
 		}
 		
+			print $groupid."\n";
+			print $resellerid."\n";
+			print "-----------"."\n";
+		if ($maxprefix == '' && $default == ''){ // did get rate from group
+			print $groupid."\n";
+			print $resellerid."\n";
 
-		if ($secondGroupid != null && $maxprefix == '' && $default ==''){ // did get rate from group
-			return astercc::readRate($dst,$groupid, $tbl);
+			if ($groupid == 0 && $resellerid == 0) {
+				return;
+			}
+			
+			if ($groupid != "0" && $resellerid != "0") {
+				print "here";
+				return astercc::searchRate($dst,"0",$resellerid,$tbl);		
+			}
+
+			if ($groupid == 0 && $resellerid != 0) {
+				print "ok";
+				return astercc::searchRate($dst,"0","0",$tbl);		
+			}
+
+			//return astercc::readRate($dst,$groupid, $tbl);
 		}
-
+	
 		if ($maxprefix == ''){
 			return $default;
 		}else{
@@ -353,14 +382,18 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 
 	function readRateDesc($memo){
-		$memo = split("\n",$memo,4);
-		if ( $memo[0] != ''){
-			foreach ($memo as $val){
-				$tmp = split(":",$val);
-				$rate[$tmp[0]] = $tmp[1];
+		if (!is_array($memo)){
+			$memo = split("\n",$memo,4);
+			if ( $memo[0] != ''){
+				foreach ($memo as $val){
+					$tmp = split(":",$val);
+					$rate[$tmp[0]] = $tmp[1];
+				}
+			}else{
+				return "";
 			}
 		}else{
-			return "";
+			$rate = $memo;
 		}
 		if ($rate['initblock'] != 0){
 			$desc .= floor($rate['connectcharge']*100)/100 . ' for first ' . $rate['initblock'] . ' seconds <br/>';

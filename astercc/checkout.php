@@ -24,19 +24,24 @@ require_once('checkout.common.php');
 	function init(){
 		curpeer = document.getElementById("hidCurpeer").value;
 		xajax_init(curpeer);
+		if (curpeer != ''){
+			document.getElementById('ckbDetail').checked = true;
+		}
 		listCDR();
 	}
 
-	function  addOption(objId,optionVal,optionText)  {
+	function  addOption(objId,optionVal,optionText,optionSelected)  {
 		objSelect = document.getElementById(objId);
 		var _o = document.createElement("OPTION");
 		_o.text = optionText;
 		_o.value = optionVal;
+		_o.selected = optionSelected;
 	//	alert(objSelect.length);
 		objSelect.options.add(_o);
 	} 
 
 	function listCDR(){
+
 		xajax_listCDR(xajax.getFormValues("frmFilter"));
 	}
 
@@ -165,6 +170,7 @@ require_once('checkout.common.php');
 			<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail">List Detail
 			<br>
 			<input type="button" onclick="listCDR();return false;" value="List">
+			<input type="hidden" id="hidCurpeer" name="hidCurpeer" value="<?echo $_REQUEST['peer']?>">
 		</div>
 		</form>
 
@@ -185,7 +191,6 @@ require_once('checkout.common.php');
 		</div>
 		</center>
 
-		<input type="hidden" id="hidCurpeer" name="hidCurpeer" value="<?echo $_REQUEST['peer']?>">
 		<div id="divCopyright"></div>
 	</body>
 </html>

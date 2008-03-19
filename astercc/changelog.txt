@@ -36,7 +36,7 @@ code有时候会出现问题, vista总是不识别
 [fixed] pin不得为空
 [fixed] import表init时应清空 字段列表
 [fixed] report里应该加上该用户的limit状态和limit信息
-
+[fixed] 点击CDR不自动选择booth
 astercc features:
 	
 	work with all asterisk based system	

@@ -63,4 +63,5 @@ $xajax->registerFunction("checkOut");
 $xajax->registerFunction("setCreditLimit");
 $xajax->registerFunction("setStatus");
 $xajax->registerFunction("setGroupBalance");
+$xajax->registerFunction("searchRate");
 ?>

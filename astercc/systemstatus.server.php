@@ -80,6 +80,18 @@ if (!isset($_SESSION['callbacks']))
 	return $objResponse;
 }
 
+function searchRate($dialprefix){
+	$objResponse = new xajaxResponse();
+	if ($dialprefix == ''){
+		return $objResponse;
+	}
+	
+	$rate = astercc::searchRate($dialprefix,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'],"myrate");
+	$rateDesc = astercc::readRateDesc($rate);
+	$objResponse->addAssign("spanRate","innerHTML",$rateDesc);
+	return $objResponse;
+}
+
 function setGroupBalance(){
 	global $config;
 	$objResponse = new xajaxResponse();
@@ -300,13 +312,6 @@ function showStatus(){
 	$_SESSION['status'] = $peerstatus;
 	$objResponse->addScript('setTimeout("showStatus()", 2000);');
 	$objResponse->addAssign("spanLastRefresh",'innerHTML',date ("Y-m-d H:i:s",time()));
-	return $objResponse;
-}
-
-function getLimitSec($dst,$creditLimit){
-	$objResponse = new xajaxResponse();
-	$rate = asterEvent::readRate($dst,$_SESSION['curuser']['groupid']);
-	$limitSec = asterEvent::calculateLimitSec($creditLimit,$rate);
 	return $objResponse;
 }
 
