@@ -53,9 +53,18 @@
 	Note: This option can only fit to redhat-release system. 
 	If you want astercc daemons to start automatically when you boot your
 	machine, you need to :
+
 	cp /opt/asterisk/scripts/astercc/asterccd /etc/rc.d/init.d
 	chmod 755 /etc/rc.d/init.d/asterccd
 	chkconfig --add asterccd
+	
+	Advice: Configure your astercc restart once everyday, it's not necessary, but it 's good for your astercc operation.
+	for example: you want to restart astercc at 0'clock everyday,just do the following line as root. 
+	crontab -e
+	add a line: 
+		0 0 * * * /etc/rc.d/init.d/asterccd restart 
+	end of this file, the first "0" figure minutes and the second "0" figure hours.
+
 
 7) set folder access 
 
