@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `curcdr` (
   `dstuid` varchar(20) NOT NULL default '',
   `disposition` varchar(10) NOT NULL default '',
   `userid` int(11) NOT NULL default '0',
-	`groupid` int(11) NOT NULL default '0',
+  `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
   `credit` double(24,4) NOT NULL default '0.0000',
   `callshopcredit` double(24,4) NOT NULL default '0.0000',
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
-  KEY `srcid` (`src`,`dst`,`channel`,`dstchannel`,`duration`,`billsec`,`disposition`)
+  KEY `srcid` (`src`,`dst`,`channel`,`duration`,`billsec`,`disposition`)
 ) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
