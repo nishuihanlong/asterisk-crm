@@ -1,5 +1,5 @@
 #!/bin/sh   
-#   singhead monitor 
+#   singhead monitor for astercc daemons
 #     
 # |||||||||||||||||||| CONFIGURATION SECTION  ||||||||||||||||||||
 # --------------------                              --------------------   
