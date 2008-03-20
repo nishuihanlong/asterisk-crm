@@ -10,6 +10,7 @@
 	mv /var/www/html/astercc/daemons/* /opt/asterisk/scripts/astercc/
 	chmod +x /opt/asterisk/scripts/astercc/astercc
 	chmod +x /opt/asterisk/scripts/astercc/asterrc
+	chmod +x /opt/asterisk/scripts/astercc/asterccd
 
 3) Create the MySQL database and table, asterCC need mysql 4.1 or above
 
