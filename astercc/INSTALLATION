@@ -43,10 +43,18 @@
 5) modify /var/www/html/astercc/astercc.conf.php and /opt/asterisk/scripts/astercc/astercc.conf to fit your configration
 		mainly database setting and AMI setting
 
-6) Start astercc daemons
-
-	/opt/asterisk/scripts/astercc/astercc -d
-	/opt/asterisk/scripts/astercc/asterrc -d
+6) Start astercc daemons 
+	
+	/opt/asterisk/scripts/astercc/asterccd start
+	Note: If your astercc scripts in other directory, you need to modify script path in CONFIGURATION SECTION of asterccd and asterccdaemon to fit your script path (modify path of astercc,asterrc and asterccdaemon in asterccd; modify path of asterccd and monitor log in asterccdaemon).
+	
+	Start astercc daemons when system startup:
+	Note: This option can only fit to redhat-release system. 
+	If you want astercc daemons to start automatically when you boot your
+	machine, you need to :
+	cp /opt/asterisk/scripts/astercc/asterccd /etc/rc.d/init.d
+	chmod 755 /etc/rc.d/init.d/asterccd
+	chkconfig --add asterccd
 
 7) set folder access 
 

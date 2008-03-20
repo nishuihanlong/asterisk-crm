@@ -1,0 +1,49 @@
+#!/bin/sh   
+#   singhead monitor 
+#     
+# |||||||||||||||||||| CONFIGURATION SECTION  ||||||||||||||||||||
+# --------------------                              --------------------   
+#
+# the absolute path to your asterccd shell, must included shell name, can not include options
+asterccdpath="/opt/asterisk/scripts/astercc/asterccd"
+# the absolute path to your monitor log, can not include logfile name
+monitorlogpath="/opt/asterisk/scripts/astercc/"
+#
+# --------------------                              --------------------
+# ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
+while   [   1   ]   
+	do
+		sleep  3 
+		asterccpid=`ps -ef |grep -v grep |grep -E /asterc[.\ ]+-d |awk '{print $2}'`
+		asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[.\ ]+-d |awk '{print $2}'`
+		if [ "x$asterccpid" != "x" ]
+		then
+			if [ "x$asterrcpid" != "x" ]
+			then
+				:
+			else
+				if test -s $asterccdpath; then
+					$asterccdpath
+					if [ $? -ne 0 ];then
+						echo "start asterccd faild at "`date`" ERROR="$? >> $monitorlogpath/asterccmonitor.log
+					else
+						echo "start asterccd start successed at "`date` >> $monitorlogpath/asterccmonitor.log
+					fi
+				else
+					echo Not asterccd in $asterccdpath
+				fi
+			fi
+		else
+			if test -s $asterccdpath; then
+				$asterccdpath
+				if [ $? -ne 0 ];then
+					echo "start asterccd faild at "`date`" ERROR="$? >> $monitorlogpath/asterccmonitor.log
+				else
+					echo "start asterccd start successed at "`date` >> $monitorlogpath/asterccmonitor.log
+				fi
+			else
+				echo Not asterccd in $asterccdpath
+			fi
+		fi
+	done
+
