@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `curcdr` (
   `memo` varchar(100) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
-) ENGINE=MyISAM;
+) ENGINE=HEAP;
 
 -- --------------------------------------------------------
 

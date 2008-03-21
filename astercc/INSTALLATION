@@ -1,8 +1,8 @@
 1) Download and unzip the source
 
 	cd /var/www/html
-	unzip astercc-0.03.zip
-	mv astercc-0.0.03 astercc
+	unzip astercc-0.04.zip
+	mv astercc-0.04 astercc
 
 2) Create the directories and move astercc daemon scripts:
 

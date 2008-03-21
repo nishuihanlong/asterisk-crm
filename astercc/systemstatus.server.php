@@ -89,6 +89,9 @@ function searchRate($dialprefix){
 	$rate = astercc::searchRate($dialprefix,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'],"myrate");
 
 	$rateDesc = astercc::readRateDesc($rate);
+	// remove the connect charge part
+	// $rateDesc = split("seconds",$rateDesc);
+	// $rateDesc = $rateDesc[1]." seconds";
 	$objResponse->addAssign("divRate","innerHTML",$rate['destination']."(".$rateDesc.")");
 	return $objResponse;
 }

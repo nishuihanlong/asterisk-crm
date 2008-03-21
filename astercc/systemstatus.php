@@ -74,10 +74,10 @@ require_once('systemstatus.common.php');
 			<a href="clid.php" target="_blank">Clid</a><br>
 			<a href="login.php">Logout</a>
 		</div>
+		&nbsp;Last refresh time: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit Status:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
 		<input type="button" value="Callshop Status" onclick="showCallshopStatus();">
 		<div id="divAmount" style="display:none;">
 		&nbsp;Amount:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;Cost:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit:&nbsp;<span id="spanLimit" name="spanLimit"> </span><br>
-		&nbsp;Last refresh time: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit Status:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
 		</div>
 		<div>
 				<input type="text" size="10" name="iptDialprefix" id="iptDialprefix"><input type="button" value="Search Rate" onclick="searchRate();">
