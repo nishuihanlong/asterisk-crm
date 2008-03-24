@@ -285,7 +285,7 @@ CREATE TABLE `trunkinfo` (
 `id` INT NOT NULL AUTO_INCREMENT ,
 `trunkname` VARCHAR( 50 ) NOT NULL ,
 `trunkchannel` VARCHAR( 50 ) NOT NULL ,
-`tranknote` TEXT NOT NULL ,
+`trunknote` TEXT NOT NULL ,
 `creby` VARCHAR( 50 ) NOT NULL ,
 `cretime` DATETIME NOT NULL ,
 INDEX ( `trunkchannel` ) ,

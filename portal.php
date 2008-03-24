@@ -207,6 +207,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 
 		<div id="divHangup" name="divHangup">
 			<input type="button" value="Hangup" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
+			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 		</div><br>
 
 		<span id="spanTransfer" name="spanTransfer">

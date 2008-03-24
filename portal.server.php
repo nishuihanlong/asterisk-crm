@@ -271,7 +271,7 @@ function incomingCalls($myValue){
 
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
-
+			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
 		}
 		$objResponse->addAssign("status","innerHTML", $status );
 //		$objResponse->addAssign("extensionStatus","value", $status );
@@ -364,6 +364,16 @@ function waitingCalls($myValue){
 		$trunk = split("-",$call['callerChannel']);
 
 		$info	= $info. ' channel: ' . $trunk[0];
+		// get trunk info 
+		$mytrunk = astercrm::getTrunkinfo($trunk[0]);
+		if ($mytrunk){
+			$infomsg = "<strong>".$mytrunk['trunkname']."</strong><br>";
+			$infomsg .= astercrm::db2html($mytrunk['trunknote']);
+			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+		}else{
+			$infomsg = "no information get for trunk: ".$trunk[0];
+			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+		}
 
 		$objResponse->addAssign("btnHangup","disabled", false );
 

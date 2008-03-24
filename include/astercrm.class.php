@@ -101,6 +101,14 @@
 
 Class astercrm extends PEAR{
 
+	function getTrunkinfo($trunk){
+		global $db;
+		$query = "SELECT * FROM trunkinfo WHERE trunkchannel = '$trunk'";
+		astercrm::events($query);
+		$res =& $db->getRow($query);
+		return $res;
+	}
+
 	function insertNewMonitor($callerid,$filename){
 		global $db;
 		$query= "INSERT INTO monitorrecord SET "
@@ -1912,5 +1920,10 @@ Class astercrm extends PEAR{
 		$res =& $db->query($query);
 		return $res;
 	}
+
+	function db2html($string){
+		return str_replace(chr(13),'<br>',$string);
+	}
+
 }
 ?>

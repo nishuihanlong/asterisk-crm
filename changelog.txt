@@ -173,10 +173,11 @@ v0.047
 2008-3-24		增加了eventtype参数
 2008-3-24		增加了表curcdr, mycdr
 2008-3-24		增加了表trunkinfo, 保存trunk信息
+2008-3-24		增加了显示从哪条外线打来的功能
 
 TO-DO:
 增加对dialedlist的导出和删除功能
-
+增加显示主叫号码的功能
 [no fix] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue
 解决办法1 在queue内定义agent时使用 Local/8000@from-internal/n 的方法
 解决办法2 使用老的方法获取事件
