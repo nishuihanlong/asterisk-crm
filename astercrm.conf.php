@@ -32,6 +32,10 @@ log_enabled = 1
 ;Log file path
 log_file_path = /tmp/astercrmDebug.log
 
+; where astercrm get asterisk call events
+; option: event, curcdr
+eventtype = event
+
 ;
 ; Asterisk context parameter, use which context when dial in or dial out
 ;

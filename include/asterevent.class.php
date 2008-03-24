@@ -96,6 +96,39 @@ class asterEvent extends PEAR
 			$call['uniqueid']		(string)	uniqueid for the new call
 */
 	function checkNewCall($curid,$exten){
+		global $db,$config;
+
+		if ($config['system']['eventtype'] == 'curcdr'){
+			if (strstr($exten,"/")){
+				$query = "SELECT * FROM curcdr WHERE (srcchan LIKE '$exten-%' OR dstchan LIKE '$exten-%') AND id > $curid AND src != '' AND dst != ''";
+			}else{
+				$query = "SELECT * FROM curcdr WHERE (srcchan LIKE '%$exten-%' OR dstchan LIKE '%$exten-%') AND id > $curid AND src != '' AND dst != ''";
+			}
+			$res = $db->query($query);
+			asterEvent::events($query);
+			if ($res->fetchInto($list)) {
+				if (strstr($list['srcchan'],$exten) ) {	// dial out
+					$call['status'] = 'dialout';
+					$call['callerid'] = trim($list['dst']);
+					$call['uniqueid'] = trim($list['srcuid']);
+					$call['curid'] = trim($list['id']);
+					$call['callerChannel'] = $list['srcchan'];
+					$call['calleeChannel'] = $list['dstchan'];
+				}else{		//dial in
+					$call['callerChannel'] = $list['srcchan'];
+					$call['calleeChannel'] = $list['dstchan'];
+					$call['status'] = 'incoming';
+					$call['callerid'] = trim($list['src']);
+					$call['uniqueid'] = trim($list['srcuid']);
+					$call['curid'] = trim($list['id']);
+				}
+			}else{
+				$call['status'] = '';
+				$call['curid'] = $curid;
+			}
+
+			return $call;
+		}
 
 		$call =& asterEvent::checkIncoming($curid,$exten);
 
@@ -123,6 +156,28 @@ class asterEvent extends PEAR
 			$call['calleeChannel']	(string)	callee channel (if status is link)
 */
 	function checkCallStatus($curid,$uniqueid){
+		global $db,$config;
+		if ($config['system']['eventtype'] == 'curcdr'){
+			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' ";
+			$res = $db->query($query);
+			asterEvent::events($query);
+			if ($res->fetchInto($list)) {
+				if ($list['answertime'] != '0000-00-00 00:00:00'){
+
+					$call['callerChannel'] = $list['srcchan'];
+					$call['calleeChannel'] = $list['dstchan'];
+
+					$call['status'] = 'link';
+				}else{
+					$call['status'] = '';
+				}
+			}else{
+				$call['status'] = 'hangup';
+			}
+			$call['id'] = $curid;
+			return $call;
+		}
+
 		// check if hangup
 		$call =& asterEvent::checkHangup($curid,$uniqueid);
 

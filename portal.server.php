@@ -360,6 +360,10 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
+		
+		$trunk = split("-",$call['callerChannel']);
+
+		$info	= $info. ' channel: ' . $trunk[0];
 
 		$objResponse->addAssign("btnHangup","disabled", false );
 
@@ -766,11 +770,13 @@ function hangup($channel){
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
-
+	if (trim($channel) == '')
+		return $objResponse;
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	if (!$res){
-		return;
+		$objResponse->addALert("action Huangup failed");
+		return $objResponse;
 	}
 	$myAsterisk->Hangup($channel);
 	//$objResponse->addAssign("btnHangup", "disabled", true);

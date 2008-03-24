@@ -170,6 +170,9 @@ v0.047
 2008-2-24		增加了monitorrecord表, 并且在录音的同时会将录音信息保存到该表中
 2008-2-26		修正了一个bug, 当使用customer模式时, 点击detail会报错
 2008-2-29		修正了一个predictivedialer对ie的兼容性问题
+2008-3-24		增加了eventtype参数
+2008-3-24		增加了表curcdr, mycdr
+2008-3-24		增加了表trunkinfo, 保存trunk信息
 
 TO-DO:
 增加对dialedlist的导出和删除功能

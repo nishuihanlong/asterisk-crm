@@ -189,7 +189,7 @@ function processAccountData($aFormValues)
 	if you dont want check manager status and show device status when user login 
 	please uncomment these three line
 */
-				$objResponse->addAlert($locate->Translate("Login success"));
+				//$objResponse->addAlert($locate->Translate("Login success"));
 				$objResponse->addScript('window.location.href="portal.php";');
 				return $objResponse;
 
