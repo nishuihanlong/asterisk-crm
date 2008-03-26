@@ -220,11 +220,19 @@ function transfer($aFormValues){
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
+	
+	if ($aFormValues['iptTtansfer'] != ''){
+		$action = $aFormValues['iptTtansfer'];
+	}elseif ($aFormValues['sltExten'] != ''){
+		$action = $aFormValues['sltExten'];
+	}else{
+		return $objResponse;
+	}
 
 	if ($aFormValues['direction'] == 'in')		
-		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
+		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
 	else
-		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$aFormValues['sltExten'],$config['system']['outcontext'],1);
+		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
 	return $objResponse;
 }
 

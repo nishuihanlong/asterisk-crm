@@ -294,6 +294,38 @@ UNIQUE (
 )
 ) ENGINE = MYISAM ;
 
+CREATE TABLE `asteriskcalls` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`outcontext` VARCHAR( 50 ) NOT NULL ,
+`incontext` VARCHAR( 50 ) NOT NULL ,
+`inextension` VARCHAR( 50 ) NOT NULL ,
+`groupid` INT NOT NULL ,
+`cretime` DATETIME NOT NULL ,
+`creby` VARCHAR( 50 ) NOT NULL ,
+UNIQUE (
+`id` 
+)
+) ENGINE = MYISAM ;
+
+CREATE TABLE `remindercalls` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`customerid` INT NOT NULL ,
+`contactid` INT NOT NULL ,
+`phonenumber` VARCHAR( 50 ) NOT NULL ,
+`asteriskcallsid` INT NOT NULL ,
+`creby` VARCHAR( 50 ) NOT NULL ,
+`cretime` DATETIME NOT NULL ,
+`note` VARCHAR( 255 ) NOT NULL ,
+`result` VARCHAR( 255 ) NOT NULL ,
+`groupid` INT NOT NULL ,
+`dialtime` DATETIME NOT NULL ,
+`status` VARCHAR( 50 ) NOT NULL ,
+UNIQUE (
+`id` 
+)
+) ENGINE = MYISAM ;
+
+
 INSERT INTO `account` (
 `id` ,
 `username` ,

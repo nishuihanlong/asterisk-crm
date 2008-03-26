@@ -213,6 +213,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<span id="spanTransfer" name="spanTransfer">
 			<SELECT id="sltExten" name="sltExten">
 			</SELECT>
+			<INPUT TYPE="text" name="iptTtansfer" id="iptTtansfer" size="15">
 			<INPUT type="BUTTON" value="Transfer" id="btnTransfer" onclick="xajax_transfer(xajax.getFormValues('myForm'));">
 		</span>
 		<div id="myevents"></div>
