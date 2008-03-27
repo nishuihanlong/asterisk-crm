@@ -51,6 +51,24 @@ require_once('remindercalls.common.php');
 				return false;
 			}
 
+		function  addOption(objId,optionVal,optionText)  {
+			objSelect = document.getElementById(objId);
+			var _o = document.createElement("OPTION");
+			_o.text = optionText;
+			_o.value = optionVal;
+			objSelect.options.add(_o);
+		} 
+
+			function setAsteriskcalls(){
+				var groupid = xajax.$('groupid').value;
+				if (groupid == '')
+					return;
+				//清空 asteriskcallsid
+				document.getElementById("asteriskcallsid").options.length = 0;
+				if (groupid != 0)
+					xajax_setAsteriskcalls(asteriskcallsid);
+			}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>

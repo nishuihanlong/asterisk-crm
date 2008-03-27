@@ -190,7 +190,7 @@ class Customer extends astercrm
 	
 	function formAdd(){
 		global $locate;
-
+/*
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$res = Customer::getGroups();
 				$grouphtml .= '<select name="groupid" id="groupid">';
@@ -203,6 +203,55 @@ class Customer extends astercrm
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
 
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$res = Customer::getRecordsByGroupid(null,'asteriskcalls');
+		}else{
+			$res = Customer::getRecordsByGroupid($_SESSION['curuser']['groupid'],'asteriskcalls');
+		}
+		$asteriskcallshtml .= '<select name="asteriskcallsid" id="asteriskcallsid">';
+		while ($row = $res->fetchRow()) {
+				$asteriskcallshtml .= '<option value="'.$row['id'].'"';
+				$asteriskcallshtml .='>'.$row['asteriskcallsname'].'</option>';
+		}
+		$asteriskcallshtml .= '</select>';
+*/
+
+		$groupoptions = '';
+		$group = astercrm::getGroups();
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$groupoptions .= '<select id="groupid" name="groupid" onchange="setAsteriskcalls();">';
+			$groupoptions .= '<option value="0"></option>';
+			while	($group->fetchInto($row)){
+				$groupoptions .= "<OPTION value='".$row['groupid']."'>".$row['groupname']."</OPTION>";
+			}
+			$groupoptions .= '</select>';
+		}else{
+			while	($group->fetchInto($row)){
+				if ($row['id'] == $_SESSION['curuser']['groupid']){
+					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
+					break;
+				}
+			}
+		}
+
+		//$res = Customer::getRecordsByGroupid($_SESSION['curuser']['groupid'],'asteriskcalls');
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$asteriskcallsoptions .= '<select id="asteriskcallsid" name="asteriskcallsid">';
+			$asteriskcallsoptions .= "<OPTION value='0'></OPTION>";
+			//while	($group->fetchInto($row)){
+			//	$groupoptions .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
+			//}
+			$asteriskcallsoptions .= '</select>';
+		}else{
+			//while	($group->fetchInto($row)){
+			//	if ($row['id'] == $_SESSION['curuser']['groupid']){
+			//		$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
+			//		break;
+			//	}
+			//}
+		}
+
 
 		$html = '
 			<!-- No edit the next line -->
@@ -210,20 +259,20 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dialout context").' *</td>
-					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="50"></td>
+					<td nowrap align="left">'.$locate->Translate("Phone number").' *</td>
+					<td align="left"><input type="text" id="phonenumber" name="phonenumber" size="30" maxlength="50"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dialin context").' *</td>
-					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="50"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dialin extension").'</td>
-					<td align="left"><input type="text" id="inextension" name="inextension" size="30" maxlength="50"></td>
+					<td nowrap align="left">'.$locate->Translate("Note").'</td>
+					<td align="left"><input type="text" id="note" name="note" size="50" maxlength="255"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
-					<td align="left">'.$grouphtml.'</td>
+					<td align="left">'.$groupoptions.'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Call plan").' *</td>
+					<td align="left">'.$asteriskcallsoptions.'</td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
@@ -314,6 +363,9 @@ class Customer extends astercrm
 				."customerid='".$f['customerid']."', "
 				."contactid='".$f['contactid']."', "
 				."phonenumber= '".$f['phonenumber']."', "
+				."asteriskcallsid= '".$f['asteriskcallsid']."', "
+				."note= '".$f['note']."', "
+				."dialtime= '".$f['dialtime']."', "
 				."groupid = ".$f['groupid'].", "
 				."cretime = now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -322,13 +374,16 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function updateremindercallsRecord($f){
+	function updateRemindercallsRecord($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
 		$query= "UPDATE remindercalls SET "
-				."outcontext='".$f['dialoutcontext']."', "
-				."incontext='".$f['dialincontext']."', "
-				."inextension= '".$f['dialinextension']."', "
+				."customerid='".$f['customerid']."', "
+				."contactid='".$f['contactid']."', "
+				."phonenumber= '".$f['phonenumber']."', "
+				."asteriskcallsid= '".$f['asteriskcallsid']."', "
+				."note= '".$f['note']."', "
+				."dialtime= '".$f['dialtime']."', "
 				."groupid = ".$f['groupid'].", "
 				."cretime = now() "
 				."WHERE id= ".$f['id']." ";

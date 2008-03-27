@@ -322,6 +322,18 @@ function edit($id){
 	return $objResponse->getXML();
 }
 
+function setAsteriskcalls($groupid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$res = Customer::getRecordsByGroupid($groupid,'asteriskcalls');
+
+	//添加option
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('asteriskcallsid','".$row['id']."','".$row['asteriskcallsname']."');");
+	}
+	return $objResponse;
+}
+
 function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
