@@ -190,31 +190,6 @@ class Customer extends astercrm
 	
 	function formAdd(){
 		global $locate;
-/*
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$res = Customer::getGroups();
-				$grouphtml .= '<select name="groupid" id="groupid">';
-				while ($row = $res->fetchRow()) {
-						$grouphtml .= '<option value="'.$row['groupid'].'"';
-						$grouphtml .='>'.$row['groupname'].'</option>';
-				}
-				$grouphtml .= '</select>';
-		}else{
-				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
-		}
-
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$res = Customer::getRecordsByGroupid(null,'asteriskcalls');
-		}else{
-			$res = Customer::getRecordsByGroupid($_SESSION['curuser']['groupid'],'asteriskcalls');
-		}
-		$asteriskcallshtml .= '<select name="asteriskcallsid" id="asteriskcallsid">';
-		while ($row = $res->fetchRow()) {
-				$asteriskcallshtml .= '<option value="'.$row['id'].'"';
-				$asteriskcallshtml .='>'.$row['asteriskcallsname'].'</option>';
-		}
-		$asteriskcallshtml .= '</select>';
-*/
 
 		$groupoptions = '';
 		$group = astercrm::getGroups();
@@ -300,23 +275,53 @@ class Customer extends astercrm
 	function formEdit($id){
 		global $locate;
 		$remindercalls =& Customer::getRecordByID($id,'remindercalls');
-		
-		if ($_SESSION['curuser']['usertype'] == 'admin'){ 
-				$grouphtml .=	'<select name="groupid" id="groupid" >
-																<option value=""></option>';
-				$res = Customer::getGroups();
-				while ($row = $res->fetchRow()) {
-					$grouphtml .= '<option value="'.$row['groupid'].'"';
-					if($row['groupid'] == $remindercalls['groupid']){
-						$grouphtml .= ' selected ';
-					}
-					$grouphtml .= '>'.$row['groupname'].'</option>';
+
+		$groupoptions = '';
+		$group = astercrm::getGroups();
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$groupoptions .= '<select id="groupid" name="groupid" onchange="setAsteriskcalls();">';
+			$groupoptions .= '<option value="0"></option>';
+			while	($group->fetchInto($row)){
+				$groupoptions .= '<option value="'.$row['groupid'].'"';
+				if($row['groupid'] == $remindercalls['groupid']){
+					$groupoptions .= ' selected ';
 				}
-				$grouphtml .= '</select>';
+				$groupoptions .= '>'.$row['groupname'].'</option>';
+			}
+			$groupoptions .= '</select>';
 		}else{
-				
-				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input type="hidden" name="groupid" id="groupid" value="'.$_SESSION['curuser']['groupid'].'">';
+			while	($group->fetchInto($row)){
+				if ($row['id'] == $_SESSION['curuser']['groupid']){
+					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
+					break;
+				}
+			}
 		}
+
+		$asteriskcalls = Customer::getRecordsByGroupid($remindercalls['groupid'],'asteriskcalls');
+		
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$asteriskcallsoptions .= '<select id="asteriskcallsid" name="asteriskcallsid">';
+			$asteriskcallsoptions .= "<OPTION value='0'></OPTION>";
+			while	($asteriskcalls->fetchInto($row)){
+				if ($row['id'] == $remindercalls['asteriskcallsid']){
+					$asteriskcallsoptions .= "<OPTION value='".$row['id']."' selected>".$row['asteriskcallsname']."</OPTION>";
+				}else{
+					$asteriskcallsoptions .= "<OPTION value='".$row['id']."' >".$row['asteriskcallsname']."</OPTION>";
+				}
+			}
+			$asteriskcallsoptions .= '</select>';
+		}else{
+			while	($group->fetchInto($row)){
+				if ($row['id'] == $remindercalls['asteriskcallsid']){
+					$asteriskcallsoptions .= $row['asteriskcallsname'].'<input type="hidden" value="'.$row['id'].'" name="asteriskcallsid" id="asteriskcallsid">';
+					break;
+				}
+			}
+		}
+
+
 
 		$html = '
 			<!-- No edit the next line -->
@@ -324,35 +329,33 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dialout context").'</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $remindercalls['id'].'"><input type="text" id="dialoutcontext" name="dialoutcontext" size="30" maxlength="50" value="'.$remindercalls['outcontext'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("Phone number").' *</td>
+					<td align="left"><input type="text" id="phonenumber" name="phonenumber" size="30" maxlength="50" value="'.$remindercalls['phonenumber'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dialin context").'</td>
-					<td align="left"><input type="text" id="dialincontext" name="dialincontext" size="30" maxlength="50" value="'.$remindercalls['incontext'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dialin extension").'</td>
-					<td align="left"><input type="text" id="dialinextension" name="dialinextension" size="30" maxlength="50" value="'.$remindercalls['inextension'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("Note").'</td>
+					<td align="left"><input type="text" id="note" name="note" size="50" maxlength="255" value="'.$remindercalls['note'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
-					<td align="left">'.$grouphtml.'</td>
+					<td align="left">'.$groupoptions.'</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
+					<td nowrap align="left">'.$locate->Translate("Call plan").' *</td>
+					<td align="left">'.$asteriskcallsoptions.'</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
 			 </table>
 			';
 
-			
-
-		$html .= '
-				</form>
-				'.$locate->Translate("obligatory_fields").'
-				';
-
+		$html .='
+			</form>
+			'.$locate->Translate("obligatory_fields").'
+			';
+		
 		return $html;
 	}
 

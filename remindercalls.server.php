@@ -213,7 +213,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['phonenumber'];
+		$rowc[] = '<a href="?" onclick="return false;">'.$row['phonenumber'].'</a>';
 		$rowc[] = $row['status'];
 		$rowc[] = $row['result'];
 		$rowc[] = $row['note'];
@@ -326,7 +326,6 @@ function setAsteriskcalls($groupid){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	$res = Customer::getRecordsByGroupid($groupid,'asteriskcalls');
-
 	//添加option
 	while ($res->fetchInto($row)) {
 		$objResponse->addScript("addOption('asteriskcallsid','".$row['id']."','".$row['asteriskcallsname']."');");

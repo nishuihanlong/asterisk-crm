@@ -66,7 +66,7 @@ require_once('remindercalls.common.php');
 				//清空 asteriskcallsid
 				document.getElementById("asteriskcallsid").options.length = 0;
 				if (groupid != 0)
-					xajax_setAsteriskcalls(asteriskcallsid);
+					xajax_setAsteriskcalls(groupid);
 			}
 
 		//-->
@@ -85,6 +85,14 @@ require_once('remindercalls.common.php');
 			<td style="padding: 0px;">
 				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
+		<div id="formCustomerInfo" class="formDiv drsElement"
+			style="left: 20px; top: 50px;"></div>
+		<div id="formContactInfo" class="formDiv drsElement"
+			style="left: 20px; top: 330px;"></div>
+		<div id="formNoteInfo" class="formDiv  drsElement"
+			style="left: 450px; top: 330px;"></div>
+		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;"></div>
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
