@@ -1,7 +1,7 @@
 <?
 /*******************************************************************************
-* asteriskcalls.grid.inc.php
-* asteriskcalls操作类
+* remindercalls.grid.inc.php
+* remindercalls操作类
 * Customer class
 
 * @author			Solo Fu <solo.fu@gmail.com>
@@ -13,8 +13,8 @@
 	getAllRecords				获取所有记录
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
-	formAdd						生成添加asteriskcalls表单的HTML
-	formEdit					生成编辑asteriskcalls表单的HTML
+	formAdd						生成添加remindercalls表单的HTML
+	formEdit					生成编辑remindercalls表单的HTML
 	新增getRecordsFilteredMore  用于获得多条件搜索记录集
 	新增getNumRowsMore          用于获得多条件搜索记录条数
 
@@ -27,7 +27,7 @@
 ********************************************************************************/
 
 require_once 'db_connect.php';
-require_once 'asteriskcalls.common.php';
+require_once 'remindercalls.common.php';
 require_once 'include/astercrm.class.php';
 
 
@@ -45,12 +45,12 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT asteriskcalls.*, groupname  FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.groupid = asteriskcalls.groupid";
+		$sql = "SELECT remindercalls.*, groupname, asteriskcallsname  FROM remindercalls LEFT JOIN accountgroup ON accountgroup.groupid = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
-			$sql .= " WHERE asteriskcalls.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " WHERE remindercalls.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 //		if ($creby != null)
@@ -84,7 +84,7 @@ class Customer extends astercrm
 		global $db;
 		
 		if(($filter != null) and ($content != null)){
-			$sql = "SELECT * FROM asteriskcalls"
+			$sql = "SELECT * FROM remindercalls"
 					." WHERE ".$filter." like '%".$content."%' "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
@@ -109,11 +109,11 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT asteriskcalls.*, groupname FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid WHERE ";
+		$sql = "SELECT remindercalls.*, groupname, asteriskcallsname FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
-			$sql .= " asteriskcalls.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " remindercalls.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		if ($joinstr!=''){
@@ -139,9 +139,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid";
+			$sql = " SELECT COUNT(*) FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid ";
 		}else{
-			$sql = " SELECT COUNT(*) FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid WHERE asteriskcalls.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE remindercalls.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -162,11 +162,11 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
-				$sql .= " asteriskcalls.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+				$sql .= " remindercalls.groupid = ".$_SESSION['curuser']['groupid']." AND ";
 			}
 
 			if ($joinstr!=''){
@@ -189,7 +189,7 @@ class Customer extends astercrm
 	*/
 	
 	function formAdd(){
-			global $locate;
+		global $locate;
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$res = Customer::getGroups();
@@ -203,15 +203,12 @@ class Customer extends astercrm
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
 
-	$html = '
+
+		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
 			
 			<table border="1" width="100%" class="adminlist">
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Name").' *</td>
-					<td align="left"><input type="text" id="asteriskcallsname" name="asteriskcallsname" size="30" maxlength="50"></td>
-				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Dialout context").' *</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="50"></td>
@@ -253,7 +250,7 @@ class Customer extends astercrm
 	
 	function formEdit($id){
 		global $locate;
-		$asteriskcalls =& Customer::getRecordByID($id,'asteriskcalls');
+		$remindercalls =& Customer::getRecordByID($id,'remindercalls');
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){ 
 				$grouphtml .=	'<select name="groupid" id="groupid" >
@@ -261,7 +258,7 @@ class Customer extends astercrm
 				$res = Customer::getGroups();
 				while ($row = $res->fetchRow()) {
 					$grouphtml .= '<option value="'.$row['groupid'].'"';
-					if($row['groupid'] == $asteriskcalls['groupid']){
+					if($row['groupid'] == $remindercalls['groupid']){
 						$grouphtml .= ' selected ';
 					}
 					$grouphtml .= '>'.$row['groupname'].'</option>';
@@ -278,20 +275,16 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Name").' *</td>
-					<td align="left"><input type="text" id="asteriskcallsname" name="asteriskcallsname" size="30" maxlength="50" value="'.$asteriskcalls['asteriskcallsname'].'"></td>
-				</tr>
-				<tr>
 					<td nowrap align="left">'.$locate->Translate("Dialout context").'</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $asteriskcalls['id'].'"><input type="text" id="dialoutcontext" name="dialoutcontext" size="30" maxlength="50" value="'.$asteriskcalls['outcontext'].'"></td>
+					<td align="left"><input type="hidden" id="id" name="id" value="'. $remindercalls['id'].'"><input type="text" id="dialoutcontext" name="dialoutcontext" size="30" maxlength="50" value="'.$remindercalls['outcontext'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Dialin context").'</td>
-					<td align="left"><input type="text" id="dialincontext" name="dialincontext" size="30" maxlength="50" value="'.$asteriskcalls['incontext'].'"></td>
+					<td align="left"><input type="text" id="dialincontext" name="dialincontext" size="30" maxlength="50" value="'.$remindercalls['incontext'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Dialin extension").'</td>
-					<td align="left"><input type="text" id="dialinextension" name="dialinextension" size="30" maxlength="50" value="'.$asteriskcalls['inextension'].'"></td>
+					<td align="left"><input type="text" id="dialinextension" name="dialinextension" size="30" maxlength="50" value="'.$remindercalls['inextension'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
@@ -314,14 +307,13 @@ class Customer extends astercrm
 		return $html;
 	}
 
-	function insertNewAsteriskcalls($f){
+	function insertNewRemindercalls($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$query= "INSERT INTO asteriskcalls SET "
-				."asteriskcallsname='".$f['asteriskcallsname']."', "
-				."outcontext='".$f['outcontext']."', "
-				."incontext='".$f['incontext']."', "
-				."inextension= '".$f['inextension']."', "
+		$query= "INSERT INTO remindercalls SET "
+				."customerid='".$f['customerid']."', "
+				."contactid='".$f['contactid']."', "
+				."phonenumber= '".$f['phonenumber']."', "
 				."groupid = ".$f['groupid'].", "
 				."cretime = now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -330,11 +322,10 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function updateAsteriskcallsRecord($f){
+	function updateremindercallsRecord($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$query= "UPDATE asteriskcalls SET "
-				."asteriskcallsname='".$f['asteriskcallsname']."', "
+		$query= "UPDATE remindercalls SET "
 				."outcontext='".$f['dialoutcontext']."', "
 				."incontext='".$f['dialincontext']."', "
 				."inextension= '".$f['dialinextension']."', "

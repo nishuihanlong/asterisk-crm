@@ -296,6 +296,7 @@ UNIQUE (
 
 CREATE TABLE `asteriskcalls` (
 `id` INT NOT NULL AUTO_INCREMENT ,
+`asteriskcallsname` VARCHAR( 50 ) NOT NULL ,
 `outcontext` VARCHAR( 50 ) NOT NULL ,
 `incontext` VARCHAR( 50 ) NOT NULL ,
 `inextension` VARCHAR( 50 ) NOT NULL ,

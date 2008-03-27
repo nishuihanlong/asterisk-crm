@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************
-* asteriskcalls.server.php
+* remindercalls.server.php
 
 * 账户组管理系统后台文件
-* asteriskcalls background management script
+* remindercalls background management script
 
 * Function Desc
-	provide asteriskcalls management script
+	provide remindercalls management script
 
 * 功能描述
 	提供帐户管理脚本
@@ -15,17 +15,17 @@
 		init				初始化页面元素
 		showGrid			显示grid
 		createGrid			生成grid的HTML代码
-		add					显示添加asteriskcalls的表单
-		save				保存asteriskcalls信息
-		update				更新asteriskcalls信息
-		edit				显示修改asteriskcalls的表单
-		delete				删除asteriskcalls信息
-		showDetail			显示asteriskcalls详细信息
+		add					显示添加remindercalls的表单
+		save				保存remindercalls信息
+		update				更新remindercalls信息
+		edit				显示修改remindercalls的表单
+		delete				删除remindercalls信息
+		showDetail			显示remindercalls详细信息
 							当前返回空值
 		searchFormSubmit    根据提交的搜索信息重构显示页面
 
 * Revision 0.0456  2007/10/30 13:47:00  last modified by solo
-* Desc: modify function showDetail, make it show asteriskcalls detail when click detail
+* Desc: modify function showDetail, make it show remindercalls detail when click detail
 
 * Revision 0.045  2007/10/19 10:01:00  last modified by solo
 * Desc: modify extensions description
@@ -36,11 +36,11 @@
 ********************************************************************************/
 
 require_once ("db_connect.php");
-require_once ('asteriskcalls.grid.inc.php');
+require_once ('remindercalls.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
-require_once ("asteriskcalls.common.php");
+require_once ("remindercalls.common.php");
 
 /**
 *  initialize page elements
@@ -118,8 +118,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"asteriskcalls");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"asteriskcalls");
+			$numRows =& Customer::getNumRowsMore($filter, $content,"remindercalls");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"remindercalls");
 		}
 	}
 	
@@ -127,30 +127,33 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
+	$fields[] = 'phonenumber';
+	$fields[] = 'status';
+	$fields[] = 'result';
+	$fields[] = 'note';
 	$fields[] = 'asteriskcallsname';
-	$fields[] = 'outcontext';
-	$fields[] = 'incontext';
-	$fields[] = 'inextension';
 	$fields[] = 'groupname';
 	$fields[] = 'creby';
 	$fields[] = 'cretime';
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("Name");
-	$headers[] = $locate->Translate("Dialout context");
-	$headers[] = $locate->Translate("Dialin context");
-	$headers[] = $locate->Translate("Dialin extension");
+	$headers[] = $locate->Translate("Number");
+	$headers[] = $locate->Translate("Status");
+	$headers[] = $locate->Translate("Result");
+	$headers[] = $locate->Translate("Note");
+	$headers[] = $locate->Translate("Plan name");
 	$headers[] = $locate->Translate("Groupname");
 	$headers[] = $locate->Translate("Creby");
 	$headers[] = $locate->Translate("Cretime");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="15%"';
@@ -164,34 +167,38 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","phonenumber","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","result","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","asteriskcallsname","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","outcontext","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","incontext","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","inextension","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
+	$fieldsFromSearch[] = 'phonenumber';
+	$fieldsFromSearch[] = 'status';
+	$fieldsFromSearch[] = 'result';
+	$fieldsFromSearch[] = 'note';
 	$fieldsFromSearch[] = 'asteriskcallsname';
-	$fieldsFromSearch[] = 'outcontext';
-	$fieldsFromSearch[] = 'incontext';
-	$fieldsFromSearch[] = 'inextension';
 	$fieldsFromSearch[] = 'groupname';
-	$fieldsFromSearch[] = 'asteriskcalls.creby';
-	$fieldsFromSearch[] = 'asteriskcalls.cretime';
+	$fieldsFromSearch[] = 'remindercalls.creby';
+	$fieldsFromSearch[] = 'remindercalls.cretime';
 	
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("Name");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dialout context");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dialin context");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dialin extension");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Number");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Result");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Note");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Plan name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Creby");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Cretime");
 
@@ -200,20 +207,21 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("asteriskcalls",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("remindercalls",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		$rowc[] = $row['phonenumber'];
+		$rowc[] = $row['status'];
+		$rowc[] = $row['result'];
+		$rowc[] = $row['note'];
 		$rowc[] = $row['asteriskcallsname'];
-		$rowc[] = $row['outcontext'];
-		$rowc[] = $row['incontext'];
-		$rowc[] = $row['inextension'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];
-		$table->addRow("asteriskcalls",$rowc,1,1,0,$divName,$fields);
+		$table->addRow("remindercalls",$rowc,1,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -232,7 +240,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top($locate->Translate("Add Asterisk calls"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("Add Reminder calls"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -257,11 +265,11 @@ function save($f){
 		return $objResponse->getXML();
 	}
 */
-	$respOk = Customer::insertNewAsteriskcalls($f); // add a new account
+	$respOk = Customer::insertNewremindercalls($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Asterisk calls Added"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Reminder calls Added"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
@@ -281,7 +289,7 @@ function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
-	$respOk = Customer::updateAsteriskcallsRecord($f);
+	$respOk = Customer::updateremindercallsRecord($f);
 
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -303,7 +311,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit asterisk calls"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("edit reminder calls"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
@@ -323,7 +331,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($type == "delete"){
-		$res = Customer::deleteRecord($id,'asteriskcalls');
+		$res = Customer::deleteRecord($id,'remindercalls');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
 			$objResponse = new xajaxResponse();
