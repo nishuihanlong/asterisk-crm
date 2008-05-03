@@ -177,7 +177,7 @@ v0.047
 2008-3-26		增加表 asteriskcalls, remindercalls
 
 TO-DO:
-增加对dialedlist的导出和删除功能
+[fixed] 增加对dialedlist的导出和删除功能
 增加显示主叫号码的功能
 [no fix] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue
 解决办法1 在queue内定义agent时使用 Local/8000@from-internal/n 的方法
