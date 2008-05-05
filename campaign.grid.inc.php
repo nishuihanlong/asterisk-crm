@@ -217,6 +217,18 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="campaignnote" name="campaignnote" size="30" maxlength="255"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Outcontext").'</td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Incontext").'</td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
+					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>
 				</tr>
@@ -276,6 +288,18 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Campaign Note").'</td>
 					<td align="left"><input type="text" id="campaignnote" name="campaignnote" size="30" maxlength="255" value="'.$campaign['campaignnote'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Outcontext").'</td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$campaign['outcontext'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Incontext").'</td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$campaign['incontext'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
+					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30" value="'.$campaign['inexten'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>

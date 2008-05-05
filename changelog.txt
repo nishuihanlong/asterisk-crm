@@ -181,8 +181,11 @@ v0.047
 			表dialedlist中更改`dialnumber` 为 `dialednumber`
 			增加了 `transfertime` 字段
 2008-5-4		表 `diallist` 增加了 dialtime, trytime, status 字段
+			表 `campaign` 增加了 incontext, outcontext, inexten 字段
+
 
 TO-DO:
+删除asteriskcalls和remindercalls部分
 [fixed] 增加对dialedlist的导出和删除功能
 增加显示主叫号码的功能
 [no fix] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue

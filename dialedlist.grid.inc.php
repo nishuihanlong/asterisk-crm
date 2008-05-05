@@ -96,7 +96,7 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		$creby = $_SESSION['curuser']['username'];
 		while ($res->fetchInto($row)) {
-			$number = $row["dialednumber"];
+			$number = $row["dialedednumber"];
 			$groupid = $row["groupid"];
 			$assign = $row["assign"];
 			$campaignid = $row["campaignid"];

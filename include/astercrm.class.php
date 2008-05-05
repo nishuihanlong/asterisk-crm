@@ -350,6 +350,9 @@ Class astercrm extends PEAR{
 		$query= "INSERT INTO campaign SET "
 				."campaignname='".$f['campaignname']."', "
 				."campaignnote='".$f['campaignnote']."', "
+				."outcontext='".$f['outcontext']."', "
+				."incontext='".$f['incontext']."', "
+				."inexten='".$f['inexten']."', "
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
@@ -363,7 +366,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		
 		$query= "INSERT INTO diallist SET "
-				."dialednumber='".$f['dialednumber']."', "
+				."dialnumber='".$f['dialnumber']."', "
 				."groupid='".$f['groupid']."', "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
@@ -540,6 +543,9 @@ Class astercrm extends PEAR{
 		$query= "UPDATE campaign SET "
 				."campaignname='".$f['campaignname']."', "
 				."campaignnote='".$f['campaignnote']."', "
+				."outcontext='".$f['outcontext']."', "
+				."incontext='".$f['incontext']."', "
+				."inexten='".$f['inexten']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
 		astercrm::events($query);
@@ -1620,14 +1626,14 @@ Class astercrm extends PEAR{
 	function getDialNumber($groupid = '', $campaignid = ''){
 		global $db;
 		if ($campaignid != ''){
-			$query = "SELECT * FROM diallist WHERE campaignid = $campaignid ";
+			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.campaignid = $campaignid ";
 		}elseif ($groupid != ''){
-			$query = "SELECT * FROM diallist WHERE groupid = $groupid ";
+			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.groupid = $groupid ";
 		}else{
-			$query = "SELECT * FROM diallist ";
+			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid";
 		}
 
-		$query .=  " ORDER BY id DESC	LIMIT 0,1";
+		$query .=  " ORDER BY diallist.id DESC	LIMIT 0,1";
 
 		$row =& $db->getRow($query);
 

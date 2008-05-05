@@ -235,7 +235,7 @@ function save($f){
 		}
 	}
 
-	$surveyid = Customer::insertNewDiallist($f); 
+	$id = Customer::insertNewDiallist($f); 
 	$html = createGrid(0,ROWSXPAGE);
 	$objResponse->addAssign("grid", "innerHTML", $html);
 	$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("diallist_added"));

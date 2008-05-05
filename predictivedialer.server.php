@@ -172,10 +172,11 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 
 	//获取一个号码
 	$row =& astercrm::getDialNumber($groupid,$campaignid);
-	$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
-	$pdextension = $grouprow['pdextension'];
-	$pdcontext = $grouprow['pdcontext'];
-	
+	//$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
+	$pdextension = $row['inexten'];
+	$pdcontext = $row['incontext'];
+	$outcontext = $row['outcontext'];
+
 	if ($row['id'] == ''){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
 		$objResponse->addScript("stopDial();");
@@ -207,7 +208,7 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 
 
 		$res = astercrm::deleteRecord($id,"diallist");
-		$f['dialnumber'] = $phoneNum;
+		$f['dialednumber'] = $phoneNum;
 		$f['dialedby'] = $_SESSION['curuser']['username'];
 		$f['groupid'] = $groupid;
 		$f['assign'] = $assign;
@@ -228,7 +229,8 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 			';
 		$res = $db->query($query);
 		*/
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+		// $outcontext = $config['system']['outcontext']
+		$strChannel = "Local/".$phoneNum."@".$outcontext."/n";
 		if ($config['system']['allow_dropcall'] == true){
 
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
