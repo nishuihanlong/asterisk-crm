@@ -154,7 +154,7 @@ function processAccountData($aFormValues)
 		//$query = "SELECT * FROM account WHERE username='" . $aFormValues['username'] . "'";
 		//$res = $db->query($query);
 		
-		$row = astercrm::getRecordByField("username",$aFormValues['username'],"account");
+		$row = astercrm::getRecordByField("username",$aFormValues['username'],"astercrm_account");
 		if ($row['id'] != '' ){
 			if ($row['password'] == $aFormValues['password'])
 			{

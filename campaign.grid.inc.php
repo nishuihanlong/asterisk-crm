@@ -45,7 +45,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT campaign.*, groupname  FROM campaign LEFT JOIN accountgroup ON accountgroup.groupid = campaign.groupid";
+		$sql = "SELECT campaign.*, groupname  FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaign.groupid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -109,7 +109,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT campaign.*, groupname FROM campaign LEFT JOIN accountgroup ON accountgroup.id = campaign.groupid WHERE ";
+		$sql = "SELECT campaign.*, groupname FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -139,9 +139,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM campaign LEFT JOIN accountgroup ON accountgroup.id = campaign.groupid";
+			$sql = " SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid";
 		}else{
-			$sql = " SELECT COUNT(*) FROM campaign LEFT JOIN accountgroup ON accountgroup.id = campaign.groupid WHERE campaign.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE campaign.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -162,7 +162,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN accountgroup ON accountgroup.id = campaign.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

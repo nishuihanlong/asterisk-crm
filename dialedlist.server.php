@@ -106,7 +106,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
-	$fields[] = 'dialnumber';
+	$fields[] = 'dialednumber';
 	$fields[] = 'answertime';
 	$fields[] = 'duration';
 	$fields[] = 'response';
@@ -149,7 +149,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialednumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","answertime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
@@ -160,7 +160,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'dialnumber';
+	$fieldsFromSearch[] = 'dialednumber';
 	$fieldsFromSearch[] = 'answertime';
 	$fieldsFromSearch[] = 'duration';
 	$fieldsFromSearch[] = 'response';
@@ -191,7 +191,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['dialnumber'];
+		$rowc[] = $row['dialednumber'];
 		$rowc[] = $row['answertime'];
 		$rowc[] = $row['duration'];
 		$rowc[] = $row['response'];

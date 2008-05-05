@@ -1,4 +1,4 @@
-#version 0.0461
+#version 0.047
 
 #DROP DATABASE astercrm;
 
@@ -6,9 +6,9 @@
 
 #USE astercrm;
 
-DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS astercrm_account;
 
-CREATE TABLE `account` (
+CREATE TABLE `astercrm_account` (
   `id` int(11) NOT NULL auto_increment,
   `username` varchar(30) NOT NULL default '',
   `password` varchar(30) NOT NULL default '',
@@ -21,9 +21,9 @@ CREATE TABLE `account` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM;
 
-DROP TABLE IF EXISTS accountgroup;
+DROP TABLE IF EXISTS astercrm_accountgroup;
 
-CREATE TABLE `accountgroup` (
+CREATE TABLE `astercrm_accountgroup` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`groupname` VARCHAR( 100 ) NOT NULL ,
 	`groupid` INT NOT NULL ,
@@ -43,6 +43,9 @@ CREATE TABLE `campaign` ( #added by solo 2008-2-5
   `groupid` int(11) NOT NULL default '0',
   `campaignname` varchar(60) NOT NULL default '',
   `campaignnote` varchar(255) NOT NULL default '',
+  `fileid` int(11) NOT NULL default '0',		#added by solo 2008-5-4
+  `end-fileid` int(11) NOT NULL default '0',		#added by solo 2008-5-4
+  `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008-5-4
   `creby` varchar(30) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
@@ -102,9 +105,10 @@ DROP TABLE IF EXISTS dialedlist;
 
 CREATE TABLE dialedlist (
   `id` int(11) NOT NULL auto_increment,
-  `dialnumber` varchar(30) NOT NULL default '',
+  `dialednumber` varchar(30) NOT NULL default '',
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008-2-1
   `duration` int(11) NOT NULL default '0',												#added by solo 2008-2-1
+  `transfertime` int(11) NOT NULL default '0',				#added by solo 2008-5-4										#added by solo 2008-2-1
   `response` varchar(20) NOT NULL default '',											#added by solo 2008-2-1
   `uniqueid` varchar(20) NOT NULL default '',											#added by solo 2008-2-1
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008-2-3
@@ -121,10 +125,13 @@ DROP TABLE IF EXISTS diallist;
 CREATE TABLE `diallist` (
   `id` int(11) NOT NULL auto_increment,
   `dialnumber` varchar(30) NOT NULL default '',
+  `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008/05/04
   `assign` varchar(20) NOT NULL default '',
-  `groupid` INT(11) NOT NULL DEFAULT '0',						#added by solo 2007-12-17
-	`campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008-2-5
-  `creby`	varchar(50) NOT NULL default '',					#added by solo 2008-1-15
+  `status` varchar(50) NOT NULL default '',				#added by solo 2008/05/04
+  `groupid` INT(11) NOT NULL DEFAULT '0',				#added by solo 2007-12-17
+  `trytime` INT(11) NOT NULL DEFAULT '0',				#added by solo 2008/05/04
+  `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008-2-5
+  `creby`	varchar(50) NOT NULL default '',			#added by solo 2008-1-15
   `cretime`	datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008-1-15
   UNIQUE KEY id (id)
 ) ENGINE = MYISAM;
@@ -229,57 +236,7 @@ UNIQUE (
 )
 ) ENGINE = MYISAM ;
 
--- 
---  `curcdr`
--- 
-
-DROP TABLE IF EXISTS `curcdr`;
-CREATE TABLE `curcdr` (
-  `id` int(11) NOT NULL auto_increment,
-  `src` varchar(20) NOT NULL default '',
-  `dst` varchar(20) NOT NULL default '',
-  `srcchan` varchar(100) NOT NULL default '',
-  `dstchan` varchar(100) NOT NULL default '',
-  `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `srcuid` varchar(20) NOT NULL default '',
-  `dstuid` varchar(20) NOT NULL default '',
-  `disposition` varchar(10) NOT NULL default '',
-  `groupid` int(11) NOT NULL default '0',
-  `userid` int(11) NOT NULL default '0',
-  `credit` double(24,4) NOT NULL default '0.0000',
-  `callshopcredit` double(24,4) NOT NULL default '0.0000',
-  `resellercredit` double(24,4) NOT NULL default '0.0000',
-  `creditlimit` double(24,4) NOT NULL default '0.0000',
-  UNIQUE KEY `id` (`id`),
-  KEY `srcid` (`src`,`dst`,`srcchan`,`dstchan`,`srcuid`,`dstuid`)
-) ENGINE=HEAP  ;
-
-DROP TABLE IF EXISTS `mycdr`;
-CREATE TABLE `mycdr` (
-  `id` int(11) NOT NULL auto_increment,
-  `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
-  `src` varchar(30) NOT NULL default '',
-  `dst` varchar(30) NOT NULL default '',
-  `channel` varchar(50) NOT NULL default '',
-  `dstchannel` varchar(50) NOT NULL default '',
-  `duration` int(11) NOT NULL default '0',
-  `billsec` int(11) NOT NULL default '0',
-  `disposition` varchar(45) NOT NULL default '',
-  `accountcode` varchar(20) NOT NULL default '',
-  `userfield` varchar(255) NOT NULL default '',
-  `srcuid` varchar(20) NOT NULL default '',
-  `dstuid` varchar(20) NOT NULL default '',
-  `calltype` varchar(255) NOT NULL default '',
-  `credit` double(24,4) NOT NULL default '0.0000',
-  `callshopcredit` double(24,4) NOT NULL default '0.0000',
-  `resellercredit` double(24,4) NOT NULL default '0.0000',
-  `groupid` int(11) NOT NULL default '0',
-  `resellerid` int(11) NOT NULL default '0',
-  `userid` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `srcid` (`src`,`dst`,`channel`,`dstchannel`,`duration`,`billsec`,`disposition`)
-) ENGINE=MyISAM  ;
+DROP TABLE IF EXISTS trunkinfo;
 
 CREATE TABLE `trunkinfo` (
 `id` INT NOT NULL AUTO_INCREMENT ,
@@ -294,6 +251,8 @@ UNIQUE (
 )
 ) ENGINE = MYISAM ;
 
+DROP TABLE IF EXISTS asteriskcalls;
+
 CREATE TABLE `asteriskcalls` (
 `id` INT NOT NULL AUTO_INCREMENT ,
 `asteriskcallsname` VARCHAR( 50 ) NOT NULL ,
@@ -307,6 +266,8 @@ UNIQUE (
 `id` 
 )
 ) ENGINE = MYISAM ;
+
+DROP TABLE IF EXISTS remindercalls;
 
 CREATE TABLE `remindercalls` (
 `id` INT NOT NULL AUTO_INCREMENT ,
@@ -327,7 +288,7 @@ UNIQUE (
 ) ENGINE = MYISAM ;
 
 
-INSERT INTO `account` (
+INSERT INTO `astercrm_account` (
 `id` ,
 `username` ,
 `password` ,

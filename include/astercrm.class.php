@@ -125,7 +125,7 @@ Class astercrm extends PEAR{
 
 	function getGroups(){
 		global $db;
-		$sql = "SELECT *  FROM accountgroup";
+		$sql = "SELECT * FROM astercrm_accountgroup";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -133,7 +133,7 @@ Class astercrm extends PEAR{
 
 	function getGroupById($groupid){
 		global $db;
-		$sql = "SELECT groupname  FROM accountgroup WHERE id = $groupid";
+		$sql = "SELECT groupname  FROM astercrm_accountgroup WHERE id = $groupid";
 		astercrm::events($sql);
 		$res =& $db->getRow($sql);
 		return $res;
@@ -314,7 +314,7 @@ Class astercrm extends PEAR{
 	function insertNewAccount($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$query= "INSERT INTO account SET "
+		$query= "INSERT INTO astercrm_account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."',"
@@ -332,7 +332,7 @@ Class astercrm extends PEAR{
 	function insertNewAccountgroup($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$query= "INSERT INTO accountgroup SET "
+		$query= "INSERT INTO astercrm_accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
@@ -363,7 +363,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		
 		$query= "INSERT INTO diallist SET "
-				."dialnumber='".$f['dialnumber']."', "
+				."dialednumber='".$f['dialednumber']."', "
 				."groupid='".$f['groupid']."', "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
@@ -379,7 +379,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query = 'INSERT INTO dialedlist (dialnumber,dialedby,dialedtime,groupid,campaignid,assign) VALUES ("'.$f['dialnumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].',"'.$f['assign'].'")';
+		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,assign) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].',"'.$f['assign'].'")';
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -501,7 +501,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query= "UPDATE account SET "
+		$query= "UPDATE astercrm_account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
 				."extension='".$f['extension']."', "
@@ -521,7 +521,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query= "UPDATE accountgroup SET "
+		$query= "UPDATE astercrm_accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
 				."pdcontext='".$f['pdcontext']."', "
@@ -726,9 +726,9 @@ Class astercrm extends PEAR{
 	function getGroupMemberListByID($groupid = null){
 		global $db;
 		if ($groupid == null)
-			$query = "SELECT id,username,extension FROM account";
+			$query = "SELECT id,username,extension FROM astercrm_account";
 		else
-			$query = "SELECT id,username,extension FROM account WHERE groupid =$groupid";
+			$query = "SELECT id,username,extension FROM astercrm_account WHERE groupid =$groupid";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;

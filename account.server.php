@@ -120,8 +120,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"account");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"account");
+			$numRows =& Customer::getNumRowsMore($filter, $content);
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order);
 		}
 	}
 
@@ -195,7 +195,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("astercrm_account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -207,7 +207,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['extensions'];
 		$rowc[] = $row['usertype'];
 		$rowc[] = $row['groupname'];
-		$table->addRow("account",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("astercrm_account",$rowc,1,1,1,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -246,9 +246,8 @@ function save($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	$username = $f['username'];
-	$sql = "SELECT id FROM account WHERE username = '".$username."'";
-	$res =& $db->query($sql);
-	if($res->numRows() > 0){
+	$userid = astercrm::checkValues("astercrm_account","username",$username);
+	if($userid != '' ){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
 	}
@@ -361,7 +360,7 @@ function edit($id){
 
 function delete($accountid = null){
 	global $locate;
-	$res = Customer::deleteRecord($accountid,'account');
+	$res = Customer::deleteRecord($accountid,'astercrm_account');
 	if ($res){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse = new xajaxResponse();
@@ -400,7 +399,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($type == "delete"){
-		$res = Customer::deleteRecord($id,'account');
+		$res = Customer::deleteRecord($id,'astercrm_account');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
 			$objResponse = new xajaxResponse();

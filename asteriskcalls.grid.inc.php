@@ -45,7 +45,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT asteriskcalls.*, groupname  FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.groupid = asteriskcalls.groupid";
+		$sql = "SELECT asteriskcalls.*, groupname  FROM asteriskcalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = asteriskcalls.groupid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -109,7 +109,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT asteriskcalls.*, groupname FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid WHERE ";
+		$sql = "SELECT asteriskcalls.*, groupname FROM asteriskcalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = asteriskcalls.groupid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -139,9 +139,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid";
+			$sql = " SELECT COUNT(*) FROM asteriskcalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = asteriskcalls.groupid";
 		}else{
-			$sql = " SELECT COUNT(*) FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid WHERE asteriskcalls.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM asteriskcalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = asteriskcalls.groupid WHERE asteriskcalls.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -162,7 +162,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM asteriskcalls LEFT JOIN accountgroup ON accountgroup.id = asteriskcalls.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM asteriskcalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = asteriskcalls.groupid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

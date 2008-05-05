@@ -45,7 +45,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT remindercalls.*, groupname, asteriskcallsname  FROM remindercalls LEFT JOIN accountgroup ON accountgroup.groupid = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid";
+		$sql = "SELECT remindercalls.*, groupname, asteriskcallsname  FROM remindercalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -109,7 +109,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT remindercalls.*, groupname, asteriskcallsname FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE ";
+		$sql = "SELECT remindercalls.*, groupname, asteriskcallsname FROM remindercalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -139,9 +139,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid ";
+			$sql = " SELECT COUNT(*) FROM remindercalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid ";
 		}else{
-			$sql = " SELECT COUNT(*) FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE remindercalls.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM remindercalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE remindercalls.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -162,7 +162,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM remindercalls LEFT JOIN accountgroup ON accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE ";
+			$sql = "SELECT COUNT(*) FROM remindercalls LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = remindercalls.groupid LEFT JOIN asteriskcalls ON asteriskcalls.id = remindercalls.asteriskcallsid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

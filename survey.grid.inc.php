@@ -43,7 +43,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 
-		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN accountgroup ON accountgroup.groupid = survey.groupid ";
+		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = survey.groupid ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -86,7 +86,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid WHERE ";
+		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -118,7 +118,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -153,9 +153,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid";
+			$sql = " SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid";
 		}else{
-			$sql = " SELECT COUNT(*) FROM survey LEFT JOIN accountgroup ON accountgroup.id = survey.groupid WHERE survey.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE survey.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);

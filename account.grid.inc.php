@@ -45,12 +45,12 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $groupid = null){
 		global $db;
 		
-		$sql = "SELECT account.*, groupname  FROM account LEFT JOIN accountgroup ON accountgroup.groupid = account.groupid";
+		$sql = "SELECT astercrm_account.*, groupname  FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = astercrm_account.groupid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
-			$sql .= " WHERE account.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " WHERE astercrm_account.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 			
 		if($order == null){
@@ -75,7 +75,7 @@ class Customer extends astercrm
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
 
-	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order, $ordering = ""){
 		global $db;
 
 		$i=0;
@@ -88,11 +88,11 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT account.*, groupname FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid WHERE ";
+		$sql = "SELECT astercrm_account.*, groupname FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = astercrm_account.groupid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
-			$sql .= " account.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " astercrm_account.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		if ($joinstr!=''){
@@ -119,9 +119,9 @@ class Customer extends astercrm
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid";
+			$sql = " SELECT COUNT(*) FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = astercrm_account.groupid";
 		}else{
-			$sql = " SELECT COUNT(*) FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid WHERE account.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = astercrm_account.groupid WHERE astercrm_account.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 		
 		Customer::events($sql);
@@ -129,7 +129,7 @@ class Customer extends astercrm
 		return $res;		
 	}
 
-	function &getNumRowsMore($filter = null, $content = null,$table){
+	function &getNumRowsMore($filter = null, $content = null){
 		global $db;
 		
 			$i=0;
@@ -142,11 +142,11 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = astercrm_account.groupid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
-				$sql .= " account.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+				$sql .= " astercrm_account.groupid = ".$_SESSION['curuser']['groupid']." AND ";
 			}
 
 			if ($joinstr!=''){
@@ -259,7 +259,7 @@ class Customer extends astercrm
 	
 	function formEdit($id){
 		global $locate;
-		$account =& Customer::getRecordByID($id,'account');
+		$account =& Customer::getRecordByID($id,'astercrm_account');
 
 	if ($_SESSION['curuser']['usertype'] == 'admin'){ 
 			$grouphtml .=	'<select name="groupid" id="groupid" >
@@ -369,7 +369,7 @@ class Customer extends astercrm
 	
 	function showAccountDetail($id){
 		global $locate;
-		$account =& Customer::getRecordByID($id,'account');
+		$account =& Customer::getRecordByID($id,'astercrm_account');
 		$group = & Customer::getGroupByID($account['groupid']);
 		$html = '
 			

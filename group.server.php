@@ -118,8 +118,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"accountgroup");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"accountgroup");
+			$numRows =& Customer::getNumRowsMore($filter, $content);
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order);
 		}
 	}
 	

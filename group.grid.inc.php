@@ -45,7 +45,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT * FROM accountgroup ";
+		$sql = "SELECT * FROM astercrm_accountgroup ";
 
 //		if ($creby != null)
 //			$sql .= " WHERE note.creby = '".$_SESSION['curuser']['username']."' ";
@@ -78,7 +78,7 @@ class Customer extends astercrm
 		global $db;
 		
 		if(($filter != null) and ($content != null)){
-			$sql = "SELECT * FROM accountgroup"
+			$sql = "SELECT * FROM astercrm_accountgroup"
 					." WHERE ".$filter." like '%".$content."%' "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
@@ -90,7 +90,7 @@ class Customer extends astercrm
 	}
 	
 
-	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$ordering = ""){
 		global $db;
 
 		$i=0;
@@ -104,13 +104,13 @@ class Customer extends astercrm
 		}
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql = "SELECT * FROM accountgroup"
+			$sql = "SELECT * FROM astercrm_accountgroup"
 					." WHERE ".$joinstr."  "
 					." ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}else {
-			$sql = "SELECT * FROM accountgroup";
+			$sql = "SELECT * FROM astercrm_accountgroup";
 		}
 		
 		Customer::events($sql);
@@ -128,13 +128,13 @@ class Customer extends astercrm
 	function &getNumRows($filter = null, $content = null){
 		global $db;
 		
-		$sql = "SELECT COUNT(*) AS numRows FROM accountgroup";
+		$sql = "SELECT COUNT(*) AS numRows FROM astercrm_accountgroup";
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
 
-	function &getNumRowsMore($filter = null, $content = null,$table){
+	function &getNumRowsMore($filter = null, $content = null){
 		global $db;
 		
 			$i=0;
@@ -148,9 +148,9 @@ class Customer extends astercrm
 			}
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-				$sql = 'SELECT COUNT(*) AS numRows FROM accountgroup WHERE '.$joinstr;
+				$sql = 'SELECT COUNT(*) AS numRows FROM astercrm_accountgroup WHERE '.$joinstr;
 			}else {
-				$sql = "SELECT COUNT(*) AS numRows FROM accountgroup";
+				$sql = "SELECT COUNT(*) AS numRows FROM astercrm_accountgroup";
 			}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
@@ -213,7 +213,7 @@ class Customer extends astercrm
 	
 	function formEdit($id){
 		global $locate;
-		$account =& Customer::getRecordByID($id,'accountgroup');
+		$account =& Customer::getRecordByID($id,'astercrm_accountgroup');
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -263,7 +263,7 @@ class Customer extends astercrm
 	
 	function showAccountgroupDetail($id){
 		global $locate, $db;
-		$account =& Customer::getRecordByID($id,'accountgroup');
+		$account =& Customer::getRecordByID($id,'astercrm_accountgroup');
 		$contactList =& astercrm::getGroupMemberListByID($account['groupid']);
 		$html = '
 			

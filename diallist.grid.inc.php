@@ -45,7 +45,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT diallist.*, groupname,campaignname  FROM diallist LEFT JOIN accountgroup ON accountgroup.groupid = diallist.groupid LEFT JOIN campaign ON campaign.id = diallist.campaignid";
+		$sql = "SELECT diallist.*, groupname,campaignname  FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = diallist.groupid LEFT JOIN campaign ON campaign.id = diallist.campaignid";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -88,7 +88,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT diallist.*, groupname,campaignname FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
+		$sql = "SELECT diallist.*, groupname,campaignname FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
@@ -122,9 +122,9 @@ class Customer extends astercrm
 		$sql = "SELECT COUNT(*) AS numRows FROM diallist ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid";
+			$sql = " SELECT COUNT(*) FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid";
 		}else{
-			$sql = " SELECT COUNT(*) FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -145,7 +145,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM diallist LEFT JOIN accountgroup ON accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
+			$sql = "SELECT COUNT(*) FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

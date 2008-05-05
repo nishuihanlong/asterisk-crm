@@ -174,7 +174,13 @@ v0.047
 2008-3-24		增加了表curcdr, mycdr
 2008-3-24		增加了表trunkinfo, 保存trunk信息
 2008-3-24		增加了显示从哪条外线打来的功能
-2008-3-26		增加表 asteriskcalls, remindercalls
+2008-3-26		增加表 asteriskcalls , remindercalls (用于预报号系统)
+2008-5-4		更改了account表和accountgroup表名为astercrm_account和astercrm_accountgroup
+			为了避免和astercc使用中发生冲突
+			表campaign中增加了 `fileid`  `end-fileid` `phonenumber` 三个字段
+			表dialedlist中更改`dialnumber` 为 `dialednumber`
+			增加了 `transfertime` 字段
+2008-5-4		表 `diallist` 增加了 dialtime, trytime, status 字段
 
 TO-DO:
 [fixed] 增加对dialedlist的导出和删除功能
