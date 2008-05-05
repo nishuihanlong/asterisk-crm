@@ -174,8 +174,6 @@ class Customer extends astercrm
 				$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
 				while ($row = $res->fetchRow()) {
 						$groupoptions .= '<option value="'.$row['groupid'].'"';
-						if ($survey['groupid']  == $row['groupid'])
-							$groupoptions .= ' selected';
 						$groupoptions .='>'.$row['groupname'].'</option>';
 				}
 				$groupoptions .= '</select>';
@@ -199,6 +197,13 @@ class Customer extends astercrm
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35"">
 						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
+						<td align="left">
+							<input type="text" name="dialtime" size="20" value="'.date("Y-m-d H:i",time()).'">
+			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
+						</td>
 					</tr>';
 		$html .= '
 					<tr>
@@ -213,6 +218,69 @@ class Customer extends astercrm
 		$html .= '
 					<tr>
 						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_save(xajax.getFormValues(\'formDiallist\'));return false;"></td>
+					</tr>
+				<table>
+				</form>
+				';
+		return $html;
+	}
+
+	function formEdit($id){
+		global $locate;
+		$diallist =& Customer::getRecordByID($id,'diallist');
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$res = Customer::getGroups();
+				$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
+				while ($row = $res->fetchRow()) {
+						$groupoptions .= '<option value="'.$row['groupid'].'"';
+						if ($diallist['groupid']  == $row['groupid'])
+							$groupoptions .= ' selected';
+						$groupoptions .='>'.$row['groupname'].'</option>';
+				}
+				$groupoptions .= '</select>';
+		}else{
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+		}
+
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="formDiallist" id="formDiallist">
+				
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("number").'</td>
+						<td align="left">
+							<input type="text" id="dialnumber" name="dialnumber" size="35"  value="'.$diallist['dialnumber'].'">
+							<input type="hidden" id="id" name="id" value="'.$diallist['id'].'">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
+						<td align="left">
+							<input type="text" id="assign" name="assign" size="35" value="'.$diallist['assign'].'">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
+						<td align="left">
+							<input type="text" name="dialtime" size="20" value="'.$diallist['dialtime'].'">
+			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
+						</td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
+						<td><SELECT id="campaignid" name="campaignid"></SELECT></td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_update(xajax.getFormValues(\'formDiallist\'));return false;"></td>
 					</tr>
 				<table>
 				</form>

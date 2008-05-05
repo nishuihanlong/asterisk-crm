@@ -162,7 +162,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	
@@ -180,7 +180,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 
-		$table->addRow("diallist",$rowc,0,1,0,$divName,$fields);
+		$table->addRow("diallist",$rowc,1,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -202,6 +202,38 @@ function add(){
 	//增加读取campaign的js函数
 	$objResponse->addScript("setCampaign();");
 
+	return $objResponse->getXML();
+}
+
+function edit($id){
+	global $locate;
+	$html = Table::Top( $locate->Translate("edit_group"),"formDiv"); 
+	$html .= Customer::formEdit($id);
+	$html .= Table::Footer();
+	// End edit zone
+
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formDiv", "innerHTML", $html);
+	$objResponse->addScript("setCampaign();");
+	return $objResponse->getXML();
+}
+
+function update($f){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	$respOk = Customer::updateDiallistRecord($f);
+
+	if ($respOk->message == ''){
+		$html = createGrid(0,ROWSXPAGE);
+		$objResponse->addAssign("grid", "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("update_rec"));
+		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
+	}else{
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_update").":".$respOk->message);
+	}
+	
 	return $objResponse->getXML();
 }
 

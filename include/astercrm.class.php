@@ -368,6 +368,7 @@ Class astercrm extends PEAR{
 		$query= "INSERT INTO diallist SET "
 				."dialnumber='".$f['dialnumber']."', "
 				."groupid='".$f['groupid']."', "
+				."dialtime='".$f['dialtime']."', "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
 				."campaignid= ".$f['campaignid'].", "
@@ -531,6 +532,22 @@ Class astercrm extends PEAR{
 				."pdextension='".$f['pdextensions']."' "
 				."WHERE id='".$f['id']."'";
 		
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
+	function updateDiallistRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query= "UPDATE diallist SET "
+				."dialnumber='".$f['dialnumber']."', "
+				."groupid='".$f['groupid']."', "
+				."dialtime='".$f['dialtime']."', "
+				."campaignid= ".$f['campaignid'].", "
+				."assign='".$f['assign']."'"
+				."WHERE id='".$f['id']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;

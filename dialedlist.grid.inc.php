@@ -96,11 +96,11 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		$creby = $_SESSION['curuser']['username'];
 		while ($res->fetchInto($row)) {
-			$number = $row["dialedednumber"];
+			$number = $row["dialednumber"];
 			$groupid = $row["groupid"];
 			$assign = $row["assign"];
 			$campaignid = $row["campaignid"];
-			$query = "INSERT INTO diallist SET dialednumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby =  '$creby', assign = '$assign' ";
+			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby =  '$creby', assign = '$assign' ";
 			$db->query($query);
 			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 			$db->query($query);
