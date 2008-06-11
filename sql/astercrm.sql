@@ -43,6 +43,9 @@ CREATE TABLE `campaign` ( #added by solo 2008-2-5
   `groupid` int(11) NOT NULL default '0',
   `campaignname` varchar(60) NOT NULL default '',
   `campaignnote` varchar(255) NOT NULL default '',
+  `outcontext` varchar(60) NOT NULL default '',
+  `incontext` varchar(60) NOT NULL default '',
+  `inexten` varchar(30) NOT NULL default '',
   `fileid` int(11) NOT NULL default '0',		#added by solo 2008-5-4
   `end-fileid` int(11) NOT NULL default '0',		#added by solo 2008-5-4
   `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008-5-4
