@@ -63,6 +63,20 @@
 
 			variableFiler			用于转译变量, 自动加\
 			exportDataToCSV     得到要导出的sql语句的结果集，转换为符合csv格式的文本字符串
+
+			----------------2008-6 by donnie---------------------------------------
+			formDiallistAdd			生成customer对应的diallist的html
+			getDiallistNumRowsMore	得到customer对应的diallist多条件搜索记录数
+			getDiallistFilteredMore customer对应的diallist多条件搜索结果集
+			getDiallistNumRows		得到customer对应的diallist全部记录数
+			getAllDiallist			customer对应的diallist全部结果集
+			createDiallistGrid		生成customer对应的diallist列表
+			getCdrNumRowsMore		得到customer对应的CDR多条件搜索记录数
+			getCdrRecordsFilteredMore	得到customer对应的CDR多条件搜索结果集
+			getCdrNumRows			得到customer对应的CDR全部记录数
+			getAllCdrRecords		得到customer对应的CDR全部结果集
+			createCdrGrid			生成customer对应的CDR列表
+			--------------------------------------------------------------------------
 			
 * Private Functions List
 			generateSurvey			生成添加survey的HTML语法
@@ -1734,6 +1748,24 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
+	function getCustomerphoneSqlByid($customerid,$feild,$type){
+
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		$sql = '';
+		if ($res_customer['phone'] != '') $sql .= " $type $feild='".$res_customer['phone']."' ";
+		if ($res_customer['mobile'] != '') $sql .= " $type $feild='".$res_customer['mobile']."' ";
+		while ($res_contact->fetchInto($row)) {
+			if ($row['phone'] != '') $sql .= " $type $feild='".$row['phone']."' ";
+			if ($row['phone1'] != '') $sql .= " $type $feild='".$row['phone1']."' ";
+			if ($row['phone2'] != '') $sql .= " $type $feild='".$row['phone2']."' ";
+			if ($row['mobile'] != '') $sql .= " $type $feild='".$row['mobile']."' ";
+		}
+		if($sql != '') $sql = ltrim($sql,"\ ".$type);
+		return $sql;
+	}
+
 	/**
 	*  delete a record form a table
 	*
@@ -2204,31 +2236,13 @@ Class astercrm extends PEAR{
 		$res_contact =astercrm::getContactListByID($customerid);
 		
 		if($cdrtype == 'out'){
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
-
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
 		}else{
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
-
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
 		}
 
 		if($sql != '' ) {
-			$sql = "SELECT * FROM mycdr WHERE ".ltrim($sql,"\ OR");
+			$sql = "SELECT * FROM mycdr WHERE ".$sql;
 		}else {
 			$sql = "SELECT * FROM mycdr WHERE id = '0'";
 		}
@@ -2246,34 +2260,15 @@ Class astercrm extends PEAR{
 
 	function &getCdrNumRows($customerid,$cdrtype,$filter = null, $content = null){
 		global $db;
-	
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-
+		
 		if ($cdrtype == 'out'){
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
 		}else{
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
 		}
 
 		if($sql != '' ) {
-			$sql = "SELECT COUNT(*) FROM mycdr WHERE ".ltrim($sql,"\ OR");
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE ".$sql;
 		}else {
 			return '0';
 		}
@@ -2285,9 +2280,6 @@ Class astercrm extends PEAR{
 	function &getCdrRecordsFilteredMore($customerid,$cdrtype,$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
 		global $db;
 		
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
@@ -2299,29 +2291,13 @@ Class astercrm extends PEAR{
 		}
 
 		if($cdrtype == 'out'){
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
 		}else{
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
 		}
 
 		if($sql != '' ) {
-			$sql = "SELECT * FROM mycdr WHERE (".ltrim($sql,"\ OR").")";
+			$sql = "SELECT * FROM mycdr WHERE (".$sql.")";
 		}else {
 			$sql = "SELECT * FROM mycdr WHERE id = '0'";
 		}
@@ -2341,9 +2317,6 @@ Class astercrm extends PEAR{
 
 	function &getCdrNumRowsMore($customerid,$cdrtype,$filter = null, $content = null,$table = ''){
 		global $db;
-		
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
 
 		$i=0;
 		$joinstr='';
@@ -2356,29 +2329,13 @@ Class astercrm extends PEAR{
 		}
 
 		if ($cdrtype == 'out'){
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
 		}else{
-			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
-			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
-			}
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
 		}
 
 		if($sql != '' ) {
-			$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($sql,"\ OR").")";
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE (".$sql.")";
 		}else {
 			return '0';
 		}
@@ -2561,21 +2518,10 @@ Class astercrm extends PEAR{
 	function &getAllDiallist($userexten,$customerid,$start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
+		$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
 
-		$sql = '';
-		if ($res_customer['phone'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['phone']."' ";
-		if ($res_customer['mobile'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['mobile']."' ";
-
-		while ($res_contact->fetchInto($row)) {
-			if ($row['phone'] != '') $sql .= " OR diallist.dialnumber='".$row['phone']."' ";
-			if ($row['phone1'] != '') $sql .= " OR diallist.dialnumber='".$row['phone1']."' ";
-			if ($row['phone2'] != '') $sql .= " OR diallist.dialnumber='".$row['phone2']."' ";
-			if ($row['mobile'] != '') $sql .= " OR diallist.dialnumber='".$row['mobile']."' ";
-		}
 		if( $sql != '') {
-			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".ltrim($sql,"\ OR").")";
+			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".$sql.")";
 		}else{
 			$sql = "SELECT * FROM diallist WHERE id = '0' ";
 		}
@@ -2593,21 +2539,11 @@ Class astercrm extends PEAR{
 
 	function &getDiallistNumRows($userexten,$customerid,$filter = null, $content = null){
 		global $db;
-//echo $customerid;
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-//print_r($res_contact);
-		$sql = '';
-		if ($res_customer['phone'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['phone']."' ";
-		if ($res_customer['mobile'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['mobile']."' ";
-		while ($res_contact->fetchInto($row)) {
-			if ($row['phone'] != '') $sql .= " OR diallist.dialnumber='".$row['phone']."' ";
-			if ($row['phone1'] != '') $sql .= " OR diallist.dialnumber='".$row['phone1']."' ";
-			if ($row['phone2'] != '') $sql .= " OR diallist.dialnumber='".$row['phone2']."' ";
-			if ($row['mobile'] != '') $sql .= " OR diallist.dialnumber='".$row['mobile']."' ";
-		}
+		
+		$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
+		
 		if( $sql != '') {
-			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".ltrim($sql,"\ OR").")";
+			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".$sql.")";
 		}else{
 			return '0';
 		}
@@ -2619,6 +2555,8 @@ Class astercrm extends PEAR{
 
 	function &getDiallistFilteredMore($userexten,$customerid,$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
 		global $db;
+
+		$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
 				
 		$i=0;
 		$joinstr='';
@@ -2629,22 +2567,9 @@ Class astercrm extends PEAR{
 			}
 			$i++;
 		}
-
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-
-		$sql = '';
-		if ($res_customer['phone'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['phone']."' ";
-		if ($res_customer['mobile'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['mobile']."' ";
-
-		while ($res_contact->fetchInto($row)) {
-			if ($row['phone'] != '') $sql .= " OR diallist.dialnumber='".$row['phone']."' ";
-			if ($row['phone1'] != '') $sql .= " OR diallist.dialnumber='".$row['phone1']."' ";
-			if ($row['phone2'] != '') $sql .= " OR diallist.dialnumber='".$row['phone2']."' ";
-			if ($row['mobile'] != '') $sql .= " OR diallist.dialnumber='".$row['mobile']."' ";
-		}
+		
 		if( $sql != '') {
-			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote,campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".ltrim($sql,"\ OR").")";
+			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote,campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".$sql.")";
 		}else{
 			$sql = "SELECT * FROM diallist WHERE id = '0' ";
 		}
@@ -2665,6 +2590,8 @@ Class astercrm extends PEAR{
 	function &getDiallistNumRowsMore($userexten,$customerid,$filter = null, $content = null){
 		global $db;
 
+		$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
+
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
@@ -2674,21 +2601,9 @@ Class astercrm extends PEAR{
 			}
 			$i++;
 		}
-
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-
-		$sql = '';
-		if ($res_customer['phone'] != '') $sql .= " OR dialnumber='".$res_customer['phone']."' ";
-		if ($res_customer['mobile'] != '') $sql .= " OR dialnumber='".$res_customer['mobile']."' ";
-		while ($res_contact->fetchInto($row)) {
-			if ($row['phone'] != '') $sql .= " OR dialnumber='".$row['phone']."' ";
-			if ($row['phone1'] != '') $sql .= " OR dialnumber='".$row['phone1']."' ";
-			if ($row['phone2'] != '') $sql .= " OR dialnumber='".$row['phone2']."' ";
-			if ($row['mobile'] != '') $sql .= " OR dialnumber='".$row['mobile']."' ";
-		}
+		
 		if( $sql != '') {
-			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".ltrim($sql,"\ OR").") ";
+			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".$sql.") ";
 		}else{
 			return '0';
 		}

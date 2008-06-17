@@ -90,6 +90,12 @@ require_once('customer.common.php');
 			style="left: 450px; top: 50px;"></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
+		<div id="formDiallist" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 800px"></div>
+		<div id="formaddDiallistInfo"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
+		<div id="formeditDiallistInfo"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
 				</fieldset>
 			</td>
 		</tr>

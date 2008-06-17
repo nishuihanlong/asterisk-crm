@@ -16,6 +16,7 @@
 			saveSurvey				保存survey result结果
 			showCustomer			显示详细customer信息的表单
 			showContact				显示详细contact信息的表单
+			
 			showNote				显示详细note信息的表单
 			save					主保存函数
 									可用于插入customer, contact, survey result 和 note
@@ -29,7 +30,14 @@
 			edit
 			confirmCustomer
 			confirmContact
-
+			-----------2008-6 by donnie----------------------------------------
+			showCdr					显示customer对应的CDR列表页
+			showDiallist			显示customer对应的Diallist列表页(条件:diallist.assign																	==agent.exten)
+			addDiallist				显示增加customer对应的diallist的表单
+			searchCdrFormSubmit		customer对应的CDR搜索
+			searchDiallistFormSubmit	 customer对应的Diallist搜索
+			saveDiallist			保存新增和修改的diallist记录
+			-------------------------------------------------------------------
 * Revision 0.0455  2007/10/25 15:21:00  last modified by solo
 * Desc: add confirmCustomer,confirmContact
 
