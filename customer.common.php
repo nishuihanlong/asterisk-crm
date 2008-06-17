@@ -84,7 +84,7 @@ require_once ('include/localization.class.php');
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'astercrm');
 
 $xajax = new xajax("customer.server.php");
-
+//$xajax->debugOn();
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("add");
@@ -105,7 +105,10 @@ $xajax->registerFunction("showCustomer");
 $xajax->registerFunction("addSearchTr");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("importTOExcel");
-
+$xajax->registerFunction("searchCdrFormSubmit");
+$xajax->registerFunction("searchDiallistFormSubmit");
+$xajax->registerFunction("showCdr");
+$xajax->registerFunction("showDiallist");
 //define(ENABLE_CONTACT, $config['system']['enable_contact']);  // Enable contact
 define(ROWSXPAGE, 15); // Number of rows show it per page.
 define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.

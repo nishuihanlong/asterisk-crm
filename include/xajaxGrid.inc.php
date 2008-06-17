@@ -128,7 +128,7 @@ class ScrollTable{
 	 * @param string  $content: content to search
 	 * @param string  $order: field to organize the data of the table
 	 */
-	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null){
+	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null,$customerid='',$cdrtype = '',$userexten = ''){
 		$this->n_cols = $cols;
 		$this->limit = $limit;
 		$this->numRows = $numRows;
@@ -139,8 +139,17 @@ class ScrollTable{
 		$this->filter = $filter;
 		$this->content = $content;
 		$this->order = $order;
-
-		$this->setFooter();
+		$this->customerid = $customerid;
+		$this->cdrtype = $cdrtype;
+		$this->userexten = $userexten;
+		
+		if ($cdrtype != '') {
+			$this->setSpecFooter('mycdr');
+		}elseif ($userexten != '') {
+			$this->setSpecFooter('diallist');
+		}else{
+			$this->setFooter();
+		}
 	}
 
 
@@ -229,7 +238,7 @@ class ScrollTable{
 	*
 	*/
 
-	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null){
+	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$privilege=null){
 		global $local_grid;
 		$nameRow = $divName."Row".$arr[0];
 	   $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
@@ -243,26 +252,45 @@ class ScrollTable{
    		$ind++;
 		}
 */
+
 	   	if($key != 'id')
    			$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
    		$ind++;
 		}
 
-		if($edit)
-			$row .= '
-					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
-					</td>';
-		if($delete)
-			$row .= '
-					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
-					</td>';
-		if($detail)
-			$row .= '
-					<td align="center" width="5%" nowrap>
-						<a href="?" onClick="xajax_showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
-					</td>';
+		if ($divName == 'formDiallist'){
+			if($privilege == $_SESSION['curuser']['username'] || $_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
+				if($edit){
+					$row .= '
+						<td align="center" width="5%" nowrap>
+							<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
+						</td>';
+				}
+				if($delete){
+					$row .= '
+							<td align="center" width="5%" nowrap>
+								<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  xajax_searchDiallistFormSubmit(xajax.getFormValues(\'searchDiallistForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
+							</td>';
+				}
+			}else $row .= '<td align="center" width="5%" nowrap>&nbsp;</td>
+							<td	align="center" width="5%" nowrap>&nbsp;</td>';
+		}else{
+			if($edit)
+				$row .= '
+						<td align="center" width="5%" nowrap>
+							<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
+						</td>';
+			if($delete)
+				$row .= '
+						<td align="center" width="5%" nowrap>
+							<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
+						</td>';
+			if($detail)
+				$row .= '
+						<td align="center" width="5%" nowrap>
+							<a href="?" onClick="xajax_showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
+						</td>';
+		}
 
 		$row .= "</tr>\n";
 		$this->rows .= $row;
@@ -351,17 +379,49 @@ class ScrollTable{
 		global $local_grid;
 		$ind = 0;
 		$ind_selected = 0;
-		$this->search = '
-		    <form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5);">
+		if ($table == 'mycdr'){
+			$this->search = '
+		    <form action="javascript:void(null);" name="searchCdrForm" id="searchCdrForm" onSubmit="xajax_searchCdrFormSubmit(xajax.getFormValues(\'searchCdrForm\'),0,5);">
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
+			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
+			<input type="hidden" name="cdrtype" id="cdrtype" value="'.$this->cdrtype.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
-
+			<tr>
+			<td></td>
+			</tr>
 			<tr>
 				<td align="left" width="10%">';
-				if($withNewButton){
-					$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
-				}
+		}elseif ($table == 'diallist' && $this->userexten != ''){
+			$this->search = '
+		    <form action="javascript:void(null);" name="searchDiallistForm" id="searchDiallistForm" onSubmit="xajax_searchDiallistFormSubmit(xajax.getFormValues(\'searchDiallistForm\'),0,5);">
+			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
+			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
+			<input type="hidden" name="userexten" id="userexten" value="'.$this->userexten.'"/>
+			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
+			<table width="99%" border="0" style="line-height:30px;">
+			<tr>
+			<td></td>
+			</tr>
+			<tr>
+				<td align="left" width="10%">';
+			if($withNewButton){
+				$this->search .= '<button id="submitButton" onClick="xajax_addDiallist(\''.$this->userexten.'\',\''.$this->customerid.'\');return false;">'.$local_grid->Translate("add_record").'</button>';
+			}
+		}else {
+			$this->search = '
+				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5);">
+				<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
+				<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
+				<table width="99%" border="0" style="line-height:30px;">
+
+				<tr>
+					<td align="left" width="10%">';
+			if($withNewButton){
+				$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
+			}
+		}
+		
 		$this->search .= '
 				</td>
 				<td> '.$local_grid->Translate("table").': ';
@@ -428,7 +488,6 @@ class ScrollTable{
 	*/
 
 	function setFooter(){
-		
 		global $local_grid;
 		$next_rows = $this->start + $this->limit;
 		$previos_rows = $this->start - $this->limit;
@@ -504,6 +563,94 @@ class ScrollTable{
 				<td width="25%" align="right">
 					<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$local_grid->Translate("show_all").'</button>
 				</td>
+			</tr>
+		</table>';
+
+	}
+
+	function setSpecFooter($type){
+		global $local_grid;
+		$next_rows = $this->start + $this->limit;
+		$previos_rows = $this->start - $this->limit;
+		if($next_rows>$this->numRows) $next_rows = $this->numRows;
+		if($previos_rows<0)$previos_rows = 0;
+		if($this->numRows < 1) $this->start = -1;
+		if($type == 'mycdr') {
+			$arg = 'cdrtype';
+			$form = 'searchCdrForm';
+			$submit = 'searchCdrFormSubmit';
+		}elseif($type == 'diallist'){
+			$arg = 'userexten';
+			$form = 'searchDiallistForm';
+			$submit = 'searchDiallistFormSubmit';
+		}
+		$this->footer = '</table>';
+		$this->footer .= '
+		<table class="adminlist">
+			<tr>
+				<th colspan="'.$this->n_cols.'">
+					<span class="pagenav">';
+					if($this->start>0){
+						$this->footer .= '<a href="?" onClick="
+						document.getElementById(\'numRows\').value = 0;
+						document.getElementById(\'limit\').value='.$this->limit.';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';
+						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
+						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+					}else{
+						$this->footer .= $local_grid->Translate("first");
+					}
+					$this->footer .= '</span>
+					<span class="pagenav">';
+
+					if($this->start >0){
+					$this->footer .= '<a href="?" onClick="
+						document.getElementById(\'numRows\').value = '.$previos_rows.';
+						document.getElementById(\'limit\').value='.$this->limit.';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';
+						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
+						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
+						return false;">'.$local_grid->Translate("previous").'</a>';
+					}else{
+						$this->footer .= $local_grid->Translate("previous");
+					}
+					$this->footer .= '
+					</span>
+					<span class="pagenav">';
+
+					$this->footer .= ' [ ' . ($this->start+1) . ' / ' . $next_rows .$local_grid->Translate("total"). $this->numRows .' ] ';
+
+					$this->footer .= '
+					</span>
+					<span class="pagenav">';
+
+					if($next_rows < $this->numRows){
+						$this->footer .= '<a href="?" onClick="
+						document.getElementById(\'numRows\').value = '.$next_rows.';
+						document.getElementById(\'limit\').value='.$this->limit.';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';
+						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
+						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+					}else{
+						$this->footer .= $local_grid->Translate("next");
+					}
+
+					$this->footer .= ' </span>
+					<span class="pagenav">';
+
+					if($next_rows < $this->numRows){
+						$this->footer .= '<a href="?" onClick="
+						document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
+						document.getElementById(\'limit\').value='.$this->limit.';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';
+						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
+						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+					}else{
+
+						$this->footer .= $local_grid->Translate("last").'</span>';
+					}
+				$this->footer .= '
+				</th>
 			</tr>
 		</table>';
 

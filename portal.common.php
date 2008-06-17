@@ -130,6 +130,13 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("saveNote");
 	$xajax->registerFunction("saveSurvey");
 	$xajax->registerFunction("getContact");
+	$xajax->registerFunction("showCdr");
+	$xajax->registerFunction("showDiallist");
+	$xajax->registerFunction("addDiallist");
+	$xajax->registerFunction("setCampaign");
+	$xajax->registerFunction("saveDiallist");
+	$xajax->registerFunction("searchCdrFormSubmit");
+	$xajax->registerFunction("searchDiallistFormSubmit");
 }
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.

@@ -97,17 +97,19 @@ class asterEvent extends PEAR
 */
 	function checkNewCall($curid,$exten){
 		global $db,$config;
-
+		//echo $exten;
 		if ($config['system']['eventtype'] == 'curcdr'){
 			if (strstr($exten,"/")){
-				$query = "SELECT * FROM curcdr WHERE (srcchan LIKE '$exten-%' OR dstchan LIKE '$exten-%') AND id > $curid AND src != '' AND dst != ''";
+				$exten = ltrim(strstr($exten,"/"),"/");
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten') AND id > $curid AND src != '' AND dst != ''";
 			}else{
-				$query = "SELECT * FROM curcdr WHERE (srcchan LIKE '%$exten-%' OR dstchan LIKE '%$exten-%') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten') AND id > $curid AND src != '' AND dst != ''";
 			}
+			//echo $query;exit;
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
-				if (strstr($list['srcchan'],$exten) ) {	// dial out
+				if (strstr($list['src'],$exten) ) {	// dial out
 					$call['status'] = 'dialout';
 					$call['callerid'] = trim($list['dst']);
 					$call['uniqueid'] = trim($list['srcuid']);
@@ -126,22 +128,23 @@ class asterEvent extends PEAR
 				$call['status'] = '';
 				$call['curid'] = $curid;
 			}
-
+			//print_r($call);exit;
 			return $call;
 		}
 
 		$call =& asterEvent::checkIncoming($curid,$exten);
 
 		if ($call['status'] == 'incoming' && $call['callerid'] != '' ){
+			//print_r($call);exit;
 			return $call;
 		}
 	
-//		print_r($call);
+		//print_r($call);
 		
 		$call =& asterEvent::checkDialout($curid,$exten,$call['curid']);
 
-//		print_r($call);
-//		exit;
+		//print_r($call);
+		//exit;
 		return $call;
 	}
 

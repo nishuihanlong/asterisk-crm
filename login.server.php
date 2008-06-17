@@ -184,7 +184,8 @@ function processAccountData($aFormValues)
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 
 				// get group information
-				$_SESSION['curuser']['group'] = astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
+				$_SESSION['curuser']['group'] = astercrm::getRecordByField("groupid",$row['groupid'],"astercrm_accountgroup");
+
 /*
 	if you dont want check manager status and show device status when user login 
 	please uncomment these three line

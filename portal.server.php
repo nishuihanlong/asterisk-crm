@@ -663,7 +663,7 @@ function addWithPhoneNumber(){
 		astercrm::deleteRecord($row['id'],"diallist");
 		$f['dialnumber'] = $phoneNum;
 		$f['dialedby'] = $_SESSION['curuser']['extension'];
-		astercrm::insertNewDialedlist($f);
+		astercrm::insertNewDialedlist($row);
 	}
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
@@ -828,13 +828,14 @@ function getContact($callerid){
 
 		//try get customer
 	if ($config['system']['detail_level'] == 'all')
-		$row = astercrm::getCustomerByCallerid($mycallerid);
+		$customerid = astercrm::getCustomerByCallerid($mycallerid);
 	else
-		$row = astercrm::getCustomerByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
+		$customerid = astercrm::getCustomerByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
 
 		if ($customerid == ''){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
 		}else{
+			
 			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 			$html .= Customer::formAdd($callerid,$customerid);  // <-- Change by your method
 			$html .= Table::Footer();
@@ -895,7 +896,7 @@ function chanspy($exten,$spyexten){
 }
 
 function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();

@@ -80,6 +80,10 @@ require_once('customer.common.php');
 			style="left: 20px; top: 50px;"></div>
 		<div id="formContactInfo" class="formDiv drsElement"
 			style="left: 20px; top: 330px;"></div>
+		<div id="formCdr" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 850px"></div>
+		<div id="formDiallist" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 800px"></div>
 		<div id="formNoteInfo" class="formDiv  drsElement"
 			style="left: 450px; top: 330px;"></div>
 		<div id="formEditInfo" class="formDiv drsElement"

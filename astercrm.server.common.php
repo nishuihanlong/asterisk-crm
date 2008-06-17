@@ -387,6 +387,21 @@ function add($callerid = null,$customerid = null,$contactid = null){
 	return $objResponse->getXML();
 }
 
+function addDiallist($userexten,$customerid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	$html = Table::Top($locate->Translate("add_diallist"),"formaddDiallistInfo");  
+	$html .= Customer::formDiallistAdd($userexten,$customerid);
+	$html .= Table::Footer();	
+	$objResponse->addAssign("formaddDiallistInfo", "innerHTML", $html);
+	$objResponse->addAssign("formaddDiallistInfo", "style.visibility", "visible");
+	//增加读取campaign的js函数
+	$objResponse->addScript("setCampaign();");
+
+	return $objResponse->getXML();
+}
+
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
 	
 	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
@@ -407,17 +422,166 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 function edit($id = null, $type = "note"){
 	global $locate;
 	// Edit zone
-	$html = Table::Top($locate->Translate("edit_record"),"formEditInfo");
+	if ($type == "diallist") {
+		$formdiv = 'formeditDiallistInfo';
+	}else {
+		$formdiv = 'formEditInfo';
+	}
+	$html = Table::Top($locate->Translate("edit_record"),$formdiv);
 	$html .= Customer::formEdit($id, $type);
 	$html .= Table::Footer();
    	// End edit zone
 
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("formEditInfo", "style.visibility", "visible");
-	$objResponse->addAssign("formEditInfo", "innerHTML", $html);
+	$objResponse->addAssign($formdiv, "style.visibility", "visible");
+	$objResponse->addAssign($formdiv, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 
+function showCdr($id,$cdrtype,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formCdr", $ordering = "",$stype = null){
+	global $locate;
 
+	if($id != ''){
+		$html = Table::Top($locate->Translate("cdr"),"formCdr"); 			
+		$html .= Customer::createCdrGrid($id,$cdrtype,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
+		$html .= Table::Footer();
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("formCdr", "style.visibility", "visible");
+		$objResponse->addAssign("formCdr", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
 
+function showDiallist($userexten,$customerid,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formDiallist", $ordering = "",$stype = null){
+	global $locate;
+	if($userexten != ''){
+		$html = Table::Top($locate->Translate("diallist"),"formDiallist"); 			
+		$html .= Customer::createDiallistGrid($userexten,$customerid,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
+		$html .= Table::Footer();
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("formDiallist", "style.visibility", "visible");
+		$objResponse->addAssign("formDiallist", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
+
+function searchCdrFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
+		global $locate,$db;
+		$objResponse = new xajaxResponse();
+		$searchField = array();
+		$searchContent = array();
+		$searchType = array();
+		$customerid = $searchFormValue['customerid'];
+		$cdrtype = $searchFormValue['cdrtype'];
+		$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+		$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+		$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+		$divName = "formCdr";
+		//echo $customerid.','.$cdrtype;
+		//print_r($searchFormValue);exit;
+		$html = Table::Top($locate->Translate("cdr"),"formCdr");
+		if($type == "delete"){
+			$res = Customer::deleteRecord($id,'account');
+			if ($res){
+				$html = Customer::createCdrGrid($customerid,$cdrtype,$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+				$objResponse = new xajaxResponse();
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			}else{
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+			}
+		}else{
+			$html .= Customer::createCdrGrid($customerid,$cdrtype,$numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "",true);
+		}
+		$html .= Table::Footer();
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
+		return $objResponse->getXML();
+}
+
+function searchDiallistFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
+		global $locate,$db;
+		$objResponse = new xajaxResponse();
+		$searchField = array();
+		$searchContent = array();
+		$searchType = array();
+		$customerid = $searchFormValue['customerid'];
+		$userexten = $searchFormValue['userexten'];
+		$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+		$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+		$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+		$divName = "formDiallist";
+		$html = Table::Top($locate->Translate("diallist"),"formDiallist");
+		if($type == "delete"){
+			$res = Customer::deleteRecord($id,'diallist');
+			if ($res){
+				$html .= Customer::createDiallistGrid($userexten,$customerid,$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchType, $searchField, $divName, "");
+				$objResponse = new xajaxResponse();
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			}else{
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+			}
+		}else{
+			$html .= Customer::createDiallistGrid($userexten,$customerid,$numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "");
+		}
+		$html .= Table::Footer();
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
+		return $objResponse->getXML();
+}
+
+function setCampaign($groupid){
+	$objResponse = new xajaxResponse();
+	$res = Customer::getRecordsByGroupid($groupid,"campaign");
+	//添加option
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('campaignid','".$row['id']."','".$row['campaignname']."');");
+	}
+	return $objResponse;
+}
+
+function saveDiallist($f,$userexten = '',$customerid = ''){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($f['campaignid'] == ''){
+		$objResponse->addAlert($locate->Translate("Must select a campaign"));
+		return $objResponse->getXML();
+	}
+
+	// check if the assign number belong to this group
+	if ($_SESSION['curuser']['usertype'] != 'admin'){
+		$flag = false;
+		if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+				if ($extension == $f['assign']){
+					$flag = true; 
+					break;
+				}
+			}
+		}else{
+			if($_SESSION['curuser']['extension'] == $f['assign']){
+				$flag = true;
+			}
+		}
+
+		if (!$flag){
+			$objResponse->addAlert('"'.$locate->Translate("Cant insert, please confirm the assign number is in your group").'"');
+		}
+	}
+	if ($userexten != ''){
+		$id = Customer::insertNewDiallist($f);
+		$html = Table::Top($locate->Translate("diallist"),"formDiallist");
+		$html .= Customer::createDiallistGrid($userexten,$customerid,0,ROWSXPAGE);
+		$html .= Table::Footer();
+		$objResponse->addAssign("formDiallist", "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("diallist_added"));
+		$objResponse->addAssign("formaddDiallistInfo", "style.visibility", "hidden");
+		$objResponse->addClear("formaddDiallistInfo", "innerHTML");
+	}else {
+		$id = Customer::updateDiallistRecord($f);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("diallist_updated"));
+		$objResponse->addAssign("formeditDiallistInfo", "style.visibility", "hidden");
+		$objResponse->addClear("formeditDiallistInfo", "innerHTML");
+	}
+	return $objResponse->getXML();
+}
 ?>

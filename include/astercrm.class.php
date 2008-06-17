@@ -373,7 +373,6 @@ Class astercrm extends PEAR{
 				."cretime= now(), "
 				."campaignid= ".$f['campaignid'].", "
 				."assign='".$f['assign']."'";
-
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -739,8 +738,7 @@ Class astercrm extends PEAR{
 
 	function &getContactListByID($customerid){
 		global $db;
-		$query = "SELECT id,contact FROM contact WHERE customerid=$customerid";
-		
+		$query = "SELECT * FROM contact WHERE customerid=$customerid";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -1253,7 +1251,7 @@ Class astercrm extends PEAR{
 	*/
 	
 	function formEdit($id , $type){
-		global $locate;
+		global $locate; global $db;
 		if ($type == 'note'){
 			$note =& astercrm::getRecordById($id,'note');
 			for ($i=0;$i<11;$i++){
@@ -1425,6 +1423,84 @@ Class astercrm extends PEAR{
 						<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_update(xajax.getFormValues("frmCustomerEdit"),"customer");return false;\'>'.$locate->Translate("continue").'</button></td>
 					</tr>
 					';
+		}elseif ($type == 'diallist'){
+			$diallist =& astercrm::getRecordByField('id',$id,'diallist');
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$res = Customer::getGroups();
+				$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
+				while ($row = $res->fetchRow()) {
+						$groupoptions .= '<option value="'.$row['groupid'].'"';
+						if($row['groupid'] == $diallist['groupid']) $groupoptions .='selected';
+						$groupoptions .='>'.$row['groupname'].'</option>';
+				}				
+				$groupoptions .= '</select>';
+				$sql = "SELECT * FROM campaign WHERE groupid ='".$diallist['groupid']."'";			
+				$res = & $db->query($sql);
+
+				$campaignoptions .= '<select name="campaignid" id="campaignid" >';
+				while ($campaign = $res->fetchRow()) {
+					$campaignoptions .= '<option value="'.$campaign['id'].'"';
+					if($campaign['id'] == $diallist['campaignid']) $campaignoptions .='selected';
+					$campaignoptions .='>'.$campaign['campaignname'].'</option>';
+				}				
+				$campaignoptions .= '</select>';
+			}else{
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+				
+				$sql = "SELECT * FROM campaign WHERE groupid ='".$diallist['groupid']."'";			
+				$res = & $db->query($sql);
+
+				$campaignoptions .= '<select name="campaignid" id="campaignid" >';
+				while ($campaign = $res->fetchRow()) {
+					$campaignoptions .= '<option value="'.$campaign['id'].'"';
+					if($campaign['id'] == $diallist['campaignid']) $campaignoptions .='selected';
+					$campaignoptions .='>'.$campaign['campaignname'].'</option>';
+				}				
+				$campaignoptions .= '</select>';
+			}
+
+			$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="formeditDiallist" id="formeditDiallist">
+				
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("number").'</td>
+						<td align="left">
+							<input type="text" id="dialnumber" name="dialnumber" size="35" value="'.$diallist['dialnumber'].'">
+							<input type="hidden" id="id"  name="id" value="'.$diallist['id'].'">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
+						<td align="left">
+							<input type="text" id="assign" name="assign" size="35"" value="'.$diallist['assign'].'">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
+						<td align="left">
+							<input type="text" name="dialtime" size="20" value="'.$diallist['dialtime'].'">
+			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
+						</td>
+					</tr>';
+			$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>';
+			$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
+						<td>'.$campaignoptions.'</td>
+					</tr>';
+			$html .= '
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_saveDiallist(xajax.getFormValues(\'formeditDiallist\'));return false;"></td>
+					</tr>
+				<table>
+				</form>
+				';			
 		}else {
 			$contact =& astercrm::getContactByID($id);
 			if ($contact['gender'] == 'male')
@@ -1507,6 +1583,7 @@ Class astercrm extends PEAR{
     	global $locate;
 		$customer =& astercrm::getCustomerByID($id,$type);
 		$contactList =& astercrm::getContactListByID($customer['id']);
+
 		$html = '
 				<table border="0" width="100%">
 				<tr>
@@ -1519,7 +1596,7 @@ Class astercrm extends PEAR{
 								hideObj(\'trCustomerBankDetails\');
 								xajax.$(\'hidCustomerBankDetails\').value = \'OFF\';
 							}
-							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails"></td>
+							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'out\');return false;">'.$locate->Translate("outbound").'</a>]&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'in\');return false;">'.$locate->Translate("inbound").'</a>]&nbsp;[<a href=? onclick="xajax_showDiallist(\''.$_SESSION['curuser']['extension'].'\',\''.$customer['id'].'\');return false;">'.$locate->Translate("diallist").'</a>]</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("city").'/'.$locate->Translate("state").'['.$locate->Translate("zipcode").']'.'</td>
@@ -1852,6 +1929,7 @@ Class astercrm extends PEAR{
 	function getCustomerByCallerid($callerid,$groupid = ''){
 		global $db;
 		$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' ";
+		//echo $query;exit;
 		astercrm::events($query);
 		$customerid =& $db->getOne($query);
 		return $customerid;
@@ -1863,7 +1941,7 @@ Class astercrm extends PEAR{
 			$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' LIMIT 0,1";
 		else
 			$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' AND groupid=$groupid LIMIT 0,1";
-
+//echo $query;exit;
 		astercrm::events($query);
 		$row =& $db->getRow($query);
 		return $row;
@@ -1948,5 +2026,748 @@ Class astercrm extends PEAR{
 		return str_replace(chr(13),'<br>',$string);
 	}
 
+	function createCdrGrid($customerid,$cdrtype,$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formCdr", $ordering = ""){
+		global $locate;
+		$_SESSION['ordering'] = $ordering;
+		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
+			$content = null;
+			$filter = null;
+			$numRows =& Customer::getCdrNumRows($customerid,$cdrtype);
+			$arreglo =& Customer::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
+		}else{
+			foreach($content as $value){
+				if(trim($value) != ""){  //搜索内容有值
+					$flag = "1";
+					break;
+				}
+			}
+			foreach($filter as $value){
+				if(trim($value) != ""){  //搜索条件有值
+					$flag2 = "1";
+					break;
+				}
+			}
+//			foreach($stype as $value){
+//				if(trim($value) != ""){  //搜索方式有值
+//					$flag3 = "1";
+//					break;
+//				}
+//			}
+			if($flag != "1" || $flag2 != "1" ){  //无值	
+				$order = null;
+				$numRows =& Customer::getCdrNumRows($customerid,$cdrtype);
+				$arreglo =& Customer::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
+			}elseif($flag3 != 1 ){  //未选择搜索方式
+				$order = "calldate";
+				$numRows =& Customer::getCdrNumRowsMore($customerid,$cdrtype,$filter, $content);
+				$arreglo =& Customer::getCdrRecordsFilteredMore($customerid,$cdrtype,$start, $limit, $filter, $content, $order);
+			}else{
+				$order = "calldate";
+				$numRows =& Customer::getCdrNumRowsMorewithstype($customerid,$cdrtype,$filter, $content,$stype);
+				$arreglo =& Customer::getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order);
+			}
+		}	
+//echo $arreglo;exit;
+		// Editable zone
+
+		// Databse Table: fields
+		$fields = array();
+		$fields[] = 'calldate';
+		$fields[] = 'src';
+		$fields[] = 'dst';
+		$fields[] = 'duration';
+		$fields[] = 'billsec';
+		$fields[] = 'disposition';
+		$fields[] = 'credit';
+		$fileds[] = 'destination';
+		$fileds[] = 'memo';
+
+		// HTML table: Headers showed
+		$headers = array();
+		$headers[] = $locate->Translate("Calldate");
+		$headers[] = $locate->Translate("Src");
+		$headers[] = $locate->Translate("Dst");
+		$headers[] = $locate->Translate("Duration");
+		$headers[] = $locate->Translate("Billsec");
+		$headers[] = $locate->Translate("Disposition");
+		$headers[] = $locate->Translate("credit");
+		$headers[] = $locate->Translate("destination");
+		$headers[] = $locate->Translate("memo");
+
+		// HTML table: hearders attributes
+		$attribsHeader = array();
+		$attribsHeader[] = 'width="13%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="13%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="12%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="12%"';
+		$attribsHeader[] = 'width="10%"';
+
+		// HTML Table: columns attributes
+		$attribsCols = array();
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+
+		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
+		$eventHeader = array();
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		
+		// Select Box: type table.
+		$typeFromSearch = array();
+		$typeFromSearch[] = 'like';
+		$typeFromSearch[] = 'equal';
+		$typeFromSearch[] = 'more';
+		$typeFromSearch[] = 'less';
+
+		// Selecct Box: Labels showed on searchtype select box.
+		$typeFromSearchShowAs = array();
+		$typeFromSearchShowAs[] = 'like';
+		$typeFromSearchShowAs[] = '=';
+		$typeFromSearchShowAs[] = '>';
+		$typeFromSearchShowAs[] = '<';
+
+		// Select Box: fields table.
+		$fieldsFromSearch = array();
+		$fieldsFromSearch[] = 'src';
+		$fieldsFromSearch[] = 'calldate';
+		$fieldsFromSearch[] = 'dst';
+		$fieldsFromSearch[] = 'billsec';
+		$fieldsFromSearch[] = 'disposition';
+		$fieldsFromSearch[] = 'credit';
+		$fieldsFromSearch[] = 'destination';
+		$fieldsFromSearch[] = 'memo';
+
+		// Selecct Box: Labels showed on search select box.
+		$fieldsFromSearchShowAs = array();
+		$fieldsFromSearchShowAs[] = $locate->Translate("src");
+		$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
+		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
+		$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
+		$fieldsFromSearchShowAs[] = $locate->Translate("credit");
+		$fieldsFromSearchShowAs[] = $locate->Translate("destination");
+		$fieldsFromSearchShowAs[] = $locate->Translate("memo");
+
+
+		// Create object whit 5 cols and all data arrays set before.
+		$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
+		$table->setAttribsCols($attribsCols);
+		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+
+		while ($arreglo->fetchInto($row)) {
+		// Change here by the name of fields of its database table
+			$rowc = array();
+			$rowc[] = $row['id'];
+			$rowc[] = $row['calldate'];
+			$rowc[] = $row['src'];
+			$rowc[] = $row['dst'];
+			$rowc[] = $row['duration'];
+			$rowc[] = $row['billsec'];
+			$rowc[] = $row['disposition'];
+			$rowc[] = $row['credit'];
+			$rowc[] = $row['destination'];
+			$rowc[] = $row['memo'];
+			$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
+		}
+		
+		// End Editable Zone
+		
+		$html = $table->render();
+		
+		return $html;
+	}
+
+	
+	function &getAllCdrRecords($customerid,$cdrtype,$start, $limit, $order = null, $creby = null){
+		global $db;
+		
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+		
+		if($cdrtype == 'out'){
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
+
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
+			}
+		}else{
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
+
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
+			}
+		}
+
+		if($sql != '' ) {
+			$sql = "SELECT * FROM mycdr WHERE ".ltrim($sql,"\ OR");
+		}else {
+			$sql = "SELECT * FROM mycdr WHERE id = '0'";
+		}
+
+		if($order == null || is_array($order)){
+			$sql .= " ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+		}else{
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+		}
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getCdrNumRows($customerid,$cdrtype,$filter = null, $content = null){
+		global $db;
+	
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		if ($cdrtype == 'out'){
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
+			}
+		}else{
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
+			}
+		}
+
+		if($sql != '' ) {
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE ".ltrim($sql,"\ OR");
+		}else {
+			return '0';
+		}
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;		
+	}
+
+	function &getCdrRecordsFilteredMore($customerid,$cdrtype,$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
+		global $db;
+		
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+
+		if($cdrtype == 'out'){
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
+			}
+		}else{
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
+			}
+		}
+
+		if($sql != '' ) {
+			$sql = "SELECT * FROM mycdr WHERE (".ltrim($sql,"\ OR").")";
+		}else {
+			$sql = "SELECT * FROM mycdr WHERE id = '0'";
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  ";
+		}
+
+		$sql .= " ORDER BY ".$order
+					." DESC LIMIT $start, $limit $ordering";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getCdrNumRowsMore($customerid,$cdrtype,$filter = null, $content = null,$table = ''){
+		global $db;
+		
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+
+		if ($cdrtype == 'out'){
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR dst='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR dst='".$res_customer['mobile']."' ";
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR dst='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR dst='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR dst='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR dst='".$row['mobile']."' ";
+			}
+		}else{
+			$sql = '';
+			if ($res_customer['phone'] != '') $sql .= " OR src='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '') $sql .= " OR src='".$res_customer['mobile']."' ";
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $sql .= " OR src='".$row['phone']."' ";
+				if ($row['phone1'] != '') $sql .= " OR src='".$row['phone1']."' ";
+				if ($row['phone2'] != '') $sql .= " OR src='".$row['phone2']."' ";
+				if ($row['mobile'] != '') $sql .= " OR src='".$row['mobile']."' ";
+			}
+		}
+
+		if($sql != '' ) {
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($sql,"\ OR").")";
+		}else {
+			return '0';
+		}
+		
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}
+
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);		
+		return $res;
+	}
+
+	function createDiallistGrid($userexten,$customerid,$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formDiallist", $ordering = ""){
+		global $locate;
+		$_SESSION['ordering'] = $ordering;
+		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
+			$content = null;
+			$filter = null;
+			$numRows =& Customer::getDiallistNumRows($userexten,$customerid);
+			$arreglo =& Customer::getAllDiallist($userexten,$customerid,$start,$limit,$order);
+		}else{
+			foreach($content as $value){
+				if(trim($value) != ""){  //搜索内容有值
+					$flag = "1";
+					break;
+				}
+			}
+			foreach($filter as $value){
+				if(trim($value) != ""){  //搜索条件有值
+					$flag2 = "1";
+					break;
+				}
+			}
+//			foreach($stype as $value){
+//				if(trim($value) != ""){  //搜索方式有值
+//					$flag3 = "1";
+//					break;
+//				}
+//			}
+			if($flag != "1" || $flag2 != "1" ){  //无值	
+				$order = null;
+				$numRows =& Customer::getDiallistNumRows($userexten,$customerid);
+				$arreglo =& Customer::getAllDiallist($userexten,$customerid,$start,$limit,$order);
+			}elseif($flag3 != 1 ){  //未选择搜索方式
+				$order = "dialtime";
+				$numRows =& Customer::getDiallistNumRowsMore($userexten,$customerid,$filter, $content);
+				$arreglo =& Customer::getDiallistFilteredMore($userexten,$customerid,$start, $limit, $filter, $content, $order);
+			}else{
+				$order = "dialtime";
+				$numRows =& Customer::getDiallistNumRowsMorewithstype($userexten,$customerid,$filter, $content,$stype);
+				$arreglo =& Customer::getDiallistFilteredMorewithstype($userexten,$customerid,$start, $limit, $filter, $content, $stype,$order);
+			}
+		}	
+//echo $arreglo;exit;
+		// Editable zone
+
+		// Databse Table: fields
+		$fields = array();
+		$fields[] = 'dialnumber';
+		$fields[] = 'dialtime';
+		$fields[] = 'status';
+		$fields[] = 'trytime';
+		$fields[] = 'creby';
+		$fields[] = 'cretime';
+		$fileds[] = 'campaignname';
+		$fileds[] = 'campaignnote';
+		$fieeds[] = 'inexten';
+
+		// HTML table: Headers showed
+		$headers = array();
+		$headers[] = $locate->Translate("Dialnumber");
+		$headers[] = $locate->Translate("Dialtime");
+		$headers[] = $locate->Translate("Status");
+		$headers[] = $locate->Translate("Trytime");
+		$headers[] = $locate->Translate("Creby");
+		$headers[] = $locate->Translate("Cretime");
+		$headers[] = $locate->Translate("Campaignname");
+		$headers[] = $locate->Translate("Campaignnote");
+		$headers[] = $locate->Translate("Inexten");
+
+		// HTML table: hearders attributes
+		$attribsHeader = array();
+		$attribsHeader[] = 'width="13%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="13%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="12%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="12%"';
+		$attribsHeader[] = 'width="10%"';
+
+		// HTML Table: columns attributes
+		$attribsCols = array();
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+
+		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
+		$eventHeader = array();
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","trytime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+
+		// Select Box: type table.
+		$typeFromSearch = array();
+		$typeFromSearch[] = 'like';
+		$typeFromSearch[] = 'equal';
+		$typeFromSearch[] = 'more';
+		$typeFromSearch[] = 'less';
+
+		// Selecct Box: Labels showed on searchtype select box.
+		$typeFromSearchShowAs = array();
+		$typeFromSearchShowAs[] = 'like';
+		$typeFromSearchShowAs[] = '=';
+		$typeFromSearchShowAs[] = '>';
+		$typeFromSearchShowAs[] = '<';
+
+		// Select Box: fields table.
+		$fieldsFromSearch = array();
+		$fieldsFromSearch[] = 'dialnumber';
+		$fieldsFromSearch[] = 'dialtime';
+		$fieldsFromSearch[] = 'status';
+		$fieldsFromSearch[] = 'trytime';
+		$fieldsFromSearch[] = 'creby';
+		$fieldsFromSearch[] = 'cretime';
+
+		// Selecct Box: Labels showed on search select box.
+		$fieldsFromSearchShowAs = array();
+		$fieldsFromSearchShowAs[] = $locate->Translate("dialnumber");
+		$fieldsFromSearchShowAs[] = $locate->Translate("dialtime");
+		$fieldsFromSearchShowAs[] = $locate->Translate("status");
+		$fieldsFromSearchShowAs[] = $locate->Translate("trytime");
+		$fieldsFromSearchShowAs[] = $locate->Translate("creby");
+		$fieldsFromSearchShowAs[] = $locate->Translate("cretime");
+
+		// Create object whit 5 cols and all data arrays set before.
+		$table = new ScrollTable(11,$start,$limit,$filter,$numRows,$content,$order,$customerid,'',$userexten);
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=1,$delete=1,$detail=false);
+		$table->setAttribsCols($attribsCols);
+		$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,"1",$typeFromSearch,$typeFromSearchShowAs,$stype);
+
+		while ($arreglo->fetchInto($row)) {
+		// Change here by the name of fields of its database table
+			$rowc = array();
+			$rowc[] = $row['id'];
+			$rowc[] = $row['dialnumber'];
+			$rowc[] = $row['dialtime'];
+			$rowc[] = $row['status'];
+			$rowc[] = $row['trytime'];
+			$rowc[] = $row['creby'];
+			$rowc[] = $row['cretime'];
+			$rowc[] = $row['campaignname'];
+			$rowc[] = $row['campaignnote'];
+			$rowc[] = $row['inexten'];
+			$table->addRow("diallist",$rowc,1,1,false,$divName,$fields,$row['creby']);
+		}
+		
+		// End Editable Zone
+		
+		$html = $table->render();
+		
+		return $html;
+	}
+
+	
+	function &getAllDiallist($userexten,$customerid,$start, $limit, $order = null, $creby = null){
+		global $db;
+		
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		$sql = '';
+		if ($res_customer['phone'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['phone']."' ";
+		if ($res_customer['mobile'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['mobile']."' ";
+
+		while ($res_contact->fetchInto($row)) {
+			if ($row['phone'] != '') $sql .= " OR diallist.dialnumber='".$row['phone']."' ";
+			if ($row['phone1'] != '') $sql .= " OR diallist.dialnumber='".$row['phone1']."' ";
+			if ($row['phone2'] != '') $sql .= " OR diallist.dialnumber='".$row['phone2']."' ";
+			if ($row['mobile'] != '') $sql .= " OR diallist.dialnumber='".$row['mobile']."' ";
+		}
+		if( $sql != '') {
+			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".ltrim($sql,"\ OR").")";
+		}else{
+			$sql = "SELECT * FROM diallist WHERE id = '0' ";
+		}
+		
+		if($order == null || is_array($order)){
+			$sql .= " ORDER by diallist.id DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+		}else{
+			$sql .= " ORDER BY diallist.".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+		}
+		
+		astercrm::events($sql);
+		$res =& $db->query($sql);		
+		return $res;
+	}
+
+	function &getDiallistNumRows($userexten,$customerid,$filter = null, $content = null){
+		global $db;
+//echo $customerid;
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+//print_r($res_contact);
+		$sql = '';
+		if ($res_customer['phone'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['phone']."' ";
+		if ($res_customer['mobile'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['mobile']."' ";
+		while ($res_contact->fetchInto($row)) {
+			if ($row['phone'] != '') $sql .= " OR diallist.dialnumber='".$row['phone']."' ";
+			if ($row['phone1'] != '') $sql .= " OR diallist.dialnumber='".$row['phone1']."' ";
+			if ($row['phone2'] != '') $sql .= " OR diallist.dialnumber='".$row['phone2']."' ";
+			if ($row['mobile'] != '') $sql .= " OR diallist.dialnumber='".$row['mobile']."' ";
+		}
+		if( $sql != '') {
+			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".ltrim($sql,"\ OR").")";
+		}else{
+			return '0';
+		}
+
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;		
+	}
+
+	function &getDiallistFilteredMore($userexten,$customerid,$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
+		global $db;
+				
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND diallist.$filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		$sql = '';
+		if ($res_customer['phone'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['phone']."' ";
+		if ($res_customer['mobile'] != '') $sql .= " OR diallist.dialnumber='".$res_customer['mobile']."' ";
+
+		while ($res_contact->fetchInto($row)) {
+			if ($row['phone'] != '') $sql .= " OR diallist.dialnumber='".$row['phone']."' ";
+			if ($row['phone1'] != '') $sql .= " OR diallist.dialnumber='".$row['phone1']."' ";
+			if ($row['phone2'] != '') $sql .= " OR diallist.dialnumber='".$row['phone2']."' ";
+			if ($row['mobile'] != '') $sql .= " OR diallist.dialnumber='".$row['mobile']."' ";
+		}
+		if( $sql != '') {
+			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote,campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".ltrim($sql,"\ OR").")";
+		}else{
+			$sql = "SELECT * FROM diallist WHERE id = '0' ";
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  ";
+		}
+
+		$sql .= " ORDER BY diallist.".$order
+					." DESC LIMIT $start, $limit $ordering";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getDiallistNumRowsMore($userexten,$customerid,$filter = null, $content = null){
+		global $db;
+
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND diallist.$filter[$i] like '%".$value."%' ";
+			}
+			$i++;
+		}
+
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+
+		$sql = '';
+		if ($res_customer['phone'] != '') $sql .= " OR dialnumber='".$res_customer['phone']."' ";
+		if ($res_customer['mobile'] != '') $sql .= " OR dialnumber='".$res_customer['mobile']."' ";
+		while ($res_contact->fetchInto($row)) {
+			if ($row['phone'] != '') $sql .= " OR dialnumber='".$row['phone']."' ";
+			if ($row['phone1'] != '') $sql .= " OR dialnumber='".$row['phone1']."' ";
+			if ($row['phone2'] != '') $sql .= " OR dialnumber='".$row['phone2']."' ";
+			if ($row['mobile'] != '') $sql .= " OR dialnumber='".$row['mobile']."' ";
+		}
+		if( $sql != '') {
+			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".ltrim($sql,"\ OR").") ";
+		}else{
+			return '0';
+		}
+		
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}
+
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);		
+		return $res;
+	}
+
+	function formDiallistAdd($userexten,$customerid){
+		global $locate;
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$res = Customer::getGroups();
+				$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
+				while ($row = $res->fetchRow()) {
+						$groupoptions .= '<option value="'.$row['groupid'].'"';
+						$groupoptions .='>'.$row['groupname'].'</option>';
+				}				
+				$groupoptions .= '</select>';				
+		}else{
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';				
+		}
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$res_contact =astercrm::getContactListByID($customerid);
+		$numberblank = '<select name="dialnumber" id="dialnumber">';
+		if ($res_customer['phone'] != '') $numberblank .= '<option value="'.$res_customer['phone'].'">'.$res_customer['phone'].'</option>';
+		if ($res_customer['mobile'] != '') $numberblank .= '<option value="'.$res_customer['mobile'].'">'.$res_customer['mobile'].'</option>';
+		while ($res_contact->fetchInto($row)) {
+			if ($row['phone'] != '') $numberblank .= '<option value="'.$row['phone'].'">'.$row['phone'].'</option>';
+			if ($row['phone1'] != '') $numberblank .= '<option value="'.$row['phone1'].'">'.$row['phone1'].'</option>';
+			if ($row['phone2'] != '') $numberblank .= '<option value="'.$row['phone2'].'">'.$row['phone2'].'</option>';
+			if ($row['mobile'] != '') $numberblank .= '<option value="'.$row['mobile'].'">'.$row['mobile'].'</option>';
+		}
+		$numberblank .= '</select>';
+
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="formaddDiallist" id="formaddDiallist">
+				
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("number").'</td>
+						<td align="left">'.$numberblank.'</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
+						<td align="left">
+							<input type="text" id="assign" name="assign" size="35"">
+						</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
+						<td align="left">
+							<input type="text" name="dialtime" size="20" value="'.date("Y-m-d H:i",time()).'">
+			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
+						</td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
+						<td><SELECT id="campaignid" name="campaignid"></SELECT></td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_saveDiallist(xajax.getFormValues(\'formaddDiallist\'),\''.$userexten.'\',\''.$customerid.'\');return false;"></td>
+					</tr>
+				<table>
+				</form>
+				';
+		return $html;
+	}
 }
 ?>

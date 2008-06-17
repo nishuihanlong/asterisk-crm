@@ -251,6 +251,11 @@ function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
+	if($f['campaignid'] == ''){
+		$objResponse->addAlert($locate->Translate("Must select a campaign"));
+		return $objResponse->getXML();
+	}
+
 	// check if the assign number belong to this group
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		$flag = false;
