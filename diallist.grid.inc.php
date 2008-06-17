@@ -88,7 +88,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT diallist.*, groupname,campaignname FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
+		$sql = "SELECT diallist.*, groupname,campaignname FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
@@ -103,6 +103,8 @@ class Customer extends astercrm
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
+//		print $sql;
+//		exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;

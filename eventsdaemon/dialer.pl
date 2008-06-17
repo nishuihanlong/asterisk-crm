@@ -183,7 +183,7 @@ while (1) {
 	my $date_hd = strftime "%Y-%m-%d %H:%M:%S", localtime(time + 60);
 
 #	my $query = "SELECT * FROM diallist WHERE trytime < '3' ";
-	my $query = "SELECT * FROM diallist WHERE dialtime <= '$date_hd' AND trytime < '1' ORDER BY dialtime ASC LIMIT 0, $avaiable_channel_num ";
+	my $query = "SELECT * FROM diallist WHERE dialtime <= '$date_hd' AND trytime < '3' ORDER BY dialtime ASC LIMIT 0, $avaiable_channel_num ";
 	my $rows = &executeQuery($query,'rows');
 #	print $rows;
 	while (my $ref = $rows->fetchrow_hashref()) {
