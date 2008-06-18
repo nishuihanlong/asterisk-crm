@@ -174,7 +174,6 @@ v0.047
 2008-3-24		增加了表curcdr, mycdr
 2008-3-24		增加了表trunkinfo, 保存trunk信息
 2008-3-24		增加了显示从哪条外线打来的功能
-2008-3-26		增加表 asteriskcalls , remindercalls (用于预报号系统)
 2008-5-4		更改了account表和accountgroup表名为astercrm_account和astercrm_accountgroup
 			为了避免和astercc使用中发生冲突
 			表campaign中增加了 `fileid`  `end-fileid` `phonenumber` 三个字段
@@ -183,8 +182,9 @@ v0.047
 2008-5-4		表 `diallist` 增加了 dialtime, trytime, status 字段
 			表 `campaign` 增加了 incontext, outcontext, inexten 字段
 2008-6-3		增加了customer对应的CDR查询功能
-2006-6-11		修正了使用astercc时，拨入不弹屏的问题及弹屏时不弹出已有客户信息的问题		
-2006-6-16		增加了customer对应的diallist查询,添加,修改功能
+2008-6-11		修正了使用astercc时，拨入不弹屏的问题及弹屏时不弹出已有客户信息的问题		
+2008-6-16		增加了customer对应的diallist查询,添加,修改功能
+2008-6-16		增加了dialer.pl进程作为自动拨号程序
 
 TO-DO:
 删除asteriskcalls和remindercalls部分
