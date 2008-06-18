@@ -183,7 +183,7 @@ v0.047
 2008-5-4		表 `diallist` 增加了 dialtime, trytime, status 字段
 			表 `campaign` 增加了 incontext, outcontext, inexten 字段
 2008-6-3		增加了customer对应的CDR查询功能
-2006-6-11		修正了使用astercc时，拨入不弹屏的问题		
+2006-6-11		修正了使用astercc时，拨入不弹屏的问题及弹屏时不弹出已有客户信息的问题		
 2006-6-16		增加了customer对应的diallist查询,添加,修改功能
 
 TO-DO:
