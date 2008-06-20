@@ -2099,9 +2099,6 @@ Class astercrm extends PEAR{
 				$arreglo =& Customer::getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order);
 			}
 		}	
-//echo $arreglo;exit;
-		// Editable zone
-
 		// Databse Table: fields
 		$fields = array();
 		$fields[] = 'calldate';

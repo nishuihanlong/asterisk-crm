@@ -207,7 +207,7 @@ function add(){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_group"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("Edit_Record"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone

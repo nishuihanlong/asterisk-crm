@@ -185,7 +185,7 @@ v0.047
 2008-6-11		修正了使用astercc时，拨入不弹屏的问题及弹屏时不弹出已有客户信息的问题		
 2008-6-16		增加了customer对应的diallist查询,添加,修改功能
 2008-6-16		增加了dialer.pl进程作为自动拨号程序
-
+2008-6-20		修正了customer对应的diallist列表中添加和修改功能中不能选择日期的bug
 TO-DO:
 删除asteriskcalls和remindercalls部分
 [fixed] 增加对dialedlist的导出和删除功能

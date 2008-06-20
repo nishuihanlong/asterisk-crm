@@ -219,7 +219,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top($locate->Translate("Add Campaign"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("Add Trunk"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -290,7 +290,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_group"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("Edit Trunk"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
