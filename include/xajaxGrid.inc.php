@@ -142,7 +142,7 @@ class ScrollTable{
 		$this->customerid = $customerid;
 		$this->cdrtype = $cdrtype;
 		$this->userexten = $userexten;
-		
+
 		if ($cdrtype != '') {
 			$this->setSpecFooter('mycdr');
 		}elseif ($userexten != '') {
@@ -379,7 +379,7 @@ class ScrollTable{
 		global $local_grid;
 		$ind = 0;
 		$ind_selected = 0;
-		if ($table == 'mycdr'){
+		if ($table == 'mycdr' && $this->customerid !=''){
 			$this->search = '
 		    <form action="javascript:void(null);" name="searchCdrForm" id="searchCdrForm" onSubmit="xajax_searchCdrFormSubmit(xajax.getFormValues(\'searchCdrForm\'),0,5);">
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
@@ -410,7 +410,7 @@ class ScrollTable{
 			}
 		}else {
 			$this->search = '
-				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5);">
+				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,'.$this->numRowsToShow.');">
 				<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 				<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 				<table width="99%" border="0" style="line-height:30px;">

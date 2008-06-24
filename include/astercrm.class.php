@@ -2058,7 +2058,7 @@ Class astercrm extends PEAR{
 		return str_replace(chr(13),'<br>',$string);
 	}
 
-	function createCdrGrid($customerid,$cdrtype,$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formCdr", $ordering = ""){
+	function createCdrGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formCdr", $ordering = ""){
 		global $locate;
 		$_SESSION['ordering'] = $ordering;
 		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -2226,22 +2226,34 @@ Class astercrm extends PEAR{
 	}
 
 	
-	function &getAllCdrRecords($customerid,$cdrtype,$start, $limit, $order = null, $creby = null){
+	function &getAllCdrRecords($customerid='',$cdrtype='',$start, $limit, $order = null, $creby = null){
 		global $db;
-		
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-		
-		if($cdrtype == 'out'){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
-		}else{
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+		if($customerid != ''){
+			if($cdrtype == 'out'){
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+			}else{
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			}
 		}
 
-		if($sql != '' ) {
-			$sql = "SELECT * FROM mycdr WHERE ".$sql;
-		}else {
-			$sql = "SELECT * FROM mycdr WHERE id = '0'";
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT * FROM mycdr ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT * FROM mycdr WHERE ".ltrim($group_str,"\ OR");
+			}else {
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+			}
+		}else{			
+			if($sql != '' ) {
+				$sql = "SELECT * FROM mycdr WHERE ".$sql;
+			}else {
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+			}
 		}
 
 		if($order == null || is_array($order)){
@@ -2249,32 +2261,48 @@ Class astercrm extends PEAR{
 		}else{
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
-
+//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
 
-	function &getCdrNumRows($customerid,$cdrtype,$filter = null, $content = null){
+	function &getCdrNumRows($customerid='',$cdrtype='',$filter = null, $content = null){
 		global $db;
-		
-		if ($cdrtype == 'out'){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
-		}else{
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+		if($customerid != ''){
+			if ($cdrtype == 'out'){
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+			}else{
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			}
 		}
 
-		if($sql != '' ) {
-			$sql = "SELECT COUNT(*) FROM mycdr WHERE ".$sql;
-		}else {
-			return '0';
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT COUNT(*) FROM mycdr ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE ".ltrim($group_str,"\ OR");
+			}else {
+				return '0';
+			}
+		}else{
+			if($sql != '' ) {
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE ".$sql;
+			}else {
+				return '0';
+			}
 		}
+		
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
 
-	function &getCdrRecordsFilteredMore($customerid,$cdrtype,$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
+	function &getCdrRecordsFilteredMore($customerid='',$cdrtype='',$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
 		global $db;
 		
 		$i=0;
@@ -2286,17 +2314,31 @@ Class astercrm extends PEAR{
 			}
 			$i++;
 		}
-
-		if($cdrtype == 'out'){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
-		}else{
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+		if($customerid != ''){
+			if($cdrtype == 'out'){
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+			}else{
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			}
 		}
-
-		if($sql != '' ) {
-			$sql = "SELECT * FROM mycdr WHERE (".$sql.")";
-		}else {
-			$sql = "SELECT * FROM mycdr WHERE id = '0'";
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT * FROM mycdr WHERE 1 ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT * FROM mycdr WHERE (".ltrim($group_str,"\ OR").") ";
+			}else {
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+			}
+		}else{
+			if($sql != '' ) {
+				$sql = "SELECT * FROM mycdr WHERE (".$sql.")";
+			}else {
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+			}
 		}
 
 		if ($joinstr!=''){
@@ -2312,7 +2354,7 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function &getCdrNumRowsMore($customerid,$cdrtype,$filter = null, $content = null,$table = ''){
+	function &getCdrNumRowsMore($customerid='',$cdrtype='',$filter = null, $content = null,$table = ''){
 		global $db;
 
 		$i=0;
@@ -2324,19 +2366,33 @@ Class astercrm extends PEAR{
 			}
 			$i++;
 		}
+		if($customerid != ''){
+			if ($cdrtype == 'out'){
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+			}else{
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			}
+		}
 
-		if ($cdrtype == 'out'){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE 1 ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($group_str,"\ OR").") ";
+			}else {
+				return '0';
+			}
 		}else{
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			if($sql != '' ) {
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".$sql.")";
+			}else {
+				return '0';
+			}
 		}
-
-		if($sql != '' ) {
-			$sql = "SELECT COUNT(*) FROM mycdr WHERE (".$sql.")";
-		}else {
-			return '0';
-		}
-		
 		if ($joinstr!=''){
 			$sql .= " ".$joinstr;
 		}

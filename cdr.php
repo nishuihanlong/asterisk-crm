@@ -1,13 +1,13 @@
 <?php
 /*******************************************************************************
-* trunkinfo.php
+* cdr.php
 * 拨号结果信息管理界面
 * trunkinfo information management interface
 * 功能描述
 	 提供对调查信息进行管理的功能
 
 * Function Desc
-	trunkinfo management
+	cdr 
 
 * Page elements
 * div:							
@@ -18,12 +18,12 @@
 									init	
 
 
-* Revision 0.047  2008/3/24 12:55:00  modified by solo
+* Revision 0.047  2008/6/24 18:55:00  create by donnie
 * Desc: create page
 * 描述: 建立
 ********************************************************************************/
 
-require_once('trunkinfo.common.php');
+require_once('cdr.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
