@@ -123,7 +123,7 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function insertNewMonitor($callerid,$filename){
+	function insertNewMonitor($callerid,$filename,$uniqueid){
 		global $db;
 		$query= "INSERT INTO monitorrecord SET "
 				."callerid='".$callerid."', "
@@ -131,6 +131,7 @@ Class astercrm extends PEAR{
 				."cretime=now(), "
 				."groupid = ".$_SESSION['curuser']['groupid'].", "
 				."extension = ".$_SESSION['curuser']['extension'].", "
+				."uniqueid = '".$uniqueid."', "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
@@ -2064,8 +2065,8 @@ Class astercrm extends PEAR{
 		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
 			$content = null;
 			$filter = null;
-			$numRows =& Customer::getCdrNumRows($customerid,$cdrtype);
-			$arreglo =& Customer::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
+			$numRows =& astercrm::getCdrNumRows($customerid,$cdrtype);
+			$arreglo =& astercrm::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
 		}else{
 			foreach($content as $value){
 				if(trim($value) != ""){  //搜索内容有值
@@ -2087,16 +2088,16 @@ Class astercrm extends PEAR{
 //			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
 				$order = null;
-				$numRows =& Customer::getCdrNumRows($customerid,$cdrtype);
-				$arreglo =& Customer::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
+				$numRows =& astercrm::getCdrNumRows($customerid,$cdrtype);
+				$arreglo =& astercrm::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
 			}elseif($flag3 != 1 ){  //未选择搜索方式
 				$order = "calldate";
-				$numRows =& Customer::getCdrNumRowsMore($customerid,$cdrtype,$filter, $content);
-				$arreglo =& Customer::getCdrRecordsFilteredMore($customerid,$cdrtype,$start, $limit, $filter, $content, $order);
+				$numRows =& astercrm::getCdrNumRowsMore($customerid,$cdrtype,$filter, $content);
+				$arreglo =& astercrm::getCdrRecordsFilteredMore($customerid,$cdrtype,$start, $limit, $filter, $content, $order);
 			}else{
 				$order = "calldate";
-				$numRows =& Customer::getCdrNumRowsMorewithstype($customerid,$cdrtype,$filter, $content,$stype);
-				$arreglo =& Customer::getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order);
+				$numRows =& astercrm::getCdrNumRowsMorewithstype($customerid,$cdrtype,$filter, $content,$stype);
+				$arreglo =& astercrm::getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order);
 			}
 		}	
 		// Databse Table: fields
