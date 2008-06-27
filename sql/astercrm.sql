@@ -232,6 +232,7 @@ CREATE TABLE `monitorrecord` (
 `filename` VARCHAR( 60 ) NOT NULL ,
 `groupid` INT NOT NULL ,
 `extension` VARCHAR( 30 ) NOT NULL ,
+`uniqueid` varchar(20) NOT NULL default '',
 `creby` VARCHAR( 30 ) NOT NULL ,
 `cretime` DATETIME NOT NULL ,
 UNIQUE (
