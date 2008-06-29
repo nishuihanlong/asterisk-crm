@@ -33,6 +33,7 @@
 			-----------2008-6 by donnie----------------------------------------
 			showCdr					显示customer对应的CDR列表页
 			showDiallist			显示customer对应的Diallist列表页(条件:diallist.assign																	==agent.exten)
+			showRecords				显示customer对应的录音列表页
 			addDiallist				显示增加customer对应的diallist的表单
 			searchCdrFormSubmit		customer对应的CDR搜索
 			searchDiallistFormSubmit	 customer对应的Diallist搜索
@@ -473,6 +474,20 @@ function showDiallist($userexten,$customerid,$start = 0, $limit = 5,$filter = nu
 	}
 }
 
+function showRecords($id,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formRecords", $ordering = "",$stype = null){
+	global $locate;
+
+	if($id != ''){
+		$html = Table::Top($locate->Translate("Monitors"),"formRecords"); 			
+		$html .= Customer::createRecordsGrid($id,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
+		$html .= Table::Footer();
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("formRecords", "style.visibility", "visible");
+		$objResponse->addAssign("formRecords", "innerHTML", $html);	
+		return $objResponse->getXML();
+	}
+}
+
 function searchCdrFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
 		global $locate,$db;
 		$objResponse = new xajaxResponse();
@@ -590,6 +605,38 @@ function saveDiallist($f,$userexten = '',$customerid = ''){
 		$objResponse->addAssign("formeditDiallistInfo", "style.visibility", "hidden");
 		$objResponse->addClear("formeditDiallistInfo", "innerHTML");
 	}
+	return $objResponse->getXML();
+}
+
+function searchRecordsFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	$searchField = array();
+	$searchContent = array();
+	$searchType = array();
+	$customerid = $searchFormValue['customerid'];
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+	$divName = "formRecords";
+	//echo $customerid.','.$cdrtype;
+	//print_r($searchFormValue);exit;
+	$html = Table::Top($locate->Translate("Monitors"),"formRecords");
+	if($type == "delete"){
+		$res = Customer::deleteRecord($id,'account');
+		if ($res){
+			$html = Customer::createRecordsGrid($customerid,$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
+	}else{
+		$html .= Customer::createRecordsGrid($customerid,$numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "",true);
+	}
+	$html .= Table::Footer();
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
 ?>

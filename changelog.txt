@@ -186,6 +186,8 @@ v0.047
 2008-6-16		增加了customer对应的diallist查询,添加,修改功能
 2008-6-16		增加了dialer.pl进程作为自动拨号程序
 2008-6-20		修正了customer对应的diallist列表中添加和修改功能中不能选择日期的bug
+2008-6-26		monitorrecords 表增加了uniqueid字段，用于与mycdr表记录关联
+2008-6-26		更改了录音存储目录结构，按年/月/日/小时进行目录存储
 TO-DO:
 删除asteriskcalls和remindercalls部分
 [fixed] 增加对dialedlist的导出和删除功能

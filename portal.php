@@ -154,7 +154,7 @@ require_once('config.php');
 			if (xajax.$('btnMonitorStatus').value == 'recording')
 				xajax_monitor(channel,callerid,'stop');
 			else
-				xajax_monitor(channel,callerid,'start');
+				xajax_monitor(channel,callerid,'start',document.getElementById("uniqueid").value);
 
 			return false;
 		}
@@ -266,10 +266,12 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>			
 		<div id="formCustomerInfo" class="formDiv drsElement"
-			style="left: 20px; top: 50px;"></div>
+			style="left: 20px; top: 50px;width: 550px"></div>
 		<div id="formContactInfo" class="formDiv drsElement"
 			style="left: 20px; top: 330px;"></div>
 		<div id="formCdr" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 800px"></div>
+		<div id="formRecords" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 800px"></div>
 		<div id="formDiallist" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 800px"></div>

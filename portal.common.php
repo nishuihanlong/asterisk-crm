@@ -137,6 +137,8 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("saveDiallist");
 	$xajax->registerFunction("searchCdrFormSubmit");
 	$xajax->registerFunction("searchDiallistFormSubmit");
+	$xajax->registerFunction("showRecords");
+	$xajax->registerFunction("searchRecordsFormSubmit");
 }
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.

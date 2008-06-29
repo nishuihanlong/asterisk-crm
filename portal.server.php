@@ -293,7 +293,7 @@ function incomingCalls($myValue){
 	add a new parameter callerid		by solo2008/2/24
 	when monitor, record the callerid and the filename to database
 */
-function monitor($channel,$callerid,$action = 'start'){
+function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
@@ -305,10 +305,11 @@ function monitor($channel,$callerid,$action = 'start'){
 	}
 
 	if ($action == 'start'){
+		//echo $channel;
+		//echo $uniqueid;exit;
 		$filename = str_replace("/","-",$channel);
-		$filename = $config['asterisk']['monitorpath'].$channel;
+		$filename = $config['asterisk']['monitorpath'].date('Y/m/d/H/').$filename;
 		$filename .= '.'.time();
-
 		$format = $config['asterisk']['monitorformat'];
 		$mix = true;
 		$res = $myAsterisk->Monitor($channel,$filename,$format,$mix);
@@ -317,7 +318,7 @@ function monitor($channel,$callerid,$action = 'start'){
 			return $objResponse;
 		}
 		// 录音信息保存到数据库
-		astercrm::insertNewMonitor($callerid,$filename);
+		astercrm::insertNewMonitor($callerid,$filename,$uniqueid);
 		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("recording") );
 		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
 

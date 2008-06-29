@@ -128,7 +128,7 @@ class ScrollTable{
 	 * @param string  $content: content to search
 	 * @param string  $order: field to organize the data of the table
 	 */
-	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null,$customerid='',$cdrtype = '',$userexten = ''){
+	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null,$customerid='',$cdrtype = '',$userexten = '',$table = ''){
 		$this->n_cols = $cols;
 		$this->limit = $limit;
 		$this->numRows = $numRows;
@@ -147,6 +147,8 @@ class ScrollTable{
 			$this->setSpecFooter('mycdr');
 		}elseif ($userexten != '') {
 			$this->setSpecFooter('diallist');
+		}elseif ($table == 'monitorrecord') {
+			$this->setSpecFooter('monitorrecord');
 		}else{
 			$this->setFooter();
 		}
@@ -408,6 +410,18 @@ class ScrollTable{
 			if($withNewButton){
 				$this->search .= '<button id="submitButton" onClick="xajax_addDiallist(\''.$this->userexten.'\',\''.$this->customerid.'\');return false;">'.$local_grid->Translate("add_record").'</button>';
 			}
+		}elseif ($table == 'monitorrecord'){
+			$this->search = '
+		    <form action="javascript:void(null);" name="searchRecordsForm" id="searchRecordsForm" onSubmit="xajax_searchRecordsFormSubmit(xajax.getFormValues(\'searchRecordsForm\'),0,5);">
+			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
+			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
+			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
+			<table width="99%" border="0" style="line-height:30px;">
+			<tr>
+			<td></td>
+			</tr>
+			<tr>
+				<td align="left" width="10%">';
 		}else {
 			$this->search = '
 				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,'.$this->numRowsToShow.');">
@@ -583,6 +597,10 @@ class ScrollTable{
 			$arg = 'userexten';
 			$form = 'searchDiallistForm';
 			$submit = 'searchDiallistFormSubmit';
+		}elseif($type == 'monitorrecord'){
+			$arg = 'non';
+			$form = 'searchRecordsForm';
+			$submit = 'searchRecordsFormSubmit';
 		}
 		$this->footer = '</table>';
 		$this->footer .= '
@@ -594,9 +612,11 @@ class ScrollTable{
 						$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = 0;
 						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';
-						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
-						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';';
+						if($arg != 'non') {
+							$this->footer .= 'document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+						}
+						$this->footer .= 'xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("first");
 					}
@@ -607,9 +627,11 @@ class ScrollTable{
 					$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = '.$previos_rows.';
 						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';
-						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
-						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
+						document.getElementById(\'customerid\').value = '.$this->customerid.';';
+						if($arg != 'non') {
+							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+						}
+						$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
 						return false;">'.$local_grid->Translate("previous").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("previous");
@@ -628,9 +650,11 @@ class ScrollTable{
 						$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = '.$next_rows.';
 						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';
-						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
-						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';';
+						if($arg != 'non') {
+							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+						}
+						$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("next");
 					}
@@ -642,9 +666,11 @@ class ScrollTable{
 						$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
 						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';
-						document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';
-						xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+						document.getElementById(\'customerid\').value = '.$this->customerid.';';
+						if($arg != 'non') {
+							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+						}
+						$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
 					}else{
 
 						$this->footer .= $local_grid->Translate("last").'</span>';
