@@ -479,7 +479,7 @@ function showRecords($id,$start = 0, $limit = 5,$filter = null, $content = null,
 
 	if($id != ''){
 		$html = Table::Top($locate->Translate("Monitors"),"formRecords"); 			
-		$html .= Customer::createRecordsGrid($id,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
+		$html .= Customer::createRecordsGrid($id,$start, $limit,$filter, $content, $order, $divName, $ordering);	
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("formRecords", "style.visibility", "visible");

@@ -147,7 +147,7 @@ class ScrollTable{
 			$this->setSpecFooter('mycdr');
 		}elseif ($userexten != '') {
 			$this->setSpecFooter('diallist');
-		}elseif ($table == 'monitorrecord') {
+		}elseif ($table == 'monitorrecord' && $customerid!='') {
 			$this->setSpecFooter('monitorrecord');
 		}else{
 			$this->setFooter();
@@ -410,7 +410,7 @@ class ScrollTable{
 			if($withNewButton){
 				$this->search .= '<button id="submitButton" onClick="xajax_addDiallist(\''.$this->userexten.'\',\''.$this->customerid.'\');return false;">'.$local_grid->Translate("add_record").'</button>';
 			}
-		}elseif ($table == 'monitorrecord'){
+		}elseif ($table == 'monitorrecord' && $this->customerid !=''){
 			$this->search = '
 		    <form action="javascript:void(null);" name="searchRecordsForm" id="searchRecordsForm" onSubmit="xajax_searchRecordsFormSubmit(xajax.getFormValues(\'searchRecordsForm\'),0,5);">
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>

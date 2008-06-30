@@ -114,6 +114,8 @@ $xajax->registerFunction("setCampaign");
 $xajax->registerFunction("saveDiallist");
 $xajax->registerFunction("searchCdrFormSubmit");
 $xajax->registerFunction("searchDiallistFormSubmit");
+$xajax->registerFunction("showRecords");
+$xajax->registerFunction("searchRecordsFormSubmit");
 //define(ENABLE_CONTACT, $config['system']['enable_contact']);  // Enable contact
 define(ROWSXPAGE, 15); // Number of rows show it per page.
 define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.

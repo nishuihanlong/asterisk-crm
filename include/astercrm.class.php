@@ -2749,7 +2749,7 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 
-	function createRecordsGrid($customerid='',$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formCdr", $ordering = ""){
+	function createRecordsGrid($customerid='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "formRecords", $ordering = ""){
 		global $locate;
 		$_SESSION['ordering'] = $ordering;
 		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -2936,7 +2936,7 @@ Class astercrm extends PEAR{
 		}else{
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
-
+//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -2971,7 +2971,7 @@ Class astercrm extends PEAR{
 				return '0';
 			}
 		}
-
+//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		

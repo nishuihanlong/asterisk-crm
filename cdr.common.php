@@ -65,10 +65,6 @@ $xajax = new xajax("cdr.server.php");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("searchFormSubmit");
-$xajax->registerFunction("add");
-$xajax->registerFunction("save");
-$xajax->registerFunction("edit");
-$xajax->registerFunction("update");
 
 define(ROWSXPAGE, 50); // Number of rows show it per page.
 // Total number of rows show it when click on "Show All" button.

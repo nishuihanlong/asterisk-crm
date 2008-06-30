@@ -237,7 +237,8 @@ CREATE TABLE `monitorrecord` (
 `cretime` DATETIME NOT NULL ,
 UNIQUE (
 `id`
-)
+),
+KEY `monitorid`(`uniqueid`,`filename`,`creby`)
 ) ENGINE = MYISAM ;
 
 DROP TABLE IF EXISTS trunkinfo;
