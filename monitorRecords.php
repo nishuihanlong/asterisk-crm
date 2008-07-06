@@ -61,6 +61,8 @@ require_once('monitorRecords.common.php');
 				<fieldset>
 					<div id="formDiv"  class="formDiv drsElement" style="left: 450px; top: 50px;" ></div>
 					<div id="grid" align="center"> </div>
+					<div id="formplaymonitor"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;width: 300px""></div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 				</fieldset>
 			</td>
