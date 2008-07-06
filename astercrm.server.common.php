@@ -639,4 +639,19 @@ function searchRecordsFormSubmit($searchFormValue,$numRows,$limit,$id='',$type='
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
 }
+
+function playmonitor($id){
+	global $config,$locate;
+	$objResponse = new xajaxResponse();
+	$res = Customer::getRecordByID($id,'monitorrecord');
+	$path = "./monitor/".str_replace($config['asterisk']['monitorpath'],'',$res['filename']).".wav";
+//	echo $path;exit;
+//	print_r($res);exit;
+	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
+	$html .= '<embed src="'.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true">';
+	$html .= Table::Footer();
+	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
+	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	
+	return $objResponse->getXML();
+}
 ?>

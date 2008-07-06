@@ -305,8 +305,6 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 	}
 
 	if ($action == 'start'){
-		//echo $channel;
-		//echo $uniqueid;exit;
 		$filename = str_replace("/","-",$channel);
 		$filename = $config['asterisk']['monitorpath'].date('Y/m/d/H/').$filename;
 		$filename .= '.'.time();

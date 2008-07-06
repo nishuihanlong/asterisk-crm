@@ -2889,7 +2889,7 @@ Class astercrm extends PEAR{
 			$rowc[] = $row['dst'];
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
-			$rowc[] = $row['filename'];
+			$rowc['filename'] = $row['filename'];
 			$rowc[] = $row['creby'];
 			$table->addRow("monitorrecord",$rowc,false,false,false,$divName,$fields);
 		}

@@ -60,7 +60,7 @@ require_once ('include/localization.class.php');
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
 
-$xajax = new xajax("MonitorRecords.server.php");
+$xajax = new xajax("monitorRecords.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");

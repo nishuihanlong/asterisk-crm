@@ -255,8 +255,13 @@ class ScrollTable{
 		}
 */
 
-	   	if($key != 'id')
-   			$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
+			if($key != 'id'){
+				if($key == 'filename' && $table = 'monitorrecord') {					
+					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.basename($value).'<a href="?" onClick="xajax_playmonitor('.$arr[0].');return false;"><img src="skin/default/images/play.gif" border="0"></a></td>'."\n";
+				}else{
+					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
+				}
+			}
    		$ind++;
 		}
 
@@ -603,9 +608,15 @@ class ScrollTable{
 			$submit = 'searchRecordsFormSubmit';
 		}
 		$this->footer = '</table>';
-		$this->footer .= '
-		<table class="adminlist">
-			<tr>
+		$this->footer .= '<table class="adminlist">';
+//		if($type == 'monitorrecord'){
+//			//$this->footer .='<tr>
+//			//	<th width="15" >
+//			//		<embed src="" width=0 height=0 autostart=false loop=false>
+//			//	</th>
+//			//</tr>';
+//		}
+		$this->footer .= '<tr>
 				<th colspan="'.$this->n_cols.'">
 					<span class="pagenav">';
 					if($this->start>0){

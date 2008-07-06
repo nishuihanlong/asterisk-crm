@@ -19,8 +19,8 @@
 
 ********************************************************************************/
 require_once ("db_connect.php");
-require_once ("MonitorRecords.common.php");
-require_once ('MonitorRecords.grid.inc.php');
+require_once ("monitorRecords.common.php");
+require_once ('monitorRecords.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
 
@@ -189,7 +189,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 			$rowc[] = $row['dst'];
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
-			$rowc[] = $row['filename'];
+			$rowc['filename'] = $row['filename'];
 			$rowc[] = $row['creby'];
 			$table->addRow("monitorrecord",$rowc,false,false,false,$divName,$fields);
 		}

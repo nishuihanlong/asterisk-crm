@@ -26,7 +26,7 @@
 
 ********************************************************************************/
 require_once 'db_connect.php';
-require_once 'MonitorRecords.common.php';
+require_once 'monitorRecords.common.php';
 require_once 'include/astercrm.class.php';
 
 class Customer extends astercrm
