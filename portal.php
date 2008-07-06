@@ -159,11 +159,6 @@ require_once('config.php');
 			return false;
 		}
 
-//		function PlayOne(){
-//			var thissound=document.getElementById(sound);
-//			thissound.Play();
-//		}
-
 		function init(){
 			xajax_init();
 			updateEvents();
@@ -289,7 +284,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 300px""></div>
+			style="left: 450px; top: 50px;width: 350px""></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 					</fieldset>
