@@ -201,6 +201,7 @@ class asterEvent extends PEAR
 */
 
 	function checkExtensionStatus($curid, $type = 'list'){
+		global $db,$config;
 		/* 
 			if type is list, then only check some specific extension
 			or else we get extension list from events
@@ -228,71 +229,100 @@ class asterEvent extends PEAR
 			$phones = array();
 		else
 			$phones = $_SESSION['curuser']['extensions_session'];
-
-		$events =& asterEvent::getEvents($curid);
-		while ($events->fetchInto($list)) {
-			$data  = trim($list['event']);
-			list($event,$event_val,$ev,$priv,$priv_val,$pv,$chan,$chan_val,$cv,$stat,$stat_val,$sv,$extra) = split(" ", $data, 13);
-//			if (strtolower(substr($chan_val,0,3)) != "sip" && strtolower(substr($chan_val,0,3)) != "iax") continue;	// also we check iax peer status
-			if (strtolower(substr($chan_val,0,3)) != "sip") continue;
-			if (substr($event_val,0,10) == "PeerStatus") {
-				if (!in_array($chan_val,$phones)) $phones[] = $chan_val;
-				if (substr($stat_val,0,11) == "Unreachable")  { $status[$chan_val] = 2; continue; }
-				if (substr($stat_val,0,12) == "Unregistered") { $status[$chan_val] = 2; continue; }
-				if (substr($stat_val,0,9)  == "Reachable")    {
-					if ($status[$chan_val] == 1) continue;
-					$status[$chan_val] = 0;
-					continue;
-				}
-				if (substr($stat_val,0,12) == "Registered")   { 
-					if ($status[$chan_val] == 1) continue; 
-					$status[$chan_val] = 0; 
-					continue;
-				}
-				if (!isset($status[$chan_val])) $status[$chan_val] = 0;
-				continue;
-			} 
-
-			if (substr($event_val,0,10) == "Newchannel") {
-				$peer_val = split("-",$chan_val);
-				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
-				$status[$peer_val[0]] = 1;
-				
-				//get unique id
-				//add by solo 2007-11-1
-				$extra = split("  ", $extra);
-				foreach ($extra as $temp){
-					if (preg_match("/^Uniqueid:/",$temp)){
-						$uniqueid = substr($temp,9);
-						$callerid[$peer_val[0]] =& asterEvent::getCallerID($uniqueid);
-						$direction[$peer_val[0]] = "dialin";
+		
+		if($config['system']['eventtype'] == 'curcdr'){
+			$events =& asterEvent::getPeerstatus($phones);
+			while ($events->fetchInto($list)) {
+				$peer = split("\/",trim($list['peer']));
+				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2; continue; }
+				if ($list['status']  == "reachable"){					
+					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]') AND id > $curid AND src != '' AND dst != ''";
+					$res = $db->query($query);					
+					asterEvent::events($query);
+					if ($res->fetchInto($cdrrow)) {
+						if ($status[$list['peer']] == 1) continue;
+						if (strstr($cdrrow['src'],$peer[1]) ) {	// dial out
+							$callerid[$list['peer']] = trim($cdrrow['dst']);
+							$direction[$list['peer']] = "dialout";
+							$status[$list['peer']] = 1;
+						}else{		//dial in
+							$callerid[$list['peer']] = trim($cdrrow['src']);
+							$direction[$list['peer']] = "dialin";
+							$status[$list['peer']] = 1;
+						}
+					}else{
+							$callerid[$list['peer']] = '';
+							$direction[$list['peer']] = '';
+							$status[$list['peer']] = 0;
 					}
 				}
+			}
+		}else{
+			$events =& asterEvent::getEvents($curid);
+			while ($events->fetchInto($list)) {
+				$data  = trim($list['event']);
+				list($event,$event_val,$ev,$priv,$priv_val,$pv,$chan,$chan_val,$cv,$stat,$stat_val,$sv,$extra) = split(" ", $data, 13);				
+	//			if (strtolower(substr($chan_val,0,3)) != "sip" && strtolower(substr($chan_val,0,3)) != "iax") continue;	// also we check iax peer status
+				if (strtolower(substr($chan_val,0,3)) != "sip") continue;			
+				if (substr($event_val,0,10) == "PeerStatus") {
+					if (!in_array($chan_val,$phones)) $phones[] = $chan_val;
+					if (substr($stat_val,0,11) == "Unreachable")  { $status[$chan_val] = 2; continue; }
+					if (substr($stat_val,0,12) == "Unregistered") { $status[$chan_val] = 2; continue; }
+					if (substr($stat_val,0,9)  == "Reachable")    {
+						if ($status[$chan_val] == 1) continue;
+						$status[$chan_val] = 0;
+						continue;
+					}
+					if (substr($stat_val,0,12) == "Registered")   { 
+						if ($status[$chan_val] == 1) continue; 
+						$status[$chan_val] = 0; 
+						continue;
+					}
+					if (!isset($status[$chan_val])) $status[$chan_val] = 0;
+					continue;
+				} 
 
-				if ($callerid[$peer_val[0]] == 0 ){	// it's a dial out
-					$srcInfo = & asterEvent::getInfoBySrcID($uniqueid);
-					$callerid[$peer_val[0]] = $srcInfo['Extension'];
-					$direction[$peer_val[0]] = "dialout";
-				}
-				//**************************
+				if (substr($event_val,0,10) == "Newchannel") {
+					$peer_val = split("-",$chan_val);
+					if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
+					$status[$peer_val[0]] = 1;
+					
+					//get unique id
+					//add by solo 2007-11-1
+					$extra = split("  ", $extra);
+					foreach ($extra as $temp){
+						if (preg_match("/^Uniqueid:/",$temp)){
+							$uniqueid = substr($temp,9);
+							$callerid[$peer_val[0]] =& asterEvent::getCallerID($uniqueid);
+							$direction[$peer_val[0]] = "dialin";
+						}
+					}
 
-				continue;
+					if ($callerid[$peer_val[0]] == 0 ){	// it's a dial out
+						$srcInfo = & asterEvent::getInfoBySrcID($uniqueid);
+						$callerid[$peer_val[0]] = $srcInfo['Extension'];
+						$direction[$peer_val[0]] = "dialout";
+					}
+					//**************************
+
+					continue;
+				} 
+				if (substr($event_val,0,8) == "Newstate") {
+					$peer_val = split("-",$chan_val);
+					if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
+					$status[$peer_val[0]] = 1;
+					continue;
+				} 
+				if (substr($event_val,0,6) == "Hangup") {
+					$peer_val = split("-",$chan_val);
+					if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
+					$status[$peer_val[0]] = 0;
+					$callerid[$peer_val[0]] = "";
+					continue;
+			   } 
 			} 
-			if (substr($event_val,0,8) == "Newstate") {
-				$peer_val = split("-",$chan_val);
-				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
-				$status[$peer_val[0]] = 1;
-				continue;
-			} 
-			if (substr($event_val,0,6) == "Hangup") {
-				$peer_val = split("-",$chan_val);
-				if (!in_array($peer_val[0],$phones)) $phones[] = $peer_val[0];
-				$status[$peer_val[0]] = 0;
-				$callerid[$peer_val[0]] = "";
-				continue;
-		   } 
-		} 
-
+		}
+//		print_r($phones);print_r($status);print_r($callerid);print_r($direction);exit;
 		if ($type == 'list'){
 			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == ''){
 				$phones = array();
@@ -304,7 +334,7 @@ class asterEvent extends PEAR
 			$_SESSION['curuser']['extensions_session'] = $phones;
 			$action =& asterEvent::tableStatus($phones,$status,$callerid,$direction);
 		}
-
+//print_r($status);exit;
 		$_SESSION['extension_status'] = $status;
 		$_SESSION['callerid'] = $callerid;
 		$_SESSION['direction'] = $direction;
@@ -326,7 +356,6 @@ class asterEvent extends PEAR
 
 	*/
 	function &tableStatus($phones,$status,$callerid,$direction){
-		//print_r($phones);
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
 		foreach ($phones as $key => $value) {
@@ -371,6 +400,7 @@ class asterEvent extends PEAR
 	*/
 
 	function &listStatus($phones,$status,$callerid,$direction){
+//print_r($phones);print_r($status);print_r($callerid);print_r($direction);exit;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $key => $value) {
 			if (!strstr($value,'SIP/'))
@@ -414,8 +444,27 @@ class asterEvent extends PEAR
 */
 
 	function &getEvents($curid){
-		global $db;
+		global $db,$config;
 		$query = "SELECT * FROM events WHERE id > $curid order by id";
+		
+		asterEvent::events($query);
+		$res = $db->query($query);
+		//$db->disconnect();
+		return $res;
+	}
+
+	function &getPeerstatus($phones){
+		global $db,$config;
+		$phone_str = '';
+		foreach($phones as $value){
+			$phone_str .= " OR peer = 'SIP/".trim($value)."' ";
+		}
+
+		if($phone_str != '')
+			$query = "SELECT * FROM peerstatus WHERE ".ltrim($phone_str," OR");
+		else
+			$query = "SELECT * FROM peerstatus WHERE id = '0'";
+
 		asterEvent::events($query);
 		$res = $db->query($query);
 		//$db->disconnect();
