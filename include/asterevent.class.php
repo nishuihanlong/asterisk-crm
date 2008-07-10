@@ -231,13 +231,14 @@ class asterEvent extends PEAR
 			$phones = $_SESSION['curuser']['extensions_session'];
 		
 		if($config['system']['eventtype'] == 'curcdr'){
-			$events =& asterEvent::getPeerstatus($phones);
+			$events =& asterEvent::getPeerstatus($curid);
 			while ($events->fetchInto($list)) {
+				if (!in_array($list['peer'],$phones)) $phones[] = $list['peer'];
 				$peer = split("\/",trim($list['peer']));
 				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2; continue; }
-				if ($list['status']  == "reachable"){					
+				if ($list['status']  == "reachable"){			
 					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]') AND id > $curid AND src != '' AND dst != ''";
-					$res = $db->query($query);					
+					$res = $db->query($query);				
 					asterEvent::events($query);
 					if ($res->fetchInto($cdrrow)) {
 						if ($status[$list['peer']] == 1) continue;
@@ -455,15 +456,17 @@ class asterEvent extends PEAR
 
 	function &getPeerstatus($phones){
 		global $db,$config;
-		$phone_str = '';
-		foreach($phones as $value){
-			$phone_str .= " OR peer = 'SIP/".trim($value)."' ";
-		}
+//		$phone_str = '';
+//		foreach($phones as $value){
+//			$phone_str .= " OR peer = 'SIP/".trim($value)."' ";
+//		}
+//
+//		if($phone_str != '')
+//			$query = "SELECT * FROM peerstatus WHERE ".ltrim($phone_str," OR");
+//		else
+//			$query = "SELECT * FROM peerstatus WHERE id = '0'";
 
-		if($phone_str != '')
-			$query = "SELECT * FROM peerstatus WHERE ".ltrim($phone_str," OR");
-		else
-			$query = "SELECT * FROM peerstatus WHERE id = '0'";
+$query = "SELECT * FROM peerstatus WHERE id > '".$curid."'";
 
 		asterEvent::events($query);
 		$res = $db->query($query);
