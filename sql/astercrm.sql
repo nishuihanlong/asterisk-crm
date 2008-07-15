@@ -363,3 +363,11 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
 ) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `speeddial` (
+  `id` int(11) NOT NULL auto_increment,
+  `description` varchar(100) NOT NULL default '',
+  `number` varchar(20) NOT NULL default '',
+  `groupid` int(11) NOT NULL default '0',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM;
