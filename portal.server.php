@@ -167,6 +167,17 @@ function init(){
 		$extension = trim($extension);
 		$objResponse->addScript("addOption('sltExten','$extension','$extension');");
 	}
+	$speeddial = & Customer::getAllSpeedDialRecords();
+	$speednumber[] = $_SESSION['curuser']['extension'];
+	while ($speeddial->fetchInto($row)) {
+	// Change here by the name of fields of its database table
+		$speednumber[] = $row['number'];
+	}
+//	print_r($speednumber);exit;
+	foreach ($speednumber as $destnumber){
+		$extension = trim($extension);
+		$objResponse->addScript("addOption('iptSrcNumber','$destnumber','$destnumber');");
+	}
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
 		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';

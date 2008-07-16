@@ -251,5 +251,21 @@ class Customer extends astercrm
 		$res =& $db->getOne($sql);
 		return $res;
 	}
+
+	function &getAllSpeedDialRecords(){
+		global $db;
+
+		$sql = "SELECT number FROM speeddial ";
+
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 }
 ?>
