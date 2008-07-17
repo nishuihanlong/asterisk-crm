@@ -180,7 +180,7 @@ function init(){
 	}
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
-		$panelHTML = '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
+		$panelHTML = '<a href=? onclick="xajax_showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a>&nbsp;<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;';
 	}
 
 	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a>";
@@ -202,7 +202,6 @@ function init(){
 			$objResponse->addScript($javascript);
 		}
 	}
-
 	return $objResponse;
 }
 

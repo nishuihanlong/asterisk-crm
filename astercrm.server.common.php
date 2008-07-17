@@ -461,6 +461,17 @@ function showCdr($id,$cdrtype,$start = 0, $limit = 5,$filter = null, $content = 
 	}
 }
 
+function showRecentCdr($id='',$cdrtype,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formRecentCdr", $ordering = "",$stype = null){
+	global $locate;
+	$html = Table::Top($locate->Translate("RecentCdr"),"formRecentCdr"); 			
+	$html .= Customer::createCdrGrid($id,$cdrtype,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
+	$html .= Table::Footer();
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formRecentCdr", "style.visibility", "visible");
+	$objResponse->addAssign("formRecentCdr", "innerHTML", $html);	
+	return $objResponse->getXML();
+}
+
 function showDiallist($userexten,$customerid,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formDiallist", $ordering = "",$stype = null){
 	global $locate;
 	if($userexten != ''){
@@ -488,21 +499,25 @@ function showRecords($id,$start = 0, $limit = 5,$filter = null, $content = null,
 	}
 }
 
-function searchCdrFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
+function searchCdrFormSubmit($searchFormValue='',$numRows,$limit,$id='',$type=''){
 		global $locate,$db;
 		$objResponse = new xajaxResponse();
-		$searchField = array();
-		$searchContent = array();
-		$searchType = array();
-		$customerid = $searchFormValue['customerid'];
-		$cdrtype = $searchFormValue['cdrtype'];
-		$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
-		$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-		$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
-		$divName = "formCdr";
-		//echo $customerid.','.$cdrtype;
-		//print_r($searchFormValue);exit;
-		$html = Table::Top($locate->Translate("cdr"),"formCdr");
+		if($searchFormValue == 'recent'){
+			$cdrtype = 'recent';
+			$divName = "formRecentCdr";
+			$html = Table::Top($locate->Translate("RecentCdr"),"formRecentCdr");
+		}else{
+			$searchField = array();
+			$searchContent = array();
+			$searchType = array();
+			$customerid = $searchFormValue['customerid'];
+			$cdrtype = $searchFormValue['cdrtype'];
+			$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+			$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+			$searchType =  $searchFormValue['searchType'];		//搜索方式 数组
+			$divName = "formCdr";
+			$html = Table::Top($locate->Translate("cdr"),"formCdr");
+		}
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'account');
 			if ($res){
@@ -513,7 +528,10 @@ function searchCdrFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 			}
 		}else{
-			$html .= Customer::createCdrGrid($customerid,$cdrtype,$numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "",true);
+			//if($cdrtype == 'recent')
+			//	$html .= Customer::createCdrGrid('',$cdrtype,$numRows, $limit,'', '', '', $searchField[count($searchField)-1], $divName, "",true);
+			//else
+				$html .= Customer::createCdrGrid($customerid,$cdrtype,$numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "",true);
 		}
 		$html .= Table::Footer();
 		$objResponse->addClear("msgZone", "innerHTML");
@@ -619,8 +637,6 @@ function searchRecordsFormSubmit($searchFormValue,$numRows,$limit,$id='',$type='
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "formRecords";
-	//echo $customerid.','.$cdrtype;
-	//print_r($searchFormValue);exit;
 	$html = Table::Top($locate->Translate("Monitors"),"formRecords");
 	if($type == "delete"){
 		$res = Customer::deleteRecord($id,'account');
@@ -645,8 +661,6 @@ function playmonitor($id){
 	$objResponse = new xajaxResponse();
 	$res = Customer::getRecordByID($id,'monitorrecord');
 	$path = "./monitor/".str_replace($config['asterisk']['monitorpath'],'',$res['filename']).".wav";
-//	echo $path;exit;
-//	print_r($res);exit;
 	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
 	$html .= '<embed src="'.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true">';
 	$html .= Table::Footer();

@@ -622,12 +622,16 @@ class ScrollTable{
 					if($this->start>0){
 						$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = 0;
-						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';';
-						if($arg != 'non') {
+						document.getElementById(\'limit\').value='.$this->limit.';';
+						if ($this->$arg != 'recent')
+							$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
+						if($arg != 'non' && $this->$arg != 'recent') {
 							$this->footer .= 'document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
 						}
-						$this->footer .= 'xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+						if ($this->$arg == 'recent')
+							$this->footer .= 'xajax_'.$submit.'(\'recent\',0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+						else
+							$this->footer .= 'xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("first");
 					}
@@ -637,13 +641,18 @@ class ScrollTable{
 					if($this->start >0){
 					$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = '.$previos_rows.';
-						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';';
-						if($arg != 'non') {
+						document.getElementById(\'limit\').value='.$this->limit.';';
+						if ($this->$arg != 'recent')
+							$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
+						if($arg != 'non' && $this->$arg != 'recent') {
 							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
 						}
-						$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
-						return false;">'.$local_grid->Translate("previous").'</a>';
+						if ($this->$arg == 'recent')
+							$this->footer .='xajax_'.$submit.'(\'recent\','.$previos_rows.','.$this->limit.');
+							return false;">'.$local_grid->Translate("previous").'</a>';
+						else
+							$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
+							return false;">'.$local_grid->Translate("previous").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("previous");
 					}
@@ -660,12 +669,16 @@ class ScrollTable{
 					if($next_rows < $this->numRows){
 						$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = '.$next_rows.';
-						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';';
-						if($arg != 'non') {
+						document.getElementById(\'limit\').value='.$this->limit.';';
+						if ($this->$arg != 'recent')
+						$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
+						if($arg != 'non' && $this->$arg != 'recent') {
 							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
 						}
-						$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+						if ($this->$arg == 'recent')	
+							$this->footer .='xajax_'.$submit.'(\'recent\','.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+						else
+							$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
 					}else{
 						$this->footer .= $local_grid->Translate("next");
 					}
@@ -676,12 +689,16 @@ class ScrollTable{
 					if($next_rows < $this->numRows){
 						$this->footer .= '<a href="?" onClick="
 						document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
-						document.getElementById(\'limit\').value='.$this->limit.';
-						document.getElementById(\'customerid\').value = '.$this->customerid.';';
-						if($arg != 'non') {
+						document.getElementById(\'limit\').value='.$this->limit.';';
+						if ($this->$arg != 'recent')
+						$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
+						if($arg != 'non' && $this->$arg != 'recent') {
 							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
 						}
-						$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+						if ($this->$arg == 'recent')
+							$this->footer .='xajax_'.$submit.'(\'recent\','.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+						else
+							$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
 					}else{
 
 						$this->footer .= $local_grid->Translate("last").'</span>';
@@ -690,7 +707,7 @@ class ScrollTable{
 				</th>
 			</tr>
 		</table>';
-
+//echo $this->footer;exit;
 	}
 
 	/**
@@ -698,8 +715,12 @@ class ScrollTable{
 	*
 	*/
 
-	function render(){
-		$table = $this->search . $this->top . $this->header . $this->rows . $this->footer;
+	function render($arg=''){
+		if($arg=='static'){
+			$table =$this->top . $this->header . $this->rows . $this->footer;
+		}else{
+			$table = $this->search . $this->top . $this->header . $this->rows . $this->footer;
+		}
 
 		return $table;
 	}

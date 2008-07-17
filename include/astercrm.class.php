@@ -2112,134 +2112,237 @@ Class astercrm extends PEAR{
 			}
 		}	
 		// Databse Table: fields
-		$fields = array();
-		$fields[] = 'calldate';
-		$fields[] = 'src';
-		$fields[] = 'dst';
-		$fields[] = 'duration';
-		$fields[] = 'billsec';
-		$fields[] = 'disposition';
-		$fields[] = 'credit';
-		$fileds[] = 'destination';
-		$fileds[] = 'memo';
+		if($cdrtype=='recent'){
+			$fields = array();
+			$fields[] = 'calldate';
+			$fields[] = 'src';
+			$fields[] = 'dst';
+			$fields[] = 'duration';
+			$fields[] = 'billsec';
 
-		// HTML table: Headers showed
-		$headers = array();
-		$headers[] = $locate->Translate("Calldate");
-		$headers[] = $locate->Translate("Src");
-		$headers[] = $locate->Translate("Dst");
-		$headers[] = $locate->Translate("Duration");
-		$headers[] = $locate->Translate("Billsec");
-		$headers[] = $locate->Translate("Disposition");
-		$headers[] = $locate->Translate("credit");
-		$headers[] = $locate->Translate("destination");
-		$headers[] = $locate->Translate("memo");
+			// HTML table: Headers showed
+			$headers = array();
+			$headers[] = $locate->Translate("Calldate");
+			$headers[] = $locate->Translate("Src");
+			$headers[] = $locate->Translate("Dst");
+			$headers[] = $locate->Translate("Duration");
+			$headers[] = $locate->Translate("Billsec");
 
-		// HTML table: hearders attributes
-		$attribsHeader = array();
-		$attribsHeader[] = 'width="13%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="13%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="12%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="12%"';
-		$attribsHeader[] = 'width="10%"';
+			// HTML table: hearders attributes
+			$attribsHeader = array();
+			$attribsHeader[] = 'width="13%"';
+			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="13%"';
+			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="10%"';
 
-		// HTML Table: columns attributes
-		$attribsCols = array();
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
-		$attribsCols[] = 'style="text-align: left"';
+			// HTML Table: columns attributes
+			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
 
-		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
-		$eventHeader = array();
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		
-		// Select Box: type table.
-		$typeFromSearch = array();
-		$typeFromSearch[] = 'like';
-		$typeFromSearch[] = 'equal';
-		$typeFromSearch[] = 'more';
-		$typeFromSearch[] = 'less';
+			// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
+			$eventHeader = array();
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			
+			// Select Box: type table.
+			$typeFromSearch = array();
+			$typeFromSearch[] = 'like';
+			$typeFromSearch[] = 'equal';
+			$typeFromSearch[] = 'more';
+			$typeFromSearch[] = 'less';
 
-		// Selecct Box: Labels showed on searchtype select box.
-		$typeFromSearchShowAs = array();
-		$typeFromSearchShowAs[] = 'like';
-		$typeFromSearchShowAs[] = '=';
-		$typeFromSearchShowAs[] = '>';
-		$typeFromSearchShowAs[] = '<';
+			// Selecct Box: Labels showed on searchtype select box.
+			$typeFromSearchShowAs = array();
+			$typeFromSearchShowAs[] = 'like';
+			$typeFromSearchShowAs[] = '=';
+			$typeFromSearchShowAs[] = '>';
+			$typeFromSearchShowAs[] = '<';
 
-		// Select Box: fields table.
-		$fieldsFromSearch = array();
-		$fieldsFromSearch[] = 'src';
-		$fieldsFromSearch[] = 'calldate';
-		$fieldsFromSearch[] = 'dst';
-		$fieldsFromSearch[] = 'billsec';
-		$fieldsFromSearch[] = 'disposition';
-		$fieldsFromSearch[] = 'credit';
-		$fieldsFromSearch[] = 'destination';
-		$fieldsFromSearch[] = 'memo';
+			// Select Box: fields table.
+			$fieldsFromSearch = array();
+			$fieldsFromSearch[] = 'src';
+			$fieldsFromSearch[] = 'calldate';
+			$fieldsFromSearch[] = 'dst';
+			$fieldsFromSearch[] = 'billsec';
 
-		// Selecct Box: Labels showed on search select box.
-		$fieldsFromSearchShowAs = array();
-		$fieldsFromSearchShowAs[] = $locate->Translate("src");
-		$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
-		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
-		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
-		$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
-		$fieldsFromSearchShowAs[] = $locate->Translate("credit");
-		$fieldsFromSearchShowAs[] = $locate->Translate("destination");
-		$fieldsFromSearchShowAs[] = $locate->Translate("memo");
+			// Selecct Box: Labels showed on search select box.
+			$fieldsFromSearchShowAs = array();
+			$fieldsFromSearchShowAs[] = $locate->Translate("src");
+			$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
+			$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+			$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
+
+			// Create object whit 5 cols and all data arrays set before.
+			$table = new ScrollTable(5,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
+			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
+			$table->setAttribsCols($attribsCols);
+			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+
+			while ($arreglo->fetchInto($row)) {
+			// Change here by the name of fields of its database table
+				$rowc = array();
+				$rowc[] = $row['id'];
+				$rowc[] = $row['calldate'];
+				$rowc[] = $row['src'];
+				$rowc[] = $row['dst'];
+				$rowc[] = $row['duration'];
+				$rowc[] = $row['billsec'];
+				$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
+			}
+			$html = $table->render('static');
+		}else{
+			$fields = array();
+			$fields[] = 'calldate';
+			$fields[] = 'src';
+			$fields[] = 'dst';
+			$fields[] = 'duration';
+			$fields[] = 'billsec';
+			$fields[] = 'disposition';
+			$fields[] = 'credit';
+			$fileds[] = 'destination';
+			$fileds[] = 'memo';
+
+			// HTML table: Headers showed
+			$headers = array();
+			$headers[] = $locate->Translate("Calldate");
+			$headers[] = $locate->Translate("Src");
+			$headers[] = $locate->Translate("Dst");
+			$headers[] = $locate->Translate("Duration");
+			$headers[] = $locate->Translate("Billsec");
+			$headers[] = $locate->Translate("Disposition");
+			$headers[] = $locate->Translate("credit");
+			$headers[] = $locate->Translate("destination");
+			$headers[] = $locate->Translate("memo");
+
+			// HTML table: hearders attributes
+			$attribsHeader = array();
+			$attribsHeader[] = 'width="13%"';
+			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="13%"';
+			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="12%"';
+			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="12%"';
+			$attribsHeader[] = 'width="10%"';
+
+			// HTML Table: columns attributes
+			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+
+			// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
+			$eventHeader = array();
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			
+			// Select Box: type table.
+			$typeFromSearch = array();
+			$typeFromSearch[] = 'like';
+			$typeFromSearch[] = 'equal';
+			$typeFromSearch[] = 'more';
+			$typeFromSearch[] = 'less';
+
+			// Selecct Box: Labels showed on searchtype select box.
+			$typeFromSearchShowAs = array();
+			$typeFromSearchShowAs[] = 'like';
+			$typeFromSearchShowAs[] = '=';
+			$typeFromSearchShowAs[] = '>';
+			$typeFromSearchShowAs[] = '<';
+
+			// Select Box: fields table.
+			$fieldsFromSearch = array();
+			$fieldsFromSearch[] = 'src';
+			$fieldsFromSearch[] = 'calldate';
+			$fieldsFromSearch[] = 'dst';
+			$fieldsFromSearch[] = 'billsec';
+			$fieldsFromSearch[] = 'disposition';
+			$fieldsFromSearch[] = 'credit';
+			$fieldsFromSearch[] = 'destination';
+			$fieldsFromSearch[] = 'memo';
+
+			// Selecct Box: Labels showed on search select box.
+			$fieldsFromSearchShowAs = array();
+			$fieldsFromSearchShowAs[] = $locate->Translate("src");
+			$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
+			$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+			$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
+			$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
+			$fieldsFromSearchShowAs[] = $locate->Translate("credit");
+			$fieldsFromSearchShowAs[] = $locate->Translate("destination");
+			$fieldsFromSearchShowAs[] = $locate->Translate("memo");
 
 
-		// Create object whit 5 cols and all data arrays set before.
-		$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
-		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
-		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+			// Create object whit 5 cols and all data arrays set before.
+			$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
+			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
+			$table->setAttribsCols($attribsCols);
+			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
-		while ($arreglo->fetchInto($row)) {
-		// Change here by the name of fields of its database table
-			$rowc = array();
-			$rowc[] = $row['id'];
-			$rowc[] = $row['calldate'];
-			$rowc[] = $row['src'];
-			$rowc[] = $row['dst'];
-			$rowc[] = $row['duration'];
-			$rowc[] = $row['billsec'];
-			$rowc[] = $row['disposition'];
-			$rowc[] = $row['credit'];
-			$rowc[] = $row['destination'];
-			$rowc[] = $row['memo'];
-			$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
+			while ($arreglo->fetchInto($row)) {
+			// Change here by the name of fields of its database table
+				$rowc = array();
+				$rowc[] = $row['id'];
+				$rowc[] = $row['calldate'];
+				$rowc[] = $row['src'];
+				$rowc[] = $row['dst'];
+				$rowc[] = $row['duration'];
+				$rowc[] = $row['billsec'];
+				$rowc[] = $row['disposition'];
+				$rowc[] = $row['credit'];
+				$rowc[] = $row['destination'];
+				$rowc[] = $row['memo'];
+				$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
+			}
+			$html = $table->render();
 		}
-		
-		// End Editable Zone
-		
-		$html = $table->render();
-		
+		// End Editable Zone		
 		return $html;
 	}
 
 	
 	function &getAllCdrRecords($customerid='',$cdrtype='',$start, $limit, $order = null, $creby = null){
 		global $db;
+		if($cdrtype == 'recent'){
+			if($_SESSION['curuser']['extension'] != ''){
+				$sql = "SELECT * FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' ";
+				if($order == null || is_array($order)){
+					$sql .= " ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+				}else{
+					$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+				}
+				astercrm::events($sql);
+				$res =& $db->query($sql);
+				return $res;
+			}else{
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				astercrm::events($sql);
+				$res =& $db->query($sql);
+				return $res;
+			}
+		}
 		if($customerid != ''){
 			if($cdrtype == 'out'){
 				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
@@ -2280,6 +2383,19 @@ Class astercrm extends PEAR{
 
 	function &getCdrNumRows($customerid='',$cdrtype='',$filter = null, $content = null){
 		global $db;
+		if($cdrtype == 'recent'){
+			if($_SESSION['curuser']['extension'] != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' ";				
+				astercrm::events($sql);
+				$res =& $db->getOne($sql);
+				return $res;
+			}else{
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE id = '0'";
+				astercrm::events($sql);
+				$res =& $db->getOne($sql);
+				return $res;
+			}
+		}
 		if($customerid != ''){
 			if ($cdrtype == 'out'){
 				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
@@ -2936,7 +3052,6 @@ Class astercrm extends PEAR{
 		}else{
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
-//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -2971,7 +3086,6 @@ Class astercrm extends PEAR{
 				return '0';
 			}
 		}
-//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
