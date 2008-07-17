@@ -176,7 +176,7 @@ function init(){
 //	print_r($speednumber);exit;
 	foreach ($speednumber as $destnumber){
 		$extension = trim($extension);
-		$objResponse->addScript("addOption('iptSrcNumber','$destnumber','$destnumber');");
+		$objResponse->addScript("addOption('iptDestNumber','$destnumber','$destnumber');");
 	}
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){

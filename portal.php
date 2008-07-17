@@ -253,7 +253,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	<div id="divDialList" name="divDialList"></div><br/>
 	<div id="processingMessage" name="processingMessage"></div>
 
-	<div id="divInvite"><SELECT id="iptSrcNumber" name="iptSrcNumber"></SELECT>&nbsp;->&nbsp;<input type="text" value="" name="iptDestNumber" id="iptDestNumber">&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
+	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber"></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
