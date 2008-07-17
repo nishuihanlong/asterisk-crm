@@ -753,12 +753,12 @@ function invite($src,$dest){
 	$dest = trim($dest);
 	$objResponse = new xajaxResponse();
 
-	if ($src == $_SESSION['curuser']['extension'])
-		$callerid = $dest;
-	else if ($dest == $_SESSION['curuser']['extension'])
-		$callerid = $src;
-	else
-		return $objResponse;
+//	if ($src == $_SESSION['curuser']['extension'])
+//		$callerid = $dest;
+//	else if ($dest == $_SESSION['curuser']['extension'])
+//		$callerid = $src;
+//	else
+//		return $objResponse;
 
 	$myAsterisk = new Asterisk();
 	
