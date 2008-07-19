@@ -106,15 +106,17 @@ require_once('config.php');
 
 		<script type="text/javascript">
 
-		function dial(phonenum){
+		function dial(phonenum,first){
 			if (document.getElementById("uniqueid").value != '')
 				return false;
-			xajax_dial(phonenum);
+			xajax.$("divMsg").innerHTML = "Dialing to "+phonenum;
+			xajax_dial(phonenum,first);
 		}
 
 		function hangup(){
 			//alert (xajax.$('callerChannel').value);
 			//alert (xajax.$('calleeChannel').value);
+			xajax.$("divMsg").innerHTML = "Hangup";
 			xajax_hangup(xajax.$('callerChannel').value);
 			xajax_hangup(xajax.$('calleeChannel').value);
 		}
@@ -174,6 +176,7 @@ require_once('config.php');
 				return false;
 			src = trim(xajax.$('iptSrcNumber').value);
 			dest = trim(xajax.$('iptDestNumber').value);
+			xajax.$("divMsg").innerHTML = "Dialing to "+src;
 			if (src == '' && dest == '')
 				return false;
 			if (src == ''){
@@ -188,6 +191,11 @@ require_once('config.php');
 
 			xajax_invite(src,dest);
 		}
+		
+		function transfer(){
+			xajax.$("divMsg").innerHTML = "Transfering to "+xajax.$("sltExten").value;
+			xajax_transfer(xajax.getFormValues('myForm'));
+		}
 
 		function trim(stringToTrim) {
 			return stringToTrim.replace(/^\s+|\s+$/g,"");
@@ -201,7 +209,6 @@ require_once('config.php');
 			document.getElementById("campaignid").options.length=0
 			xajax_setCampaign(groupid);
 		}
-
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
@@ -224,7 +231,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<SELECT id="sltExten" name="sltExten">
 			</SELECT>
 			<INPUT TYPE="text" name="iptTtansfer" id="iptTtansfer" size="15">
-			<INPUT type="BUTTON" value="Transfer" id="btnTransfer" onclick="xajax_transfer(xajax.getFormValues('myForm'));">
+			<INPUT type="BUTTON" value="Transfer" id="btnTransfer" onclick="transfer();">
 		</span>
 		<div id="myevents"></div>
 		<br>
@@ -254,11 +261,13 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	<div id="processingMessage" name="processingMessage"></div>
 
 	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber"></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
-
+	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
 			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
 		</div>
+		<div id="divMsg" name="divMsg" align="center" style="font-weight:bold;
+"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>
 				<td style="padding: 0px;">
@@ -272,7 +281,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formCdr" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 800px"></div>
 		<div id="formRecentCdr" class="formDiv drsElement"
-			style="left: 20px; top: 50px; width: 400px"></div>
+			style="left: 20px; top: 50px; width: 400px"></div>		
 		<div id="formRecords" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 800px"></div>
 		<div id="formDiallist" class="formDiv drsElement"
@@ -286,7 +295,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 350px""></div>
+			style="left: 450px; top: 50px;width: 350px"></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 					</fieldset>

@@ -243,6 +243,8 @@ function transfer($aFormValues){
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
 	else
 		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
+	sleep('3');
+	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse;
 }
 
@@ -737,6 +739,8 @@ function dial($phoneNum,$first = ''){
 		}
 	}
 	//$myAsterisk->disconnect();
+	sleep('3');
+	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse->getXML();
 }
 
@@ -748,18 +752,18 @@ function dial($phoneNum,$first = ''){
 */
 
 function invite($src,$dest){
-	global $config;
+	global $config,$locate;
 	$src = trim($src);
 	$dest = trim($dest);
-	$objResponse = new xajaxResponse();
-
-//	if ($src == $_SESSION['curuser']['extension'])
-//		$callerid = $dest;
-//	else if ($dest == $_SESSION['curuser']['extension'])
-//		$callerid = $src;
+	$objResponse = new xajaxResponse();	
+	//$objResponse->addAssign("dialmsg", "innerHTML", "<b>".$locate->Translate("dailing")." ".$src."</b>");
+	if ($src == $_SESSION['curuser']['extension'])
+		$callerid = $dest;
+	else if ($dest == $_SESSION['curuser']['extension'])
+		$callerid = $src;
 //	else
 //		return $objResponse;
-
+	
 	$myAsterisk = new Asterisk();
 	
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
@@ -782,7 +786,8 @@ function invite($src,$dest){
 	}else{
 		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
 	}
-
+	sleep('3');
+	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse->getXML();
 }
 
@@ -807,6 +812,8 @@ function hangup($channel){
 	}
 	$myAsterisk->Hangup($channel);
 	//$objResponse->addAssign("btnHangup", "disabled", true);
+	sleep('1');
+	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse;
 }
 

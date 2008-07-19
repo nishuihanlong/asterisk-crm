@@ -409,19 +409,19 @@ class asterEvent extends PEAR
 			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {
-					$action .= " onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" id='ButtonU'>\n";
+					$action .= " onclick=\"dial('".substr($value,4)."','callee');return false;\" id='ButtonU'>\n";
 				}
 				else {
 					if ($status[$value] == 1) {
 						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\" id='ButtonR'>\n";
 					}
 					else {
-						$action .= " onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" id='ButtonG'>\n";
+						$action .= " onclick=\"dial ('".substr($value,4)."','callee');return false;\" id='ButtonG'>\n";
 					}
 				}
 			}
 			else {
-				$action .= " onclick=\"xajax_dial ('".substr($value,4)."','callee');return false;\" id='ButtonB'>\n";
+				$action .= " onclick=\"dial ('".substr($value,4)."','callee');return false;\" id='ButtonB'>\n";
 			}
 			$action .= $value;
 			$action .= "</button>\n";
