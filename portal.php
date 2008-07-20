@@ -109,7 +109,7 @@ require_once('config.php');
 		function dial(phonenum,first){
 			if (document.getElementById("uniqueid").value != '')
 				return false;
-			xajax.$("divMsg").innerHTML = "Dialing to "+phonenum;
+			xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+phonenum;
 			xajax_dial(phonenum,first);
 		}
 
@@ -176,13 +176,14 @@ require_once('config.php');
 				return false;
 			src = trim(xajax.$('iptSrcNumber').value);
 			dest = trim(xajax.$('iptDestNumber').value);
-			xajax.$("divMsg").innerHTML = "Dialing to "+src;
+			
 			if (src == '' && dest == '')
 				return false;
 			if (src == ''){
 				xajax.$('iptSrcNumber').value = xajax.$('extension').value;
 				src = xajax.$('extension').value;
-			}
+				xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
+			}else xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
 
 			if (dest == ''){
 				xajax.$('iptDestNumber').value = xajax.$('extension').value;
@@ -193,7 +194,7 @@ require_once('config.php');
 		}
 		
 		function transfer(){
-			xajax.$("divMsg").innerHTML = "Transfering to "+xajax.$("sltExten").value;
+			xajax.$("divMsg").innerHTML = xajax.$('trantip').value+" "+xajax.$("sltExten").value;
 			xajax_transfer(xajax.getFormValues('myForm'));
 		}
 
@@ -254,6 +255,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>
 		<input type="hidden" name="popup" id="popup" value="yes"/>
+		<input type="hidden" name="dialtip" id="dialtip" value="Dialing to"/>
+		<input type="hidden" name="trantip" id="trantip" value="Transfering to"/>
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>

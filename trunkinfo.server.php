@@ -49,8 +49,8 @@ function init(){
 	global $locate;//,$config,$db;
 
 	$objResponse = new xajaxResponse();
-
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	//echo $_SESSION['curuser']['country'];exit;
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");

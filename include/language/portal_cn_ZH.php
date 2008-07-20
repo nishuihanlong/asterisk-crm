@@ -78,4 +78,7 @@ $campaign_name='计划名称';
 $add_diallist = '添加新记录';
 $monitors = '录音记录';
 $filename = '录音文件';
+$dialing_to = '正在呼叫';
+$transfering_to = '转接到';
+$recentcdr = '最近呼叫';
 ?>

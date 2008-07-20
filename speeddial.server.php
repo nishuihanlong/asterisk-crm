@@ -50,7 +50,7 @@ function init(){
 
 	$objResponse = new xajaxResponse();
 
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
@@ -147,7 +147,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Description");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Groupname");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create by");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create time");
 

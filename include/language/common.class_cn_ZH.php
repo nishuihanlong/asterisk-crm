@@ -13,4 +13,8 @@ $import					= "导入";
 $export					= "导出";
 $log_out				= "退出";
 $back					= "返回";
+$trunkinfo = "线路信息";
+$cdr = "通话记录";
+$monitorrecords = "录音记录";
+$speeddial = "速拨号码";
 ?>

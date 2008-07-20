@@ -19,8 +19,8 @@
 
 ********************************************************************************/
 require_once ("db_connect.php");
-require_once ("monitorRecords.common.php");
-require_once ('monitorRecords.grid.inc.php');
+require_once ("monitorrecords.common.php");
+require_once ('monitorrecords.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
 
@@ -39,8 +39,7 @@ function init(){
 	global $locate;//,$config,$db;
 
 	$objResponse = new xajaxResponse();
-
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");

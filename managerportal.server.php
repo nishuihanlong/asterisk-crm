@@ -8,7 +8,7 @@ function init(){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
-	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	return $objResponse;
 }
 

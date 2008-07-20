@@ -28,7 +28,7 @@
 require_once ('localization.class.php');
 
 if ($_SESSION['curuser']['country'] != '' ){
-	$GLOBALS['locate_common']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['country'],'common.class');
+	$GLOBALS['locate_common']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'common.class');
 }else{
 	$GLOBALS['locate_common']=new Localization('en','US','common.class');
 }
@@ -54,8 +54,9 @@ class Common{
 		return $html;
 	}
 
-	function generateManageNav($skin){
-		global $locate_common;
+	function generateManageNav($skin,$curcountry = 'en',$curuserlanguage = 'US'){
+		//global $locate_common;
+		$locate_common=new Localization($curcountry,$curuserlanguage,'common.class');
 /*
 
 
@@ -83,7 +84,7 @@ class Common{
 		<li><a href="portal.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'back\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/back.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/back_sml.gif" alt="back" name="back" width="71" height="126" border="0" id="back" /></a></li>
 		<li><a href="login.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'logout\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logout_sml.gif" alt="logout" name="logout" width="71" height="126" border="0" id="logout" /></a></li>
 		<li><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logo_bn.gif"/></li>
-		<a href="trunkinfo.php">Trunkinfo</a>&nbsp;&nbsp;&nbsp;<a href="cdr.php">CDR</a>&nbsp;&nbsp;&nbsp;<a href="monitorrecords.php">MonitorRecords</a>&nbsp;&nbsp;&nbsp;<a href="speeddial.php">SpeedDial</a>
+		<a href="trunkinfo.php">'.$locate_common->Translate("Trunkinfo").'</a>&nbsp;&nbsp;&nbsp;<a href="cdr.php">'.$locate_common->Translate("CDR").'</a>&nbsp;&nbsp;&nbsp;<a href="monitorrecords.php">'.$locate_common->Translate("MonitorRecords").'</a>&nbsp;&nbsp;&nbsp;<a href="speeddial.php">'.$locate_common->Translate("SpeedDial").'</a>
 	</ul>
 </div>
 				';

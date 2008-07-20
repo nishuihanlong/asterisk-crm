@@ -146,6 +146,8 @@ function init(){
 	$objResponse->addAssign("extensionStatus","value", 'idle');
 	$objResponse->addAssign("btnDial","value", $locate->Translate("dial") );
 	$objResponse->addAssign("btnHangup","value", $locate->Translate("hangup") );
+	$objResponse->addAssign("dialtip","value", $locate->Translate("Dialing to") );
+	$objResponse->addAssign("trantip","value", $locate->Translate("Transfering to") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	$objResponse->addAssign("spanMonitorSetting","innerText", $locate->Translate("always_record_when_connected") );
 	$objResponse->addAssign("spanMonitor","innerText", $locate->Translate("monitor") );
@@ -269,7 +271,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
 			$objResponse->addAssign("btnMonitor","disabled", false );
-			$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 			if ($myValue['chkMonitor'] == 'on') 
 				$objResponse->addScript("monitor();");
 			
@@ -342,7 +344,7 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 		$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 	}
 
-	$objResponse->addAssign("btnMonitor","disabled", false );
+	//$objResponse->addAssign("btnMonitor","disabled", false );
 	return $objResponse;
 }
 
