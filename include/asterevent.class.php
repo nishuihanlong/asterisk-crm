@@ -101,9 +101,9 @@ class asterEvent extends PEAR
 		if ($config['system']['eventtype'] == 'curcdr'){
 			if (strstr($exten,"/")){
 				$exten = ltrim(strstr($exten,"/"),"/");
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='local/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}else{
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='local/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}
 			//echo $query;exit;
 			$res = $db->query($query);
