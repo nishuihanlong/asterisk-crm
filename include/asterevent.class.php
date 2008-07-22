@@ -101,15 +101,16 @@ class asterEvent extends PEAR
 		if ($config['system']['eventtype'] == 'curcdr'){
 			if (strstr($exten,"/")){
 				$exten = ltrim(strstr($exten,"/"),"/");
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='local/$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}else{
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='local/$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}
 			//echo $query;exit;
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
-				if (strstr($list['src'],$exten) ) {	// dial out
+				//echo strstr($list['src']);exit; 
+				if (strstr($list['src'],$exten)) {	// dial out
 					$call['status'] = 'dialout';
 					$call['callerid'] = trim($list['dst']);
 					$call['uniqueid'] = trim($list['srcuid']);
