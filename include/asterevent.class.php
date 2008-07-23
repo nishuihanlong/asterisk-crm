@@ -101,15 +101,14 @@ class asterEvent extends PEAR
 		if ($config['system']['eventtype'] == 'curcdr'){
 			if (strstr($exten,"/")){
 				$exten = ltrim(strstr($exten,"/"),"/");
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}else{
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}
-			//echo $query;exit;
+
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
-				//echo strstr($list['src']);exit; 
 				if (strstr($list['src'],$exten)) {	// dial out
 					$call['status'] = 'dialout';
 					$call['callerid'] = trim($list['dst']);
@@ -129,23 +128,17 @@ class asterEvent extends PEAR
 				$call['status'] = '';
 				$call['curid'] = $curid;
 			}
-			//print_r($call);exit;
 			return $call;
 		}
 
 		$call =& asterEvent::checkIncoming($curid,$exten);
 
 		if ($call['status'] == 'incoming' && $call['callerid'] != '' ){
-			//print_r($call);exit;
 			return $call;
 		}
 	
-		//print_r($call);
-		
 		$call =& asterEvent::checkDialout($curid,$exten,$call['curid']);
 
-		//print_r($call);
-		//exit;
 		return $call;
 	}
 
@@ -162,7 +155,7 @@ class asterEvent extends PEAR
 	function checkCallStatus($curid,$uniqueid){
 		global $db,$config;
 		if ($config['system']['eventtype'] == 'curcdr'){
-			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' ";
+			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (dst LIKE '%".$_SESSION['curuser']['extension']."' OR src LIKE '%".$_SESSION['curuser']['extension']."')";
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
@@ -171,7 +164,7 @@ class asterEvent extends PEAR
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 
-					$call['status'] = 'link';
+					$call['status'] = 'link';		
 				}else{
 					$call['status'] = '';
 				}
