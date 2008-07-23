@@ -262,6 +262,7 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
+
 			if ($myValue['extensionStatus'] == 'link')	 //already get link event
 				return $objResponse;
 //			if ($call['callerChannel'] == '' or $call['calleeChannel'] == '')
