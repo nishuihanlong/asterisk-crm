@@ -18,7 +18,7 @@ CREATE TABLE `astercrm_account` (
   `usertype` varchar(20) NOT NULL default '',
   `accountcode` varchar(20) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`,`username`)
 ) ENGINE = MYISAM;
 
 DROP TABLE IF EXISTS astercrm_accountgroup;
@@ -362,7 +362,15 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
   KEY `srcid` (`src`,`dst`,`channel`,`duration`,`billsec`,`disposition`)
 ) ENGINE=MyISAM;
 
--- --------------------------------------------------------
+CREATE TABLE `peerstatus` (
+	`id` INT NOT NULL AUTO_INCREMENT ,
+	`status` VARCHAR( 50 ) NOT NULL ,
+	`peer` VARCHAR( 100 ) NOT NULL ,
+	`lastupdate` DATETIME NOT NULL ,
+	UNIQUE (
+	`id` 
+	)
+) ENGINE = MYISAM ;
 
 CREATE TABLE IF NOT EXISTS `speeddial` (
   `id` int(11) NOT NULL auto_increment,
@@ -373,3 +381,4 @@ CREATE TABLE IF NOT EXISTS `speeddial` (
   `cretime` DATETIME NOT NULL ,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM;
+

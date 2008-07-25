@@ -3,12 +3,13 @@ new features in 0.047
 	scheduler dialer
 	customer CDR
 	could work with astercc
-
+        trunk information when dialin
 0.047 新特性
 
 	定时拨号
 	客户通话记录
 	结合astercc使用
+	被叫通道信息
 
 astercrm features(0.047)
 
@@ -38,6 +39,8 @@ astercrm features(0.047)
 	multi condition search & export
 	config system parameters in browser 
 	monitor/spy channel in real time
+	check history phone recorded on line
+	customer call history
 	remove prefix
 	switch in customer mode and customer->contact mode
 	read callerid of other extensions when they are talking
@@ -47,3 +50,4 @@ astercrm features(0.047)
 	scheduler dialer
 	customer dialer
 	could work with astercc
+	DID inforamtion when pop up
