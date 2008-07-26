@@ -82,7 +82,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['extension'] == '') 
+if ($_SESSION['curuser']['extension'] == '' && $_SESSION['curuser']['usertype'] != 'admin') 
 	header("Location: login.php");
 
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;

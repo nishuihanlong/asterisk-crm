@@ -231,7 +231,7 @@ class asterEvent extends PEAR
 				$peer = split("\/",trim($list['peer']));
 				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2; continue; }
 				if ($list['status']  == "reachable"){			
-					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]') AND id > $curid AND src != '' AND dst != ''";
+					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
 					$res = $db->query($query);				
 					asterEvent::events($query);
 					if ($res->fetchInto($cdrrow)) {
@@ -351,6 +351,7 @@ class asterEvent extends PEAR
 
 	*/
 	function &tableStatus($phones,$status,$callerid,$direction){
+		print_r($phones);exit;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
 		foreach ($phones as $key => $value) {
@@ -401,12 +402,13 @@ class asterEvent extends PEAR
 			if (!strstr($value,'SIP/'))
 				$value = "SIP/".$value;
 			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
-			if (isset($status[$value])) {
-				if ($status[$value] == 2) {
+			$iaxkey = str_replace('SIP','IAX2',$value);			
+			if (isset($status[$value]) || isset($status[$iaxkey])) {
+				if ($status[$value] == 2 || $status[$iaxkey] == 2) {
 					$action .= " onclick=\"dial('".substr($value,4)."','callee');return false;\" id='ButtonU'>\n";
 				}
 				else {
-					if ($status[$value] == 1) {
+					if ($status[$value] == 1 || $status[$iaxkey] == 1) {
 						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\" id='ButtonR'>\n";
 					}
 					else {
@@ -417,17 +419,24 @@ class asterEvent extends PEAR
 			else {
 				$action .= " onclick=\"dial ('".substr($value,4)."','callee');return false;\" id='ButtonB'>\n";
 			}
-			$action .= $value;
+			$action .= substr($value,4);
 			$action .= "</button>\n";
-			if ($status[$value] == 1) {
+			if ($status[$value] == 1 || $status[$iaxkey] == 1) {
 				//$action .= "<span align=left>";
-				$action .= "<BR>".$direction[$value];
-				$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$value]."');return false;\">".$callerid[$value]."</a>";
+				if ($status[$iaxkey] == 1) {
+					$action .= "<BR>".$direction[$iaxkey];
+					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$iaxkey]."');return false;\">".$callerid[$iaxkey]."</a>";
+				}else {
+					$action .= "<BR>".$direction[$value];
+					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$value]."');return false;\">".$callerid[$value]."</a>";
+				}
+				
 				//$action .= "</span>";
 			}
 
 			$action .=  "</td></tr>\n";
 		 }
+//		 exit;
 		 $action .= '</table><br>';
 		return $action;
 	}
