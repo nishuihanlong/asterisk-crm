@@ -61,7 +61,7 @@ function init($fileName){
 				  </select>";
 
 	$objResponse->addAssign("divTables","innerHTML",$tableList);
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divGrid", "innerHTML", '');
 	//$objResponse->addScript("xajax_showDivMainRight(document.getElementById('hidFileName').value);");
 	//$objResponse->loadXML(showDivMainRight($fileName));

@@ -56,6 +56,7 @@ class Common{
 
 	function generateManageNav($skin,$curcountry = 'en',$curuserlanguage = 'US'){
 		//global $locate_common;
+//		echo $curcountry;exit;
 		$locate_common=new Localization($curcountry,$curuserlanguage,'common.class');
 /*
 

@@ -11,4 +11,6 @@ $outcontext = '拨出路由';
 $incontext = '拨入路由';
 $inexten = '回拨分机';
 $group = '分组名称';
+$dialed = '已拨列表';
+$dial_list = '拨号列表';
 ?>

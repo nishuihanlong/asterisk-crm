@@ -351,7 +351,6 @@ class asterEvent extends PEAR
 
 	*/
 	function &tableStatus($phones,$status,$callerid,$direction){
-		print_r($phones);exit;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
 		foreach ($phones as $key => $value) {

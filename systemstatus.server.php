@@ -43,7 +43,7 @@ function init(){
 	}
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
 
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	return $objResponse;

@@ -9,4 +9,6 @@ $create_time = '创建时间';
 $create_by = '创建者';
 $dialtime = '拨号时间';
 $edit_record = "修改记录";
+$dialed = '已拨列表';
+$campaign = '拨号计划';
 ?>

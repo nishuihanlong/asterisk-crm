@@ -33,7 +33,7 @@ function init(){
 	if (!$res){
 		$objResponse->addAssign("divAMIStatus", "innerHTML", $locate->Translate("AMI_connection_failed"));
 	}
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
 

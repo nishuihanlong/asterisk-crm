@@ -78,11 +78,11 @@ require_once('diallist.common.php');
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 	</head>
 	<body onload="init();">
-	<div id="divNav"></div>
+	<div id="divNav"></div><br>
 	<br>
 	<div id="divActive" name="divActive">
-		<input type="button" value="Dialed" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
-		<input type="button" value="Campaign" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
+		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
+		<input type="button" value="" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

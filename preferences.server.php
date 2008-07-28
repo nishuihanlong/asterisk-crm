@@ -36,7 +36,7 @@ require_once ("include/asterisk.class.php");
 
 function init(){
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->loadXML(initLocate());
 	$objResponse->loadXML(initIni());
