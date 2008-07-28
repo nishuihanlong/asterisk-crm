@@ -267,7 +267,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="Search" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
+			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
 		</div>
 		<div id="divMsg" name="divMsg" align="center" style="font-weight:bold;
 "></div>

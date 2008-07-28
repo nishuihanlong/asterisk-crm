@@ -155,6 +155,7 @@ function init(){
 	$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+	$objResponse->addAssign("btnSearchContact","value", $locate->Translate("Search") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 

@@ -167,7 +167,7 @@ function processAccountData($aFormValues)
 				// added by solo 2007-10-90
 				$_SESSION['curuser']['channel'] = $row['channel'];
 				$_SESSION['curuser']['extensions'] = array();
-				$_SESSION['curuser']['groupid'] = $row['groupid'];
+				$_SESSION['curuser']['groupid'] = $row['groupid'];				
 
 				if ($row['extensions'] != ''){
 					$_SESSION['curuser']['extensions'] = split(',',$row['extensions']);
@@ -185,6 +185,12 @@ function processAccountData($aFormValues)
 
 				// get group information
 				$_SESSION['curuser']['group'] = astercrm::getRecordByField("groupid",$row['groupid'],"astercrm_accountgroup");
+				if($row['dialinterval'] != 0) {
+					$_SESSION['curuser']['dialinterval'] = $row['dialinterval'];
+				}else {
+					$row_group = astercrm::getRecordByField("groupid",$row['groupid'],"astercrm_accountgroup");
+					$_SESSION['curuser']['dialinterval'] = $_SESSION['curuser']['group']['agentinterval'];
+				}
 
 /*
 	if you dont want check manager status and show device status when user login 
@@ -222,7 +228,7 @@ function processAccountData($aFormValues)
 		}
 
 
-		if (!$loginError){
+		if (!$loginError){			
 			return $objResponse;
 		} else {
 			$objResponse->addAlert($locate->Translate("login_failed"));
@@ -237,7 +243,5 @@ function processAccountData($aFormValues)
 	
 	return $objResponse;
 }
-
-
 $xajax->processRequests();
 ?>

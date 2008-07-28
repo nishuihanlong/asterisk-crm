@@ -233,6 +233,10 @@ class Customer extends astercrm
 						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
 						<td>'.$groupoptions.'</td>
 					</tr>';
+		$html .= '<tr>
+					<td nowrap align="left">'.$locate->Translate("Dial Interval").'</td>
+					<td align="left"><input type="text" id="dialinterval" name="dialinterval" size="20" maxlength="20"></td>
+				</tr>';
 		$html .= '
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
@@ -341,6 +345,10 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("group_name").'</td>
 					<td align="left">'.$grouphtml.'
 					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Dial Interval").'</td>
+					<td align="left"><input type="text" id="dialinterval" name="dialinterval" size="20" maxlength="20" value="'.$account['dialinterval'].'"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
