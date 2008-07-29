@@ -189,6 +189,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="pdextensions" name="pdextensions" size="25" maxlength="100"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
+					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -235,7 +239,10 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("pdextensions").'</td>
 					<td align="left"><input type="text" id="pdextensions" name="pdextensions" size="25" maxlength="100" value="'.$account['pdextension'].'"></td>
 				</tr>
-				
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
+					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100" value="'.$account['agentinterval'].'"></td>
+				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>

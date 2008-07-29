@@ -108,6 +108,7 @@ function getPrivateDialListNumber($extension = null){
 	$count = astercrm::getCountByField("assign",$extension,"diallist");
 	if ($count == 0){
 		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
+		$objResponse->addAssign("btnWork","disabled", true );
 	} else{
 		// add div
 		$objResponse->addRemove("spanDialListRecords");
@@ -155,6 +156,9 @@ function init(){
 	$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+	$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
+	$objResponse->addAssign("btnWorkStatus","value", "" );
+	$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
 	$objResponse->addAssign("btnSearchContact","value", $locate->Translate("Search") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
@@ -279,7 +283,7 @@ function incomingCalls($myValue){
 			
 				$objResponse->addAssign("btnHangup","disabled", false );
 				$objResponse->addAssign("btnTransfer","disabled", false );
-		} elseif ($call['status'] =='hangup'){
+		} elseif ($call['status'] =='hangup'){			
 			$status	= 'hang up';
 			$info	= "Hang up call from " . $myValue['callerid'];
 //			$objResponse->addScript('document.title=\'asterCrm\';');
@@ -296,6 +300,10 @@ function incomingCalls($myValue){
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+			if($myValue['btnWorkStatus'] == 'working') {
+				sleep($_SESSION['curuser']['dialinterval']);
+				workctrl('start');
+			}
 		}
 		$objResponse->addAssign("status","innerHTML", $status );
 //		$objResponse->addAssign("extensionStatus","value", $status );
@@ -686,6 +694,33 @@ function addWithPhoneNumber(){
 	return $objResponse;
 }
 
+function workctrl($action = 'stop') {
+	global $db,$locate;
+	$objResponse = new xajaxResponse();
+	if($action == 'start') {
+		$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
+		if ($row['id'] == ''){
+
+		} else {
+			$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
+			$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
+			$objResponse->addAssign("btnWorkStatus","value", "working" );
+			$phoneNum = $row['dialnumber'];			
+			astercrm::deleteRecord($row['id'],"diallist");
+			$f['dialnumber'] = $phoneNum;
+			$f['dialedby'] = $_SESSION['curuser']['extension'];
+			astercrm::insertNewDialedlist($row);
+			$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+			invite($_SESSION['curuser']['extension'],$phoneNum);
+		}		
+	}else {
+		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
+		$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
+		$objResponse->addAssign("btnWorkStatus","value", "" );
+		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+	}
+	return $objResponse;
+}
 # click to dial
 # $phoneNum	phone to call
 # $first	which phone will ring first, caller or callee

@@ -353,6 +353,7 @@ Class astercrm extends PEAR{
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now(),"
+				."agentinterval='".$f['agentinterval']."',"
 				."pdcontext='".$f['pdcontext']."',"
 				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
 		astercrm::events($query);
@@ -544,6 +545,7 @@ Class astercrm extends PEAR{
 		$query= "UPDATE astercrm_accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
+				."agentinterval='".$f['agentinterval']."', "
 				."pdcontext='".$f['pdcontext']."', "
 				."pdextension='".$f['pdextensions']."' "
 				."WHERE id='".$f['id']."'";
