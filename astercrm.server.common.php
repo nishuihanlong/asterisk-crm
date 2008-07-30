@@ -668,4 +668,28 @@ function playmonitor($id){
 	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	
 	return $objResponse->getXML();
 }
+
+function showWorkoff(){
+	global $locate;
+		$html = Table::Top($locate->Translate("Work Off"),"formWorkoff"); 			
+		$html .= '
+			<!-- No edit the next line -->
+			<form method="post" name="workoff" id="workoff">			
+			<table border="1" width="100%" class="adminlist">
+			<tr>
+				<td nowrap align="right">'.$locate->Translate("User Name").'&nbsp;&nbsp;</td>
+				<td nowrap align="left"><input type="text" id="adminname" name="adminname" size="25" maxlength="25"> </td>
+			</tr>
+			<tr>
+				<td nowrap align="right">'.$locate->Translate("Password").'&nbsp;&nbsp;</td>
+				<td nowrap align="left"><input type="text" id="Workoffpwd" name="Workoffpwd" size="25" maxlength="25"> </td>
+			</tr>			
+			<tr><td colspan="2" align="center"><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_workoffcheck(xajax.getFormValues(\'workoff\'));return false;"></td></tr>
+			</table></form>';
+		$html .= Table::Footer();
+		$objResponse = new xajaxResponse();
+		$objResponse->addAssign("formWorkoff", "style.visibility", "visible");
+		$objResponse->addAssign("formWorkoff", "innerHTML", $html);	
+		return $objResponse->getXML();
+}
 ?>

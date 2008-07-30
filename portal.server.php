@@ -108,7 +108,11 @@ function getPrivateDialListNumber($extension = null){
 	$count = astercrm::getCountByField("assign",$extension,"diallist");
 	if ($count == 0){
 		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
+		$objResponse->addAssign("divWork", "innerHTML", '');
+		$objResponse->addAssign("btnWorkStatus","value", "" );
+		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
 		$objResponse->addAssign("btnWork","disabled", true );
+		$_SESSION['curuser']['WorkStatus'] = '';
 	} else{
 		// add div
 		$objResponse->addRemove("spanDialListRecords");
@@ -156,9 +160,16 @@ function init(){
 	$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
-	$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
-	$objResponse->addAssign("btnWorkStatus","value", "" );
-	$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
+	if($_SESSION['curuser']['WorkStatus'] == ''){
+		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
+		$objResponse->addAssign("btnWorkStatus","value", "" );
+		$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
+	}else{
+		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
+		$objResponse->addAssign("btnWorkStatus","value", "working" );
+		$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
+		workstart();
+	}
 	$objResponse->addAssign("btnSearchContact","value", $locate->Translate("Search") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
@@ -300,9 +311,9 @@ function incomingCalls($myValue){
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
-			if($myValue['btnWorkStatus'] == 'working') {
-				sleep($_SESSION['curuser']['dialinterval']);
-				workctrl('start');
+			if($myValue['btnWorkStatus'] == 'working') {				
+				$interval = $_SESSION['curuser']['dialinterval'];
+				$objResponse->addScript("autoDial('$interval');");
 			}
 		}
 		$objResponse->addAssign("status","innerHTML", $status );
@@ -694,29 +705,40 @@ function addWithPhoneNumber(){
 	return $objResponse;
 }
 
-function workctrl($action = 'stop') {
+function workstart() {
 	global $db,$locate;
 	$objResponse = new xajaxResponse();
-	if($action == 'start') {
-		$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
-		if ($row['id'] == ''){
+	$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
+	if ($row['id'] == ''){
 
-		} else {
-			$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
-			$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
-			$objResponse->addAssign("btnWorkStatus","value", "working" );
-			$phoneNum = $row['dialnumber'];			
-			astercrm::deleteRecord($row['id'],"diallist");
-			$f['dialnumber'] = $phoneNum;
-			$f['dialedby'] = $_SESSION['curuser']['extension'];
-			astercrm::insertNewDialedlist($row);
-			$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
-			invite($_SESSION['curuser']['extension'],$phoneNum);
-		}		
-	}else {
+	} else {
+		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
+		$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
+		$objResponse->addAssign("btnWorkStatus","value", "working" );
+		$_SESSION['curuser']['WorkStatus'] = 'working';
+		$phoneNum = $row['dialnumber'];	
+		astercrm::deleteRecord($row['id'],"diallist");
+		$f['dialnumber'] = $phoneNum;
+		$f['dialedby'] = $_SESSION['curuser']['extension'];
+		astercrm::insertNewDialedlist($row);
+		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+		invite($_SESSION['curuser']['extension'],$phoneNum);
+	}		
+	return $objResponse;
+}
+
+function workoffcheck($f){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$admininfo = astercrm::getRecordByField('username',$f['adminname'],'astercrm_account');
+	if($admininfo['username'] != '' && $admininfo['password'] == $f['Workoffpwd'] && (($admininfo['usertype'] == 'groupadmin' && $admininfo['groupid'] == $_SESSION['curuser']['groupid']) || $admininfo['usertype'] == 'admin')) {
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
 		$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
 		$objResponse->addAssign("btnWorkStatus","value", "" );
+		$objResponse->addAssign("divWork","innerHTML", "" );
+		$_SESSION['curuser']['WorkStatus'] = '';
+		$objResponse->addAssign("formWorkoff", "style.visibility", "hidden");
+		$objResponse->addAssign("formWorkoff", "innerHTML", '');
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 	}
 	return $objResponse;

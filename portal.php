@@ -105,7 +105,7 @@ require_once('config.php');
 
 
 		<script type="text/javascript">
-
+		var intervalID = 0; //for stop setInterval of autoDial
 		function dial(phonenum,first){
 			if (document.getElementById("uniqueid").value != '')
 				return false;
@@ -210,11 +210,33 @@ require_once('config.php');
 			document.getElementById("campaignid").options.length=0
 			xajax_setCampaign(groupid);
 		}
-		function workctrl(){
-			if (xajax.$('btnWorkStatus').value == 'working')
-				xajax_workctrl('stop');
-			else
-				xajax_workctrl('start');
+		function workctrl(aciton){
+			if (aciton == 'stop'){
+				xajax_showWorkoff();
+			}else{
+				xajax.$("divWork").innerHTML = 'dialing';
+				xajax_workstart();
+			}
+		}
+		function autoDial(interval){
+			if(interval == '') return false;
+			xajax.$("divWork").innerHTML = interval;
+			intervalID=setInterval("showsec(xajax.$('divWork').innerHTML)",1000);
+		}
+		function showsec(i)
+		{	
+			if(xajax.$('btnWorkStatus').value == '') {
+				clearInterval(intervalID);
+				xajax.$("divWork").innerHTML = '';				
+				return false;
+			}
+			if(i == 0){
+				xajax.$("divWork").innerHTML = 'dialing';
+				clearInterval(intervalID);
+				workctrl('start');
+			}else{
+				xajax.$("divWork").innerHTML = i-1;
+			}
 		}
 		</script>
 <?
@@ -262,14 +284,15 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="direction" id="direction" value=""/>
 		<input type="hidden" name="popup" id="popup" value="yes"/>
 		<input type="hidden" name="dialtip" id="dialtip" value="Dialing to"/>
-		<input type="hidden" name="trantip" id="trantip" value="Transfering to"/>
-		<input type='hidden' value='' name="btnWorkStatus" id="btnWorkStatus">
+		<input type="hidden" name="trantip" id="trantip" value="Transfering to"/>		
+		<input type='hidden' value="" name="btnWorkStatus" id="btnWorkStatus">
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
 	<div id="divDialList" name="divDialList"></div><br/>
 	<div id="processingMessage" name="processingMessage"></div>
-	<div id="misson" name="misson"><input type="button" id="btnWork" name="btnWork" value=""></div><br>	
+	<div id="misson" name="misson"><input type="button" id="btnWork" name="btnWork" value=""></div><div id="divWork" name="divWork" align="left" style="font-weight:bold;
+	"></div><br>
 	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber"></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
 	
 		<br/>
@@ -301,6 +324,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formeditDiallistInfo"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
 		<div id="formNoteInfo" class="formDiv  drsElement"
+			style="left: 450px; top: 330px;"></div>
+		<div id="formWorkoff" class="formDiv  drsElement"
 			style="left: 450px; top: 330px;"></div>
 		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;"></div>

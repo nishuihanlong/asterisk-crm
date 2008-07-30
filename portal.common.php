@@ -141,7 +141,9 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("searchRecordsFormSubmit");
 	$xajax->registerFunction("playmonitor");
 	$xajax->registerFunction("showRecentCdr");
-	$xajax->registerFunction("workctrl");
+	$xajax->registerFunction("workstart");
+	$xajax->registerFunction("showWorkoff");
+	$xajax->registerFunction("workoffcheck");
 }
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.
