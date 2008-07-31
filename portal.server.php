@@ -696,8 +696,8 @@ function addWithPhoneNumber(){
 		$phoneNum = $row['dialnumber'];
 		$objResponse->loadXML(getContact($phoneNum));
 		astercrm::deleteRecord($row['id'],"diallist");
-		$f['dialnumber'] = $phoneNum;
-		$f['dialedby'] = $_SESSION['curuser']['extension'];
+		$row['dialnumber'] = $phoneNum;
+		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		astercrm::insertNewDialedlist($row);
 	}
 
@@ -720,8 +720,8 @@ function workstart() {
 		$_SESSION['curuser']['WorkStatus'] = 'working';
 		$phoneNum = $row['dialnumber'];	
 		astercrm::deleteRecord($row['id'],"diallist");
-		$f['dialnumber'] = $phoneNum;
-		$f['dialedby'] = $_SESSION['curuser']['extension'];
+		$row['dialnumber'] = $phoneNum;
+		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		astercrm::insertNewDialedlist($row);
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 		invite($_SESSION['curuser']['extension'],$phoneNum);
