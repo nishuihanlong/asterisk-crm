@@ -195,14 +195,14 @@ v0.047 beta
 2008-6-30		增加了customer对应的录音记录查询功能及管理员后台录音记录查询
 2008-7-7		增加了录音记录web播放功能(wav录音格式/mediaplayer插件播放)
 2008-7-22		更新了astercc改善了对queue拨入的支持
+2008-7-26		增加了表queuestatus, 用于保存队列状态
 
 TO-DO:
 删除asteriskcalls和remindercalls部分
+agent不应该有权限删除任何东西
 [fixed] 增加对dialedlist的导出和删除功能
 增加显示主叫号码的功能
-[no fix] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue
-解决办法1 在queue内定义agent时使用 Local/8000@from-internal/n 的方法
-解决办法2 使用老的方法获取事件
+[fixed] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue, 只能通过astercc解决这个问题
 
 [fixed] 部分系统当 allow_dropcall = 1 时 无法发起呼叫, 建议检查asterisk spool目录权限是否正确, 或者修改为 allow_dropcall = 0
 

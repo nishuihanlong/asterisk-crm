@@ -21,6 +21,22 @@ CREATE TABLE `astercrm_account` (
   UNIQUE KEY `id` (`id`,`username`)
 ) ENGINE = MYISAM;
 
+DROP TABLE IF EXISTS `queuestatus`;
+
+CREATE TABLE `queuestatus` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`channel` VARCHAR( 60 ) NOT NULL ,
+`callerid` VARCHAR( 40 ) NOT NULL ,
+`calleridname` VARCHAR( 40 ) NOT NULL ,
+`queue` VARCHAR( 40 ) NOT NULL ,
+`position` INT NOT NULL ,
+`count` INT NOT NULL ,
+`cretime` DATETIME NOT NULL ,
+UNIQUE (
+`id`
+)
+) ENGINE = MYISAM ;
+
 DROP TABLE IF EXISTS astercrm_accountgroup;
 
 CREATE TABLE `astercrm_accountgroup` (
