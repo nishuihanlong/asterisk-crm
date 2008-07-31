@@ -682,7 +682,7 @@ function showWorkoff(){
 			</tr>
 			<tr>
 				<td nowrap align="right">'.$locate->Translate("Password").'&nbsp;&nbsp;</td>
-				<td nowrap align="left"><input type="text" id="Workoffpwd" name="Workoffpwd" size="25" maxlength="25"> </td>
+				<td nowrap align="left"><input type="password" id="Workoffpwd" name="Workoffpwd" size="25" maxlength="25"> </td>
 			</tr>			
 			<tr><td colspan="2" align="center"><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_workoffcheck(xajax.getFormValues(\'workoff\'));return false;"></td></tr>
 			</table></form>';

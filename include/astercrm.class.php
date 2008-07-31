@@ -2331,7 +2331,7 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT * FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' ";
+				$sql = "SELECT * FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' ";
 				if($order == null || is_array($order)){
 					$sql .= " ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 				}else{
@@ -2389,7 +2389,7 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' ";				
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' ";				
 				astercrm::events($sql);
 				$res =& $db->getOne($sql);
 				return $res;

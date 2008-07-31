@@ -168,7 +168,8 @@ function init(){
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
 		$objResponse->addAssign("btnWorkStatus","value", "working" );
 		$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
-		workstart();
+		$interval = $_SESSION['curuser']['dialinterval'];
+		$objResponse->addScript("autoDial('$interval');");
 	}
 	$objResponse->addAssign("btnSearchContact","value", $locate->Translate("Search") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
@@ -715,6 +716,7 @@ function workstart() {
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
 		$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
 		$objResponse->addAssign("btnWorkStatus","value", "working" );
+		$objResponse->addAssign("divWork","innerHTML", $locate->Translate("dialing to")." ".$row['dialnumber']);
 		$_SESSION['curuser']['WorkStatus'] = 'working';
 		$phoneNum = $row['dialnumber'];	
 		astercrm::deleteRecord($row['id'],"diallist");

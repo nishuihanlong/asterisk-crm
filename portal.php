@@ -213,8 +213,7 @@ require_once('config.php');
 		function workctrl(aciton){
 			if (aciton == 'stop'){
 				xajax_showWorkoff();
-			}else{
-				xajax.$("divWork").innerHTML = 'dialing';
+			}else{				
 				xajax_workstart();
 			}
 		}
@@ -231,7 +230,7 @@ require_once('config.php');
 				return false;
 			}
 			if(i == 0){
-				xajax.$("divWork").innerHTML = 'dialing';
+				//xajax.$("divWork").innerHTML = 'dialing';
 				clearInterval(intervalID);
 				workctrl('start');
 			}else{
@@ -326,7 +325,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formNoteInfo" class="formDiv  drsElement"
 			style="left: 450px; top: 330px;"></div>
 		<div id="formWorkoff" class="formDiv  drsElement"
-			style="left: 450px; top: 330px;"></div>
+			style="left: 300px; top: 0px; z-index: 999; "></div>
 		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
