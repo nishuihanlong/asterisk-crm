@@ -107,18 +107,22 @@ require_once('config.php');
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
 		function dial(phonenum,first){
+			dialnum = phonenum;
+			firststr = first;
 			if (document.getElementById("uniqueid").value != '')
 				return false;
 			xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+phonenum;
-			xajax_dial(phonenum,first);
+			setTimeout("xajax_dial(dialnum,firststr)",1000);
 		}
 
 		function hangup(){
 			//alert (xajax.$('callerChannel').value);
 			//alert (xajax.$('calleeChannel').value);
 			xajax.$("divMsg").innerHTML = "Hangup";
-			xajax_hangup(xajax.$('callerChannel').value);
-			xajax_hangup(xajax.$('calleeChannel').value);
+			callerChan = xajax.$('callerChannel').value;
+			calleeChan = xajax.$('calleeChannel').value;
+			setTimeout("xajax_hangup(callerChan)",1000);
+			setTimeout("xajax_hangup(calleeChan)",1000);
 		}
 
 		function showProcessingMessage(){
@@ -190,12 +194,12 @@ require_once('config.php');
 				dest = xajax.$('extension').value;
 			}
 
-			xajax_invite(src,dest);
+			setTimeout("xajax_invite(src,dest)",1000);
 		}
 		
 		function transfer(){
 			xajax.$("divMsg").innerHTML = xajax.$('trantip').value+" "+xajax.$("sltExten").value;
-			xajax_transfer(xajax.getFormValues('myForm'));
+			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",1000);
 		}
 
 		function trim(stringToTrim) {

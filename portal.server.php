@@ -262,7 +262,6 @@ function transfer($aFormValues){
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
 	else
 		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
-	sleep('3');
 	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse;
 }
@@ -802,7 +801,6 @@ function dial($phoneNum,$first = ''){
 		}
 	}
 	//$myAsterisk->disconnect();
-	sleep('3');
 	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse->getXML();
 }
@@ -849,7 +847,7 @@ function invite($src,$dest){
 	}else{
 		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
 	}
-	sleep('3');
+	
 	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse->getXML();
 }
@@ -875,7 +873,6 @@ function hangup($channel){
 	}
 	$myAsterisk->Hangup($channel);
 	//$objResponse->addAssign("btnHangup", "disabled", true);
-	sleep('1');
 	$objResponse->addClear("divMsg", "innerHTML");
 	return $objResponse;
 }
