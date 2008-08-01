@@ -154,7 +154,7 @@
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div>
+		<div id="divNav"></div><br>
 		<center>
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">

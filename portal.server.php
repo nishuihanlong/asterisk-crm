@@ -723,7 +723,7 @@ function workstart() {
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		astercrm::insertNewDialedlist($row);
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
-		invite($_SESSION['curuser']['extension'],$phoneNum);
+		invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid']);
 	}		
 	return $objResponse;
 }
@@ -812,7 +812,7 @@ function dial($phoneNum,$first = ''){
 *  @return	object						xajax response object
 */
 
-function invite($src,$dest){
+function invite($src,$dest,$campaignid=''){
 	global $config,$locate;
 	$src = trim($src);
 	$dest = trim($dest);
@@ -831,21 +831,29 @@ function invite($src,$dest){
 	$res = $myAsterisk->connect();
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
+	if($campaignid != ''){
+		$row_campaign = astercrm::getRecordByID($campaignid,"campaign");
+		$incontext = $row_campaign['incontext'];
+		$outcontext = $row_campaign['outcontext'];
+		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
+	}else{
+		$incontext = $config['system']['incontext'];
+		$outcontext = $config['system']['outcontext'];
+	}
+	$strChannel = "Local/".$src."@".$incontext."/n";
 
-
-	$strChannel = "Local/".$src."@".$config['system']['incontext']."/n";
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 							'WaitTime'=>30,
 							'Exten'=>$dest,
-							'Context'=>$config['system']['outcontext'],
+							'Context'=>$outcontext,
 							'Account'=>$_SESSION['curuser']['accountcode'],
 							'Variable'=>"$strVariable",
 							'Priority'=>1,
 							'MaxRetries'=>0,
 							'CallerID'=>$callerid));
 	}else{
-		$myAsterisk->sendCall($strChannel,$dest,$config['system']['outcontext'],1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
+		$myAsterisk->sendCall($strChannel,$dest,$outcontext,1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
 	}
 	
 	$objResponse->addClear("divMsg", "innerHTML");

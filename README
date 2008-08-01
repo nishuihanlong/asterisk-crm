@@ -110,7 +110,7 @@ however, multiple servers enhance performance.
 	; use your astercrm ip to replace 127.0.0.1 or add a new line
 	permit=127.0.0.1/255.255.255.0	 
 	
-5) modify astercrm.conf.php and eventsdaemon.pl to fit your configration
+5) modify astercrm.conf.php and eventsdaemon.pl to fit your configuration
 	mainly database setting and AMI setting, the other parameters could be set in astercrm page
 
 6) Start Asterisk and  eventsdaemon.pl
