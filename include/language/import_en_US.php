@@ -9,7 +9,7 @@
 	$uploadsuccess = "upload success";
 	$have = "have";
 	$default = "records ,show the top 8 records";
-	$failed = "upload failed, please check dir purview";
+	$failed = "upload failed, please check folder permission";
 	$choose = "choose file";
 	$import = "Import";
 	$area = "assign";
