@@ -168,6 +168,7 @@ require_once('config.php');
 		function init(){
 			xajax_init();
 			updateEvents();
+			xajax_checkworkexten();
 
 			//make div draggable
 			dragresize.apply(document);
@@ -217,9 +218,22 @@ require_once('config.php');
 		function workctrl(aciton){
 			if (aciton == 'stop'){
 				xajax_showWorkoff();
-			}else{				
-				xajax_workstart();
+			}else{
+				if(xajax.$("workingextenflag").value != 'yes' ){					
+					if(xajax.$("workingextenstatus").value != 'ok'){
+						if(confirm(xajax.$("workingextenstatus").value)){
+							xajax.$("workingextenflag").value = 'yes'
+							xajax_workstart();							
+						}
+					}else{
+						xajax_workstart();
+					}
+				}else{
+					xajax_workstart();
+				}
+				
 			}
+			return false;
 		}
 		function autoDial(interval){
 			if(interval == '') return false;
@@ -286,6 +300,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="calleeChannel" id="calleeChannel" value=""/>
 		<input type="hidden" name="direction" id="direction" value=""/>
 		<input type="hidden" name="popup" id="popup" value="yes"/>
+		<input type="hidden" name="workingextenflag" id="workingextenflag" value=""/>
+		<input type="hidden" name="workingextenstatus" id="workingextenstatus" value=""/>
 		<input type="hidden" name="dialtip" id="dialtip" value="Dialing to"/>
 		<input type="hidden" name="trantip" id="trantip" value="Transfering to"/>		
 		<input type='hidden' value="" name="btnWorkStatus" id="btnWorkStatus">

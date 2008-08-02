@@ -144,6 +144,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("workstart");
 	$xajax->registerFunction("showWorkoff");
 	$xajax->registerFunction("workoffcheck");
+	$xajax->registerFunction("checkworkexten");
 }
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.

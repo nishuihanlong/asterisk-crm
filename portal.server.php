@@ -705,9 +705,27 @@ function addWithPhoneNumber(){
 	return $objResponse;
 }
 
+function checkworkexten() {
+	global $db,$locate;
+	$objResponse = new xajaxResponse();
+	if($_SESSION['curuser']['channel'] == ''){
+		$row = astercrm::getRecordByField("peer","SIP/".$_SESSION['curuser']['extension'],"peerstatus");
+	}else{
+		$row = astercrm::getRecordByField("peer",$_SESSION['curuser']['channel'],"peerstatus");
+	}
+	if($row['status'] != 'reachable') {
+		$objResponse->addAssign("workingextenstatus","value", "it seems ur extension is not avaiable, are u sure to procress?" );
+	}else{
+		$objResponse->addAssign("workingextenstatus","value", "ok" );
+	}
+
+	return $objResponse;
+}
+
 function workstart() {
 	global $db,$locate;
 	$objResponse = new xajaxResponse();
+
 	$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
 	if ($row['id'] == ''){
 
