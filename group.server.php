@@ -318,7 +318,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	if($type == "delete"){
-		$res = Customer::deleteRecord($id,'accountgroup');
+		$res = Customer::deleteRecord($id,'astercrm_accountgroup');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
 			$objResponse = new xajaxResponse();

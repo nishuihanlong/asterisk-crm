@@ -16,6 +16,7 @@ CREATE TABLE `astercrm_account` (
   `extensions` varchar(200) NOT NULL default '',
   `channel` varchar(30) NOT NULL default '',
   `usertype` varchar(20) NOT NULL default '',
+  `dialinterval` int(5) NULL,
   `accountcode` varchar(20) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`,`username`)
@@ -45,6 +46,7 @@ CREATE TABLE `astercrm_accountgroup` (
 	`groupid` INT NOT NULL ,
 	`pdcontext` VARCHAR( 30 ) NOT NULL  ,
 	`pdextension` VARCHAR( 30 ) NOT NULL  ,
+	`agentinterval` int(5) NULL,
 	`cretime` datetime NOT NULL default '0000-00-00 00:00:00',
 	`creby` varchar(50) NOT NULL default '',
 	UNIQUE (
