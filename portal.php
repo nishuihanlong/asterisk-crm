@@ -217,7 +217,7 @@ require_once('config.php');
 		}
 		function workctrl(aciton){
 			if (aciton == 'stop'){
-				xajax_showWorkoff();
+				xajax_workoffcheck();
 			}else{
 				if(xajax.$("workingextenflag").value != 'yes' ){					
 					if(xajax.$("workingextenstatus").value != 'ok'){
