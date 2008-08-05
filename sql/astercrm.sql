@@ -67,6 +67,7 @@ CREATE TABLE `campaign` ( #added by solo 2008-2-5
   `fileid` int(11) NOT NULL default '0',		#added by solo 2008-5-4
   `end-fileid` int(11) NOT NULL default '0',		#added by solo 2008-5-4
   `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008-5-4
+  `maxtrytime` int(11) NOT NULL default '0',
   `creby` varchar(30) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
@@ -135,6 +136,7 @@ CREATE TABLE dialedlist (
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008-2-3
   `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008-2-5
   `assign` varchar(20) NOT NULL default '',												#added by solo 2008-2-10
+  `trytime` INT(11) NOT NULL DEFAULT '0',
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)

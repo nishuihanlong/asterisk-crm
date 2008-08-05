@@ -723,7 +723,7 @@ function checkworkexten() {
 }
 
 function workstart() {
-	global $db,$locate;
+	global $db,$locate,$config;
 	$objResponse = new xajaxResponse();
 
 	$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
@@ -731,12 +731,16 @@ function workstart() {
 
 	} else {
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
-		$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
+		if($config['system']['stop_work_verify'])
+			$objResponse->addEvent("btnWork", "onclick", "workctrl('check');");
+		else
+			$objResponse->addEvent("btnWork", "onclick", "workctrl('stop');");
 		$objResponse->addAssign("btnWorkStatus","value", "working" );
 		$objResponse->addAssign("divWork","innerHTML", $locate->Translate("dialing to")." ".$row['dialnumber']);
 		$_SESSION['curuser']['WorkStatus'] = 'working';
 		$phoneNum = $row['dialnumber'];	
 		astercrm::deleteRecord($row['id'],"diallist");
+		$row['trytime'] = $row['trytime'] + 1;
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		astercrm::insertNewDialedlist($row);
@@ -747,10 +751,22 @@ function workstart() {
 }
 
 function workoffcheck($f=''){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
-//	$admininfo = astercrm::getRecordByField('username',$f['adminname'],'astercrm_account');
-//	if($admininfo['username'] != '' && $admininfo['password'] == $f['Workoffpwd'] && (($admininfo['usertype'] == 'groupadmin' && $admininfo['groupid'] == $_SESSION['curuser']['groupid']) || $admininfo['usertype'] == 'admin')) {
+	if($config['system']['stop_work_verify']){
+		if($f['adminname'] == '') return $objResponse;
+		$admininfo = astercrm::getRecordByField('username',$f['adminname'],'astercrm_account');
+		if($admininfo['password'] == $f['Workoffpwd'] && (($admininfo['usertype'] == 'groupadmin' && $admininfo['groupid'] == $_SESSION['curuser']['groupid']) || $admininfo['usertype'] == 'admin')) {
+			$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
+			$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
+			$objResponse->addAssign("btnWorkStatus","value", "" );
+			$objResponse->addAssign("divWork","innerHTML", "" );
+			$_SESSION['curuser']['WorkStatus'] = '';
+			$objResponse->addAssign("formWorkoff", "style.visibility", "hidden");
+			$objResponse->addAssign("formWorkoff", "innerHTML", '');
+			$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+		}
+	}else{
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
 		$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
 		$objResponse->addAssign("btnWorkStatus","value", "" );
@@ -759,7 +775,7 @@ function workoffcheck($f=''){
 		$objResponse->addAssign("formWorkoff", "style.visibility", "hidden");
 		$objResponse->addAssign("formWorkoff", "innerHTML", '');
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
-//	}
+	}
 	return $objResponse;
 }
 # click to dial

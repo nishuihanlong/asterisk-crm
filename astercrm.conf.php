@@ -46,7 +46,8 @@ outcontext = from-sipuser
 ;context when dial in, in trixbox this could be from-trunk
 incontext = from-sipuser
 
-
+;if need to enter password of admin or groupadmin when agent stop work
+stop_work_verify = 0
 
 ; Asterisk context parameter, use which context and extenstion
 ; when predictive dialer connect the call
