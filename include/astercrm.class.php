@@ -370,6 +370,7 @@ Class astercrm extends PEAR{
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
+				."maxtrytime='".$f['maxtrytime']."', "
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
@@ -581,6 +582,7 @@ Class astercrm extends PEAR{
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
+				."maxtrytime='".$f['maxtrytime']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
 		astercrm::events($query);

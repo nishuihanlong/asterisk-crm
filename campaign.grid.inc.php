@@ -233,6 +233,10 @@ class Customer extends astercrm
 					<td align="left">'.$grouphtml.'</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Max trytime").'</td>
+					<td align="left"><input type="text" id="maxtrytime" name="maxtrytime" size="10" maxlength="10"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -304,6 +308,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Max trytime").'</td>
+					<td align="left"><input type="text" id="maxtrytime" name="maxtrytime" size="30" maxlength="30" value="'.$campaign['maxtrytime'].'"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
