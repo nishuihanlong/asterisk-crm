@@ -1171,10 +1171,12 @@ Class astercrm extends PEAR{
 	function getRecordByField($field,$value,$table){
 		global $db;
 		if (is_numeric($value)){
-			$query = "SELECT * FROM $table WHERE $field = $value LIMIT 0,1";
+			$query = "SELECT * FROM $table WHERE $field = $value ";
 		}else{
-			$query = "SELECT * FROM $table WHERE $field = '$value'  LIMIT 0,1";
+			$query = "SELECT * FROM $table WHERE $field = '$value' ";
 		}
+		if($table == 'diallist') $query .= " ORDER BY id ASC ";
+		$query .= " LIMIT 0,1 ";
 		astercrm::events($query);
 		$row =& $db->getRow($query);
 		return $row;
