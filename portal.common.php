@@ -108,6 +108,10 @@ $xajax->registerFunction("hangup");
 $xajax->registerFunction("chanspy");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("displayMap");
+$xajax->registerFunction("workstart");
+$xajax->registerFunction("showWorkoff");
+$xajax->registerFunction("workoffcheck");
+$xajax->registerFunction("checkworkexten");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function
@@ -140,11 +144,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("showRecords");
 	$xajax->registerFunction("searchRecordsFormSubmit");
 	$xajax->registerFunction("playmonitor");
-	$xajax->registerFunction("showRecentCdr");
-	$xajax->registerFunction("workstart");
-	$xajax->registerFunction("showWorkoff");
-	$xajax->registerFunction("workoffcheck");
-	$xajax->registerFunction("checkworkexten");
+	$xajax->registerFunction("showRecentCdr");	
 }
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.
