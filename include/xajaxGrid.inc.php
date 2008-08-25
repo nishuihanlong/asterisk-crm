@@ -183,13 +183,15 @@ class ScrollTable{
 // 					$this->header .= $value;
 // 				}
 			$this->header .= $value;
-
-			$this->header .= '
+			if(strstr($value,'checkbox')){
+				$this->header .= '';
+			}else{
+				$this->header .= '
 				&nbsp;
 				<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
 				<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
-			</th>';
-
+				</th>';
+			}
 			$ind++;
 		}
 
@@ -258,11 +260,13 @@ class ScrollTable{
 			if($key != 'id'){
 				if($key == 'filename' && $table = 'monitorrecord') {					
 					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.basename($value).'<a href="?" onClick="xajax_playmonitor('.$arr[0].');return false;"><img src="skin/default/images/play.gif" border="0"></a></td>'."\n";
+				}elseif($key == 'select_id'){
+					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'><input type="checkbox" id="ckb[]" name="ckb[]" value="'.$value.'" ></td>'."\n";
 				}else{
 					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
 				}
 			}
-   		$ind++;
+   			$ind++;
 		}
 
 		if ($divName == 'formDiallist'){
@@ -382,7 +386,7 @@ class ScrollTable{
 	* customer addRowSearth
 	*/
     //增加搜索选项
-	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=0){
 		global $local_grid;
 		$ind = 0;
 		$ind_selected = 0;
@@ -435,9 +439,12 @@ class ScrollTable{
 				<table width="99%" border="0" style="line-height:30px;">
 
 				<tr>
-					<td align="left" width="10%">';
+					<td align="left" width="15%">';
 			if($withNewButton){
 				$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
+			}
+			if($withDelButton){
+				$this->search .= '&nbsp;&nbsp;<button id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'customerGrid\'),xajax.getFormValues(\'searchForm\'));}return false;">'.$local_grid->Translate("delete").'</button>';
 			}
 		}
 		
@@ -718,6 +725,8 @@ class ScrollTable{
 	function render($arg=''){
 		if($arg=='static'){
 			$table =$this->top . $this->header . $this->rows . $this->footer;
+		}elseif($arg='customerGrid'){
+			$table = $this->search .'<form name="customerGrid" id="customerGrid" method="post">'. $this->top . $this->header . $this->rows .'</form>'. $this->footer;
 		}else{
 			$table = $this->search . $this->top . $this->header . $this->rows . $this->footer;
 		}

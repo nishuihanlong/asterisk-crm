@@ -126,6 +126,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";//"Customer Name";
 	$headers[] = $locate->Translate("customer_name")."<BR \>";//"Customer Name";
 	$headers[] = $locate->Translate("state")."<BR \>";//"Customer Name";
 	$headers[] = $locate->Translate("city")."<BR \>";//"Category";
@@ -138,12 +139,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width="2%"';
 	$attribsHeader[] = 'width="17%"';
 	$attribsHeader[] = 'width="7%"';
 	$attribsHeader[] = 'width="8%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="18%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="8%"';
@@ -199,15 +201,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 
 	// Create object whit 5 cols and all data arrays set before.
-	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
+	$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
-	$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("customer",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		$rowc['select_id'] = $row['id'];
 		$rowc[] = '<a href=? onclick="xajax_showDetail(\''.$row['id'].'\');return false;">'.$row['customer'].'</a>';
 		$rowc[] = $row['state'];
 		$rowc[] = $row['city'];
@@ -223,8 +226,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		
  	}
 	
-	$html = $table->render();
-
+	$html = $table->render('customerGrid');
 	return $html;
 	 
  	// End Editable Zone
@@ -279,6 +281,23 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
+	return $objResponse->getXML();
+}
+
+function deleteByButton($f,$searchFormValue){
+//	print_r($searchFormValue);exit;
+	$objResponse = new xajaxResponse();
+	if(is_array($f['ckb'])){
+		foreach($f['ckb'] as $vaule){
+			$res = astercrm::deleteRecord($vaule,'customer');
+		}
+	}
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$numRows = $searchFormValue['numRows'];
+	$limit = $searchFormValue['limit'];     
+	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
+	$objResponse->addAssign('grid', "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

@@ -49,6 +49,15 @@ require_once('customer.common.php');
 			//make div draggable
 			dragresize.apply(document);
 		}
+
+		function ckbAllOnClick(objCkb){
+			var ockb = document.getElementsByName('ckb[]');
+			for(i=0;i<ockb.length;i++) {				
+				if (ockb[i].checked != objCkb.checked){
+					ockb[i].checked = objCkb.checked;
+				}
+			}			
+		}
 		//-->
 		</SCRIPT>
 
@@ -65,7 +74,7 @@ require_once('customer.common.php');
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-	<br>
+	<br><br>
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnContact" name="btnContact" onClick="window.location='contact.php';" />
 		<input type="button" value="" id="btnNote" name="btnNote" onClick="window.location='note.php';" />
