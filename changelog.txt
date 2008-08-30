@@ -196,7 +196,12 @@ v0.047 beta
 2008-7-7		增加了录音记录web播放功能(wav录音格式/mediaplayer插件播放)
 2008-7-22		更新了astercc改善了对queue拨入的支持
 2008-7-26		增加了表queuestatus, 用于保存队列状态
-
+2008-8-1		批量删除客户记录
+2008-8-6		座席自动拨号
+2008-8-16		更新了astercc对diallist拨号时通话状态的记录
+			dialedlist表中增加了字段`dialedtime`用于回收未到最大拨号次数的未接能号码
+			campaign表中增加了字段`maxtrytime`用于指定diallist号码最大拨号次数
+			增加了回收dialedlist中未到最大拨号次数的未接能号码
 TO-DO:
 删除asteriskcalls和remindercalls部分
 agent不应该有权限删除任何东西
