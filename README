@@ -163,7 +163,7 @@ however, multiple servers enhance performance.
 	or else, please check your database/AMI configration in astercc.conf
 
 	Start up astercc (default settings):
-		modify astercrm.conf set eventtype to mycdr
+		modify astercrm.conf set eventtype to curcdr
 		/opt/asterisk/scripts/eventsdaemon/astercc -d
 
 	Start up astercc daemons when system startup:
