@@ -145,8 +145,7 @@ however, multiple servers enhance performance.
 	so that everytime your server start, eventsdaemon would be loaded
 
 	B for astercc mode
-	try start astercc
-		modify astercrm.conf set eventtype to mycdr
+	try start astercc		
 		modify /opt/asterisk/scripts/eventsdaemon/astercc.conf to fit your configuration
 		mainly database setting and AMI setting.
 		/opt/asterisk/scripts/eventsdaemon/astercc
@@ -164,6 +163,7 @@ however, multiple servers enhance performance.
 	or else, please check your database/AMI configration in astercc.conf
 
 	Start up astercc (default settings):
+		modify astercrm.conf set eventtype to mycdr
 		/opt/asterisk/scripts/eventsdaemon/astercc -d
 
 	Start up astercc daemons when system startup:
