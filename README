@@ -117,7 +117,7 @@ however, multiple servers enhance performance.
 	mainly database setting and AMI setting, the other parameters could be set in astercrm page
 
 6) Start Asterisk and  daemon
-	There are two modes you can choose, eventsdaemon mode or astercc mode
+	There are two daemon modes you can choose, eventsdaemon mode or astercc mode
 	
 	A for eventsdaemon mode
 	try start eventsdaemon:
@@ -132,6 +132,7 @@ however, multiple servers enhance performance.
 	or else, please check your database/AMI configration in eventsdaemon.pl
 
 	Start eventsdaemon (default settings):
+		modify astercrm.conf set eventtype to event
 		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl -d
 
 	At some point it may be desirable to delete unwanted events from the database
@@ -145,6 +146,7 @@ however, multiple servers enhance performance.
 
 	B for astercc mode
 	try start astercc
+		modify astercrm.conf set eventtype to mycdr
 		modify /opt/asterisk/scripts/eventsdaemon/astercc.conf to fit your configuration
 		mainly database setting and AMI setting.
 		/opt/asterisk/scripts/eventsdaemon/astercc
