@@ -80,6 +80,9 @@ however, multiple servers enhance performance.
 	mv /var/www/html/astercrm/eventsdaemon/* /opt/asterisk/scripts/eventsdaemon
 	chmod +x /opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl
 	chmod +x /opt/asterisk/scripts/eventsdaemon/eventdog.sh
+	chmod +x /opt/asterisk/scripts/eventsdaemon/astercc
+	chmod +x /opt/asterisk/scripts/astercc/asterccd
+	chmod +x /opt/asterisk/scripts/astercc/asterccdaemon
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
@@ -110,20 +113,21 @@ however, multiple servers enhance performance.
 	; use your astercrm ip to replace 127.0.0.1 or add a new line
 	permit=127.0.0.1/255.255.255.0	 
 	
-5) modify astercrm.conf.php and eventsdaemon.pl to fit your configuration
+5) modify astercrm.conf.php to fit your configuration
 	mainly database setting and AMI setting, the other parameters could be set in astercrm page
 
-6) Start Asterisk and  eventsdaemon.pl
-
-	try start eventsdaemon:
-
-		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl 
+6) Start Asterisk and  daemon
+	There are two modes you can choose, eventsdaemon mode or astercc mode
 	
+	A for eventsdaemon mode
+	try start eventsdaemon:
+		modify eventsdaemon.pl to fit your configuration mainly database setting and AMI setting.
+		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl 	
 	if you could read:
 
 		"Message: Authentication accepted"
 
-	congratulations, your eventsdaemon works
+	congratulations, your eventsdaemon works well
 	use ctrl + c to exit
 	or else, please check your database/AMI configration in eventsdaemon.pl
 
@@ -138,6 +142,43 @@ however, multiple servers enhance performance.
 	add this shell to your start-up file
 		/opt/asterisk/scripts/eventsdaemon/eventdog.sh
 	so that everytime your server start, eventsdaemon would be loaded
+
+	B for astercc mode
+	try start astercc
+		modify /opt/asterisk/scripts/eventsdaemon/astercc.conf to fit your configuration
+		mainly database setting and AMI setting.
+		/opt/asterisk/scripts/eventsdaemon/astercc
+	if you could read like following line:
+		"Connecting to mysql database on 127.0.0.1:
+		 Database connection successful.
+		 Connecting to asterisk on 210.83.203.100 port 7998:
+		 Asterisk socket connection successful.
+		 Check asterisk username & secret:
+		 Success
+		 Monitor Start: 
+		 ...(some log message)..."
+	congratulations, your astercc works well
+	use ctrl + c to exit
+	or else, please check your database/AMI configration in astercc.conf
+
+	Start up astercc (default settings):
+		/opt/asterisk/scripts/eventsdaemon/astercc -d
+
+	Start up astercc daemons when system startup:
+	Note: This option can only fit to redhat-release system. 
+	If you want astercc daemons to start automatically when you boot your
+	machine, you need to :
+
+	cp /opt/asterisk/scripts/astercc/asterccd /etc/rc.d/init.d
+	chmod 755 /etc/rc.d/init.d/asterccd
+	chkconfig --add asterccd
+	
+	Advice: Configure your astercc restart once everyday, it's not necessary, but it 's good for your astercc operation.
+	for example: you want to restart astercc at 0'clock everyday,just do the following line as root. 
+	crontab -e
+	add a line: 
+		0 0 * * * /etc/rc.d/init.d/asterccd restart 
+	end of this file, the first "0" figures minutes and the second "0" figures hours.
 
 7) set file&folder access 
 
