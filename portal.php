@@ -215,6 +215,7 @@ require_once('config.php');
 			document.getElementById("campaignid").options.length=0
 			xajax_setCampaign(groupid);
 		}
+
 		function workctrl(aciton){
 			if (aciton == 'stop'){
 				xajax_workoffcheck();
@@ -239,11 +240,13 @@ require_once('config.php');
 			}
 			return false;
 		}
+
 		function autoDial(interval){
 			if(interval == '') return false;
 			xajax.$("divWork").innerHTML = interval;
-			intervalID=setInterval("showsec(xajax.$('divWork').innerHTML)",1000);
+			intervalID = setInterval("showsec(xajax.$('divWork').innerHTML)",1000);
 		}
+
 		function showsec(i)
 		{	
 			if(xajax.$('btnWorkStatus').value == '') {

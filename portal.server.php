@@ -740,10 +740,12 @@ function workstart() {
 		$_SESSION['curuser']['WorkStatus'] = 'working';
 		$phoneNum = $row['dialnumber'];	
 		astercrm::deleteRecord($row['id'],"diallist");
+
 		$row['trytime'] = $row['trytime'] + 1;
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		astercrm::insertNewDialedlist($row);
+
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 		invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid']);
 	}		

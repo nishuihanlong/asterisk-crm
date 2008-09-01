@@ -32,7 +32,7 @@ log_enabled = 1
 ;Log file path
 log_file_path = /tmp/astercrmDebug.log
 
-; where astercrm get asterisk call events
+; where astercrm get asterisk call events, set to curcdr when using astercc
 ; option: event, curcdr
 eventtype = event
 

@@ -173,7 +173,7 @@ v0.047 alpha
 2008-3-24		增加了eventtype参数
 2008-3-24		增加了表curcdr, mycdr
 2008-3-24		增加了表trunkinfo, 保存trunk信息
-2008-3-24		增加了显示从哪条外线打来的功能
+2008-3-24		增加了显示从哪条外线打来的功能(被叫号码信息显示)
 2008-5-4		更改了account表和accountgroup表名为astercrm_account和astercrm_accountgroup
 			为了避免和astercc使用中发生冲突
 			表campaign中增加了 `fileid`  `end-fileid` `phonenumber` 三个字段
@@ -206,7 +206,8 @@ TO-DO:
 删除asteriskcalls和remindercalls部分
 agent不应该有权限删除任何东西
 [fixed] 增加对dialedlist的导出和删除功能
-增加显示主叫号码的功能
+[added] 增加显示主叫号码的功能
+call hold
 [fixed] 修改后的获取振铃的方法需要和queue测试, 结果表明依靠dial事件获取振铃的方法不适合queue, 只能通过astercc解决这个问题
 
 [fixed] 部分系统当 allow_dropcall = 1 时 无法发起呼叫, 建议检查asterisk spool目录权限是否正确, 或者修改为 allow_dropcall = 0

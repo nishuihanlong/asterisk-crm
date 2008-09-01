@@ -2,14 +2,15 @@ new features in 0.047
 	
 	scheduler dialer
 	customer CDR
+	CDR(in astercc mode)
 	could work with astercc
         trunk information when dialin
 	list and listen to the monitor records(in astercc mode)
 	removing lot of customer records in one go
 	agent auto dial
 	speed dial list
-	cdr(in astercc mode)
 	recycle no answer number in dialed list(in astercc mode)
+
 0.047 新特性
 
 	定时拨号
