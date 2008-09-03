@@ -126,7 +126,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";//"Customer Name";
+	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";//"select all for delete";
 	$headers[] = $locate->Translate("customer_name")."<BR \>";//"Customer Name";
 	$headers[] = $locate->Translate("state")."<BR \>";//"Customer Name";
 	$headers[] = $locate->Translate("city")."<BR \>";//"Category";
@@ -226,7 +226,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		
  	}
 	
-	$html = $table->render('customerGrid');
+	$html = $table->render('delGrid');
 	return $html;
 	 
  	// End Editable Zone
@@ -285,11 +285,11 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 }
 
 function deleteByButton($f,$searchFormValue){
-//	print_r($searchFormValue);exit;
 	$objResponse = new xajaxResponse();
 	if(is_array($f['ckb'])){
 		foreach($f['ckb'] as $vaule){
-			$res = astercrm::deleteRecord($vaule,'customer');
+			$res_contact = astercrm::deleteRecords('customerid',$vaule,'contact');
+			$res_customer = astercrm::deleteRecord($vaule,'customer');
 		}
 	}
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组

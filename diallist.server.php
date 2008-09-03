@@ -107,6 +107,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	
 	// HTML table: Headers showed
 	$headers = array();
+	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";
 	$headers[] = $locate->Translate("number");
 	$headers[] = $locate->Translate("assign to");
 	$headers[] = $locate->Translate("Group Name");
@@ -116,11 +117,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width="2%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="23%"';
 	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
@@ -169,12 +171,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	//$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	
 	$table->exportFlag = '1';//对导出标记进行赋值
-	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['dialnumber'];
 		$rowc[] = $row['assign'];
 		$rowc[] = $row['groupname'];
@@ -187,7 +190,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	
  	// End Editable Zone
  	
- 	$html = $table->render();
+ 	$html = $table->render('delGrid');
  	
  	return $html;
 }
@@ -313,6 +316,22 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
+	return $objResponse->getXML();
+}
+
+function deleteByButton($f,$searchFormValue){
+	$objResponse = new xajaxResponse();
+	if(is_array($f['ckb'])){
+		foreach($f['ckb'] as $vaule){
+			$res_customer = astercrm::deleteRecord($vaule,'diallist');
+		}
+	}
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$numRows = $searchFormValue['numRows'];
+	$limit = $searchFormValue['limit'];     
+	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
+	$objResponse->addAssign('grid', "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

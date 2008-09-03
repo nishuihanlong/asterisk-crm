@@ -351,8 +351,7 @@ class ScrollTable{
 	*/
 
 	function addRowSearch($table,$fieldsFromSearch,$fieldsFromSearchShowAs, $withNewButton = 1){
-		global $local_grid;
-		$ind = 0;
+		global $local_grid;		$ind = 0;
 		$this->search = '
 			<table width="99%" border="0">
 			<tr>
@@ -444,7 +443,7 @@ class ScrollTable{
 				$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
 			}
 			if($withDelButton){
-				$this->search .= '&nbsp;&nbsp;<button id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'customerGrid\'),xajax.getFormValues(\'searchForm\'));}return false;">'.$local_grid->Translate("delete").'</button>';
+				$this->search .= '&nbsp;&nbsp;<button id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'delGrid\'),xajax.getFormValues(\'searchForm\'));}return false;">'.$local_grid->Translate("delete").'</button>';
 			}
 		}
 		
@@ -723,10 +722,12 @@ class ScrollTable{
 	*/
 
 	function render($arg=''){
-		if($arg=='static'){
-			$table =$this->top . $this->header . $this->rows . $this->footer;
-		}elseif($arg='customerGrid'){
-			$table = $this->search .'<form name="customerGrid" id="customerGrid" method="post">'. $this->top . $this->header . $this->rows .'</form>'. $this->footer;
+		if($arg!=''){
+			if($arg=='static'){
+				$table =$this->top . $this->header . $this->rows . $this->footer;
+			}elseif($arg=='delGrid'){
+				$table = $this->search .'<form name="delGrid" id="delGrid" method="post">'. $this->top . $this->header . $this->rows .'</form>'. $this->footer;
+			}
 		}else{
 			$table = $this->search . $this->top . $this->header . $this->rows . $this->footer;
 		}

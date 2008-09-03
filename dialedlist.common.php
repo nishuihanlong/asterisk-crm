@@ -66,6 +66,7 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("recycle");
+$xajax->registerFunction("deleteByButton");
 
 define(ROWSXPAGE, 50); // Number of rows show it per page.
 // Total number of rows show it when click on "Show All" button.
