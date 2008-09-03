@@ -5,9 +5,9 @@
 # --------------------                              --------------------   
 #
 # the absolute path to your asterccd shell, must included shell name, can not include options
-asterccdpath="/opt/asterisk/scripts/astercc/asterccd"
+asterccdpath="/opt/asterisk/scripts/eventsdaemon/asterccd"
 # the absolute path to your monitor log, can not include logfile name
-monitorlogpath="/opt/asterisk/scripts/astercc/"
+monitorlogpath="/opt/asterisk/scripts/eventsdaemon/"
 i=0
 #
 # --------------------                              --------------------

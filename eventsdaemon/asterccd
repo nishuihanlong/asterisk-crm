@@ -27,10 +27,10 @@
 # 
 #
 # the absolute path to your astercc binary,must included shell name, can not include options
-asterccpath="/opt/asterisk/scripts/astercc/astercc"
+asterccpath="/opt/asterisk/scripts/eventsdaemon/astercc"
 #
 # the absolute path to your asterrc monitor---asterccdaemon, must included shell name, can not be included options
-asterccdaemonpath="/opt/asterisk/scripts/astercc/asterccdaemon"
+asterccdaemonpath="/opt/asterisk/scripts/eventsdaemon/asterccdaemon"
 #
 # --------------------                              --------------------
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
