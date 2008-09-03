@@ -119,6 +119,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";//"select all for delete";
 	$headers[] = $locate->Translate("contact");//"Customer Name";
 	$headers[] = $locate->Translate("gender");//"Customer Name";
 	$headers[] = $locate->Translate("position");//"Category";
@@ -129,13 +130,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width="2%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="7%"';
 	$attribsHeader[] = 'width="8%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="23%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -185,11 +187,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
-	$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		$rowc['select_id'] = $row['id'];
 		$rowc[] = '<a href=? onclick="xajax_showContact(\''.$row['id'].'\');return false;">'.$row['contact'].'</a>';
 		$rowc[] = $row['gender'];
 		$rowc[] = $row['position'];
@@ -207,7 +210,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	
  	// End Editable Zone
  	
- 	$html = $table->render();
+ 	$html = $table->render('delGrid');
  	
  	return $html;
 }
@@ -263,6 +266,22 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
+	return $objResponse->getXML();
+}
+
+function deleteByButton($f,$searchFormValue){
+	$objResponse = new xajaxResponse();
+	if(is_array($f['ckb'])){
+		foreach($f['ckb'] as $vaule){
+			$res_customer = astercrm::deleteRecord($vaule,'contact');
+		}
+	}
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$numRows = $searchFormValue['numRows'];
+	$limit = $searchFormValue['limit'];     
+	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
+	$objResponse->addAssign('grid', "innerHTML", $html);
 	return $objResponse->getXML();
 }
 
