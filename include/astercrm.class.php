@@ -2130,11 +2130,11 @@ Class astercrm extends PEAR{
 
 			// HTML table: Headers showed
 			$headers = array();
-			$headers[] = $locate->Translate("Calldate");
-			$headers[] = $locate->Translate("Src");
-			$headers[] = $locate->Translate("Dst");
-			$headers[] = $locate->Translate("Duration");
-			$headers[] = $locate->Translate("Billsec");
+			$headers[] = $locate->Translate("Calldate").'<br>';
+			$headers[] = $locate->Translate("Src").'<br>';
+			$headers[] = $locate->Translate("Dst").'<br>';
+			$headers[] = $locate->Translate("Duration").'<br>';
+			$headers[] = $locate->Translate("Billsec").'<br>';
 
 			// HTML table: hearders attributes
 			$attribsHeader = array();
@@ -2220,15 +2220,15 @@ Class astercrm extends PEAR{
 
 			// HTML table: Headers showed
 			$headers = array();
-			$headers[] = $locate->Translate("Calldate");
-			$headers[] = $locate->Translate("Src");
-			$headers[] = $locate->Translate("Dst");
-			$headers[] = $locate->Translate("Duration");
-			$headers[] = $locate->Translate("Billsec");
-			$headers[] = $locate->Translate("Disposition");
-			$headers[] = $locate->Translate("credit");
-			$headers[] = $locate->Translate("destination");
-			$headers[] = $locate->Translate("memo");
+			$headers[] = $locate->Translate("Calldate").'<br>';
+			$headers[] = $locate->Translate("Src").'<br>';
+			$headers[] = $locate->Translate("Dst").'<br>';
+			$headers[] = $locate->Translate("Duration").'<br>';
+			$headers[] = $locate->Translate("Billsec").'<br>';
+			$headers[] = $locate->Translate("Disposition").'<br>';
+			$headers[] = $locate->Translate("credit").'<br>';
+			$headers[] = $locate->Translate("destination").'<br>';
+			$headers[] = $locate->Translate("memo").'<br>';
 
 			// HTML table: hearders attributes
 			$attribsHeader = array();
