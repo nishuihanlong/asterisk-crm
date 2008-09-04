@@ -13,4 +13,5 @@ $inexten = '回拨分机';
 $group = '分组名称';
 $dialed = '已拨列表';
 $dial_list = '拨号列表';
+$obligatory_fields = '* 为必填项';
 ?>

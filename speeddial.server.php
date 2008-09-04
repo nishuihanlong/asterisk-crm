@@ -237,6 +237,10 @@ function add(){
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['number']) == '' ){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 
 /*	if (!ereg("[0-9]+",$f['groupid'])){
 		$objResponse->addAlert($locate->Translate("digit_only"));
@@ -266,6 +270,10 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['number']) == '' ){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 	$respOk = Customer::updateSpeedDialRecord($f);
 
 	if($respOk){

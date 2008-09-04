@@ -228,6 +228,10 @@ function add(){
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['groupname']) == '' || trim($f['groupid']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 	if (!ereg("[0-9]+",$f['groupid'])){
 		$objResponse->addAlert($locate->Translate("digit_only"));
 		return $objResponse->getXML();
@@ -257,6 +261,15 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['groupname']) == '' || trim($f['groupid']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
+	if (!ereg("[0-9]+",$f['groupid'])){
+		$objResponse->addAlert($locate->Translate("digit_only"));
+		return $objResponse->getXML();
+	}
 
 	$respOk = Customer::updateAccountgroupRecord($f);
 

@@ -6,5 +6,5 @@ $group_name ='分组名称';
 $add_speeddial_number = '添加新记录';
 $description = '描述';
 $edit_speeddial =  '编辑';
-$obligatory_fields = '必填项 *';
+$obligatory_fields = '* 为必填项';
 ?>

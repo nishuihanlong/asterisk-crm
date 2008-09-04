@@ -244,6 +244,11 @@ function save($f){
 		return $objResponse->getXML();
 	}
 */
+	if(trim($f['trunkname']) == '' || trim($f['trunkchannel']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
 	$respOk = Customer::insertNewTrunkinfo($f); // add a new trunkinfo
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -267,6 +272,10 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['trunkname']) == '' || trim($f['trunkchannel']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 
 	$respOk = Customer::updateTrunkinfoRecord($f);
 

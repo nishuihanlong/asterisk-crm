@@ -167,7 +167,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();

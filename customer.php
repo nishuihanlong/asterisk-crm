@@ -58,6 +58,15 @@ require_once('customer.common.php');
 				}
 			}			
 		}
+
+		function setCampaign(){
+			groupid = document.getElementById("groupid").value;
+			//if (groupid == '')
+			//	return;
+			//清空campaignid
+			document.getElementById("campaignid").options.length=0
+			xajax_setCampaign(groupid);
+		}
 		//-->
 		</SCRIPT>
 

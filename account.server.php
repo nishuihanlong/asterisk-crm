@@ -247,6 +247,10 @@ function save($f){
 	$objResponse = new xajaxResponse();
 	$username = $f['username'];
 	$userid = astercrm::checkValues("astercrm_account","username",$username);
+	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 	if($userid != '' ){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
@@ -297,6 +301,11 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+
+	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		// check if the assign number belong to this group

@@ -173,7 +173,7 @@ class Customer extends astercrm
 				';
 
 		$html .= '<tr><td colspan=2>
-					'. $locate->Translate("survey_title") .'
+					'. $locate->Translate("survey_title") .'*
 				</td></tr>';
 
 		if ($surveyid == 0){
@@ -280,6 +280,7 @@ if ($_SESSION['curuser']['usertype'] == 'admin'){
 		$html .= '
 				</table>
 				</form>
+				'.$locate->Translate("obligatory_fields").'
 				';
 		return $html;
 	}

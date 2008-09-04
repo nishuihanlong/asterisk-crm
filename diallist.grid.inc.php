@@ -189,13 +189,13 @@ class Customer extends astercrm
 				
 				<table border="1" width="100%" class="adminlist">
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("number").'</td>
+						<td nowrap align="left">'.$locate->Translate("number").'*</td>
 						<td align="left">
 							<input type="text" id="dialnumber" name="dialnumber" size="35">
 						</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'*</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35"">
 						</td>
@@ -209,12 +209,12 @@ class Customer extends astercrm
 					</tr>';
 		$html .= '
 					<tr>
-						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'*</td>
 						<td>'.$groupoptions.'</td>
 					</tr>';
 		$html .= '
 					<tr>
-						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
+						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'*</td>
 						<td><SELECT id="campaignid" name="campaignid"></SELECT></td>
 					</tr>';
 		$html .= '
@@ -223,7 +223,8 @@ class Customer extends astercrm
 					</tr>
 				<table>
 				</form>
-				';
+				'.$locate->Translate("obligatory_fields").'
+			';
 		return $html;
 	}
 
@@ -251,14 +252,14 @@ class Customer extends astercrm
 				
 				<table border="1" width="100%" class="adminlist">
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("number").'</td>
+						<td nowrap align="left">'.$locate->Translate("number").'*</td>
 						<td align="left">
 							<input type="text" id="dialnumber" name="dialnumber" size="35"  value="'.$diallist['dialnumber'].'">
 							<input type="hidden" id="id" name="id" value="'.$diallist['id'].'">
 						</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'*</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35" value="'.$diallist['assign'].'">
 						</td>

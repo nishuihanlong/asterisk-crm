@@ -81,8 +81,8 @@ however, multiple servers enhance performance.
 	chmod +x /opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl
 	chmod +x /opt/asterisk/scripts/eventsdaemon/eventdog.sh
 	chmod +x /opt/asterisk/scripts/eventsdaemon/astercc
-	chmod +x /opt/asterisk/scripts/astercc/asterccd
-	chmod +x /opt/asterisk/scripts/astercc/asterccdaemon
+	chmod +x /opt/asterisk/scripts/eventsdaemon/asterccd
+	chmod +x /opt/asterisk/scripts/eventsdaemon/asterccdaemon
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
@@ -163,7 +163,7 @@ however, multiple servers enhance performance.
 	or else, please check your database/AMI configration in astercc.conf
 
 	Start up astercc (default settings):
-		modify astercrm.conf set eventtype to curcdr
+		modify /var/www/html/astercrm/astercrm.conf.php set eventtype to curcdr
 		/opt/asterisk/scripts/eventsdaemon/astercc -d
 
 	Start up astercc daemons when system startup:
@@ -171,7 +171,7 @@ however, multiple servers enhance performance.
 	If you want astercc daemons to start automatically when you boot your
 	machine, you need to :
 
-	cp /opt/asterisk/scripts/astercc/asterccd /etc/rc.d/init.d
+	cp /opt/asterisk/scripts/eventsdaemon/asterccd /etc/rc.d/init.d
 	chmod 755 /etc/rc.d/init.d/asterccd
 	chkconfig --add asterccd
 	

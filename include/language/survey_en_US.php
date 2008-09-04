@@ -10,4 +10,5 @@ $survey_updated = "A survey has been updated";
 $option_updated = "An option has been updated";
 $survey_note	= "Survey Note";
 $survey_result	= "Survey Result";
+$obligatory_fields = '* Obligatory fields';
 ?>

@@ -250,6 +250,11 @@ function save($f){
 		return $objResponse->getXML();
 	}
 */
+	if(trim($f['campaignname']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
 	$respOk = Customer::insertNewCampaign($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -273,6 +278,10 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['campaignname']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 
 	$respOk = Customer::updateCampaignRecord($f);
 

@@ -7,5 +7,5 @@ $create_time = '创建时间';
 $continue = '继续';
 $add_trunk = '添加线路信息';
 $edit_trunk = '编辑线路信息';
-$obligatory_fields = '必填项 *';
+$obligatory_fields = '* 为必填项';
 ?>

@@ -227,6 +227,10 @@ function edit($id){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['dialnumber']) == '' || trim($f['assign']) == '' || trim($f['groupid']) == '' || trim($f['campaignid']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 
 	$respOk = Customer::updateDiallistRecord($f);
 
@@ -255,6 +259,10 @@ function setCampaign($groupid){
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if(trim($f['dialnumber']) == '' || trim($f['assign']) == '' || trim($f['groupid']) == '' || trim($f['campaignid']) == ''){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
 
 	if($f['campaignid'] == ''){
 		$objResponse->addAlert($locate->Translate("Must select a campaign"));

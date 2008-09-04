@@ -209,7 +209,7 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Campaign Name").'</td>
+					<td nowrap align="left">'.$locate->Translate("Campaign Name").'*</td>
 					<td align="left"><input type="text" id="campaignname" name="campaignname" size="30" maxlength="60"></td>
 				</tr>
 				<tr>
@@ -286,7 +286,7 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Campaign Name").'</td>
+					<td nowrap align="left">'.$locate->Translate("Campaign Name").'*</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $campaign['id'].'"><input type="text" id="campaignname" name="campaignname" size="30" maxlength="60" value="'.$campaign['campaignname'].'"></td>
 				</tr>
 				<tr>

@@ -192,15 +192,15 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("username").'</td>
+					<td nowrap align="left">'.$locate->Translate("username").'*</td>
 					<td align="left"><input type="text" id="username" name="username" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("password").'</td>
+					<td nowrap align="left">'.$locate->Translate("password").'*</td>
 					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("extension").'</td>
+					<td nowrap align="left">'.$locate->Translate("extension").'*</td>
 					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
@@ -212,7 +212,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="channel" name="channel" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
+					<td nowrap align="left">'.$locate->Translate("usertype").'*</td>
 					<td align="left">
 					<select id="usertype" name="usertype">
 						<option value=""></option>
@@ -289,15 +289,15 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("username").'</td>
+					<td nowrap align="left">'.$locate->Translate("username").'*</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $account['id'].'"><input type="text" id="username" name="username" size="25" maxlength="30" value="'.$account['username'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("password").'</td>
+					<td nowrap align="left">'.$locate->Translate("password").'*</td>
 					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="30" value="'.$account['password'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("extension").'</td>
+					<td nowrap align="left">'.$locate->Translate("extension").'*</td>
 					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="30" value="'.$account['extension'].'"></td>
 				</tr>
 				<tr>
@@ -309,7 +309,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="channel" name="channel" size="25" maxlength="30" value="'.$account['channel'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
+					<td nowrap align="left">'.$locate->Translate("usertype").'*</td>
 					<td align="left">
 					<select id="usertype" name="usertype">
 						<option value="" ';
