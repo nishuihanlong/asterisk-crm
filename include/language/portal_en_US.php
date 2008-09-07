@@ -51,4 +51,6 @@ $add_remind = "add new remind";
 $show_all_remind = "show remind";
 $no_read = "no remind";
 $readed = "reminded";
+$exten_in_use = "Your extension is in use, could not to dial";
+$google_map_no_key = "google map key is null, please apply it";
 ?>

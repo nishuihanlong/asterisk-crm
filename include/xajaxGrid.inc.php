@@ -385,7 +385,7 @@ class ScrollTable{
 	* customer addRowSearth
 	*/
     //增加搜索选项
-	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=0){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=false){
 		global $local_grid;
 		$ind = 0;
 		$ind_selected = 0;
@@ -397,9 +397,7 @@ class ScrollTable{
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
 			<input type="hidden" name="cdrtype" id="cdrtype" value="'.$this->cdrtype.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
-			<tr>
-			<td></td>
-			</tr>
+			
 			<tr>
 				<td align="left" width="10%">';
 		}elseif ($table == 'diallist' && $this->userexten != ''){
@@ -409,10 +407,7 @@ class ScrollTable{
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<input type="hidden" name="userexten" id="userexten" value="'.$this->userexten.'"/>
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
-			<table width="99%" border="0" style="line-height:30px;">
-			<tr>
-			<td></td>
-			</tr>
+			<table width="99%" border="0" style="line-height:30px;">			
 			<tr>
 				<td align="left" width="10%">';
 			if($withNewButton){
@@ -425,9 +420,6 @@ class ScrollTable{
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
-			<tr>
-			<td></td>
-			</tr>
 			<tr>
 				<td align="left" width="10%">';
 		}else {

@@ -177,7 +177,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,'','','monitorrecord');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table

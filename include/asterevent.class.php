@@ -105,7 +105,6 @@ class asterEvent extends PEAR
 			}else{
 				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}
-
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {

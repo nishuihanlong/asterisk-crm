@@ -273,6 +273,7 @@ function deleteByButton($f,$searchFormValue){
 	$objResponse = new xajaxResponse();
 	if(is_array($f['ckb'])){
 		foreach($f['ckb'] as $vaule){
+			$res_note = astercrm::deleteRecords('contactid',$vaule,'note');
 			$res_customer = astercrm::deleteRecord($vaule,'contact');
 		}
 	}

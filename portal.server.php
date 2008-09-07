@@ -262,7 +262,7 @@ function transfer($aFormValues){
 		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
 	else
 		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
-	$objResponse->addClear("divMsg", "innerHTML");
+	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse;
 }
 
@@ -784,10 +784,22 @@ function workoffcheck($f=''){
 # $phoneNum	phone to call
 # $first	which phone will ring first, caller or callee
 
-function dial($phoneNum,$first = ''){
-	global $config;
-	$myAsterisk = new Asterisk();
+function dial($phoneNum,$first = '',$myValue){
+	global $config,$locate;
 	$objResponse = new xajaxResponse();
+	if(trim($myValue['curid']) > 0) $curid = trim($myValue['curid']) - 1;
+	else $curid = trim($myValue['curid']);
+	if ($_SESSION['curuser']['channel'] == '')
+		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
+	else
+		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
+
+	if($call['status'] != '') {
+		$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+		$objResponse->addScript("alert('".$locate->Translate("Exten in use")."')");
+		return $objResponse->getXML();
+	}
+	$myAsterisk = new Asterisk();	
 	if ($first == ''){
 		$first = $config['system']['firstring'];
 	}
@@ -837,7 +849,7 @@ function dial($phoneNum,$first = ''){
 		}
 	}
 	//$myAsterisk->disconnect();
-	$objResponse->addClear("divMsg", "innerHTML");
+	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse->getXML();
 }
 
@@ -892,7 +904,7 @@ function invite($src,$dest,$campaignid=''){
 		$myAsterisk->sendCall($strChannel,$dest,$outcontext,1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
 	}
 	
-	$objResponse->addClear("divMsg", "innerHTML");
+	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse->getXML();
 }
 
@@ -917,7 +929,7 @@ function hangup($channel){
 	}
 	$myAsterisk->Hangup($channel);
 	//$objResponse->addAssign("btnHangup", "disabled", true);
-	$objResponse->addClear("divMsg", "innerHTML");
+	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse;
 }
 
@@ -984,8 +996,13 @@ function getContact($callerid){
 }
 
 function displayMap($address){
-	global $config;
+	global $config,$locate;
 	$objResponse = new xajaxResponse();
+	if($config['google-map']['key'] == ''){
+		$objResponse->addAssign("divMap","style.visibility","hidden");
+		$objResponse->addScript("alert('".$locate->Translate("google_map_no_key")."')");	
+		return $objResponse;
+	}
 	if ($address == '')
 		return $objResponse;
 	$map = new PhoogleMap();

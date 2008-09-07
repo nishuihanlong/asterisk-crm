@@ -107,17 +107,20 @@ require_once('config.php');
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
 		function dial(phonenum,first){
+			myFormValue = xajax.getFormValues("myForm");
 			dialnum = phonenum;
 			firststr = first;
 			if (document.getElementById("uniqueid").value != '')
 				return false;
+			xajax.$("divMsg").style.visibility = 'visible';
 			xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+phonenum;
-			setTimeout("xajax_dial(dialnum,firststr)",1000);
+			setTimeout("xajax_dial(dialnum,firststr,myFormValue)",1000);
 		}
 
 		function hangup(){
 			//alert (xajax.$('callerChannel').value);
 			//alert (xajax.$('calleeChannel').value);
+			xajax.$("divMsg").style.visibility = 'visible';
 			xajax.$("divMsg").innerHTML = "Hangup";
 			callerChan = xajax.$('callerChannel').value;
 			calleeChan = xajax.$('calleeChannel').value;
@@ -187,8 +190,12 @@ require_once('config.php');
 			if (src == ''){
 				xajax.$('iptSrcNumber').value = xajax.$('extension').value;
 				src = xajax.$('extension').value;
+				xajax.$("divMsg").style.visibility = 'visible';
 				xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
-			}else xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
+			}else {
+				xajax.$("divMsg").style.visibility = 'visible';
+				xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
+			}
 
 			if (dest == ''){
 				xajax.$('iptDestNumber').value = xajax.$('extension').value;
@@ -199,6 +206,7 @@ require_once('config.php');
 		}
 		
 		function transfer(){
+			xajax.$("divMsg").style.visibility = 'visible';
 			xajax.$("divMsg").innerHTML = xajax.$('trantip').value+" "+xajax.$("sltExten").value;
 			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",1000);
 		}
@@ -325,8 +333,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
 			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
 		</div>
-		<div id="divMsg" name="divMsg" align="center" style="font-weight:bold;
-"></div>
+		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>
 				<td style="padding: 0px;">

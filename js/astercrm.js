@@ -157,6 +157,6 @@ function hideObj(objname) {
 function showObj(objname) {
 	var obj = document.getElementsByName(objname);
 	for(i=0;i<obj.length;i++) {
-		obj[i].style.display="block";
+		obj[i].style.display="";
 	}
 }

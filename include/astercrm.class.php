@@ -1635,11 +1635,11 @@ Class astercrm extends PEAR{
 				<!--**********************-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['mobile'].'\');return false;">'.$customer['mobile'].'</a></td>
+					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['mobile'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['fax'].'\');return false;">'.$customer['fax'].'</a></td>
+					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1656,7 +1656,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['phone'].'\');return false;">'.$customer['phone'].'</a></td>
+					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['phone'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
@@ -1862,13 +1862,13 @@ Class astercrm extends PEAR{
 			$html .='
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a></td>
+						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone'].'</a></td>
 					</tr>';
 		else
 			$html .='
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\');return false;">'.$contact['phone'].'</a> ext: '.$contact['ext'].'</td>
+						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone'].'</a> ext: '.$contact['ext'].'</td>
 					</tr>';
 
 		if ($contact['phone1'] != '' || $contact['ext1'] != '')
@@ -1876,13 +1876,13 @@ Class astercrm extends PEAR{
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a></td>
+							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone1'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\');return false;">'.$contact['phone1'].'</a> ext: '.$contact['ext1'].'</td>
+							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone1'].'</a> ext: '.$contact['ext1'].'</td>
 						</tr>';
 		
 		if ($contact['phone2'] != '' || $contact['ext2'] != '')
@@ -1890,19 +1890,19 @@ Class astercrm extends PEAR{
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\');return false;">'.$contact['phone2'].'</a></td>
+							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone2'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\');return false;">'.$contact['phone2'].'</a> ext: '.$contact['ext2'].'</td>
+							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone2'].'</a> ext: '.$contact['ext2'].'</td>
 						</tr>';
 
 		$html .='
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['mobile'].'\');return false;">'.$contact['mobile'].'</a></td>
+					<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['mobile'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
@@ -2307,7 +2307,7 @@ Class astercrm extends PEAR{
 			$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 			$table->setAttribsCols($attribsCols);
-			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
 
 			while ($arreglo->fetchInto($row)) {
 			// Change here by the name of fields of its database table
@@ -2677,7 +2677,7 @@ Class astercrm extends PEAR{
 		$table = new ScrollTable(11,$start,$limit,$filter,$numRows,$content,$order,$customerid,'',$userexten);
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=1,$delete=1,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,"1",$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,"1");
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -3002,7 +3002,7 @@ Class astercrm extends PEAR{
 		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,'','','monitorrecord');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
