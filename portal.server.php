@@ -154,10 +154,10 @@ function init(){
 	$objResponse->addAssign("dialtip","value", $locate->Translate("Dialing to") );
 	$objResponse->addAssign("trantip","value", $locate->Translate("Transfering to") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
-	$objResponse->addAssign("spanMonitorSetting","innerText", $locate->Translate("always_record_when_connected") );
-	$objResponse->addAssign("spanMonitor","innerText", $locate->Translate("monitor") );
+	$objResponse->addAssign("spanMonitorSetting","innerHTML", $locate->Translate("always_record_when_connected") );
+	$objResponse->addAssign("spanMonitor","innerHTML", $locate->Translate("monitor") );
 
-	$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
+	$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 	if($_SESSION['curuser']['WorkStatus'] == ''){
@@ -187,15 +187,18 @@ function init(){
 		$objResponse->addScript("addOption('sltExten','$extension','$extension');");
 	}
 	$speeddial = & Customer::getAllSpeedDialRecords();
-	$speednumber[] = $_SESSION['curuser']['extension'];
+	$speednumber['0']['number'] = $_SESSION['curuser']['extension'];
+	$speednumber['0']['description'] = $_SESSION['curuser']['username'];
+	$n = 1;
 	while ($speeddial->fetchInto($row)) {
 	// Change here by the name of fields of its database table
-		$speednumber[] = $row['number'];
+		$speednumber[$n]['description'] = $row['description'];
+		$speednumber[$n]['number'] = $row['number'];
+		$n++;
 	}
-//	print_r($speednumber);exit;
-	foreach ($speednumber as $destnumber){
-		$extension = trim($extension);
-		$objResponse->addScript("addOption('iptDestNumber','$destnumber','$destnumber');");
+	$n = count($speednumber);
+	for ($i=0;$i<$n;++$i){
+		$objResponse->addScript("addOption('iptDestNumber','".$speednumber[$i]['number']."','".$speednumber[$i]['description']."-".$speednumber[$i]['number']."');");
 	}
 	$panelHTML = '<a href=? onclick="xajax_showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a>&nbsp;&nbsp;';
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
@@ -289,12 +292,13 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
 			$objResponse->addAssign("btnMonitor","disabled", false );
 			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
-			if ($myValue['chkMonitor'] == 'on') 
+			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'idle') 
+				$objResponse->addScript("monitor();");			
+			$objResponse->addAssign("btnHangup","disabled", false );
+			$objResponse->addAssign("btnTransfer","disabled", false );
+		} elseif ($call['status'] =='hangup'){
+			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'recording') 
 				$objResponse->addScript("monitor();");
-			
-				$objResponse->addAssign("btnHangup","disabled", false );
-				$objResponse->addAssign("btnTransfer","disabled", false );
-		} elseif ($call['status'] =='hangup'){			
 			$status	= 'hang up';
 			$info	= "Hang up call from " . $myValue['callerid'];
 //			$objResponse->addScript('document.title=\'asterCrm\';');
@@ -352,14 +356,14 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 		}
 		// 录音信息保存到数据库
 		astercrm::insertNewMonitor($callerid,$filename,$uniqueid);
-		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("recording") );
+		$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("recording") );
 		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
 
 		$objResponse->addAssign("btnMonitor","value", $locate->Translate("stop_record") );
 	}else{
 		$myAsterisk->StopMontor($channel);
 
-		$objResponse->addAssign("spanMonitorStatus","innerText", $locate->Translate("idle") );
+		$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
 		$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 
 		$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );

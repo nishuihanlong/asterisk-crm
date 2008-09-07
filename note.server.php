@@ -107,6 +107,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\">";//"select all for delete";
 	$headers[] = $locate->Translate("note");
 	$headers[] = $locate->Translate("priority");
 	$headers[] = $locate->Translate("contact");
@@ -116,11 +117,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="8%"';
+	$attribsHeader[] = 'width="19%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="22%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
 //	$attribsHeader[] = 'width="5%"';
 
@@ -167,11 +169,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
+	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['note'];
 		$rowc[] = $row['priority'];
 		$rowc[] = $row['contact'];
@@ -184,7 +187,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	
  	// End Editable Zone
  	
- 	$html = $table->render();
+ 	$html = $table->render('delGrid');
  	
  	return $html;
 }
@@ -222,7 +225,21 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	return $objResponse->getXML();
 }
 
-
+function deleteByButton($f,$searchFormValue){
+	$objResponse = new xajaxResponse();
+	if(is_array($f['ckb'])){
+		foreach($f['ckb'] as $vaule){
+			$res = astercrm::deleteRecord($vaule,'note');
+		}
+	}
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$numRows = $searchFormValue['numRows'];
+	$limit = $searchFormValue['limit'];     
+	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
+	$objResponse->addAssign('grid', "innerHTML", $html);
+	return $objResponse->getXML();
+}
 
 $xajax->processRequests();
 

@@ -11,4 +11,5 @@ $option_updated = "更新了一个选项";
 $survey_note	= "问卷备注";
 $survey_result	= "问卷结果";
 $obligatory_fields = '* 为必填项';
+$title = '标题';
 ?>

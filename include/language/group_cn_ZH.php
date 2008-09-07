@@ -12,9 +12,10 @@ $adding_group = "添加组";
 $edit_group = "编辑组";
 $group_detail		= "组信息";
 $groupname = "组名";
-$groupid = "组id";
-$pdcontext = "pdcontext";
-$pdextensions = "pdextensions";
+$groupid = "组号";
+$pdcontext = "预拨号context";
+$pdextensions = "预拨号热线";
 $digit_only = "组id只允许添数字";
 $display_all_member = "显示组员";
+$agent_interval = "成员拨号间隔"
 ?>

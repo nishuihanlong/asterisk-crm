@@ -130,8 +130,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="2%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="4%"';
+	$attribsHeader[] = 'width="18%"';
 	$attribsHeader[] = 'width="7%"';
 	$attribsHeader[] = 'width="8%"';
 	$attribsHeader[] = 'width="10%"';

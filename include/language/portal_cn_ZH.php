@@ -83,4 +83,6 @@ $transfering_to = '转接到';
 $recentcdr = '最近呼叫';
 $exten_in_use = "你的分机正在通话中，不能再次拨号";
 $google_map_no_key = "google map key 为空，请申请并设置它";
+$start_work = "开始拨号";
+$stop_work = "停止拨号";
 ?>

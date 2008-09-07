@@ -55,6 +55,14 @@ require_once('note.common.php');
 		function exportCustomer(){
 			xajax_export();
 		}
+		function ckbAllOnClick(objCkb){
+			var ockb = document.getElementsByName('ckb[]');
+			for(i=0;i<ockb.length;i++) {				
+				if (ockb[i].checked != objCkb.checked){
+					ockb[i].checked = objCkb.checked;
+				}
+			}			
+		}
 		//-->
 		</SCRIPT>
 

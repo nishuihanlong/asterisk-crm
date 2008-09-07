@@ -171,6 +171,7 @@ class ScrollTable{
 	function setHeader($class,$headers,$attribs,$events,$edit=true,$delete=true,$detail=true){
 
 		global $local_grid;
+		if($_SESSION['curuser']['usertype'] == 'agent') $delete = false;
 		$ind = 0;
 		$this->header = '
 		<tr>';
@@ -244,8 +245,9 @@ class ScrollTable{
 
 	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$privilege=null){
 		global $local_grid;
+		if($_SESSION['curuser']['usertype'] == 'agent') $delete = false;
 		$nameRow = $divName."Row".$arr[0];
-	   $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
+	    $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
 		$ind = 0;
 
 	   foreach ($arr as $key => $value) {

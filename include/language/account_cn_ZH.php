@@ -23,4 +23,5 @@ $account_code		= "账户标识";	// added 2007/11/12 by solo
 $username_repeat = "用户名重复";
 $group_name = "分组名称";
 $group_manage = "分组管理";
+$dial_interval = "拨号间隔";
 ?>

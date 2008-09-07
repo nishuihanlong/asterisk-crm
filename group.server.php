@@ -134,10 +134,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("groupname")."<BR \>";
-	$headers[] = $locate->Translate("groupid")."<BR \>";
-	$headers[] = $locate->Translate("pdcontext")."<BR \>";
-	$headers[] = $locate->Translate("pdextensions")."<BR \>";
+	$headers[] = $locate->Translate("groupname");
+	$headers[] = $locate->Translate("groupid");
+	$headers[] = $locate->Translate("pdcontext");
+	$headers[] = $locate->Translate("pdextensions");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();

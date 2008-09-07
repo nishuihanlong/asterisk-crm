@@ -110,7 +110,9 @@ class Customer extends astercrm
 											contact.contact AS contact,
 											customer.category AS category,
 											note.cretime AS cretime,
-											note.creby AS creby 
+											note.creby AS creby,
+											note.customerid AS customerid,
+											note.contactid AS contactid
 											FROM note 
 											LEFT JOIN customer ON customer.id = note.customerid 
 											LEFT JOIN contact ON contact.id = note.contactid
@@ -128,7 +130,9 @@ class Customer extends astercrm
 											contact.contact AS contact,
 											customer.category AS category,
 											note.cretime AS cretime,
-											note.creby AS creby 
+											note.creby AS creby ,
+											note.customerid AS customerid,
+											note.contactid AS contactid
 											FROM note 
 											LEFT JOIN customer ON customer.id = note.customerid 
 											LEFT JOIN contact ON contact.id = note.contactid"
@@ -255,7 +259,7 @@ class Customer extends astercrm
 	function &getAllSpeedDialRecords(){
 		global $db;
 
-		$sql = "SELECT number FROM speeddial ";
+		$sql = "SELECT number,description FROM speeddial ";
 
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
