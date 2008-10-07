@@ -1,3 +1,4 @@
+<?
 [database]
 ;
 ; Database connection parameter
@@ -144,3 +145,4 @@ detail_level = all
 [google-map]
 
 key = 
+?>
