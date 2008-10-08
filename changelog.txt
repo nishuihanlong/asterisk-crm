@@ -202,9 +202,13 @@ v0.047 beta
 			dialedlist表中增加了字段`dialedtime`用于回收未到最大拨号次数的未接能号码
 			campaign表中增加了字段`maxtrytime`用于指定diallist号码最大拨号次数
 			增加了回收dialedlist中未到最大拨号次数的未接能号码
+
+
 TO-DO:
 删除asteriskcalls和remindercalls部分
+xajaxGrid无法搜索带单引号的字符串
 agent不应该有权限删除任何东西
+
 [fixed] 增加对dialedlist的导出和删除功能
 [added] 增加显示主叫号码的功能
 call hold
