@@ -250,7 +250,8 @@ require_once('config.php');
 		}
 
 		function autoDial(interval){
-			if(interval == '') return false;
+			if(interval == '') interval = 30;
+			if(interval == 0 ) interval = 30;
 			xajax.$("divWork").innerHTML = interval;
 			intervalID = setInterval("showsec(xajax.$('divWork').innerHTML)",1000);
 		}

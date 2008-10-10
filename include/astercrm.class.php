@@ -300,7 +300,7 @@ Class astercrm extends PEAR{
 	function insertNewNote($f,$customerid,$contactid){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		//print_r($f);
+		print_r($f);exit;
 		$query= "INSERT INTO note SET "
 				."note='".$f['note']."', "
 				."attitude='".$f['attitude']."', "
@@ -2814,7 +2814,8 @@ Class astercrm extends PEAR{
 						$groupoptions .= '<option value="'.$row['groupid'].'"';
 						$groupoptions .='>'.$row['groupname'].'</option>';
 				}				
-				$groupoptions .= '</select>';				
+				$groupoptions .= '</select>';	
+				$assignoptions = '<input type="text" id="assign" name="assign" size="35"">';
 		}else{
 				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';				
 		}

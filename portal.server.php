@@ -885,8 +885,10 @@ function invite($src,$dest,$campaignid=''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 	if($campaignid != ''){
 		$row_campaign = astercrm::getRecordByID($campaignid,"campaign");
-		$incontext = $row_campaign['incontext'];
-		$outcontext = $row_campaign['outcontext'];
+		if(trim($row_campaign['incontext']) != '' ) $incontext = $row_campaign['incontext'];
+		else $incontext = $config['system']['incontext'];
+		if(trim($row_campaign['outcontext']) != '' ) $outcontext = $row_campaign['outcontext'];
+		else $outcontext = $config['system']['outcontext'];
 		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
 	}else{
 		$incontext = $config['system']['incontext'];

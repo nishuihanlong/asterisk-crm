@@ -205,6 +205,7 @@ v0.047 beta
 
 
 TO-DO:
+portal中调用checkNewCall函数时,不再判断并传递['curuser']['channel'],只传递['curuser']['extension']###传递channel无法做弹屏判断
 删除asteriskcalls和remindercalls部分
 xajaxGrid无法搜索带单引号的字符串
 agent不应该有权限删除任何东西
