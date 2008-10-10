@@ -54,7 +54,9 @@ class Asterisk extends AGI_AsteriskManager{
                        $exten=NULL, $context=NULL, $priority=NULL,
                        $application=NULL, $data=NULL,
                        $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL){
-		
+	  global $config;
+	  if($context == '' ) $context = $config['system']['outcontext'];
+
       $req = "Action: Originate\r\n";
       $parameters = array('Channel'=>$channel);
 
