@@ -142,13 +142,14 @@ class ScrollTable{
 		$this->customerid = $customerid;
 		$this->cdrtype = $cdrtype;
 		$this->userexten = $userexten;
+		$this->table = $table; 
 
 		if ($cdrtype != '') {
-			$this->setSpecFooter('mycdr');
+			$this->setSpecFooter('mycdr'); //用于agent页面中customer信息页中的mycdr页脚
 		}elseif ($userexten != '') {
-			$this->setSpecFooter('diallist');
+			$this->setSpecFooter('diallist');//用于agent页面中customer信息页中的diallist页脚
 		}elseif ($table == 'monitorrecord' && $customerid!='') {
-			$this->setSpecFooter('monitorrecord');
+			$this->setSpecFooter('monitorrecord');//用于agent页面中customer信息页中的monitorrecord页脚
 		}else{
 			$this->setFooter();
 		}
@@ -171,7 +172,7 @@ class ScrollTable{
 	function setHeader($class,$headers,$attribs,$events,$edit=true,$delete=true,$detail=true){
 
 		global $local_grid;
-		if($_SESSION['curuser']['usertype'] == 'agent') $delete = false;
+		if($_SESSION['curuser']['usertype'] == 'agent' && $this->table != 'diallist') $delete = false; //禁止agent的删除功能
 		$ind = 0;
 		$this->header = '
 		<tr>';
@@ -279,7 +280,7 @@ class ScrollTable{
 							<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
 						</td>';
 				}
-				if($delete){
+				if('1'){
 					$row .= '
 							<td align="center" width="5%" nowrap>
 								<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  xajax_searchDiallistFormSubmit(xajax.getFormValues(\'searchDiallistForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
@@ -387,9 +388,11 @@ class ScrollTable{
 	* customer addRowSearth
 	*/
     //增加搜索选项
-	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=false){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=false,$typeFromSearch = null,$typeFromSearchShowAs = null,$stype = null){
 		global $local_grid;
 		$ind = 0;
+		$ind_type = 0;
+		$ind_typeselected = 0;
 		$ind_selected = 0;
 		if ($table == 'mycdr' && $this->customerid !=''){
 			$this->search = '
@@ -423,7 +426,7 @@ class ScrollTable{
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
 			<tr>
-				<td align="left" width="10%">';
+				<td align="left">';
 		}else {
 			$this->search = '
 				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,'.$this->numRowsToShow.');">
@@ -432,7 +435,7 @@ class ScrollTable{
 				<table width="99%" border="0" style="line-height:30px;">
 
 				<tr>
-					<td align="left" width="15%">';
+					<td align="left" >';
 			if($withNewButton){
 				$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
 			}
@@ -446,14 +449,13 @@ class ScrollTable{
 				<td> '.$local_grid->Translate("table").': ';
 		$this->search .= $table ;
 		$this->search .= '</td>
-				<td align="right" width="50%">
+				<td align="right" >
 					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
 		if($filter != null){
 			for($j=0;$j<count($filter);$j++){
 				if(trim($content[$j]) != '' && trim($filter[$j]) != ''){
-					$this->search .= ''.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/>
-							&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-								<select name="searchField[]" id="searchField[]">
+					$this->search .= ''.$local_grid->Translate(search).'&nbsp;'.$local_grid->Translate("by").' : &nbsp;
+					<select name="searchField[]" id="searchField[]">
 									<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
 								foreach ($fieldsFromSearchShowAs as $value_arr) {
 									if($ind_selected > count($fieldsFromSearch)-1)
@@ -467,20 +469,51 @@ class ScrollTable{
 									$this->search .=  '>'.$value_arr.'</option>';
 									$ind_selected++;
 								}
-					$this->search .= '</select><br />';
+					$this->search .= '</select>&nbsp;&nbsp;';
+					
+					if(is_array($typeFromSearchShowAs) ){
+						$this->search .='<select name="searchType[]" id="searchType[]">';
+							//<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
+							foreach ($typeFromSearchShowAs as $value_arr) {
+									if($ind_typeselected > count($typeFromSearch)-1)
+									{
+										$ind_typeselected = 0;
+									}
+									$this->search .= '<option value="'.$typeFromSearch[$ind_typeselected].'" ';
+									if($typeFromSearch[$ind_typeselected] == $stype[$j]){
+										$this->search .= ' selected ';
+									}
+									$this->search .=  '>'.$value_arr.'</option>';
+									$ind_typeselected++;
+							}
+						$this->search .= '</select>&nbsp;&nbsp;';
+					}
+					$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/>
+							<br>';
+								
 				}
 			}
 		}
-		$this->search .= ''.$local_grid->Translate('search').' : &nbsp;<input type="text" size="30"  name="searchContent[]" id="searchContent[]"/>
-				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
-					<select name="searchField[]" id="searchField[]">
+		$this->search .= ''.$local_grid->Translate('search').'&nbsp;'.$local_grid->Translate("by").' : &nbsp;<select name="searchField[]" id="searchField[]">
 						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
 					foreach ($fieldsFromSearchShowAs as $value) {
 						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'" ';
 						$this->search .=  '>'.$value.'</option>';
 						$ind++;
 					}
-		$this->search .= '</select><br />';
+		$this->search .= '</select>&nbsp;&nbsp;';
+		if(is_array($typeFromSearchShowAs)){
+			$this->search .='<select name="searchType[]" id="searchType[]">';
+					//<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
+			foreach ($typeFromSearchShowAs as $value) {
+				$this->search .= '<option value="'.$typeFromSearch[$ind_type].'" ';
+				$this->search .=  '>'.$value.'</option>';
+				$ind_type++;
+			}
+			$this->search .= '</select>&nbsp;&nbsp;';
+		}
+		$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]"/><br>';
+					
 		$this->search .= '</div>
 					</td>
 					<td>

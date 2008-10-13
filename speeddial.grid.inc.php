@@ -82,6 +82,7 @@ class Customer extends astercrm
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -115,6 +116,7 @@ class Customer extends astercrm
 			$i=0;
 			$joinstr='';
 			foreach ($content as $value){
+				$value = preg_replace("/'/","\\'",$value);
 				$value=trim($value);
 				if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 					$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -134,10 +136,51 @@ class Customer extends astercrm
 			}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
-//		print $sql;
-//		print "\n";
-//		print $res;
-//		exit;
+		return $res;
+	}
+
+	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
+		global $db;
+
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial,astercrm_accountgroup WHERE astercrm_accountgroup.id = speeddial.groupid ";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " AND speeddial.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
+		global $db;
+		
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+			$sql = "SELECT COUNT(*) FROM speeddial WHERE ";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 ";
+			}else{
+				$sql .= " groupid = ".$_SESSION['curuser']['groupid'];
+			}
+
+			if ($joinstr!=''){
+				$sql .= " ".$joinstr;
+			}
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
 		return $res;
 	}
 

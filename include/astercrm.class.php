@@ -63,19 +63,31 @@
 
 			variableFiler			用于转译变量, 自动加\
 			exportDataToCSV     得到要导出的sql语句的结果集，转换为符合csv格式的文本字符串
+			createSqlWithStype	根据filter,content,searchtype生成查询条件语句
 
 			----------------2008-6 by donnie---------------------------------------
 			formDiallistAdd			生成customer对应的diallist的html
+			getDiallistNumRowsMorewithstype   customer对应的diallist多条件带搜索类型的记录数
+			getDiallistFilteredMorewithstype  customer对应的diallist多条件带搜索类型的结果集
 			getDiallistNumRowsMore	得到customer对应的diallist多条件搜索记录数
 			getDiallistFilteredMore customer对应的diallist多条件搜索结果集
 			getDiallistNumRows		得到customer对应的diallist全部记录数
 			getAllDiallist			customer对应的diallist全部结果集
 			createDiallistGrid		生成customer对应的diallist列表
+			getCdrRecordsFilteredMorewithstype   得到customer对应的CDR多条件带搜索类型的结果集
+			getCdrNumRowsMorewithstype   得到customer对应的CDR多条件带搜索类型的记录数
 			getCdrNumRowsMore		得到customer对应的CDR多条件搜索记录数
 			getCdrRecordsFilteredMore	得到customer对应的CDR多条件搜索结果集
 			getCdrNumRows			得到customer对应的CDR全部记录数
 			getAllCdrRecords		得到customer对应的CDR全部结果集
 			createCdrGrid			生成customer对应的CDR列表
+			getRecNumRows
+			getAllRecRecords
+			getRecNumRowsMore
+			getRecRecordsFilteredMore
+			getRecNumRowsMorewithstype
+			getRecRecordsFilteredMorewithstype
+			createRecordsGrid
 			--------------------------------------------------------------------------
 			
 * Private Functions List
@@ -300,7 +312,6 @@ Class astercrm extends PEAR{
 	function insertNewNote($f,$customerid,$contactid){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		print_r($f);exit;
 		$query= "INSERT INTO note SET "
 				."note='".$f['note']."', "
 				."attitude='".$f['attitude']."', "
@@ -501,11 +512,10 @@ Class astercrm extends PEAR{
 						."WHERE id='".$f['noteid']."'";
 			else
 				$query= "UPDATE note SET "
-						."note=CONCAT(note,'<br>',now(),'  ".$f['note']." by " .$_SESSION['curuser']['username']. "'), "
+						."note=CONCAT(note,'<br>',now(),' ".$f['note']." by " .$_SESSION['curuser']['username']. "'), "
 						."attitude='".$f['attitude']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
-
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -1170,6 +1180,7 @@ Class astercrm extends PEAR{
 
 	function getRecordByField($field,$value,$table){
 		global $db;
+		$value = preg_replace("/'/","\\'",$value);
 		if (is_numeric($value)){
 			$query = "SELECT * FROM $table WHERE $field = $value ";
 		}else{
@@ -1182,8 +1193,23 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
+	function getRecordsByField($field,$value,$table){
+		global $db;
+		$value = preg_replace("/'/","\\'",$value);
+		if (is_numeric($value)){
+			$query = "SELECT * FROM $table WHERE $field = $value ";
+		}else{
+			$query = "SELECT * FROM $table WHERE $field = '$value' ";
+		}
+		if($table == 'diallist') $query .= " ORDER BY id ASC ";
+		astercrm::events($query);
+		$row =& $db->query($query);
+		return $row;
+	}
+
 	function getCountByField($field,$value,$table){
 		global $db;
+		$value = preg_replace("/'/","\\'",$value);
 		if (is_numeric($value)){
 			$query = "SELECT count(*) FROM $table WHERE $field = $value";
 		}else{
@@ -1467,8 +1493,29 @@ Class astercrm extends PEAR{
 					$campaignoptions .='>'.$campaign['campaignname'].'</option>';
 				}				
 				$campaignoptions .= '</select>';
+			}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';			$res = Customer::getRecordsByField('groupid',$_SESSION['curuser']['groupid'],'astercrm_account');
+				$assignoptions .= '<select name="assign" id="assign">';
+				while ($row = $res->fetchRow()) {
+						$assignoptions .= '<option value="'.$row['extension'].'"';
+						$assignoptions .='>'.$row['extension'].'</option>';
+				}				
+				$assignoptions .= '</select>';
+				
+				$sql = "SELECT * FROM campaign WHERE groupid ='".$diallist['groupid']."'";			
+				$res = & $db->query($sql);
+
+				$campaignoptions .= '<select name="campaignid" id="campaignid" >';
+				while ($campaign = $res->fetchRow()) {
+					$campaignoptions .= '<option value="'.$campaign['id'].'"';
+					if($campaign['id'] == $diallist['campaignid']) $campaignoptions .='selected';
+					$campaignoptions .='>'.$campaign['campaignname'].'</option>';
+				}				
+				$campaignoptions .= '</select>';
 			}else{
 				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+
+				$assignoptions = '<input type="text" id="assign" name="assign" size="35" value="'.$diallist['assign'].'" disabled><input type="hidden" id="assign" name="assign" value="'.$diallist['assign'].'">';
 				
 				$sql = "SELECT * FROM campaign WHERE groupid ='".$diallist['groupid']."'";			
 				$res = & $db->query($sql);
@@ -1490,14 +1537,14 @@ Class astercrm extends PEAR{
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("number").'</td>
 						<td align="left">
-							<input type="text" id="dialnumber" name="dialnumber" size="35" value="'.$diallist['dialnumber'].'">
+							<input type="text" id="dialnumber" name="dialnumber" size="35" value="'.$diallist['dialnumber'].'" disabled><input type="hidden" id="dialnumber" name="dialnumber" value="'.$diallist['dialnumber'].'" >
 							<input type="hidden" id="id"  name="id" value="'.$diallist['id'].'">
 						</td>
 					</tr>
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
-							<input type="text" id="assign" name="assign" size="35"" value="'.$diallist['assign'].'">
+							'.$assignoptions.'
 						</td>
 					</tr>
 					<tr>
@@ -1974,6 +2021,36 @@ Class astercrm extends PEAR{
 	}
 
 	/**
+	*  create a 'where string' with 'like,<,>,=' assign by stype 
+	*
+	*	@param $stype		(array)		assign search type
+	*	@param $filter		(array) 	filter in sql
+	*	@param $content		(array)		content in sql
+	*	@return $joinstr	(string)	sql where string
+	*/
+	function createSqlWithStype($filter,$content,$stype){
+
+		$i=0;
+		$joinstr='';
+		foreach($stype as $type){
+			$content[$i] = preg_replace("/'/","\\'",$content[$i]);
+			if($filter[$i] != '' && trim($content[$i]) != ''){
+				if($type == "equal"){
+					$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
+				}elseif($type == "more"){
+					$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
+				}elseif($type == "less"){
+					$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
+				}else{
+					$joinstr.="AND $filter[$i] like '%".trim($content[$i])."%' ";
+				}
+			}
+			$i++;
+		}
+		return $joinstr;
+	}
+
+	/**
 	*  return customerid if match a phonenumber
 	*
 	*	@param $type		(string)		data to be exported
@@ -1982,6 +2059,7 @@ Class astercrm extends PEAR{
 
 	function getCustomerByCallerid($callerid,$groupid = ''){
 		global $db;
+		$callerid = preg_replace("/'/","\\'",$callerid);
 		$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' ";
 		astercrm::events($query);
 		$customerid =& $db->getOne($query);
@@ -1990,6 +2068,7 @@ Class astercrm extends PEAR{
 
 	function getContactByCallerid($callerid,$groupid = ''){
 		global $db;
+		$callerid = preg_replace("/'/","\\'",$callerid);
 		if ($groupid == '')
 			$query = "SELECT id,customerid FROM contact WHERE phone LIKE '%$callerid' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid' OR mobile LIKE '%$callerid' LIMIT 0,1";
 		else
@@ -2099,12 +2178,12 @@ Class astercrm extends PEAR{
 					break;
 				}
 			}
-//			foreach($stype as $value){
-//				if(trim($value) != ""){  //搜索方式有值
-//					$flag3 = "1";
-//					break;
-//				}
-//			}
+			foreach($stype as $value){
+				if(trim($value) != ""){  //搜索方式有值
+					$flag3 = "1";
+					break;
+				}
+			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
 				$order = null;
 				$numRows =& astercrm::getCdrNumRows($customerid,$cdrtype);
@@ -2192,7 +2271,7 @@ Class astercrm extends PEAR{
 			$table = new ScrollTable(5,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 			$table->setAttribsCols($attribsCols);
-			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 			while ($arreglo->fetchInto($row)) {
 			// Change here by the name of fields of its database table
@@ -2307,7 +2386,7 @@ Class astercrm extends PEAR{
 			$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 			$table->setAttribsCols($attribsCols);
-			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
+			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 			while ($arreglo->fetchInto($row)) {
 			// Change here by the name of fields of its database table
@@ -2443,6 +2522,7 @@ Class astercrm extends PEAR{
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -2495,6 +2575,7 @@ Class astercrm extends PEAR{
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -2537,6 +2618,92 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function &getCdrNumRowsMorewithstype($customerid,$cdrtype,$filter, $content,$stype){
+		global $db;
+
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		if($customerid != ''){
+			if ($cdrtype == 'out'){
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+			}else{
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			}
+		}
+
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE 1 ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($group_str,"\ OR").") ";
+			}else {
+				return '0';
+			}
+		}else{
+			if($sql != '' ) {
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".$sql.")";
+			}else {
+				return '0';
+			}
+		}
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}
+
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);		
+		return $res;
+	}
+
+	function &getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order){
+		global $db;
+		
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		if($customerid != ''){
+			if($cdrtype == 'out'){
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+			}else{
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+			}
+		}
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT * FROM mycdr WHERE 1 ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT * FROM mycdr WHERE (".ltrim($group_str,"\ OR").") ";
+			}else {
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+			}
+		}else{
+			if($sql != '' ) {
+				$sql = "SELECT * FROM mycdr WHERE (".$sql.")";
+			}else {
+				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+			}
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  ";
+		}
+
+		$sql .= " ORDER BY ".$order
+					." DESC LIMIT $start, $limit $ordering";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	function createDiallistGrid($userexten,$customerid,$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formDiallist", $ordering = ""){
 		global $locate;
 		$_SESSION['ordering'] = $ordering;
@@ -2558,12 +2725,12 @@ Class astercrm extends PEAR{
 					break;
 				}
 			}
-//			foreach($stype as $value){
-//				if(trim($value) != ""){  //搜索方式有值
-//					$flag3 = "1";
-//					break;
-//				}
-//			}
+			foreach($stype as $value){
+				if(trim($value) != ""){  //搜索方式有值
+					$flag3 = "1";
+					break;
+				}
+			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
 				$order = null;
 				$numRows =& Customer::getDiallistNumRows($userexten,$customerid);
@@ -2674,10 +2841,10 @@ Class astercrm extends PEAR{
 		$fieldsFromSearchShowAs[] = $locate->Translate("cretime");
 
 		// Create object whit 5 cols and all data arrays set before.
-		$table = new ScrollTable(11,$start,$limit,$filter,$numRows,$content,$order,$customerid,'',$userexten);
+		$table = new ScrollTable(11,$start,$limit,$filter,$numRows,$content,$order,$customerid,'',$userexten,'diallist');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=1,$delete=1,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,"1");
+		$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,"1",0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -2749,6 +2916,7 @@ Class astercrm extends PEAR{
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND diallist.$filter[$i] like '%".$value."%' ";
@@ -2783,6 +2951,7 @@ Class astercrm extends PEAR{
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND diallist.$filter[$i] like '%".$value."%' ";
@@ -2805,6 +2974,54 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function &getDiallistNumRowsMorewithstype($userexten,$customerid,$filter, $content,$stype){
+		global $db;
+
+		$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
+
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		
+		if( $sql != '') {
+			$sql = "SELECT COUNT(*) FROM diallist WHERE assign ='".$userexten."' AND (".$sql.") ";
+		}else{
+			return '0';
+		}
+		
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}
+
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);		
+		return $res;
+	}
+
+	function &getDiallistFilteredMorewithstype($userexten,$customerid,$start, $limit, $filter, $content, $stype,$order){
+		global $db;
+
+		$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
+				
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		
+		if( $sql != '') {
+			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote,campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".$sql.")";
+		}else{
+			$sql = "SELECT * FROM diallist WHERE id = '0' ";
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  ";
+		}
+
+		$sql .= " ORDER BY diallist.".$order
+					." DESC LIMIT $start, $limit $ordering";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	function formDiallistAdd($userexten,$customerid){
 		global $locate;
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -2816,9 +3033,20 @@ Class astercrm extends PEAR{
 				}				
 				$groupoptions .= '</select>';	
 				$assignoptions = '<input type="text" id="assign" name="assign" size="35"">';
+		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';	
+				$res = Customer::getRecordsByField('groupid',$_SESSION['curuser']['groupid'],'astercrm_account');
+				$assignoptions .= '<select name="assign" id="assign">';
+				while ($row = $res->fetchRow()) {
+						$assignoptions .= '<option value="'.$row['extension'].'"';
+						$assignoptions .='>'.$row['extension'].'</option>';
+				}				
+				$assignoptions .= '</select>';
 		}else{
-				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';				
+				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';	
+				$assignoptions = '<input type="text" id="assign" name="assign" size="35" value="'.$_SESSION['curuser']['extension'].'" disabled><input type="hidden" id="assign" name="assign" value="'.$_SESSION['curuser']['extension'].'">';
 		}
+
 		$res_customer =astercrm::getRecordById($customerid,'customer');
 		$res_contact =astercrm::getContactListByID($customerid);
 		$numberblank = '<select name="dialnumber" id="dialnumber">';
@@ -2844,7 +3072,7 @@ Class astercrm extends PEAR{
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
-							<input type="text" id="assign" name="assign" size="35"">
+							'.$assignoptions.'
 						</td>
 					</tr>
 					<tr>
@@ -2874,7 +3102,7 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 
-	function createRecordsGrid($customerid='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "formRecords", $ordering = ""){
+	function createRecordsGrid($customerid='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "formRecords", $ordering = "",$stype=null ){
 		global $locate;
 		$_SESSION['ordering'] = $ordering;
 		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -2895,12 +3123,12 @@ Class astercrm extends PEAR{
 					break;
 				}
 			}
-//			foreach($stype as $value){
-//				if(trim($value) != ""){  //搜索方式有值
-//					$flag3 = "1";
-//					break;
-//				}
-//			}
+			foreach($stype as $value){
+				if(trim($value) != ""){  //搜索方式有值
+					$flag3 = "1";
+					break;
+				}
+			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
 				$order = null;
 				$numRows =& astercrm::getRecNumRows($customerid);
@@ -3003,7 +3231,7 @@ Class astercrm extends PEAR{
 		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,'','','monitorrecord');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
+		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -3106,6 +3334,7 @@ Class astercrm extends PEAR{
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -3158,6 +3387,7 @@ Class astercrm extends PEAR{
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -3197,6 +3427,92 @@ Class astercrm extends PEAR{
 
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);		
+		return $res;
+	}
+
+	function &getRecNumRowsMorewithstype($customerid,$filter, $content,$stype){
+		global $db;
+
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		if($customerid != ''){
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
+		}
+
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT COUNT(*) FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").") ";
+			}else {
+				return '0';
+			}
+		}else{
+			if($sql != '' ) {
+				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
+					$sql = "SELECT COUNT(*) FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."'";
+				}else{
+					$sql = "SELECT COUNT(*) FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' AND (".$sql.")";
+				}
+			}else {
+				return '0';
+			}
+		}
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}
+
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);		
+		return $res;
+	}
+
+	function &getRecRecordsFilteredMorewithstype($customerid,$start, $limit, $filter, $content, $stype,$order){
+		global $db;
+		
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		if($customerid != ''){
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
+		}
+		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			$group_str = '';
+			foreach($_SESSION['curuser']['memberExtens'] as $value){
+				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
+			}
+			if($group_str != ''){
+				$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").") ";
+			}else {
+				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
+			}
+		}else{
+			if($sql != '' ) {
+				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid)  AND monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."'";
+				}else{
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr,monitorrecord WHERE (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) AND monitorrecord.uniqueid != '' AND (".$sql.") ";
+				}
+			}else {
+				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
+			}
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  ";
+		}
+
+		$sql .= " ORDER BY ".$order
+					." DESC LIMIT $start, $limit $ordering";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
 		return $res;
 	}
 }

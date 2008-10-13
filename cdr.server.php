@@ -58,7 +58,7 @@ function init(){
 }
 
 //	create grid
-function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
 	global $locate;
 
 		$_SESSION['ordering'] = $ordering;
@@ -80,12 +80,12 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 					break;
 				}
 			}
-//			foreach($stype as $value){
-//				if(trim($value) != ""){  //搜索方式有值
-//					$flag3 = "1";
-//					break;
-//				}
-//			}
+			foreach($stype as $value){
+				if(trim($value) != ""){  //搜索方式有值
+					$flag3 = "1";
+					break;
+				}
+			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
 				$order = null;
 				$numRows =& Customer::getCdrNumRows($customerid,$cdrtype);
@@ -201,7 +201,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
+		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -241,14 +241,14 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'account');
 			if ($res){
-				$html = createGrid('','',$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+				$html = createGrid('','',$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 				$objResponse = new xajaxResponse();
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 			}else{
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 			}
 		}else{
-			$html .= createGrid('','',$numRows, $limit,$searchField, $searchContent,  $order, $divName, "",true);
+			$html .= createGrid('','',$numRows, $limit,$searchField, $searchContent,  $order, $divName, "",$searchType);
 		}
 
 		$objResponse->addClear("msgZone", "innerHTML");

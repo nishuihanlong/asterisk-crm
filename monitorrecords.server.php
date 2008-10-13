@@ -48,7 +48,7 @@ function init(){
 }
 
 //	create grid
-function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
 		global $locate;
 		$_SESSION['ordering'] = $ordering;
 		if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -69,12 +69,12 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 					break;
 				}
 			}
-//			foreach($stype as $value){
-//				if(trim($value) != ""){  //搜索方式有值
-//					$flag3 = "1";
-//					break;
-//				}
-//			}
+			foreach($stype as $value){
+				if(trim($value) != ""){  //搜索方式有值
+					$flag3 = "1";
+					break;
+				}
+			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
 				$order = null;
 				$numRows =& astercrm::getRecNumRows($customerid);
@@ -177,7 +177,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,'','','monitorrecord');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0);
+		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -209,20 +209,20 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
 	$customerid = $searchFormValue['customerid'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
-//	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
 
 	if($type == "delete"){
 		$res = Customer::deleteRecord($id,'account');
 		if ($res){
-			$html = createGrid($customerid,$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$html = createGrid($customerid,$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 		}else{
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html .= createGrid($customerid,$numRows, $limit,$searchField, $searchContent, $searchField[count($searchField)-1], $divName, "",true);
+		$html .= createGrid($customerid,$numRows, $limit,$searchField, $searchContent, $searchField[count($searchField)-1], $divName, "",$searchType);
 	}
 	$html .= Table::Footer();
 	$objResponse->addClear("msgZone", "innerHTML");

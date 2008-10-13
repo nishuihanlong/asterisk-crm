@@ -502,7 +502,7 @@ function waitingCalls($myValue){
 }
 
 //	create grid
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=null){
 	global $locate,$config;
 
 	$_SESSION['ordering'] = $ordering;
@@ -525,18 +525,43 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 				break;
 			}
 		}
+		foreach($stype as $value){
+			if(trim($value) != ""){  //搜索方式有值
+				$flag3 = "1";
+				break;
+			}
+		}
 		if($flag != "1" || $flag2 != "1"){  //无值
 			$order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
-		}else{
+		}elseif($flag3 != 1){ //无搜索方式
 			$order = "id";
 			$numRows =& Customer::getNumRows($filter, $content);
 			$arreglo =& Customer::getRecordsFiltered($start, $limit, $filter, $content, $order);
+		}else{
+			$order = "id";
+			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
+			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
 		}
 	}
 
 	// Editable zone
+
+	// Select Box: type table.
+	$typeFromSearch = array();
+	$typeFromSearch[] = 'like';
+	$typeFromSearch[] = 'equal';
+	$typeFromSearch[] = 'more';
+	$typeFromSearch[] = 'less';
+
+	// Selecct Box: Labels showed on searchtype select box.
+	$typeFromSearchShowAs = array();
+	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = '=';
+	$typeFromSearchShowAs[] = '>';
+	$typeFromSearchShowAs[] = '<';
+
 
 	// Databse Table: fields
 	$fields = array();
@@ -636,9 +661,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-	$table->addRowSearchMore($config['system']['portal_display_type'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore($config['system']['portal_display_type'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
-	//print_r($arreglo);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
@@ -1045,6 +1069,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
 	if($type == "delete"){
 		if ($config['system']['portal_display_type'] == "note"){
@@ -1060,7 +1085,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$searchType);
 	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);

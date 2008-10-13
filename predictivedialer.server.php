@@ -173,9 +173,11 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 	//获取一个号码
 	$row =& astercrm::getDialNumber($groupid,$campaignid);
 	//$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
-	$pdextension = $row['inexten'];
-	$pdcontext = $row['incontext'];
-	$outcontext = $row['outcontext'];
+	$pdextension = $row['inexten']; 
+	if($row['incontext'] != '') $pdcontext = $row['incontext'];
+	else $pdcontext = $config['system']['incontext'];
+	if($row['outcontext'] != '') $outcontext = $row['outcontext'];
+	else $outcontext = $config['system']['outcontext'];
 
 	if ($row['id'] == ''){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
@@ -217,7 +219,7 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 
 		$sid=md5(uniqid(""));
 		// if we didnt set pdextension, we use send phone number to pdcontext
-		if ($pdextension == '') $pdextension = $phoneNum;
+		if ($pdextension == '') $pdextension = $assign;
 
 		/*
 		$query = '

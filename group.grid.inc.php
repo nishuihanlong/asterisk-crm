@@ -96,6 +96,7 @@ class Customer extends astercrm
 		$i=0;
 		$joinstr='';
 		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 				$joinstr.="AND $filter[$i] like '%".$value."%' ";
@@ -140,12 +141,50 @@ class Customer extends astercrm
 			$i=0;
 			$joinstr='';
 			foreach ($content as $value){
+				$value = preg_replace("/'/","\\'",$value);
 				$value=trim($value);
 				if (strlen($value)!=0 && strlen($filter[$i]) != 0){
 					$joinstr.="AND $filter[$i] like '%".$value."%' ";
 				}
 				$i++;
 			}
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql = 'SELECT COUNT(*) AS numRows FROM astercrm_accountgroup WHERE '.$joinstr;
+			}else {
+				$sql = "SELECT COUNT(*) AS numRows FROM astercrm_accountgroup";
+			}
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
+	}
+
+	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
+		global $db;
+
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql = "SELECT * FROM astercrm_accountgroup"
+					." WHERE ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}else {
+			$sql = "SELECT * FROM astercrm_accountgroup";
+		}
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
+		global $db;
+		
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 				$sql = 'SELECT COUNT(*) AS numRows FROM astercrm_accountgroup WHERE '.$joinstr;

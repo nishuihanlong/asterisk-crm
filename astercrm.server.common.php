@@ -648,8 +648,9 @@ function searchRecordsFormSubmit($searchFormValue,$numRows,$limit,$id='',$type='
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html .= Customer::createRecordsGrid($customerid,$numRows, $limit,$searchField, $searchContent, $searchType, $searchField[count($searchField)-1], $divName, "",true);
+		$html .= Customer::createRecordsGrid($customerid,$numRows, $limit,$searchField, $searchContent, $searchField[count($searchField)-1], $divName, "",$searchType);
 	}
+
 	$html .= Table::Footer();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);

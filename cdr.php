@@ -54,7 +54,7 @@ require_once('cdr.common.php');
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-	<br>
+	<br><br>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">
@@ -65,7 +65,7 @@ require_once('cdr.common.php');
 				</fieldset>
 			</td>
 		</tr>
-	</table>
+	</table>	
 	<form name="exportForm" id="exportForm" action="dataexport.php" >
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
 	</form>

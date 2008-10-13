@@ -92,7 +92,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
@@ -114,16 +114,40 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 				break;
 			}
 		}
+		foreach($stype as $value){
+			if(trim($value) != ""){  //搜索方式有值
+				$flag3 = "1";
+				break;
+			}
+		}
 		if($flag != "1" || $flag2 != "1"){  //无值
 			$order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
-		}else{
+		}elseif($flag3 != 1){
 			$order = "id";
 			$numRows =& Customer::getNumRowsMore($filter, $content,"campaign");
 			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"campaign");
+		}else{
+			$order = "id";
+			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
+			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
 		}
 	}
+	
+	// Select Box: type table.
+	$typeFromSearch = array();
+	$typeFromSearch[] = 'like';
+	$typeFromSearch[] = 'equal';
+	$typeFromSearch[] = 'more';
+	$typeFromSearch[] = 'less';
+
+	// Selecct Box: Labels showed on searchtype select box.
+	$typeFromSearchShowAs = array();
+	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = '=';
+	$typeFromSearchShowAs[] = '>';
+	$typeFromSearchShowAs[] = '<';
 	
 	// Editable zone
 
@@ -193,7 +217,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("campaign",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit);
+	$table->addRowSearchMore("campaign",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -341,18 +365,19 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchContent = array();
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
 	if($type == "delete"){
 		$res = Customer::deleteRecord($id,'campaign');
 		if ($res){
-			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 		}else{
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "");
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$searchType);
 	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
