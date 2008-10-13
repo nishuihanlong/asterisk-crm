@@ -160,3 +160,13 @@ function showObj(objname) {
 		obj[i].style.display="";
 	}
 }
+
+function keyPress(evt){
+    evt = (evt) ? evt : ((window.event) ? window.event : ""); //兼容IE和Firefox获得keyBoardEvent对象
+    var key = evt.keyCode?evt.keyCode:evt.which; //兼容IE和Firefox获得keyBoardEvent对象的键值
+//    if(key == 13){ //同时按下了Ctrl和回车键
+//        //do something;
+//		document.getElementById('searchButton').focus(); 
+//		return false;
+//    }
+}

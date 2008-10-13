@@ -95,6 +95,7 @@ require_once('config.php');
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<?php $xajax->printJavascript('include/'); ?>
 
+	<script type="text/javascript" src="js/astercrm.js"></script>
 	<script type="text/javascript" src="js/dragresize.js"></script>
 	<script type="text/javascript" src="js/dragresizeInit.js"></script>
 	<script type="text/javascript" src="js/common.js"></script>
@@ -348,7 +349,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formCdr" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 850px"></div>
 		<div id="formRecentCdr" class="formDiv drsElement"
-			style="left: 20px; top: 50px; width: 400px"></div>		
+			style="left: 20px; top: 50px; width: 420px"></div>		
 		<div id="formRecords" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 850px"></div>
 		<div id="formDiallist" class="formDiv drsElement"

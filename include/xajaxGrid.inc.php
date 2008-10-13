@@ -261,8 +261,8 @@ class ScrollTable{
 */
 
 			if($key != 'id'){
-				if($key == 'filename' && $table = 'monitorrecord') {					
-					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.basename($value).'<a href="?" onClick="xajax_playmonitor('.$arr[0].');return false;"><img src="skin/default/images/play.gif" border="0"></a></td>'."\n";
+				if($key == 'filename' && ($table == 'monitorrecord' || $table == 'mycdr') && $value != '') {	
+					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'><a href="?" onClick="xajax_playmonitor('.$arr[0].');return false;" class="info"><img src="skin/default/images/play.gif" border="0"><span>'.basename($value).'</span></a></td>'."\n";
 				}elseif($key == 'select_id'){
 					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'><input type="checkbox" id="ckb[]" name="ckb[]" value="'.$value.'" ></td>'."\n";
 				}else{
@@ -368,7 +368,7 @@ class ScrollTable{
 					$table.
 				'</td>
 				<td align="right" width="30%" nowrap>
-				'.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30" id="searchContent" name="searchContent">
+				'.$local_grid->Translate(search).' : &nbsp;<input type="text" size="30" id="searchContent" name="searchContent" >
 				&nbsp;&nbsp;'.$local_grid->Translate("by").' &nbsp;
 					<select id="searchField" name="searchField">
 						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
@@ -416,7 +416,7 @@ class ScrollTable{
 			<tr>
 				<td align="left" width="10%">';
 			if($withNewButton){
-				$this->search .= '<button id="submitButton" onClick="xajax_addDiallist(\''.$this->userexten.'\',\''.$this->customerid.'\');return false;">'.$local_grid->Translate("add_record").'</button>';
+				$this->search .= '<input type="button" id="submitButton" onClick="xajax_addDiallist(\''.$this->userexten.'\',\''.$this->customerid.'\');return false;" value="'.$local_grid->Translate("add_record").'">';
 			}
 		}elseif ($table == 'monitorrecord' && $this->customerid !=''){
 			$this->search = '
@@ -437,10 +437,10 @@ class ScrollTable{
 				<tr>
 					<td align="left" >';
 			if($withNewButton){
-				$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
+				$this->search .= '<input type="button" id="submitButton" onClick="xajax_add();return false;" value="'.$local_grid->Translate("add_record").'">';
 			}
 			if($withDelButton){
-				$this->search .= '&nbsp;&nbsp;<button id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'delGrid\'),xajax.getFormValues(\'searchForm\'));}return false;">'.$local_grid->Translate("delete").'</button>';
+				$this->search .= '&nbsp;&nbsp;<input type="button" id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'delGrid\'),xajax.getFormValues(\'searchForm\'));}return false;" value="'.$local_grid->Translate("delete").'">';
 			}
 		}
 		
@@ -488,7 +488,7 @@ class ScrollTable{
 							}
 						$this->search .= '</select>&nbsp;&nbsp;';
 					}
-					$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'"/>
+					$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'" onkeydown="keyPress(event);"/>
 							<br>';
 								
 				}
@@ -512,7 +512,7 @@ class ScrollTable{
 			}
 			$this->search .= '</select>&nbsp;&nbsp;';
 		}
-		$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]"/><br>';
+		$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" onkeypress="keyPress(event);"/><br>';
 					
 		$this->search .= '</div>
 					</td>
@@ -521,7 +521,7 @@ class ScrollTable{
 				<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
 				<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
 				&nbsp;&nbsp;
-				<input type="submit" id="submitButton" name="submitButton" value="'.$local_grid->Translate("continue").'"/>
+				<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'"/>
 				</td>';
 		if($this->exportFlag != ''){
 			$this->search .='<td>

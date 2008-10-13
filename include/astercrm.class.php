@@ -1682,11 +1682,11 @@ Class astercrm extends PEAR{
 				<!--**********************-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['mobile'].'</a></td>
+					<td align="left"><a href=? onclick="dial(\''.$customer['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['mobile'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a></td>
+					<td align="left"><a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1703,7 +1703,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-					<td align="left"><a href=? onclick="xajax_dial(\''.$customer['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['phone'].'</a></td>
+					<td align="left"><a href=? onclick="dial(\''.$customer['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['phone'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
@@ -1909,13 +1909,13 @@ Class astercrm extends PEAR{
 			$html .='
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone'].'</a></td>
+						<td align="left"><a href=? onclick="dial(\''.$contact['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone'].'</a></td>
 					</tr>';
 		else
 			$html .='
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><a href=? onclick="xajax_dial(\''.$contact['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone'].'</a> ext: '.$contact['ext'].'</td>
+						<td align="left"><a href=? onclick="dial(\''.$contact['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone'].'</a> ext: '.$contact['ext'].'</td>
 					</tr>';
 
 		if ($contact['phone1'] != '' || $contact['ext1'] != '')
@@ -1923,13 +1923,13 @@ Class astercrm extends PEAR{
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone1'].'</a></td>
+							<td align="left"><a href="?" onclick="dial(\''.$contact['phone1'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone1'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone1'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone1'].'</a> ext: '.$contact['ext1'].'</td>
+							<td align="left"><a href="?" onclick="dial(\''.$contact['phone1'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone1'].'</a> ext: '.$contact['ext1'].'</td>
 						</tr>';
 		
 		if ($contact['phone2'] != '' || $contact['ext2'] != '')
@@ -1937,19 +1937,19 @@ Class astercrm extends PEAR{
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone2'].'</a></td>
+							<td align="left"><a href="?" onclick="dial(\''.$contact['phone2'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone2'].'</a></td>
 						</tr>';
 			else
 				$html .='
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-							<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['phone2'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone2'].'</a> ext: '.$contact['ext2'].'</td>
+							<td align="left"><a href="?" onclick="dial(\''.$contact['phone2'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['phone2'].'</a> ext: '.$contact['ext2'].'</td>
 						</tr>';
 
 		$html .='
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><a href="?" onclick="xajax_dial(\''.$contact['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['mobile'].'</a></td>
+					<td align="left"><a href="?" onclick="dial(\''.$contact['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['mobile'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
@@ -2007,14 +2007,24 @@ Class astercrm extends PEAR{
 	function exportDataToCSV($query){
 		global $db;
 		astercrm::events($query);
-		$res =& $db->query($query);
+		$res =& $db->query($query);		
+		$first = 'yes';
 		while ($res->fetchInto($row)) {
-			foreach ($row as $val){
+			$first_line = '';
+			foreach ($row as $key => $val){
+				if($first == 'yes'){
+					$first_line .= '"'.$key.'"'.',';
+				}
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
 						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
 				
 				$txtstr .= '"'.$val.'"'.',';
 			}
+			if($first_line != ''){
+				$first_line .= "\n";
+				$txtstr = $first_line.$txtstr;
+				$first = 'no';
+			}			
 			$txtstr .= "\n";
 		}
 		return $txtstr;
@@ -2206,6 +2216,7 @@ Class astercrm extends PEAR{
 			$fields[] = 'dst';
 			$fields[] = 'duration';
 			$fields[] = 'billsec';
+			$fields[] = 'record';
 
 			// HTML table: Headers showed
 			$headers = array();
@@ -2214,17 +2225,20 @@ Class astercrm extends PEAR{
 			$headers[] = $locate->Translate("Dst").'<br>';
 			$headers[] = $locate->Translate("Duration").'<br>';
 			$headers[] = $locate->Translate("Billsec").'<br>';
+			$headers[] = $locate->Translate("record").'<br>';
 
 			// HTML table: hearders attributes
 			$attribsHeader = array();
-			$attribsHeader[] = 'width="13%"';
+			$attribsHeader[] = 'width="15%"';
 			$attribsHeader[] = 'width="10%"';
 			$attribsHeader[] = 'width="13%"';
 			$attribsHeader[] = 'width="10%"';
 			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="7%"';
 
 			// HTML Table: columns attributes
 			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
@@ -2238,20 +2252,7 @@ Class astercrm extends PEAR{
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			
-			// Select Box: type table.
-			$typeFromSearch = array();
-			$typeFromSearch[] = 'like';
-			$typeFromSearch[] = 'equal';
-			$typeFromSearch[] = 'more';
-			$typeFromSearch[] = 'less';
-
-			// Selecct Box: Labels showed on searchtype select box.
-			$typeFromSearchShowAs = array();
-			$typeFromSearchShowAs[] = 'like';
-			$typeFromSearchShowAs[] = '=';
-			$typeFromSearchShowAs[] = '>';
-			$typeFromSearchShowAs[] = '<';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","id","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';			
 
 			// Select Box: fields table.
 			$fieldsFromSearch = array();
@@ -2276,12 +2277,13 @@ Class astercrm extends PEAR{
 			while ($arreglo->fetchInto($row)) {
 			// Change here by the name of fields of its database table
 				$rowc = array();
-				$rowc[] = $row['id'];
+				$rowc[] = $row['monitorid'];
 				$rowc[] = $row['calldate'];
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
 				$rowc[] = $row['duration'];
 				$rowc[] = $row['billsec'];
+				$rowc['filename'] = $row['filename'];
 				$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
 			}
 			$html = $table->render('static');
@@ -2414,12 +2416,13 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT * FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' ";
+				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid or mycdr.dstuid = monitorrecord.uniqueid WHERE (mycdr.src = '".$_SESSION['curuser']['extension']."' OR mycdr.dst ='".$_SESSION['curuser']['extension']."') AND mycdr.src != '' AND mycdr.dst != '' AND mycdr.src != '<unknown>' AND mycdr.dst != '<unknown>' ";
 				if($order == null || is_array($order)){
-					$sql .= " ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+					$sql .= " ORDER by mycdr.calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 				}else{
-					$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+					$sql .= " ORDER BY mycdr.".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 				}
+				//echo $sql;exit;
 				astercrm::events($sql);
 				$res =& $db->query($sql);
 				return $res;

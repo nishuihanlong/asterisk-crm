@@ -228,9 +228,9 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchType =  $searchFormValue['searchType'];
 	if($exportFlag == "1"){
 		$sql =& Customer::getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
-		$_SESSION['export_sql'] = $sql;
-		echo $sql;exit;
+		//$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", "note");//传递主表名，防止groupid等字段在各表中重复
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}else{
 		if($type == "delete"){

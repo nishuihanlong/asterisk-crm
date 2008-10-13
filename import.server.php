@@ -44,6 +44,12 @@ function init($fileName){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("spanSelectFile","innerHTML", $locate->Translate("please_select_file"));
+	
+	$file_list = getExistfilelist();
+	$objResponse->addScript("addOption('filelist','0','".$locate->Translate('select a existent file')."');");
+	foreach ( $file_list as $value ) {
+		$objResponse->addScript("addOption('filelist','".$value."','".$value."');");
+	}
 
 	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
 	$objResponse->addAssign("btnImportData","value",$locate->Translate("import"));
@@ -466,6 +472,21 @@ function getGridHTML($filePath){
 
 	
 	return array('gridHTML'=>$HTML,'columnNumber'=>$num);
+}
+
+function getExistfilelist(){
+	global $locate,$config;
+	$uploaddir = opendir($config['system']['upload_file_path']);
+	$file_list = array();
+	while( false !== ($files = readdir($uploaddir)) ) {
+		$ext_tmp = split("\.",$files);
+		$n = count($ext_tmp) - 1;
+		$ext =  $ext_tmp[$n];
+		$ext = strtolower($ext);
+		if ( $ext == 'xls' ||  $ext == 'csv' )
+			$file_list[] = $files;
+	}
+	return $file_list;
 }
 
 $xajax->processRequests();
