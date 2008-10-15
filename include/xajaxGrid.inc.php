@@ -171,7 +171,7 @@ class ScrollTable{
 
 	function setHeader($class,$headers,$attribs,$events,$edit=true,$delete=true,$detail=true){
 
-		global $local_grid;
+		global $local_grid; 
 		if($_SESSION['curuser']['usertype'] == 'agent' && $this->table != 'diallist') $delete = false; //禁止agent的删除功能
 		$ind = 0;
 		$this->header = '
@@ -190,8 +190,8 @@ class ScrollTable{
 			}else{
 				$this->header .= '
 				&nbsp;
-				<img src="skin/default/images/asc.png" title="Ascendent" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
-				<img src="skin/default/images/desc.png" title="Descendent" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
+				<img src="skin/default/images/asc.png" title="A&nbsp;->&nbsp;Z" style="cursor: pointer;" '.str_replace("ORDERING","ASC",$events[$ind]).'>
+				<img src="skin/default/images/desc.png" title="Z&nbsp;->&nbsp;A" style="cursor: pointer;" '.str_replace("ORDERING","DESC",$events[$ind]).'>
 				</th>';
 			}
 			$ind++;

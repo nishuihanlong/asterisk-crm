@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `callshoprate` (
 CREATE TABLE IF NOT EXISTS `clid` (
   `id` int(11) NOT NULL auto_increment,
   `clid` varchar(20) NOT NULL default '',
-  `pin` varchar(20) NOT NULL default '',
+  `pin` varchar(30) NOT NULL default '',
   `creditlimit` DOUBLE NOT NULL default '0.0000',
   `curcredit` DOUBLE NOT NULL default '0.0000',
   `limittype` VARCHAR( 20 ) NOT NULL,
@@ -131,7 +131,8 @@ CREATE TABLE IF NOT EXISTS `clid` (
   `status` tinyint(4) NOT NULL default '1',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `pin` (`pin`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
@@ -212,12 +213,13 @@ CREATE TABLE IF NOT EXISTS `credithistory` (
   `modifytime` datetime NOT NULL default '0000-00-00 00:00:00',
   `resellerid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
+  `clidid` int(11) NOT NULL default '0',
   `srccredit` double(24,4) NOT NULL default '0.0000',
   `modifystatus` varchar(20) NOT NULL default '',
   `modifyamount` double(24,4) NOT NULL default '0.0000',
   `operator` varchar(20) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
-  key `resellerid` (`resellerid`,`groupid`,`modifytime`,`modifystatus`,`modifyamount`,`operator`)
+  key `resellerid` (`resellerid`,`groupid`,`clidid`,`modifytime`,`modifystatus`,`modifyamount`,`operator`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ----------------------------------------------------------
