@@ -488,7 +488,7 @@ class ScrollTable{
 							}
 						$this->search .= '</select>&nbsp;&nbsp;';
 					}
-					$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'" onkeydown="keyPress(event);"/>
+					$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'" />
 							<br>';
 								
 				}
@@ -512,7 +512,7 @@ class ScrollTable{
 			}
 			$this->search .= '</select>&nbsp;&nbsp;';
 		}
-		$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" onkeypress="keyPress(event);"/><br>';
+		$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" /><br>';
 					
 		$this->search .= '</div>
 					</td>
