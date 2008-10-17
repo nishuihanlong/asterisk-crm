@@ -1,0 +1,72 @@
+new features in 0.047
+	
+	scheduler dialer
+	customer CDR
+	CDR(in astercc mode)
+	could work with astercc
+        trunk information when dialin
+	list and listen to the monitor records(in astercc mode)
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)
+
+0.047 新特性
+
+	定时拨号
+	客户通话记录
+	结合astercc使用
+	被叫通道信息
+	在线查看、收听电话录音(astercc模式支持)
+	批量删除客户记录
+	座席自动拨号
+	快速拨号列表
+	通话记录(astercc模式支持)
+	回收已拨号码表中的未接通号码(astercc模式支持)
+
+astercrm features(0.047)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	list and listen to the monitor records
+	check history phone recorded on line
+	customer call history
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list
+	scheduler dialer
+	customer dialer
+	could work with astercc
+	cdr(in astercc mode)
+	DID inforamtion when pop up
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)

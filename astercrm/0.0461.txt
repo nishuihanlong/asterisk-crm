@@ -1,0 +1,44 @@
+new features in 0.0461
+	
+	add campaign in dial list, easy for management
+	support recyle no answer number from dialed list
+
+0.0461新特性
+
+	增加了diallist的分组功能
+	允许从已拨号列表里将未接通的号码回收到diallist
+
+astercrm features(0.0461)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list

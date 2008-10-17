@@ -1,0 +1,44 @@
+new features in 0.046
+
+	add group features, then astercrm could be used as a hosted callcenter
+	add predictive dialer for accound group, could choose different context for different group
+	add debug mode for eventsdaemon, add a watch dog script 
+
+0.046新特性
+
+	增加了分组功能, 这样astercrm就可以用于虚拟呼叫中心解决方案
+	增加了拨号器的分组拨号功能, 可以为不同的分组选用不同的context
+	修改了 eventsdaemon.pl 默认启动时为debug模式, 增加了shell脚本 eventdog.sh
+
+astercrm features(0.046)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group

@@ -1,0 +1,51 @@
+new features in 0.045
+
+	use perl script: eventsdaemon to replace the python script: ProxyMan
+	customer and contact could be related or irrespective
+	import/export datas online, include customer, contact, dial list
+	add survey module, administrator could add difference survey
+	survey result statistics
+	add monitor control in agent interface
+	all pop-up form is movable
+	browser title blinking and maximize when dial events happened
+	enter phone number and dial in agent interface
+	could trim zero in the callerid
+	multi-skin support
+
+0.045新特性
+
+	使用eventsdaemon代替porxyman, 安装配置更加方便
+	客户和联系人可以关联或是完全独立
+	在线导入导出数据, 包括客户信息，联系人信息，预拨号列表
+	增加了问卷模块, 管理员可以添加不同的问卷
+	问卷结果统计功能
+	在座席界面增加了录音控制
+	弹出的表单都是可以移动的(div movable)
+	发生呼叫事件时 浏览器标题栏会闪烁, 并且最大化
+	座席可以手动输入电话号码拨号
+	来电号码系统可以自动去除前面的区号(0)
+	多皮肤支持
+
+astercrm功能(0.045)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manully dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
