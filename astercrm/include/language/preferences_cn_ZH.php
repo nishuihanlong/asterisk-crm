@@ -41,4 +41,6 @@ $AMI_connect_failed			= 'AMI连接失败, 请检查系统配置';
 $AMI_connect_success		= 'AMI连接成功';
 $permission_error			= '目录权限错误';
 $sys_check_success			= '配置信息检查成功';
+$sys_eventtype				= '设置使用astercc或是eventdaemon模式捕获呼叫事件';
+$sys_stop_work_verify		= '设置坐席停止工作时是否需要输入密码(组管理员或高级管理员帐号/密码)';
 ?>

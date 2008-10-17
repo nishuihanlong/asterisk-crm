@@ -64,6 +64,7 @@ function initIni(){
 	$objResponse->addAssign("iptAsMonitorformat","value",$config["asterisk"]["monitorformat"]);
 
 	//system section
+	$objResponse->addAssign("iptSyseventtype","value",$config["system"]["eventtype"]);
 	$objResponse->addAssign("iptSysLogEnabled","value",$config["system"]["log_enabled"]);
 
 	//print $config["system"]["log_enabled"];
@@ -73,9 +74,9 @@ function initIni(){
 	$objResponse->addAssign("iptSysIncontext","value",$config["system"]['incontext']);
 
 	$objResponse->addAssign(
-			"iptSysPredialerContext",
+			"iptSysStop_work_verify",
 			"value",
-			$config["system"]["predialer_context"]);
+			$config["system"]["stop_work_verify"]);
 
 	$objResponse->addAssign(
 			"iptSysPredialerExtension",
@@ -149,15 +150,16 @@ function initLocate(){
 
 
 	//system section
+	$objResponse->addAssign("divSyseventtype","innerHTML",$locate->Translate('Sys_eventtype'));
 	$objResponse->addAssign("divSysLogEnabled","innerHTML",$locate->Translate('sys_log_enabled'));
 	$objResponse->addAssign("divSysLogFilePath","innerHTML",$locate->Translate('sys_log_file_path'));
 	$objResponse->addAssign("divSysOutcontext","innerHTML",$locate->Translate('sys_outcontext'));
 	$objResponse->addAssign("divSysIncontext","innerHTML",$locate->Translate('sys_incontext'));
 
 	$objResponse->addAssign(
-			"divSysPredialerContext",
+			"divSysStop_work_verify",
 			"innerHTML",
-			$locate->Translate('sys_predialer_context'));
+			$locate->Translate('Sys_Stop_work_verify'));
 
 	$objResponse->addAssign(
 			"divSysPredialerExtension",
@@ -229,8 +231,8 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['log_file_path'] = $aFormValues['iptSysLogFilePath'];
 	$myPreferences['system']['outcontext'] = $aFormValues['iptSysOutcontext'];
 	$myPreferences['system']['incontext'] = $aFormValues['iptSysIncontext'];
-	$myPreferences['system']['predialer_context'] = $aFormValues['iptSysPredialerContext'];
-	$myPreferences['system']['predialer_extension'] = $aFormValues['iptSysPredialerExtension'];
+	$myPreferences['system']['eventtype'] = $aFormValues['iptSyseventtype'];
+	$myPreferences['system']['stop_work_verify'] = $aFormValues['iptSysStop_work_verify'];
 
 
 

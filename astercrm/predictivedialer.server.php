@@ -206,6 +206,7 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 		$groupid = $row['groupid'];
 		$campaignid = $row['campaignid'];
 		$phoneNum = $row['dialnumber'];
+		$trytime = $row['trytime'];
 		$assign = $row['assign'];
 
 
@@ -213,6 +214,7 @@ function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
 		$f['dialednumber'] = $phoneNum;
 		$f['dialedby'] = $_SESSION['curuser']['username'];
 		$f['groupid'] = $groupid;
+		$f['trytime'] = $trytime + 1;
 		$f['assign'] = $assign;
 		$f['campaignid'] = $campaignid;
 		$res = astercrm::insertNewDialedlist($f);

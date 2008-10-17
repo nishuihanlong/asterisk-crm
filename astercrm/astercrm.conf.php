@@ -1,4 +1,4 @@
-<?
+<? = 
 [database]
 ;
 ; Database connection parameter
@@ -47,7 +47,7 @@ outcontext = from-internal
 ;context when dial in, in trixbox this could be from-trunk
 incontext = from-internal
 
-;if need to enter password of admin or groupadmin when agent stop work
+;if need to enter accountcode/password of admin or groupadmin when agent stop work
 stop_work_verify = 0
 
 ; Asterisk context parameter, use which context and extenstion
@@ -109,10 +109,12 @@ browser_maximize_when_pop_up = 0
 ;
 ; astercrm will show contact
 ;
-enable_contact = 1
+enable_contact = 
 
 ;caller | callee
 firstring = caller
+
+upload_file_path = ./upload/
 
 ;
 ; astercrm will use external crm software if this parameter is true
@@ -137,11 +139,9 @@ external_crm_default_url = http://www.astercrm.org
 ;
 external_crm_url = http://www.astercrm.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
 
-upload_file_path = ./upload/
-
 detail_level = all
 
 [google-map]
 
 key = 
-?>
+?> = 

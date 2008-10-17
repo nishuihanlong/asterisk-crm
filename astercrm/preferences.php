@@ -224,6 +224,20 @@ require_once('preferences.common.php');
   </tr>
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu2" width="780">
+  <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysEventtype" name="SysEventtype">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eventtype
+	</td>
+    <td width="200" align="left" valign="top" >
+        <select name="iptSyseventtype" id="iptSyseventtype">
+          <option value="curcdr">curcdr</option>
+          <option value="event">event</option>
+        </select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSyseventtype" name="divSyseventtype"></div>
+	</td>
+  </tr>
   <tr>
     <td width="230" align="left" valign="top"  id="SysLogEnabled" name="SysLogEnabled">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_enabled
@@ -272,17 +286,20 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top"  id="SysPredialerContext" name="SysPredialerContext">
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preDialer_context
+    <td width="230" align="left" valign="top"  id="SysStop_work_verify" name="SysStop_work_verify">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop_work_verify
 	</td>
     <td width="200" align="left" valign="top" >
-		<input type="text" size="30" id="iptSysPredialerContext" name="iptSysPredialerContext" />
+		<select id="iptSysStop_work_verify" name="iptSysStop_work_verify">
+			<option value="0">0</option>
+            <option value="1">1</option>
+        </select>
 	</td>
     <td align="left" valign="top" >
-		<div id="divSysPredialerContext" name="divSysPredialerContext"></div>
+		<div id="divSysStop_work_verify" name="divSysStop_work_verify"></div>
 	</td>
   </tr>
-  <tr>
+  <!--<tr>
     <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysPredialerExtension" name="SysPredialerExtension">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preDialer_extension
 	</td>
@@ -290,34 +307,34 @@ require_once('preferences.common.php');
     <td align="left" valign="top" bgcolor="#F7F7F7">
 		<div id="divSysPredialerExtension" name="divSysPredialerExtension"></div>
 	</td>
-  </tr>
+  </tr>-->
   <tr>
-    <td width="230" align="left" valign="top" id="SysPhoneNumberLength" name="SysPhoneNumberLength">
+    <td width="230" align="left" valign="top" id="SysPhoneNumberLength" name="SysPhoneNumberLength" bgcolor="#F7F7F7">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;phone_number_length
 	</td>
-    <td width="200" align="left" valign="top" >
+    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
 		<input type="text" size="30" id="iptSysPhoneNumberLength" name="iptSysPhoneNumberLength" />
 	</td>
-    <td align="left" valign="top" >
+    <td align="left" valign="top" bgcolor="#F7F7F7">
 		<div id="divSysPhoneNumberLength" name="divSysPhoneNumberLength"></div>
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysTrimPrefix" name="SysTrimPrefix">
+    <td width="230" align="left" valign="top" id="SysTrimPrefix" name="SysTrimPrefix">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trim_prefix
 	</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top" >
 		<input type="text" size="30" id="iptSysTrimPrefix" name="iptSysTrimPrefix" />
 	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
+    <td align="left" valign="top" >
 		<div id="divSysTrimPrefix" name="divSysTrimPrefix"></div>
 	</td>
   </tr>
-  <tr>
-    <td width="230" align="left" valign="top"  id="SysAllowDropcall" name="SysAllowDropcall">
+  <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysAllowDropcall" name="SysAllowDropcall" bgcolor="#F7F7F7">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow_dropcall</td>
-    <td width="200" align="left" valign="top" >
-		<select name="iptSysAllowDropcall" id="iptSysAllowDropcall">
+    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+		<select name="iptSysAllowDropcall" id="iptSysAllowDropcall" >
 			<option value="0">0</option>
 			<option value="1">1</option>
 		</select>
@@ -327,30 +344,30 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysAllowSameDate" name="SysAllowSameDate">
+    <td width="230" align="left" valign="top" id="SysAllowSameDate" name="SysAllowSameDate">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow_same_data</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top" >
 		<select name="iptSysAllowSameData" id="iptSysAllowSameData">
 			<option value="0">0</option>
 			<option value="1">1</option>
         </select>
 	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
+    <td align="left" valign="top">
 		<div id="divSysAllowSameData" name="divSysAllowSameData"></div>
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top"  id="SysPortalDisplayType" name="SysPortalDisplayType">
+    <td width="230" align="left" valign="top"  id="SysPortalDisplayType" name="SysPortalDisplayType" bgcolor="#F7F7F7">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;portal_display_type</td>
-    <td width="200" align="left" valign="top" >
+    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
 		<select id="iptSysPortalDisplayType" name="iptSysPortalDisplayType">
 			<option value="customer">customer</option>
 			<option value="note">note</option>
 		</select>
 	</td>
-    <td align="left" valign="top" ><div id="divSysPortalDisplayType" name="divSysPortalDisplayType"></div></td>
+    <td align="left" valign="top" bgcolor="#F7F7F7"><div id="divSysPortalDisplayType" name="divSysPortalDisplayType"></div></td>
   </tr>
-  <tr bgcolor="#F7F7F7">
+  <tr >
     <td width="230" align="left" valign="top"  id="SysEnableContact" name="SysEnableContact">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;detail_level
 	</td>
@@ -364,7 +381,7 @@ require_once('preferences.common.php');
 			<div id="divSysDetailLevel" name="divSysDetailLevel"></div>
 		</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysPopUpWhenDialIn" name="SysPopUpWhenDialIn">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop_up_when_dial_in
 	</td>
@@ -377,9 +394,9 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysPopUpWhenDialOut" name="SysPopUpWhenDialOut">
+    <td width="230" align="left" valign="top" id="SysPopUpWhenDialOut" name="SysPopUpWhenDialOut">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop_up_when_dial_out</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top">
 		<select name="iptSysPopUpWhenDialOut" id="iptSysPopUpWhenDialOut">
 		  <option value="0">0</option>
 		  <option value="1">1</option>
@@ -389,7 +406,7 @@ require_once('preferences.common.php');
 		<div id="divSysPopUpWhenDialOut" name="divSysPopUpWhenDialOut"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysBrowserMaximizeWhenPopUp" name="SysBrowserMaximizeWhenPopUp">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;browser_maximize_when_pop_up
 	</td>
@@ -405,7 +422,7 @@ require_once('preferences.common.php');
   </tr>
 
   <tr>
-    <td width="230" align="left" valign="top"  id="SysFirstring" name="SysFirstring"  bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysFirstring" name="SysFirstring"  >
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;firstring
 	</td>
     <td width="200" align="left" valign="top" >
@@ -414,11 +431,11 @@ require_once('preferences.common.php');
 			<option value="callee">callee</option>
 		</select>
     </td>
-    <td align="left" valign="top"  bgcolor="#F7F7F7">
+    <td align="left" valign="top" >
 		<div id="divSysFirstring" name="divSysFirstring"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysUploadExcelPath" name="SysUploadExcelPath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upload_file_path</td>
     <td width="200" align="left" valign="top" >
 		<input type="text" size="30" id="iptSysUploadFilePath" name="iptSysUploadFilePath" />

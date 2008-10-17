@@ -228,8 +228,8 @@ class asterEvent extends PEAR
 			while ($events->fetchInto($list)) {
 				if (!in_array($list['peer'],$phones)) $phones[] = $list['peer'];
 				$peer = split("\/",trim($list['peer']));
-				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2;}
-				//if ($list['status']  == "reachable"){			
+				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2; continue;}
+				if ($list['status']  == "reachable"){			
 					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]' OR dst='LOCAL/$peer[1]' OR dst='SIP/$peer[1]' OR dst='IAX2/$peer[1]') AND src != '' AND dst != ''";
 					$res = $db->query($query);				
 					asterEvent::events($query);
@@ -249,7 +249,7 @@ class asterEvent extends PEAR
 							$direction[$list['peer']] = '';
 							$status[$list['peer']] = 0;
 					}
-				//}
+				}
 			}
 		}else{
 			$events =& asterEvent::getEvents($curid);
