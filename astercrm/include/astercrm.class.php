@@ -150,6 +150,18 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function getAll($table,$field = '', $value = ''){
+		global $db;
+		if (trim($field) != '' && trim($value) != ''){
+			$query = "SELECT * FROM $table WHERE $field = '$value' ";
+		}else{
+			$query = "SELECT * FROM $table ";
+		}
+		astercrm::events($query);
+		$res = $db->query($query);
+		return $res;
+	}
+
 	function getGroups(){
 		global $db;
 		$sql = "SELECT * FROM astercrm_accountgroup";

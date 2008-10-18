@@ -78,25 +78,51 @@ function refreshRecords(){
 
 function showChannelsInfo(){
 	global $locate;
-	$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
-	$channels = split(chr(10),$channels[1]);
-	array_pop($channels); 
-	$activeCalls = array_pop($channels); 
-	$activeChannels = array_pop($channels); 
+	global $config;
 
-	array_shift($channels); 
-	$title = array_shift($channels); 
-	$title = split("_",implode("_",array_filter(split(" ",$title))));
-	$myInfo[] = $title;
+	if ($config['system']['eventtype'] == 'events'){
+		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
+		$channels = split(chr(10),$channels[1]);
+		array_pop($channels); 
+		$activeCalls = array_pop($channels); 
+		$activeChannels = array_pop($channels); 
 
-	foreach ($channels as $channel ){
-		if (strstr($channel," Dial")) {
-			$myItem = split("_",implode("_",array_filter(split(" ",$channel))));
-			$myInfo[] = $myItem;
+		array_shift($channels); 
+		$title = array_shift($channels); 
+		$title = split("_",implode("_",array_filter(split(" ",$title))));
+		$myInfo[] = $title;
+
+		foreach ($channels as $channel ){
+			if (strstr($channel," Dial")) {
+				$myItem = split("_",implode("_",array_filter(split(" ",$channel))));
+				$myInfo[] = $myItem;
+			}
 		}
+		
+		$myChannels = common::generateTabelHtml($myInfo);
+	}else{
+		// 可能应该只检查本组目前的通话情况
+		$curcdr = astercrm::getAll("curcdr");
+/*
+  `src` varchar(20) NOT NULL default '',
+  `dst` varchar(20) NOT NULL default '',
+  `srcchan` varchar(100) NOT NULL default '',
+  `dstchan` varchar(100) NOT NULL default '',
+  `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `srcuid` varchar(20) NOT NULL default '',
+  `dstuid` varchar(20) NOT NULL default '',
+  `disposition` varchar(10) NOT NULL default '',
+*/
+		$aDyadicArray[] = array("src","dst","srcchan","dstchan","starttime","answertime","srcuid","dstuid","disposition");
+		while	($curcdr->fetchInto($row)){
+			$aDyadicArray[] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["srcuid"],$row["dstuid"],$row["disposition"]);
+			$i++;
+		}
+		$myChannels = common::generateTabelHtml($aDyadicArray);
+		$activeCalls = $i;
 	}
-	
-	$myChannels = common::generateTabelHtml($myInfo);
+
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
 //	$objResponse->addAssign("divActiveCalls", "innerHTML", uniqid(""));
