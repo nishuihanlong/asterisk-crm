@@ -92,8 +92,11 @@ class Common{
 			$html .= '
 							<a href="checkout.php" >Report</a> | <a href="rate.php" >Rate to Customer</a>';
 		}
-
-		$html .= ' | <a href="login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>';
+		if($_SESSION['curuser']['usertype'] == 'clid'){
+			$html .= ' | <a href="login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>';
+		}else{
+			$html .= ' | <a href="manager_login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>';
+		}
 		$html .= '</div>';
 
 		return $html;
