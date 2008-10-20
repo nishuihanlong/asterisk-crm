@@ -108,9 +108,16 @@ class asterEvent extends PEAR
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
-				if (strstr($list['src'],$exten)) {	// dial out
+				if($list['didnumber'] != '' ){
+					$didnumber = $list['didnumber'];
+				}else{
+					$sql = "SELECT didnumber FROM curcdr WHERE srcchan = '".$list['didnumber']."' AND didnumber != ''";
+					if($res_did = $db->getone($sql)) $didnumber = $res_did;
+				}
+					if (strstr($list['src'],$exten)) {	// dial out
 					$call['status'] = 'dialout';
 					$call['callerid'] = trim($list['dst']);
+					$call['didnumber'] = $didnumber;
 					$call['uniqueid'] = trim($list['srcuid']);
 					$call['curid'] = trim($list['id']);
 					$call['callerChannel'] = $list['srcchan'];
@@ -118,6 +125,7 @@ class asterEvent extends PEAR
 				}else{		//dial in
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
+					$call['didnumber'] = $didnumber;
 					$call['status'] = 'incoming';
 					$call['callerid'] = trim($list['src']);
 					$call['uniqueid'] = trim($list['srcuid']);

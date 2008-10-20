@@ -288,6 +288,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="divHangup" name="divHangup">
 			<input type="button" value="Hangup" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
+			<div id="divDIDinfo" name="divDIDinfo"></div>
 		</div><br>
 
 		<span id="spanTransfer" name="spanTransfer">
@@ -347,11 +348,11 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formContactInfo" class="formDiv drsElement"
 			style="left: 20px; top: 330px;"></div>
 		<div id="formCdr" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 850px"></div>
+			style="left: 20px; top: 330px; width: 900px"></div>
 		<div id="formRecentCdr" class="formDiv drsElement"
-			style="left: 20px; top: 50px; width: 420px"></div>		
+			style="left: 20px; top: 30px; width:600px"></div>		
 		<div id="formRecords" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 850px"></div>
+			style="left: 20px; top: 330px; width: 900px"></div>
 		<div id="formDiallist" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 850px"></div>
 		<div id="formaddDiallistInfo"  class="formDiv drsElement" 
@@ -365,7 +366,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 350px"></div>
+			style="left: 450px; top: 50px;width: 350px; z-index:200"></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 					</fieldset>

@@ -105,6 +105,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fields[] = 'calldate';
 		$fields[] = 'src';
 		$fields[] = 'dst';
+		$fields[] = 'didnumber';
 		$fields[] = 'duration';
 		$fields[] = 'billsec';
 		$fields[] = 'disposition';
@@ -114,30 +115,33 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 
 		// HTML table: Headers showed
 		$headers = array();
-		$headers[] = $locate->Translate("Calldate");
-		$headers[] = $locate->Translate("Src");
-		$headers[] = $locate->Translate("Dst");
-		$headers[] = $locate->Translate("Duration");
-		$headers[] = $locate->Translate("Billsec");
-		$headers[] = $locate->Translate("Disposition");
-		$headers[] = $locate->Translate("credit");
-		$headers[] = $locate->Translate("destination");
-		$headers[] = $locate->Translate("memo");
+		$headers[] = $locate->Translate("Calldate")."<br>";
+		$headers[] = $locate->Translate("Src")."<br>";
+		$headers[] = $locate->Translate("Dst")."<br>";
+		$headers[] = $locate->Translate("Callee Id")."<br>";
+		$headers[] = $locate->Translate("Duration")."<br>";
+		$headers[] = $locate->Translate("Billsec")."<br>";
+		$headers[] = $locate->Translate("Disposition")."<br>";
+		$headers[] = $locate->Translate("Credit")."<br>";
+		$headers[] = $locate->Translate("Destination")."<br>";
+		$headers[] = $locate->Translate("Memo")."<br>";
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
-		$attribsHeader[] = 'width="13%"';
 		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="13%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="12%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="12%"';
-		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="15%"';
+		$attribsHeader[] = 'width="15%"';
+		$attribsHeader[] = 'width="15%"';
+		$attribsHeader[] = 'width="6%"';
+		$attribsHeader[] = 'width="6%"';
+		$attribsHeader[] = 'width="6%"';
+		$attribsHeader[] = 'width="6%"';
+		$attribsHeader[] = 'width="6%"';
+		$attribsHeader[] = 'width="15%"';
 
 		// HTML Table: columns attributes
 		$attribsCols = array();
+		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
@@ -153,6 +157,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -179,6 +184,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fieldsFromSearch[] = 'src';
 		$fieldsFromSearch[] = 'calldate';
 		$fieldsFromSearch[] = 'dst';
+		$fieldsFromSearch[] = 'didnumber';
 		$fieldsFromSearch[] = 'billsec';
 		$fieldsFromSearch[] = 'disposition';
 		$fieldsFromSearch[] = 'credit';
@@ -190,6 +196,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fieldsFromSearchShowAs[] = $locate->Translate("src");
 		$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
 		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+		$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
 		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 		$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
 		$fieldsFromSearchShowAs[] = $locate->Translate("credit");
@@ -210,6 +217,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 			$rowc[] = $row['calldate'];
 			$rowc[] = $row['src'];
 			$rowc[] = $row['dst'];
+			$rowc[] = $row['didnumber'];
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
 			$rowc[] = $row['disposition'];

@@ -315,6 +315,7 @@ function incomingCalls($myValue){
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+			$objResponse->addAssign('divDIDinfo','innerHTML','');
 			if($myValue['btnWorkStatus'] == 'working') {				
 				$interval = $_SESSION['curuser']['dialinterval'];
 				$objResponse->addScript("autoDial('$interval');");
@@ -394,7 +395,6 @@ function waitingCalls($myValue){
 		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
 	//  end
 
-	//print_r($call);
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
 		$status	= 'idle';
@@ -417,8 +417,12 @@ function waitingCalls($myValue){
 			$infomsg .= astercrm::db2html($mytrunk['trunknote']);
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
 		}else{
-			$infomsg = "no information get for trunk: ".$trunk[0];
+			$infomsg = $locate->Translate("no information get for trunk").": ".$trunk[0];
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+		}
+		if($call['didnumber'] != ''){
+			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
+			$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
 		}
 
 		$objResponse->addAssign("btnHangup","disabled", false );
@@ -459,6 +463,10 @@ function waitingCalls($myValue){
 
 		$objResponse->addAssign("btnHangup","disabled", false );
 
+		if($call['didnumber'] != ''){
+			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;".$call['didnumber'];
+			$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
+		}
 
 		if ($config['system']['pop_up_when_dial_out']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length']){

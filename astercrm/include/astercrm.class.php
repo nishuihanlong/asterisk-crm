@@ -2226,6 +2226,7 @@ Class astercrm extends PEAR{
 			$fields[] = 'calldate';
 			$fields[] = 'src';
 			$fields[] = 'dst';
+			$fields[] = 'didnumber';
 			$fields[] = 'duration';
 			$fields[] = 'billsec';
 			$fields[] = 'record';
@@ -2235,6 +2236,7 @@ Class astercrm extends PEAR{
 			$headers[] = $locate->Translate("Calldate").'<br>';
 			$headers[] = $locate->Translate("Src").'<br>';
 			$headers[] = $locate->Translate("Dst").'<br>';
+			$headers[] = $locate->Translate("Callee Id").'<br>';
 			$headers[] = $locate->Translate("Duration").'<br>';
 			$headers[] = $locate->Translate("Billsec").'<br>';
 			$headers[] = $locate->Translate("record").'<br>';
@@ -2242,14 +2244,16 @@ Class astercrm extends PEAR{
 			// HTML table: hearders attributes
 			$attribsHeader = array();
 			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
 			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="13%"';
-			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="7%"';
 
 			// HTML Table: columns attributes
 			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
@@ -2262,6 +2266,7 @@ Class astercrm extends PEAR{
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","id","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';			
@@ -2271,6 +2276,7 @@ Class astercrm extends PEAR{
 			$fieldsFromSearch[] = 'src';
 			$fieldsFromSearch[] = 'calldate';
 			$fieldsFromSearch[] = 'dst';
+			$fieldsFromSearch[] = 'didnumber';
 			$fieldsFromSearch[] = 'billsec';
 
 			// Selecct Box: Labels showed on search select box.
@@ -2278,10 +2284,11 @@ Class astercrm extends PEAR{
 			$fieldsFromSearchShowAs[] = $locate->Translate("src");
 			$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
 			$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+			$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
 			$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 
 			// Create object whit 5 cols and all data arrays set before.
-			$table = new ScrollTable(5,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
+			$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 			$table->setAttribsCols($attribsCols);
 			$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -2293,6 +2300,7 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['calldate'];
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
+				$rowc[] = $row['didnumber'];
 				$rowc[] = $row['duration'];
 				$rowc[] = $row['billsec'];
 				$rowc['filename'] = $row['filename'];
@@ -2304,6 +2312,7 @@ Class astercrm extends PEAR{
 			$fields[] = 'calldate';
 			$fields[] = 'src';
 			$fields[] = 'dst';
+			$fields[] = 'didnumber';
 			$fields[] = 'duration';
 			$fields[] = 'billsec';
 			$fields[] = 'disposition';
@@ -2316,6 +2325,7 @@ Class astercrm extends PEAR{
 			$headers[] = $locate->Translate("Calldate").'<br>';
 			$headers[] = $locate->Translate("Src").'<br>';
 			$headers[] = $locate->Translate("Dst").'<br>';
+			$headers[] = $locate->Translate("Callee Id").'<br>';
 			$headers[] = $locate->Translate("Duration").'<br>';
 			$headers[] = $locate->Translate("Billsec").'<br>';
 			$headers[] = $locate->Translate("Disposition").'<br>';
@@ -2325,18 +2335,20 @@ Class astercrm extends PEAR{
 
 			// HTML table: hearders attributes
 			$attribsHeader = array();
-			$attribsHeader[] = 'width="13%"';
 			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="13%"';
-			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="12%"';
-			$attribsHeader[] = 'width="10%"';
-			$attribsHeader[] = 'width="12%"';
-			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="6%"';
+			$attribsHeader[] = 'width="6%"';
+			$attribsHeader[] = 'width="6%"';
+			$attribsHeader[] = 'width="6%"';
+			$attribsHeader[] = 'width="6%"';
+			$attribsHeader[] = 'width="15%"';
 
 			// HTML Table: columns attributes
 			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
@@ -2352,6 +2364,7 @@ Class astercrm extends PEAR{
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -2378,6 +2391,7 @@ Class astercrm extends PEAR{
 			$fieldsFromSearch[] = 'src';
 			$fieldsFromSearch[] = 'calldate';
 			$fieldsFromSearch[] = 'dst';
+			$fieldsFromSearch[] = 'didnumber';
 			$fieldsFromSearch[] = 'billsec';
 			$fieldsFromSearch[] = 'disposition';
 			$fieldsFromSearch[] = 'credit';
@@ -2389,6 +2403,7 @@ Class astercrm extends PEAR{
 			$fieldsFromSearchShowAs[] = $locate->Translate("src");
 			$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
 			$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+			$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
 			$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 			$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
 			$fieldsFromSearchShowAs[] = $locate->Translate("credit");
@@ -2409,6 +2424,7 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['calldate'];
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
+				$rowc[] = $row['didnumber'];
 				$rowc[] = $row['duration'];
 				$rowc[] = $row['billsec'];
 				$rowc[] = $row['disposition'];

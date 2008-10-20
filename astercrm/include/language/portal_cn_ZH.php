@@ -56,7 +56,7 @@ $inbound="呼入记录";
 $diallist="拨号列表";
 $calldate="时间";
 $src="主叫";
-$dst="被叫";
+$dst="目标号码";
 $duration="时长";
 $billsec="接通";
 $disposition="状态";
@@ -85,4 +85,6 @@ $exten_in_use = "你的分机正在通话中，不能再次拨号";
 $google_map_no_key = "google map key 为空，请申请并设置它";
 $start_work = "开始拨号";
 $stop_work = "停止拨号";
+$callee_id = "被叫号码";
+$record = "录音";
 ?>
