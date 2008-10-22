@@ -1,4 +1,6 @@
 
+-- last modified by solo 2008-10-22, added table `qagent`,`qname`, `queue_stats`, `queue_agent`, `qagent_event`, `queue_caller`
+
 -- 
 -- 主机: 127.0.0.1
 -- 生成日期: 2008 年 03 月 11 日 21:05
@@ -738,6 +740,151 @@ CREATE TABLE IF NOT EXISTS `speeddial` (
   `creby` VARCHAR( 30 ) NOT NULL ,
   `cretime` DATETIME NOT NULL ,
   UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+
+CREATE TABLE `sip_show_peers` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `username` varchar(50) NOT NULL default '',
+  `host` varchar(50) NOT NULL default '',
+  `dyn` char(1) NOT NULL default '',
+  `nat` char(1) NOT NULL default '',
+  `port` varchar(5) NOT NULL default '',
+  `status` varchar(20) NOT NULL default '',
+  `freshtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `pbxserver` varchar(50) NOT NULL default '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+
+####### FOR QUEUE STATS ###########
+
+CREATE TABLE `qagent` (
+  agent_id int(6) NOT NULL auto_increment,
+  agent varchar(40) NOT NULL default '',
+  PRIMARY KEY  (agent_id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table `qevent`
+--
+
+CREATE TABLE `qevent` (
+  event_id int(2) NOT NULL default '0',
+  event varchar(40) default NULL,
+  PRIMARY KEY  (event_id)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+--
+-- Dumping data for table `qevent`
+--
+
+
+INSERT INTO qevent VALUES (1,'ABANDON');
+INSERT INTO qevent VALUES (2,'AGENTDUMP');
+INSERT INTO qevent VALUES (3,'AGENTLOGIN');
+INSERT INTO qevent VALUES (4,'AGENTCALLBACKLOGIN');
+INSERT INTO qevent VALUES (5,'AGENTLOGOFF');
+INSERT INTO qevent VALUES (6,'AGENTCALLBACKLOGOFF');
+INSERT INTO qevent VALUES (7,'COMPLETEAGENT');
+INSERT INTO qevent VALUES (8,'COMPLETECALLER');
+INSERT INTO qevent VALUES (9,'CONFIGRELOAD');
+INSERT INTO qevent VALUES (10,'CONNECT');
+INSERT INTO qevent VALUES (11,'ENTERQUEUE');
+INSERT INTO qevent VALUES (12,'EXITWITHKEY');
+INSERT INTO qevent VALUES (13,'EXITWITHTIMEOUT');
+INSERT INTO qevent VALUES (14,'QUEUESTART');
+INSERT INTO qevent VALUES (15,'SYSCOMPAT');
+INSERT INTO qevent VALUES (16,'TRANSFER');
+INSERT INTO qevent VALUES (17,'PAUSE');
+INSERT INTO qevent VALUES (18,'UNPAUSE');
+INSERT INTO qevent VALUES (19,'RINGNOANSWER');
+
+
+--
+-- Table structure for table `qname`
+--
+
+CREATE TABLE `qname` (
+  qname_id int(6) NOT NULL auto_increment,
+  queue varchar(40) NOT NULL default '',
+  PRIMARY KEY  (qname_id)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+--
+-- Table structure for table `queue_stats`
+--
+
+CREATE TABLE `queue_stats` (
+  queue_stats_id int(12) NOT NULL auto_increment,
+  uniqueid varchar(40) default NULL,
+  datetime datetime NOT NULL default '0000-00-00 00:00:00',
+  qname int(6) default NULL,
+  qagent int(6) default NULL,
+  qevent int(2) default NULL,
+  info1 varchar(40) default NULL,
+  info2 varchar(40) default NULL,
+  info3 varchar(40) default NULL,
+  src varchar(32) default NULL,
+  dst varchar(32) default NULL,
+ PRIMARY KEY  (queue_stats_id),
+  UNIQUE KEY unico (datetime,qname,qagent,qevent)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+-- 
+-- 表的结构 `queue_name`
+-- 
+
+CREATE TABLE `queue_name` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `queuename` varchar(32) NOT NULL default '',
+  `curcalls` int NOT NULL default 0,
+  `limit_type` varchar(32) NOT NULL default '',
+  `strategy` varchar(32) NOT NULL default '',
+  `holdtime` int NOT NULL default 0,
+  `w` int NOT NULL default 0,
+  `calls_answered` int NOT NULL default 0,
+  `calls_unanswered` int NOT NULL default 0,
+  `service_level` int NOT NULL default 0,
+  `t` int NOT NULL default 0,
+  `data` varchar(255) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY unico (`queuename`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+-- 
+-- 表的结构 `queue_agent`
+-- 
+
+CREATE TABLE `queue_agent` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `queuename` varchar(32) NOT NULL default '',
+  `agent` varchar(32) NOT NULL default '',
+  `status` varchar(16) NOT NULL default '',
+  `takencalls` int NOT NULL default 0,
+  `lastcall` int NOT NULL default 0,
+  `data` varchar(255) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+-- 
+-- 表的结构 `queue_caller`
+-- 
+
+CREATE TABLE `queue_caller` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `queuename` varchar(32) NOT NULL default '',
+  `corder` int NOT NULL default 0,
+  `caller` varchar(32) NOT NULL default '',
+  `waittime` int NOT NULL default 0,
+  `prio` int NOT NULL default 0,
+  `data` varchar(255) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ----------------------------------------------------------
