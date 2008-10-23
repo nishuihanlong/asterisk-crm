@@ -120,7 +120,7 @@ function showChannelsInfo(){
 			$i++;
 		}
 		$myChannels = common::generateTabelHtml($aDyadicArray);
-		$activeCalls = $i;
+		$activeCalls = $i." active calls";
 	}
 
 	$objResponse = new xajaxResponse();
@@ -190,41 +190,70 @@ function showPredictiveDialer($preDictiveDialerStatus,$groupid,$campaignid){
 	return $objResponse;
 }
 
-function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid){
+function predictiveDialer($maxChannels,$totalRecords,$groupid,$campaignid,$strategy,$rate){
 	global $config,$db,$locate;
 	$objResponse = new xajaxResponse();
+	if ($strategy == "freeagent"){
+			# get queue name
+			$campaign = astercrm::getRecordById($campaignid,"campaign");
+			if ($campaign['queuename'] == ""){
+				$objResponse->addAlert($locate->Translate("there is no queue set in this campaign"));
+				return $objResponse;
+			}
+			# get free agent in the queue
+			$query = "SELECT COUNT(*) FROM queue_agent WHERE queuename = '".$campaign['queuename']."' AND status = 'Not in use' ";
+			$maxChannels = $db->getOne($query);
+			if ($maxChannels > 0){
+				$maxChannels = intval($maxChannels * (1+ $rate / 100));
+			}
+	}
 	
 	$myAsterisk = new Asterisk();
 
 	//获取一个号码
 	$row =& astercrm::getDialNumber($groupid,$campaignid);
 	//$grouprow = & astercrm::getRecordByField("groupid",$row['groupid'],"accountgroup");
+
 	$pdextension = $row['inexten']; 
-	if($row['incontext'] != '') $pdcontext = $row['incontext'];
-	else $pdcontext = $config['system']['incontext'];
-	if($row['outcontext'] != '') $outcontext = $row['outcontext'];
-	else $outcontext = $config['system']['outcontext'];
+	if($row['incontext'] != ''){
+		$pdcontext = $row['incontext'];
+	}	else{
+		$pdcontext = $config['system']['incontext'];
+	}
+
+	if($row['outcontext'] != ''){
+		$outcontext = $row['outcontext'];
+	}	else{
+		$outcontext = $config['system']['outcontext'];
+	}
 
 	if ($row['id'] == ''){
 		$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("no_phonenumber_in_database"));
 		$objResponse->addScript("stopDial();");
 		return $objResponse;
 	} else {
-		// get active channel
-		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
-		$channels = split(chr(10),$channels[1]);
-		//trim the first two records and the last three records
+		if ($config['system']['eventtype'] == 'event'){
 
-		array_pop($channels); 
-		$activeCalls = array_pop($channels); 
-		$activeChannels = array_pop($channels); 
-		
-		$curCalls = split(" ",$activeCalls);
-		$curCalls = $curCalls[0];
+			// get active channel
+			$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
+			$channels = split(chr(10),$channels[1]);
+			//trim the first two records and the last three records
+
+			array_pop($channels); 
+			$activeCalls = array_pop($channels); 
+			$activeChannels = array_pop($channels); 
+			
+			$curCalls = split(" ",$activeCalls);
+			$curCalls = $curCalls[0];
+		}else{
+			$curCalls = astercrm::getCountByField("","","curcdr");
+		}
+
 		if ($curCalls >= $maxChannels){
 			$objResponse->addAssign("divPredictiveDialerMsg", "innerHTML", $locate->Translate("reach_maximum_concurrent_calls"));
 			return $objResponse;
 		}
+
 		//place calls
 		$placeCallsNumber = $maxCahnnels - $curCalls ;
 

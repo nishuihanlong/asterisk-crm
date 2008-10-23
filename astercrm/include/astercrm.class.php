@@ -1219,16 +1219,16 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
-	function getCountByField($field,$value,$table){
+	function getCountByField($field = '',$value = '',$table){
 		global $db;
 		$value = preg_replace("/'/","\\'",$value);
 		if (is_numeric($value)){
 			$query = "SELECT count(*) FROM $table WHERE $field = $value";
 		}else{
-			if ($value == null)
-				$query = "SELECT count(*) FROM $table ";
-			else
+			if ($field != '' || $value != '')
 				$query = "SELECT count(*) FROM $table WHERE $field = '$value'";
+			else
+				$query = "SELECT count(*) FROM $table ";
 		}
 		astercrm::events($query);
 		$row =& $db->getOne($query);
@@ -1802,11 +1802,11 @@ Class astercrm extends PEAR{
 	function getDialNumber($groupid = '', $campaignid = ''){
 		global $db;
 		if ($campaignid != ''){
-			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.campaignid = $campaignid ";
+			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext,campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.campaignid = $campaignid ";
 		}elseif ($groupid != ''){
-			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.groupid = $groupid ";
+			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext,campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.groupid = $groupid ";
 		}else{
-			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid";
+			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext,campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid";
 		}
 
 		$query .=  " ORDER BY diallist.id DESC	LIMIT 0,1";

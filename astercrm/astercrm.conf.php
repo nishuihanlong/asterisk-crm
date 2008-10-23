@@ -1,4 +1,4 @@
-<? = 
+;<?
 [database]
 ;
 ; Database connection parameter
@@ -18,7 +18,7 @@ server = 127.0.0.1
 ;should be matched in manager.conf
 port = 5038
 username = admin
-secret = admin
+secret = amp111
 
 ; Recorded file path
 monitorpath = /var/spool/asterisk/monitor/
@@ -144,4 +144,4 @@ detail_level = all
 [google-map]
 
 key = 
-?> = 
+;?>

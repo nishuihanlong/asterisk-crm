@@ -76,7 +76,26 @@ require_once('predictivedialer.common.php');
 				}
 			}
 
+			function get_radio_value(field){ 
+				if (field && field.length){
+						for (var i = 0; i < field.length; i++){ 
+								if (field[i].checked){
+										return field[i].value; 
+								} 
+						} 
+				}else{ 
+						return;     
+				} 
+			}
+
 			function startDial(){
+
+				if (! checkCampaign() ){
+					return false;
+				}
+				// get dial Strategy
+				strategy = get_radio_value(document.getElementsByName("dialStrategy"));
+				rate = document.getElementById("rate").value;
 
 				maxActiveCalls = xajax.$('fldMaxActiveCalls').value;
 				if (!isNumber(maxActiveCalls)){
@@ -84,7 +103,7 @@ require_once('predictivedialer.common.php');
 					stopDial();
 					return;
 				}
-					
+
 				xajax.$('btnDial').value = xajax.$('btnStopMsg').value;
 
 				totalRecordsHTML = trim(xajax.$('spanTotalRecords').innerHTML);
@@ -96,10 +115,10 @@ require_once('predictivedialer.common.php');
 				}
 				var groupid = document.getElementById('groupid').value;
 				var campaignid = document.getElementById('campaignid').value;
-				xajax_predictiveDialer(maxActiveCalls,totalRecords,groupid,campaignid);
 				xajax.$('predictiveDialerStatus').value = "dialing";
-				timerPredictiveDialer = setTimeout("startDial()", 2000);
 
+				xajax_predictiveDialer(maxActiveCalls,totalRecords,groupid,campaignid,strategy,rate);
+				timerPredictiveDialer = setTimeout("startDial()", 1000);
 			}
 			
 			function stopDial(){
@@ -145,6 +164,18 @@ require_once('predictivedialer.common.php');
 					xajax_setCampaign(groupid);
 			}
 
+			function checkCampaign(){
+				if (document.getElementById("campaignid").value == 0){
+					document.getElementById("campaignid").value 
+					alert("please select a campaign");
+					document.getElementById("freeagent").checked = false;
+					document.getElementById("maxcall").checked = true;
+					return false;
+				}else{
+					return true;
+				}
+			}
+
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -159,18 +190,27 @@ require_once('predictivedialer.common.php');
 		<div id="divAMIStatus" name="divAMIStatus"></div>
 
 		<div id="divGroup" name="divGroup">
+			Group:
 			<SELECT id="groupid" name="groupid" onchange="setCampaign();showPredictiveDialer();">
 			</SELECT>
+			Campaign:
 			<SELECT id="campaignid" name="campaignid" onchange="showPredictiveDialer();">
 			</SELECT>
 		</div>
 		<span id="spanTotalRecords" name="spanTotalRecords" align="left"></span><!--&nbsp;&nbsp;records left-->
-		<div id="divPredictiveDialerMsg" name="divPredictiveDialerMsg" align="left"> </div>
-	
+		<br>
+		<div id="divPredictiveDialerMsg" name="divPredictiveDialerMsg" align="left"></div>
+		<br>
+
 		<div id="divPredictiveDialer" name="divPredictiveDialer" align="left" style="display:none;">
 			<div id="divActiveCalls" name="divActiveCalls" align="left"> </div>
-			<input type="button" value="Dial" id="btnDial" name="btnDial" onClick="btnDialOnClick();">&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="text" size="10" value="5" maxlength="3" id="fldMaxActiveCalls" name="fldMaxActiveCalls">
+			<input type="button" value="Dial" id="btnDial" name="btnDial" onClick="btnDialOnClick();">
+			&nbsp;&nbsp;&nbsp;&nbsp;By&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="radio"  name="dialStrategy" value="maxcall" checked id="maxcall">
+			<input type="text" size="3" value="5" maxlength="3" id="fldMaxActiveCalls" name="fldMaxActiveCalls"> Max Calls
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="radio"  name="dialStrategy" value="freeagent" onclick="checkCampaign(this);" id="freeagent">
+			free agents in queue and increase <input type="text" size="2" value="10" maxlength="3" id="rate" name="rate">%<br>
 
 			<input type="hidden" value="Dial" id="btnDialMsg" name="btnDialMsg">
 			<input type="hidden" value="Stop" id="btnStopMsg" name="btnStopMsg">
