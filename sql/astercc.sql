@@ -1,5 +1,11 @@
 
--- last modified by solo 2008-10-22, added table `qagent`,`qname`, `queue_stats`, `queue_agent`, `qagent_event`, `queue_caller`
+-- last modified by solo 2008-10-22
+-- added table `qagent`,`qname`, `queue_stats`, `queue_agent`, `qagent_event`, `queue_caller`
+-- last modified by solo 2008-10-23
+-- add fields astercrm_account.firstname, astercrm_account.lastname, astercrm_account.agent,
+-- astercrm_accountgroup.groupnote, contact.fax_ext, customer.country, customer.fax_ext, customer.phone_ext
+
+-- change filed, customer.category, astercrm_account.extension
 
 -- 
 -- 主机: 127.0.0.1
@@ -357,7 +363,10 @@ CREATE TABLE IF NOT EXISTS `astercrm_account` (
  `id` int(11) NOT NULL auto_increment,
  `username` varchar(30) NOT NULL default '',
  `password` varchar(30) NOT NULL default '',
- `extension` varchar(30) NOT NULL default '',
+ `firstname` varchar(15) NOT NULL default '',		-- 名
+ `lastname` varchar(15) NOT NULL default '',		-- 姓
+ `agent` varchar(15) NOT NULL default '',		-- 座席号码
+ `extension` varchar(15) NOT NULL default '',
  `extensions` varchar(200) NOT NULL default '',
  `channel` varchar(30) NOT NULL default '',
  `usertype` varchar(20) NOT NULL default '',
@@ -408,6 +417,7 @@ CREATE TABLE IF NOT EXISTS `queuestatus` (
 CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
  `groupname` VARCHAR( 30 ) NOT NULL ,
+ `groupnote` VARCHAR( 255 ) NOT NULL ,				-- 组描述
  `groupid` INT NOT NULL ,
  `pdcontext` VARCHAR( 30 ) NOT NULL  ,
  `pdextension` VARCHAR( 30 ) NOT NULL  ,
@@ -459,6 +469,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
  `ext2` varchar(8) NOT NULL default '',
  `mobile` varchar(50) NOT NULL default '',
  `fax` varchar(50) NOT NULL default '',
+ `fax_ext` varchar(8) NOT NULL default '',					--传真分机
  `email` varchar(100) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
@@ -479,11 +490,14 @@ CREATE TABLE IF NOT EXISTS `customer` (
  `address` varchar(200) NOT NULL default '',
  `zipcode` varchar(10) NOT NULL default '',
  `website` varchar(100) NOT NULL default '',
- `category` varchar(20) NOT NULL default '',
+ `category` varchar(255) NOT NULL default '',
  `city`	varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
  `state` varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
+ `country` varchar(50) NOT NULL default '',			--国家
  `phone` varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
+ `phone_ext` varchar(8) NOT NULL default '',		#add 2008-10-24 by solo
  `fax` varchar(50) NOT NULL default '',		#add 2007-10-24 by solo
+ `fax_ext` varchar(8) NOT NULL default '',		#add 2008-10-24 by solo
  `mobile` varchar(50) NOT NULL default '',	#add 2007-10-24 by solo
  `email` varchar(50) NOT NULL default '',	#add 2007-10-24 by solo
  `contact` varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
@@ -660,8 +674,8 @@ CREATE TABLE IF NOT EXISTS `monitorrecord` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `callerid` VARCHAR( 20 ) NOT NULL ,
  `filename` VARCHAR( 128 ) NOT NULL ,
- `groupid` INT NOT NULL ,
- `extension` VARCHAR( 30 ) NOT NULL ,
+ `groupid` INT NOT NULL DEFAULT 0,
+ `extension` VARCHAR( 15 ) NOT NULL ,
  `uniqueid` varchar(20) NOT NULL default '',
  `creby` VARCHAR( 30 ) NOT NULL ,
  `cretime` DATETIME NOT NULL ,
@@ -853,7 +867,7 @@ CREATE TABLE `queue_name` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY unico (`queuename`)
-) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 -- 
 -- 表的结构 `queue_agent`
@@ -869,7 +883,7 @@ CREATE TABLE `queue_agent` (
   `data` varchar(255) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 -- 
 -- 表的结构 `queue_caller`
@@ -885,7 +899,7 @@ CREATE TABLE `queue_caller` (
   `data` varchar(255) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ----------------------------------------------------------
 
