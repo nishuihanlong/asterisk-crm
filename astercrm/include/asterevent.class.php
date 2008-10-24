@@ -99,13 +99,11 @@ class asterEvent extends PEAR
 		global $db,$config;
 		//echo $exten;
 		if ($config['system']['eventtype'] == 'curcdr'){
-			if($_SESSION['curuser']['mode'] == 'agent'){
-				$query="SELECT * FROM curcdr WHERE dstchan = 'AGENT/".$_SESSION['curuser']['agent']."' AND id > $curid";
-			}elseif (strstr($exten,"/")){
+			if (strstr($exten,"/")){
 				$exten = ltrim(strstr($exten,"/"),"/");
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten' OR dstchan = 'AGENT/".$_SESSION['curuser']['agent']."') AND dstchan != '' AND id > $curid AND src != '' AND dst != ''";
 			}else{
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
+				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten' OR dstchan = 'AGENT/".$_SESSION['curuser']['agent']."') AND dstchan != '' AND id > $curid AND src != '' AND dst != ''";
 			}
 			//echo $query;exit;
 			$res = $db->query($query);
@@ -165,11 +163,9 @@ class asterEvent extends PEAR
 	function checkCallStatus($curid,$uniqueid){
 		global $db,$config;
 		if ($config['system']['eventtype'] == 'curcdr'){
-			if($_SESSION['curuser']['mode'] == 'agent'){
-				$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND dstchan = 'AGENT/".$_SESSION['curuser']['agent']."'";
-			}else{
-				$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (dst LIKE '%".$_SESSION['curuser']['extension']."' OR src LIKE '%".$_SESSION['curuser']['extension']."')";
-			}
+
+			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (dst LIKE '%".$_SESSION['curuser']['extension']."' OR src LIKE '%".$_SESSION['curuser']['extension']."'  OR dstchan = 'AGENT/".$_SESSION['curuser']['agent']."')";
+			
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
@@ -219,8 +215,8 @@ class asterEvent extends PEAR
 			$i = 0;
 			foreach($_SESSION['curuser']['extensions'] as $value ){
 				$row = astercrm::getRecordByField('username',$value,'astercrm_account');
-				$panellist[$i]['phones'] = $row['extension'];
-				$panellist[$i]['username'] = $row['username'];
+				$panellist[$row['extension']]['username'] = $row['username'];
+				$panellist[$row['extension']]['agent'] = $row['agent'];
 				$panelphones[] = $row['extension'];
 				$i++;
 			}
@@ -244,25 +240,23 @@ class asterEvent extends PEAR
 			$direction = $_SESSION['direction'];
 		}
 
-		if (!isset($panelphones) or $panelphones == '')
-			$phones = array();
-		else
-			$phones = $panelphones;
+		if (!isset($panelphones) or $panelphones == '') $panelphones = array();
 
 		if($config['system']['eventtype'] == 'curcdr'){
 			$events =& asterEvent::getPeerstatus(0);
 			while ($events->fetchInto($list)) {
-				if (!in_array($list['peer'],$phones)) $phones[] = $list['peer'];
+				if (!in_array($list['peer'],$panelphones)) $panelphones[] = $list['peer'];
 				$peer = split("\/",trim($list['peer']));
 				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2; continue;}
-				if ($list['status']  == "reachable"){			
-					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]' OR dst='LOCAL/$peer[1]' OR dst='SIP/$peer[1]' OR dst='IAX2/$peer[1]') AND src != '' AND dst != ''";
+				if ($list['status']  == "reachable"){
+					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]' OR dst='LOCAL/$peer[1]' OR dst='SIP/$peer[1]' OR dst='IAX2/$peer[1]' OR dstchan = 'AGENT/".$panellist[$peer[1]]['agent']."') AND src != '' AND dst != '' AND dstchan != '' ORDER BY id DESC";
+					//echo $query;exit;
 					$res = $db->query($query);				
 					asterEvent::events($query);
 					if ($res->fetchInto($cdrrow)) {
 						if ($status[$list['peer']] == 1) continue;
 						if (strstr($cdrrow['src'],$peer[1]) ) {	// dial out
-							$callerid[$list['peer']] = trim($cdrrow['dst']);
+							$callerid[$list['peer']] = trim($cdrrow['didnumber']);
 							$direction[$list['peer']] = "dialout";
 							$status[$list['peer']] = 1;
 						}else{		//dial in
@@ -342,7 +336,7 @@ class asterEvent extends PEAR
 			   } 
 			} 
 		}
-//		print_r($phones);print_r($status);print_r($callerid);print_r($direction);exit;
+		//print_r($phones);print_r($status);print_r($callerid);print_r($direction);exit;
 		if ($type == 'list'){
 			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == ''){
 				$phones = array();
@@ -353,7 +347,7 @@ class asterEvent extends PEAR
 			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction);
 		}else{
 			//$_SESSION['curuser']['extensions_session'] = $phones;
-			$action =& asterEvent::tableStatus($phones,$status,$callerid,$direction);
+			$action =& asterEvent::tableStatus($panelphones,$status,$callerid,$direction);
 		}
 //print_r($status);exit;
 		$_SESSION['extension_status'] = $status;
@@ -421,40 +415,39 @@ class asterEvent extends PEAR
 	*/
 
 	function &listStatus($phones,$status,$callerid,$direction){
-//print_r($phones);exit;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $key => $row) {
-			//print_r($row['phones']);exit;
-			if (!strstr($row['phones'],'SIP/'))
-				$row['phones'] = "SIP/".$row['phones'];
-			$action .= "<tr><td align=center><button name='" . substr($row['phones'],4)."'";
-			$iaxkey = str_replace('SIP','IAX2',$row['phones']);			
-			if (isset($status[$row['phones']]) || isset($status[$iaxkey])) {
-				if ($status[$row['phones']] == 2 || $status[$iaxkey] == 2) {
-					$action .= " onclick=\"dial('".substr($row['phones'],4)."','callee');return false;\" id='ButtonU'>\n";
+			//print_r($row);exit;
+			if (!strstr($key,'SIP/'))
+				$key = "SIP/".$key;
+			$action .= "<tr><td align=center><button name='" . substr($key,4)."'";
+			$iaxkey = str_replace('SIP','IAX2',$key);			
+			if (isset($status[$key]) || isset($status[$iaxkey])) {
+				if ($status[$key] == 2 || $status[$iaxkey] == 2) {
+					$action .= " onclick=\"dial('".substr($key,4)."','callee');return false;\" id='ButtonU'>\n";
 				}
 				else {
-					if ($status[$row['phones']] == 1 || $status[$iaxkey] == 1) {
-						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($row['phones'],4)."');return false;\" id='ButtonR'>\n";
+					if ($status[$key] == 1 || $status[$iaxkey] == 1) {
+						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($key,4)."');return false;\" id='ButtonR'>\n";
 					}
 					else {
-						$action .= " onclick=\"dial ('".substr($row['phones'],4)."','callee');return false;\" id='ButtonG'>\n";
+						$action .= " onclick=\"dial ('".substr($key,4)."','callee');return false;\" id='ButtonG'>\n";
 					}
 				}
 			}
 			else {
-				$action .= " onclick=\"dial ('".substr($row['phones'],4)."','callee');return false;\" id='ButtonB'>\n";
+				$action .= " onclick=\"dial ('".substr($key,4)."','callee');return false;\" id='ButtonB'>\n";
 			}
 			$action .= $row['username'];
 			$action .= "</button>\n";
-			if ($status[$row['phones']] == 1 || $status[$iaxkey] == 1) {
+			if ($status[$key] == 1 || $status[$iaxkey] == 1) {
 				//$action .= "<span align=left>";
 				if ($status[$iaxkey] == 1) {
 					$action .= "<BR>".$direction[$iaxkey];
 					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$iaxkey]."');return false;\">".$callerid[$iaxkey]."</a>";
 				}else {
-					$action .= "<BR>".$direction[$row['phones']];
-					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$row['phones']]."');return false;\">".$callerid[$row['phones']]."</a>";
+					$action .= "<BR>".$direction[$key];
+					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$key]."');return false;\">".$callerid[$key]."</a>";
 				}
 				
 				//$action .= "</span>";

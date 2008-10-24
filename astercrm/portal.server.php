@@ -184,7 +184,8 @@ function init(){
 
 	foreach ($_SESSION['curuser']['extensions'] as $extension){
 		$extension = trim($extension);
-		$objResponse->addScript("addOption('sltExten','$extension','$extension');");
+		$row = astercrm::getRecordByField('username',$extension,'astercrm_account');		
+		$objResponse->addScript("addOption('sltExten','".$row['extension']."','$extension');");
 	}
 	$speeddial = & Customer::getAllSpeedDialRecords();
 	$speednumber['0']['number'] = $_SESSION['curuser']['extension'];
@@ -233,22 +234,6 @@ function init(){
 */
 function listenCalls($aFormValues){
 	$objResponse = new xajaxResponse();
-
-	if($_SESSION['curuser']['agent'] != ''){//if use dynamic agent mode
-		$agent = astercrm::getRecordByField('agent','AGENT/'.$_SESSION['curuser']['agent'],'queue_agent');
-		//print_r($agent);exit;
-		if($agent['status'] == 'Unavailable' || $agent['status'] == ''){
-			$_SESSION['curuser']['mode'] = 'extension';
-		}else{
-			if($_SESSION['curuser']['mode'] == 'extension'){
-				$objResponse->addAssign('divDIDinfo','innerHTML','');
-				$objResponse->addAssign("btnHangup","disabled", true);
-				$objResponse->addAssign("uniqueid","value", "" );
-				$aFormValues['uniqueid'] = '';
-			}
-			$_SESSION['curuser']['mode'] = 'agent';
-		}
-	}
 
 	if ($aFormValues['uniqueid'] == ''){
 		$objResponse->loadXML(waitingCalls($aFormValues));
