@@ -156,6 +156,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'username';
 	$fields[] = 'password';
 	$fields[] = 'extension';
+	$fields[] = 'agent';
 	$fields[] = 'extensions';
 	$fields[] = 'usertype';
 	$fields[] = 'groupname';
@@ -165,12 +166,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("username")."<BR \>";
 	$headers[] = $locate->Translate("password")."<BR \>";
 	$headers[] = $locate->Translate("extension")."<BR \>";
+	$headers[] = $locate->Translate("dynamic agent")."<BR \>";
 	$headers[] = $locate->Translate("extensions").','.$locate->Translate("extensions_note")."<BR \>";
 	$headers[] = $locate->Translate("usertype").'<BR \>'.$locate->Translate("usertype_note")."";
 	$headers[] = $locate->Translate("Group Name")."<BR \>";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -186,12 +189,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","password","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extension","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","agent","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
@@ -201,6 +206,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'username';
 	$fieldsFromSearch[] = 'password';
 	$fieldsFromSearch[] = 'extension';
+	$fieldsFromSearch[] = 'agent';
 	$fieldsFromSearch[] = 'extensions';
 	$fieldsFromSearch[] = 'usertype';
 	$fieldsFromSearch[] = 'groupname';
@@ -210,13 +216,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("username");
 	$fieldsFromSearchShowAs[] = $locate->Translate("password");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extension");
+	$fieldsFromSearchShowAs[] = $locate->Translate("dynamic agent");
 	$fieldsFromSearchShowAs[] = $locate->Translate("extensions");
 	$fieldsFromSearchShowAs[] = $locate->Translate("User Type");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 
 
 	// Create object whit 5 cols and all data arrays set before.
-	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
+	$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
 	$table->setAttribsCols($attribsCols);
 	$table->addRowSearchMore("astercrm_account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -228,6 +235,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['username'];
 		$rowc[] = $row['password'];
 		$rowc[] = $row['extension'];
+		$rowc[] = $row['agent'];
 		$rowc[] = $row['extensions'];
 		$rowc[] = $row['usertype'];
 		$rowc[] = $row['groupname'];
@@ -272,7 +280,7 @@ function save($f){
 	$objResponse = new xajaxResponse();
 	$username = $f['username'];
 	$userid = astercrm::checkValues("astercrm_account","username",$username);
-	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == ''){
+	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
@@ -283,13 +291,13 @@ function save($f){
 	
 	// check if the assign number belong to this group
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
-		$myextensions = split(",",$f['extensions']);
+		$myusernames = split(",",$f['extensions']);
 		$newextensions = "";
 
-		foreach ($myextensions as $myextension){
-			foreach ($_SESSION['curuser']['memberExtens'] as $extension){
-				if ($extension == $myextension){
-					$newextensions .= ",$myextension";
+		foreach ($myusernames as $myusername){
+			foreach ($_SESSION['curuser']['memberNames'] as $username){
+				if ($username == $myusername){
+					$newextensions .= ",$myusername";
 					break;
 				}
 			}
@@ -327,20 +335,20 @@ function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
-	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == ''){
+	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
 
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		// check if the assign number belong to this group
-		$myextensions = split(",",$f['extensions']);
+		$myusernames = split(",",$f['extensions']);
 		$newextensions = "";
 
-		foreach ($myextensions as $myextension){
-			foreach ($_SESSION['curuser']['memberExtens'] as $extension){
-				if ($extension == $myextension){
-					$newextensions .= ",$myextension";
+		foreach ($myusernames as $myusername){
+			foreach ($_SESSION['curuser']['memberNames'] as $username){
+				if ($username == $myusername){
+					$newextensions .= ",$myusername";
 					break;
 				}
 			}

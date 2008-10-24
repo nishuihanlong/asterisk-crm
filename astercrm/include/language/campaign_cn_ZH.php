@@ -14,4 +14,6 @@ $group = '分组名称';
 $dialed = '已拨列表';
 $dial_list = '拨号列表';
 $obligatory_fields = '* 为必填项';
+$max_trytime = '最大重拨次数';
+$queue_name = '队列名称';
 ?>

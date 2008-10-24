@@ -250,8 +250,20 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("first name").'*</td>
+					<td align="left"><input type="text" id="firstname" name="firstname" size="25" maxlength="15"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("last name").'*</td>
+					<td align="left"><input type="text" id="lastname" name="lastname" size="25" maxlength="15"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'*</td>
-					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="15"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("dynamic agent").'</td>
+					<td align="left"><input type="text" id="agent" name="agent" size="25" maxlength="15"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
@@ -347,8 +359,20 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="password" name="password" size="25" maxlength="30" value="'.$account['password'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("first name").'*</td>
+					<td align="left"><input type="text" id="firstname" name="firstname" size="25" maxlength="15" value="'.$account['firstname'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("last name").'*</td>
+					<td align="left"><input type="text" id="lastname" name="lastname" size="25" maxlength="15" value="'.$account['lastname'].'"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'*</td>
-					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="30" value="'.$account['extension'].'"></td>
+					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="15" value="'.$account['extension'].'"></td>
+				</tr>				
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("dynamic agent").'</td>
+					<td align="left"><input type="text" id="agent" name="agent" size="25" maxlength="15" value="'.$account['agent'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>

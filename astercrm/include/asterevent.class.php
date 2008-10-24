@@ -99,12 +99,15 @@ class asterEvent extends PEAR
 		global $db,$config;
 		//echo $exten;
 		if ($config['system']['eventtype'] == 'curcdr'){
-			if (strstr($exten,"/")){
+			if($_SESSION['curuser']['mode'] == 'agent'){
+				$query="SELECT * FROM curcdr WHERE dstchan = 'AGENT/".$_SESSION['curuser']['agent']."' AND id > $curid";
+			}elseif (strstr($exten,"/")){
 				$exten = ltrim(strstr($exten,"/"),"/");
 				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}else{
 				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten') AND id > $curid AND src != '' AND dst != ''";
 			}
+			//echo $query;exit;
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
@@ -135,9 +138,9 @@ class asterEvent extends PEAR
 				$call['status'] = '';
 				$call['curid'] = $curid;
 			}
+			//print_r($call);exit;
 			return $call;
 		}
-
 		$call =& asterEvent::checkIncoming($curid,$exten);
 
 		if ($call['status'] == 'incoming' && $call['callerid'] != '' ){
@@ -162,7 +165,11 @@ class asterEvent extends PEAR
 	function checkCallStatus($curid,$uniqueid){
 		global $db,$config;
 		if ($config['system']['eventtype'] == 'curcdr'){
-			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (dst LIKE '%".$_SESSION['curuser']['extension']."' OR src LIKE '%".$_SESSION['curuser']['extension']."')";
+			if($_SESSION['curuser']['mode'] == 'agent'){
+				$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND dstchan = 'AGENT/".$_SESSION['curuser']['agent']."'";
+			}else{
+				$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (dst LIKE '%".$_SESSION['curuser']['extension']."' OR src LIKE '%".$_SESSION['curuser']['extension']."')";
+			}
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
@@ -207,11 +214,22 @@ class asterEvent extends PEAR
 			if type is list, then only check some specific extension
 			or else we get extension list from events
 		*/
-		if ($type == 'list')
-			$_SESSION['curuser']['extensions_session'] = $_SESSION['curuser']['extensions'];
-		else
-			$_SESSION['curuser']['extensions_session'] = array();
-
+		$panellist = array();
+		if ($type == 'list'){
+			$i = 0;
+			foreach($_SESSION['curuser']['extensions'] as $value ){
+				$row = astercrm::getRecordByField('username',$value,'astercrm_account');
+				$panellist[$i]['phones'] = $row['extension'];
+				$panellist[$i]['username'] = $row['username'];
+				$panelphones[] = $row['extension'];
+				$i++;
+			}
+			//$_SESSION['curuser']['extensions_session'] = $panellist;
+		}
+		else{
+			$panellist = array();
+		}
+//print_r($panellist);exit;
 		if (!isset($_SESSION['extension_status'])){
 			$status = array();
 			$callerid = array();
@@ -226,11 +244,11 @@ class asterEvent extends PEAR
 			$direction = $_SESSION['direction'];
 		}
 
-		if (!isset($_SESSION['curuser']['extensions_session']) or $_SESSION['curuser']['extensions_session'] == '')
+		if (!isset($panelphones) or $panelphones == '')
 			$phones = array();
 		else
-			$phones = $_SESSION['curuser']['extensions_session'];
-		
+			$phones = $panelphones;
+
 		if($config['system']['eventtype'] == 'curcdr'){
 			$events =& asterEvent::getPeerstatus(0);
 			while ($events->fetchInto($list)) {
@@ -329,11 +347,12 @@ class asterEvent extends PEAR
 			if (!isset($_SESSION['curuser']['extensions']) or $_SESSION['curuser']['extensions'] == ''){
 				$phones = array();
 			}else{
-				$phones = $_SESSION['curuser']['extensions'];
+				//$phones = $_SESSION['curuser']['extensions'];
+				$phones = $panellist;
 			}
 			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction);
 		}else{
-			$_SESSION['curuser']['extensions_session'] = $phones;
+			//$_SESSION['curuser']['extensions_session'] = $phones;
 			$action =& asterEvent::tableStatus($phones,$status,$callerid,$direction);
 		}
 //print_r($status);exit;
@@ -402,39 +421,40 @@ class asterEvent extends PEAR
 	*/
 
 	function &listStatus($phones,$status,$callerid,$direction){
-//print_r($phones);print_r($status);print_r($callerid);print_r($direction);exit;
+//print_r($phones);exit;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
-		foreach ($phones as $key => $value) {
-			if (!strstr($value,'SIP/'))
-				$value = "SIP/".$value;
-			$action .= "<tr><td align=center><button name='" . substr($value,4)."'";
-			$iaxkey = str_replace('SIP','IAX2',$value);			
-			if (isset($status[$value]) || isset($status[$iaxkey])) {
-				if ($status[$value] == 2 || $status[$iaxkey] == 2) {
-					$action .= " onclick=\"dial('".substr($value,4)."','callee');return false;\" id='ButtonU'>\n";
+		foreach ($phones as $key => $row) {
+			//print_r($row['phones']);exit;
+			if (!strstr($row['phones'],'SIP/'))
+				$row['phones'] = "SIP/".$row['phones'];
+			$action .= "<tr><td align=center><button name='" . substr($row['phones'],4)."'";
+			$iaxkey = str_replace('SIP','IAX2',$row['phones']);			
+			if (isset($status[$row['phones']]) || isset($status[$iaxkey])) {
+				if ($status[$row['phones']] == 2 || $status[$iaxkey] == 2) {
+					$action .= " onclick=\"dial('".substr($row['phones'],4)."','callee');return false;\" id='ButtonU'>\n";
 				}
 				else {
-					if ($status[$value] == 1 || $status[$iaxkey] == 1) {
-						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\" id='ButtonR'>\n";
+					if ($status[$row['phones']] == 1 || $status[$iaxkey] == 1) {
+						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($row['phones'],4)."');return false;\" id='ButtonR'>\n";
 					}
 					else {
-						$action .= " onclick=\"dial ('".substr($value,4)."','callee');return false;\" id='ButtonG'>\n";
+						$action .= " onclick=\"dial ('".substr($row['phones'],4)."','callee');return false;\" id='ButtonG'>\n";
 					}
 				}
 			}
 			else {
-				$action .= " onclick=\"dial ('".substr($value,4)."','callee');return false;\" id='ButtonB'>\n";
+				$action .= " onclick=\"dial ('".substr($row['phones'],4)."','callee');return false;\" id='ButtonB'>\n";
 			}
-			$action .= substr($value,4);
+			$action .= $row['username'];
 			$action .= "</button>\n";
-			if ($status[$value] == 1 || $status[$iaxkey] == 1) {
+			if ($status[$row['phones']] == 1 || $status[$iaxkey] == 1) {
 				//$action .= "<span align=left>";
 				if ($status[$iaxkey] == 1) {
 					$action .= "<BR>".$direction[$iaxkey];
 					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$iaxkey]."');return false;\">".$callerid[$iaxkey]."</a>";
 				}else {
-					$action .= "<BR>".$direction[$value];
-					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$value]."');return false;\">".$callerid[$value]."</a>";
+					$action .= "<BR>".$direction[$row['phones']];
+					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$row['phones']]."');return false;\">".$callerid[$row['phones']]."</a>";
 				}
 				
 				//$action .= "</span>";

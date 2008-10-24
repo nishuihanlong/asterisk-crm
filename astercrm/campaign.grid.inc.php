@@ -278,6 +278,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Queue name").'</td>
+					<td align="left"><input type="text" id="queuename" name="queuename" size="30" maxlength="15"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>
 				</tr>
@@ -353,6 +357,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
 					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30" value="'.$campaign['inexten'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Queue name").'</td>
+					<td align="left"><input type="text" id="queuename" name="queuename" size="30" maxlength="30" value="'.$campaign['queuename'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>

@@ -16,4 +16,5 @@ $device_status			= "Device status";
 $continue			= "Contunue";
 $no_pass			= "no pass, please check your configuration file";
 $invalid_string		= "Invalid input, only digits or letters allowed";
+$choose_user_mode	= "Are you sure to login as dynamic agent mode";
 ?>

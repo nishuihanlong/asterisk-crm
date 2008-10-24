@@ -61,6 +61,16 @@ require_once('login.common.php');
 			xajax_processForm(xajax.getFormValues("loginForm"));
 			return false;
 		}
+		
+		function selectmode(msg)
+		{
+			if(confirm(msg)){
+				window.location.href="portal.php";
+				return true;
+			}
+			xajax_clearDynamicMode();
+			return false;
+		}
 
 		/**
 		*  init function, launched after page load

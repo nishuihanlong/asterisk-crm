@@ -145,9 +145,10 @@ function processAccountData($aFormValues)
 	$objResponse = new xajaxResponse();
 	
 	$bError = false;
-	
 
 	$loginError = false;
+	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
 
 	if (!$bError)
 	{
@@ -163,6 +164,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['extension'] = $row['extension'];
 				$_SESSION['curuser']['usertype'] = $row['usertype'];
 				$_SESSION['curuser']['accountcode'] = $row['accountcode'];
+				$_SESSION['curuser']['agent'] = $row['agent'];
 
 				// added by solo 2007-10-90
 				$_SESSION['curuser']['channel'] = $row['channel'];
@@ -176,9 +178,11 @@ function processAccountData($aFormValues)
 				// if it's a group admin, then add all group extension to it
 				if ($row['usertype'] == 'groupadmin'){
 					$_SESSION['curuser']['memberExtens'] = array();
+					$_SESSION['curuser']['memberNames'] = array();
 					$groupList = astercrm::getGroupMemberListByID($row['groupid']);
 					while	($groupList->fetchInto($groupRow)){
 						$_SESSION['curuser']['memberExtens'][] = $groupRow['extension'];
+						$_SESSION['curuser']['memberNames'][] = $groupRow['username'];
 					}
 				}
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
@@ -197,6 +201,11 @@ function processAccountData($aFormValues)
 	please uncomment these three line
 */
 				//$objResponse->addAlert($locate->Translate("Login success"));
+//				if($_SESSION['curuser']['agent'] != ''){
+//					$msg = $locate->Translate("choose user mode");
+//					$objResponse->addScript("selectmode('".$msg."')");
+//					return $objResponse;
+//				}
 				$objResponse->addScript('window.location.href="portal.php";');
 				return $objResponse;
 
@@ -243,5 +252,15 @@ function processAccountData($aFormValues)
 	
 	return $objResponse;
 }
+
+#清除$_SESSION['curuser']['agent']值
+//function clearDynamicMode() {
+//	//echo $_SESSION['curuser']['agent'];exit;
+//	$objResponse = new xajaxResponse();
+//	$_SESSION['curuser']['agent'] = '';
+//	$objResponse->addScript('window.location.href="portal.php";');
+//	return $objResponse;
+//}
+
 $xajax->processRequests();
 ?>

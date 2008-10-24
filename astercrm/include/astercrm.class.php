@@ -355,7 +355,10 @@ Class astercrm extends PEAR{
 		$query= "INSERT INTO astercrm_account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
+				."firstname='".$f['firstname']."',"
+				."lastname='".$f['lastname']."',"
 				."extension='".$f['extension']."',"
+				."agent = '".$f['agent']."',"
 				."channel='".$f['channel']."',"			// added 2007/10/30 by solo
 				."usertype='".$f['usertype']."',"
 				."extensions='".$f['extensions']."', "	// added 2007/11/12 by solo
@@ -393,6 +396,7 @@ Class astercrm extends PEAR{
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
+				."queuename='".$f['queuename']."', "
 				."maxtrytime='".$f['maxtrytime']."', "
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
@@ -547,7 +551,10 @@ Class astercrm extends PEAR{
 		$query= "UPDATE astercrm_account SET "
 				."username='".$f['username']."', "
 				."password='".$f['password']."', "
+				."firstname='".$f['firstname']."', "
+				."lastname='".$f['lastname']."', "
 				."extension='".$f['extension']."', "
+				."agent ='".$f['agent']."', "
 				."usertype='".$f['usertype']."', "
 				."channel='".$f['channel']."', "	// added 2007/10/30 by solo
 				."extensions='".$f['extensions']."', "
@@ -604,6 +611,7 @@ Class astercrm extends PEAR{
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
+				."queuename='".$f['queuename']."', "
 				."maxtrytime='".$f['maxtrytime']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];

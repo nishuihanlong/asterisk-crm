@@ -24,4 +24,7 @@ $username_repeat = "用户名重复";
 $group_name = "分组名称";
 $group_manage = "分组管理";
 $dial_interval = "拨号间隔";
+$dynamic_agent = "动态座席";
+$first_name = "名字";
+$last_name = "姓氏";
 ?>

@@ -76,13 +76,13 @@ however, multiple servers enhance performance.
 
 2) Create the directories and move eventsdaemon scripts:
 
-	mkdir -p /opt/asterisk/scripts/eventsdaemon 
-	mv /var/www/html/astercrm/eventsdaemon/* /opt/asterisk/scripts/eventsdaemon
-	chmod +x /opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl
-	chmod +x /opt/asterisk/scripts/eventsdaemon/eventdog.sh
-	chmod +x /opt/asterisk/scripts/eventsdaemon/astercc
-	chmod +x /opt/asterisk/scripts/eventsdaemon/asterccd
-	chmod +x /opt/asterisk/scripts/eventsdaemon/asterccdaemon
+	mkdir -p /opt/asterisk/scripts/astercc 
+	mv /var/www/html/astercrm/script/* /opt/asterisk/scripts/astercc
+	chmod +x /opt/asterisk/scripts/astercc/eventsdaemon.pl
+	chmod +x /opt/asterisk/scripts/astercc/eventdog.sh
+	chmod +x /opt/asterisk/scripts/astercc/astercc
+	chmod +x /opt/asterisk/scripts/astercc/asterccd
+	chmod +x /opt/asterisk/scripts/astercc/asterccdaemon
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 

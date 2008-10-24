@@ -233,6 +233,23 @@ function init(){
 */
 function listenCalls($aFormValues){
 	$objResponse = new xajaxResponse();
+
+	if($_SESSION['curuser']['agent'] != ''){//if use dynamic agent mode
+		$agent = astercrm::getRecordByField('agent','AGENT/'.$_SESSION['curuser']['agent'],'queue_agent');
+		//print_r($agent);exit;
+		if($agent['status'] == 'Unavailable' || $agent['status'] == ''){
+			$_SESSION['curuser']['mode'] = 'extension';
+		}else{
+			if($_SESSION['curuser']['mode'] == 'extension'){
+				$objResponse->addAssign('divDIDinfo','innerHTML','');
+				$objResponse->addAssign("btnHangup","disabled", true);
+				$objResponse->addAssign("uniqueid","value", "" );
+				$aFormValues['uniqueid'] = '';
+			}
+			$_SESSION['curuser']['mode'] = 'agent';
+		}
+	}
+
 	if ($aFormValues['uniqueid'] == ''){
 		$objResponse->loadXML(waitingCalls($aFormValues));
 	} else{
@@ -275,7 +292,6 @@ function incomingCalls($myValue){
 	$objResponse = new xajaxResponse();
 
 	if ($myValue['direction'] != ''){
-
 		$call = asterEvent::checkCallStatus($myValue['curid'],$myValue['uniqueid']);
 
 		if ($call['status'] ==''){
@@ -389,6 +405,7 @@ function waitingCalls($myValue){
 
 	//	modified 2007/10/30 by solo
 	//  start
+	//print_r($_SESSION);exit;
 	if ($_SESSION['curuser']['channel'] == '')
 		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
 	else
@@ -424,7 +441,7 @@ function waitingCalls($myValue){
 			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
 			$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
 		}
-
+		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
 		$objResponse->addAssign("btnHangup","disabled", false );
 
 		if ($config['system']['pop_up_when_dial_in']){
@@ -460,7 +477,8 @@ function waitingCalls($myValue){
 		$status	= 'dialing';
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
-
+		
+		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
 		$objResponse->addAssign("btnHangup","disabled", false );
 
 		if($call['didnumber'] != ''){
@@ -497,9 +515,9 @@ function waitingCalls($myValue){
 //	$objResponse->addScript('document.title='.$title.';');
 //	$objResponse->addAssign("status","innerHTML", $stauts );
 	$objResponse->addAssign("extensionStatus","value", $stauts );
+	//echo $call['uniqueid'];exit;
 	$objResponse->addAssign("uniqueid","value", $call['uniqueid'] );
-	$objResponse->addAssign("callerid","value", $call['callerid'] );
-
+	$objResponse->addAssign("callerid","value", $call['callerid'] );	
 	$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 	$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
 	$objResponse->addAssign("curid","value", $call['curid'] );
