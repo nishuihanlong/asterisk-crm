@@ -48,7 +48,7 @@ log_file_path = /tmp/astercrmDebug.log
 
 ;if set to admin, the index page will link to "manager login" page,
 ;else if set to user defaulf page is user login page
-useindex = user
+useindex = admin
 
 ;context when dial out, in trixbox this could be from-internal
 outcontext =  callshop

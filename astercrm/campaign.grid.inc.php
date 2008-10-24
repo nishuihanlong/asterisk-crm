@@ -265,6 +265,9 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Campaign Note").'</td>
 					<td align="left"><input type="text" id="campaignnote" name="campaignnote" size="30" maxlength="255"></td>
 				</tr>
+				<tr>					
+					<td align="left" colspan="2">'.$locate->Translate("Enable").'&nbsp;<input type="radio" id="enable" name="enable" value="1" checked>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" ></td>
+				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60"></td>
@@ -346,6 +349,14 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Campaign Note").'</td>
 					<td align="left"><input type="text" id="campaignnote" name="campaignnote" size="30" maxlength="255" value="'.$campaign['campaignnote'].'"></td>
 				</tr>
+				<tr>					
+					<td align="left" colspan="2">'.$locate->Translate("Enable").'&nbsp;<input type="radio" id="enable" name="enable" value="1"';
+			if($campaign['enable']) 
+				$html .= 'checked>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" ></td>';
+			else
+				$html .= '>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" checked></td>';
+			$html .= 
+				'</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$campaign['outcontext'].'"></td>
