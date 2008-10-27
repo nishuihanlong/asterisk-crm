@@ -260,8 +260,8 @@ function add(){
 }
 
 /**
-*  save group record
-*  @param	f			array		group record
+*  save campaign record
+*  @param	f			array		campaign record
 *  @return	objResponse	object		xajax response object
 */
 
@@ -274,7 +274,7 @@ function save($f){
 		return $objResponse->getXML();
 	}
 */
-	if(trim($f['campaignname']) == ''){
+	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
@@ -302,7 +302,7 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
-	if(trim($f['campaignname']) == ''){
+	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}

@@ -238,7 +238,7 @@ class Customer extends astercrm
 	*/
 	
 	function formAdd(){
-			global $locate;
+			global $locate,$config;
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$res = Customer::getGroups();
@@ -269,12 +269,12 @@ class Customer extends astercrm
 					<td align="left" colspan="2">'.$locate->Translate("Enable").'&nbsp;<input type="radio" id="enable" name="enable" value="1" checked>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" ></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Outcontext").'</td>
-					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60"></td>
+					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$config['system']['outcontext'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Incontext").'</td>
-					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60"></td>
+					<td nowrap align="left">'.$locate->Translate("Incontext").'*</td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$config['system']['incontext'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
@@ -358,11 +358,11 @@ class Customer extends astercrm
 			$html .= 
 				'</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Outcontext").'</td>
+					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$campaign['outcontext'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Incontext").'</td>
+					<td nowrap align="left">'.$locate->Translate("Incontext").'*</td>
 					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$campaign['incontext'].'"></td>
 				</tr>
 				<tr>

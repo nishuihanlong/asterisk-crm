@@ -50,8 +50,9 @@ function init($fileName){
 	foreach ( $file_list as $value ) {
 		$objResponse->addScript("addOption('filelist','".$value."','".$value."');");
 	}
-
+	
 	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
+	$objResponse->addAssign("or","innerHTML",$locate->Translate("or"));
 	$objResponse->addAssign("btnImportData","value",$locate->Translate("import"));
 
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("file_manager"));
@@ -377,6 +378,7 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	for ($j=0;$j<count($arrRow);$j++)
 	{
 		if ($arrRow[$j] != mb_convert_encoding($arrRow[$j],"UTF-8","UTF-8"))
+			//echo "ok";exit;
 			$arrRow[$j]=mb_convert_encoding($arrRow[$j],"UTF-8","GB2312");
 
 		$fieldOrder = trim($order[$j]);//得到字段顺序号

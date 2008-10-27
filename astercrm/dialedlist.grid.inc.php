@@ -90,8 +90,9 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
-			$sql .= " WHERE dialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " AND dialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		$creby = $_SESSION['curuser']['username'];
