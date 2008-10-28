@@ -68,28 +68,32 @@ function init(){
 					$has_queue = $db->getOne($query);
 				}
 
+				$campaignHTML .= '<div class="group01content">';
+
 				if ($has_queue != 0){
-					$campaignHTML .= "<ul>".$campaign['campaignname'].' ( queue: '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> numbers in dial list ) 
-				<div id="divLimit">
-				<input type="checkbox" name="'.$campaign['id'].'-ckb">Start
-				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked> Limited by max channel <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2">
-				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="agent"> Limited by agents
-				</div>
-				</ul>
-				<div id="campaign'.$campaign['id'].'" style="campaign"></div>';
+					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /> '.$campaign['campaignname'].' ( '.$locate->Translate("queue").': '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </div>
+				<div class="group01r">
+				<input type="checkbox" name="'.$campaign['id'].'-ckb">'.$locate->Translate("Start").'
+				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked> '.$locate->Translate("Limited by max channel").' <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit">
+				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="agent" > '.$locate->Translate("Limited by agents and increase").' <input type="text" value="10" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="2" maxlength="3" class="inputlimit">%
+				</div>';
 				}else{
-					$campaignHTML .= "<ul>".$campaign['campaignname'].' ( no queue for this campaign ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> numbers in dial list ) 
-				<div id="divLimit">
-				<input type="checkbox" name="'.$campaign['id'].'-ckb">Start
+					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /> '.$campaign['campaignname'].' ( '.$locate->Translate("no_queue_for_this_campaign").' ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </div>
+				<div class="group01r">
+				<input type="checkbox" name="'.$campaign['id'].'-ckb">'.$locate->Translate("Start").'
 				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked>
-				Limited by Max Channel <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2">
-				</div>
-				</ul>
-				<div id="campaign'.$campaign['id'].'" style="campaign"></div>';
+				'.$locate->Translate("Limited by Max Channel").' <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit">
+				</div>';
 				}
+				$campaignHTML .= '</div>';
+
+				$campaignHTML .= '<div class="group01_channel" id="campaign'.$campaign['id'].'" ></div>';
 		}
 
-		$divGroup .= $group['groupname'].'<div id="group'.$group['groupid'].'" style="group">'.$campaignHTML.'<div id="unknown'.$group['groupid'].'"></div></div>';
+		$divGroup .= '<div class="group01"><img src="images/groups_icon01.gif" align="absmiddle" />'.$group['groupname'].'</div>
+												<div id="group'.$group['groupid'].'">'.$campaignHTML.'</div>
+											  <div class="group01_channel" id="unknown'.$group['groupid'].'"></div>
+											 </div>';
 	}
 	$objResponse->addAssign("divMain","innerHTML",$divGroup);
 	return $objResponse;
@@ -99,7 +103,7 @@ function predictiveDialer($f){
 	global $config,$db,$locate;
 	$objResponse = new xajaxResponse();
 
-	$aDyadicArray[] = array("src","dst","srcchan","dstchan","starttime","answertime","disposition");
+	$aDyadicArray[] = array($locate->Translate("src"),$locate->Translate("dst"),$locate->Translate("srcchan"),$locate->Translate("dstchan"),$locate->Translate("starttime"),$locate->Translate("answertime"),$locate->Translate("disposition"));
 
 	// 检查系统目前的通话情况
 	$curcdr = astercrm::getAll("curcdr");
@@ -220,7 +224,12 @@ function predictiveDialer($f){
 
 					$query = "SELECT COUNT(*) FROM queue_agent WHERE status = 'Not in use' AND queuename = '".$campaign_queue_name[$key]."' ";
 					$free_agent_num = $db->getOne($query);
-					$exp = ($busy_agent_num + $free_agent_num) - count($campaignCDR[$key]);
+					$totalagent = ($busy_agent_num + $free_agent_num);
+					if (is_numeric($value['rate'])){
+						$myagent = intval($totalagent * (1+$rate/100));
+					}
+
+					$exp = $myagent - count($campaignCDR[$key]);
 					if (  $exp > 0 ){
 						// 可以发起呼叫, 规则为 (差额 +2)/3
 						$num = intval(($exp + 2)/3);

@@ -40,16 +40,12 @@ class Common{
 		global $locate_common;
 
 		$html .='
-				<div align="center">
-					<table class="copyright" id="tblCopyright">
-					<tr>
-						<td>
-							©2007 asterCRM - <a href="http://www.astercrm.org" target="_blank">asterCRM home</a><br>
-							version: 0.047 beta
-						</td>
-					</tr>
-					</table>
-				</dvi>
+				<div class="end">
+				<ul>
+				<li>2007 asterCRM - asterCRM home</li>
+				<li>version:0.047 beta</li>
+				</ul>
+				</div>
 				';
 		return $html;
 	}
@@ -96,13 +92,15 @@ class Common{
 	function generateTabelHtml($aDyadicArray,$thArray = null){
 		if (!is_Array($aDyadicArray))
 			return '';
-		$html .= "<table class='myTable'>";
+		$html .= '<table class="groups_channel"  border="0" cellpadding="0" cellspacing="0"  width="98%">';
 		$myArray = array_shift($aDyadicArray);
+		$html .="<tr>";
 		foreach ($myArray as $field){
 			$html .= "<th>";
 			$html .= $field;
 			$html .= "</th>";
 		}
+		$html .="</tr>";
 
 		foreach ($aDyadicArray as $myArray){
 			$html .="<tr>";

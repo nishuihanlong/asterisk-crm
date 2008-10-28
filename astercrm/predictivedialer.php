@@ -103,8 +103,9 @@ require_once('predictivedialer.common.php');
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
-	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
-	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/dragresize.css" type="text/css" rel="stylesheet"/>
+	<LINK href="skin/default/css/style.css" type="text/css" rel="stylesheet"/>
+	<LINK href="skin/default/css/dialer.css" type="text/css" rel="stylesheet" />
 
 	</head>
 	<body onload="init();">
@@ -114,10 +115,14 @@ require_once('predictivedialer.common.php');
 		<div id="divAMIStatus" name="divAMIStatus"></div>
 
 		<form action="" method="post" name="f" id="f">
-		Groups:<div id="divMain" name="divMain"></div>
-		System:<div id="idvUnknowChannels"></div>
+		<div class="groups_tittle"><?echo $locate->Translate("Group")?></div>
+		<div id="divMain" name="divMain"></div>
+
+		<div class="groups_tittle2"><?echo $locate->Translate("System")?></div>
+		<div class="groupsystem_channel" id="idvUnknowChannels" ></div>
 		</form>
 
 		<div id="divCopyright"></div>
+
 	</body>
 </html>
