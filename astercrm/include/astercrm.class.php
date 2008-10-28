@@ -1809,16 +1809,9 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
-	function getDialNumber($groupid = '', $campaignid = ''){
+	function getDialNumber($campaignid = ''){
 		global $db;
-		if ($campaignid != ''){
-			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext,campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.campaignid = $campaignid ";
-		}elseif ($groupid != ''){
-			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext,campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.groupid = $groupid ";
-		}else{
-			$query = "SELECT diallist.*,campaign.incontext,campaign.inexten,campaign.outcontext,campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid";
-		}
-
+		$query = "SELECT diallist.*,campaign.incontext, campaign.inexten, campaign.outcontext, campaign.queuename FROM diallist LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE diallist.campaignid = $campaignid ";
 		$query .=  " ORDER BY diallist.id DESC	LIMIT 0,1";
 
 		$row =& $db->getRow($query);

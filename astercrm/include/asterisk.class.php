@@ -55,7 +55,7 @@ class Asterisk extends AGI_AsteriskManager{
                        $application=NULL, $data=NULL,
                        $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL){
 	  global $config;
-	  if($context == '' ) $context = $config['system']['outcontext'];
+	  //if($context == '' ) $context = $config['system']['outcontext'];
 	  //echo $channel;exit;
       $req = "Action: Originate\r\n";
       $parameters = array('Channel'=>$channel);
@@ -83,12 +83,11 @@ class Asterisk extends AGI_AsteriskManager{
       if(!is_null($async)) $parameters['Async'] = ($async) ? 'true' : 'false';
       if($actionid) $parameters['ActionID'] = $actionid;
 
-      foreach($parameters as $var=>$val)
-        $req .= "$var: $val\r\n";
+      foreach($parameters as $var=>$val) $req .= "$var: $val\r\n";
       $req .= "\r\n";
 		//print 
-	 // print $req;
-	  //exit;
+		//print $req;
+		//exit;
       fwrite($this->socket, $req);
 	  return;
 	}
