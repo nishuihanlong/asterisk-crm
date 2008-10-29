@@ -376,36 +376,34 @@ class asterEvent extends PEAR
 		foreach ($phones as $key => $value) {
 			//$value = "SIP/".$value;
 			if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
-			$action .= "<td align=center ><br><button name='" . substr($value,4) . "' ";
+			$action .= "<td align=center ><br><div id='div_exten'>";
 			if (isset($status[$value])) {
 				if ($status[$value] == 2) {
-					$action .= "  id='ButtonU'>\n";
-				}
-				else {
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".strtoupper(substr($value,4))."</a></LI>";
+				}else {
 					if ($status[$value] == 1) {
-						$action .= "  onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\" id='ButtonR'>\n";
+						$action .= "<UL id='extenBtnR'><LI><a href='###' >".strtoupper(substr($value,4))."</a><UL><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\">-<font size='2px'>Spy</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."','w');return false;\" >-<font size='2px'>Whisper</font>-</A></UL></LI>";
 					}
 					else {
-						$action .= "  id='ButtonG'>\n";
+						$action .= "<UL id='extenBtnG'><LI><a href='###'>".strtoupper(substr($value,4))."</a></LI>";
 					}
 				}
 			}
 			else {
-				$action .= "  id='ButtonB'>\n";
-			}
-			$action .= strtoupper(substr($value,4));
-			$action .= "</button>\n";
+				$action .= "<UL id='extenBtnB'><LI><a href='###'>".strtoupper(substr($value,4))."</a></LI>";
+			}			
+			$action .= "</UL></div>";
 
 			if ($status[$value] == 1) {
 				//$action .= "<span align=left>";
-				$action .= "<BR>".$direction[$value];
+				$action .= $direction[$value];
 				$action .= "<BR>".$callerid[$value]."";
 				//$action .= "</span>";
 			}
-
 			$action .=  "</td>\n";
 		}
 		$action .= '</tr></table><br>';
+		//echo $action;exit;
 		return $action;
 	}
 
@@ -420,33 +418,34 @@ class asterEvent extends PEAR
 			//print_r($row);exit;
 			if (!strstr($key,'SIP/'))
 				$key = "SIP/".$key;
-			$action .= "<tr><td align=center><button name='" . substr($key,4)."'";
+			$action .= "<tr><td align=center><div id='div_exten'>";
 			$iaxkey = str_replace('SIP','IAX2',$key);			
 			if (isset($status[$key]) || isset($status[$iaxkey])) {
 				if ($status[$key] == 2 || $status[$iaxkey] == 2) {
-					$action .= " onclick=\"dial('".substr($key,4)."','callee');return false;\" id='ButtonU'>\n";
+					$action .= "<UL id='extenBtnU'><LI><a href='###' onclick=\"dial('".substr($key,4)."','callee');return false;\">".$row['username']."</a></LI>";					
 				}
 				else {
 					if ($status[$key] == 1 || $status[$iaxkey] == 1) {
-						$action .= " onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($key,4)."');return false;\" id='ButtonR'>\n";
+						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($key,4)."');return false;\">-<font size='2px'>Spy</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($key,4)."','w');return false;\" >-<font size='2px'>Whisper</font>-</A></UL></LI>";					
 					}
 					else {
-						$action .= " onclick=\"dial ('".substr($key,4)."','callee');return false;\" id='ButtonG'>\n";
+						$action .= "<UL id='extenBtnG'><LI><a href='###' onclick=\"dial ('".substr($key,4)."','callee');return false;\">".$row['username']."</a></LI>";
 					}
 				}
 			}
 			else {
-				$action .= " onclick=\"dial ('".substr($key,4)."','callee');return false;\" id='ButtonB'>\n";
+				$action .= "<UL id='extenBtnB'><LI><a href='###' onclick=\"dial ('".substr($key,4)."','callee');return false;\">".$row['username']."</a></LI>";
 			}
-			$action .= $row['username'];
-			$action .= "</button>\n";
+
+			$action .= "</UL></div>";
+
 			if ($status[$key] == 1 || $status[$iaxkey] == 1) {
 				//$action .= "<span align=left>";
 				if ($status[$iaxkey] == 1) {
-					$action .= "<BR>".$direction[$iaxkey];
+					$action .= $direction[$iaxkey];
 					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$iaxkey]."');return false;\">".$callerid[$iaxkey]."</a>";
 				}else {
-					$action .= "<BR>".$direction[$key];
+					$action .= $direction[$key];
 					$action .= "<BR><a href=? onclick=\"xajax_getContact('".$callerid[$key]."');return false;\">".$callerid[$key]."</a>";
 				}
 				
@@ -455,8 +454,9 @@ class asterEvent extends PEAR
 
 			$action .=  "</td></tr>\n";
 		 }
-//		 exit;
-		 $action .= '</table><br>';
+
+		 $action .= '</table>';
+		 		// echo $action; exit;
 		return $action;
 	}
 
@@ -488,7 +488,7 @@ class asterEvent extends PEAR
 //		else
 //			$query = "SELECT * FROM peerstatus WHERE id = '0'";
 
-$query = "SELECT * FROM peerstatus WHERE id > '".$curid."'";
+		$query = "SELECT * FROM peerstatus WHERE id > '".$curid."'";
 
 		asterEvent::events($query);
 		$res = $db->query($query);

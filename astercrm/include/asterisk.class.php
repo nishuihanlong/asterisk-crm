@@ -50,19 +50,19 @@ class Asterisk extends AGI_AsteriskManager{
 		return $callfile;
 	}
 
-	function sendCall($channel,
+	 function sendCall($channel,
                        $exten=NULL, $context=NULL, $priority=NULL,
                        $application=NULL, $data=NULL,
                        $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL){
-	  global $config;
-	  //if($context == '' ) $context = $config['system']['outcontext'];
-	  //echo $channel;exit;
+          global $config;
+          //if($context == '' ) $context = $config['system']['outcontext'];
+          //echo $channel;exit;
       $req = "Action: Originate\r\n";
       $parameters = array('Channel'=>$channel);
 
       if($exten) $parameters['Exten'] = $exten;
-	
-	  //$parameters['Accountcode'] = $exten;
+
+          //$parameters['Accountcode'] = $exten;
 
       if($context) $parameters['Context'] = $context;
       if($priority) $parameters['Priority'] = $priority;
@@ -73,11 +73,11 @@ class Asterisk extends AGI_AsteriskManager{
       if($timeout) $parameters['WaitTime'] = $timeout;
       if($callerid) $parameters['CallerID'] = $callerid;
       if($variable) $parameters['Variable'] = $variable;
-      
-	  if($account) 
-		  $parameters['Account'] = $account;
-	  else
-		  $parameters['Account'] = $callerid;
+
+          if($account)
+                  $parameters['Account'] = $account;
+          else
+                  $parameters['Account'] = $callerid;
 
 
       if(!is_null($async)) $parameters['Async'] = ($async) ? 'true' : 'false';
@@ -85,12 +85,13 @@ class Asterisk extends AGI_AsteriskManager{
 
       foreach($parameters as $var=>$val) $req .= "$var: $val\r\n";
       $req .= "\r\n";
-		//print 
-		//print $req;
-		//exit;
+                //print
+                //print $req;
+                //exit;
       fwrite($this->socket, $req);
-	  return;
-	}
+          return;
+        }
+
 
 	function getSipChannels(){
 		global $config;
@@ -149,8 +150,10 @@ class Asterisk extends AGI_AsteriskManager{
 	/*
 	*	$spy:		监听方
 	*	$exten:		被监听方
+	*	$pam:		监听参数
 	*/
-	function chanSpy($spy, $exten){
+	function chanSpy($spy, $exten ,$pam){
+
 /*
 Action: originate 
 Channel: Local/300 
@@ -166,7 +169,7 @@ $channel,
                        $application=NULL, $data=NULL,
                        $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL
 */
-		Asterisk::sendCall("Local/$spy",null,null,null,"ChanSpy",$exten."|qb",30);
+		Asterisk::sendCall("Local/$spy",null,null,null,"ChanSpy",$exten."|qb".$pam,30);
 	}
 
 	function zapSpy(){

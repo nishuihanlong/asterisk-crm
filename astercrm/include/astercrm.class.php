@@ -127,9 +127,17 @@
 
 Class astercrm extends PEAR{
 
-	function getTrunkinfo($trunk){
+	function getTrunkinfo($trunk,$trunkdid = ''){
 		global $db;
+		if($trunkdid != ''){
+			$query = "SELECT * FROM trunkinfo WHERE didnumber = '$trunkdid'";
+			astercrm::events($query);
+			$res =& $db->getRow($query);
+			if($res) return $res;
+		}
+
 		$query = "SELECT * FROM trunkinfo WHERE trunkchannel = '$trunk'";
+		
 		astercrm::events($query);
 		$res =& $db->getRow($query);
 		return $res;
