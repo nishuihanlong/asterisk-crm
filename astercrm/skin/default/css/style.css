@@ -1133,6 +1133,61 @@ form{
 	width: 461px;
 }
 
+#div_exten { 
+			width:100px; 
+			height:25px; 
+			background:gainsboro; 
+			margin-left: auto;
+			margin-right:auto;
+} 
+/********************************************/
+#extenBtnG { line-height: 25px; list-style-type: none; margin-top:5px;margin:0;padding:0;}        
+#extenBtnG a { display: block; width: 100px; text-align:center; font-size:16px;font-weight: bold;} 
+#extenBtnG a:link { color:#009966; text-decoration:none;margin:0;}     
+#extenBtnG a:visited {color:#009966;text-decoration:none;margin:0;}  
+#extenBtnG a:hover {color:#009966;text-decoration:none;}              
+
+#extenBtnG li {float: left;}                 
+#extenBtnG li a:hover{background:gainsboro;} 
+
+#extenBtnB { line-height: 25px; list-style-type: none; margin-top:5px;margin:0;padding:0;}        
+#extenBtnB a { display: block; width: 100px; text-align:center; font-size:16px;font-weight: bold;} 
+#extenBtnB a:link { color:#999999; text-decoration:none;margin:0;}     
+#extenBtnB a:visited {color:#999999;text-decoration:none;margin:0;}  
+#extenBtnB a:hover {color:#999999;text-decoration:none;}              
+
+#extenBtnB li {float: left;}                 
+#extenBtnB li a:hover{background:gainsboro;} 
+
+#extenBtnU { line-height: 25px; list-style-type: none; margin-top:5px;margin:0;padding:0;}        
+#extenBtnU a { display: block; width: 100px; text-align:center; font-size:16px;font-weight: bold;} 
+#extenBtnU a:link { color:#993300; text-decoration:none;margin:0;}     
+#extenBtnU a:visited {color:#993300;text-decoration:none;margin:0;}  
+#extenBtnU a:hover {color:#993300;text-decoration:none;}              
+
+#extenBtnU li {float: left;}                 
+#extenBtnU li a:hover{background:gainsboro;} 
+
+#extenBtnR { line-height: 25px; list-style-type: none; margin-top:5px;margin:0;padding:0;}        
+#extenBtnR a { display: block; width: 100px; text-align:center; font-size:16px;font-weight: bold;} 
+#extenBtnR a:link { color:#CC0033; text-decoration:none;margin:0;}     
+#extenBtnR a:visited {color:#CC0033;text-decoration:none;margin:0;}  
+#extenBtnR a:hover {color:#CC0033;text-decoration:none;}              
+
+#extenBtnR li {float: left;}                 
+#extenBtnR li a:hover{background:gainsboro;}
+
+#extenBtnR li ul {line-height: 24px; background:white; list-style-type: none;text-align:left;left: -999em; width:80px; position: absolute;border-width: 1px;border-top-style: solid;border-right-style: solid;border-bottom-style: solid;border-left-style: solid; padding:1px;}      
+#extenBtnR li ul a{display:block; width: 80px;text-align:left;padding-left:0px;}                 
+#extenBtnR li ul a:link {color:#0d5097; text-decoration:none; font-size:11px}                                   
+#extenBtnR li ul a:visited {color:#0d5097;text-decoration:none;font-size:11px}                                 
+#extenBtnR li ul a:hover {color:#FFF;text-decoration:none;font-weight:normal;background:lightblue ;}
+
+#extenBtnR li:hover ul {left: auto;}
+#extenBtnR li.sfhover ul {left: auto;}
+
+/********************************************/
+
 /********************************/
 div{
 	white-space:normal;

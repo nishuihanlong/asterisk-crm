@@ -695,10 +695,12 @@ CREATE TABLE IF NOT EXISTS `trunkinfo` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `trunkname` VARCHAR( 30 ) NOT NULL ,
  `trunkchannel` VARCHAR( 50 ) NOT NULL ,
+ `didnumber` VARCHAR(30) NOT NULL,
  `trunknote` TEXT NOT NULL ,
  `creby` VARCHAR( 30 ) NOT NULL ,
  `cretime` DATETIME NOT NULL ,
  INDEX ( `trunkchannel` ) ,
+ INDEX ( `didnumber` ) ,
  UNIQUE (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 

@@ -315,7 +315,7 @@ function incomingCalls($myValue){
 
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
-			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+			$objResponse->addAssign('divTrunkinfo',"innerHTML",'');
 			$objResponse->addAssign('divDIDinfo','innerHTML','');
 			if($myValue['btnWorkStatus'] == 'working') {				
 				$interval = $_SESSION['curuser']['dialinterval'];
@@ -408,12 +408,18 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
+
+		if($call['didnumber'] != ''){
+			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
+			$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
+		}
 		
 		$trunk = split("-",$call['callerChannel']);
-
+		//print_r($trunk);exit;
+		
 		$info	= $info. ' channel: ' . $trunk[0];
-		// get trunk info 
-		$mytrunk = astercrm::getTrunkinfo($trunk[0]);
+		// get trunk info
+		$mytrunk = astercrm::getTrunkinfo($trunk[0],$call['didnumber']);
 		if ($mytrunk){
 			$infomsg = "<strong>".$mytrunk['trunkname']."</strong><br>";
 			$infomsg .= astercrm::db2html($mytrunk['trunknote']);
@@ -422,10 +428,7 @@ function waitingCalls($myValue){
 			$infomsg = $locate->Translate("no information get for trunk").": ".$trunk[0];
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
 		}
-		if($call['didnumber'] != ''){
-			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
-			$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
-		}
+		
 		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
 		$objResponse->addAssign("btnHangup","disabled", false );
 

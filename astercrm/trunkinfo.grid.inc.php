@@ -204,6 +204,7 @@ class Customer extends astercrm
 		$query= "INSERT INTO trunkinfo SET "
 				."trunkname='".$f['trunkname']."', "
 				."trunkchannel='".$f['trunkchannel']."', "
+				."didnumber='".$f['didnumber']."', "
 				."trunknote='".$f['trunknote']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -235,6 +236,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Channel").' *</td>
 					<td align="left"><input type="text" id="trunkchannel" name="trunkchannel" size="30" maxlength="50"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("DID Number").' </td>
+					<td align="left"><input type="text" id="didnumber" name="didnumber" size="30" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Note").'</td>
@@ -281,6 +286,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="trunkchannel" name="trunkchannel" size="30" maxlength="50" value="'.$trunkinfo['trunkchannel'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("DID Number").' </td>
+					<td align="left"><input type="text" id="didnumber" name="didnumber" size="30" maxlength="50" value="'.$trunkinfo['didnumber'].'"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Note").'</td>
 					<td align="left"><textarea rows="8" cols="50" id="trunknote" name="trunknote">'.$trunkinfo['trunknote'].'</textarea></td>
 				</tr>
@@ -308,6 +317,7 @@ class Customer extends astercrm
 		$query= "UPDATE trunkinfo SET "
 				."trunkname='".$f['trunkname']."', "
 				."trunkchannel='".$f['trunkchannel']."', "
+				."didnumber='".$f['didnumber']."', "
 				."trunknote='".$f['trunknote']."', "
 				."cretime= now() "
 				."WHERE id= ".$f['id']." ";

@@ -124,6 +124,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'trunkname';
 	$fields[] = 'trunkchannel';
+	$fields[] = 'didnumber';
 	$fields[] = 'trunknote';
 	$fields[] = 'creby';
 	$fields[] = 'cretime';
@@ -132,14 +133,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("Trunk Name");
 	$headers[] = $locate->Translate("Trunk Channel");
+	$headers[] = $locate->Translate("DID Number");
 	$headers[] = $locate->Translate("Trunk Note");
 	$headers[] = $locate->Translate("Create by");
 	$headers[] = $locate->Translate("Create time");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="30%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
@@ -152,11 +155,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","trunkname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","trunkchannel","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","trunknote","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
@@ -165,6 +170,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'trunkname';
 	$fieldsFromSearch[] = 'trunkchannel';
+	$fieldsFromSearch[] = 'didnumber';
 	$fieldsFromSearch[] = 'trunknote';
 	$fieldsFromSearch[] = 'creby';
 	$fieldsFromSearch[] = 'cretime';
@@ -173,13 +179,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Trunk Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Trunk Channel");
+	$fieldsFromSearchShowAs[] = $locate->Translate("DID Number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Trunk Note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create by");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create time");
 
 
 	// Create object whit 5 cols and all data arrays set before.
-	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
+	$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
 	//$table->exportFlag = '1';//对导出标记进行赋值
@@ -190,6 +197,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['trunkname'];
 		$rowc[] = $row['trunkchannel'];
+		$rowc[] = $row['didnumber'];
 		$rowc[] = astercrm::db2html($row['trunknote']);
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];

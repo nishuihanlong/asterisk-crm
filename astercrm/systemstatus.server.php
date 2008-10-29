@@ -86,8 +86,12 @@ function showStatus(){
 */
 
 function showChannelsInfo(){
-	global $locate;
-	$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
+	global $locate,$config;
+//	if($config['system']['eventtype'] == 'curcdr'){
+//		$channels = astercrm::getTableRecords('curcdr');
+//	}else{
+		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
+	//}
 /*
 	if ($channels == null){
 			$objResponse->addAssign("channels", "innerHTML", "can not connect to AMI, please check config.php");
@@ -122,7 +126,7 @@ function showChannelsInfo(){
 	return $objResponse;
 }
 
-function chanspy($exten,$spyexten){
+function chanspy($exten,$spyexten,$pam = ''){
 	//print $spyexten;
 	//exit;
 	global $config,$locate;
@@ -134,7 +138,7 @@ function chanspy($exten,$spyexten){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"SIP/".$spyexten);
+	$myAsterisk->chanSpy($exten,"SIP/".$spyexten,$pam);
 	//$objResponse->addAlert($spyexten);
 	return $objResponse;
 
