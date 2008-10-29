@@ -179,10 +179,14 @@ function processAccountData($aFormValues)
 				if ($row['usertype'] == 'groupadmin'){
 					$_SESSION['curuser']['memberExtens'] = array();
 					$_SESSION['curuser']['memberNames'] = array();
+					$_SESSION['curuser']['memberAgents'] = array();
 					$groupList = astercrm::getGroupMemberListByID($row['groupid']);
 					while	($groupList->fetchInto($groupRow)){
 						$_SESSION['curuser']['memberExtens'][] = $groupRow['extension'];
 						$_SESSION['curuser']['memberNames'][] = $groupRow['username'];
+						if($groupRow['agent'] != ''){
+							$_SESSION['curuser']['memberAgents'][] = $groupRow['agent'];
+						}
 					}
 				}
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);

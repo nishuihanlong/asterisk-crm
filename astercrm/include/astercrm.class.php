@@ -35,6 +35,8 @@
 			getContactByID			根据contactid获取contact记录信息或者根据noteid获取与之相关的contact信息
 			getContactListByID		根据customerid获取与之邦定的contact记录
 
+			getGroupCurcdr			取出当前groupadmin所在group所包含的所有exten和agent的curcdr记录
+
 			getRecord				从表中读取数据(以id作为标识)
 			getRecordByID			根据id获取记录
 			getRecordByField($field,$value,$table)
@@ -388,6 +390,7 @@ Class astercrm extends PEAR{
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now(),"
 				."agentinterval='".$f['agentinterval']."',"
+				."groupnote='".$f['groupnote']."',"
 				."pdcontext='".$f['pdcontext']."',"
 				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
 		astercrm::events($query);
@@ -585,6 +588,7 @@ Class astercrm extends PEAR{
 				."groupname='".$f['groupname']."', "
 				."groupid='".$f['groupid']."', "
 				."agentinterval='".$f['agentinterval']."', "
+				."groupnote='".$f['groupnote']."',"
 				."pdcontext='".$f['pdcontext']."', "
 				."pdextension='".$f['pdextensions']."' "
 				."WHERE id='".$f['id']."'";
@@ -808,9 +812,9 @@ Class astercrm extends PEAR{
 	function getGroupMemberListByID($groupid = null){
 		global $db;
 		if ($groupid == null)
-			$query = "SELECT id,username,extension FROM astercrm_account";
+			$query = "SELECT id,username,extension,agent FROM astercrm_account";
 		else
-			$query = "SELECT id,username,extension FROM astercrm_account WHERE groupid =$groupid";
+			$query = "SELECT id,username,extension,agent FROM astercrm_account WHERE groupid =$groupid";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -1856,6 +1860,25 @@ Class astercrm extends PEAR{
 			if($sql != '') $sql = ltrim($sql,"\ ".$type);
 		}
 		return $sql;
+	}
+
+	function getGroupCurcdr() {
+		global $db;
+		foreach ($_SESSION['curuser']['memberExtens'] as $value){
+			$memberextena .= "'".$value."',";
+			$memberextenb .= "'LOCAL/".$value."',";
+			$memberextenc .= "'SIP/".$value."',";
+			$memberextend .= "'IAX/".$value."',";
+		}
+		foreach ($_SESSION['curuser']['memberAgents'] as $value){
+			$memberagents .= "'AGENT/".$value."',";				
+		}
+		$memberextens = rtrim($memberextena.$memberextenb.$memberextenc.$memberextend,',');
+		$memberagents = rtrim($memberagents,',');
+		$query = "SELECT * FROM curcdr WHERE src in ($memberextens) OR dst in ($memberextens) OR dstchan in ($memberagents)";
+		astercrm::events($query);
+		$row =& $db->query($query);
+		return $row;		
 	}
 
 	/**

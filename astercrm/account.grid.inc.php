@@ -465,8 +465,20 @@ class Customer extends astercrm
 					<td align="left">'.$account['password'].'</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("first name").'</td>
+					<td align="left">'.$account['firstname'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("last name").'</td>
+					<td align="left">'.$account['lastname'].'</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'</td>
 					<td align="left">'.$account['extension'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("dynamic agent").'</td>
+					<td align="left">'.$account['agent'].'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>

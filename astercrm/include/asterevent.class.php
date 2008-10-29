@@ -223,9 +223,13 @@ class asterEvent extends PEAR
 			//$_SESSION['curuser']['extensions_session'] = $panellist;
 		}
 		else{
-			$panellist = array();
+			$alluser = astercrm::getall('astercrm_account');
+			while($alluser->fetchinto($row)){
+				$panellist[$row['username']]['extension'] = $row['extension'];
+				$panelphones[] = $row['extension'];
+			}
 		}
-//print_r($panellist);exit;
+//print_r($panelphones);exit;
 		if (!isset($_SESSION['extension_status'])){
 			$status = array();
 			$callerid = array();
@@ -347,7 +351,7 @@ class asterEvent extends PEAR
 			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction);
 		}else{
 			//$_SESSION['curuser']['extensions_session'] = $phones;
-			$action =& asterEvent::tableStatus($panelphones,$status,$callerid,$direction);
+			$action =& asterEvent::tableStatus($panellist,$status,$callerid,$direction);
 		}
 //print_r($status);exit;
 		$_SESSION['extension_status'] = $status;
@@ -371,36 +375,47 @@ class asterEvent extends PEAR
 
 	*/
 	function &tableStatus($phones,$status,$callerid,$direction){
+		//print_r($status);exit;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
+		$i=0;
 		foreach ($phones as $key => $value) {
-			//$value = "SIP/".$value;
-			if ( (($key %  6) == 0) && ($key != 0) ) $action .= "</tr><tr>";
+			$exten = $value['extension'];
+			$sipphone = "SIP/".$value['extension'];
+			$iaxphone = "IAX2/".$value['extension'];
+			if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				if(!in_array($exten,$_SESSION['curuser']['memberExtens'])) continue;
+			}
+			if ( (($i %  6) == 0) && ($i != 0) ) $action .= "</tr><tr>";
 			$action .= "<td align=center ><br><div id='div_exten'>";
-			if (isset($status[$value])) {
-				if ($status[$value] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".strtoupper(substr($value,4))."</a></LI>";
+			if (isset($status[$sipphone]) OR isset($status[$iaxphone])) {
+				if ($status[$sipphone] == 2 || $status[$iaxphone] == 2) {
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$key."</a></LI>";
 				}else {
-					if ($status[$value] == 1) {
-						$action .= "<UL id='extenBtnR'><LI><a href='###' >".strtoupper(substr($value,4))."</a><UL><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."');return false;\">-<font size='2px'>Spy</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($value,4)."','w');return false;\" >-<font size='2px'>Whisper</font>-</A></UL></LI>";
+					if ($status[$sipphone] == 1 OR $status[$iaxphone] == 1) {
+						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$key."</a><UL><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."');return false;\">-<font size='2px'>Spy</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."','w');return false;\" >-<font size='2px'>Whisper</font>-</A></UL></LI>";
 					}
 					else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###'>".strtoupper(substr($value,4))."</a></LI>";
+						$action .= "<UL id='extenBtnG'><LI><a href='###'>".$key."</a></LI>";
 					}
 				}
 			}
 			else {
-				$action .= "<UL id='extenBtnB'><LI><a href='###'>".strtoupper(substr($value,4))."</a></LI>";
+				$action .= "<UL id='extenBtnB'><LI><a href='###'>".$key."</a></LI>";
 			}			
 			$action .= "</UL></div>";
 
-			if ($status[$value] == 1) {
+			if ($status[$sipphone] == 1) {
 				//$action .= "<span align=left>";
-				$action .= $direction[$value];
-				$action .= "<BR>".$callerid[$value]."";
+				$action .= $direction[$sipphone];
+				$action .= "<BR>".$callerid[$sipphone]."";
 				//$action .= "</span>";
+			}elseif ($status[$iaxphone] == 1) {
+				$action .= $direction[$iaxphone];
+				$action .= "<BR>".$callerid[$iaxphone]."";
 			}
 			$action .=  "</td>\n";
+			$i++;
 		}
 		$action .= '</tr></table><br>';
 		//echo $action;exit;

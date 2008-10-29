@@ -52,6 +52,7 @@ require_once('systemstatus.common.php');
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/dialer.css" type="text/css" rel="stylesheet" />
 
 	</head>
 	<body onload="init();">
@@ -68,7 +69,7 @@ require_once('systemstatus.common.php');
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
 		<div id="divStatus" align="center"> </div>
 		<div id="divActiveCalls" name="divActiveCalls" align="left"> </div>
-		<div id="channels" align="left"></div>
+		<div id="channels" align="left" class="groupsystem_channel"></div>
 		<div id="divCopyright"></div>
 	</body>
 </html>

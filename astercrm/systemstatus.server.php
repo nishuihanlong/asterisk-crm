@@ -23,6 +23,7 @@ require_once ("systemstatus.common.php");
 require_once ("db_connect.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/asterevent.class.php');
+require_once ('include/astercrm.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('include/common.class.php');
 
@@ -86,12 +87,33 @@ function showStatus(){
 */
 
 function showChannelsInfo(){
-	global $locate,$config;
-//	if($config['system']['eventtype'] == 'curcdr'){
-//		$channels = astercrm::getTableRecords('curcdr');
-//	}else{
-		$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
-	//}
+	global $locate,$config,$db;
+	
+	$aDyadicArray[] = array($locate->Translate("src"),$locate->Translate("dst"),$locate->Translate("srcchan"),$locate->Translate("dstchan"),$locate->Translate("starttime"),$locate->Translate("answertime"),$locate->Translate("disposition"));
+
+	$objResponse = new xajaxResponse();
+
+	if($config['system']['eventtype'] == 'curcdr'){
+		if($_SESSION['curuser']['usertype'] == 'admin'){		
+			$curcdr = astercrm::getAll("curcdr");			
+		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			//print_r($_SESSION['curuser']['memberExtens']);exit;
+			$curcdr = astercrm::getGroupCurcdr();
+		}
+
+		while	($curcdr->fetchInto($row)){
+			$systemCDR[] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
+		}
+
+		$activeCalls = "&nbsp;&nbsp;".count($systemCDR)."&nbsp;".$locate->Translate("active calls");
+		$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
+		$systemChannels = common::generateTabelHtml(array_merge($aDyadicArray , $systemCDR));		
+		$objResponse->addAssign("channels", "innerHTML", nl2br(trim($systemChannels)));
+		return $objResponse;
+	}
+
+	$channels = split(chr(13),asterisk::getCommandData('show channels verbose'));
+	
 /*
 	if ($channels == null){
 			$objResponse->addAssign("channels", "innerHTML", "can not connect to AMI, please check config.php");
@@ -118,8 +140,7 @@ function showChannelsInfo(){
 	}
 	
 	$myChannels = common::generateTabelHtml($myInfo);
-
-	$objResponse = new xajaxResponse();
+	
 	$objResponse->addAssign("divActiveCalls", "innerHTML", $activeCalls);
 
 	$objResponse->addAssign("channels", "innerHTML", nl2br(trim($myChannels)));

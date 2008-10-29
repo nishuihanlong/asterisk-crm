@@ -278,12 +278,15 @@ function save($f){
 	global $locate,$db;
 	//print_r($f);exit;
 	$objResponse = new xajaxResponse();
-	$username = $f['username'];
-	$userid = astercrm::checkValues("astercrm_account","username",$username);
+	
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
+
+	$username = $f['username'];
+	$userid = astercrm::checkValues("astercrm_account","username",$username);
+
 	if($userid != '' ){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
@@ -337,6 +340,14 @@ function update($f){
 
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
+	$username = $f['username'];
+	$userid = astercrm::checkValues("astercrm_account","username",$username);
+
+	if($userid != '' ){
+		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
 	}
 

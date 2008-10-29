@@ -232,6 +232,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Group Note").'</td>
+					<td align="left"><textarea rows="5" cols="50" id="groupnote" name="groupnote"></textarea></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -281,6 +285,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100" value="'.$account['agentinterval'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Group Note").'</td>
+					<td align="left"><textarea rows="5" cols="50" id="groupnote" name="groupnote">'.$account['groupnote'].'</textarea></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>

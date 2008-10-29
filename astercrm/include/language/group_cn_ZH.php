@@ -17,5 +17,6 @@ $pdcontext = "预拨号context";
 $pdextensions = "预拨号热线";
 $digit_only = "组id只允许添数字";
 $display_all_member = "显示组员";
-$agent_interval = "成员拨号间隔"
+$agent_interval = "成员拨号间隔";
+$group_note = "组信息";
 ?>
