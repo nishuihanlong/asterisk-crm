@@ -93,7 +93,6 @@ require_once('config.php');
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
-		<link rel="shortcut icon" href="favicon.ico" >
 		<?php $xajax->printJavascript('include/'); ?>
 
 	<script type="text/javascript" src="js/astercrm.js"></script>
@@ -108,15 +107,27 @@ require_once('config.php');
 
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
-		function dial(phonenum,first){
+		function dial(phonenum,first,myvalue,dtmf){
 			myFormValue = xajax.getFormValues("myForm");
 			dialnum = phonenum;
 			firststr = first;
+
+			if(typeof(first) != 'undefined'){
+				firststr = first;
+			}else{
+				firststr = '';
+			}
+	
+			if(typeof(dtmf) != 'undefined'){
+				dtmfstr = dtmf;
+			}else{
+				dtmfstr = '';
+			}
 			if (document.getElementById("uniqueid").value != '')
 				return false;
 			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+phonenum;
-			setTimeout("xajax_dial(dialnum,firststr,myFormValue)",1000);
+			xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+phonenum;			
+			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr)",1000);
 		}
 
 		function hangup(){

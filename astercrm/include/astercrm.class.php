@@ -261,6 +261,7 @@ Class astercrm extends PEAR{
 		$query= "INSERT INTO customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
+				."country='".$f['country']."', "
 				."address='".$f['address']."', "
 				."zipcode='".$f['zipcode']."', "
 				."city='".$f['city']."', "
@@ -268,12 +269,14 @@ Class astercrm extends PEAR{
 				."contact='".$f['customerContact']."', "
 				."contactgender='".$f['customerContactGender']."', "
 				."phone='".$f['customerPhone']."', "
+				."phone_ext='".$f['customerPhone_ext']."', "
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
 				."bankaccount='".$f['bankaccount']."', "
 				."bankaccountname='".$f['bankaccountname']."', "
 				."fax='".$f['mainFax']."', "
+				."fax_ext='".$f['mainFax_ext']."', "
 				."mobile='".$f['mainMobile']."', "
 				."email='".$f['mainEmail']."', "
 				."cretime=now(), "
@@ -310,6 +313,7 @@ Class astercrm extends PEAR{
 				."ext2='".$f['ext2']."', "
 				."mobile='".$f['mobile']."', "
 				."fax='".$f['fax']."', "
+				."fax_ext='".$f['fax_ext']."', "
 				."email='".$f['email']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
@@ -459,9 +463,11 @@ Class astercrm extends PEAR{
 		$query= "UPDATE customer SET "
 				."customer='".$f['customer']."', "
 				."website='".$f['website']."', "
+				."country='".$f['country']."', "
 				."address='".$f['address']."', "
 				."zipcode='".$f['zipcode']."', "
 				."phone='".$f['customerPhone']."', "
+				."phone_ext='".$f['customerPhone_ext']."', "
 				."contact='".$f['customerContact']."', "
 				."contactgender='".$f['customerContactGender']."', "
 				."state='".$f['state']."', "
@@ -470,6 +476,7 @@ Class astercrm extends PEAR{
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
 				."fax='".$f['mainFax']."', "
+				."fax_ext='".$f['mainFax_ext']."', "
 				."mobile='".$f['mainMobile']."', "
 				."email='".$f['mainEmail']."', "
 				."bankaccount='".$f['bankaccount']."', "
@@ -504,6 +511,7 @@ Class astercrm extends PEAR{
 				."ext2='".$f['ext2']."', "
 				."mobile='".$f['mobile']."', "
 				."fax='".$f['fax']."', "
+				."fax_ext='".$f['fax_ext']."', "
 				."email='".$f['email']."' "
 				."WHERE id='".$f['contactid']."'";
 		astercrm::events($query);
@@ -983,7 +991,7 @@ Class astercrm extends PEAR{
 							<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
 						</select>
 					</td>
-				</tr>
+				</tr>				
 				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("address").'</td>
 					<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
@@ -997,8 +1005,12 @@ Class astercrm extends PEAR{
 					<td align="left"><input type="text" id="state" name="state" size="35" maxlength="50"></td>
 				</tr>
 				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("country").'</td>
+					<td align="left"><input type="text" id="country" name="country" size="35" maxlength="50"></td>
+				</tr>
+				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-					<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"></td>
+					<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50">-<input type="text" id="customerPhone_ext" name="customerPhone_ext" size="8" maxlength="8"></td>
 				</tr>
 				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
@@ -1018,7 +1030,7 @@ Class astercrm extends PEAR{
 				</tr>-->
 				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><input type="text" id="mainFax" name="mainFax" size="35"></td>
+					<td align="left"><input type="text" id="mainFax" name="mainFax" size="35">-<input type="text" id="mainFax_ext" name="mainFax_ext" size="8" maxlength="8"></td>
 				</tr>
 				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left" style="border-bottom:1px double orange;">'.$locate->Translate("category").'</td>
@@ -1109,15 +1121,15 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr name="phoneTR" id="phoneTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="6" maxlength="6" value=""></td>
+						<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="8" maxlength="8" value=""></td>
 					</tr>
 					<tr name="phone1TR" id="phone1TR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-						<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6" value=""></td>
+						<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="8" maxlength="8" value=""></td>
 					</tr>
 					<tr name="phone2TR" id="phone2TR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-						<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6" value=""></td>
+						<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="8" maxlength="8" value=""></td>
 					</tr>
 					<tr name="mobileTR" id="mobileTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
@@ -1125,7 +1137,7 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr name="faxTR" id="faxTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("fax").'</td>
-						<td align="left"><input type="text" id="fax" name="fax" size="35"></td>
+						<td align="left"><input type="text" id="fax" name="fax" size="35">-<input type="text" id="fax_ext" name="fax_ext" size="8" maxlength="8" value=""></td>
 					</tr>
 					<tr name="emailTR" id="emailTR" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1447,7 +1459,7 @@ Class astercrm extends PEAR{
 						</select>
 						
 						</td>
-					</tr>
+					</tr>					
 					<tr id="trEditCustomerDetails" name="trEditCustomerDetails">
 						<td nowrap align="left">'.$locate->Translate("address").'</td>
 						<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200" value="' . $customer['address'] . '"></td>
@@ -1461,8 +1473,12 @@ Class astercrm extends PEAR{
 						<td align="left"><input type="text" id="state" name="state" size="35" maxlength="50" value="'.$customer['state'].'"></td>
 					</tr>
 					<tr id="trEditCustomerDetails" name="trEditCustomerDetails">
+						<td nowrap align="left">'.$locate->Translate("country").'</td>
+						<td align="left"><input type="text" id="country" name="country" size="35" maxlength="50" value="' . $customer['country'] . '"></td>
+					</tr>
+					<tr id="trEditCustomerDetails" name="trEditCustomerDetails">
 						<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-						<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"  value="' . $customer['phone'] . '"></td>
+						<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50"  value="' . $customer['phone'] . '">-<input type="text" id="customerPhone_ext" name="customerPhone_ext" size="8" maxlength="8"  value="' . $customer['phone_ext'] . '"></td>
 					</tr>
 					<tr name="trEditCustomerDetails" id="trEditCustomerDetails">
 						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
@@ -1483,7 +1499,7 @@ Class astercrm extends PEAR{
 
 					<tr name="trEditCustomerDetails" id="trEditCustomerDetails" >
 						<td nowrap align="left">'.$locate->Translate("fax").'</td>
-						<td align="left"><input type="text" id="mainFax" name="mainFax" size="35" value="' . $customer['fax'] . '"></td>
+						<td align="left"><input type="text" id="mainFax" name="mainFax" size="35" value="' . $customer['fax'] . '"><input type="text" id="mainFax_ext" name="mainFax_ext" maxlength="8" size="8" value="' . $customer['fax_ext'] . '"></td>
 					</tr>
 					<!--*********************************************************-->
 					<tr id="trEditBankDetails" name="trEditBankDetails">
@@ -1638,15 +1654,15 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr name="phoneTR" id="phoneTR">
 						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><input type="text" id="phone" name="phone" size="35"  value="'.$contact['phone'].'">-<input type="text" id="ext" name="ext" size="6" maxlength="6"  value="'.$contact['ext'].'"></td>
+						<td align="left"><input type="text" id="phone" name="phone" size="35"  value="'.$contact['phone'].'">-<input type="text" id="ext" name="ext" size="8" maxlength="8"  value="'.$contact['ext'].'"></td>
 					</tr>
 					<tr name="phone1TR" id="phone1TR">
 						<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-						<td align="left"><input type="text" id="phone1" name="phone1" size="35"  value="'.$contact['phone1'].'">-<input type="text" id="ext1" name="ext1" size="6" maxlength="6"  value="'.$contact['ext1'].'"></td>
+						<td align="left"><input type="text" id="phone1" name="phone1" size="35"  value="'.$contact['phone1'].'">-<input type="text" id="ext1" name="ext1" size="8" maxlength="8"  value="'.$contact['ext1'].'"></td>
 					</tr>
 					<tr name="phone2TR" id="phone2TR">
 						<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-						<td align="left"><input type="text" id="phone2" name="phone2" size="35"  value="'.$contact['phone2'].'">-<input type="text" id="ext2" name="ext2" size="6" maxlength="6"  value="'.$contact['ext2'].'"></td>
+						<td align="left"><input type="text" id="phone2" name="phone2" size="35"  value="'.$contact['phone2'].'">-<input type="text" id="ext2" name="ext2" size="8" maxlength="8"  value="'.$contact['ext2'].'"></td>
 					</tr>
 					<tr name="mobileTR" id="mobileTR">
 						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
@@ -1654,7 +1670,7 @@ Class astercrm extends PEAR{
 					</tr>
 					<tr name="faxTR" id="faxTR">
 						<td nowrap align="left">'.$locate->Translate("fax").'</td>
-						<td align="left"><input type="text" id="fax" name="fax" size="35" value="'.$contact['fax'].'"></td>
+						<td align="left"><input type="text" id="fax" name="fax" size="35" value="'.$contact['fax'].'">-<input type="text" id="fax_ext" name="fax_ext" size="8" maxlength="8" value="'.$contact['fax_ext'].'"></td>
 					</tr>
 					<tr name="emailTR" id="emailTR">
 						<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1703,8 +1719,8 @@ Class astercrm extends PEAR{
 							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'out\');return false;">'.$locate->Translate("outbound").'</a>]&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'in\');return false;">'.$locate->Translate("inbound").'</a>]&nbsp;[<a href=? onclick="xajax_showDiallist(\''.$_SESSION['curuser']['extension'].'\',\''.$customer['id'].'\');return false;">'.$locate->Translate("diallist").'</a>]&nbsp;[<a href=? onclick="xajax_showRecords(\''.$customer['id'].'\');return false;">'.$locate->Translate("monitors").'</a>]</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("city").'/'.$locate->Translate("state").'['.$locate->Translate("zipcode").']'.'</td>
-					<td align="left">'.$customer['city'].'/'.$customer['state'].'['.$customer['zipcode'].']'.'</td>
+					<td nowrap align="left">'.$locate->Translate("city").'/'.$locate->Translate("state").'/'.$locate->Translate("country").'['.$locate->Translate("zipcode").']'.'</td>
+					<td align="left">'.$customer['city'].'/'.$customer['state'].'/'.$customer['country'].'['.$customer['zipcode'].']'.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("address").
@@ -1720,7 +1736,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a></td>
+					<td align="left"><a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a>-<a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\')\''.$customer['fax_ext'].'\');return false;">'.$customer['fax_ext'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1737,7 +1753,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-					<td align="left"><a href=? onclick="dial(\''.$customer['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['phone'].'</a></td>
+					<td align="left"><a href=? onclick="dial(\''.$customer['phone'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['phone'].'</a>-<a href=? onclick="dial(\''.$customer['phone'].'\',\'\',xajax.getFormValues(\'myForm\'),\''.$customer['phone_ext'].'\');return false;">'.$customer['phone_ext'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("category").'</td>
@@ -1996,11 +2012,23 @@ Class astercrm extends PEAR{
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
 					<td align="left"><a href="?" onclick="dial(\''.$contact['mobile'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$contact['mobile'].'</a></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left">'.$contact['fax'].'</td>
-				</tr>
+				</tr>';
+			if ($contact['fax'] != '' || $contact['fax_ext'] != ''){
+				if ($contact['fax_ext'] != ''){
+					$html .='
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("fax").'</td>
+						<td align="left">'.$contact['fax'].' ext: '.$contact['fax_ext'].'</td>
+					</tr>';
+				}else{
+					$html .='
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("fax").'</td>
+						<td align="left">'.$contact['fax'].'</td>
+					</tr>';
+				}
+			}
+		$html .='
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
 					<td align="left">'.$contact['email'].'</td>

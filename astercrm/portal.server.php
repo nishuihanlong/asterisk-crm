@@ -826,8 +826,9 @@ function workoffcheck($f=''){
 # $phoneNum	phone to call
 # $first	which phone will ring first, caller or callee
 
-function dial($phoneNum,$first = '',$myValue){
+function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 	global $config,$locate;
+
 	$objResponse = new xajaxResponse();
 	if(trim($myValue['curid']) > 0) $curid = trim($myValue['curid']) - 1;
 	else $curid = trim($myValue['curid']);
@@ -841,6 +842,12 @@ function dial($phoneNum,$first = '',$myValue){
 		$objResponse->addScript("alert('".$locate->Translate("Exten in use")."')");
 		return $objResponse->getXML();
 	}
+
+	if ($dtmf != '') {
+		$app = 'Dial';
+		$data = 'LOCAL/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D500';
+	}
+
 	$myAsterisk = new Asterisk();	
 	if ($first == ''){
 		$first = $config['system']['firstring'];
@@ -865,7 +872,7 @@ function dial($phoneNum,$first = '',$myValue){
 								'MaxRetries'=>0,
 								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
+			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
 		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
@@ -887,7 +894,7 @@ function dial($phoneNum,$first = '',$myValue){
 								'MaxRetries'=>0,
 								'CallerID'=>$_SESSION['curuser']['extension']));
 		}else{
-			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incontext'],1,$app,$data,30,$_SESSION['curuser']['extension'],NULL,NULL);
 		}
 	}
 	//$myAsterisk->disconnect();
