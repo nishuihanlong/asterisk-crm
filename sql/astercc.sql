@@ -373,7 +373,8 @@ CREATE TABLE IF NOT EXISTS `astercrm_account` (
  `dialinterval` int(5) NULL,
  `accountcode` varchar(20) NOT NULL default '',
  `groupid` int(11) NOT NULL default '0',
- UNIQUE KEY `id` (`id`,`username`)
+ UNIQUE KEY `id` (`id`),
+ UNIQUE KEY `username` (`username`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ----------------------------------------------------------

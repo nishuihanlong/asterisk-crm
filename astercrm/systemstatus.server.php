@@ -165,5 +165,77 @@ function chanspy($exten,$spyexten,$pam = ''){
 
 }
 
+function hangup($channel){
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+	if (trim($channel) == '')
+		return $objResponse;
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		$objResponse->addALert("action Huangup failed");
+		return $objResponse;
+	}
+	$myAsterisk->Hangup($channel);
+	return $objResponse;
+}
+
+function dial($phoneNum,$first = ''){
+	global $config,$locate;
+
+	$myAsterisk = new Asterisk();	
+	if ($first == ''){
+		$first = $config['system']['firstring'];
+	}
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res)
+		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
+
+	if ($first == 'caller'){	//caller will ring first
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
+
+		if ($config['system']['allow_dropcall'] == true){
+			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+								'WaitTime'=>30,
+								'Exten'=>$phoneNum,
+								'Context'=>$config['system']['outcontext'],
+								'Account'=>$_SESSION['curuser']['accountcode'],
+								'Variable'=>"$strVariable",
+								'Priority'=>1,
+								'MaxRetries'=>0,
+								'CallerID'=>$phoneNum));
+		}else{
+			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
+		}
+	}else{
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+
+		if ($config['system']['allow_dropcall'] == true){
+
+/*
+	coz after we use new method to capture dial event
+	there's no good method to make both leg display correct clid for now
+	so we comment these lines
+*/
+			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+								'WaitTime'=>30,
+								'Exten'=>$_SESSION['curuser']['extension'],
+								'Context'=>$config['system']['incontext'],
+								'Account'=>$_SESSION['curuser']['accountcode'],
+								'Variable'=>"$strVariable",
+								'Priority'=>1,
+								'MaxRetries'=>0,
+								'CallerID'=>$_SESSION['curuser']['extension']));
+		}else{
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incotext'],1,NULL,NULL,30,$_SESSION['curuser']['extension'],NULL,NULL);
+		}
+	}
+
+	return;
+}
+
 $xajax->processRequests();
 ?>

@@ -45,6 +45,19 @@ require_once('systemstatus.common.php');
 				showChannelsInfo();
 			}
 
+			function hangup(srcChan,dstChan){
+				var callerChan = srcChan;
+				var calleeChan = dstChan;
+				xajax_hangup(callerChan);
+				xajax_hangup(calleeChan);
+			}
+
+			function dial(phonenum,first){
+				dialnum = phonenum;
+				firststr = first;
+				xajax_dial(dialnum,firststr);
+			}
+
 		//-->
 		</SCRIPT>
 
