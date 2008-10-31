@@ -106,4 +106,5 @@ $campaign_name='计划名称';
 $add_diallist = '添加新记录';
 $monitors = '录音记录';
 $all = "全部";
+$country = "国家";
 ?>

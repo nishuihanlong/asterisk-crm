@@ -55,7 +55,7 @@ stop_work_verify = 0
 ;
 
 ;predialer_context = from-siptrunk
-;predialer_extension = 1
+;predialer_extension = 
 
 
 ;
