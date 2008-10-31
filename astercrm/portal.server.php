@@ -845,7 +845,8 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 
 	if ($dtmf != '') {
 		$app = 'Dial';
-		$data = 'LOCAL/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D500';
+		$data = 'LOCAL/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
+		$first = 'caller';
 	}
 
 	$myAsterisk = new Asterisk();	
