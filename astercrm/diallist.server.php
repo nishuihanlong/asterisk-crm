@@ -244,7 +244,7 @@ function edit($id){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
-	$objResponse->addScript("setCampaign();");
+	//$objResponse->addScript("setCampaign();");
 	return $objResponse->getXML();
 }
 

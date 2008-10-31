@@ -298,6 +298,15 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
 
+		$campaignlist =  Customer::getAll("campaign","groupid", $diallist['groupid']);
+		while ($row = $campaignlist->fetchRow()) {
+			$campaign_options .= '<option value="'.$row['groupid'].'"';
+			if ($diallist['campaignid']  == $row['id'])
+				$campaign_options .= ' selected';
+			$campaign_options .='>'.$row['campaignname'].'</option>';
+		}
+
+
 		$html = '
 				<!-- No edit the next line -->
 				<form method="post" name="formDiallist" id="formDiallist">
@@ -331,7 +340,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		$html .= '
 					<tr>
 						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
-						<td><SELECT id="campaignid" name="campaignid"></SELECT></td>
+						<td><SELECT id="campaignid" name="campaignid">'.$campaign_options.'</SELECT></td>
 					</tr>';
 		$html .= '
 					<tr>

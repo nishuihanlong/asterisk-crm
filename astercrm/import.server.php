@@ -156,9 +156,13 @@ function selectTable($tableName){
 		$type_arr = explode(' ',$row['flags']);
 		if(!in_array('auto_increment',$type_arr))
 		{
-			$HTML .= "<li height='20px'>";
-			$HTML .= $i.":&nbsp;&nbsp;".$row['name'];
-			$HTML .= "</li>";
+			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
+
+			}else{
+				$HTML .= "<li height='20px'>";
+				$HTML .= $i.":&nbsp;&nbsp;".$row['name'];
+				$HTML .= "</li>";
+			}
 		}
 		$i++;
 	}
