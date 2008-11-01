@@ -38,38 +38,35 @@ however, multiple servers enhance performance.
 	8).	click to monitor
 	9).	can be integrated with all asterisk based systems, 
 			such as Magiclink IP PBX, Trixbox ...
-	10).multi-language support (Chinese, English, German)
-	11).multi-skin support	
-	12).support external crm
-	13).extension status
-	14).show asterisk active channels 
-	15).predictive dialer
-	16).CRM data import/export online
-	17).diallist import online
-	18).survey
-	19).survey result statistics
-	20).distributed solution
+	10).	multi-language support (Chinese, English, German)
+	11).	multi-skin support	
+	12).	support external crm
+	13).	extension status
+	14).	show asterisk active channels 
+	15).	predictive dialer
+	16).	CRM data import/export online
+	17).	diallist import online
+	18).	survey
+	19).	survey result statistics
+	20).	distributed solution
 
 2. asterCRM Installation: (assuming your WEB root is /var/www/html)
 
 1) Download and unzip the source
 
 	cd /var/www/html
-	unzip astercrm-X.X-XXXX.zip
-	mv astercrm-0.0461 astercrm
-
-	Note: this creates the /var/www/html/astercrm directory which contains the
-	PHP scripts and several sub-directories. 
-
-	/var/www/html/astercrm									main directory and PHP scripts  
-	/var/www/html/astercrm/astercrm.conf.php		astercrm configration file
-	/var/www/html/astercrm/eventsdaemon 			eventsdaemon file
-	/var/www/html/astercrm/includes 					files needed in php scripts
-	/var/www/html/astercrm/includes/language 		asterCRM language files
-	/var/www/html/astercrm/skin							image/style files used by astercrm
-	/var/www/html/astercrm/js								auto-complete java scripts
-	/var/www/html/astercrm/upload				upload folder, make sure it get write permission
-	/var/www/html/astercrm/sql					sql to create astercrm database 
+	unzip astercc-X.X.zip
+	mv astercc-X.X astercc
+	
+	/var/www/html/astercc/astercrm				main directory and PHP scripts of astercrm
+	/var/www/html/astercc/astercrm/astercrm.conf.php	astercrm configration file
+	/var/www/html/astercc/astercrm/includes 		files needed in php scripts
+	/var/www/html/astercc/astercrm/includes/language	asterCRM language files
+	/var/www/html/astercc/astercrm/skin			image/style files used by astercrm
+	/var/www/html/astercc/astercrm/js								auto-complete java scripts
+	/var/www/html/astercc/astercrm/upload			upload folder, make sure it get write permission
+	/var/www/html/astercc/sql				sql to create database tables 
+	/var/www/html/astercc/script 				astercc daemon and some script files 
 
 	It is highly advised that the whole eventsdaemon directory be moved to a more secure
 	location like /opt and out of the WEB root directory (in step 2)
@@ -77,23 +74,29 @@ however, multiple servers enhance performance.
 2) Create the directories and move eventsdaemon scripts:
 
 	mkdir -p /opt/asterisk/scripts/astercc 
-	mv /var/www/html/astercrm/script/* /opt/asterisk/scripts/astercc
+	mv /var/www/html/astercc/script/* /opt/asterisk/scripts/astercc
 	chmod +x /opt/asterisk/scripts/astercc/eventsdaemon.pl
 	chmod +x /opt/asterisk/scripts/astercc/eventdog.sh
 	chmod +x /opt/asterisk/scripts/astercc/astercc
-	chmod +x /opt/asterisk/scripts/astercc/asterccd
+	chmod +x /opt/asterisk/scripts/astercc/astercctools
+	chmod +x /opt/asterisk/scripts/astercc/dialer.pl
+	chmod +x /opt/asterisk/scripts/astercc/cdr_move.pl
+	chmod +x /opt/asterisk/scripts/astercc/asterrc
+	chmod +x /opt/asterisk/scripts/astercc/astercclock
 	chmod +x /opt/asterisk/scripts/astercc/asterccdaemon
+	chmod +x /opt/asterisk/scripts/astercc/asterccd
 
 3) Create the MySQL database and table, asterCRM need mysql 4.1 or above
 
-	mysqladmin -uyourmysqluser -pyourmysqlpasswd create astercrm
-	mysql -uyourmysqluser -pyourmysqlpasswd astercrm </var/www/html/astercrm/sql/astercrm.sql 
+	mysqladmin -uyourmysqluser -pyourmysqlpasswd create astercc
+	mysql -uyourmysqluser -pyourmysqlpasswd astercc < /var/www/html/astercc/sql/astercc.sql 
 
-	Note: here we create the database named astercrm, you could use whatever db name you want
-				use your configration to replace "yourmysqluser" and "yourmysqlpasswd"
+	Note: here we create the database named astercc, it both used for astercrm and asterbilling,
+	you could use whatever db name you want	use your configration to replace "yourmysqluser"
+	and "yourmysqlpasswd"
 	
 4) Update /etc/asterisk/manager.conf to enable Manager connections
-	Note: asterisk and astercrm could be on different server
+	Note:allow asterisk and astercrm on different server
  
 	Add something like this to the manager.conf file:
 
@@ -104,8 +107,8 @@ however, multiple servers enhance performance.
 	;displayconnects = yes
 
 	;the following line could be changed by yourself
-	[eventsdaemon]
-	secret = myeventsdaemon
+	[astercc]
+	secret = astercc
 	read = system,call,log,verbose,command,agent,user
 	write = system,call,log,verbose,command,agent,user
 	deny=0.0.0.0/0.0.0.0
@@ -116,37 +119,14 @@ however, multiple servers enhance performance.
 5) modify astercrm.conf.php to fit your configuration
 	mainly database setting and AMI setting, the other parameters could be set in astercrm page
 
+
 6) Start Asterisk and  daemon
 	There are two daemon modes you can choose, eventsdaemon mode or astercc mode
 	
-	A for eventsdaemon mode
-	try start eventsdaemon:
-		modify eventsdaemon.pl to fit your configuration mainly database setting and AMI setting.
-		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl 	
-	if you could read:
+	A for astercc mode
 
-		"Message: Authentication accepted"
-
-	congratulations, your eventsdaemon works well
-	use ctrl + c to exit
-	or else, please check your database/AMI configration in eventsdaemon.pl
-
-	Start eventsdaemon (default settings):
-		modify astercrm.conf set eventtype to event
-		/opt/asterisk/scripts/eventsdaemon/eventsdaemon.pl -d
-
-	At some point it may be desirable to delete unwanted events from the database
-	table. The eventsdaemon is also designed for this.
-	please check eventsdaemon.pl for parameter "log_life"
-
-	also we provide a "watch dog", it would help you restart eventsdaemon when it shutdown
-	add this shell to your start-up file
-		/opt/asterisk/scripts/eventsdaemon/eventdog.sh
-	so that everytime your server start, eventsdaemon would be loaded
-
-	B for astercc mode
-	try start astercc		
-		modify /opt/asterisk/scripts/eventsdaemon/astercc.conf to fit your configuration
+	try start astercc:		
+		modify /opt/asterisk/scripts/astercc/astercc.conf to fit your configuration
 		mainly database setting and AMI setting.
 		/opt/asterisk/scripts/eventsdaemon/astercc
 	if you could read like following line:
@@ -158,20 +138,19 @@ however, multiple servers enhance performance.
 		 Success
 		 Monitor Start: 
 		 ...(some log message)..."
-	congratulations, your astercc works well
-	use ctrl + c to exit
+	congratulations, your astercc works well, use 'ctrl + c' to exit
 	or else, please check your database/AMI configration in astercc.conf
 
 	Start up astercc (default settings):
 		modify /var/www/html/astercrm/astercrm.conf.php set eventtype to curcdr
-		/opt/asterisk/scripts/eventsdaemon/astercc -d
+		/opt/asterisk/scripts/astercc/astercc -d
 
 	Start up astercc daemons when system startup:
 	Note: This option can only fit to redhat-release system. 
 	If you want astercc daemons to start automatically when you boot your
 	machine, you need to :
 
-	cp /opt/asterisk/scripts/eventsdaemon/asterccd /etc/rc.d/init.d
+	cp /opt/asterisk/scripts/astercc/asterccd /etc/rc.d/init.d
 	chmod 755 /etc/rc.d/init.d/asterccd
 	chkconfig --add asterccd
 	
@@ -182,14 +161,45 @@ however, multiple servers enhance performance.
 		0 0 * * * /etc/rc.d/init.d/asterccd restart 
 	end of this file, the first "0" figures minutes and the second "0" figures hours.
 
+	B for eventsdaemon mode
+	try start eventsdaemon:
+		modify eventsdaemon.pl to fit your configuration mainly database setting and AMI setting.
+		/opt/asterisk/scripts/astercc/eventsdaemon.pl 	
+	if you could read:
+
+		"Message: Authentication accepted"
+
+	congratulations, your eventsdaemon works well
+	use ctrl + c to exit
+	or else, please check your database/AMI configration in eventsdaemon.pl
+
+	Start eventsdaemon (default settings):
+		modify astercrm.conf set eventtype to event
+		/opt/asterisk/scripts/astercc/eventsdaemon.pl -d
+
+	At some point it may be desirable to delete unwanted events from the database
+	table. The eventsdaemon is also designed for this.
+	please check eventsdaemon.pl for parameter "log_life"
+
+	also we provide a "watch dog", it would help you restart eventsdaemon when it shutdown
+	add this shell to your start-up file
+		/opt/asterisk/scripts/astercc/eventdog.sh
+	so that everytime your server start, eventsdaemon would be loaded
+
+
 7) set file&folder access 
 
-	chmod 777 /var/www/html/astercrm/upload
-	chmod 777 /var/www/html/astercrm/astercrm.conf.php
+	chmod 777 /var/www/html/astercc/astercrm/upload
+	chmod 777 /var/www/html/astercc/astercrm/astercrm.conf.php
 
-8) Testing: browse to http://localhost/astercrm
+	if asterisk and astercrm running in one server,you could make a soft link to astercrm web dir for listen monitor records. 
+	ln -s /var/spool/asterisk/monitor/ /vavr/www/html/astercc/astercrm/monitor
+	note: astercrm support listen monitors online only can be wav format file. 
+8) Testing: browse to http://localhost/astercc/astercrm 
 
-	or http://YOUR-WEB-SERVER-ADDRESS/astercrm
+	or http://YOUR-WEB-SERVER-ADDRESS/astercc/astercrm
+
+	also you can move astercrm dir to any path where your apache be allowed to access.
 		
 	login with admin/admin
 
