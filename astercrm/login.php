@@ -45,6 +45,7 @@ require_once('login.common.php');
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
+		<title>asterCC</title>
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<?php $xajax->printJavascript('include/'); ?>
 		<script type="text/javascript">
@@ -56,8 +57,8 @@ require_once('login.common.php');
 		*/
 		function loginSignup()
 		{
-			xajax.$('loginButton').disabled=true;
-			xajax.$('loginButton').value=xajax.$('onclickMsg').value;
+			//xajax.$('loginButton').disabled=true;
+			//xajax.$('loginButton').value=xajax.$('onclickMsg').value;
 			xajax_processForm(xajax.getFormValues("loginForm"));
 			return false;
 		}
@@ -84,55 +85,46 @@ require_once('login.common.php');
 		}
 		</script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+	
+	<link href="skin/default/css/login.css" rel="stylesheet" type="text/css" />
 
 </head>
-	<body onload="init();" style="margin-top: 80px;">
-	 <div align="center">
-	 		<div id="formDiv">
-			<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
-		  <div class="login_in">
-				<div class="login_in_logo" align="right"><br /><div id="titleDiv"></div></div>
-				<div class="left">
-			<table width="385" height="143" border="0" cellpadding="0" cellspacing="0">
-			  <tr>
-				<th width="92" height="58" scope="col">&nbsp;</th>
-				<th width="92" valign="bottom" scope="col"><div name="usernameDiv" id="usernameDiv" align="left"></div></th>
-				<th width="201" valign="bottom" scope="col"><div align="left">
-				  <input name="username" type="text" id="username" style="width:150px;height:14px" />
-			    </div></th>
-			  </tr>
-			  <tr>
-				<td height="49">&nbsp;</td>
-				<th><div name="passwordDiv" id="passwordDiv" align="left"></div></th>
-				<td><div align="left">
-				  <input type="password" name="password" id="password" style="width:150px;height:14px" />
-			    </div></td>
-			  </tr>
-			  <tr>
-				<td height="36" colspan="2">&nbsp;</td>
-				<td><div name="locateDiv" id="locateDiv">
-						<div align="left">
-						  <SELECT name="locate" id="locate" onchange="init();">
-						    <OPTION value="en_US">English</OPTION>
-						    <OPTION value="cn_ZH">简体中文</OPTION>
-						    <OPTION value="de_GER">Germany</OPTION>
-				      </SELECT>
-				      <input id="loginButton" name="loginButton" type="submit" value=""/>
-				  <input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
-			    </div>
-				</div></td>
-			  </tr>
-				  </table>
-
-				</div>
-				<div class="right"></div><div id="outputDiv"></div>
-                <div align="center">
-					<img src="skin/default/images/login_in_03.gif" width="277" height="7"></div>
-		  </div></form></div>
-
-	    </div>
-				<div id="divCopyright"></div>                      
+	<body onload="init();">
+		<div id="loginbody">
+		<div id="astercclogo"><img src="skin/default/images/asterCC_logo.gif" /></div>		
+		<div id="logininfo">
+		<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
+		<div class="text01" id="logintip" id="logintip"></div>
+		<table border="0" cellspacing="0" cellpadding="2">
+			<tr>
+			  <td width="110"><div name="usernameDiv" id="usernameDiv" align="right"></div></td>
+			  <td><input name="username" type="text" id="username" class="input"/></td>
+			  <td>&nbsp;</td>
+			</tr>
+			<tr>
+			  <td><div name="passwordDiv" id="passwordDiv" align="right"></div></td>
+			  <td><input type="password" name="password" id="password" class="input" /></td>
+			  <td>&nbsp;</td>
+			</tr>
+			<tr>
+			  <td>&nbsp;</td>
+			  <td>&nbsp;</td>
+			  <td>&nbsp;</td>
+			</tr>
+			<tr>
+			  <td><div name="languageDiv" id="languageDiv" align="right"></div></td>
+			  <td><SELECT name="locate" id="locate" onchange="init();" class="select">
+					 <OPTION value="en_US">English</OPTION>
+					 <OPTION value="cn_ZH">简体中文</OPTION>
+					 <OPTION value="de_GER">Germany</OPTION>
+				   </SELECT></td>
+			  <td><input type="image" src="skin/default/images/btn_login.gif" align="absmiddle" onclick="form.submit('loginForm');"/></td>
+			</tr>
+		  </table>
+		<div id="copyright"><br>&copy; 2004-2008 Sonicwell Inc.All Rights Reserved.</div>
+		</form>
+		</div>
+		<div id="sonicwelllogo"><img src="skin/default/images/sonicwell_logo.gif" /></div>
+		</div>
 	</body>
 </html>

@@ -16,4 +16,5 @@ $device_status			= "Software/Hardware status";
 $continue			= "Weiter";
 $no_pass			= "Zugang fehlgeschlagen, bitte Überprüfen Sie die Konfiguration";
 $invalid_string		= "Unzuläsiger Eintrag, Es sind nur Ziffern/buchstaben zulässig";
+$logintip			= "Benutzer Login";
 ?>

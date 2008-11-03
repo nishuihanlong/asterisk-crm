@@ -342,11 +342,11 @@ function update($f){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
-
+	
 	$username = $f['username'];
 	$userid = astercrm::checkValues("astercrm_account","username",$username);
 
-	if($userid != '' ){
+	if($userid != '' && $userid != $f['id'] ){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
 	}

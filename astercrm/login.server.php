@@ -108,11 +108,13 @@ function init($aFormValue){
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
 
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("Title"));
+	$objResponse->addAssign("logintip","innerHTML",$locate->Translate("logintip"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("Username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("Password"));
+	$objResponse->addAssign("languageDiv","innerHTML",$locate->Translate("Language"));
 	$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
-	$objResponse->addAssign("onclickMsg","value",$locate->Translate("Please waiting"));
+	//$objResponse->addAssign("onclickMsg","value",$locate->Translate("Please waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 

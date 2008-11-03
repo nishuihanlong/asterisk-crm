@@ -69,6 +69,26 @@ require_once('contact.common.php');
 				}
 			}			
 		}
+
+		function dial(phonenum,first,myvalue,dtmf){
+			myFormValue = xajax.getFormValues("myForm");
+			dialnum = phonenum;
+			firststr = first;
+
+			if(typeof(first) != 'undefined'){
+				firststr = first;
+			}else{
+				firststr = '';
+			}
+	
+			if(typeof(dtmf) != 'undefined'){
+				dtmfstr = dtmf;
+			}else{
+				dtmfstr = '';
+			}
+			
+			xajax_dial(dialnum,firststr,myFormValue,dtmfstr);
+		}
 		//-->
 		</SCRIPT>
 

@@ -67,6 +67,26 @@ require_once('customer.common.php');
 			document.getElementById("campaignid").options.length=0
 			xajax_setCampaign(groupid);
 		}
+
+		function dial(phonenum,first,myvalue,dtmf){
+			myFormValue = xajax.getFormValues("myForm");
+			dialnum = phonenum;
+			firststr = first;
+
+			if(typeof(first) != 'undefined'){
+				firststr = first;
+			}else{
+				firststr = '';
+			}
+	
+			if(typeof(dtmf) != 'undefined'){
+				dtmfstr = dtmf;
+			}else{
+				dtmfstr = '';
+			}
+			
+			xajax_dial(dialnum,firststr,myFormValue,dtmfstr);
+		}
 		//-->
 		</SCRIPT>
 

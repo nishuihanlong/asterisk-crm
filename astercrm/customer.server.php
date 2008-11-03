@@ -40,6 +40,7 @@ require_once ('include/xajaxGrid.inc.php');
 require_once ('astercrm.server.common.php');
 require_once ('include/common.class.php');
 require_once ('include/astercrm.class.php');
+require_once ('include/asterisk.class.php');
 
 /**
 *  initialize page elements
@@ -326,6 +327,73 @@ function deleteByButton($f,$searchFormValue){
 	$limit = $searchFormValue['limit'];     
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
 	$objResponse->addAssign('grid', "innerHTML", $html);
+	return $objResponse->getXML();
+}
+
+function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
+	global $config,$locate;
+
+	$objResponse = new xajaxResponse();
+	if(trim($myValue['curid']) > 0) $curid = trim($myValue['curid']) - 1;
+	else $curid = trim($myValue['curid']);
+	
+	if ($dtmf != '') {
+		$app = 'Dial';
+		$data = 'LOCAL/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
+		$first = 'caller';
+	}
+
+	$myAsterisk = new Asterisk();	
+	if ($first == ''){
+		$first = $config['system']['firstring'];
+	}
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res)
+		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
+
+	if ($first == 'caller'){	//caller will ring first
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
+
+		if ($config['system']['allow_dropcall'] == true){
+			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+								'WaitTime'=>30,
+								'Exten'=>$phoneNum,
+								'Context'=>$config['system']['outcontext'],
+								'Account'=>$_SESSION['curuser']['accountcode'],
+								'Variable'=>"$strVariable",
+								'Priority'=>1,
+								'MaxRetries'=>0,
+								'CallerID'=>$phoneNum));
+		}else{
+			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
+		}
+	}else{
+		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+
+		if ($config['system']['allow_dropcall'] == true){
+
+/*
+	coz after we use new method to capture dial event
+	there's no good method to make both leg display correct clid for now
+	so we comment these lines
+*/
+			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
+								'WaitTime'=>30,
+								'Exten'=>$_SESSION['curuser']['extension'],
+								'Context'=>$config['system']['incontext'],
+								'Account'=>$_SESSION['curuser']['accountcode'],
+								'Variable'=>"$strVariable",
+								'Priority'=>1,
+								'MaxRetries'=>0,
+								'CallerID'=>$_SESSION['curuser']['extension']));
+		}else{
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incontext'],1,$app,$data,30,$_SESSION['curuser']['extension'],NULL,NULL);
+		}
+	}
+	//$myAsterisk->disconnect();
+	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse->getXML();
 }
 
