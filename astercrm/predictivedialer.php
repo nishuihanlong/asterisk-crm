@@ -117,9 +117,9 @@ require_once('predictivedialer.common.php');
 		<form action="" method="post" name="f" id="f">
 		<div class="groups_tittle"><?echo $locate->Translate("Group")?></div>
 		<div id="divMain" name="divMain"></div>
-
-		<div class="groups_tittle2"><?echo $locate->Translate("System")?></div>
-		<div class="groupsystem_channel" id="idvUnknowChannels" ></div>
+		<?if($_SESSION['curuser']['usertype'] == 'admin')
+		echo '<div class="groups_tittle2">'.$locate->Translate("System").'</div>
+		<div class="groupsystem_channel" id="idvUnknowChannels" ></div>'?>
 		</form>
 
 		<div id="divCopyright"></div>

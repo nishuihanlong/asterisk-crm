@@ -112,11 +112,11 @@ function predictiveDialer($f){
 
 	// 检查系统目前的通话情况
 
-	if($_SESSION['curuser']['usertype'] == 'admin'){
+	//if($_SESSION['curuser']['usertype'] == 'admin'){
 		$curcdr = astercrm::getAll("curcdr");
-	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
-		$curcdr = astercrm::getGroupCurcdr();
-	}	
+	//}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+	//	$curcdr = astercrm::getGroupCurcdr();
+	//}	
 	
 	while	($curcdr->fetchInto($row)){
 			if ($row['dstchan'] != ""){
