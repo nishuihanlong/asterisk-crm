@@ -274,7 +274,7 @@ function placeCall($campaignid){
 	$outcontext = $row['outcontext'];
 
 	if ($row['inexten'] != ""){
-		$pdextension = $row['dialnumber'];
+		$pdextension = $row['inexten'];
 	}else{
 		if ($row['assign'] != ""){
 			$pdextension = $row['assign'];

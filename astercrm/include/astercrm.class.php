@@ -2287,8 +2287,9 @@ Class astercrm extends PEAR{
 			$fields = array();
 			$fields[] = 'calldate';
 			$fields[] = 'src';
-			$fields[] = 'dst';
+			$fields[] = 'dst';			
 			$fields[] = 'didnumber';
+			$fields[] = 'dstchannel';
 			$fields[] = 'duration';
 			$fields[] = 'billsec';
 			$fields[] = 'record';
@@ -2299,22 +2300,25 @@ Class astercrm extends PEAR{
 			$headers[] = $locate->Translate("Src").'<br>';
 			$headers[] = $locate->Translate("Dst").'<br>';
 			$headers[] = $locate->Translate("Callee Id").'<br>';
+			$headers[] = $locate->Translate("Dynamic agent").'<br>';
 			$headers[] = $locate->Translate("Duration").'<br>';
 			$headers[] = $locate->Translate("Billsec").'<br>';
 			$headers[] = $locate->Translate("record").'<br>';
 
 			// HTML table: hearders attributes
 			$attribsHeader = array();
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
 
 			// HTML Table: columns attributes
 			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
@@ -2329,6 +2333,7 @@ Class astercrm extends PEAR{
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dstchannel","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","id","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';			
@@ -2363,6 +2368,12 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
 				$rowc[] = $row['didnumber'];
+				if(strstr($row['dstchannel'],'AGENT')){
+					$agent = split('/',$row['dstchannel']);
+					$rowc[] = $agent['1'];
+				}else{
+					$rowc[]='';
+				}
 				$rowc[] = $row['duration'];
 				$rowc[] = $row['billsec'];
 				$rowc['filename'] = $row['filename'];
@@ -2375,6 +2386,7 @@ Class astercrm extends PEAR{
 			$fields[] = 'src';
 			$fields[] = 'dst';
 			$fields[] = 'didnumber';
+			$fields[] = 'dstchannel';
 			$fields[] = 'duration';
 			$fields[] = 'billsec';
 			$fields[] = 'disposition';
@@ -2388,6 +2400,7 @@ Class astercrm extends PEAR{
 			$headers[] = $locate->Translate("Src").'<br>';
 			$headers[] = $locate->Translate("Dst").'<br>';
 			$headers[] = $locate->Translate("Callee Id").'<br>';
+			$headers[] = $locate->Translate("Dynamic agent").'<br>';
 			$headers[] = $locate->Translate("Duration").'<br>';
 			$headers[] = $locate->Translate("Billsec").'<br>';
 			$headers[] = $locate->Translate("Disposition").'<br>';
@@ -2398,6 +2411,7 @@ Class astercrm extends PEAR{
 			// HTML table: hearders attributes
 			$attribsHeader = array();
 			$attribsHeader[] = 'width="10%"';
+			$attribsHeader[] = 'width="15%"';
 			$attribsHeader[] = 'width="15%"';
 			$attribsHeader[] = 'width="15%"';
 			$attribsHeader[] = 'width="15%"';
@@ -2420,6 +2434,7 @@ Class astercrm extends PEAR{
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
 			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
 
 			// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 			$eventHeader = array();
@@ -2427,6 +2442,7 @@ Class astercrm extends PEAR{
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING");return false;\'';
+			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dstchannel","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showCdr('.$customerid.',"'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -2487,6 +2503,12 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
 				$rowc[] = $row['didnumber'];
+				if(strstr($row['dstchannel'],'AGENT')){
+					$agent = split('/',$row['dstchannel']);
+					$rowc[] = $agent['1'];
+				}else{
+					$rowc[]='';
+				}
 				$rowc[] = $row['duration'];
 				$rowc[] = $row['billsec'];
 				$rowc[] = $row['disposition'];
@@ -2506,7 +2528,7 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid or mycdr.dstuid = monitorrecord.uniqueid WHERE (mycdr.src = '".$_SESSION['curuser']['extension']."' OR mycdr.dst ='".$_SESSION['curuser']['extension']."') AND mycdr.src != '' AND mycdr.dst != '' AND mycdr.src != '<unknown>' AND mycdr.dst != '<unknown>' ";
+				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid or mycdr.dstuid = monitorrecord.uniqueid WHERE (mycdr.src = '".$_SESSION['curuser']['extension']."' OR mycdr.dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'AGENT/".$_SESSION['curuser']['agent']."') AND mycdr.src != '' AND mycdr.dst != '' AND mycdr.src != '<unknown>' AND mycdr.dst != '<unknown>' AND dstchannel != ''";
 				if($order == null || is_array($order)){
 					$sql .= " ORDER by mycdr.calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 				}else{
@@ -2526,20 +2548,25 @@ Class astercrm extends PEAR{
 		if($customerid != ''){
 			if($cdrtype == 'out'){
 				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+				$sql = "(".$sql.") AND dstchannel != '' AND src != dst ";
 			}else{
 				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+				$sql = "(".$sql.") AND dstchannel != '' ";
 			}
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT * FROM mycdr ";
+			$sql = "SELECT * FROM mycdr WHERE dstchannel != '' ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			$group_str = '';
 			foreach($_SESSION['curuser']['memberExtens'] as $value){
 				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
 			}
+			foreach($_SESSION['curuser']['memberAgents'] as $value){
+				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
+			}
 			if($group_str != ''){
-				$sql = "SELECT * FROM mycdr WHERE ".ltrim($group_str,"\ OR");
+				$sql = "SELECT * FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
 			}else {
 				$sql = "SELECT * FROM mycdr WHERE id = '0'";
 			}
@@ -2556,6 +2583,7 @@ Class astercrm extends PEAR{
 		}else{
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
+		//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -2565,7 +2593,7 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' ";				
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'AGENT/".$_SESSION['curuser']['agent']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' AND dstchannel != '' ";				
 				astercrm::events($sql);
 				$res =& $db->getOne($sql);
 				return $res;
@@ -2585,14 +2613,17 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr ";
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE dstchannel != '' ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			$group_str = '';
 			foreach($_SESSION['curuser']['memberExtens'] as $value){
 				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
 			}
+			foreach($_SESSION['curuser']['memberAgents'] as $value){
+				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
+			}
 			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE ".ltrim($group_str,"\ OR");
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
 			}else {
 				return '0';
 			}
@@ -2630,7 +2661,7 @@ Class astercrm extends PEAR{
 			}
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT * FROM mycdr WHERE 1 ";
+			$sql = "SELECT * FROM mycdr WHERE dstchannel != '' ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			$group_str = '';
 			foreach($_SESSION['curuser']['memberExtens'] as $value){

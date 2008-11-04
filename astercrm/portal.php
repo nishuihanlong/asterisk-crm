@@ -362,7 +362,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formCdr" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 900px"></div>
 		<div id="formRecentCdr" class="formDiv drsElement"
-			style="left: 20px; top: 30px; width:600px"></div>		
+			style="left: 20px; top: 30px; width:750px"></div>		
 		<div id="formRecords" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 900px"></div>
 		<div id="formDiallist" class="formDiv drsElement"
