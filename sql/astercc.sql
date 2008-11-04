@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
  `ext2` varchar(8) NOT NULL default '',
  `mobile` varchar(50) NOT NULL default '',
  `fax` varchar(50) NOT NULL default '',
- `fax_ext` varchar(8) NOT NULL default '',					--传真分机
+ `fax_ext` varchar(8) NOT NULL default '',					#传真分机
  `email` varchar(100) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
@@ -496,7 +496,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
  `category` varchar(255) NOT NULL default '',
  `city`	varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
  `state` varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
- `country` varchar(50) NOT NULL default '',			--国家
+ `country` varchar(50) NOT NULL default '',			#国家
  `phone` varchar(50) NOT NULL default '',	#add 2007-9-30 by solo
  `phone_ext` varchar(8) NOT NULL default '',		#add 2008-10-24 by solo
  `fax` varchar(50) NOT NULL default '',		#add 2007-10-24 by solo

@@ -94,6 +94,8 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fields[] = 'calldate';
 		$fields[] = 'src';
 		$fields[] = 'dst';
+		$fields[] = 'didnumber';
+		$fields[] = 'dstchannel';
 		$fields[] = 'duration';
 		$fields[] = 'billsec';
 		$fields[] = 'filename';
@@ -104,6 +106,8 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$headers[] = $locate->Translate("Calldate");
 		$headers[] = $locate->Translate("Src");
 		$headers[] = $locate->Translate("Dst");
+		$headers[] = $locate->Translate("Callee Id");
+		$headers[] = $locate->Translate("Agent");
 		$headers[] = $locate->Translate("Duration");
 		$headers[] = $locate->Translate("Billsec");
 		$headers[] = $locate->Translate("filename");
@@ -114,6 +118,8 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$attribsHeader[] = 'width="13%"';
 		$attribsHeader[] = 'width="10%"';
 		$attribsHeader[] = 'width="13%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="10%"';
 		$attribsHeader[] = 'width="10%"';
 		$attribsHeader[] = 'width="10%"';
 		$attribsHeader[] = 'width="12%"';
@@ -129,12 +135,16 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
 
 		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 		$eventHeader = array();
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.didnumber","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.dstchannel","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.duration","'.$divName.'","ORDERING");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mycdr.billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","monitorrecord.filename","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -160,6 +170,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fieldsFromSearch[] = 'src';
 		$fieldsFromSearch[] = 'calldate';
 		$fieldsFromSearch[] = 'dst';
+		$fieldsFromSearch[] = 'didnumber';
 		$fieldsFromSearch[] = 'billsec';
 		$fieldsFromSearch[] = 'filename';
 		$fieldsFromSearch[] = 'creby';
@@ -169,6 +180,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fieldsFromSearchShowAs[] = $locate->Translate("src");
 		$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
 		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
+		$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
 		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 		$fieldsFromSearchShowAs[] = $locate->Translate("filename");
 		$fieldsFromSearchShowAs[] = $locate->Translate("creby");
@@ -186,6 +198,13 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 			$rowc[] = $row['calldate'];
 			$rowc[] = $row['src'];
 			$rowc[] = $row['dst'];
+			$rowc[] = $row['didnumber'];
+			if(strstr($row['dstchannel'],'AGENT')){
+				$agent = split('/',$row['dstchannel']);
+				$rowc[] = $agent['1'];
+			}else{
+				$rowc[]='';
+			}
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
 			$rowc['filename'] = $row['filename'];

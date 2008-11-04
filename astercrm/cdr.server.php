@@ -120,7 +120,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$headers[] = $locate->Translate("Src")."<br>";
 		$headers[] = $locate->Translate("Dst")."<br>";
 		$headers[] = $locate->Translate("Callee Id")."<br>";
-		$headers[] = $locate->Translate("Dynamic agent").'<br>';
+		$headers[] = $locate->Translate("Agent").'<br>';
 		$headers[] = $locate->Translate("Duration")."<br>";
 		$headers[] = $locate->Translate("Billsec")."<br>";
 		$headers[] = $locate->Translate("Disposition")."<br>";

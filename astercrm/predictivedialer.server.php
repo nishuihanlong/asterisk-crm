@@ -48,7 +48,12 @@ function init(){
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	// get all groups
-	$groups = astercrm::getAll("astercrm_accountgroup");
+	if($_SESSION['curuser']['usertype'] == 'admin'){
+		$groups = astercrm::getAll("astercrm_accountgroup");
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$groups = astercrm::getRecordsByField('id',$_SESSION['curuser']['groupid'],'astercrm_accountgroup');
+	}
+
 	while	($groups->fetchInto($group)){
 		// get all enabled campaigns
 		$query = "SELECT id,campaignname,campaignnote,queuename FROM campaign WHERE enable = 1 AND groupid = ".$group['groupid'];
@@ -106,7 +111,13 @@ function predictiveDialer($f){
 	$aDyadicArray[] = array($locate->Translate("src"),$locate->Translate("dst"),$locate->Translate("srcchan"),$locate->Translate("dstchan"),$locate->Translate("starttime"),$locate->Translate("answertime"),$locate->Translate("disposition"));
 
 	// 检查系统目前的通话情况
-	$curcdr = astercrm::getAll("curcdr");
+
+	if($_SESSION['curuser']['usertype'] == 'admin'){
+		$curcdr = astercrm::getAll("curcdr");
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$curcdr = astercrm::getGroupCurcdr();
+	}	
+	
 	while	($curcdr->fetchInto($row)){
 			if ($row['dstchan'] != ""){
 				$flag = 0;
