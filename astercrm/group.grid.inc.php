@@ -228,6 +228,11 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="pdextensions" name="pdextensions" size="25" maxlength="100"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("force monitor").'</td>
+					<td align="left"><input type="radio" id="monitorforce" name="monitorforce" value="0" checked>'.$locate->Translate("disable").'<input type="radio" id="monitorforce" name="monitorforce" value="1" >'.$locate->Translate("enable").'
+					</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100"></td>
 				</tr>
@@ -281,6 +286,16 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("pdextensions").'</td>
 					<td align="left"><input type="text" id="pdextensions" name="pdextensions" size="25" maxlength="100" value="'.$account['pdextension'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("force monitor").'</td>
+					<td align="left">';
+				if($account['monitorforce']){
+					$html .= '<input type="radio" id="monitorforce" name="monitorforce" value="0" >'.$locate->Translate("disable").'<input type="radio" id="monitorforce" name="monitorforce" value="1" checked>'.$locate->Translate("enable");
+				}else{
+					$html .= '<input type="radio" id="monitorforce" name="monitorforce" value="0" checked>'.$locate->Translate("disable").'<input type="radio" id="monitorforce" name="monitorforce" value="1" >'.$locate->Translate("enable");
+				}
+		$html .=	'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>

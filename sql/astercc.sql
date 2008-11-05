@@ -312,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
-  KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`duration`,`billsec`,`disposition`)
+  KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 --------------------------------------------------------
@@ -422,6 +422,7 @@ CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
  `groupid` INT NOT NULL ,
  `pdcontext` VARCHAR( 30 ) NOT NULL  ,
  `pdextension` VARCHAR( 30 ) NOT NULL  ,
+ `monitorforce` INT(1) NOT NULL defalut 0,
  `agentinterval` int(5) NULL,
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',

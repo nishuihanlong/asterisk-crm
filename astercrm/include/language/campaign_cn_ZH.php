@@ -16,4 +16,6 @@ $dial_list = '拨号列表';
 $obligatory_fields = '* 为必填项';
 $max_trytime = '最大重拨次数';
 $queue_name = '队列名称';
+$disable = '不可用';
+$enable = '可用';
 ?>

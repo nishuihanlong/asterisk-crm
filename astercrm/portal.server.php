@@ -225,6 +225,15 @@ function init(){
 			$objResponse->addScript($javascript);
 		}
 	}
+	$monitorstatus = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'astercrm_accountgroup');
+
+	if ($monitorstatus['monitorforce']) {
+		$objResponse->addAssign("chkMonitor","checked", 'true');
+		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
+		$objResponse->addAssign("btnMonitor","disabled", 'true');
+		
+	}
+
 	return $objResponse;
 }
 
@@ -291,8 +300,13 @@ function incomingCalls($myValue){
 			$info	= $locate->Translate("talking_to").$myValue['callerid'];
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
-			$objResponse->addAssign("btnMonitor","disabled", false );
+			//if chkMonitor be checked btnMonitor must be disabled
+			if ($myValue['chkMonitor'] != 'on') {
+				$objResponse->addAssign("btnMonitor","disabled", false );
+			}
 			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+			astercrm::events($myValue['chkMonitor'].'-chkMonitor');
+			astercrm::events($myValue['btnMonitorStatus'].'-btnMonitorStatus');
 			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'idle') 
 				$objResponse->addScript("monitor();");			
 			$objResponse->addAssign("btnHangup","disabled", false );
