@@ -55,6 +55,10 @@ require_once('preferences.common.php');
 				xajax_savePreferences(xajax.getFormValues("formPreferences"));
 			}
 			
+			function saveLicence(){
+				xajax_saveLicence(xajax.getFormValues("formLicence"));
+			}
+			
 			function checkDb(){
 				xajax_checkDb(xajax.getFormValues("formPreferences"));
 			}
@@ -264,6 +268,17 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr>
+    <td width="230" align="left" valign="top" id="SysAsterccConfPath" name="SysAsterccConfPath">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;astercc_path
+	</td>
+    <td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysAsterccPath" name="iptSysAsterccPath" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysAsterccPath" name="divSysAsterccPath"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysOutcontext" name="SysOutcontext">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outcontext
 	</td>
@@ -275,17 +290,17 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysIncontext" name="SysIncontext">
+    <td width="230" align="left" valign="top"  id="SysIncontext" name="SysIncontext">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;incontext
 	</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top" >
 		<input type="text" size="30" id="iptSysIncontext" name="iptSysIncontext" />
 	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
+    <td align="left" valign="top" >
 		<div id="divSysIncontext" name="divSysIncontext"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysStop_work_verify" name="SysStop_work_verify">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop_work_verify
 	</td>
@@ -309,17 +324,17 @@ require_once('preferences.common.php');
 	</td>
   </tr>-->
   <tr>
-    <td width="230" align="left" valign="top" id="SysPhoneNumberLength" name="SysPhoneNumberLength" bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top" id="SysPhoneNumberLength" name="SysPhoneNumberLength">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;phone_number_length
 	</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top" >
 		<input type="text" size="30" id="iptSysPhoneNumberLength" name="iptSysPhoneNumberLength" />
 	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
+    <td align="left" valign="top" >
 		<div id="divSysPhoneNumberLength" name="divSysPhoneNumberLength"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top" id="SysTrimPrefix" name="SysTrimPrefix">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trim_prefix
 	</td>
@@ -330,10 +345,10 @@ require_once('preferences.common.php');
 		<div id="divSysTrimPrefix" name="divSysTrimPrefix"></div>
 	</td>
   </tr>
-  <tr bgcolor="#F7F7F7">
-    <td width="230" align="left" valign="top"  id="SysAllowDropcall" name="SysAllowDropcall" bgcolor="#F7F7F7">
+  <tr >
+    <td width="230" align="left" valign="top"  id="SysAllowDropcall" name="SysAllowDropcall" >
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow_dropcall</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top" >
 		<select name="iptSysAllowDropcall" id="iptSysAllowDropcall" >
 			<option value="0">0</option>
 			<option value="1">1</option>
@@ -343,7 +358,7 @@ require_once('preferences.common.php');
 		<div id="divSysAllowDropcall" name="divSysAllowDropcall"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top" id="SysAllowSameDate" name="SysAllowSameDate">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow_same_data</td>
     <td width="200" align="left" valign="top" >
@@ -357,17 +372,17 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr>
-    <td width="230" align="left" valign="top"  id="SysPortalDisplayType" name="SysPortalDisplayType" bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysPortalDisplayType" name="SysPortalDisplayType" >
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;portal_display_type</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
+    <td width="200" align="left" valign="top" >
 		<select id="iptSysPortalDisplayType" name="iptSysPortalDisplayType">
 			<option value="customer">customer</option>
 			<option value="note">note</option>
 		</select>
 	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7"><div id="divSysPortalDisplayType" name="divSysPortalDisplayType"></div></td>
+    <td align="left" valign="top" ><div id="divSysPortalDisplayType" name="divSysPortalDisplayType"></div></td>
   </tr>
-  <tr >
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysEnableContact" name="SysEnableContact">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;detail_level
 	</td>
@@ -381,7 +396,7 @@ require_once('preferences.common.php');
 			<div id="divSysDetailLevel" name="divSysDetailLevel"></div>
 		</td>
   </tr>
-  <tr bgcolor="#F7F7F7">
+  <tr>
     <td width="230" align="left" valign="top"  id="SysPopUpWhenDialIn" name="SysPopUpWhenDialIn">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop_up_when_dial_in
 	</td>
@@ -393,7 +408,7 @@ require_once('preferences.common.php');
 		<div id="divSysPopUpWhenDialIn" name="divSysPopUpWhenDialIn"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top" id="SysPopUpWhenDialOut" name="SysPopUpWhenDialOut">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop_up_when_dial_out</td>
     <td width="200" align="left" valign="top">
@@ -406,7 +421,7 @@ require_once('preferences.common.php');
 		<div id="divSysPopUpWhenDialOut" name="divSysPopUpWhenDialOut"></div>
 	</td>
   </tr>
-  <tr bgcolor="#F7F7F7">
+  <tr >
     <td width="230" align="left" valign="top"  id="SysBrowserMaximizeWhenPopUp" name="SysBrowserMaximizeWhenPopUp">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;browser_maximize_when_pop_up
 	</td>
@@ -421,7 +436,7 @@ require_once('preferences.common.php');
 	</td>
   </tr>
 
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysFirstring" name="SysFirstring"  >
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;firstring
 	</td>
@@ -435,7 +450,7 @@ require_once('preferences.common.php');
 		<div id="divSysFirstring" name="divSysFirstring"></div>
 	</td>
   </tr>
-  <tr bgcolor="#F7F7F7">
+  <tr>
     <td width="230" align="left" valign="top"  id="SysUploadExcelPath" name="SysUploadExcelPath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upload_file_path</td>
     <td width="200" align="left" valign="top" >
 		<input type="text" size="30" id="iptSysUploadFilePath" name="iptSysUploadFilePath" />
@@ -533,11 +548,58 @@ require_once('preferences.common.php');
     </td>
   </tr>
   <tr>
-    <td height="10" class="td"></td>
+    <td height="10" class="td">&nbsp;</td>
   </tr>
 </table>
-</center>
 </form>
+<form name="formLicence" id="formLicence" method="post">
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+  <tr>
+    <td height="39" class="td font" align="left" colspan="3">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Licence
+    </td>
+  </tr>
+  <tr>
+    <td height="10" class="td" colspan="3"></td>
+  </tr>  
+  <tr>
+    <td width="230" align="left" valign="top" id="licenceto" name="licenceto">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Licence to</td>
+    <td width="200" align="left" valign="top" >
+			<input type="text" size="30" id="asterccLicenceto" name="asterccLicenceto" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divLicenceto" name="divLicenceto">&nbsp;</div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top" id="channels" name="channels">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Channels</td>
+    <td width="200" align="left" valign="top" >
+			<input type="text" size="30" id="asterccChannels" name="asterccChannels" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divChannels" name="divChannels">&nbsp;</div>
+	</td>
+  </tr>
+  <tr>
+    <td width="230" align="left" valign="top" id="key" name="key">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key</td>
+    <td width="200" align="left" valign="top" >
+			<input type="text" size="50" id="asterccKey" name="asterccKey" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divKey" name="divKey">&nbsp;</div>
+	</td>
+  </tr>
+  <tr>
+    <td height="39" class="td font" align="left" colspan="3">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSaveLicence" id="btnSaveLicence"  value="Update Lisence" onclick="saveLicence();return false;"/>
+    </td>
+  </tr>
+</table>
+</form>
+</center>
 		<div id="divCopyright"></div>
-	</body>
+</body>
 </html>

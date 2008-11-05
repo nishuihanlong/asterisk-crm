@@ -43,4 +43,8 @@ $permission_error			= '目录权限错误';
 $sys_check_success			= '配置信息检查成功';
 $sys_eventtype				= '设置使用astercc或是eventdaemon模式捕获呼叫事件';
 $sys_stop_work_verify		= '设置坐席停止工作时是否需要输入密码(组管理员或高级管理员帐号/密码)';
+$astercc_path			= 'astercc 后台程序路径';
+$update_licence_success	= '许可已更新,必须重新启动服务器,新的许可才会生效';
+$astercc_conf_non		= 'astercc.conf 不存在于指定的目录中:';
+$astercc_non		= 'astercc 程序不存在于指定的目录中:';
 ?>

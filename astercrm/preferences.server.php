@@ -70,6 +70,7 @@ function initIni(){
 	//print $config["system"]["log_enabled"];
 	//exit;
 	$objResponse->addAssign("iptSysLogFilePath","value",$config["system"]["log_file_path"]);
+	$objResponse->addAssign("iptSysAsterccPath","value",$config["system"]["astercc_path"]);
 	$objResponse->addAssign("iptSysOutcontext","value",$config["system"]["outcontext"]);
 	$objResponse->addAssign("iptSysIncontext","value",$config["system"]['incontext']);
 
@@ -119,6 +120,11 @@ function initIni(){
 
 	$objResponse->addAssign("iptGooglemapkey","value",$config["google-map"]["key"]);
 
+	Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+	$objResponse->addAssign("asterccLicenceto","value",$asterccConfig["licence"]["licenceto"]);
+	$objResponse->addAssign("asterccChannels","value",$asterccConfig["licence"]["channel"]);
+	$objResponse->addAssign("asterccKey","value",$asterccConfig["licence"]["key"]);
+
 	return $objResponse;
 }
 
@@ -153,6 +159,7 @@ function initLocate(){
 	$objResponse->addAssign("divSyseventtype","innerHTML",$locate->Translate('Sys_eventtype'));
 	$objResponse->addAssign("divSysLogEnabled","innerHTML",$locate->Translate('sys_log_enabled'));
 	$objResponse->addAssign("divSysLogFilePath","innerHTML",$locate->Translate('sys_log_file_path'));
+	$objResponse->addAssign("divSysAsterccPath","innerHTML",$locate->Translate('astercc_path'));
 	$objResponse->addAssign("divSysOutcontext","innerHTML",$locate->Translate('sys_outcontext'));
 	$objResponse->addAssign("divSysIncontext","innerHTML",$locate->Translate('sys_incontext'));
 
@@ -229,6 +236,7 @@ function savePreferences($aFormValues){
 	//system section
 	$myPreferences['system']['log_enabled'] = $aFormValues['iptSysLogEnabled'];
 	$myPreferences['system']['log_file_path'] = $aFormValues['iptSysLogFilePath'];
+	$myPreferences['system']['astercc_conf_path'] = $aFormValues['iptSysAsterccConfPath'];
 	$myPreferences['system']['outcontext'] = $aFormValues['iptSysOutcontext'];
 	$myPreferences['system']['incontext'] = $aFormValues['iptSysIncontext'];
 	$myPreferences['system']['eventtype'] = $aFormValues['iptSyseventtype'];
@@ -316,6 +324,41 @@ function checkSys($aFormValues){
 		$objResponse->addAssign("divSysMsg","innerHTML","<span class='failed'>".$locate->Translate('permission_error')."</span");
 	}
 		
+	return $objResponse;
+}
+
+function saveLicence($aFormValues){
+	global $config,$locate;
+	$objResponse = new xajaxResponse();
+
+	if(!file_exists($config['system']['astercc_path'].'/astercc.conf')){
+		$objResponse->addAlert($locate->Translate('astercc_conf_non').$config['system']['astercc_path']);
+		return $objResponse;
+	}
+	
+	if(!file_exists($config['system']['astercc_path'].'/astercc')){
+		$objResponse->addAlert($locate->Translate('astercc_non').$config['system']['astercc_path']);
+		return $objResponse;
+	}
+
+	Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+
+	$asterccConfig['licence']['licenceto'] = $aFormValues['asterccLicenceto'];
+	$asterccConfig['licence']['channel'] = $aFormValues['asterccChannels'];
+	$asterccConfig['licence']['key'] = $aFormValues['asterccKey'];
+
+	if (Common::write_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig)){
+		$rval = exec($config['system']['astercc_path'].'/astercc -t',$asterccMsg);
+		$asterccMsg = implode("\n",$asterccMsg);
+
+		if ( stristr($asterccMsg,'Success') === FALSE ) { //check key if vaild
+			$objResponse->addAlert($asterccMsg);
+		}else{
+			$objResponse->addAlert($locate->Translate('update_licence_success'));
+		}
+	}else{
+		$objResponse->addAlert($locate->Translate('update_licence_failed'));
+	}
 	return $objResponse;
 }
 

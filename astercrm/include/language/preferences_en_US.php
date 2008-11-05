@@ -43,4 +43,8 @@ $permission_error			= 'directory permission error';
 $sys_check_success			= 'parameters check pass';
 $sys_eventtype				= 'where astercrm get asterisk call events, set to curcdr when using astercc';
 $sys_stop_work_verify		= 'if need to enter accountcode/password of admin or groupadmin when agent stop work';
+$astercc_path			= 'path of astercc daemon';
+$update_licence_success	= 'licence has been updated,you must reboot server to enable new licence';
+$astercc_conf_non		= 'astercc.conf is not exists in specified directory:';
+$astercc_non		= 'astercc daemon is not exists in specified directory:';
 ?>
