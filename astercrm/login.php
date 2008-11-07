@@ -118,7 +118,7 @@ require_once('login.common.php');
 					 <OPTION value="cn_ZH">简体中文</OPTION>
 					 <OPTION value="de_GER">Germany</OPTION>
 				   </SELECT></td>
-			  <td><input type="image" src="skin/default/images/btn_login.gif" align="absmiddle" onclick="form.submit('loginForm');"/></td>
+			  <td><div id="loginDiv" name="loginDiv" ></div></td>
 			</tr>
 		  </table>
 		<div id="copyright"><br>&copy; 2004-2008 Sonicwell Inc.All Rights Reserved.</div>

@@ -102,16 +102,20 @@ function init($aFormValue){
 	$objResponse = new xajaxResponse();
 	
 	global $locate,$config;
+	
 
 	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);	
+	
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
+	$login_div = '<input type="image" src="skin/default/images_'.$_SESSION['curuser']['country'].'/login.gif" align="absmiddle" onclick="form.submit(\'loginForm\');"/>';
 
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("Title"));
 	$objResponse->addAssign("logintip","innerHTML",$locate->Translate("logintip"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("Username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("Password"));
 	$objResponse->addAssign("languageDiv","innerHTML",$locate->Translate("Language"));
+	$objResponse->addAssign("loginDiv","innerHTML",$login_div);
 	$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
 	//$objResponse->addAssign("onclickMsg","value",$locate->Translate("Please waiting"));

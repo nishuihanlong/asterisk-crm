@@ -806,25 +806,21 @@ function workoffcheck($f=''){
 		if($f['adminname'] == '') return $objResponse;
 		$admininfo = astercrm::getRecordByField('username',$f['adminname'],'astercrm_account');
 		if($admininfo['password'] == $f['Workoffpwd'] && (($admininfo['usertype'] == 'groupadmin' && $admininfo['groupid'] == $_SESSION['curuser']['groupid']) || $admininfo['usertype'] == 'admin')) {
-			$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
-			$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
-			$objResponse->addAssign("btnWorkStatus","value", "" );
-			$objResponse->addAssign("divWork","innerHTML", "" );
-			$_SESSION['curuser']['WorkStatus'] = '';
-			$objResponse->addAssign("formWorkoff", "style.visibility", "hidden");
-			$objResponse->addAssign("formWorkoff", "innerHTML", '');
-			$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+			
+		}else{
+			return $objResponse;
 		}
-	}else{
-		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
-		$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
-		$objResponse->addAssign("btnWorkStatus","value", "" );
-		$objResponse->addAssign("divWork","innerHTML", "" );
-		$_SESSION['curuser']['WorkStatus'] = '';
-		$objResponse->addAssign("formWorkoff", "style.visibility", "hidden");
-		$objResponse->addAssign("formWorkoff", "innerHTML", '');
-		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 	}
+
+	$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
+	$objResponse->addEvent("btnWork", "onclick", "workctrl('start');");
+	$objResponse->addAssign("btnWorkStatus","value", "" );
+	$objResponse->addAssign("divWork","innerHTML", "" );
+	$_SESSION['curuser']['WorkStatus'] = '';
+	$objResponse->addAssign("formWorkoff", "style.visibility", "hidden");
+	$objResponse->addAssign("formWorkoff", "innerHTML", '');
+	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+	
 	return $objResponse;
 }
 # click to dial

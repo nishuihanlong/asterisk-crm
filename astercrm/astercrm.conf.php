@@ -107,15 +107,15 @@ browser_maximize_when_pop_up = 0
 
 ;
 ; which phone ring first when using click to dial
-;
+;caller | callee
+firstring = callee
 
 ;
 ; astercrm will show contact
 ;
 enable_contact = 
 
-;caller | callee
-firstring = caller
+
 
 upload_file_path = ./upload/
 

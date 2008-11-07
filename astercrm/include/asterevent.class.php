@@ -442,19 +442,19 @@ class asterEvent extends PEAR
 			$iaxkey = str_replace('SIP','IAX2',$key);			
 			if (isset($status[$key]) || isset($status[$iaxkey])) {
 				if ($status[$key] == 2 || $status[$iaxkey] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','callee');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";					
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";					
 				}
 				else {
 					if ($status[$key] == 1 || $status[$iaxkey] == 1) {
 						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($key,4)."');return false;\">&nbsp;-<font size='2px'>Spy</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".substr($key,4)."','w');return false;\" >&nbsp;-<font size='2px'>Whisper</font>-</A></UL></LI>";					
 					}
 					else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','callee');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
 					}
 				}
 			}
 			else {
-				$action .= "<UL id='extenBtnB'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','callee');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+				$action .= "<UL id='extenBtnB'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
 			}
 
 			$action .= "</UL></div>";
