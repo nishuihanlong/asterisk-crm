@@ -71,7 +71,7 @@ phone_number_length = 0
 ; if astercrm trim fellowing prefix, use gamma to sperate
 ; leave it blank if no prefix need to be removed
 
-trim_prefix = 0,9
+trim_prefix = 
 
 ;
 ; if your astercrm work on the same server with asterisk, set to true
@@ -108,12 +108,12 @@ browser_maximize_when_pop_up = 0
 ;
 ; which phone ring first when using click to dial
 ;caller | callee
-firstring = callee
+firstring = caller
 
 ;
 ; astercrm will show contact
 ;
-enable_contact = 
+enable_contact = 1
 
 
 
@@ -132,7 +132,7 @@ open_new_window = 0
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = http://www.astercrm.org
+external_crm_default_url = http://www.astercc.org
 
 ;
 ; when using external crm, put pop up page here
@@ -140,7 +140,7 @@ external_crm_default_url = http://www.astercrm.org
 ; %calleeid		calleeid
 ; %method		dialout or dialin
 ;
-external_crm_url = http://www.astercrm.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
+external_crm_url = http://www.astercc.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
 
 detail_level = all
 

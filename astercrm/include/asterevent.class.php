@@ -95,7 +95,7 @@ class asterEvent extends PEAR
 			$call['callerid']		(string)	caller id/callee id
 			$call['uniqueid']		(string)	uniqueid for the new call
 */
-	function checkNewCall($curid,$exten){
+	function checkNewCall($curid,$exten,$channel){
 		global $db,$config;
 		//echo $exten;
 		if ($config['system']['eventtype'] == 'curcdr'){

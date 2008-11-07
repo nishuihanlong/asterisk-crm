@@ -919,7 +919,7 @@ function invite($src,$dest,$campaignid=''){
 	//$objResponse->addAssign("dialmsg", "innerHTML", "<b>".$locate->Translate("dailing")." ".$src."</b>");
 	if ($src == $_SESSION['curuser']['extension'])
 		$callerid = $dest;
-	else if ($dest == $_SESSION['curuser']['extension'])
+	else //if ($dest == $_SESSION['curuser']['extension'])
 		$callerid = $src;
 //	else
 //		return $objResponse;
