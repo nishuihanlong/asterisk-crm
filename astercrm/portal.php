@@ -126,7 +126,7 @@ require_once('config.php');
 			if (document.getElementById("uniqueid").value != '')
 				return false;
 			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+phonenum;			
+			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>"+" "+phonenum;			
 			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr)",1000);
 		}
 
@@ -204,10 +204,10 @@ require_once('config.php');
 				xajax.$('iptSrcNumber').value = xajax.$('extension').value;
 				src = xajax.$('extension').value;
 				xajax.$("divMsg").style.visibility = 'visible';
-				xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
+				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;
 			}else {
 				xajax.$("divMsg").style.visibility = 'visible';
-				xajax.$("divMsg").innerHTML = xajax.$('dialtip').value+" "+src;
+				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;
 			}
 
 			if (dest == ''){
@@ -220,7 +220,7 @@ require_once('config.php');
 		
 		function transfer(){
 			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = xajax.$('trantip').value+" "+xajax.$("sltExten").value;
+			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + xajax.$("sltExten").value;
 			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",1000);
 		}
 
@@ -298,7 +298,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="divUserMsg" name="divUserMsg"></div><br>
 
 		<div id="divHangup" name="divHangup">
-			<input type="button" value="Hangup" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
+			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 			<div id="divDIDinfo" name="divDIDinfo"></div>
 		</div><br>
@@ -307,17 +307,17 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<SELECT id="sltExten" name="sltExten">
 			</SELECT>
 			<INPUT TYPE="text" name="iptTtansfer" id="iptTtansfer" size="15">
-			<INPUT type="BUTTON" value="Transfer" id="btnTransfer" onclick="transfer();">
+			<INPUT type="button" value="<?echo $locate->Translate("Transfer");?>" id="btnTransfer" onclick="transfer();">
 		</span>
 		<div id="myevents"></div>
 		<br>
-		<span id="spanMonitor" name="spanMonitor"></span><br>
+		<?echo $locate->Translate("monitor")?><br>
 		<div id="divMonitor">
 			<span id="spanMonitorStatus" name="spanMonitorStatus"></span><br>
 			<input type='button' value='' name="btnMonitor" id="btnMonitor" onclick="monitor();return false;">
 			<input type='hidden' value='' name="btnMonitorStatus" id="btnMonitorStatus">
 			<input type='checkbox' name='chkMonitor' id="chkMonitor">
-			<span id="spanMonitorSetting" name="spanMonitorSetting"></span>
+			<?echo $locate->Translate("Always record when connected");?>
 		</div>
 
 		<input type="hidden" name="extensionStatus" id="extensionStatus" value=""/>
@@ -332,21 +332,23 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="popup" id="popup" value="yes"/>
 		<input type="hidden" name="workingextenflag" id="workingextenflag" value=""/>
 		<input type="hidden" name="workingextenstatus" id="workingextenstatus" value=""/>
-		<input type="hidden" name="dialtip" id="dialtip" value="Dialing to"/>
-		<input type="hidden" name="trantip" id="trantip" value="Transfering to"/>		
 		<input type='hidden' value="" name="btnWorkStatus" id="btnWorkStatus">
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
 	<div id="divDialList" name="divDialList"></div><br/>
 	<div id="processingMessage" name="processingMessage"></div>
-	<div id="misson" name="misson"><input type="button" id="btnWork" name="btnWork" value=""></div><div id="divWork" name="divWork" align="left" style="font-weight:bold;
-	"></div><br>
-	<div id="divInvite"><input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber"></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="Dial" onclick="invite();"></div><br/>
+	<div id="misson" name="misson"><input type="button" id="btnWork" name="btnWork" value="<?echo $locate->Translate("Start work")?>"></div>
+	<div id="divWork" name="divWork" align="left" style="font-weight:bold;	"></div>
+	<br>
+	<div id="divInvite">
+		<input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber"></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="<?echo $locate->Translate("Dial");?>" onclick="invite();">
+	</div>
+	<br/>
 	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
+			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
 		</div>
 		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
@@ -413,7 +415,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			</tr>
 			<tr>
 				<td>
-					<fieldset><legend>Map</legend>
+					<fieldset><legend><?echo $locate->Translate("Google Map")?></legend>
 					<div id="map" style="width: 300px;height: 300px;"></div>
 					</fieldset>
 				</td>

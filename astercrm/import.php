@@ -101,7 +101,7 @@
 					if(document.getElementsByName('chkAssign')[0].checked == true){
 						if(document.getElementById('assign').value == "")
 						{
-							alert(document.getElementById('hidAssignAlertMsg').value);
+							alert('<?echo $locate->Translate("assign_automaticly");?>');
 						}
 					}
 				}
@@ -110,7 +110,7 @@
 				//return false;
 				//alert("ok");
 				xajax.$('btnImportData').disabled=true;
-				xajax.$('btnImportData').value=xajax.$('hidOnSubmitMsg').value;
+				xajax.$('btnImportData').value= "<?echo $locate->Translate("data_importing");?>";
 				xajax_submitForm(xajax.getFormValues('formImport'));
 			}
 
@@ -124,7 +124,7 @@
 					return false;
 
 				xajax.$('btnUpload').disabled = true;
-				xajax.$('btnUpload').value=xajax.$('hidOnUploadMsg').value;
+				xajax.$('btnUpload').value= "<?echo $locate->Translate("uploading");?>";
 				xajax.$('formUpload').submit();
 				return false;
 			}
@@ -159,12 +159,9 @@
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="spanSelectFile"></span>: <input type="file" name="excel" id="excel"/>&nbsp;<span id="or" >or</span>&nbsp;<select name="filelist" id="filelist"></select>
-					<br /><br>
-					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
-					<input id="hidOnUploadMsg" name="hidOnUploadMsg" type="hidden" value=""/>
-					<input id="hidAssignAlertMsg" type="hidden" value=""/>
-					
+					<?echo $locate->Translate("please_select_file");?>: <input type="file" name="excel" id="excel" onchange="if (this.value != 0){document.getElementById('filelist').value=0;}"/>&nbsp;<?echo $locate->Translate("or");?>&nbsp;<select name="filelist" id="filelist" onchange="if (this.value != 0){document.getElementById('excel').value='';}"></select>
+					<br/><br/>
+					<input type="submit" value="<?echo $locate->Translate("upload");?>" id="btnUpload" name="btnUpload" style="width:150px;"/>
 				</form>
 			</div>
 
@@ -173,7 +170,7 @@
 			<table id="maintable">
 				<tr>
 					<td colspan="2" id="title" align='center'>
-						<span id="spanFileManager"></span>
+						<?echo $locate->Translate("file_manager");?>
 					</td>
 				</tr>
 			</table>
@@ -193,7 +190,6 @@
 					</td>
 					<td width="80%" valign="top">
 						<form method='post' name='formImport' id='formImport'>
-							<input id="hidOnSubmitMsg" name="hidOnSubmitMsg" type="hidden" value=""/>
 							<input type='hidden' value='' name='hidFileName' id='hidFileName' />
 							<input type='hidden' value='' name='hidTableName' id='hidTableName' />
 							<input type='hidden' value='' name='hidMaxTableColumnNum' id='hidMaxTableColumnNum' />
@@ -213,7 +209,7 @@
 					</tr>
 					<tr>
 						<td height="30px">
-							<input type="button" id="btnImportData"  name="btnImportData" value="Import" style="border:1px double #cccccc;width:200px" disabled="true" onclick="submitFormOnSubmit();return false;"/>
+							<input type="button" id="btnImportData"  name="btnImportData" value="<?echo $locate->Translate("import");?>" style="border:1px double #cccccc;width:200px" disabled="true" onclick="submitFormOnSubmit();return false;"/>
 						</td>
 					</tr>
 					<tr>

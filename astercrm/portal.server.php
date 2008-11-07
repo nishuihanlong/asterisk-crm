@@ -149,14 +149,7 @@ function init(){
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 //	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("extensionStatus","value", 'idle');
-	$objResponse->addAssign("btnDial","value", $locate->Translate("dial") );
-	$objResponse->addAssign("btnHangup","value", $locate->Translate("hangup") );
-	$objResponse->addAssign("dialtip","value", $locate->Translate("Dialing to") );
-	$objResponse->addAssign("trantip","value", $locate->Translate("Transfering to") );
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
-	$objResponse->addAssign("spanMonitorSetting","innerHTML", $locate->Translate("always_record_when_connected") );
-	$objResponse->addAssign("spanMonitor","innerHTML", $locate->Translate("monitor") );
-
 	$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
@@ -171,7 +164,6 @@ function init(){
 		$interval = $_SESSION['curuser']['dialinterval'];
 		$objResponse->addScript("autoDial('$interval');");
 	}
-	$objResponse->addAssign("btnSearchContact","value", $locate->Translate("Search") );
 	$objResponse->addAssign("btnMonitor","disabled", true );
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 
@@ -179,7 +171,6 @@ function init(){
 
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 
-	$objResponse->addAssign("btnTransfer","value",$locate->Translate("transfer"));
 	$objResponse->addAssign("btnTransfer","disabled",true);
 
 	foreach ($_SESSION['curuser']['extensions'] as $extension){

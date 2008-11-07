@@ -43,7 +43,6 @@ require_once ('include/astercrm.class.php');
 function init($fileName){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("spanSelectFile","innerHTML", $locate->Translate("please_select_file"));
 	
 	$file_list = getExistfilelist();
 	$objResponse->addScript("addOption('filelist','0','".$locate->Translate('select a existent file')."');");
@@ -51,31 +50,21 @@ function init($fileName){
 		$objResponse->addScript("addOption('filelist','".$value."','".$value."');");
 	}
 	
-	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
-	$objResponse->addAssign("or","innerHTML",$locate->Translate("or"));
-	$objResponse->addAssign("btnImportData","value",$locate->Translate("import"));
-
-	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("file_manager"));
-
-	$objResponse->addAssign("hidAssignAlertMsg","value",$locate->Translate("assign_automaticly"));
-	$objResponse->addAssign("hidOnUploadMsg","value",$locate->Translate("uploading"));
-	$objResponse->addAssign("hidOnSubmitMsg","value",$locate->Translate("data_importing"));
-
 	$tableList = "<select name='sltTable' id='sltTable' onchange='selectTable(this.value);' >
-						<option value=''>".$locate->Translate("selecttable")."</option>
-						<option value='customer'>customer</option>
-						<option value='contact'>contact</option>
-				  </select>";
+											<option value=''>".$locate->Translate("selecttable")."</option>
+											<option value='customer'>customer</option>
+											<option value='contact'>contact</option>
+										</select>";
 
 	$objResponse->addAssign("divTables","innerHTML",$tableList);
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divGrid", "innerHTML", '');
+
 	//$objResponse->addScript("xajax_showDivMainRight(document.getElementById('hidFileName').value);");
 	//$objResponse->loadXML(showDivMainRight($fileName));
 	//$objResponse->addAssign("divDiallistImport", "innerHTML", '');
 
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-	$objResponse->loadXML(showDivMainRight($fileName));
 
 	if ($_SESSION['curuser']['usertype'] == 'admin') {
 		// add all group
@@ -89,7 +78,7 @@ function init($fileName){
 	}
 
 	$objResponse->addScript("setCampaign();");
-
+	$objResponse->loadXML(showDivMainRight($fileName));
 	return $objResponse;
 }
 
@@ -406,6 +395,15 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);
 }
 
+function csv_string_to_array($str){
+
+   $expr="/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
+
+   $results=preg_split($expr,trim($str));
+
+    return preg_replace(array("/^\"(.*)\"$/","/\"\"/"),array("$1",""),$results);
+}
+
 //得到excel文件的所有行数据，返回数组结构的数据
 
 /**
@@ -416,9 +414,9 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 function getSourceData($filePath){  
 	$type = substr($filePath,-3);
 	if($type == 'csv'){  //csv 格式文件
-		$handle = fopen($filePath,"r");  //打开csc文件,得到句柄
-		while($data = fgetcsv($handle, 1000, ",")){
-			$arrData[] = $data;
+		$handle = fopen($filePath,"r");  //打开csv文件,得到句柄
+		while (($data = fgets($handle)) !== FALSE) { 
+			$arrData[] = csv_string_to_array($data);
 		}
 	}elseif($type == 'xls'){  //xls格式文件
 		Read_Excel_File($filePath,$return);
@@ -426,6 +424,7 @@ function getSourceData($filePath){
 			$arrData[] = $return[Sheet1][$i];
 		}
 	}
+	//print_r($arrData);exit;
 	return $arrData;
 }
 

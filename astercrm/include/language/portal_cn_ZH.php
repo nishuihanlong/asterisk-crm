@@ -87,4 +87,5 @@ $start_work = "开始拨号";
 $stop_work = "停止拨号";
 $callee_id = "被叫号码";
 $record = "录音";
+$google_map = "Google地图";
 ?>

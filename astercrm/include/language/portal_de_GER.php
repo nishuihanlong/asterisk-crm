@@ -50,4 +50,5 @@ $add_remind = "add new remind";
 $show_all_remind = "show remind";
 $no_read = "no remind";
 $readed = "reminded";
+$google_map = "Google Map";
 ?>
