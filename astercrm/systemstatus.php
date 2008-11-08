@@ -45,6 +45,24 @@ require_once('systemstatus.common.php');
 				showChannelsInfo();
 			}
 
+		function menuFix() { 
+			var sfEls = document.getElementById("divStatus").getElementsByTagName("li"); 
+			for (var i=0; i<sfEls.length; i++) { 
+				sfEls[i].onmouseover=function() { 
+					this.className+=(this.className.length>0? " ": "") + "sfhover"; 
+				} 
+				sfEls[i].onMouseDown=function() { 
+					this.className+=(this.className.length>0? " ": "") + "sfhover"; 
+				} 
+				sfEls[i].onMouseUp=function() { 
+					this.className+=(this.className.length>0? " ": "") + "sfhover"; 
+				} 
+				sfEls[i].onmouseout=function() { 
+					this.className=this.className.replace(new RegExp("( ?|^)sfhover\\b"),""); 
+				} 
+			} 
+		} 
+
 			function hangup(srcChan,dstChan){
 				var callerChan = srcChan;
 				var calleeChan = dstChan;

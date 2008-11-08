@@ -147,6 +147,35 @@
 			}
 
 		</script>
+<style>
+#divMessage{
+	padding:5px 0;
+	background-color:#F0F8FF;
+	width:auto;
+	font-weight:bold;
+	width:100%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:5px;
+	height:30px
+}
+#mainform{
+	font-size:12px;
+	font-weight:normal;
+	text-align:left;
+	padding:10px;
+	margin-top:10px;
+	margin-left:auto;
+	margin-right:auto;
+	border:1px double #cccccc;
+	width:60%;
+	text-align:center;
+	margin-bottom:10px;
+}
+#maintable tr td{
+	padding: 6px 6px 6px 12px;
+}
+</style>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
@@ -214,7 +243,7 @@
 					</tr>
 					<tr>
 						<td height="30px">
-							<div style="width:100%;height:auto;lin-height:30px;text-align:left;" id="divResultMsg" name="divResultMsg"></div>
+							<div style="width:100%;height:auto;line-height:30px;text-align:left;" id="divResultMsg" name="divResultMsg"></div>
 						</td>
 					</tr>
 				</table>

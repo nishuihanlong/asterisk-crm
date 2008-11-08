@@ -6,9 +6,10 @@
 /*
 整个页面主体
  */
-*{
-padding:0;
-margin:0;
+*
+{
+	padding:0;
+	margin:0;
 }
 /*
 所有的内间距、外间距
@@ -161,10 +162,11 @@ padding:0;
 color:#7D8288;
 list-style:none;
 }
+
 .end ul li{
-padding-top:11px;
-*+line-height:20px;
-*+padding-top:0px;
+	padding-top:11px;
+	line-height:20px;
+	padding-top:0px;
 }
 
 

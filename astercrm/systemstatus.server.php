@@ -77,6 +77,7 @@ function showStatus(){
 	$html .= "<br><br><br><br>";
 	$html .= asterEvent::checkExtensionStatus(0,'table');
 	$objResponse->addAssign("divStatus", "innerHTML", $html);
+	$objResponse->addScript("menuFix();");
 	return $objResponse;
 }
 

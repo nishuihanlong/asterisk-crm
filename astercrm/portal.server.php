@@ -392,7 +392,7 @@ function waitingCalls($myValue){
 **************************/
 	$phone_html = asterEvent::checkExtensionStatus($curid);
 	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
-
+	$objResponse->addScript("menuFix();");
 
 	//	modified 2007/10/30 by solo
 	//  start

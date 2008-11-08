@@ -476,7 +476,12 @@ class asterEvent extends PEAR
 				}
 			}
 			else {
-				$action .= "<UL id='extenBtnB'><LI><a href='###' >".$row['username']."</a><UL><A href='###' onclick=\"dial('".substr($key,4)."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+				$action .= "<UL id='extenBtnB'>
+												<LI><a href='###' >".$row['username']."</a>
+													<UL>
+														<A href='###' onclick=\"dial('".substr($key,4)."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A>
+													</UL>
+												</LI>";
 			}
 
 			$action .= "</UL></div>";

@@ -107,6 +107,7 @@ require_once('config.php');
 
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
+
 		function dial(phonenum,first,myvalue,dtmf){
 			myFormValue = xajax.getFormValues("myForm");
 			dialnum = phonenum;
@@ -284,6 +285,24 @@ require_once('config.php');
 				xajax.$("divWork").innerHTML = i-1;
 			}
 		}
+
+		function menuFix() { 
+			var sfEls = document.getElementById("divExtension").getElementsByTagName("li"); 
+			for (var i=0; i<sfEls.length; i++) { 
+				sfEls[i].onmouseover=function() { 
+					this.className+=(this.className.length>0? " ": "") + "sfhover"; 
+				} 
+				sfEls[i].onMouseDown=function() { 
+					this.className+=(this.className.length>0? " ": "") + "sfhover"; 
+				} 
+				sfEls[i].onMouseUp=function() { 
+					this.className+=(this.className.length>0? " ": "") + "sfhover"; 
+				} 
+				sfEls[i].onmouseout=function() { 
+					this.className=this.className.replace(new RegExp("( ?|^)sfhover\\b"),""); 
+				} 
+			} 
+		} 
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
