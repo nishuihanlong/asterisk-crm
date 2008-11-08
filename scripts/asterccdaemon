@@ -30,28 +30,28 @@ while   [   1   ]
 		sleep  60
 		if [ "x${1}" == "x" -o "x${1}" == "xyes" ]; 
 		then
-			asterccpid=`ps -ef |grep -v grep |grep -E /asterc[.\ ]+-d |awk '{print $2}'`
+			asterccpid=`ps -ef |grep -v grep |grep -E /asterc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterccpid='pass'
 		fi
 
 		if [ "x${2}" == "x" -o "x${2}" == "xyes" ];
 		then
-			asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[.\ ]+-d |awk '{print $2}'`
+			asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterctpid='pass'
 		fi
 
 		if [ "x${3}" == "x" -o "x${3}" == "xyes" ];
 		then
-			asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[.\ ]+-d |awk '{print $2}'`
+			asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterrcpid='pass'
 		fi
 
 		if [ "x${4}" == "x" -o "x${4}" == "xyes" ];
 		then
-			asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[.\ ]+-d |awk '{print $2}'`
+			asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterlcpid='pass'
 		fi
