@@ -144,7 +144,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on searchtype select box.
 	$typeFromSearchShowAs = array();
-	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = $locate->Translate("like");
 	$typeFromSearchShowAs[] = '=';
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';
@@ -272,7 +272,7 @@ function save($f){
 	$f['username'] = trim($f['username']);
 	$f['password'] = trim($f['password']);
 	if ($f['username'] == '' || $f['password'] == ''){
-		$objResponse->addAlert($locate->Translate("Please enter your username/password"));
+		$objResponse->addAlert($locate->Translate("Please enter the username and password"));
 		return $objResponse->getXML();
 	}
 
@@ -325,7 +325,7 @@ function update($f){
 	$f['username'] = trim($f['username']);
 	$f['password'] = trim($f['password']);
 	if ($f['username'] == '' || $f['password'] == ''){
-		$objResponse->addAlert($locate->Translate("Please enter your username/password"));
+		$objResponse->addAlert($locate->Translate("Please enter the username and password"));
 		return $objResponse->getXML();
 	}
 

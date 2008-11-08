@@ -62,9 +62,10 @@ function init(){
 }
 
 function generateSipFile(){
+	global $db;
 	$objResponse = new xajaxResponse();
 	astercc::generatePeersFile();
-	$objResponse->addAlert("sip conf file generated");
+	$objResponse->addAlert($locate->Translate("sip conf file generated"));
 	return $objResponse;
 }
 
@@ -72,7 +73,7 @@ function reloadSip(){
 	$objResponse = new xajaxResponse();
 	$myAsterisk = new Asterisk();
 	$myAsterisk->execute("sip reload");
-	$objResponse->addAlert("sip conf reloaded");
+	$objResponse->addAlert($locate->Translate("sip conf reloaded"));
 	return $objResponse;
 }
 
@@ -172,7 +173,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on searchtype select box.
 	$typeFromSearchShowAs = array();
-	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = $locate->Translate("like");
 	$typeFromSearchShowAs[] = '=';
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';
@@ -411,12 +412,12 @@ function update($f){
 	$objResponse = new xajaxResponse();
 
 	if (!is_numeric($f['clid'])){
-		$objResponse->addAlert("clid must be numeric");
+		$objResponse->addAlert($locate->Translate("clid must be numeric"));
 		return $objResponse;
 	}
 
 	if ( trim($f['pin']) == '' ){
-		$objResponse->addAlert("pin field cant be null");
+		$objResponse->addAlert($locate->Translate("pin field cant be null"));
 		return $objResponse;
 	}
 

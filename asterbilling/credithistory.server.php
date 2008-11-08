@@ -128,7 +128,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 	// Selecct Box: Labels showed on searchtype select box.
 	$typeFromSearchShowAs = array();
-	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = $locate->Translate("like");
 	$typeFromSearchShowAs[] = '=';
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';

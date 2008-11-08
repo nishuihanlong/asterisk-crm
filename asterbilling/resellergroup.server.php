@@ -145,7 +145,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on searchtype select box.
 	$typeFromSearchShowAs = array();
-	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = $locate->Translate("like");
 	$typeFromSearchShowAs[] = '=';
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';
@@ -413,7 +413,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$res = Customer::deleteRecord($id,'resellergroup');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
-			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 		}else{
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 

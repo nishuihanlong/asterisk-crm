@@ -27,6 +27,7 @@ require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
 function init($curpeer){
+	global $locate;
 	$objResponse = new xajaxResponse();
 	$peers = array();
 	if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -52,12 +53,12 @@ function init($curpeer){
 		$reseller = astercc::readRecord("resellergroup","id",$_SESSION['curuser']['resellerid']);
 		if ($reseller){
 			if ($reseller['limittype'] == ""){
-				$html = "Limit Type: No limit";
+				$html = 	$locate->Translate("Limit Type No limit");
 			}else{
-				$html = "Limit Type:".$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
+				$html = $locate->Translate("Limit Type").$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
 			}
 
-			$html = "Limit Type:".$reseller['limittype']."(".$reseller['creditlimit'].")";
+			$html = $locate->Translate("Limit Type").$reseller['limittype']."(".$reseller['creditlimit'].")";
 			$objResponse->addAssign("divLimitStatus","innerHTML",$html);
 		}
 
@@ -79,9 +80,9 @@ function init($curpeer){
 		$accountgroup = astercc::readRecord("accountgroup","id",$_SESSION['curuser']['groupid']);
 		if ($accountgroup){
 			if ($accountgroup['limittype'] == ""){
-				$html = "Limit Type: No limit";
+				$html = 	$locate->Translate("Limit Type No limit");
 			}else{
-				$html = "Limit Type:".$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
+				$html = $locate->Translate("Limit Type").$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
 			}
 			$objResponse->addAssign("divLimitStatus","innerHTML",$html);
 		}
@@ -120,6 +121,7 @@ function setClid($groupid){
 }
 
 function listCDR($aFormValues){
+	global $locate;
 	$objResponse = new xajaxResponse();
 	if ($aFormValues['sltBooth'] == '' && $aFormValues['hidCurpeer'] != ''){
 		$aFormValues['sltBooth'] = $aFormValues['hidCurpeer'];
@@ -129,14 +131,14 @@ function listCDR($aFormValues){
 
 		if ($res->fetchInto($myreport)){
 			if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-				$html .= "Amount: ".$myreport['credit']."<br>";
-				$html .= "Callshop: ".$myreport['callshopcredit']."<br>";
-				$html .= "Reseller Cost: ".$myreport['resellercredit']."<br>";
+				$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
+				$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
+				$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
 			}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-				$html .= "Amount: ".$myreport['credit']."<br>";
-				$html .= "Callshop: ".$myreport['callshopcredit']."<br>";
+				$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
+				$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 			}else if ($_SESSION['curuser']['usertype'] == 'operator'){
-				$html .= "Amount: ".$myreport['credit']."<br>";
+				$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
 			}
 		}
 		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
@@ -152,20 +154,20 @@ function listCDR($aFormValues){
 	$html .= '<table width="99%">';
 	$html .= '<tr>
 			<td width="60"></td>
-			<td width="120">calldate</td>
-			<td width="120">clid</td>
-			<td width="120">dst</td>
-			<td width="70">duration</td>
-			<td width="90">disposition</td>
-			<td width="70">billsec</td>
-			<td width="160">destination</td>
-			<td width="360">rate</td>
- 			<td width="120">price</td>
- 			<td width="70">status</td>
+			<td width="120">'.$locate->Translate("Calldate").'</td>
+			<td width="120">'.$locate->Translate("Clid").'</td>
+			<td width="120">'.$locate->Translate("Dst").'</td>
+			<td width="70">'.$locate->Translate("Duration").'</td>
+			<td width="90">'.$locate->Translate("Disposition").'</td>
+			<td width="70">'.$locate->Translate("Billsec").'</td>
+			<td width="160">'.$locate->Translate("Destination").'</td>
+			<td width="360">'.$locate->Translate("Rate").'</td>
+ 			<td width="120">'.$locate->Translate("Price").'</td>
+ 			<td width="70">'.$locate->Translate("Status").'</td>
 			</tr>';
 	$html .= '<tr>
 			<td width="60">
-				<input type="checkbox" onclick="ckbAllOnClick(this);" id="ckbAll[]" name="ckbAll[]">All
+				<input type="checkbox" onclick="ckbAllOnClick(this);" id="ckbAll[]" name="ckbAll[]">'.$locate->Translate("All").'
 			</td>
 			<td></td>
 			<td></td>
@@ -247,7 +249,7 @@ function listCDR($aFormValues){
 	}
 	$html .= '<tr>
 			<td width="60">
-				<input type="checkbox" onclick="ckbAllOnClick(this);" id="ckbAll[]" name="ckbAll[]">All
+				<input type="checkbox" onclick="ckbAllOnClick(this);" id="ckbAll[]" name="ckbAll[]">'.$locate->Translate("All").'
 			</td>
 			<td></td>
 			<td></td>

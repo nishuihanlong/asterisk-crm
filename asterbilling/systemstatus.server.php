@@ -22,7 +22,7 @@ function init(){
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	if (!$res){
-		$objResponse->addAssign("AMIStatudDiv", "innerHTML", "AMI_connection_failed");
+		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Traslate("AMI connection failed"));
 	}
 
 	$_SESSION['status'] = array();
@@ -102,27 +102,27 @@ function setGroupBalance(){
 	$objResponse = new xajaxResponse();
 	$group = astercrm::getRecordByField("id",$_SESSION['curuser']['groupid'],'accountgroup');
 
-	$amount = $group['credit_clid'];	// 总收入 income
-	$creditlimit = $group['creditlimit']; // 限制 limit
-	$callshopcredit = $group['credit_group']; // 总成本 cost
-	$curcredit = $group['curcredit']; //当前成本
+	$amount = $group['credit_clid'];	//  income
+	$creditlimit = $group['creditlimit']; //  limit
+	$callshopcredit = $group['credit_group']; // cost
+	$curcredit = $group['curcredit']; // current cost
 
 	if ($amount == '') $amount = 0;
 	if ($cost == '') $cost = 0;
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
 
 	if ($_SESSION['curuser']['limittype'] == ''){
-			$objResponse->addAssign("spanLimitStatus","innerHTML","no limit");
-			$creditlimit = "no limit";
+			$creditlimit = $locate->Traslate("no limit");
+			$objResponse->addAssign("spanLimitStatus","innerHTML",$creditlimit);
 	}else{
 		$balance = $creditlimit - $callshopcredit ;
 		if ($balance <= 50) {
 			if ($balance <= 0)
-				$objResponse->addAssign("spanLimitStatus","innerHTML","no credit left, all booth locked");
+				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("no credit left all booth locked"));
 			else
-				$objResponse->addAssign("spanLimitStatus","innerHTML","warning: less than 50");
+				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("warning credit is less than 50"));
 		}else{
-			$objResponse->addAssign("spanLimitStatus","innerHTML","normal");
+			$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("normal"));
 		}
 	}
 
@@ -145,7 +145,7 @@ function setStatus($clid,$status){
 	$objResponse = new xajaxResponse();
 	if ($affectrows == 0){
 		//$objResponse->addAssign($peer."-limitstatus","value","");
-		$objResponse->addAlert("lock/unlock failed");
+		$objResponse->addAlert($locate->Traslate("falied to lock or unlock"));
 	}else{
 		if ($status == 1){
 			$objResponse->addAssign($clid."-lock","style.backgroundColor","");
@@ -434,7 +434,7 @@ function checkOut($aFormValues,$divId){
 		foreach ($aFormValues['cdrid'] as $id){
 			$res =  astercc::setBilled($id);
 			}
-		$objResponse->addAlert("clear booth");
+		$objResponse->addAlert($locate->Traslate("clear booth"));
 		$objResponse->addAssign($divId."-unbilled","innerHTML",0);
 	}
 	$objResponse->addScript("removeTr('".$divId."');");

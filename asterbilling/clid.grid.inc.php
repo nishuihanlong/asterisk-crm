@@ -274,8 +274,8 @@ class Customer extends astercrm
 		}
 
 		$statusoptions ='
-							<option value="1">Avaiable</option>
-							<option value="-1">Lock</option>
+							<option value="1">'.$locate->Translate("Avaiable").'</option>
+							<option value="-1">'.$locate->Translate("Lock").'</option>
 						';
 		$pin = astercrm::generateUniquePin(intval($config['system']['pin_len']));
 		$html = '
@@ -405,13 +405,13 @@ class Customer extends astercrm
 
 		if ($clid['status'] == 1){
 			$statusoptions ='
-							<option value="1" selected>Avaiable</option>
-							<option value="-1">Lock</option>
+							<option value="1" selected>'.$locate->Translate("Avaiable").'</option>
+							<option value="-1">'.$locate->Translate("Lock").'</option>
 						';
 		}else{
 			$statusoptions ='
-							<option value="1">Avaiable</option>
-							<option value="-1" selected>Lock</option>
+							<option value="1">'.$locate->Translate("Avaiable").'</option>
+							<option value="-1" selected>'.$locate->Translate("Lock").'</option>
 						';
 		}
 

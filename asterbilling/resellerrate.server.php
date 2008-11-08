@@ -122,7 +122,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on searchtype select box.
 	$typeFromSearchShowAs = array();
-	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = $locate->Translate("like");
 	$typeFromSearchShowAs[] = '=';
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';
@@ -143,15 +143,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = "Prefix";
-	$headers[] = "Number length";
-	$headers[] = "Dest";
-	$headers[] = "Connect Charge";
-	$headers[] = "Init Block";
-	$headers[] = "Rate";
-	$headers[] = "Billing Block";
-	$headers[] = "Reseller";
-	$headers[] = "Add Time";
+	$headers[] = $locate->Translate("Prefix");
+	$headers[] = $locate->Translate("Number length");
+	$headers[] = $locate->Translate("Dest");
+	$headers[] = $locate->Translate("Connect Charge");
+	$headers[] = $locate->Translate("Init Block");
+	$headers[] = $locate->Translate("Rate");
+	$headers[] = $locate->Translate("Billing Block");
+	$headers[] = $locate->Translate("Reseller");
+	$headers[] = $locate->Translate("Add Time");
 
 	// HTML table: fieldsFromSearch showed
 	$fieldsFromSearch = array();
@@ -215,15 +215,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = 'dialprefix';
-	$fieldsFromSearchShowAs[] = 'numlen';
-	$fieldsFromSearchShowAs[] = 'destination';
-	$fieldsFromSearchShowAs[] = 'rateinitial';
-	$fieldsFromSearchShowAs[] = 'initblock';
-	$fieldsFromSearchShowAs[] = 'billingblock';
-	$fieldsFromSearchShowAs[] = 'connectcharge';
-	$fieldsFromSearchShowAs[] = 'resellername';
-	$fieldsFromSearchShowAs[] = 'addtime';
+	$fieldsFromSearchShowAs[] = $locate->Translate("dialprefix");
+	$fieldsFromSearchShowAs[] = $locate->Translate("numlen");
+	$fieldsFromSearchShowAs[] = $locate->Translate("destination");
+	$fieldsFromSearchShowAs[] = $locate->Translate("rateinitial");
+	$fieldsFromSearchShowAs[] = $locate->Translate("initblock");
+	$fieldsFromSearchShowAs[] = $locate->Translate("billingblock");
+	$fieldsFromSearchShowAs[] = $locate->Translate("connectcharge");
+	$fieldsFromSearchShowAs[] = $locate->Translate("resellername");
+	$fieldsFromSearchShowAs[] = $locate->Translate("addtime");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -413,10 +413,9 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$res = Customer::deleteRecord($id,'resellerrate');
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,$searchType);
-				$objResponse = new xajaxResponse();
-				$objResponse->addAssign("msgZone", "innerHTML", "record deleted"); 
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 			}else{
-				$objResponse->addAssign("msgZone", "innerHTML", "record cannot be deleted"); 
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 			}
 		}else{
 			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,$searchType);

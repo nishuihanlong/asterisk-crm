@@ -266,35 +266,35 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.'dialprefix'.'</td>
+					<td nowrap align="left">'.$locate->Translate("dialprefix").'</td>
 					<td align="left"><input type="text" id="dialprefix" name="dialprefix" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'length'.'</td>
+					<td nowrap align="left">'.$locate->Translate("length").'</td>
 					<td align="left"><input type="text" id="numlen" name="numlen" size="10" maxlength="10" value="0"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'destination'.'</td>
+					<td nowrap align="left">'.$locate->Translate("destination").'</td>
 					<td align="left"><input type="text" id="destination" name="destination" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'connectcharge'.'</td>
+					<td nowrap align="left">'.$locate->Translate("connectcharge").'</td>
 					<td align="left"><input type="text" id="connectcharge" name="connectcharge" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'initblock'.'</td>
+					<td nowrap align="left">'.$locate->Translate("initblock").'</td>
 					<td align="left"><input type="text" id="initblock" name="initblock" size="25" maxlength="100"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'rateinitial'.'</td>
+					<td nowrap align="left">'.$locate->Translate("rateinitial").'</td>
 					<td align="left"><input type="text" id="rateinitial" name="rateinitial" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'billingblock'.'</td>
+					<td nowrap align="left">'.$locate->Translate("billingblock").'</td>
 					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="5" value="60"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'."reseller".'</td>
+					<td nowrap align="left">'.$locate->Translate("reseller").'</td>
 					<td align="left">
 						<select id="resellerid" name="resellerid">'
 						.$options.
@@ -302,7 +302,7 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.'Continue'.'</button></td>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
 				</tr>
 
 			 </table>
@@ -340,9 +340,9 @@ class Customer extends astercrm
 			}
 		}
 		if ($flag == true){
-			$options .= "<OPTION value='0'>".'All'."</OPTION>";
+			$options .= "<OPTION value='0'>".$locate->Translate("All")."</OPTION>";
 		}else{
-			$options .= "<OPTION value='0' selected>".'All'."</OPTION>";
+			$options .= "<OPTION value='0' selected>".$locate->Translate("All")."</OPTION>";
 		}
 		$options .= '</select>';
 
@@ -352,35 +352,35 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.'dialprefix'.'</td>
+					<td nowrap align="left">'.$locate->Translate("dialprefix").'</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $rate['id'].'"><input type="text" id="dialprefix" name="dialprefix" size="25" maxlength="30" value="'.$rate['dialprefix'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'length'.'</td>
+					<td nowrap align="left">'.$locate->Translate("length").'</td>
 					<td align="left"><input type="text" id="numlen" name="numlen" size="10" maxlength="10" value="'.$rate['numlen'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'destination'.'</td>
+					<td nowrap align="left">'.$locate->Translate("destination").'</td>
 					<td align="left"><input type="text" id="destination" name="destination" size="25" maxlength="30" value="'.$rate['destination'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'connectcharge'.'</td>
+					<td nowrap align="left">'.$locate->Translate("connectcharge").'</td>
 					<td align="left"><input type="text" id="connectcharge" name="connectcharge" size="20" maxlength="20" value="'.$rate['connectcharge'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'."initblock".'</td>
+					<td nowrap align="left">'.$locate->Translate("initblock").'</td>
 					<td align="left"><input type="text" id="initblock" name="initblock" size="25" maxlength="100" value="'.$rate['initblock'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'rateinitial'.'</td>
+					<td nowrap align="left">'.$locate->Translate("rateinitial").'</td>
 					<td align="left"><input type="text" id="rateinitial" name="rateinitial" size="25" maxlength="30" value="'.$rate['rateinitial'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'."billingblock".'</td>
+					<td nowrap align="left">'.$locate->Translate("billingblock").'</td>
 					<td align="left"><input type="text" id="billingblock" name="billingblock" size="25" maxlength="30" value="'.$rate['billingblock'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.'reseller'.'</td>
+					<td nowrap align="left">'.$locate->Translate("reseller").'</td>
 					<td align="left">
 					'
 						.$options.
@@ -388,7 +388,7 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'."Continue".'</button></td>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
 				</tr>
 
 			 </table>
@@ -398,7 +398,7 @@ class Customer extends astercrm
 
 		$html .= '
 				</form>
-				'."obligatory_fields".'
+				'.$locate->Translate("obligatory_fields").'
 				';
 
 		return $html;

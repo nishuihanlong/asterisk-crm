@@ -55,7 +55,7 @@ require_once('credithistory.common.php');
 	<body onload="init();">
 		<div id="divNav"></div><br>
 		<div name="divClid" id="divClid" style="visibility:hidden">
-		&nbsp;Total Cost:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit:&nbsp;<span id="spanLimit" name="spanLimit"></span>&nbsp;&nbsp;&nbsp;&nbsp;Current cost:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>
+		&nbsp;<?echo $locate->Translate("Total Cost")?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit")?>:&nbsp;<span id="spanLimit" name="spanLimit"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Current cost")?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>
 		</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

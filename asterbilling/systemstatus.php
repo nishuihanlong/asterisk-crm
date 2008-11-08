@@ -34,28 +34,361 @@ require_once('systemstatus.common.php');
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
-			function init(){
-				xajax_init();
-				showStatus();
-				dragresize.apply(document);
+function addDiv(containerId,divId,creditLimit,num,status,displayname){
+	var container = document.getElementById(containerId);
+
+	if (displayname == '')
+	{
+		displayname = divId;
+	}
+	//检查是否已经存在该id
+
+	if (document.getElementById(divId + '-divContainer') != null){
+		return ;
+	}
+
+
+	var divContainer = document.createElement("div");
+	divContainer.className="float";
+	divContainer.id = divId + '-divContainer';
+
+	// add title div
+	var div = document.createElement("div");
+	div.className = "lable";
+	if (num != '')
+	{
+		div.innerHTML += "&nbsp;No." + num + ":" + displayname;
+	}else{
+		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
+	}
+	div.innerHTML += " <span id=\"" + divId + "-status\"></span>";
+	divContainer.appendChild(div);
+
+	// add cdr div
+	var div = document.createElement("div");
+	div.className = "calllog";
+	div.innerHTML += "<table width=\"500\" class=\"curcall\">" +
+																"<tbody id=\"" + divId + "-tbody\">" +
+																"<tr>" +
+																"<th style=\"width:70px;\"><?echo $locate->Traslate("Phone");?></th>" +
+																"<th style=\"width:50px;\"><?echo $locate->Traslate("Sec");?></th>" +
+																"<th style=\"width:50px;\"><?echo $locate->Traslate("Price");?></th>" +
+																"<th style=\"width:100px;\"  nowrap><?echo $locate->Traslate("Start At");?></th>" +
+																"<th style=\"width:100px;\"><?echo $locate->Traslate("Rate");?></th>" +
+																"</tr>" +
+																"<tr id=\"trTitle\" class=\"curchannel\">" +
+																"<td id=\"" + divId + "-phone\">&nbsp;</td>" +
+																"<td id=\"" + divId + "-duration\"> </td>" +
+																"<td id=\"" + divId + "-price\"> </td>" +
+																"<td id=\"" + divId + "-startat\" nowrap> </td>" +
+																"<td id=\"" + divId + "-rate\">" +
+"<div style=\"display: none;\">" +
+"<span id=\"" + divId + "-connectcharge\">-</span> <?echo $locate->Traslate("for first");?> <span id=\"" + divId + "-initblock\">-</span> <?echo $locate->Traslate("seconds");?> " + 
+"<span id=\"" + divId + "-rateinitial\">-</span> <?echo $locate->Traslate("per");?> <span id=\"" + divId + "-billingblock\">-</span> <?echo $locate->Traslate("seconds");?> " +
+"</div>" +
+"<?echo $locate->Traslate("total");?>: <span id=\"" + divId + "-totalsec\">-</span> <?echo $locate->Traslate("seconds");?>" +
+																"</td>" +
+																"</tr>" +
+																"<tr id=\"trTitle-legb\" class=\"curchannel\">" +
+																"<td id=\"" + divId + "-legb-phone\">&nbsp;</td>" +
+																"<td id=\"" + divId + "-legb-duration\"> </td>" +
+																"<td id=\"" + divId + "-legb-price\"> </td>" +
+																"<td id=\"" + divId + "-legb-startat\" nowrap> </td>" +
+																"<td id=\"" + divId + "-legb-rate\">" +
+"<div style=\"display: none;\">" +
+"<span id=\"" + divId + "-legb-connectcharge\">-</span> <?echo $locate->Traslate("for first");?> <span id=\"" + divId + "-legb-initblock\">-</span> <?echo $locate->Traslate("seconds");?> " + 
+"<span id=\"" + divId + "-legb-rateinitial\">-</span> <?echo $locate->Traslate("per");?> <span id=\"" + divId + "-legb-billingblock\">-</span> <?echo $locate->Traslate("seconds");?> " +
+"</div>" +
+																"</td>" +
+																"</tr>" +
+																"</tbody>" +
+															"</table>" +
+															"<form action=\"\" name=\"" + divId + "-form\" id=\"" + divId + "-form\">" +
+															"<table width=\"500\" class=\"calllog\">" +
+																"<tbody id=\"" + divId + "-calllog-tbody\">" +
+																"</tbody>" +
+															"</table>" +
+															"</form>";
+
+	divContainer.appendChild(div);
+
+	// add unbilled div
+	var div = document.createElement("div");
+	div.className = "lable";
+	div.innerHTML += "&nbsp;&nbsp;U:&nbsp;<span id=\""+divId+"-unbilled\">0</span>";
+	div.innerHTML += "&nbsp;&nbsp;B:&nbsp;<span name=\"" + divId + "-balance\" id = \"" + divId + "-balance\" style=\"CURSOR: pointer;\" onclick=\"calculateBalance('" + divId + "')\"></span>";
+	divContainer.appendChild(div);
+
+	// add creditlimit div
+	var div = document.createElement("div");
+	div.className = "lable";
+	if (creditLimit == ""){
+		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId + "-ckbCredit\" name=\"" + divId + "-ckbCredit\" value=\"" + divId + "\" onclick=\"ckbCreditOnClick(this);\">";
+		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Traslate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"\" size=\"9\" maxlength=\"7\" onKeyUp=\"filedFilter(document.getElementById('" + divId + "-iptCredit'),'numeric');calculateBalance('" + divId + "');\" >";
+	}else{
+		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId + "-ckbCredit\" name=\"" + divId + "-ckbCredit\" value=\"" + divId + "\" checked onclick=\"ckbCreditOnClick(this);\">";
+		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Traslate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"" + creditLimit + "\" size=\"9\" maxlength=\"7\" readonly>";
+	}
+	divContainer.appendChild(div);
+
+	//add lock div
+	var div = document.createElement("div");
+	div.className = "lable";
+	div.innerHTML += "<input type=\"hidden\" id=\"divList[]\" name=\"divList[]\" value=\"" + divId + "\">";
+	if (status == -1){
+		div.innerHTML += "<input checked type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\"  onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\" style=\"background-color: red;\"><?echo $locate->Traslate("Lock");?></span> ";
+	}else{
+		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\" value=\"" + divId + "\" onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\"><?echo $locate->Traslate("Lock");?></span> ";
+	}
+
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-channel\" name=\"" + divId + "-channel\" value=''>";
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-legb-channel\" name=\"" + divId + "-legb-channel\" value=''>";
+	div.innerHTML += '<input type="hidden" id="' + divId + '-localanswertime" name="' + divId + '-localanswertime" value="">';
+	div.innerHTML += '<input type="hidden" id="' + divId + '-legb-localanswertime" name="' + divId + '-localanswertime" value="">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-billsec" name="' + divId + '-billsec" value="0">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-legb-billsec" name="' + divId + '-billsec" value="0">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-limitstatus" name="' + divId + '-limitstatus" value="">';
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"hangupOnClick('" + divId + "');return false;\"><?echo $locate->Traslate("Hangup");?></a>";
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "');return false;\"><?echo $locate->Traslate("Clear");?></a>";
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnCDROnClick('" + divId + "');return false;\"><?echo $locate->Traslate("Cdr");?></a>";
+	divContainer.appendChild(div);
+
+	container.appendChild(divContainer);
+}
+
+function addSimpleDiv(containerId,divId,creditLimit,num,status,displayname){
+	var container = document.getElementById(containerId);
+
+	if (displayname == '')
+	{
+		displayname = divId;
+	}
+	//检查是否已经存在该id
+
+	if (document.getElementById(divId + '-divContainer') != null){
+		return ;
+	}
+
+
+	var divContainer = document.createElement("div");
+	//divContainer.className="simpleFloat";
+	divContainer.id = divId + '-divContainer';
+
+	// add title div
+	var div = document.createElement("div");
+	div.className = "lable";
+	if (num != '')
+	{
+		div.innerHTML += "&nbsp;No." + num + ":" + displayname;
+	}else{
+		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
+	}
+	div.innerHTML += " <span id=\"" + divId + "-status\"></span>";
+	divContainer.appendChild(div);
+
+	// add cdr div
+	var div = document.createElement("div");
+	div.className = "peerstatus";
+	div.innerHTML += "<table class=\"peerstatus\" width=\"400\" >" +
+																"<tbody id=\"" + divId + "-tbody\">" +
+																"<tr>" +
+																"<th style=\"width:70px;\"><?echo $locate->Traslate("Phone");?></th>" +
+																"<th style=\"width:50px;\"><?echo $locate->Traslate("Sec");?></th>" +
+																"<th style=\"width:100px;\"  nowrap><?echo $locate->Traslate("Start At");?></th>" +
+																"</tr>" +
+																"<tr id=\"trTitle\" class=\"curchannel\">" +
+																"<td id=\"" + divId + "-phone\">&nbsp;</td>" +
+																"<td id=\"" + divId + "-duration\"> </td>" +
+																"<td id=\"" + divId + "-startat\" nowrap> </td>" +
+																"</tr>" +
+																"</tbody>" +
+															"</table>";
+
+	divContainer.appendChild(div);
+
+
+
+	//add lock div
+	var div = document.createElement("div");
+	div.className = "lable";
+	div.innerHTML += "<input type=\"hidden\" id=\"divList[]\" name=\"divList[]\" value=\"" + divId + "\">";
+	if (status == -1){
+		div.innerHTML += "<input checked type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\"  onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\" style=\"background-color: red;\"><?echo $locate->Traslate("Lock");?></span> ";
+	}else{
+		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\" value=\"" + divId + "\" onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\"><?echo $locate->Traslate("Lock");?></span> ";
+	}
+
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-channel\" name=\"" + divId + "-channel\" value=''>";
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-legb-channel\" name=\"" + divId + "-legb-channel\" value=''>";
+	div.innerHTML += '<input type="hidden" id="' + divId + '-localanswertime" name="' + divId + '-localanswertime" value="">';
+	div.innerHTML += '<input type="hidden" id="' + divId + '-legb-localanswertime" name="' + divId + '-localanswertime" value="">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-billsec" name="' + divId + '-billsec" value="0">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-legb-billsec" name="' + divId + '-billsec" value="0">';
+	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-limitstatus" name="' + divId + '-limitstatus" value="">';
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"hangupOnClick('" + divId + "');return false;\"><?echo $locate->Traslate("Hangup");?></a>";
+	//div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "');return false;\">Clear</a>";
+	//div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnCDROnClick('" + divId + "');return false;\">Cdr</a>";
+	divContainer.appendChild(div);
+
+	container.appendChild(divContainer);
+}
+
+function ckbCreditOnClick(objCkb){
+	if (document.getElementById(objCkb.value+'-iptCredit').value == "")
+	{
+		objCkb.checked = false;
+		return false;
+	}
+
+	if (objCkb.checked){
+		if (confirm("<?echo $locate->Traslate("select OK to enable credit limit");?>")){
+			document.getElementById(objCkb.value+'-iptCredit').readOnly = true;
+			objCkb.checked = true;
+			document.getElementById(objCkb.value + "-limitstatus").value = "";
+			// reset balance
+			calculateBalance(objCkb.value);
+
+		}else{
+			objCkb.checked = false;
+		}
+	}else{
+		if (confirm("<?echo $locate->Traslate("select OK to disable credit limit");?>")){
+			document.getElementById(objCkb.value+'-iptCredit').readOnly = false;
+			objCkb.checked = false;
+			channel = document.getElementById(objCkb.value+'-channel').value;
+			if (channel != ''){
+				xajax_setCreditLimit(objCkb.value,channel,0);
 			}
-			function showCallshopStatus(){
-				var myDiv = document.getElementById("divAmount");
-				if (myDiv.style.display == 'block'){
-					myDiv.style.display = 'none';
-				}else{
-					xajax_setGroupBalance();
-					myDiv.style.display = 'block';
-				}
-				return false;
-			}
-			function searchRate(){
-				var objDialprefix = document.getElementById("iptDialprefix");
-				if (objDialprefix.value != '')
-					xajax_searchRate(objDialprefix.value);
-				else
-					document.getElementById("divRate").innerHTML = '';
-			}
+			document.getElementById(objCkb.value + '-balance').style.backgroundColor="";
+		}else{
+			objCkb.checked = true;
+		}
+	}
+}
+
+
+function appendTr(tbodyId,aryValues){
+	var tbody = document.getElementById(tbodyId);
+    var tr = document.createElement("tr");
+
+	// caller id
+    var td = document.createElement("td");
+	td.innerHTML = "<acronym title=\"" + "<?echo $locate->Traslate("Destination");?>:" + trim(aryValues["destination"]) + "(" + "<?echo $locate->Traslate("Rate");?>:" + trim(aryValues["rate"]) + ")" + "\">" + trim(aryValues["dst"]) + "</acronym>";
+//	td.innerHTML = trim(aryValues["dst"]);
+//	td.style.width = "70px";
+	tr.appendChild(td);
+	
+ 	// duration
+   var td = document.createElement("td");
+	var hours = parseInt(aryValues["billsec"]/3600);
+	var minutes = parseInt( (aryValues["billsec"] - hours*3600)/60);
+	var seconds = aryValues["billsec"] - hours * 3600 - minutes * 60
+	td.innerHTML = hours + ':' + minutes + ':' + seconds;
+
+//	td.style.width = "20px";
+	tr.appendChild(td);
+
+ 	// price
+   var td = document.createElement("td");
+	td.innerHTML = trim(aryValues["price"]);
+//	td.style.width = "20px";
+	tr.appendChild(td);
+
+
+	//destination
+   var td = document.createElement("td");
+	td.innerHTML = trim(aryValues["destination"]);
+//	td.style.width = "140px";
+	tr.appendChild(td);
+
+
+
+ 	// rate
+   var td = document.createElement("td");
+	td.innerHTML = trim(aryValues["rate"]) + "<input type=\"hidden\" id=\"cdrid[]\" name=\"cdrid[]\" value=\"" + aryValues["id"] + "\">";
+	td.style.width = "150px";
+	tr.appendChild(td);
+
+ 	// start at
+   var td = document.createElement("td");
+	td.innerHTML = trim(aryValues["startat"]);
+//	td.style.width = "160px";
+	tr.appendChild(td);
+
+	tbody.appendChild(tr);
+}
+
+
+function btnClearOnClick(divId){
+	if (!confirm("<?echo $locate->Traslate("Are you sure to clear this booth");?>"+"?'"))
+	{
+		return false;
+	}
+	form = document.getElementById(divId + "-form");
+	xajax_checkOut(xajax.getFormValues(divId + "-form"),divId);
+}
+
+function setStatus(trId,status){
+	if (status)
+	{
+		if (confirm("<?echo $locate->Traslate("Are you sure to lock booth");?>" + trId + "?"))
+		{
+			xajax_setStatus(trId,-1);
+		}
+	}else{
+		if (confirm("<?echo $locate->Traslate("Are you sure to unlock booth");?>" + trId + "?"))
+		{
+			xajax_setStatus(trId,1);
+		}
+	}
+}
+
+function init(){
+	xajax_init();
+	showStatus();
+	dragresize.apply(document);
+}
+
+function showCallshopStatus(){
+	var myDiv = document.getElementById("divAmount");
+	if (myDiv.style.display == 'block'){
+		myDiv.style.display = 'none';
+	}else{
+		xajax_setGroupBalance();
+		myDiv.style.display = 'block';
+	}
+	return false;
+}
+
+function hangupOnClick(trId){
+	if (confirm("<?echo $locate->Traslate("Are you sure to hangup this call");?>"+"?")){
+		//alert(document.getElementById( trId + '-channel').value);
+		//return false;
+//		"Local/84350822-legb-channel"
+		hangup(document.getElementById( trId + '-channel').value);
+		hangup(document.getElementById( trId + '-legb-channel').value);
+	}
+	return false;
+}
+
+function removeLocalDiv(divId){
+	if (confirm("<?echo $locate->Traslate("Are you sure to remove this box");?>"+"?"))
+	{
+		oDiv = document.getElementById(divId + '-divContainer');
+		oContainer =  document.getElementById('divMainContainer');
+		oContainer.removeChild(oDiv);//
+		xajax_removeLocalChannel(divId);
+	}
+}
+
+
+function searchRate(){
+	var objDialprefix = document.getElementById("iptDialprefix");
+	if (objDialprefix.value != '')
+		xajax_searchRate(objDialprefix.value);
+	else
+		document.getElementById("divRate").innerHTML = '';
+}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/common.js"></script>		
@@ -72,19 +405,19 @@ require_once('systemstatus.common.php');
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
 
 		<div id="divPanel" name="divPanel" class="divPanel">
-			<a href="rate.php" target="_blank">Rate</a><br>
-			<a href="checkout.php" target="_blank">Report</a><br>
-			<a href="clid.php" target="_blank">Clid</a><br>
-			<a href="manager_login.php">Logout</a>
+			<a href="rate.php" target="_blank"><?echo $locate->Traslate("Rate");?></a><br>
+			<a href="checkout.php" target="_blank"><?echo $locate->Traslate("Report");?></a><br>
+			<a href="clid.php" target="_blank"><?echo $locate->Traslate("Clid");?></a><br>
+			<a href="manager_login.php"><?echo $locate->Traslate("Log Out");?></a>
 		</div>
-		&nbsp;Last refresh time: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit Status:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
+		&nbsp;<?echo $locate->Traslate("Last Refresh Time");?>: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Traslate("Limit Status");?>:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
 		<input type="button" value="Callshop Status" onclick="showCallshopStatus();">
 
 		<div id="divAmount" style="display:none;">
-		&nbsp;Amount:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;Cost:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;Limit:&nbsp;<span id="spanLimit" name="spanLimit"> </span>&nbsp;&nbsp;&nbsp;&nbsp;Current credit:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>
+		&nbsp;<?echo $locate->Traslate("Amount");?>:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Traslate("Cost");?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Traslate("Limit");?>:&nbsp;<span id="spanLimit" name="spanLimit"> </span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Traslate("Current Credit");?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>
 		</div>
 		<div>
-				<input type="text" size="10" name="iptDialprefix" id="iptDialprefix"><input type="button" value="Search Rate" onclick="searchRate();">
+				<input type="text" size="10" name="iptDialprefix" id="iptDialprefix"><input type="button" value="<?echo $locate->Traslate("Search Rate");?>" onclick="searchRate();">
 				<div id="divRate" name="divRate"></div>	
 		</div>
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>
@@ -97,24 +430,24 @@ require_once('systemstatus.common.php');
 			</tr>
 			<tr >
 			<td>
-				<fieldset><legend>Call back</legend>
+				<fieldset><legend><?echo $locate->Traslate("Callback");?></legend>
 			<form action="" method="post">
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td>Ori:</td>
+					<td><?echo $locate->Traslate("Ori");?>:</td>
 					<td><input type="text" size="17" maxlength="17" id="iptLegB" name="iptLegB"></td>
 				</tr>
 				<tr>
-					<td>Dest:</td>
+					<td><?echo $locate->Traslate("Dest");?>:</td>
 					<td><input type="text" size="17" maxlength="17" id="iptLegA" name="iptLegA"></td>
 				</tr>
 				<tr>
-					<td>Credit:</td>
+					<td><?echo $locate->Traslate("Credit");?>:</td>
 					<td><input type="text" size="6" maxlength="6" id="creditLimit" name="creditLimit"></td>
 				</tr>
 				<tr>
 					<td colspan=2>
-						<input type="button" onclick="invite();return false;" value="start" >
+						<input type="button" onclick="invite();return false;" value="<?echo $locate->Traslate("Start");?>" >
 					</td>
 				</tr>
 			</table>
