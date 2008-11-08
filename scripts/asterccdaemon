@@ -1,5 +1,10 @@
 #!/bin/sh   
 #   singhead monitor for astercc daemons
+#   this script have 4 external parm to control if monitor which daemon:
+#   1st for astercc, set yes to monitor; set no to not monitor
+#   2ed for astercctools, set yes to monitor; set no to not monitor
+#   3rd for asterrc, set yes to monitor; set no to not monitor
+#   4th for astercclock, set yes to monitor; set no to not monitor
 #     
 # |||||||||||||||||||| CONFIGURATION SECTION  ||||||||||||||||||||
 # --------------------                              --------------------   
@@ -23,10 +28,35 @@ fi
 while   [   1   ]   
 	do
 		sleep  60
-		asterccpid=`ps -ef |grep -v grep |grep -E /asterc[.\ ]+-d |awk '{print $2}'`
-		asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[.\ ]+-d |awk '{print $2}'`
-		asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[.\ ]+-d |awk '{print $2}'`
-		if [ "x$asterccpid" == "x" -o "x$asterrcpid" == "x" -o "x$asterlcpid" == "x" ]
+		if [ "x${1}" == "x" -o "x${1}" == "xyes" ]; 
+		then
+			asterccpid=`ps -ef |grep -v grep |grep -E /asterc[.\ ]+-d |awk '{print $2}'`
+		else
+			asterccpid='pass'
+		fi
+
+		if [ "x${2}" == "x" -o "x${2}" == "xyes" ];
+		then
+			asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[.\ ]+-d |awk '{print $2}'`
+		else
+			asterctpid='pass'
+		fi
+
+		if [ "x${3}" == "x" -o "x${3}" == "xyes" ];
+		then
+			asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[.\ ]+-d |awk '{print $2}'`
+		else
+			asterrcpid='pass'
+		fi
+
+		if [ "x${4}" == "x" -o "x${4}" == "xyes" ];
+		then
+			asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[.\ ]+-d |awk '{print $2}'`
+		else
+			asterlcpid='pass'
+		fi
+		
+		if [ "x$asterccpid" == "x" -o "x$asterctpid" == "x" -o "x$asterrcpid" == "x" -o "x$asterlcpid" == "x" ]
 		then
 			if test -s $asterccdpath; then
 				$asterccdpath > /dev/null

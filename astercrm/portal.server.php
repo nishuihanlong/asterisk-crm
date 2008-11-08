@@ -396,10 +396,10 @@ function waitingCalls($myValue){
 	//	modified 2007/10/30 by solo
 	//  start
 	//print_r($_SESSION);exit;
-	if ($_SESSION['curuser']['channel'] == '')
-		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
-	else
-		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
+	//if ($_SESSION['curuser']['channel'] == '')
+		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension'],$_SESSION['curuser']['channel'],$_SESSION['curuser']['agent']);
+	//else
+	//	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
 	//  end
 
 	if ($call['status'] == ''){
@@ -466,6 +466,7 @@ function waitingCalls($myValue){
 			}
 		}
 	} elseif ($call['status'] == 'dialout'){	//dailing out here
+
 		$title	= $call['callerid'];
 		$status	= 'dialing';
 		$direction	= 'out';

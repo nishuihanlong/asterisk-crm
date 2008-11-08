@@ -95,27 +95,28 @@ class asterEvent extends PEAR
 			$call['callerid']		(string)	caller id/callee id
 			$call['uniqueid']		(string)	uniqueid for the new call
 */
-	function checkNewCall($curid,$exten,$channel){
+
+	function checkNewCall($curid,$exten,$channel = '',$agent = ''){
 		global $db,$config;
-		//echo $exten;
+		
 		if ($config['system']['eventtype'] == 'curcdr'){
-			if (strstr($exten,"/")){
-				$exten = ltrim(strstr($exten,"/"),"/");
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten' OR dstchan = 'AGENT/".$_SESSION['curuser']['agent']."') AND dstchan != '' AND id > $curid AND src != '' AND dst != ''";
-			}else{
-				$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dst='LOCAL/$exten' OR dst='SIP/$exten' OR dst='IAX2/$exten' OR dstchan = 'AGENT/".$_SESSION['curuser']['agent']."') AND dstchan != '' AND id > $curid AND src != '' AND dst != ''";
-			}
-			//echo $query;exit;
+
+			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'AGENT/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND id > $curid ";
+
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
+				//if dstchan does not include dst, then clear dst(for process transfer call )
+				if( !strstr($list['dstchan'],$list['dst']) ) $list['dst'] = '';
+
 				if($list['didnumber'] != '' ){
 					$didnumber = $list['didnumber'];
 				}else{
 					$sql = "SELECT didnumber FROM curcdr WHERE srcchan = '".$list['didnumber']."' AND didnumber != ''";
 					if($res_did = $db->getone($sql)) $didnumber = $res_did;
 				}
-					if (strstr($list['src'],$exten)) {	// dial out
+
+				if (strstr($list['srcchan'],$channel) OR strstr($list['src'],$exten)) {// dial out
 					$call['status'] = 'dialout';
 					$call['callerid'] = trim($list['dst']);
 					$call['didnumber'] = $didnumber;
@@ -123,7 +124,8 @@ class asterEvent extends PEAR
 					$call['curid'] = trim($list['id']);
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
-				}else{		//dial in
+					return $call;
+				}elseif (strstr($list['dstchan'],$channel) OR strstr($list['dst'],$exten)){		//dial in
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['didnumber'] = $didnumber;
@@ -131,12 +133,13 @@ class asterEvent extends PEAR
 					$call['callerid'] = trim($list['src']);
 					$call['uniqueid'] = trim($list['srcuid']);
 					$call['curid'] = trim($list['id']);
+					return $call;
 				}
-			}else{
-				$call['status'] = '';
-				$call['curid'] = $curid;
 			}
-			//print_r($call);exit;
+
+			$call['status'] = '';
+			$call['curid'] = $curid;
+
 			return $call;
 		}
 		$call =& asterEvent::checkIncoming($curid,$exten);
@@ -162,10 +165,14 @@ class asterEvent extends PEAR
 */
 	function checkCallStatus($curid,$uniqueid){
 		global $db,$config;
+		$exten = $_SESSION['curuser']['extension'];
+		$channel = $_SESSION['curuser']['channel'];
+		$agent = $_SESSION['curuser']['agent'];
+
 		if ($config['system']['eventtype'] == 'curcdr'){
 
-			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (dst LIKE '%".$_SESSION['curuser']['extension']."' OR src LIKE '%".$_SESSION['curuser']['extension']."'  OR dstchan = 'AGENT/".$_SESSION['curuser']['agent']."')";
-			
+			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (src = '$exten' OR dst = '$exten' OR dstchan = 'AGENT/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ";
+			//echo $query;exit;
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
@@ -253,25 +260,40 @@ class asterEvent extends PEAR
 				$peer = split("\/",trim($list['peer']));
 				if ($list['status'] == "unreachable")  { $status[$list['peer']] = 2; continue;}
 				if ($list['status']  == "reachable"){
-					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]' OR dst='LOCAL/$peer[1]' OR dst='SIP/$peer[1]' OR dst='IAX2/$peer[1]' OR dstchan = 'AGENT/".$panellist[$peer[1]]['agent']."') AND src != '' AND dst != '' AND dstchan != '' ORDER BY id DESC";
+					$query = "SELECT * FROM curcdr WHERE (src = '$peer[1]' OR dst = '$peer[1]' OR dstchan = 'AGENT/".$panellist[$peer[1]]['agent']."' OR srcchan LIKE '".$list['peer']."-%' OR dstchan LIKE '".$list['peer']."-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ORDER BY id ASC";
 					//echo $query;exit;
 					$res = $db->query($query);				
 					asterEvent::events($query);
 					if ($res->fetchInto($cdrrow)) {
+
+						if( !strstr($cdrrow['dstchan'],$cdrrow['dst']) ) $cdrrow['dst'] = '';
 						//if ($status[$list['peer']] == 1) continue;
-						if (strstr($cdrrow['src'],$peer[1]) ) {	// dial out
-							$callerid[$list['peer']] = trim($cdrrow['didnumber']);
+
+						if (strstr($cdrrow['src'],$peer[1]) OR strstr($cdrrow['srcchan'],$list['peer']) ) {	// dial out
+							if ( $cdrrow['didnumber'] != '' )
+								$callerid[$list['peer']] = trim($cdrrow['didnumber']);
+							else
+								$callerid[$list['peer']] = trim($cdrrow['dst']);
 							$direction[$list['peer']] = "dialout";
 							$status[$list['peer']] = 1;
 							$srcchan[$list['peer']] = trim($cdrrow['srcchan']);
 							$dstchan[$list['peer']] = trim($cdrrow['dstchan']);
-						}else{		//dial in
+
+						}elseif (strstr($cdrrow['dst'],$peer[1]) OR strstr($cdrrow['dstchan'],$list['peer'])) {		//dial in
+
 							$callerid[$list['peer']] = trim($cdrrow['src']);
 							$direction[$list['peer']] = "dialin";
 							$status[$list['peer']] = 1;
 							$srcchan[$list['peer']] = trim($cdrrow['srcchan']);
 							$dstchan[$list['peer']] = trim($cdrrow['dstchan']);
+
+						}else{
+
+							$callerid[$list['peer']] = '';
+							$direction[$list['peer']] = '';
+							$status[$list['peer']] = 0;
 						}
+
 					}else{
 							$callerid[$list['peer']] = '';
 							$direction[$list['peer']] = '';
