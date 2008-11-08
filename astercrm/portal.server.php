@@ -347,6 +347,7 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	if (!$res){
+		$objResponse->addAlert($locate->Translate("failed when connect to AMI"));
 		return;
 	}
 
@@ -362,7 +363,7 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 			return $objResponse;
 		}
 		// 录音信息保存到数据库
-		astercrm::insertNewMonitor($callerid,$filename,$uniqueid);
+		astercrm::insertNewMonitor($callerid,$filename,$uniqueid,$format);
 		$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("recording") );
 		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
 

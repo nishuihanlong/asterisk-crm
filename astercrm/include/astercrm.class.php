@@ -145,11 +145,12 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function insertNewMonitor($callerid,$filename,$uniqueid){
+	function insertNewMonitor($callerid,$filename,$uniqueid,$format){
 		global $db;
 		$query= "INSERT INTO monitorrecord SET "
-				."callerid='".$callerid."', "
-				."filename='".$filename."', "
+				."callerid = '".$callerid."', "
+				."filename = '".$filename."', "
+				."fileformat = '".$format."', "
 				."cretime=now(), "
 				."groupid = ".$_SESSION['curuser']['groupid'].", "
 				."extension = ".$_SESSION['curuser']['extension'].", "

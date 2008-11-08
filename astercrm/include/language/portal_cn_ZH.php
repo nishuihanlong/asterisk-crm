@@ -88,4 +88,5 @@ $stop_work = "停止拨号";
 $callee_id = "被叫号码";
 $record = "录音";
 $google_map = "Google地图";
+$failed_when_connect_to_AMI = "连接AMI失败";
 ?>
