@@ -1,3 +1,18 @@
+
+A {
+	color: #C64934;
+	text-decoration: none;
+}
+A:hover {
+	color : #30569D;
+	text-decoration : underline;
+}
+A:active {
+	color : #333333;
+	text-decoration : underline;
+}
+
+
 BODY {
 	/*text-align: center; */
 	/*text-align: -moz-center; */
@@ -13,6 +28,11 @@ BODY {
 
 DIV{
 	white-space:normal;
+}
+
+INPUT, TEXTAREA, SELECT {
+	z-index : -3;
+	font-size: 12px;
 }
 
 HR {
@@ -86,28 +106,8 @@ A IMG {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; PADDING-TOP: 0px
 }
 
-.lztd {
-	VERTICAL-ALIGN: top
-}
-.fdiv {
-	BORDER-TOP: #dddddd 1px dotted; PADDING-TOP: 5px; HEIGHT: 30px; TEXT-ALIGN: right
-}
-
-.spanel {
-	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 8px; MARGIN: 0px; PADDING-TOP: 5px; BORDER-BOTTOM: #dddddd 1px dotted
-}
 .mt {
 	MARGIN-LEFT: auto; WIDTH: 100%; MARGIN-RIGHT: auto; BORDER-BOTTOM: #ffffff 20px solid; border-spacing: 0px
-}
-.sbtd {
-	VERTICAL-ALIGN: top; BORDER-LEFT: #dddfdd 2px solid; HEIGHT: 100%
-}
-
-.olt {
-	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; WIDTH: 100%; PADDING-TOP: 0px
-}
-.olt TD {
-	BORDER-BOTTOM: #dddddd 1px dotted
 }
 
 .mp {
@@ -119,15 +119,7 @@ A IMG {
 .mn {
 	FONT: 14px/150% Arial, Helvetica, sans-serif; COLOR: #006600
 }
-.pl {
-	FONT: 12px/150% Arial, Helvetica, sans-serif; COLOR: #666666
-}
-.pl2 {
-	FONT: 14px/150% Arial, Helvetica, sans-serif; COLOR: #666666
-}
-.attn {
-	COLOR: #ff3300
-}
+
 .lst {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 5px; WIDTH: 100%; PADDING-TOP: 5px
 }
@@ -141,32 +133,9 @@ A IMG {
 .sil {
 	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; FLOAT: left; PADDING-BOTTOM: 5px; MARGIN: 5px; FONT: 12px Arial, Helvetica, sans-serif; VERTICAL-ALIGN: top; PADDING-TOP: 5px; TEXT-ALIGN: left
 }
-.sicon {
-	BORDER-RIGHT: #eeeeee 1px solid; BORDER-TOP: #eeeeee 1px solid; MARGIN-BOTTOM: 5px; VERTICAL-ALIGN: top; BORDER-LEFT: #eeeeee 1px solid; MARGIN-RIGHT: 10px; BORDER-BOTTOM: #eeeeee 1px solid
-}
-.m_sub_img {
-	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; PADDING-TOP: 10px;
-}
+
 .fil {
 	PADDING-RIGHT: 15px; FLOAT: left; PADDING-BOTTOM: 15px
-}
-.imgt {
-	FLOAT: left; PADDING-BOTTOM: 20px
-}
-.imgb {
-	FLOAT: left; PADDING-TOP: 20px
-}
-.imgg {
-	FLOAT: left; MARGIN-LEFT: 5px
-}
-
-
-.indent {
-	MARGIN-LEFT: 15px
-}
-
-.hot {
-	FONT: 12px Arial, Helvetica, sans-serif; COLOR: #ff5555
 }
 
 .ul {
@@ -307,19 +276,6 @@ TABLE.rbox TD.xbr {
 }
 
 
-a {
-	color: #C64934;
-	text-decoration: none;
-}
-a:hover {
-	color : #30569D;
-	text-decoration : underline;
-}
-a:active {
-	color : #333333;
-	text-decoration : underline;
-}
-
 table#toolbar {
 	margin-right: 10px;
 }
@@ -363,14 +319,7 @@ a.pagenav:active {
 	font-size : 18px;
 	font-weight: bold;
 }
-.button {
-	border-top : solid 1px #d5d5d5;
-	border-right : solid 1px #808080;
-	border-bottom : solid 1px #808080;
-	border-left : solid 1px #d5d5d5;
-	color : #333;
-	font-weight : bold;
-}
+
 .inputbox {
         z-index: -3;
         font-size: 12px;
@@ -379,10 +328,6 @@ a.pagenav:active {
         border : 1px solid #ccc;
         z-index: -3;
         font-size: 12px
-}
-INPUT, TEXTAREA, SELECT {
-	z-index : -3;
-	font-size: 12px;
 }
 .small {
 	color : #FF9900;
@@ -399,10 +344,7 @@ INPUT, TEXTAREA, SELECT {
 	font-size : 12px;
 	font-weight : bold;
 }
-.contentheading, .componentheading, .moduleheading {
-	font-size: 14px;
-	font-weight: bold;
-}
+
 table.menubar {
 	width: 98%;
 	
@@ -739,30 +681,6 @@ div.main {
 	z-index:100;
 }
 
-.extensionInfo {
-	width: 480px; 
-	border: thin solid #767676; 
-	position: absolute; 
-	left: 15%; 
-	top: 0px;
-	visibility: hidden; 
-	background-color: #F1F1F1;
-	overflow: auto;
-	z-index:1;
-}
-
-.extensionDetail {
-	z-index:2;
-	width: 480px; 
-	border: thin solid #767676; 
-	position: absolute; 
-	left: 15%; 
-	top: 0px;
-	visibility: hidden; 
-	background-color: #F1F1F1;
-	overflow: auto;
-}
-
 .formCustomerInfo {
 	width: 480px; 
 	/* height: 400px;  */
@@ -889,10 +807,6 @@ div.main {
 }
 
 
-.botton {
-	height: 14px;
-	width: 461px;
-}
 
 #div_exten { 
 			width:100px; 
