@@ -261,11 +261,10 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
 	$myPreferences['google-map']['key'] = $aFormValues['iptGooglemapkey'];
-	if (Common::write_ini_file("astercrm.conf.php",$myPreferences))
+	if (Common::write_ini_file("astercrm.conf.php",$myPreferences) >0)
 		$objResponse->addAlert($locate->Translate('save_success'));
 	else
-		$objResponse->addAlert($locate->Translate('save_failed
-	'));
+		$objResponse->addAlert($locate->Translate('save_failed'));
 	return $objResponse;
 }
 
@@ -318,8 +317,7 @@ function checkSys($aFormValues){
 
 	//check directory permittion
 	if (is_writable($aFormValues['iptSysUploadFilePath'])){
-		$objResponse->addAssign("divSysMsg","innerHTML","<span class='passed'>".$locate->Translate('sys_check_success')."</span");
-
+		$objResponse->addAssign("divSysMsg","innerHTML","<span class='passed'>".$locate->Translate('Upload Folder Writable')."</span");
 	}else{
 		$objResponse->addAssign("divSysMsg","innerHTML","<span class='failed'>".$locate->Translate('permission_error')."</span");
 	}
@@ -347,7 +345,7 @@ function saveLicence($aFormValues){
 	$asterccConfig['licence']['channel'] = $aFormValues['asterccChannels'];
 	$asterccConfig['licence']['key'] = $aFormValues['asterccKey'];
 
-	if (Common::write_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig)){
+	if (Common::write_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig) > 0){
 		$rval = exec($config['system']['astercc_path'].'/astercc -t',$asterccMsg);
 		$asterccMsg = implode("\n",$asterccMsg);
 

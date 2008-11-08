@@ -40,7 +40,6 @@ $db_connect_success			= 'database connection test passed';
 $AMI_connect_failed			= 'AMI connection test failed, please check the parameters';
 $AMI_connect_success		= 'AMI connection test passed';
 $permission_error			= 'directory permission error';
-$sys_check_success			= 'parameters check pass';
 $sys_eventtype				= 'where astercrm get asterisk call events, set to curcdr when using astercc';
 $sys_stop_work_verify		= 'if need to enter accountcode/password of admin or groupadmin when agent stop work';
 $astercc_path			= 'path of astercc daemon';

@@ -56,7 +56,10 @@ require_once('preferences.common.php');
 			}
 			
 			function saveLicence(){
-				xajax_saveLicence(xajax.getFormValues("formLicence"));
+				if (document.getElementById('asterccKey').value.length >0 ){
+					if (confirm("<?echo $locate->Translate("click ok to update your astercc license")?>"))
+						xajax_saveLicence(xajax.getFormValues("formLicence"));
+				}
 			}
 			
 			function checkDb(){
@@ -86,9 +89,9 @@ require_once('preferences.common.php');
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
     <td height="39" class="td font" id="Database" name="Database" align="left">
-		&nbsp;&nbsp;&nbsp;Database 
+		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Database')?>
         <input type="button" onclick="display('menu')"  value="+"/>
-		<input type="button" onclick="checkDb();return false;"  value="check"/>
+		<input type="button" onclick="checkDb();return false;"  value="<?echo $locate->Translate('Check')?>"/>
 		<div name="divDbMsg" id="divDbMsg"></div>
     </td>
   </tr>
@@ -216,7 +219,7 @@ require_once('preferences.common.php');
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
     <td height="39" class="td font" id="System" name="System"  align="left">
-		&nbsp;&nbsp;&nbsp;System 
+		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('System');?> 
       <input type="button" onclick="display('menu2')"  value="+"/>
 		<input type="button" onclick="checkSys();return false;"  value="check"/>
 		<div name="divSysMsg" id="divSysMsg"></div>
@@ -463,7 +466,7 @@ require_once('preferences.common.php');
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
     <td height="39" class="td font" id="ExternalCRM" name="ExternalCRM"  align="left">
-		&nbsp;&nbsp;&nbsp;External CRM 
+		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('External CRM');?>
       <input type="button" onclick="display('menu3')"  value="+"/>
     </td>
   </tr>
@@ -521,7 +524,7 @@ require_once('preferences.common.php');
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
     <td height="39" class="td font" id="others" name="others"  align="left">
-		&nbsp;&nbsp;&nbsp;Others 
+		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Others');?>
       <input type="button" onclick="display('menu4')"  value="+"/>
     </td>
   </tr>
@@ -544,7 +547,7 @@ require_once('preferences.common.php');
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
     <td height="39" class="td font" align="left">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSave" id="btnSave"  value="Save" onclick="savePreferences();return false;"/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSave" id="btnSave"   value="<?echo $locate->Translate("Save")?>" onclick="savePreferences();return false;"/>
     </td>
   </tr>
   <tr>
@@ -556,7 +559,7 @@ require_once('preferences.common.php');
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
     <td height="39" class="td font" align="left" colspan="3">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Licence
+      &nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Licence")?>
     </td>
   </tr>
   <tr>
@@ -594,7 +597,7 @@ require_once('preferences.common.php');
   </tr>
   <tr>
     <td height="39" class="td font" align="left" colspan="3">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSaveLicence" id="btnSaveLicence"  value="Update Lisence" onclick="saveLicence();return false;"/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSaveLicence" id="btnSaveLicence"  value="<?echo $locate->Translate("Update Licence")?>" onclick="saveLicence();return false;"/>
     </td>
   </tr>
 </table>

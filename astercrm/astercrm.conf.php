@@ -58,7 +58,7 @@ stop_work_verify = 0
 ;
 
 ;predialer_context = from-siptrunk
-;predialer_extension = 
+;predialer_extension =
 
 
 ;
@@ -132,7 +132,7 @@ open_new_window = 0
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = http://www.astercc.org
+external_crm_default_url = http://astercc.org
 
 ;
 ; when using external crm, put pop up page here
@@ -140,10 +140,11 @@ external_crm_default_url = http://www.astercc.org
 ; %calleeid		calleeid
 ; %method		dialout or dialin
 ;
-external_crm_url = http://www.astercc.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
+external_crm_url = http://astercc.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
 
 detail_level = all
 
+astercc_conf_path = 
 [google-map]
 
 key = 
