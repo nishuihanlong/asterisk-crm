@@ -253,11 +253,9 @@ function playmonitor($id){
 	global $config,$locate;
 	$objResponse = new xajaxResponse();
 	$res = Customer::getRecordByID($id,'monitorrecord');
-	$path = "./monitor/".str_replace($config['asterisk']['monitorpath'],'',$res['filename']).".wav";
-//	echo $path;exit;
-//	print_r($res);exit;
+	$path = $res['filename'].".".$res['fileformat'];
 	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
-	$html .= '<embed src="'.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true">';
+	$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true">';
 	$html .= Table::Footer();
 	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
 	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	
