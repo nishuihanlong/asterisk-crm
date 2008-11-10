@@ -33,7 +33,7 @@ function init($curpeer){
 	if ($_SESSION['curuser']['usertype'] == 'admin'){
 		// set all reseller first
 		$reseller = astercrm::getAll('resellergroup');
-		$objResponse->addScript("addOption('resellerid','"."0"."','"."All"."');");
+		$objResponse->addScript("addOption('resellerid','"."0"."','".$locate->Translate("All")."');");
 		while	($reseller->fetchInto($row)){
 			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
 		}
@@ -53,7 +53,7 @@ function init($curpeer){
 		$reseller = astercc::readRecord("resellergroup","id",$_SESSION['curuser']['resellerid']);
 		if ($reseller){
 			if ($reseller['limittype'] == ""){
-				$html = 	$locate->Translate("Limit Type No limit");
+				$html = 	$locate->Translate("Limit Type").":".$locate->Translate("No limit");
 			}else{
 				$html = $locate->Translate("Limit Type").$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
 			}
@@ -67,7 +67,7 @@ function init($curpeer){
 		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".""."');");
 
 		$clid = astercrm::getAll('clid','groupid',$_SESSION['curuser']['groupid']);
-		$objResponse->addScript("addOption('sltBooth','"."0"."','"."All"."');");
+		$objResponse->addScript("addOption('sltBooth','"."0"."','".$locate->Translate("All")."');");
 
 		while	($clid->fetchInto($row)){
 			if ($curpeer == $row['clid'])
@@ -75,12 +75,12 @@ function init($curpeer){
 			else
 				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
 		}
-		$objResponse->addScript("addOption('sltBooth','-1','callback');");
+		$objResponse->addScript("addOption('sltBooth','-1','".$locate->Translate("Callback")."');");
 		// get limit status and creditlimit
 		$accountgroup = astercc::readRecord("accountgroup","id",$_SESSION['curuser']['groupid']);
 		if ($accountgroup){
 			if ($accountgroup['limittype'] == ""){
-				$html = 	$locate->Translate("Limit Type No limit");
+				$html = 	$locate->Translate("Limit Type").":". $locate->Translate("No limit");
 			}else{
 				$html = $locate->Translate("Limit Type").$accountgroup['limittype']."(".$accountgroup['creditlimit'].")";
 			}
@@ -100,7 +100,7 @@ function setGroup($resellerid){
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
 	//添加option
-	$objResponse->addScript("addOption('groupid','"."0"."','"."All"."');");
+	$objResponse->addScript("addOption('groupid','"."0"."','".$locate->Translate("All")."');");
 	while ($res->fetchInto($row)) {
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 	}
@@ -112,11 +112,11 @@ function setClid($groupid){
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("clid",'groupid',$groupid);
 	//添加option
-	$objResponse->addScript("addOption('sltBooth','"."0"."','"."All"."');");
+	$objResponse->addScript("addOption('sltBooth','"."0"."','".$locate->Translate("All")."');");
 	while ($res->fetchInto($row)) {
 		$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
 	}
-	$objResponse->addScript("addOption('sltBooth','-1','callback');");
+	$objResponse->addScript("addOption('sltBooth','-1','".$locate->Translate("Callback")."');");
 	return $objResponse;
 }
 

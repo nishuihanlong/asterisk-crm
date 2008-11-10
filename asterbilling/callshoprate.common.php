@@ -39,7 +39,7 @@ if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertyp
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'callshoprate');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'rate');
 
 $xajax = new xajax("callshoprate.server.php");
 
@@ -50,7 +50,6 @@ $xajax->registerFunction("edit");
 $xajax->registerFunction("update");
 $xajax->registerFunction("delete");
 $xajax->registerFunction("init");
-$xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("setGroup");
 

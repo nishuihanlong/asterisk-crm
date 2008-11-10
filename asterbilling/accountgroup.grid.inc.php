@@ -268,10 +268,10 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
-					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30">'."(might be useful for callback)".'</td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30">'."(".$locate->Translate("might be useful for callback").")".'</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Callback").'</td>
+					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
 		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['allowcallback'] == 'yes'){
@@ -295,7 +295,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
 					<select id="limittype" name="limittype">
 						<option value="" selected>'.$locate->Translate("No limit").'</option>
@@ -313,7 +313,7 @@ class Customer extends astercrm
 
 		$html .='
 			</form>
-			'.$locate->Translate("Obligatory Fields").'
+			*'.$locate->Translate("Obligatory Fields").'
 			';
 		
 		return $html;
@@ -372,7 +372,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
-					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'">'."(might be useful for callback)".'</td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'">'."(".$locate->Translate("might be useful for callback").")".'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
@@ -419,7 +419,7 @@ class Customer extends astercrm
 				</tr>
 
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
 					<select id="limittype" name="limittype">';
 				if ($group['limittype'] == "postpaid"){
@@ -443,15 +443,7 @@ class Customer extends astercrm
 					'</select>
 					</td>
 				</tr>';
-/*
-			$currenttime = date("Y-m-d H:i:s");
-			$currentcredit = astercc::readAmount($group['id'],null,$group['billingtime'],$currenttime,'callshopcredit');
-				$html .='
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Billing time")."(".$locate->Translate("for postpaid").')</td>
-					<td align="left">'.$group['billingtime'].'<BR><INPUT TYPE="BUTTON" VALUE="'.$locate->Translate("Reset").'" onClick="setBillingtime(\''.$group['id'].'\',\''.$currenttime.'\');">'."(".$currentcredit.$locate->Translate(" By ").$currenttime.")".'</td>
-				</tr>';
-*/
+
 				$html .='
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
@@ -464,7 +456,7 @@ class Customer extends astercrm
 
 		$html .= '
 				</form>
-				'.$locate->Translate("Obligatory Fields").'
+				*'.$locate->Translate("Obligatory Fields").'
 				';
 
 		return $html;

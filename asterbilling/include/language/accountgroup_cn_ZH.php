@@ -1,0 +1,31 @@
+<?
+$reseller = "代理商";
+$reseller_name = "代理商名称";
+$group_name = "组名称";
+$account_code = "帐户标识";
+$allow_callback = "允许回拨";
+$callback = "回拨";
+$credit_limit = "限额";
+$limit_type = "限额方式";
+$continue = "继续";
+$obligatory_fields  = "必填字段";
+$add_group = "添加分组";
+$might_be_useful_for_callback = "回拨时可能用到";
+$name = "组名";
+$cur_credit = "当前费用";
+$clid_credit = "分机费用";
+$group_credit = "分组费用";
+$reseller_credit  = "代理商费用";
+$last_update = "最近更新时间";
+$yes = "是";
+$no = "否";
+$operate = "操作";
+$no_change = "不修改";
+$refund = "减少";
+$charge = "充值";
+$no_limit = "无限制";
+$prepaid = "预付费";
+$postpaid = "后付费";
+$please_enter_the_groupname = "请输入分组名称";
+$please_enter_the_resellername = "请输入代理商名称";
+?>

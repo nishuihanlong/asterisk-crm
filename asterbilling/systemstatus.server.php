@@ -22,7 +22,7 @@ function init(){
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	if (!$res){
-		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Traslate("AMI connection failed"));
+		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI connection failed"));
 	}
 
 	$_SESSION['status'] = array();
@@ -98,7 +98,7 @@ function searchRate($dialprefix){
 }
 
 function setGroupBalance(){
-	global $config;
+	global $config, $locate;
 	$objResponse = new xajaxResponse();
 	$group = astercrm::getRecordByField("id",$_SESSION['curuser']['groupid'],'accountgroup');
 
@@ -112,17 +112,17 @@ function setGroupBalance(){
 	$objResponse->addAssign("spanAmount","innerHTML",$amount);
 
 	if ($_SESSION['curuser']['limittype'] == ''){
-			$creditlimit = $locate->Traslate("no limit");
+			$creditlimit = $locate->Translate("no limit");
 			$objResponse->addAssign("spanLimitStatus","innerHTML",$creditlimit);
 	}else{
 		$balance = $creditlimit - $callshopcredit ;
 		if ($balance <= 50) {
 			if ($balance <= 0)
-				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("no credit left all booth locked"));
+				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Translate("no credit left all booth locked"));
 			else
-				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("warning no enough credit"));
+				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Translate("warning no enough credit"));
 		}else{
-			$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("normal"));
+			$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Translate("normal"));
 		}
 	}
 
@@ -145,7 +145,7 @@ function setStatus($clid,$status){
 	$objResponse = new xajaxResponse();
 	if ($affectrows == 0){
 		//$objResponse->addAssign($peer."-limitstatus","value","");
-		$objResponse->addAlert($locate->Traslate("falied to lock or unlock"));
+		$objResponse->addAlert($locate->Translate("falied to lock or unlock"));
 	}else{
 		if ($status == 1){
 			$objResponse->addAssign($clid."-lock","style.backgroundColor","");
@@ -429,12 +429,13 @@ function addUnbilled($peer,$leg = null){
 }
 
 function checkOut($aFormValues,$divId){
+	global $locate;
 	$objResponse = new xajaxResponse();
 	if (isset($aFormValues['cdrid'])){
 		foreach ($aFormValues['cdrid'] as $id){
 			$res =  astercc::setBilled($id);
 			}
-		$objResponse->addAlert($locate->Traslate("booth_cleared"));
+		$objResponse->addAlert($locate->Translate("booth_cleared"));
 		$objResponse->addAssign($divId."-unbilled","innerHTML",0);
 	}
 	$objResponse->addScript("removeTr('".$divId."');");

@@ -475,9 +475,9 @@ class ScrollTable{
 		if($this->deleteFlag !='' && $this->exportFlag != ''){
 			$this->search .='<td>
 								<select name="optionFlag" id="optionFlag" Onchange="if(this.value==\'delete\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("delete").'\';}else{if(this.value==\'export\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("export").'\';}else{document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("add").'\';}}">
-								<option value = "'.null.'" >'.$local_grid->Translate("select_option").'</option>
-								<option value="delete">'.$local_grid->Translate("delete").'</option>
-								<option value="export">'.$local_grid->Translate("export").'</option>
+								<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>
+								<option value="delete">'.$local_grid->Translate("Delete").'</option>
+								<option value="export">'.$local_grid->Translate("Export").'</option>
 								</select>
 					         </td>';
 		}elseif($this->exportFlag != ''){

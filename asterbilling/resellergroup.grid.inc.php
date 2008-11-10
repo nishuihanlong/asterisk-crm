@@ -216,7 +216,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
 					<select id="limittype" name="limittype">
 						<option value="" selected>'.$locate->Translate("No limit").'</option>
@@ -306,7 +306,7 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
 					<select id="limittype" name="limittype">';
 				if ($resellergroup['limittype'] == "postpaid"){

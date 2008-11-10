@@ -1,5 +1,5 @@
 <?
-//Cn for mangaer
+//Cn for account manager
 $add_account = "添加了一个新帐号";
 $update_rec = "该记录已更新";
 $rec_cannot_update = "该记录不能被更新";
@@ -21,4 +21,11 @@ $channel	= "通道";	// added 2007/10/30 by solo
 $account_detail		= "账户信息";	// added 2007/10/30 by solo
 $account_code		= "账户标识";	// added 2007/11/12 by solo
 $username_repeat = "用户名重复";
+$like = "包含";
+$reseller = "代理商";
+$group = "组";
+$group_admin = "组管理员";
+$admin = "系统管理员";
+$operator = "操作员";
+
 ?>

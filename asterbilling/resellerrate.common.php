@@ -37,6 +37,9 @@ if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertyp
 	header("Location: systemstatus.php");
 
 require_once ("include/xajax.inc.php");
+require_once ('include/localization.class.php');
+
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'rate');
 
 $xajax = new xajax("resellerrate.server.php");
 
@@ -47,7 +50,6 @@ $xajax->registerFunction("edit");
 $xajax->registerFunction("update");
 $xajax->registerFunction("delete");
 $xajax->registerFunction("init");
-$xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
 
 define(ROWSXPAGE, 15); // Number of rows show it per page.

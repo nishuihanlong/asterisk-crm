@@ -23,16 +23,24 @@
 
 
 ********************************************************************************/
+header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
+header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+header('Cache-Control: post-check=0, pre-check=0',false);
+header('Pragma: no-cache');
+session_cache_limiter('public, no-store');
+
+session_set_cookie_params(0);
+if (!session_id()) session_start();
+setcookie('PHPSESSID', session_id());
 
 
 require_once ('localization.class.php');
 
 if ($_SESSION['curuser']['country'] != '' ){
-	$GLOBALS['locate_common']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['country'],'common.class');
+	$GLOBALS['locate_common']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'common.class');
 }else{
 	$GLOBALS['locate_common']=new Localization('en','US','common.class');
 }
-
 
 class Common{
 
@@ -45,7 +53,7 @@ class Common{
 					<tr>
 						<td>
 							©2007 astercc - <a href="http://www.astercc.org" target="_blank">astercc home</a><br>
-							version: 0.09 beta
+							version: 0.09
 						</td>
 					</tr>
 					</table>
@@ -69,8 +77,8 @@ class Common{
 
 */
 		$html .= '<div class="">';
-		$html .= 'Username:'.$_SESSION['curuser']['username'];
-		$html .= '&nbsp;&nbsp;User type:'.$_SESSION['curuser']['usertype'];
+		$html .= $locate_common->Translate("Username").':'.$_SESSION['curuser']['username'];
+		$html .= '&nbsp;&nbsp;'.$locate_common->Translate("User Type").':'.$_SESSION['curuser']['usertype'];
 		$html .= '</div>';
 
 		$html .= '<div class="">';
@@ -78,24 +86,24 @@ class Common{
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$html .= '
-							<a href="account.php">Account</a> | <a href="accountgroup.php">Account Group</a> | <a href="resellergroup.php">Reseller Group</a> | <a href="checkout.php" >Report</a> | <a href="rate.php" >Rate to Customer</a> | <a href="callshoprate.php">Rate to Callshop</a> | <a href="resellerrate.php">Rate to Reseller</a> | <a href="clid.php">Clid</a> | <a href="import.php">Import</a> | <a href="cdr.php">CDR</a> | <a href="credithistory.php">Credit history</a>';
+							<a href="account.php">'.$locate_common->Translate("Account").'</a> | <a href="accountgroup.php">'.$locate_common->Translate("Account Group").'</a> | <a href="resellergroup.php">'.$locate_common->Translate("Reseller Group").'</a> | <a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a> | <a href="callshoprate.php">'.$locate_common->Translate("Rate to Callshop").'</a> | <a href="resellerrate.php">'.$locate_common->Translate("Rate to Reseller").'</a> | <a href="clid.php">'.$locate_common->Translate("Clid").'</a> | <a href="import.php">'.$locate_common->Translate("Import").'</a> | <a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a>';
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
 			$html .= '
-							<a href="account.php">Account</a> | <a href="accountgroup.php">Account Group</a> | <a href="checkout.php" >Report</a> | <a href="rate.php" >Rate to Customer</a> | <a href="callshoprate.php">Rate to Callshop</a> | <a href="resellerrate.php">Rate to Reseller</a> | <a href="clid.php">Clid</a> | <a href="import.php">Import</a> | <a href="cdr.php">CDR</a> | <a href="credithistory.php">Credit history</a>';
+							<a href="account.php">'.$locate_common->Translate("Account").'</a> | <a href="accountgroup.php">'.$locate_common->Translate("Account Group").'</a> | <a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a> | <a href="callshoprate.php">'.$locate_common->Translate("Rate to Callshop").'</a> | <a href="resellerrate.php">'.$locate_common->Translate("Rate to Reseller").'</a> | <a href="clid.php">'.$locate_common->Translate("Clid").'</a> | <a href="import.php">'.$locate_common->Translate("Import").'</a> | <a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a>';
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$html .= '
-							<a href="account.php">Account</a> | <a href="checkout.php" >Report</a> | <a href="callshoprate.php">Rate to Callshop</a> | <a href="rate.php" >Rate to Customer</a>  | <a href="clid.php">Clid</a> | <a href="import.php">Import</a> | <a href="cdr.php">CDR</a> | <a href="credithistory.php">Credit history</a>';
+							<a href="account.php">'.$locate_common->Translate("Account").'</a> | <a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="callshoprate.php">'.$locate_common->Translate("Rate to Callshop").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a>  | <a href="clid.php">'.$locate_common->Translate("Clid").'</a> | <a href="import.php">'.$locate_common->Translate("Import").'</a> | <a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a>';
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
-			$html .= '&nbsp;&nbsp;<a href="cdr.php">CDR</a> | <a href="credithistory.php">Credit information</a> ';
+			$html .= '&nbsp;&nbsp;<a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a> ';
 		}else{
 			// for operator 
 			$html .= '
-							<a href="checkout.php" >Report</a> | <a href="rate.php" >Rate to Customer</a>';
+							<a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a>';
 		}
 		if($_SESSION['curuser']['usertype'] == 'clid'){
-			$html .= ' | <a href="login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>';
+			$html .= ' | <a href="login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</a>';
 		}else{
-			$html .= ' | <a href="manager_login.php" onclick="if (confirm(\'are u sure to exit?\')){}else{return false;}">Logout</a>';
+			$html .= ' | <a href="manager_login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</a>';
 		}
 		$html .= '</div>';
 

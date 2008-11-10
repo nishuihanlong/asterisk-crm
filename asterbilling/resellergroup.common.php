@@ -56,7 +56,7 @@ if ($_SESSION['curuser']['usertype'] == 'clid' || $_SESSION['curuser']['usertype
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'resellergroup');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'accountgroup');
 
 $xajax = new xajax("resellergroup.server.php");
 

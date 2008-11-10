@@ -287,6 +287,8 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
+
+
 	$html = Table::Top($locate->Translate("Add group"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
@@ -306,6 +308,12 @@ function add(){
 function save($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
+
+	if (trim($f['resellername']) == ''){
+		$objResponse->addAlert($locate->Translate("please enter the resellername"));
+		return $objResponse;
+	}
+
 	$f['creditlimit'] = trim($f['creditlimit']);
 	if ($f['creditlimit'] == '' or !is_numeric($f['creditlimit'])){
 		$f['creditlimit'] = 0;
@@ -409,7 +417,12 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
 	if($type == "delete"){
-		$clid_res = Customer::deleteRecords('resellerid',$id,'clid');
+		$res = Customer::deleteRecords('resellerid',$id,'clid');
+		$res = Customer::deleteRecords('resellerid',$id,'accountgroup');
+		$res = Customer::deleteRecords('resellerid',$id,'rate');
+		$res = Customer::deleteRecords('resellerid',$id,'callshoprate');
+		$res = Customer::deleteRecords('resellerid',$id,'resellerrate');
+
 		$res = Customer::deleteRecord($id,'resellergroup');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);

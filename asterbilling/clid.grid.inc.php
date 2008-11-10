@@ -288,7 +288,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="clid" name="clid" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Pin Number").'*</td>
+					<td nowrap align="left">'.$locate->Translate("Pin").'*</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30" value="'.$pin.'" readonly><input type="hidden" id="pin" name="pin" value="'.$pin.'"></td>
 				</tr>
 				<tr>
@@ -301,7 +301,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
 					<select id="limittype" name="limittype">
 						<option value="" selected>'.$locate->Translate("No limit").'</option>
@@ -425,7 +425,7 @@ class Customer extends astercrm
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $clid['id'].'"><input type="text" id="clid" name="clid" size="25" maxlength="30" value="'.$clid['clid'].'" '.$readonly.'></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Pin Number").'*</td>
+					<td nowrap align="left">'.$locate->Translate("Pin").'*</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30" value="'.$clid['pin'].'" readonly><input type="hidden" id="pin" name="pin" value="'.$clid['pin'].'"></td>
 				</tr>
 				<tr>
@@ -458,7 +458,7 @@ class Customer extends astercrm
 						</td>
 					</tr>
 					<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Status").'</td>
+					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
 					<select id="limittype" name="limittype">';				
 					if ($clid['limittype'] == "postpaid"){
@@ -502,13 +502,13 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
 				</tr>
 			 </table>
 			';
 		$html .= '
 				</form>
-				'.$locate->Translate("obligatory_fields").'
+				*'.$locate->Translate("Obligatory Fields").'
 				';
 		return $html;
 	}

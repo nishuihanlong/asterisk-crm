@@ -51,15 +51,6 @@ require_once('accountgroup.common.php');
 			return false;
 		}
 
-		function setBillingtime(id,billingtime){
-			if (confirm("are u sure set billingtime to " + billingtime +"?")){
-				xajax_updateBillingtime(id,billingtime);
-			}else{
-				return false;
-			}
-		}
-
-
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>

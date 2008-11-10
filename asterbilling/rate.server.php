@@ -145,7 +145,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("Prefix");
-	$headers[] = $locate->Translate("Number length");
+	$headers[] = $locate->Translate("Length");
 	$headers[] = $locate->Translate("Dest");
 	$headers[] = $locate->Translate("Connect Charge");
 	$headers[] = $locate->Translate("Init Block");
@@ -153,7 +153,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Billing Block");
 	$headers[] = $locate->Translate("Group");
 	$headers[] = $locate->Translate("Reseller");
-	$headers[] = $locate->Translate("Add time");
+	$headers[] = $locate->Translate("Addtime");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -209,9 +209,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dialprefix");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Number Length");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Destination");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Prefix");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Length");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Dest");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Rate");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Init block");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Billing block");

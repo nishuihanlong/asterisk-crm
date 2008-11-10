@@ -20,7 +20,6 @@
 		update				更新clid信息
 		edit				显示修改clid的表单
 		delete				删除clid信息
-		showDetail			显示clid详细信息
 							当前返回空值
 		searchFormSubmit    根据提交的搜索信息重构显示页面
 
@@ -483,24 +482,6 @@ function edit($id){
 	return $objResponse->getXML();
 }
 
-/**
-*  show account record detail
-*  @param	accountid	int			account id
-*  @return	objResponse	object		xajax response object
-*/
-
-function showDetail($accountid){
-	$objResponse = new xajaxResponse();
-	global $locate;
-	$html = Table::Top( $locate->Translate("account_detail"),"formDiv"); 
-	$html .= Customer::showAccountDetail($accountid);
-	$html .= Table::Footer();
-
-	$objResponse->addAssign("formDiv", "style.visibility", "visible");
-	$objResponse->addAssign("formDiv", "innerHTML", $html);
-	return $objResponse;
-}
-
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
@@ -515,10 +496,11 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted")); 
 		}else{
-			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be deleted"));		
 		}
+		
 	}else{
 		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$searchType);
 	}

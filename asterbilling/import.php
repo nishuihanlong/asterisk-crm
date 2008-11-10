@@ -173,11 +173,10 @@
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" id="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="spanSelectFile"></span>: <input type="file" name="excel" id="excel"/>&nbsp;<b>or</b>&nbsp;<select name="filelist" id="filelist"></select>
+					<span id="spanSelectFile"></span>: <input type="file" name="excel" id="excel"/>&nbsp;<b><?echo $locate->Translate('or');?></b>&nbsp;<select name="filelist" id="filelist"></select>
 					<br /><br />
 					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
 					<input id="hidOnUploadMsg" name="hidOnUploadMsg" type="hidden" value=""/>
-					<input id="hidAssignAlertMsg" type="hidden" value=""/>					
 				</form>
 			</div>
 

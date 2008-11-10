@@ -64,7 +64,7 @@ require_once('manager_login.common.php');
 			  </tr>
 			  <tr>
 				<td height="49">&nbsp;</td>
-				<th>Code</th>
+				<th><div name="validcodeDiv" id="validcodeDiv" align="left"></div></th>
 				<td><div align="left">
 				  <input type="text" name="code" id="code" style="width:150px;height:14px" />
 			    </div></td>

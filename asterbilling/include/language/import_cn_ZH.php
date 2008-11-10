@@ -20,11 +20,13 @@
 	$field_cant_repeat = "不允许添加重复字段号";
 	$error = "操作失败";
 	$recrod = "条记录";
-	$assign_automaticly = "号码将自动分派到不同的asterCRM账户";
 	$submit = "提交";
 	$selecttable = "选择表";
 	$feifa = "非法操作";
 	$uploading = "正在上传，请等待……";
 	$data_importing = "正在执行数据操作，请等待……";
 	$records_inserted = '条记录，录入成功';
+	$select_a_existent_file = "选择已存在的文件";
+	$or = "或者";
+	$all = "全部";
 ?>

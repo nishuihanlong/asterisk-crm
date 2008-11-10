@@ -18,4 +18,5 @@ $show_all = "全部显示";
 $delete_confirm	= "确定要删除该项目么?";
 $add_search = "增加选项";
 $export = "导出";
+$select_option = "选择操作";
 ?>

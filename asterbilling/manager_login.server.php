@@ -4,8 +4,8 @@
 require_once ("manager_login.common.php");
 require_once ("db_connect.php");
 require_once ('include/asterisk.class.php');
-require_once ('include/common.class.php');
 require_once ('include/astercrm.class.php');
+require_once ('include/common.class.php');
 
 /**
 *  function to process form data
@@ -22,7 +22,11 @@ function processForm($aFormValues)
 	global $config;
 
 	$objResponse = new xajaxResponse();
-	global $locate;
+
+	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
+	//get locate parameter
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
+
 	if ($config['system']['validcode'] == 'yes'){
 		if (trim($aFormValues['code']) != $_SESSION["Checknum"]){
 			$objResponse->addAlert('Invalid code');
@@ -89,6 +93,7 @@ function init($aFormValue){
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("manager title"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
+	$objResponse->addAssign("validcodeDiv","innerHTML",$locate->Translate("Valid Code"));
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));

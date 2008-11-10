@@ -3,7 +3,8 @@ class Localization{
 	var $filePath;
 
 	function Localization($language,$country,$page){
-		$this->filePath = "language/".$page."_".$language."_".$country.".php";
+		$filepath = "language/".$page."_".$language."_".$country.".php";
+		$this->filePath = $filepath;
 	}
 	
 

@@ -318,7 +318,7 @@ function save($f){
 	$objResponse = new xajaxResponse();
 	
 	if (trim($f['groupname']) == ''){
-		$objResponse->addAlert("please enter the groupname");
+		$objResponse->addAlert($locate->Translate("please enter the groupname"));
 		return $objResponse;
 	}
 
@@ -428,8 +428,12 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
 	if($type == "delete"){
-		$clid_res = Customer::deleteRecords('groupid',$id,'clid');
+		$res = Customer::deleteRecords('groupid',$id,'clid');
+		$res = Customer::deleteRecords('groupid',$id,'rate');
+		$res = Customer::deleteRecords('groupid',$id,'resellerrate');
+		$res = Customer::deleteRecords('groupid',$id,'callshoprate');
 		$res = Customer::deleteRecord($id,'accountgroup');
+
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();

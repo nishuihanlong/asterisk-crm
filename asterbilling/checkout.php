@@ -163,13 +163,13 @@ require_once('checkout.common.php');
 			</select>
 			<br>
 			
-			From: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>">
-			<INPUT onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="Cal">
-			To:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>">
-			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="Cal">
-			<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail">List Detail
+			<?echo $locate->Translate("From")?>: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>">
+			<INPUT onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
+			<?echo $locate->Translate("To")?>:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>">
+			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
+			<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail"><?echo $locate->Translate("List Detail")?>
 			<br>
-			<input type="button" onclick="listCDR();return false;" value="List">
+			<input type="button" onclick="listCDR();return false;" value="<?echo $locate->Translate("List")?>">
 			<input type="hidden" id="hidCurpeer" name="hidCurpeer" value="<?echo $_REQUEST['peer']?>">
 		</div>
 		</form>
@@ -180,13 +180,13 @@ require_once('checkout.common.php');
 		<center>
 		<div>
 			<div style="display:none;">
-				Total: <span id="spanTotal" name="spanTotal">0</span> 
-				Callshop Cost: <span id="spanCallshopCost" name="spanCallshopCost">0</span>
-				Reseller Cost: <span id="spanResellerCost" name="spanResellerCost">0</span>
+				<?echo $locate->Translate("Amount")?>: <span id="spanTotal" name="spanTotal">0</span> 
+				<?echo $locate->Translate("Callshop Cost")?>: <span id="spanCallshopCost" name="spanCallshopCost">0</span>
+				<?echo $locate->Translate("Reseller Cost")?>: <span id="spanResellerCost" name="spanResellerCost">0</span>
 			</div>
-			Total: <span id="spanCurrencyTotal" name="spanCurrencyTotal">0</span><br />
-			Callshop Cost: <span id="spanCurrencyCallshopCost" name="spanCurrencyCallshopCost">0</span><br />
-			Reseller Cost: <span id="spanCurrencyResellerCost" name="spanCurrencyResellerCost">0</span><br />
+			<?echo $locate->Translate("Amount")?>: <span id="spanCurrencyTotal" name="spanCurrencyTotal">0</span><br />
+			<?echo $locate->Translate("Callshop Cost")?>: <span id="spanCurrencyCallshopCost" name="spanCurrencyCallshopCost">0</span><br />
+			<?echo $locate->Translate("Reseller Cost")?>: <span id="spanCurrencyResellerCost" name="spanCurrencyResellerCost">0</span><br />
 			<input type="button" value="Check Out" name="btnCheckOut" id="btnCheckOut" onclick="xajax_checkOut(xajax.getFormValues('f'));">
 		</div>
 		</center>

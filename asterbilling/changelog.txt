@@ -51,24 +51,23 @@ add new field amount and total in table accountgroup to store all selling and al
 0.09
 clid, accountgroup, resellergroup 增加了 credit_clid, credit_group, credit_reseller三个字段
 clid 增加了 billingtime 字段
-
-----------------------------------------------------------------------------------
 2008-10-11 修正了当选中limit但balance为0时仍然可以呼出的bug	 by solo
 2008-10-11 修正了挂机时延时载入cdr不起作用的bug	 by solo
+2008-10-15 允许从upload目录里选择文件导入费率
+2008-10-15 import时如果没有选择billingblock 应该有个默认的60秒
+2008-11-10 增加了多语言支持
+2008-11-10 删除group或者reseller时应该把相应的 clid, group, rate 也删除
+2008-11-10 取消了mb_convert_encoding函数
+2008-11-10 增加agi用于发卡和内部验证
+2008-11-10 增加了用户界面和管理员界面
 
 
 
 
 import时如果数据量大会报错
-import时如果没有选择billingblock 应该有个默认的60秒
-删除group或者reseller时应该把相应的 clid, group, rate 也删除
-允许从upload目录里选择文件导入费率
 需要在网页上提供重启asterrc的功能
-
-
 booth用户输入号码后会提示金额和分钟数
 code有时候会出现问题, vista总是不识别
-没有安装mb_string的用户 导入会有问题
 需要增加statics功能
 需要解决表名冲突的问题
 验证图片对ff失效

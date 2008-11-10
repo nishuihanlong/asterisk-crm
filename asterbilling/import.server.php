@@ -55,7 +55,6 @@ function init($fileName){
 
 	$objResponse->addAssign("spanFileManager","innerHTML", $locate->Translate("file_manager"));
 
-	$objResponse->addAssign("hidAssignAlertMsg","value",$locate->Translate("assign_automaticly"));
 	$objResponse->addAssign("hidOnUploadMsg","value",$locate->Translate("uploading"));
 	$objResponse->addAssign("hidOnSubmitMsg","value",$locate->Translate("data_importing"));
 
@@ -94,7 +93,7 @@ function init($fileName){
 
 		// add all reseller
 		$res = astercrm::getAll('resellergroup');
-		$objResponse->addScript("addOption('resellerid','0','"."All"."');");
+		$objResponse->addScript("addOption('resellerid','0','".$locate->Translate("All")."');");
 		while ($row = $res->fetchRow()) {
 			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
 		}
@@ -103,7 +102,7 @@ function init($fileName){
 		// add self
 		$objResponse->addScript("addOption('resellerid','".$_SESSION['curuser']['resellerid']."','".""."');");
 		// add groups
-		$objResponse->addScript("addOption('groupid','0','"."All"."');");
+		$objResponse->addScript("addOption('groupid','0','".$locate->Translate("All")."');");
 		$res = astercrm::getAll('accountgroup',"resellerid",$_SESSION['curuser']['resellerid']);
 		while ($row = $res->fetchRow()) {
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
@@ -139,7 +138,7 @@ function setGroup($resellerid){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
-	$objResponse->addScript("addOption('groupid','0','"."All"."');");
+	$objResponse->addScript("addOption('groupid','0','".$locate->Translate("All")."');");
 	//添加option
 	while ($res->fetchInto($row)) {
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
@@ -199,11 +198,15 @@ function selectTable($tableName){
 		$type_arr = explode(' ',$row['flags']);
 		if(!in_array('auto_increment',$type_arr))
 		{
-			$HTML .= "<li height='20px'>";
-			$HTML .= $i.":&nbsp;&nbsp;".$row['name'];
-			$HTML .= "</li>";
+			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "addtime" || $row['name'] == "groupid" || $row['name'] == "resellerid"){
+
+			}else{
+				$HTML .= "<li height='20px'>";
+				$HTML .= $i.":&nbsp;&nbsp;".$row['name'];
+				$HTML .= "</li>";
+				$i++;
+			}
 		}
-		$i++;
 	}
 	$HTML .= "</ul>";
 	$objResponse = new xajaxResponse();
@@ -391,6 +394,16 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);
 }
 
+function csv_string_to_array($str){
+
+   $expr="/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
+
+   $results=preg_split($expr,trim($str));
+
+    return preg_replace(array("/^\"(.*)\"$/","/\"\"/"),array("$1",""),$results);
+}
+
+
 //得到excel文件的所有行数据，返回数组结构的数据
 
 /**
@@ -402,7 +415,7 @@ function getSourceData($filePath){
 	$type = substr($filePath,-3);
 	if($type == 'csv'){  //csv 格式文件
 		$handle = fopen($filePath,"r");  //打开csc文件,得到句柄
-		while($data = fgetcsv($handle, 1000, ",")){
+		while($data = csv_string_to_array($handle, 1000, ",")){
 			$arrData[] = $data;
 		}
 	}elseif($type == 'xls'){  //xls格式文件

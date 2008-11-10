@@ -144,14 +144,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("Prefix");
-	$headers[] = $locate->Translate("Number length");
+	$headers[] = $locate->Translate("Length");
 	$headers[] = $locate->Translate("Dest");
 	$headers[] = $locate->Translate("Connect Charge");
 	$headers[] = $locate->Translate("Init Block");
 	$headers[] = $locate->Translate("Rate");
 	$headers[] = $locate->Translate("Billing Block");
 	$headers[] = $locate->Translate("Reseller");
-	$headers[] = $locate->Translate("Add Time");
+	$headers[] = $locate->Translate("Addtime");
 
 	// HTML table: fieldsFromSearch showed
 	$fieldsFromSearch = array();
@@ -277,7 +277,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top("add rate","formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("add rate"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -309,11 +309,11 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "add a rate");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rate added"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", "can not insert rate");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("can not insert rate"));
 	}
 	return $objResponse->getXML();
 	
@@ -340,10 +340,10 @@ function update($f){
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "update rate");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Rate Updated"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", "record cannot be updated");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be updated"));
 	}
 	
 	return $objResponse->getXML();
@@ -357,7 +357,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( "edit rate","formDiv"); 
+	$html = Table::Top( $locate->Translate("edit rate"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
@@ -366,24 +366,6 @@ function edit($id){
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
 	return $objResponse->getXML();
-}
-
-/**
-*  show account record detail
-*  @param	accountid	int			account id
-*  @return	objResponse	object		xajax response object
-*/
-
-function showDetail($accountid){
-	$objResponse = new xajaxResponse();
-	global $locate;
-	$html = Table::Top( "rate detail","formDiv"); 
-	$html .= Customer::showAccountDetail($accountid);
-	$html .= Table::Footer();
-
-	$objResponse->addAssign("formDiv", "style.visibility", "visible");
-	$objResponse->addAssign("formDiv", "innerHTML", $html);
-	return $objResponse;
 }
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
@@ -413,9 +395,9 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$res = Customer::deleteRecord($id,'resellerrate');
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,$searchType);
-				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted")); 
 			}else{
-				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be deleted")); 
 			}
 		}else{
 			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,$searchType);
