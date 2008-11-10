@@ -148,9 +148,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Number length");
 	$headers[] = $locate->Translate("Dest");
 	$headers[] = $locate->Translate("Connect Charge");
-	$headers[] = $locate->Translate("Init Bolck");
+	$headers[] = $locate->Translate("Init Block");
 	$headers[] = $locate->Translate("Rate");
-	$headers[] = $locate->Translate("Billing Bolck");
+	$headers[] = $locate->Translate("Billing Block");
 	$headers[] = $locate->Translate("Group");
 	$headers[] = $locate->Translate("Reseller");
 	$headers[] = $locate->Translate("Add time");
@@ -210,14 +210,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dialprefix");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Numlen");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Number Length");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Destination");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Rateinitial");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Initblock");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Billingblock");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Connectcharge");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Groupname");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Resellername");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Rate");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Init block");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Billing block");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Connect charge");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Reseller");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Addtime");
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -292,7 +292,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top("add rate","formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("Add Rate"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -315,7 +315,7 @@ function save($f){
 	// check if clid duplicate
 	$res = astercrm::checkRateDuplicate("myrate",$f,"insert");
 	if ($res != ''){
-		$objResponse->addAlert("rate duplicate");
+		$objResponse->addAlert($locate->Translate("rate duplicate"));
 		return $objResponse->getXML();
 	}
 
@@ -323,11 +323,11 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "add a rate");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rate added"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", "can not insert rate");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("can not insert rate"));
 	}
 	return $objResponse->getXML();
 	
@@ -344,7 +344,7 @@ function update($f){
 	$objResponse = new xajaxResponse();
 	$res = astercrm::checkRateDuplicate("myrate",$f,"update");
 	if ($res != ''){
-		$objResponse->addAlert("rate duplicate");
+		$objResponse->addAlert($locate->Translate("rate duplicate"));
 		return $objResponse->getXML();
 	}
 
@@ -353,10 +353,10 @@ function update($f){
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", "update rate");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Rate Updated"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	}else{
-		$objResponse->addAssign("msgZone", "innerHTML", "record cannot be updated");
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be updated"));
 	}
 	
 	return $objResponse->getXML();
@@ -370,7 +370,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( "edit rate","formDiv"); 
+	$html = Table::Top( $locate->Translate("edit rate"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
@@ -390,7 +390,7 @@ function edit($id){
 function showDetail($accountid){
 	$objResponse = new xajaxResponse();
 	global $locate;
-	$html = Table::Top( "rate detail","formDiv"); 
+	$html = Table::Top( $locate->Translate("rate detail"),"formDiv"); 
 	$html .= Customer::showAccountDetail($accountid);
 	$html .= Table::Footer();
 
@@ -427,9 +427,9 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType);
 				$objResponse = new xajaxResponse();
-				$objResponse->addAssign("msgZone", "innerHTML", "record deleted"); 
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted")); 
 			}else{
-				$objResponse->addAssign("msgZone", "innerHTML", "record cannot be deleted"); 
+				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be deleted")); 
 			}
 		}else{
 			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType);

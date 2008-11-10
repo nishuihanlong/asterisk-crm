@@ -120,7 +120,7 @@ function setGroupBalance(){
 			if ($balance <= 0)
 				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("no credit left all booth locked"));
 			else
-				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("warning credit is less than 50"));
+				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("warning no enough credit"));
 		}else{
 			$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Traslate("normal"));
 		}
@@ -434,7 +434,7 @@ function checkOut($aFormValues,$divId){
 		foreach ($aFormValues['cdrid'] as $id){
 			$res =  astercc::setBilled($id);
 			}
-		$objResponse->addAlert($locate->Traslate("clear booth"));
+		$objResponse->addAlert($locate->Traslate("booth_cleared"));
 		$objResponse->addAssign($divId."-unbilled","innerHTML",0);
 	}
 	$objResponse->addScript("removeTr('".$divId."');");
