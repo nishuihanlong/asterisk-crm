@@ -27,6 +27,7 @@ $are_you_sure_to_lock_booth = "锁定分机";
 $are_you_sure_to_unlock_booth = "解除锁定分机";
 $are_you_sure_to_hangup_this_call = "确定要挂断通话么";
 $are_you_sure_to_remove_this_box = "确定要删除这个窗口么";
+$are_you_sure_to_exit = "确定要退出么";
 $report = "报告";
 $clid = "分机";
 $log_out = "退出";

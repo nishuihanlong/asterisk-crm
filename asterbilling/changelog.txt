@@ -49,18 +49,21 @@ add new field curcredit in table resellergroup and accountgroup to store reselle
 add new field amount and total in table accountgroup to store all selling and all cost 
 ----------------------------------------------------------------------------------
 0.09
-clid, accountgroup, resellergroup 增加了 credit_clid, credit_group, credit_reseller三个字段
-clid 增加了 billingtime 字段
-2008-10-11 修正了当选中limit但balance为0时仍然可以呼出的bug	 by solo
-2008-10-11 修正了挂机时延时载入cdr不起作用的bug	 by solo
-2008-10-15 允许从upload目录里选择文件导入费率
-2008-10-15 import时如果没有选择billingblock 应该有个默认的60秒
-2008-11-10 增加了多语言支持
-2008-11-10 删除group或者reseller时应该把相应的 clid, group, rate 也删除
-2008-11-10 取消了mb_convert_encoding函数
-2008-11-10 增加agi用于发卡和内部验证
-2008-11-10 增加了用户界面和管理员界面
-
+2008-10-11 added new fields `credit_clid`, `credit_group`, `credit_reseller` in table clid, accountgroup, resellergroup 
+2008-10-11 added new field `billingtime` in table clid
+2008-10-11 fixed the bug in credit limit
+2008-10-11 fixed the bug when hangup
+2008-10-15 allow select a file in upload folder to improt
+2008-10-15 set billingblock to 60 by default
+2008-11-10 changed project name to asterBilling
+2008-11-10 changed conf file astercc.conf.php to asterbilling.conf.php
+2008-11-10 add multi language support
+2008-11-10 it would delete clid, group, rate when delete a group or a reseller
+2008-11-10 no use php function mb_convert_encoding
+2008-11-10 added a new agi and some sounds file for calling card usage
+2008-11-10 added difference interface for user and administrator
+2008-11-10 support use "like", ">", "<" , "=" when search
+2008-11-10 support billing on clid
 
 
 
@@ -93,6 +96,7 @@ astercc features:
 	booth/callshop/reseller credit limit
 	mulit-callshop support in one system
 	mulit-reseller support in one system
+	multi-language support
 	each customer/callshop/reseller could use a rate template or use specific rate
 	callback with credit limit support (billing lega/legb/both)
 	reseller rate/callshop rate/customer rate three level billing
@@ -105,6 +109,8 @@ astercc features:
 	CDR search/browser
 	5 free channels license
 	credit operation history
+	agi for calling card and internal pbx billing
+	billing for clid
 
 astercc特点
 
@@ -116,6 +122,7 @@ astercc特点
 	代理商/话吧/特定通话话费限额
 	多计费组支持
 	多代理商支持
+	多语言支持
 	不同的客户/分组/代理商可以使用相同的费率或是特定的费率
 	支持带话费限制的回拨(计费 主叫/被叫/同时计费)
 	代理商/分组/客户三级计费
@@ -128,3 +135,5 @@ astercc特点
 	表格型显示方式更加直观
 	5个免费的通话许可
 	话费操作记录
+	提供了可以用作电话卡或内部pbx计费的agi脚本
+	单独分机计费

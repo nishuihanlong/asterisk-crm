@@ -16,7 +16,7 @@ tb_cdr = mycdr
 server = 127.0.0.1
 port = 5038
 username = admin
-secret = admin
+secret = amp111
 
 [licence]
 

@@ -57,7 +57,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	if (num != '')
 	{
-		div.innerHTML += "&nbsp;No." + num + ":" + displayname;
+		div.innerHTML += "&nbsp;No." + num + ":" + displayname + "<div id='divStatus'></div>";
 	}else{
 		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
 	}
@@ -408,7 +408,7 @@ function searchRate(){
 			<a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a><br>
 			<a href="checkout.php" target="_blank"><?echo $locate->Translate("Report");?></a><br>
 			<a href="clid.php" target="_blank"><?echo $locate->Translate("Clid");?></a><br>
-			<a href="manager_login.php"><?echo $locate->Translate("Log Out");?></a>
+			<a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a>
 		</div>
 		&nbsp;<?echo $locate->Translate("Last Refresh Time");?>: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit Status");?>:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
 		<input type="button" value="<?echo $locate->Translate("Callshop Status");?>" onclick="showCallshopStatus();">

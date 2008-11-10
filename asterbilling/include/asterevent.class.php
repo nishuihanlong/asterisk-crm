@@ -411,6 +411,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 
 	function readRateDesc($memo){
+		global $locate;
 		if (!is_array($memo)){
 			$memo = split("\n",$memo,4);
 			if ( $memo[0] != ''){
@@ -425,10 +426,10 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			$rate = $memo;
 		}
 		if ($rate['initblock'] != 0){
-			$desc .= floor($rate['connectcharge']*100)/100 . ' for first ' . $rate['initblock'] . ' seconds <br/>';
+			$desc .= floor($rate['connectcharge']*100)/100 . ' '.$locate->Translate("for first").' ' . $rate['initblock'] . ' '.$locate->Translate("seconds").' <br/>';
 		}
 		if ($rate['billingblock'] != 0){
-			$desc .= floor(($rate['billingblock'] * $rate['rateinitial'] / 60)*100)/100 . ' per ' . $rate['billingblock'] . ' seconds';
+			$desc .= floor(($rate['billingblock'] * $rate['rateinitial'] / 60)*100)/100 . ' '.$locate->Translate("per").' ' . $rate['billingblock'] . ' '.$locate->Translate("seconds");
 		}
 		return $desc;
 	}
