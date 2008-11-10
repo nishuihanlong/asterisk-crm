@@ -24,8 +24,8 @@ secret = amp111
 ; the path must could be read by apache and allow php to exec 
 monitorpath = /var/spool/asterisk/monitor/
 
-; gsm,wav,wav49
-monitorformat = wav
+; gsm,wav
+monitorformat = gsm
 
 
 [system]

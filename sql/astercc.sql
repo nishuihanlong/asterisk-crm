@@ -672,7 +672,7 @@ CREATE TABLE IF NOT EXISTS `monitorrecord` (
  `id` INT NOT NULL AUTO_INCREMENT,
  `callerid` VARCHAR( 20 ) NOT NULL DEFAULT '',
  `filename` VARCHAR( 128 ) NOT NULL DEFAULT '',
- `fileformat` VARCHAR( 4 ) NOT NULL DEFAULT '',
+ `fileformat` VARCHAR( 8 ) NOT NULL DEFAULT '',
  `groupid` INT NOT NULL DEFAULT 0,
  `extension` VARCHAR( 15 ) NOT NULL DEFAULT '',
  `uniqueid` varchar(20) NOT NULL default '',
