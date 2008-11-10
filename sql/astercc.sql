@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `usertype` varchar(20) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `accountcode` varchar(20) NOT NULL default '',
   `callback` varchar(10) NOT NULL default '',
   UNIQUE KEY `id` (`id`,`username`)
@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS `accountgroup` (
   `credit_clid` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_group` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_reseller` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
-  `billingtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `resellerid` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `callback` (
   `credit` double(24,4) NOT NULL default '0.0000',
   `groupid` int(11) NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   KEY `leg` (`lega`,`legb`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `callshoprate` (
   `billingblock` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -130,8 +130,8 @@ CREATE TABLE IF NOT EXISTS `clid` (
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
   `status` tinyint(4) NOT NULL default '1',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
-  `billingtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `pin` (`pin`),
   UNIQUE KEY `clid` (`clid`)
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `myrate` (
   `billingblock` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -177,8 +177,8 @@ CREATE TABLE IF NOT EXISTS `resellergroup` (
   `credit_clid` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_group` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_reseller` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
-  `billingtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS `resellerrate` (
   `rateinitial` double(24,4) NOT NULL default '0.0000',
   `billingblock` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
-  `addtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `resellerrate` (
 
 CREATE TABLE IF NOT EXISTS `credithistory` (
   `id` int(11) NOT NULL auto_increment,
-  `modifytime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `modifytime` datetime NOT NULL default '0000-00-00 00:00:00',
   `resellerid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
   `clidid` int(11) NOT NULL default '0',
@@ -257,8 +257,8 @@ CREATE TABLE IF NOT EXISTS `curcdr` (
   `srcchan` varchar(100) NOT NULL default '',
   `dstchan` varchar(100) NOT NULL default '',
   `didnumber` varchar(30) NOT NULL default '',
-  `starttime` datetime NOT NULL default '0000#00#00 00:00:00',
-  `answertime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
   `srcuid` varchar(20) NOT NULL default '',
   `dstuid` varchar(20) NOT NULL default '',
   `disposition` varchar(10) NOT NULL default '',
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `curcdr` (
 
 CREATE TABLE IF NOT EXISTS `mycdr` (
   `id` int(11) NOT NULL auto_increment,
-  `calldate` datetime NOT NULL default '0000#00#00 00:00:00',
+  `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
   `src` varchar(30) NOT NULL default '',
   `dst` varchar(30) NOT NULL default '',  
   `channel` varchar(50) NOT NULL default '',
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
 
 CREATE TABLE IF NOT EXISTS `historycdr` (
   `id` int(11) NOT NULL auto_increment,
-  `calldate` datetime NOT NULL default '0000#00#00 00:00:00',
+  `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
   `src` varchar(80) NOT NULL default '',
   `dst` varchar(80) NOT NULL default '',
   `channel` varchar(80) NOT NULL default '',
@@ -418,7 +418,7 @@ CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
  `pdextension` VARCHAR( 30 ) NOT NULL  ,
  `monitorforce` INT(1) NOT NULL default 0,
  `agentinterval` int(5) NULL,
- `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+ `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
  UNIQUE (`groupid`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -440,11 +440,11 @@ CREATE TABLE IF NOT EXISTS `campaign` ( #added by solo 2008#2#5
  `inexten` varchar(30) NOT NULL default '',
  `queuename` varchar(15) NOT NULL default '',
  `fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
- `end#fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
+ `end_fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008#5#4
  `maxtrytime` int(11) NOT NULL default '0',
  `creby` varchar(30) NOT NULL default '',
- `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+ `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -469,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
  `fax` varchar(50) NOT NULL default '',
  `fax_ext` varchar(8) NOT NULL default '',					
  `email` varchar(100) NOT NULL default '',
- `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+ `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
  `customerid` int(11) NOT NULL default '0',
  `groupid` INT NOT NULL ,
@@ -504,7 +504,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
  `bankaccount` varchar(100) NOT NULL default '',	#add 2007#10#15 by solo
  `bankzip` varchar(100) NOT NULL default '',	#add 2007#10#26 by solo
  `bankaccountname` varchar(100) NOT NULL default '',	#add 2007#10#25 by solo
- `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+ `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
  `groupid` INT NOT NULL ,
   UNIQUE KEY `id` (`id`)
@@ -519,7 +519,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
 CREATE TABLE IF NOT EXISTS `dialedlist` (
   `id` int(11) NOT NULL auto_increment,
   `dialednumber` varchar(30) NOT NULL default '',
-  `answertime` datetime NOT NULL default '0000#00#00 00:00:00',		#added by solo 2008#2#1
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008#2#1
   `duration` int(11) NOT NULL default '0',												#added by solo 2008#2#1
   `transfertime` int(11) NOT NULL default '0',				#added by solo 2008#5#4										#added by solo 2008#2#1
   `response` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
@@ -529,7 +529,7 @@ CREATE TABLE IF NOT EXISTS `dialedlist` (
   `assign` varchar(20) NOT NULL default '',												#added by solo 2008#2#10
   `trytime` INT(11) NOT NULL DEFAULT '0',
   `dialedby` varchar(30) NOT NULL default '',
-  `dialedtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -543,14 +543,14 @@ CREATE TABLE IF NOT EXISTS `dialedlist` (
 CREATE TABLE IF NOT EXISTS `diallist` (
   `id` int(11) NOT NULL auto_increment,
   `dialnumber` varchar(30) NOT NULL default '',
-  `dialtime` datetime NOT NULL default '0000#00#00 00:00:00',		#added by solo 2008/05/04
+  `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008/05/04
   `assign` varchar(20) NOT NULL default '',
   `status` varchar(50) NOT NULL default '',				#added by solo 2008/05/04
   `groupid` INT(11) NOT NULL DEFAULT '0',				#added by solo 2007#12#17
   `trytime` INT(11) NOT NULL DEFAULT '0',				#added by solo 2008/05/04
   `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008#2#5
   `creby` varchar(30) NOT NULL default '',			#added by solo 2008#1#15
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',	#added by solo 2008#1#15
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008#1#15
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -581,7 +581,7 @@ CREATE TABLE IF NOT EXISTS `survey` (
   `surveynote` varchar(255) NOT NULL default '',							#add 2008#1#11 by solo
   `enable` smallint(6) NOT NULL default '0',									#add 2007#10#15 by solo
   `groupid` int(11) NOT NULL default '0',											#added by solo 2008#1#15
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -597,7 +597,7 @@ CREATE TABLE IF NOT EXISTS `surveyoptions` (
   `surveyoption` varchar(50) NOT NULL default '',
   `optionnote` varchar(255) NOT NULL default '',							#added by solo 2008#1#14
   `surveyid` int(11) NOT NULL default '0',
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -617,7 +617,7 @@ CREATE TABLE IF NOT EXISTS `surveyresult` (
   `surveynote` text NOT NULL,
   `groupid` int(11) NOT NULL default '0',
   `creby` varchar(30) NOT NULL default '',
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -632,7 +632,7 @@ CREATE TABLE IF NOT EXISTS `note` (
   `note` text character set utf8 collate utf8_unicode_ci NOT NULL,
   `priority` int(11) NOT NULL default '0',
   `attitude` int(11) NOT NULL default '0',												#add 2007#10#26 by solo
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   `creby` varchar(30) NOT NULL default '',
   `customerid` int(11) NOT NULL default '0',
   `contactid` int(11) NOT NULL default '0',
@@ -650,7 +650,7 @@ CREATE TABLE IF NOT EXISTS `remind` (
  `id` int(11) NOT NULL auto_increment,
  `title` varchar(100) NOT NULL default '',	
  `content` text NOT NULL default '',		
- `remindtime`  datetime NOT NULL default '0000#00#00 00:00:00',
+ `remindtime`  datetime NOT NULL default '0000-00-00 00:00:00',
  `remindtype` int(10) not null default 0 ,	
  `priority` int(10) NOT NULL default 0,		
  `username` varchar(30) not  null default '' ,	
@@ -658,7 +658,7 @@ CREATE TABLE IF NOT EXISTS `remind` (
  `readed` int(10) not null default 0 ,		
  `touser` varchar(50) not null default '',	
  `creby` varchar(30) NOT NULL default '',
- `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+ `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -767,7 +767,7 @@ CREATE TABLE `sip_show_peers` (
   `nat` char(1) NOT NULL default '',
   `port` varchar(5) NOT NULL default '',
   `status` varchar(20) NOT NULL default '',
-  `freshtime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `freshtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `pbxserver` varchar(50) NOT NULL default '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -835,7 +835,7 @@ CREATE TABLE `qname` (
 CREATE TABLE `queue_stats` (
   queue_stats_id int(12) NOT NULL auto_increment,
   uniqueid varchar(40) default NULL,
-  datetime datetime NOT NULL default '0000#00#00 00:00:00',
+  datetime datetime NOT NULL default '0000-00-00 00:00:00',
   qname int(6) default NULL,
   qagent int(6) default NULL,
   qevent int(2) default NULL,
@@ -865,7 +865,7 @@ CREATE TABLE `queue_name` (
   `service_level` int NOT NULL default 0,
   `t` int NOT NULL default 0,
   `data` varchar(255) NOT NULL default '',
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY unico (`queuename`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -882,7 +882,7 @@ CREATE TABLE `queue_agent` (
   `takencalls` int NOT NULL default 0,
   `lastcall` int NOT NULL default 0,
   `data` varchar(255) NOT NULL default '',
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -898,7 +898,7 @@ CREATE TABLE `queue_caller` (
   `waittime` int NOT NULL default 0,
   `prio` int NOT NULL default 0,
   `data` varchar(255) NOT NULL default '',
-  `cretime` datetime NOT NULL default '0000#00#00 00:00:00',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
