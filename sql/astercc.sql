@@ -7,12 +7,6 @@
 
 -- change filed, customer.category, astercrm_account.extension
 
--- 
--- 主机: 127.0.0.1
--- 生成日期: 2008 年 03 月 11 日 21:05
--- 服务器版本: 4.1.22
--- PHP 版本: 4.4.0
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 -- 
@@ -24,7 +18,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `account`
+-- table `account`
 -- 
 
 CREATE TABLE IF NOT EXISTS `account` (
@@ -56,7 +50,7 @@ NULL , 'admin', 'admin', 'admin' , now()
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `accountgroup`
+-- table `accountgroup`
 -- 
 
 CREATE TABLE IF NOT EXISTS `accountgroup` (
@@ -79,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `accountgroup` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `callback`
+-- table `callback`
 -- 
 
 CREATE TABLE IF NOT EXISTS `callback` (
@@ -97,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `callback` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `callshoprate`
+-- table `callshoprate`
 -- 
 
 CREATE TABLE IF NOT EXISTS `callshoprate` (
@@ -119,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `callshoprate` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `clid`
+-- table `clid`
 -- 
 
 CREATE TABLE IF NOT EXISTS `clid` (
@@ -147,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `clid` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `myrate`
+-- table `myrate`
 -- 
 
 CREATE TABLE IF NOT EXISTS `myrate` (
@@ -169,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `myrate` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `resellergroup`
+-- table `resellergroup`
 -- 
 
 CREATE TABLE IF NOT EXISTS `resellergroup` (
@@ -192,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `resellergroup` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `resellerrate`
+-- table `resellerrate`
 -- 
 
 CREATE TABLE IF NOT EXISTS `resellerrate` (
@@ -213,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `resellerrate` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `credithistory`
+-- table `credithistory`
 -- 
 
 CREATE TABLE IF NOT EXISTS `credithistory` (
@@ -239,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `credithistory` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `peerstatus`
+-- table `peerstatus`
 -- 
 
 CREATE TABLE IF NOT EXISTS `peerstatus` (
@@ -253,7 +247,7 @@ UNIQUE (`id`)
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `curcdr`
+-- table `curcdr`
 -- 
 
 CREATE TABLE IF NOT EXISTS `curcdr` (
@@ -284,16 +278,16 @@ CREATE TABLE IF NOT EXISTS `curcdr` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `mycdr`
+-- table `mycdr`
 -- 
 
 CREATE TABLE IF NOT EXISTS `mycdr` (
   `id` int(11) NOT NULL auto_increment,
   `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
-  `src` varchar(80) NOT NULL default '',
-  `dst` varchar(80) NOT NULL default '',  
-  `channel` varchar(80) NOT NULL default '',
-  `dstchannel` varchar(80) NOT NULL default '',
+  `src` varchar(30) NOT NULL default '',
+  `dst` varchar(30) NOT NULL default '',  
+  `channel` varchar(50) NOT NULL default '',
+  `dstchannel` varchar(50) NOT NULL default '',
   `didnumber` varchar(30) NOT NULL default '',
   `duration` int(11) NOT NULL default '0',
   `billsec` int(11) NOT NULL default '0',
@@ -318,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
 --------------------------------------------------------
 
 -- 
--- 表的结构 `historycdr`
+-- table `historycdr`
 -- 
 
 CREATE TABLE IF NOT EXISTS `historycdr` (
@@ -356,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `historycdr` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `astercrm_account`
+-- table `astercrm_account`
 -- 
 
 CREATE TABLE IF NOT EXISTS `astercrm_account` (
@@ -394,7 +388,7 @@ VALUES (
 -----------------------------------------------------------
 
 -- 
--- 表的结构 `queuestatus`
+-- table `queuestatus`
 -- 
 
 CREATE TABLE IF NOT EXISTS `queuestatus` (
@@ -412,7 +406,7 @@ CREATE TABLE IF NOT EXISTS `queuestatus` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `astercrm_accountgroup`
+-- table `astercrm_accountgroup`
 -- 
 
 CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
@@ -422,7 +416,7 @@ CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
  `groupid` INT NOT NULL ,
  `pdcontext` VARCHAR( 30 ) NOT NULL  ,
  `pdextension` VARCHAR( 30 ) NOT NULL  ,
- `monitorforce` INT(1) NOT NULL defalut 0,
+ `monitorforce` INT(1) NOT NULL default 0,
  `agentinterval` int(5) NULL,
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
@@ -432,7 +426,7 @@ CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `campaign`
+-- table `campaign`
 -- 
 
 CREATE TABLE IF NOT EXISTS `campaign` ( #added by solo 2008-2-5
@@ -457,7 +451,7 @@ CREATE TABLE IF NOT EXISTS `campaign` ( #added by solo 2008-2-5
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `contact`
+-- table `contact`
 -- 
 
 CREATE TABLE IF NOT EXISTS `contact` (
@@ -485,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `customer`
+-- table `customer`
 -- 
 
 CREATE TABLE IF NOT EXISTS `customer` (
@@ -519,7 +513,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `dialedlist`
+-- table `dialedlist`
 -- 
 
 CREATE TABLE IF NOT EXISTS `dialedlist` (
@@ -542,7 +536,7 @@ CREATE TABLE IF NOT EXISTS `dialedlist` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `diallist`
+-- table `diallist`
 -- 
 
 #store Predictive dialer phone list
@@ -563,7 +557,7 @@ CREATE TABLE IF NOT EXISTS `diallist` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `events`
+-- table `events`
 -- 
 
 CREATE TABLE IF NOT EXISTS `events` (
@@ -578,7 +572,7 @@ CREATE TABLE IF NOT EXISTS `events` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `survey`
+-- table `survey`
 -- 
 
 CREATE TABLE IF NOT EXISTS `survey` (
@@ -595,7 +589,7 @@ CREATE TABLE IF NOT EXISTS `survey` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `surveyoptions`
+-- table `surveyoptions`
 -- 
 
 CREATE TABLE IF NOT EXISTS `surveyoptions` (
@@ -611,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `surveyoptions` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `surveyresult`
+-- table `surveyresult`
 -- 
 
 CREATE TABLE IF NOT EXISTS `surveyresult` (
@@ -630,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `surveyresult` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `note`
+-- table `note`
 -- 
 
 CREATE TABLE IF NOT EXISTS `note` (
@@ -649,20 +643,20 @@ CREATE TABLE IF NOT EXISTS `note` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `remind`
+-- table `remind`
 -- 
 
 CREATE TABLE IF NOT EXISTS `remind` (
  `id` int(11) NOT NULL auto_increment,
- `title` varchar(100) NOT NULL default '', #标题
- `content` text NOT NULL default '',       #内容
+ `title` varchar(100) NOT NULL default '',	#标题
+ `content` text NOT NULL default '',		#内容
  `remindtime`  datetime NOT NULL default '0000-00-00 00:00:00', #提醒时间
- `remindtype` int(10) not null default 0 , #提醒类别，0为发给自己，1为发给别人
- `priority` int(10) NOT NULL default 0, #紧急程度,5为普通,10为紧急 
- `username` varchar(30) not  null default '' , #用户名
+ `remindtype` int(10) not null default 0 ,	#提醒类别，0为发给自己，1为发给别人
+ `priority` int(10) NOT NULL default 0,		#紧急程度,5为普通,10为紧急 
+ `username` varchar(30) not  null default '' ,	#用户名
  `remindabout` varchar(255) not  null default '',      #提醒的相关内容
- `readed` int(10) not null default 0 , #是否读取，0为未读，1为已读
- `touser` varchar(50) not null default '', #发给谁
+ `readed` int(10) not null default 0 ,		#是否读取，0为未读，1为已读
+ `touser` varchar(50) not null default '',	#发给谁
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
@@ -671,11 +665,11 @@ CREATE TABLE IF NOT EXISTS `remind` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `monitorrecord`
+-- table `monitorrecord`
 -- 
 
 CREATE TABLE IF NOT EXISTS `monitorrecord` (
- `id` INT NOT NULL AUTO_INCREMENT DEFAULT '',
+ `id` INT NOT NULL AUTO_INCREMENT,
  `callerid` VARCHAR( 20 ) NOT NULL DEFAULT '',
  `filename` VARCHAR( 128 ) NOT NULL DEFAULT '',
  `fileformat` VARCHAR( 4 ) NOT NULL DEFAULT '',
@@ -691,7 +685,7 @@ KEY `monitorid`(`uniqueid`,`filename`,`creby`)
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `trunkinfo`
+-- table `trunkinfo`
 -- 
 
 CREATE TABLE IF NOT EXISTS `trunkinfo` (
@@ -710,7 +704,7 @@ CREATE TABLE IF NOT EXISTS `trunkinfo` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `asteriskcalls`
+-- table `asteriskcalls`
 -- 
 
 CREATE TABLE IF NOT EXISTS `asteriskcalls` (
@@ -728,7 +722,7 @@ CREATE TABLE IF NOT EXISTS `asteriskcalls` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `remindercalls`
+-- table `remindercalls`
 -- 
 
 CREATE TABLE IF NOT EXISTS `remindercalls` (
@@ -750,7 +744,7 @@ CREATE TABLE IF NOT EXISTS `remindercalls` (
 ----------------------------------------------------------
 
 -- 
--- 表的结构 `speeddial`
+-- table `speeddial`
 -- 
 
 CREATE TABLE IF NOT EXISTS `speeddial` (
@@ -855,7 +849,7 @@ CREATE TABLE `queue_stats` (
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 -- 
--- 表的结构 `queue_name`
+-- table `queue_name`
 -- 
 
 CREATE TABLE `queue_name` (
@@ -877,7 +871,7 @@ CREATE TABLE `queue_name` (
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 -- 
--- 表的结构 `queue_agent`
+-- table `queue_agent`
 -- 
 
 CREATE TABLE `queue_agent` (
@@ -893,7 +887,7 @@ CREATE TABLE `queue_agent` (
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 -- 
--- 表的结构 `queue_caller`
+-- table `queue_caller`
 -- 
 
 CREATE TABLE `queue_caller` (
