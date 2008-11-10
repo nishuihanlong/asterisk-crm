@@ -203,6 +203,58 @@ v0.047 beta
 			campaign表中增加了字段`maxtrytime`用于指定diallist号码最大拨号次数
 			增加了回收dialedlist中未到最大拨号次数的未接能号码
 
+-----------------------------------------------------------------------------------------------
+v0.05
+2008-10-8		合并asterbilling与astercrm 库表结构
+2008-10-9		`monitorrecord` 表修改 `filename` 由VARCHAR(60)改为VARCHAR(128)，否则会出现文件名存不全的情况
+2008-10-10		增加agent的默认interval 值为30
+2008-10-10		修改agent 页面中的diallist增加功能 当用户类型为agent时将assign to 栏固定为agent自己的号码
+2008-10-10		修改predictivedialer页 当eventtype=curcdr时, 读取当前系统通话量的方法改为由curcdr表中读取
+2008-10-10		creby 改为varchar(30), 插入用户名称
+2008-10-11		更新所有的xajaxGrid代码
+			1.xajaxGrid无法搜索带单引号的字符串
+			2.将所有的搜索部分增加 > = < like的搜索方式
+2008-10-13		import页选择上传文件时可选已上传文件 上传文件时，可通过下拉列表选择已上传过的文件
+2008-10-13		拨号时在页面上增加提示 解决customer detail 点击 电话号码 进行呼叫时页面上没有任何提示
+2008-10-13		在recentcdr页面上增加对录音文件的关联
+2008-10-13		修改搜索框处敲回车键为搜索而不是添加
+2008-10-13		修正note页选择导出时出错，并且需要改进导出功能 导出数据时将title一并导出
+2008-10-17		pereference页面更新，与astercrm.conf.php同步
+2008-10-18		curcdr,mycdr,historycdr 中增加didnumber字段
+			1. 当从mycdr向historycdr转移数据时 转移didnumber字段
+			2. 显示CDR时增加显示didnumber字段
+			3. 弹屏时显示DID号码
+2008-10-18		astercc进程升级，修正了当从queue拨入时 分机cdr没有didnumber的bug
+2008-10-22		campaign表中增加绑定queue的queuename字段，用于预拨号时 拨号器查询队列状态以决定是否发起一个拨号
+2008-10-23		来电时将主叫号码加入座席页面的search文本框中做为默认值
+2008-10-24		camaign表中增加enable字段，控制camaign是否可用
+2008-10-24		astercrm_account表修改,增加firstname, lastname, agent字段, 修改了extension字段
+2008-10-25		contact表修改,增加 fax_ext 传真分机 字段
+2008-10-25		customer表修改,修改了category字段, 增加了customer.country, phone_ext, fax_ext字段
+2008-10-27		修正了groupadmin后台点回收已拨号码时报错的问题
+2008-10-27		增加对queue/agent模式的预拨号功能的支持
+2008-10-28		修正了diallist修改时出现的campaign名称与数据库存储的名称没有对应上
+2008-10-28		分机面板和后台system页面增加对分机的monitor和whisper功能
+2008-10-28		trunkinfo表中增加didnumber字段， 外部拨入时DID详细信息显示
+2008-10-28		导入页面不再显示表中由系统负责导入的字段
+2008-10-28		修改预拨号页 
+			增加两种拨号规则
+			1. 按座席空闲程度拨号
+			2. 按预拨号接通率拨号
+2008-10-29		astercrm_accoutgroup表修改,增加groupnote字段
+2008-10-31		 monitorrecord 表修改,修改了 extension 字段长度为15
+2008-10-31		增加了CDR显示页对动态座席情况下的支持
+2008-11-3		predictive页增加了groupadmin工作模式
+2008-11-4		修改astercrm_acountgroup表,增加forcemonitor字段，group配置信息中增加强制录音选项
+2008-11-5		增加了通过web更新astercc许可的功能/pereference页面
+2008-11-6		monitorrecord增加了fileformat varchar(8)字段，页面支持播放wav,gsm
+2008-11-6		修改system功能
+			当使用curcdr模式时 修改system页的工作方式为读取curcdr
+			并且当使用groupadmin登陆时, 仅显示本组的实时通话
+2008-11-8		更新asterccd/asterccdaemon脚本,支持astercctools的启动和监测
+2008-11-8		preference页面保存功能修改,增加了保存失败时的提示
+2008-11-10		修改播放monitor record 方法，取消对monitor目录的软连接
+---------------------------------------------------------------------------------------------------------
 
 TO-DO:
 portal中调用checkNewCall函数时,不再判断并传递['curuser']['channel'],只传递['curuser']['extension']###传递channel无法做弹屏判断
