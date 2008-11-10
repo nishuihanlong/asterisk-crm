@@ -181,6 +181,13 @@ function processAccountData($aFormValues)
 					$_SESSION['curuser']['extensions'] = split(',',$row['extensions']);
 				}
 
+				foreach($_SESSION['curuser']['extensions'] as $key => $value){
+					$exten_row = astercrm::getRecordByField("username",$value,"astercrm_account");
+					if($exten_row['id'] == '' ){
+						unset($_SESSION['curuser']['extensions'][$key]);
+					}
+				}
+
 				// if it's a group admin, then add all group extension to it
 				if ($row['usertype'] == 'groupadmin'){
 					$_SESSION['curuser']['memberExtens'] = array();
