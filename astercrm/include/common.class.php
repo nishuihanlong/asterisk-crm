@@ -23,6 +23,15 @@
 
 
 ********************************************************************************/
+header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
+header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+header('Cache-Control: post-check=0, pre-check=0',false);
+header('Pragma: no-cache');
+session_cache_limiter('public, no-store');
+
+session_set_cookie_params(0);
+if (!session_id()) session_start();
+setcookie('PHPSESSID', session_id());
 
 
 require_once ('localization.class.php');

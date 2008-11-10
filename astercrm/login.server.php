@@ -51,6 +51,11 @@ function processForm($aFormValues)
 {
 	global $locate;
 	$objResponse = new xajaxResponse();
+
+	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
+	//get locate parameter
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
+
 	if (trim($aFormValues['username']) == "")
 	{
 		$objResponse->addAlert($locate->Translate("Username cannot be blank"));
@@ -108,6 +113,7 @@ function init($aFormValue){
 	
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
+
 	$login_div = '<input type="image" src="skin/default/images_'.$_SESSION['curuser']['country'].'/login.gif" align="absmiddle" onclick="form.submit(\'loginForm\');"/>';
 
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("Title"));

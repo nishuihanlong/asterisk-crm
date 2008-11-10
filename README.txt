@@ -1,6 +1,6 @@
 ====================================================================================
 
-	asterCC  (C) 2006,2007,2008  Solo Fu  solo.fu@gmail.com
+	asterCC  (C) 2006,2007,2008  Solo Fu  solo@astercc.org
 
 ====================================================================================
 asterCC is a software package, in which we provide two asterisk solutions for now:
@@ -48,8 +48,8 @@ Installation:
 	mv astercc-X.X astercc
 	
 	/var/www/html/astercc/astercrm		# main directory and PHP scripts of astercrm
-	/var/www/html/astercc/asterbilling	# main directory and PHP scripts of asterbilling	
-	/var/www/html/astercc/sql		# sql to create database tables 
+	/var/www/html/astercc/asterbilling		# main directory and PHP scripts of asterbilling	
+	/var/www/html/astercc/sql			# sql to create database tables 
 	/var/www/html/astercc/script 		# astercc daemon and some other script files 
 
 	It is highly advised that the whole script directory be moved to a more secure
