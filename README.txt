@@ -3,9 +3,44 @@
 	asterCC  (C) 2006,2007,2008  Solo Fu  solo.fu@gmail.com
 
 ====================================================================================
+asterCC is a software package, in which we provide two asterisk solutions for now:
 
-Installation
+    * asterCRM, an open source contact center solution for asterisk
+    * asterBilling, a realtime billing solution for asterisk, could be used for hosted callshop, asterisk pbx billing
 
+all above in the package will use a linux daemon script named astercc, which could grab realtime CDR from asterisk, and it’s welcomed that if you want to develop your own application based astercc daemon.
+
+The astercc daemon connect to asterisk via AMI(Asterisk Management Interface), so it could work with all kinds of asterisk solutions, and would not affect your original asterisk.
+
+Here’re the benefits of solutions using astercc daemon
+
+   1. brilliant performance
+
+      we have tested that astercc could support more than 240 calls in asterisk
+   2. good compatibility
+
+      astercc could work with all asterisk based solutions, and it support both asterisk 1.2.X and 1.4.X
+   3. distributed solution
+
+      no need install astercc daemon on your asterisk server, even an embedded asterisk product could use astercc for expand
+
+Installation:
+ Rquirement:
+	 httpd
+	 mysql
+	 mysql-devel
+	 mysql-server
+	 php (or php4)
+	 php-mysql
+	 php-gd
+
+ A Auto install by 'install.sh'
+  In this way, just to run 
+	/bin/sh install.sh
+  as root in astercc main directory and enter some parameter require by it.
+  attention: You have to create dababase for astercc before run install.sh.
+
+ B install manual
   1) Download and unzip the source (assuming your WEB root is /var/www/html)
 
 	cd /var/www/html
@@ -193,22 +228,7 @@ Installation
 			asterCRM section 
 ====================================================================================
 
-asterCRM is a AJAX based 'Call Center' system. 
-
-First, Asterisk Events are captured as the occur via a perl script called eventsdaemon and
-logged to a MySQl database table.
-Since Asterisk is sending these events as they occur (and not being polled for these events),
-this leads to a more efficient Asterisk interface.
-
-eventsdaemon.pl is a perl script which connects to AMI (the Asterisk Manager
-Interface) via a stock, listens for any events or messages coming from
-the AMI, time stamps each event and logs them to a MySQL database table.
-
-eventsdaemon can be run on any machine and not confined running in your Asterisk server,
-More information on the function of eventsdaemon can be found in its source comments.
-
-WEB PHP scripts will analyze Asterisk Events in database, and finish call center jobs, 
-such as pop-up, click to dial, call queue ... 
+asterCRM is an open source contact center software for asterisk.
 
 asterCRM scripts require a running WEB and MySQL server (in which stored asterisk events).
 All of these processes can run on the same server, 
@@ -320,11 +340,28 @@ however, multiple servers enhance performance.
 			asterBilling section 
 ====================================================================================
 
-...
+asterBilling is a real time billing software. It could be used mainly for hosted callshop solution, or billing for office IP PBX system.
 
-Installation
-	
-	Done the asterCC installation above, 
-	then read the INSTALLATION file in astercrm directory and following it step by step.
+astercc features:
 
-	
+   1. work with all asterisk based system
+   2. realtime billing
+   3. prepaid/postpaid support
+   4. maximum 240 simultaneous calls support
+   5. booth lock/unlock
+   6. booth/callshop/reseller credit limit
+   7. mulit-callshop support in one system
+   8. mulit-reseller support in one system
+   9. each customer/callshop/reseller could use a rate template or use specific rate
+  10. callback with credit limit support (billing lega/legb/both)
+  11. reseller rate/callshop rate/customer rate three level billing
+  12. admin/reseller/callshop admin/operator four user types
+  13. rate import/export
+  14. hangup calls
+  15. web script part is open source
+  16. profit calculate
+  17. Grid layout
+  18. CDR search/browser
+  19. 5 free channels license
+
+

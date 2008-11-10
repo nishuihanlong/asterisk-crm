@@ -20,7 +20,8 @@ port = 5038
 username = admin
 secret = amp111
 
-; Recorded file path
+; Recorded file path, if you want to lisens records from web, 
+; the path must could be read by apache and allow php to exec 
 monitorpath = /var/spool/asterisk/monitor/
 
 ; gsm,wav,wav49
@@ -114,8 +115,6 @@ firstring = caller
 ; astercrm will show contact
 ;
 enable_contact = 1
-
-
 
 upload_file_path = ./upload/
 
