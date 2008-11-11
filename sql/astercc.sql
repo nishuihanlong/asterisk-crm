@@ -749,7 +749,7 @@ CREATE TABLE IF NOT EXISTS `remindercalls` (
 
 CREATE TABLE IF NOT EXISTS `speeddial` (
   `id` int(11) NOT NULL auto_increment,
-  `description` varchar(255) NOT NULL default '',
+  `description` varchar(30) NOT NULL default '',
   `number` varchar(20) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
   `creby` VARCHAR( 30 ) NOT NULL ,

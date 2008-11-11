@@ -88,11 +88,16 @@ then
   dbuser="root"
 fi
 
+if [ "X${dbpasswd}" != "X" ];
+then
+  dbpasswd="-p"${dbpasswd}
+fi
+
 if [ "X${dbbin}" == "X" ];
 then
   dbbin="/usr/bin"
 fi
-
+echo ${dbpasswd}
 ${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswd} ping
 
 if [ $? -ne 0 ];

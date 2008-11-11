@@ -43,7 +43,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 
-		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial,astercrm_accountgroup WHERE astercrm_accountgroup.id = speeddial.groupid ";
+		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial LEFT JOIN astercrm_accountgroup ON speeddial.groupid=astercrm_accountgroup.id WHERE 1  ";
 
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -57,7 +57,7 @@ class Customer extends astercrm
 		}else{
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
-
+//echo $sql;exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		//print_r($res);
@@ -90,7 +90,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial,astercrm_accountgroup WHERE astercrm_accountgroup.id = speeddial.groupid ";
+		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial LEFT JOIN astercrm_accountgroup ON speeddial.groupid=astercrm_accountgroup.id WHERE 1  ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -144,7 +144,7 @@ class Customer extends astercrm
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial,astercrm_accountgroup WHERE astercrm_accountgroup.id = speeddial.groupid ";
+		$sql = "SELECT speeddial.*,astercrm_accountgroup.groupname FROM speeddial LEFT JOIN astercrm_accountgroup ON speeddial.groupid=astercrm_accountgroup.id WHERE 1  ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -230,7 +230,7 @@ class Customer extends astercrm
 				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Description").'</td>
-					<td align="left"><textarea rows="3" cols="40" id="description" name="description"></textarea></td>
+					<td align="left"><input type="text" size="30" maxlength="30" id="description" name="description"></td>
 				</tr>
 				<tr>
 					<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
@@ -289,7 +289,7 @@ class Customer extends astercrm
 				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Description").'</td>
-					<td align="left"><textarea rows="3" cols="40" id="description" name="description">'.$speeddial['description'].'</textarea></td>
+					<td align="left"><input type="text" maxlength="30" id="description" name="description" value='.$speeddial['description'].'></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("group_name").'</td>
