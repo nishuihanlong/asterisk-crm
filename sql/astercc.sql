@@ -759,7 +759,7 @@ CREATE TABLE IF NOT EXISTS `speeddial` (
 
 
 
-CREATE TABLE `sip_show_peers` (
+CREATE TABLE IF NOT EXISTS `sip_show_peers` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `username` varchar(50) NOT NULL default '',
   `host` varchar(50) NOT NULL default '',
@@ -776,7 +776,7 @@ CREATE TABLE `sip_show_peers` (
 
 ####### FOR QUEUE STATS ###########
 
-CREATE TABLE `qagent` (
+CREATE TABLE IF NOT EXISTS `qagent` (
   agent_id int(6) NOT NULL auto_increment,
   agent varchar(40) NOT NULL default '',
   PRIMARY KEY  (agent_id)
@@ -786,7 +786,7 @@ CREATE TABLE `qagent` (
 ## Table structure for table `qevent`
 ##
 
-CREATE TABLE `qevent` (
+CREATE TABLE IF NOT EXISTS `qevent` (
   event_id int(2) NOT NULL default '0',
   event varchar(40) default NULL,
   PRIMARY KEY  (event_id)
@@ -822,7 +822,7 @@ INSERT INTO qevent VALUES (19,'RINGNOANSWER');
 ## Table structure for table `qname`
 ##
 
-CREATE TABLE `qname` (
+CREATE TABLE IF NOT EXISTS `qname` (
   qname_id int(6) NOT NULL auto_increment,
   queue varchar(40) NOT NULL default '',
   PRIMARY KEY  (qname_id)
@@ -832,7 +832,7 @@ CREATE TABLE `qname` (
 ## Table structure for table `queue_stats`
 ##
 
-CREATE TABLE `queue_stats` (
+CREATE TABLE IF NOT EXISTS `queue_stats` (
   queue_stats_id int(12) NOT NULL auto_increment,
   uniqueid varchar(40) default NULL,
   datetime datetime NOT NULL default '0000-00-00 00:00:00',
@@ -852,7 +852,7 @@ CREATE TABLE `queue_stats` (
 ## table `queue_name`
 ## 
 
-CREATE TABLE `queue_name` (
+CREATE TABLE IF NOT EXISTS `queue_name` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
   `curcalls` int NOT NULL default 0,
@@ -874,7 +874,7 @@ CREATE TABLE `queue_name` (
 ## table `queue_agent`
 ## 
 
-CREATE TABLE `queue_agent` (
+CREATE TABLE IF NOT EXISTS `queue_agent` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
   `agent` varchar(32) NOT NULL default '',
@@ -890,7 +890,7 @@ CREATE TABLE `queue_agent` (
 ## table `queue_caller`
 ## 
 
-CREATE TABLE `queue_caller` (
+CREATE TABLE IF NOT EXISTS `queue_caller` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
   `corder` int NOT NULL default 0,
