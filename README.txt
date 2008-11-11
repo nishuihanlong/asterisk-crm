@@ -209,6 +209,11 @@ Installation:
 	http://localhost/astercc/asterbilling
 
 	or http://YOUR-WEB-SERVER-ADDRESS/astercc/asterbilling
+	
+	NOTE:There are two login interface in asterbilling, user mode and manager mode, the default setting is manger mode.
+	You can visit user interface by http://YOUR-WEB-SERVER-ADDRESS/astercc/asterbilling/login.php 
+	and visit mannger interface by http://YOUR-WEB-SERVER-ADDRESS/astercc/asterbilling/manager_login.php .
+	You could change the default login mode in asterbilling.conf.php by prameter "useindex".
 
 	also you can move astercrm and asterbilling directory to any path where your web server be allowed to access.
 		

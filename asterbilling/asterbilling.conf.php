@@ -46,8 +46,8 @@ log_file_path = /tmp/astercrmDebug.log
 ; Asterisk context parameter, use which context when dial in or dial out
 ;
 
-;if set to admin, the index page will link to "manager login" page,
-;else if set to user defaulf page is user login page
+;if set to 'admin', the index page will link to "manager login" page,
+;else if set to 'user' defaulf page is user login page
 useindex = admin
 
 ;context when dial out, in trixbox this could be from-internal
