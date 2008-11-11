@@ -90,7 +90,7 @@ fi
 
 if [ "X${dbpasswd}" != "X" ];
 then
-  dbpasswd="-p"${dbpasswd}
+  dbpasswdstr="-p"${dbpasswd}
 fi
 
 if [ "X${dbbin}" == "X" ];
@@ -98,14 +98,14 @@ then
   dbbin="/usr/bin"
 fi
 echo ${dbpasswd}
-${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswd} ping
+${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ping
 
 if [ $? -ne 0 ];
 then
   echo "database connect error"
   exit
 else
-  ${dbbin}/mysql --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswd} ${dbname} < $curpath/sql/astercc.sql
+  ${dbbin}/mysql --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ${dbname} < $curpath/sql/astercc.sql
   if [ $? -ne 0 ];
   then
     exit;
