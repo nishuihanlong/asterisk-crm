@@ -1,5 +1,4 @@
 <?
-error_reporting(0);
 class Localization{
 	var $filePath;
 

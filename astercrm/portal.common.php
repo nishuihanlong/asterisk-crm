@@ -87,8 +87,9 @@ if ($_SESSION['curuser']['extension'] == '' && $_SESSION['curuser']['usertype'] 
 
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;
 
-require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
+require_once ("include/xajax.inc.php");
+
 
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
