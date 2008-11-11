@@ -190,6 +190,8 @@ fi
 mkdir -p ${mainpath}
 cp -Rf ${curpath}/asterbilling ${mainpath}
 cp -Rf ${curpath}/astercrm ${mainpath}
+cp -f ${curpath}/index.html ${mainpath}
+cp -f ${curpath}/astercc_full_logo.png ${mainpath}
 chmod -R 644 ${mainpath}
 
 #change dir permissions.

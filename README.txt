@@ -197,7 +197,11 @@ Installation:
 	chmod 777 /var/www/html/astercc/astercbilling/upload
 
   8) web browsing 
-  
+	for astercc guide
+	http://localhost/astercc
+
+	or http://YOUR-WEB-SERVER-ADDRESS/astercc
+
 	for astercrm:
 	http://localhost/astercc/astercrm 
 
