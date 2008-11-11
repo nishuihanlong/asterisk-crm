@@ -49,7 +49,7 @@ require_once('login.common.php');
 				<div class="left">
 			<table width="385" height="143" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
-				<th width="92" height="58" scope="col">&nbsp;</th>
+				<th width="100" height="58" scope="col">&nbsp;</th>
 				<th width="100" valign="bottom" scope="col"><div name="usernameDiv" id="usernameDiv" align="left"></div></th>
 				<th width="201" valign="bottom" scope="col"><div align="left">
 				  <input name="username" type="text" id="username" style="width:150px;height:14px" />
