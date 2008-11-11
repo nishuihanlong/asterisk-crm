@@ -89,6 +89,7 @@ function init($aFormValue){
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("User title"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
+	$objResponse->addAssign("validcodeDiv","innerHTML",$locate->Translate("Valid Code"));
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
