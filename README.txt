@@ -51,6 +51,8 @@ Installation:
 	/var/www/html/astercc/asterbilling		# main directory and PHP scripts of asterbilling	
 	/var/www/html/astercc/sql			# sql to create database tables 
 	/var/www/html/astercc/script 		# astercc daemon and some other script files 
+	/var/www/html/astercc/index.html	#guide page
+	/var/www/html/astercc/astercc_full_logo.png	#logo
 
 	It is highly advised that the whole script directory be moved to a more secure
 	location like /opt and out of the WEB root directory (in step 2)
