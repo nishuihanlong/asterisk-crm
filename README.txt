@@ -247,27 +247,64 @@ however, multiple servers enhance performance.
 
 *Features
 
-	1).	pop-up when incoming calls 
-	2).	pop-up when outbound calls
-	3).	suggestion when enter business name or contact 
-	4).	account/extension manager
-	5).	click to dial
-	6).	manully dial
-	7).	click to transfer
-	8).	click to monitor
-	9).	can be integrated with all asterisk based systems, 
-			such as Elastix IP PBX, Trixbox ...
-	10).	multi-language support (Chinese, English, German)
-	11).	multi-skin support	
-	12).	support external crm
-	13).	extension status
-	14).	show asterisk active channels 
-	15).	predictive dialer
-	16).	CRM data import/export online
-	17).	diallist import online
-	18).	survey
-	19).	survey result statistics
-	20).	distributed solution
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	list and listen to the monitor records
+	check history phone recorded on line
+	customer call history
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list
+	scheduler dialer
+	customer dialer
+	could work with astercc
+	cdr(in astercc mode)
+	DID inforamtion when pop up
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)
+	support dynamic agent mode
+	extension whisper
+	DID number/info display
+	support predictive dial dial out strategy
+	support import file which exist in server
+	recent cdr bind to monitor records
+	fax ext
+	support play gsm file in web
+	force monitor by group
+	update licence in web
+	auto install
+	system status monitor by groupadmin
+	predictive dial by groupadmin
+	multi mode search(like,=,<,>)
 
 *Manager Interface 
 
@@ -353,7 +390,7 @@ however, multiple servers enhance performance.
 
 asterBilling is a real time billing software. It could be used mainly for hosted callshop solution, or billing for office IP PBX system.
 
-astercc features:
+asterBilling features:
 
    1. work with all asterisk based system
    2. realtime billing
@@ -374,5 +411,3 @@ astercc features:
   17. Grid layout
   18. CDR search/browser
   19. 5 free channels license
-
-
