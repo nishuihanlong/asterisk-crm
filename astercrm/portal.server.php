@@ -217,12 +217,20 @@ function init(){
 		}
 	}
 	$monitorstatus = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'astercrm_accountgroup');
-
+	
 	if ($monitorstatus['monitorforce']) {
 		$objResponse->addAssign("chkMonitor","checked", 'true');
 		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
 		$objResponse->addAssign("btnMonitor","disabled", 'true');
 		
+	}
+	//if enabled monitor by astercctools
+	Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+
+	if ($asterccConfig['system']['force_record'] == 1 ) {
+		$objResponse->addAssign("chkMonitor","checked", 'false');
+		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
+		$objResponse->addAssign("btnMonitor","disabled", 'true');
 	}
 
 	return $objResponse;
@@ -273,7 +281,7 @@ function transfer($aFormValues){
 
 //check if call (uniqueid) hangup
 function incomingCalls($myValue){
-	global $db,$locate;
+	global $db,$locate,$config;
 	$objResponse = new xajaxResponse();
 
 	if ($myValue['direction'] != ''){
@@ -291,8 +299,9 @@ function incomingCalls($myValue){
 			$info	= $locate->Translate("talking_to").$myValue['callerid'];
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
-			//if chkMonitor be checked btnMonitor must be disabled
-			if ($myValue['chkMonitor'] != 'on') {
+			//if chkMonitor be checked or monitor by astercctools btnMonitor must be disabled
+			Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+			if ($myValue['chkMonitor'] != 'on' && $asterccConfig['system']['force_record'] != 1) {
 				$objResponse->addAssign("btnMonitor","disabled", false );
 			}
 			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
