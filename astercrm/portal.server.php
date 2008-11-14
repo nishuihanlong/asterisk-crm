@@ -326,6 +326,7 @@ function incomingCalls($myValue){
 			//disable monitor
 			$objResponse->addAssign("btnMonitor","disabled", true );
 			$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
+			$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
