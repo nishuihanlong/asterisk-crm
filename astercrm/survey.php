@@ -38,10 +38,35 @@ require_once('survey.common.php');
 			dragresize.apply(document);
 		}
 		
-		function addOption(formName){
-			xajax_save(xajax.getFormValues(formName));
+		function addOption(formName,optionid){
+			if (optionid == 0){
+				xajax_save(xajax.getFormValues(formName));
+			}else{
+				xajax_updateOption(xajax.getFormValues(formName),optionid);
+			}
 		}
 
+		function showItem(optionid){
+			xajax_showItem(optionid);
+		}
+
+		function addItem(optionid){
+			xajax_addItem(xajax.getFormValues('fItem'));
+		}
+
+		function deleteOption(optionid,nameRow){
+			if (confirm("<?echo $locate->Translate("are you sure to delete this option");?>"+"?")){
+				xajax_delete(optionid,'surveyoptions');
+				var myRowIndex = document.getElementById(nameRow).rowIndex;
+				document.getElementById('tblSurvey').deleteRow(myRowIndex+1);
+				document.getElementById('tblSurvey').deleteRow(myRowIndex);
+			}
+		}
+
+		function deleteItem(itemid,optionid){
+				xajax_delete(itemid,'surveyoptionitems');
+				showItem(optionid);
+		}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
@@ -61,8 +86,8 @@ require_once('survey.common.php');
 				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
-		<div id="optionDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 80px;"></div>
+		<div id="itemDiv"  class="formDiv drsElement" 
+			style="left: 350px; top: 80px;"></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 					<div id="divSurveyStatistc" align="divSurveyStatistc"> </div>

@@ -210,8 +210,37 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
+
+	function showItem($optionid){
+		global $locate, $db;
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="fItem" id="fItem" method="post">
+				
+				<table border="1" width="100%" class="adminlist" id="tblItem">
+				';
+		$surveyoption = astercrm::getRecordById($optionid,"surveyoptions");
+
+		$html .= "<tr><td>".$locate->translate("Option")."</td><td>".$surveyoption['surveyoption']."(".$locate->Translate($surveyoption['optiontype']).")"."</td></tr>";
+		$items  = astercrm::getAll("surveyoptionitems","optionid",$optionid);
+		$i = 0;
+		while ($row = $items->fetchRow()) {
+			//65
+			$html .= "<tr><td>".chr(65+$i).'(<a href="?" onclick="deleteItem(\''.$row['id'].'\',\''.$optionid.'\');return false;"><img src="skin/default/images/trash.png"></a>)</td><td>'.$row['itemcontent']."</td></tr>";
+			$i++;
+		}
+
+		$html .= "<tr><td>".chr(65+$i)."</td><td>
+										<input type=hidden id=optionid name=optionid value=\"$optionid\"/>
+										<input type=hidden id=optiontype name=optiontype value=\"".$surveyoption['optiontype']."\"/>
+										<input type=text id=itemcontent name=itemcontent size=40 maxlength=254/>
+										<input type=\"button\" value=\"".$locate->Translate("Add Item")."\" onclick=\"addItem();\">
+									</td></tr>";
+		$html .= "</table></form>";
+		return $html;
+	}
 	
-	function formAdd($surveyid = 0){
+	function formAdd($surveyid = 0, $optionid = 0){
 		global $locate;
 		$html = '
 				<!-- No edit the next line -->
@@ -232,7 +261,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						'. $locate->Translate("Survey Note") .'
 					</td></tr>';
 			$html .= '<tr><td colspan=2>
-						<input type="text" size="50" maxlangth="254" id="surveynote" name="surveynote"/></textarea>
+						<input type="text" size="50" maxlangth="254" id="surveynote" name="surveynote"/>
 					 </td></tr>';
 			$enable_html = '<tr>
 								<td colspan=2>
@@ -273,16 +302,23 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 			$ind = 0;
 			while	($options->fetchInto($row)){
 				$nameRow = "formDivRow".$row['id'];
-			   	$nameCell = $nameRow."Col".$ind;
+		   	$nameCell = $nameRow."Col".$ind;
 				
 				$html .= '<tr id="'.$nameRow.'" >'."\n";
-
+				$item_html = "";			
+				if ($row['optiontype'] == "text"){
+				}else{
+					$item_html = '(<a href=? onclick="showItem(\''.$row['id'].'\');return false;">'.$locate->Translate("Item").'</a>)';
+				}
+	
+				
+				$option_item_number = astercrm::getCountByField("optionid",$row['id'],"surveyoptionitems");
 				$html .= '
-					<td align="left" width="25%">'. $locate->Translate("option") .'(<a href="?" onclick="xajax_delete(\''.$row['id'].'\',\'surveyoptions\');var myRowIndex = document.getElementById(\''.$nameRow.'\').rowIndex;document.getElementById(\'tblSurvey\').deleteRow(myRowIndex+1);document.getElementById(\'tblSurvey\').deleteRow(myRowIndex);return false;"><img src="skin/default/images/trash.png"></a>)'.'
-					</td><td id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'surveyoptions\',\'surveyoption\',\''.$nameCell.'\',\''.$row['surveyoption'].'\',\''.$row['id'].'\');return false">'.$row['surveyoption'].'</td></tr>
+					<td align="left" width="25%">'. $locate->Translate("option") .'(<a href="?" onclick="xajax_edit(\''.$surveyid.'\',\''.$row['id'].'\');return false;"><img src="skin/default/images/edit.png"></a><a href="?" onclick="deleteOption(\''.$row['id'].'\',\''.$nameRow.'\');return false;"><img src="skin/default/images/trash.png"></a>)'.$item_html.'
+					</td><td id="'.$nameCell.'" >'.$row['surveyoption']."(".$locate->Translate($row['optiontype']).", $option_item_number ".$locate->Translate('items').")".'</td></tr>
 					<tr>
 						<td align="left" width="25%">'.$locate->Translate("Option Note").'</td>
-						<td id="'.$nameCell.'_note" style="cursor: pointer;"  onDblClick="xajax_editField(\'surveyoptions\',\'optionnote\',\''.$nameCell.'_note\',\''.$row['optionnote'].'\',\''.$row['id'].'\');return false">'.$row['optionnote'].'</td>
+						<td id="'.$nameCell.'_note">'.$row['optionnote'].'</td>
 					</tr>
 					<tr><td colspan="2" height="1" bgcolor="#ccc"></td></tr>
 					';
@@ -294,13 +330,27 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		$html .= '<tr><td colspan=2>
 					'.$locate->Translate("option").'
 				 </td></tr>';
-
+		if ($optionid == 0 ){
+			$button_value = $locate->Translate("Add Option");
+			$optionid = 0;
+		}else{
+			$button_value = $locate->Translate("Update Option");
+			$option = astercrm::getRecordById($optionid,"surveyoptions");
+			$optiontype[$option['optiontype']] = "selected";
+		}
+		
 		$html .= '<tr><td colspan=2>'.$locate->Translate("Title").': 
-					<input type="text" size="50" maxlength="50" id="surveyoption" name="surveyoption"/>
-				 </td></tr>';
+					<input type="text" size="50" maxlength="50" id="surveyoption" name="surveyoption" value="'.$option['surveyoption'].'"/>
+					<SELECT id="optiontype" name="optiontype">
+						<option value="radio" '.$optiontype['radio'].'>'.$locate->Translate("Radio").'</option>
+						<option value="checkbox" '.$optiontype['checkbox'].'>'.$locate->Translate("Checkbox").'</option>
+						<option value="text" '.$optiontype['text'].'>'.$locate->Translate("Text").'</option>
+					</SELECT>
+					</td></tr>';
+
 		$html .= '<tr><td colspan=2>'.$locate->Translate("Note").': 
-					<input type="text" size="50" maxlength="254" id="optionnote" name="optionnote"/>
-					<input type="button" value="'.$locate->Translate("add_record").'" onclick="addOption(\'f\');return false;">
+					<input type="text" size="50" maxlength="254" id="optionnote" name="optionnote" value="'.$option['optionnote'].'"/>
+					<input type="button" value="'.$button_value.'" onclick="addOption(\'f\',\''.$optionid.'\');return false;">
 				 </td></tr>';
 
 		$html .= $enable_html;
@@ -366,8 +416,9 @@ if ($_SESSION['curuser']['usertype'] == 'admin'){
 		global $db;
 		
 		$sql= "INSERT INTO surveyoptions SET "
-				."surveyoption='".$f['surveyoption']."', "
-				."optionnote='".$f['optionnote']."', "
+				."surveyoption= ".$db->quote($f['surveyoption']).", "
+				."optionnote= ".$db->quote($f['optionnote']).", "
+				."optiontype= ".$db->quote($f['optiontype']).", "
 				."surveyid='".$surveyid."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -376,5 +427,19 @@ if ($_SESSION['curuser']['usertype'] == 'admin'){
 		$optionid = mysql_insert_id();
 		return $optionid;
 	}
+
+	function updateOptionRecord($f,$optionid){
+		global $db;
+		
+		$sql= "UPDATE surveyoptions SET "
+				."surveyoption= ".$db->quote($f['surveyoption']).", "
+				."optionnote= ".$db->quote($f['optionnote']).", "
+				."optiontype= ".$db->quote($f['optiontype'])." "
+				."WHERE id = $optionid";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 }
 ?>

@@ -196,13 +196,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
  	return $html;
 }
 
-function edit($surveyid = 0){
+function edit($surveyid = 0, $optionid = 0){
 	global $locate;
 	if ($surveyid == 0)
 		return ;
 	$objResponse = new xajaxResponse();
 	$html = Table::Top($locate->Translate("edit_survey"),"formDiv");  
-	$html .= Customer::formAdd($surveyid);
+	$html .= Customer::formAdd($surveyid, $optionid);
 	$html .= Table::Footer();
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
@@ -238,6 +238,17 @@ function updateField($table, $field, $cell, $value, $id){
 	return $objResponse->getXML();
 }
 
+function showItem($optionid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("Option Item"),"itemDiv");  
+	$html .= Customer::showItem($optionid);
+	$html .= Table::Footer();
+	$objResponse->addAssign("itemDiv", "style.visibility", "visible");
+	$objResponse->addAssign("itemDiv", "innerHTML", $html);
+	return $objResponse->getXML();
+}
+
 function add($surveyid = 0){
 	global $locate;
 	$objResponse = new xajaxResponse();
@@ -256,6 +267,8 @@ function add($surveyid = 0){
 
 	return $objResponse->getXML();
 }
+
+
 
 function setSurvey($survey){
 	global $locate;
@@ -389,8 +402,36 @@ function showDetail($surveyid){
 	return $objResponse;
 }
 
+function updateOption($f,$optionid){
+		global $locate;
+		$objResponse = new xajaxResponse();
+		Customer::updateOptionRecord($f,$optionid);
+		$html = createGrid(0,ROWSXPAGE);
+		$objResponse->addAssign("grid", "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("option updated"));
+		$objResponse->addScript("xajax_edit('".$f['surveyid']."')");
+
+		return $objResponse->getXML();
+
+}
+
+function addItem($f){
+		global $locate,$db;
+		$objResponse = new xajaxResponse();
+		$query = "INSERT INTO surveyoptionitems SET
+										optionid = '".$f['optionid']."', 
+										itemtype = '".$f['optiontype']."', 
+										itemcontent = ".$db->quote($f['itemcontent']).", 
+										cretime = now(), 
+										creby = '".$_SESSION['curuser']['username']."' ";
+		$db->query($query);
+		$objResponse->addScript("showItem('".$f['optionid']."');");
+		return $objResponse;
+}
+
 	function save($f){
 		global $locate;
+
 		$objResponse = new xajaxResponse();
 		if ($f['surveyid'] == 0){
 			if ($f['surveyname'] == ''){
@@ -403,7 +444,6 @@ function showDetail($surveyid){
 				$objResponse->addAssign("grid", "innerHTML", $html);
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_added"));
 			}
-
 		}
 		else
 			$surveyid = $f['surveyid'];
