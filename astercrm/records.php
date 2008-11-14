@@ -56,7 +56,13 @@ function read_file($file){
     header($header );
     header("Content-Transfer-Encoding: binary");
     header("Content-file_length: ".$file_len);
-    @readfile($file);
+	if ($file = fopen($file, 'r')){
+		while(!feof($file)){
+			$streams = fread($file,'1024');
+			echo $streams;
+		}
+		fclose($file);
+	}
     exit;
 }
 ?>
