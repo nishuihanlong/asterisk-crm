@@ -415,9 +415,13 @@ function getSourceData($filePath){
 	$type = substr($filePath,-3);
 	if($type == 'csv'){  //csv 格式文件
 		$handle = fopen($filePath,"r");  //打开csc文件,得到句柄
-		while($data = csv_string_to_array($handle, 1000, ",")){
-			$arrData[] = $data;
+#		while($data = csv_string_to_array($handle, 1000, ",")){
+#			$arrData[] = $data;
+#		}
+		while (($data = fgets($handle)) !== FALSE) { 
+			$arrData[] = csv_string_to_array($data);
 		}
+
 	}elseif($type == 'xls'){  //xls格式文件
 		Read_Excel_File($filePath,$return);
 		for ($i=0;$i<count($return[Sheet1]);$i++){
