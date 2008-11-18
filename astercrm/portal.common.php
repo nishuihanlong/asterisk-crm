@@ -131,9 +131,9 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("showNote");
 	$xajax->registerFunction("showDetail");
 	$xajax->registerFunction("noteAdd");
-	$xajax->registerFunction("surveyAdd");
+	$xajax->registerFunction("surveyList");
+	$xajax->registerFunction("surveySave");
 	$xajax->registerFunction("saveNote");
-	$xajax->registerFunction("saveSurvey");
 	$xajax->registerFunction("getContact");
 	$xajax->registerFunction("showCdr");
 	$xajax->registerFunction("showDiallist");
@@ -146,6 +146,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("searchRecordsFormSubmit");
 	$xajax->registerFunction("playmonitor");
 	$xajax->registerFunction("showRecentCdr");	
+	$xajax->registerFunction("showSurvey");
 }
 
 define(ROWSXPAGE, 5); // Number of rows show it per page.

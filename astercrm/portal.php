@@ -183,6 +183,20 @@ require_once('portal.common.php');
 			return false;
 		}
 
+		function showSurvey(surveyid){
+			customer = document.getElementById("customerid");
+			contact = document.getElementById("customerid");
+
+			customerid = customer.value;
+			contactid = contact.value;
+
+			if (customerid == 0 && contactid == 0){
+				alert("<?echo $locate->Translate("No customer or contact selected");?>");
+			}
+			
+			xajax_showSurvey(surveyid);
+		}
+
 		function init(){
 			xajax_init();
 			updateEvents();
@@ -376,7 +390,9 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 				<td style="padding: 0px;">
 					<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;"></div>			
+			style="left: 450px; top: 50px;"></div>
+		<div id="surveyDiv"  class="formDiv drsElement" 
+			style="left: 20px; top: 20px;width:700px;"></div>			
 		<div id="formCustomerInfo" class="formDiv drsElement"
 			style="left: 20px; top: 50px;width: 600px"></div>
 		<div id="formContactInfo" class="formDiv drsElement"

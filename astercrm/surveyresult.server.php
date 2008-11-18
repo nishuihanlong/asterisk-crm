@@ -148,9 +148,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("survey_title");
-	$headers[] = $locate->Translate("survey_result");
-	$headers[] = $locate->Translate("survey_note");
+	$headers[] = $locate->Translate("Survey Title");
+	$headers[] = $locate->Translate("Survey Option");
+	$headers[] = $locate->Translate("Survey Item");
+	$headers[] = $locate->Translate("Survey Note");
 	$headers[] = $locate->Translate("customer");
 	$headers[] = $locate->Translate("contact");
 	$headers[] = $locate->Translate("create_time");
@@ -159,8 +160,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 
@@ -172,11 +174,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveyname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveyoption","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","itemcontent","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveynote","'.$divName.'","ORDERING");return false;\'';
  	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
@@ -186,6 +190,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'surveyname';
 	$fieldsFromSearch[] = 'surveyoption';
+	$fieldsFromSearch[] = 'itemcontent';
 	$fieldsFromSearch[] = 'surveyresult.surveynote';
 	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'contact.contact';
@@ -195,7 +200,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_title");
-	$fieldsFromSearchShowAs[] = $locate->Translate("survey_result");
+	$fieldsFromSearchShowAs[] = $locate->Translate("survey_option");
+	$fieldsFromSearchShowAs[] = $locate->Translate("survey_item");
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
@@ -216,6 +222,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['surveyname'];
 		$rowc[] = $row['surveyoption'];
+		$rowc[] = $row['itemcontent'];
 		$rowc[] = $row['surveynote'];
 		$rowc[] = "<a href=? onclick='xajax_showCustomer(".$row['customerid'].");return false;'>".$row['customer']."</a>";
 		$rowc[] = "<a href=? onclick='xajax_showContact(".$row['contactid'].");return false;'>".$row['contact']."</a>";

@@ -860,21 +860,35 @@ Class astercrm extends PEAR{
 	*	@return $html			(array)		HTML
 	*/
 
-	function surveyAdd($customerid,$contactid){
-		global $locate;
-		$html .= '
-				<form method="post" name="formSurvey" id="formSurvey">
-				';
-		$surveyHTML   =& astercrm::generateSurvey();
-		$html .= $surveyHTML;
-		$html .= '<div align="right">
-					<input type="button" value="'.$locate->Translate("continue").'" name="btnAddSurvey" id="btnAddSurvey" onclick="xajax_saveSurvey(xajax.getFormValues(\'formSurvey\'));return false;">
-					<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
-					<input type="hidden" value="'.$conatctid.'" name="contactid" id="contactid">
-					</div>';
-		$html .= '
-				</form>
-				';
+	function surveyAdd($surveyid,$customerid = 0, $contactid = 0){
+		global $locate,$db;
+		$html = '<form method="post" name="formSurvey" id="formSurvey"><table border="1" width="100%" class="adminlist">';
+		$survey = astercrm::getRecordById($surveyid,"survey");
+		$html .= '<tr><td>
+									<input type="hidden" value="'.$survey['id'].'" name="surveyid" id="surveyid">
+									<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">
+									<input type="hidden" value="'.$contactid.'" name="contactid" id="contactid">'
+									.$survey['surveyname'].'&nbsp;&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Save").'" onclick="xajax_surveySave(xajax.getFormValues(\'formSurvey\'));"></td></tr>';
+		if (trim($survey['surveynote']) != ""){
+			$html .= '<tr><td>'.$survey['surveynote'].'</td></tr>';
+		}
+		$options = astercrm::getRecordsByField("surveyid",$surveyid,"surveyoptions");
+		while ($options->fetchInto($option)) {
+			$html .= '<tr id="tr-option-'.$option['id'].'"><td>'.$option['surveyoption']."(".$option['optionnote'].")<input type=\"hidden\" name=\"surveyoption[]\" value=\"".$option['id']."\"></td></tr>";
+			if ($option['optiontype'] == "text"){
+				$html .= "<tr><td><input type=\"text\" name=\"".$option['id']."-note\" size='60'></td></tr>";
+			}else{
+				$items = astercrm::getRecordsByField("optionid",$option['id'],"surveyoptionitems");
+				if ($items){
+					$html .='<tr  id="tr-items-'.$option['id'].'"><td>';
+					while ($items->fetchInto($item)) {
+						$html .= '<input type="'.$option['optiontype'].'" name="'.$option['id'].'-item[]"  value="'.$item['id'].'-'.$item['itemcontent'].'" '.$additional.'>'.$item['itemcontent'];
+					}
+					$html .= " | ".$locate->Translate("Note")." <input type=\"text\" name=\"".$option['id']."-note\" size='20'></td></tr>";
+				}
+			}
+		}
+		$html .= '</table></form>';
 		return $html;
 	}
 
@@ -934,6 +948,31 @@ Class astercrm extends PEAR{
 				';
 		return $html;
 	}
+
+	function surveyList($customerid,$contactid){
+		global $locate,$config, $db;
+		$html .= '<form method="post" name="fSurveyList" id="fSurveyList">';
+		$html .= '<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">';
+		$html .= '<input type="hidden" value="'.$contactid.'" name="contactid" id="contactid">';
+
+		$html .= '	<table border="1" width="100%" class="adminlist"><tr>';
+		
+		$query = "SELECT * FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime";
+		$res = $db->query($query);
+
+
+		while ($res->fetchInto($row)) {
+			//get survey title and id
+			$surveytitle = $row['surveyname'];
+			$surveyid = $row['id'];
+			$html .= "<tr><td>$surveytitle  [<a href=? onclick=\"xajax_showSurvey('$surveyid','$customerid','$contactid');return false;\">".$locate->Translate("Add")."</a>]</td></tr>";
+		}
+
+		$html .= '	</table>';
+		$html .= '</form>';
+		return $html;
+	}
+
 
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
@@ -1310,23 +1349,28 @@ Class astercrm extends PEAR{
 	*/
 
 	function &generateSurvey(){
-		global $db;
+		global $db,$locate;
 
-		$query = "SELECT * FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime DESC LIMIT 0,1";
+		$query = "SELECT * FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime";
 		astercrm::events($query);
-		$res =& $db->getRow($query);
+		$res =& $db->query($query);
 		if (!$res)
 			return '';
-
-		//get survey title and id
-		$surveytitle = $res['surveyname'];
-		$surveyid = $res['id'];
-
+	
 		$html = "<table width='100%'>";
-		$html .= "<tr><td>$surveytitle<input type='hidden' value='$surveyid' name='surveyid' id='surveyid'></td></tr>";
+		while ($res->fetchInto($row)) {
+			//get survey title and id
+			$surveytitle = $row['surveyname'];
+			$surveyid = $row['id'];
+			$html .= "<tr><td>$surveytitle  [<a href=? onclick=\"showSurvey('$surveyid');return false;\">".$locate->Translate("Add")."</a>]</td></tr>";
+		}
+
+		$html .= "</table>";
+		return $html;
 		
 
 		//get survey options
+/*
 		$options =& astercrm::getOptions($surveyid);
 		if (!$options)
 			return '';
@@ -1336,9 +1380,7 @@ Class astercrm extends PEAR{
 			}
 			$html .= "<tr><td><input type='text' value='' id='surveynote' name='surveynote' size='50'></td></tr>";
 		}
-
-		$html .= "</table>";
-		return $html;
+*/
 	}
 	/**
 	*  Imprime la forma para editar un nuevo registro sobre el DIV identificado por "formDiv".
@@ -1797,7 +1839,7 @@ Class astercrm extends PEAR{
 							<a href="?" onclick="xajax_noteAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_note").'</a>
 							</td>
 							<td>
-							<a href="?" onclick="xajax_surveyAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_survey").'</a>
+							<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>
 							</td>					<input type="hidden" id="allContact" name="allContact" value="off">
 							</tr>
 						</table>

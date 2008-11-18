@@ -12,7 +12,6 @@
 
 			noteAdd					显示增加note的表单
 			saveNote				保存note
-			surveyAdd				显示增加survey result的表单
 			saveSurvey				保存survey result结果
 			showCustomer			显示详细customer信息的表单
 			showContact				显示详细contact信息的表单
@@ -43,6 +42,67 @@
 * Desc: add confirmCustomer,confirmContact
 
 */
+
+
+function surveySave($f){
+	global $db,$locate;
+	$objResponse = new xajaxResponse();
+
+	$surveyid = $f["surveyid"];
+	$surveyoptions = $f["surveyoption"];
+	
+	$survey = astercrm::getRecordById($surveyid, "survey");
+	$surveytitle = $survey['surveyname'];
+
+	$customerid = $f['customerid'];
+	$contactid = $f['contactid'];
+
+	foreach ($surveyoptions as $surveyoptionid){
+
+		$delFlag = 0;
+		
+		$surveyoption =  astercrm::getRecordById($surveyoptionid, "surveyoptions");
+		$surveyoptionname = $surveyoption['surveyoption'];
+
+		$note = "$surveyoptionid-note";
+		if (trim($f[$note]) != ""){
+			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', surveynote = ".$db->quote($f[$note]).", cretime = now(), creby = '".$_SESSION['curuser']['username']."' ";
+			$res = $db->query($query);
+			$delFlag = 1;
+		}
+
+		$items = "$surveyoptionid-item";
+
+		foreach ($f[$items] as $item){
+			list($itemid,$itemcontent) = split("-",$item,2);
+			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', itemid = '$itemid', itemcontent = '$itemcontent', cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
+			$res = $db->query($query);
+			$delFlag = 1;
+		}
+
+		if ($delFlag == 1){
+			$objResponse->addScript("deleteRow('tr-items-$surveyoptionid');");
+			$objResponse->addScript("deleteRow('tr-option-$surveyoptionid');");
+		}
+	}
+	$objResponse->addAlert($locate->Translate("Survey saved"));
+	
+	return $objResponse;
+}
+
+
+function showSurvey($sureyid,$customerid, $contactid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("Add Survey"),"surveyDiv");  // <-- Set the title for your form.
+	$html .= Customer::surveyAdd($sureyid,$customerid, $contactid);  // <-- Change by your method
+	$html .= Table::Footer();
+	$objResponse->addAssign("surveyDiv","innerHTML", $html );
+	$objResponse->addAssign("surveyDiv","style.visibility", "visible");
+
+	return $objResponse;
+}
+
 
 // 判断是否存在$customerName, 如果存在就显示
 function confirmCustomer($customerName,$callerID = null,$contactID){
@@ -101,11 +161,11 @@ function noteAdd($customerid,$contactid){
 	return $objResponse->getXML();
 }
 
-function surveyAdd($customerid,$contactid){
+function surveyList($customerid,$contactid){
 	global $locate;
 
-	$html = Table::Top($locate->Translate("add_survey"),"formNoteInfo"); 			
-	$html .= Customer::surveyAdd($customerid,$contactid); 		
+	$html = Table::Top($locate->Translate("Add Survey"),"formNoteInfo"); 			
+	$html .= Customer::surveyList($customerid,$contactid); 		
 	$html .= Table::Footer();
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
@@ -308,6 +368,7 @@ function save($f){
 
 	$objResponse->addClear("formCustomerInfo", "innerHTML");
 	$objResponse->addClear("formContactInfo", "innerHTML");
+	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
 	return $objResponse->getXML();
 }

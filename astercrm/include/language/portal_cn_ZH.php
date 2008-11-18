@@ -1,5 +1,7 @@
 <?
 require('astercrm_cn_ZH.php');
+$add = "添加";
+$save = "保存";
 $welcome="欢迎 ";
 $extension="你的分机是 ";
 $waiting="请等待 ";
@@ -22,7 +24,7 @@ $monitor	= "系统录音";
 $recording	= "正在录音";
 $attitude	= "反馈";
 $hangup		= "挂断";
-
+$no_customer_or_contact_selected = "没有选择任何用户或者联系人";
 $update_success = "修改成功";
 $remind_about = "提醒的相关内容";
 $remind_user_name = "提醒人姓名";

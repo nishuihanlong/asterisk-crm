@@ -1,3 +1,4 @@
+<<<<<<< .mine
 ;<?
 [database]
 ;
@@ -20,12 +21,12 @@ port = 5038
 username = admin
 secret = amp111
 
-; Recorded file path, if you want to lisens records from web, 
-; the path must could be read by apache and allow php to exec 
+; Recorded file path, if you want to lisens records from web,
+; the path must could be read by apache and allow php to exec
 monitorpath = /var/spool/asterisk/monitor/
 
 ; gsm,wav
-monitorformat = wav
+monitorformat = gsm
 
 
 [system]
@@ -89,7 +90,7 @@ allow_same_data = 0
 
 ; define what information would be displayed in portal page
 ; customer | note
-portal_display_type = note
+portal_display_type = customer
 
 ;
 ; astercrm wouldnot pop-up when dial out unless this parameter is true
@@ -114,7 +115,7 @@ firstring = caller
 ;
 ; astercrm will show contact
 ;
-enable_contact = 1
+enable_contact = 
 
 upload_file_path = ./upload/
 

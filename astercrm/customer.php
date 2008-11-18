@@ -112,6 +112,8 @@ require_once('customer.common.php');
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
+		<div id="surveyDiv"  class="formDiv drsElement" 
+			style="left: 20px; top: 20px;width:700px;"></div>			
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
 		<div id="formCustomerInfo" class="formDiv drsElement"

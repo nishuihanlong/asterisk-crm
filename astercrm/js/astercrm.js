@@ -1,3 +1,9 @@
+function deleteRow(trId){
+	var tr=document.getElementById(trId);
+	var tbody=tr.parentNode;
+	tbody.removeChild(tr);
+}
+
 function contactCopy(contactid){
 	if ( xajax.$('iptcallerid') == null)
 	{

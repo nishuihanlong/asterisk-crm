@@ -275,8 +275,8 @@ function setSurvey($survey){
 //	print_r($survey);
 //	exit;
 	$objResponse = new xajaxResponse();
-	if ($survey['radEnable'] == 1)
-		Customer::setSurveyEnable(0,1,$survey['groupid']);
+	#if ($survey['radEnable'] == 1)
+	#	Customer::setSurveyEnable(0,1,$survey['groupid']);
 
 	Customer::setSurveyEnable($survey['surveyid'],$survey['radEnable']);
 	Customer::updateField('survey','groupid',$survey['groupid'],$survey['surveyid']);
@@ -324,78 +324,65 @@ function showDetail($surveyid){
 	global $db,$locate;
 	$objResponse = new xajaxResponse();
 
-	//get all accounts
 	$sql = "SELECT * FROM account";
 	$resAccount =& $db->query($sql);
 	if (!$resAccount)
 		return;
-//	return $objResponse;
-	$html .= "<table width='98%'>";
 
 	$ind = 0;
 
+	$html .= "<div style='display: block;clear: both; float:none;'>";
 	while ($resAccount->fetchInto($account)){
-//		print_r($account);
-//		exit;
-		if ($ind % 3 == 0)
-			$html .= "<tr>";
 
-		$html .= "<td valign='top' width='30%' align='left'>";
-
-		$html  .= "<table>";
-		$html .= "<tr><th align='left'>".$locate->Translate("agent").": ".$account['username']."</th></tr>";
-		$sql = "SELECT COUNT(*) as number, surveyoption, surveynote FROM surveyresult WHERE creby = '".$account['username']."' AND surveyid = $surveyid GROUP BY surveyoption,surveynote";
+		$html .= "<div><table width=300px align=left>";
+		$html .= "<tr><th align='left' colspan='2'>".$locate->Translate("agent").": ".$account['username']."</th></tr>";
+		$sql = "SELECT COUNT(*) as number, surveyoption, surveynote, itemcontent FROM surveyresult WHERE creby = '".$account['username']."' AND surveyid = $surveyid GROUP BY surveyoption,surveynote";
 		
 		$res =& $db->query($sql);
 		if ($res){
-			$html .= "<tr><td>";
-			$html .= "<table>";
-			$html .= "<tr><td>".$locate->Translate("option")."</td><td>".$locate->Translate("note")."</td><td>".$locate->Translate("number")."</td></tr>";
+			$html .= "<tr><td>".$locate->Translate("Item")."</td><td>".$locate->Translate("Note")."</td><td>".$locate->Translate("number")."</td></tr>";
 
 			while ($res->fetchInto($row)){
-				$html .= "<tr><td>".$row['surveyoption']."</td><td>".$row['surveynote']."</td><td>".$row['number']."</td></tr>";
+				$html .= "<tr><td>".$row['itemcontent']."</td><td>".$row['surveynote']."</td><td>".$row['number']."</td></tr>";
 			}
-			$html .= "</table>";
-			$html .= "</td></tr>";
 		}
-		$html .= "</table>";
-
-		$html .= "</td>";
-
-		$ind ++;
-		if ($ind % 3 == 0)
-			$html .= "<tr><td colspan=3 height=2 bgcolor=#000000></td></tr></tr>";
+		$html .= "</table></div>";
 	}
-	$rest = $ind % 3;
-//	print $rest;
-//	exit;
-	if ($rest != 0){
-		for ($i=0;$i<(3-$rest);$i++){
-			$html .= "<td></td>";
-		}
-		$html .= "</tr>";
-	}
+	$html .= "</div>";
 
-	$html .= "</table>";
 //	print $html;
 //	exit;
+
+	$html .= "<div style='display: block;clear: both; float:none;'>";
 	
-	$sql = "SELECT COUNT(*) as number, surveyoption FROM surveyresult WHERE surveyid = $surveyid GROUP BY surveyoption";
-	$totalrecords = 0;
-	$res =& $db->query($sql);
+	$query = "SELECT * FROM surveyresult  WHERE surveyid = $surveyid  GROUP BY surveyoption";
+	$surveyoptions = $db->query($query);
+	while ($surveyoptions->fetchInto($surveyoption)){
+		$sql = "SELECT COUNT(*) as number, itemcontent,surveynote FROM surveyresult WHERE surveyoptionid = '".$surveyoption['surveyoptionid']."' GROUP BY itemcontent";
+		$totalrecords = 0;
+		$res =& $db->query($sql);
 
-		if ($res){
-			$html .= "<table width=200 align=left>";
-			$html .= "<tr><td colspan=2 align=left><strong>".$locate->Translate("total")."</strong></td></tr>";
-			$html .= "<tr><td>Option</td><td>Number</td></tr>";
+			if ($res){
+				$html .= "<div><table width=300 align=left>";
+				$html .= "<tr><td colspan=2 align=left><strong>".$surveyoption['surveyoption']." </strong></td></tr>";
+				$html .= "<tr><td width=250px>Option</td><td width=50px>Number</td></tr>";
 
-			while ($res->fetchInto($row)){
-				$html .= "<tr><td>".$row['surveyoption']."</td><td>".$row['number']."</td></tr>";
-				$totalreocrds += $row['number'];
+				while ($res->fetchInto($row)){
+					if ($row['itemcontent'] == ""){
+						$item = $row['surveynote'];
+					}else{
+						$item = $row['itemcontent'];
+					}
+					$html .= "<tr><td>".$item."</td><td>".$row['number']."</td></tr>";
+					$totalreocrds += $row['number'];
+				}
+				$html .= "<tr><td colspan=2>".$locate->Translate("total").": ".$totalreocrds."</td></tr>";
+				$html .= "</table></div>";
 			}
-			$html .= "<tr><td colspan=2>".$locate->Translate("total").": ".$totalreocrds."</td></tr>";
-			$html .= "</table>";
-		}
+	}
+	$html .= "</div>";
+
+
 
 	$objResponse->addAssign("divSurveyStatistc", "innerHTML", $html);
 

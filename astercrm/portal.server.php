@@ -1076,7 +1076,7 @@ function displayMap($address){
 	$js = $map->generateJs();
 
 	$objResponse->addAssign("divMap","style.visibility","visible");
-	$objResponse->addScript("alert('".$js."')");
+	//$objResponse->addScript("alert('".$js."')");
 	$objResponse->addScript($js);
 	return $objResponse;
 }
