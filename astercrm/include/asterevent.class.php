@@ -107,7 +107,10 @@ class asterEvent extends PEAR
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
 				//if dstchan does not include dst, then clear dst(for process transfer call )
-				if( !strstr($list['dstchan'],$list['dst']) ) $list['dst'] = '';
+				if( !strstr($list['dstchan'],$list['dst']) ) {					
+					$dst_tmp = $list['dst'];
+					$list['dst'] = '';
+				}
 
 				if($list['didnumber'] != '' ){
 					$didnumber = $list['didnumber'];
@@ -118,7 +121,11 @@ class asterEvent extends PEAR
 
 				if (strstr($list['srcchan'],$channel) OR strstr($list['src'],$exten)) {// dial out
 					$call['status'] = 'dialout';
-					$call['callerid'] = trim($list['dst']);
+					if($list['dst'] == ''){
+						$call['callerid'] = $dst_tmp;
+					}else{
+						$call['callerid'] = trim($list['dst']);
+					}
 					$call['didnumber'] = $didnumber;
 					$call['uniqueid'] = trim($list['srcuid']);
 					$call['curid'] = trim($list['id']);
