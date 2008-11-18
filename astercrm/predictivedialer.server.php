@@ -259,7 +259,7 @@ function predictiveDialer($f){
 		}
 	}
 	//exit;
-	$objResponse->addScript("setTimeout(\"startDial()\", 1000);");
+	$objResponse->addScript("setTimeout(\"startDial()\", 1500);");
 	
 
 	return $objResponse;
