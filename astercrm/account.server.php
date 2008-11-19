@@ -412,7 +412,7 @@ function edit($id){
 */
 
 function delete($accountid = null){
-	global $locate;
+	global $locate;		
 	$res = Customer::deleteRecord($accountid,'astercrm_account');
 	if ($res){
 		$html = createGrid(0,ROWSXPAGE);
@@ -453,6 +453,14 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
 	if($type == "delete"){
+		$myrow =  astercrm::getRecordByField('username',$_SESSION['curuser']['username'],'astercrm_account');
+	
+		$myid = $myrow['id'];
+		//echo $myid;exit;
+		if ($myid == $id ) {
+			$objResponse->addAlert($locate->Translate("Can not delete your own account"));
+			return $objResponse->getXML();
+		}
 		$res = Customer::deleteRecord($id,'astercrm_account');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);

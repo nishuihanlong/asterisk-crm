@@ -248,7 +248,7 @@ function listenCalls($aFormValues){
 	} else{
 		$objResponse->loadXML(incomingCalls($aFormValues));
 	}
-	$objResponse->addScript('setTimeout("updateEvents()", 1000);');
+	$objResponse->addScript('setTimeout("updateEvents()", 2000);');
 	return $objResponse;
 }
 
@@ -1081,7 +1081,7 @@ function displayMap($address){
 	return $objResponse;
 }
 
-function chanspy($exten,$spyexten){
+function chanspy($exten,$spyexten,$pam = ''){
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
@@ -1091,9 +1091,7 @@ function chanspy($exten,$spyexten){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"SIP/".$spyexten);
-	//$objResponse->addAlert($exten);
-	//$objResponse->addAlert($spyexten);
+	$myAsterisk->chanSpy($exten,"SIP/".$spyexten,$pam);
 	return $objResponse;
 }
 

@@ -30,12 +30,12 @@ require_once('systemstatus.common.php');
 			var timerShowStatus,timerShowChannelsInfo;
 			function showStatus(){
 				xajax_showStatus();
-				timerShowStatus = setTimeout("showStatus()", 1000);
+				timerShowStatus = setTimeout("showStatus()", 2000);
 			}
 
 			function showChannelsInfo(){
 				xajax_showChannelsInfo();
-				timerShowChannelsInfo = setTimeout("showChannelsInfo()", 1000);
+				timerShowChannelsInfo = setTimeout("showChannelsInfo()", 2000);
 			}
 
 			function init(){

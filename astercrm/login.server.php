@@ -122,8 +122,8 @@ function init($aFormValue){
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("Password"));
 	$objResponse->addAssign("languageDiv","innerHTML",$locate->Translate("Language"));
 	$objResponse->addAssign("loginDiv","innerHTML",$login_div);
-	$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
-	$objResponse->addAssign("loginButton","disabled",false);
+	//$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
+	//$objResponse->addAssign("loginButton","disabled",false);
 	//$objResponse->addAssign("onclickMsg","value",$locate->Translate("Please waiting"));
 	$objResponse->addScript("xajax.$('username').focus();");
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
@@ -186,7 +186,7 @@ function processAccountData($aFormValues)
 				if ($row['extensions'] != ''){
 					$_SESSION['curuser']['extensions'] = split(',',$row['extensions']);
 				}
-
+				//check extensions if exists in account table
 				foreach($_SESSION['curuser']['extensions'] as $key => $value){
 					$exten_row = astercrm::getRecordByField("username",$value,"astercrm_account");
 					if($exten_row['id'] == '' ){
