@@ -1784,7 +1784,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a>-<a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\')\''.$customer['fax_ext'].'\');return false;">'.$customer['fax_ext'].'</a></td>
+					<td align="left"><a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'));return false;">'.$customer['fax'].'</a>-<a href=? onclick="dial(\''.$customer['fax'].'\',\'\',xajax.getFormValues(\'myForm\'),\''.$customer['fax_ext'].'\');return false;">'.$customer['fax_ext'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1868,7 +1868,6 @@ Class astercrm extends PEAR{
 
 				$html .= '
 					</table>';
-
 		return $html;
 
 	}
