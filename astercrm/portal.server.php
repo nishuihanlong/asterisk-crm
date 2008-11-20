@@ -232,7 +232,6 @@ function init(){
 		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
 		$objResponse->addAssign("btnMonitor","disabled", 'true');
 	}
-
 	return $objResponse;
 }
 
@@ -1024,13 +1023,46 @@ function getContact($callerid){
 		//	print 'no match in contact list';
 
 		//try get customer
-	if ($config['system']['detail_level'] == 'all')
-		$customerid = astercrm::getCustomerByCallerid($mycallerid);
-	else
-		$customerid = astercrm::getCustomerByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
+		if ($config['system']['detail_level'] == 'all')
+			$customerid = astercrm::getCustomerByCallerid($mycallerid);
+		else
+			$customerid = astercrm::getCustomerByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
 
 		if ($customerid == ''){
 			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
+			// callerid smart match
+			if ($config['system']['smart_match_remove']) {
+				if ($config['system']['detail_level'] == 'all') {
+					$contact_res = astercrm::getContactSmartMatch($mycallerid);
+					$customer_res = astercrm::getCustomerSmartMatch($mycallerid);
+				}else {
+					$contact_res = astercrm::getContactSmartMatch($mycallerid,$_SESSION['curuser']['groupid']);
+					$customer_res = astercrm::getCustomerSmartMatch($mycallerid,$_SESSION['curuser']['groupid']);
+				}
+				$smartcount = 0;
+				while ($customer_res->fetchInto($row)) {
+					$smartcount++;
+					$smartmatch_html .= '<a href="###" onclick="xajax_showCustomer(\''.$row['id'].'\');showMsgBySmartMatch(\'customer\',\''.$row['customer'].'\');">'.$locate->Translate("customer").':&nbsp;'.$row['customer'].'<br>'.$locate->Translate("phone").':'.$row['phone'].'</a><hr>';
+				}
+
+				while ($contact_res->fetchInto($row)) {
+					$smartcount++;
+					$smartmatch_html .= '<a href="###" onclick="xajax_showContact(\''.$row['id'].'\');showMsgBySmartMatch(\'contact\',\''.$row['contact'].'\');">'.$locate->Translate("contact").':&nbsp;'.$row['contact'].'<br>'.$locate->Translate("phone").':'.$row['phone'].'&nbsp;&nbsp;'.$row['phone1'].'&nbsp;&nbsp;'.$row['phone2'].'</a><hr>';
+				}
+
+				if ($smartcount < 3 ) {
+					$objResponse->addAssign("smartMsgDiv", "style.height", '');
+					$objResponse->addAssign("SmartMatchDiv", "style.height", '');
+				}else{
+					$objResponse->addAssign("smartMsgDiv", "style.height", '160px');
+					$objResponse->addAssign("SmartMatchDiv", "style.height", '240px');
+				}
+
+				if ($smartcount) {
+					$objResponse->addAssign("smartMsgDiv", "innerHTML", $smartmatch_html);
+					$objResponse->addScript('getSmartMatchMsg();');
+				}
+			}
 		}else{
 			
 			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.

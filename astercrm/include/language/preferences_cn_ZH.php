@@ -57,4 +57,5 @@ $click_ok_to_update_your_astercc_license = "点击确定以更新您的使用许
 $update_licence = "更新使用许可";
 $licence = "使用许可";
 $save = "保存";
+$read_group_database_or_system_database = "读取本组信息或是所有信息";
 ?>

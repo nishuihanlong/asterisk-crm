@@ -52,6 +52,9 @@
 			getOptions				读取survey的所有option
 			getNoteListByID			根据customerid或者contactid获取与之邦定的note记录
 
+			getCustomerSmartMatch	客户callerid智能匹配(callerid去除后n位的匹配结果集)
+			getContactSmartMatch	联系人callerid智能匹配(callerid去除后n位的匹配结果集)
+
 			surveyAdd				生成添加survey的HTML语法
 			noteAdd					生成添加note的HTML语法
 			formAdd					生成添加综合信息(包括customer, contact, survey, note)的HTML语法
@@ -2189,7 +2192,11 @@ Class astercrm extends PEAR{
 	function getCustomerByCallerid($callerid,$groupid = ''){
 		global $db;
 		$callerid = preg_replace("/'/","\\'",$callerid);
-		$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' ";
+		if ($groupid == '') {
+			$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' ";
+		}else {
+			$query = "SELECT id FROM customer WHERE phone LIKE '%$callerid' OR mobile LIKE '%$callerid' AND groupid = $groupid ";
+		}
 		astercrm::events($query);
 		$customerid =& $db->getOne($query);
 		return $customerid;
@@ -2205,6 +2212,51 @@ Class astercrm extends PEAR{
 		astercrm::events($query);
 		$row =& $db->getRow($query);
 		return $row;
+	}
+
+	function getContactSmartMatch($callerid,$groupid = ''){
+		global $db,$config;
+
+		$callerid = preg_replace("/'/","\\'",$callerid);
+
+		if (is_numeric($config['system']['smart_match_remove'])){
+			$remove = 0 - $config['system']['smart_match_remove'];
+			$callerid = substr($callerid,0,$remove);
+		}else{
+			$callerid = substr($callerid,0,-3);
+		}
+
+		if( $groupid == '' ) {
+			$query = "SELECT * FROM contact WHERE phone LIKE '%$callerid%' OR phone1 LIKE '%$callerid' OR phone2 LIKE '%$callerid%' ";
+		}else{
+			$query = "SELECT * FROM contact WHERE phone LIKE '%$callerid%' OR phone1 LIKE '%$callerid%' OR phone2 LIKE '%$callerid%' AND groupid=$groupid";
+		}
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
+	function getCustomerSmartMatch($callerid,$groupid = ''){
+		global $db,$config;
+
+		$callerid = preg_replace("/'/","\\'",$callerid);
+
+		if (is_numeric($config['system']['smart_match_remove'])){
+			$remove = 0 - $config['system']['smart_match_remove'];
+			$callerid = substr($callerid,0,$remove);
+		}else{
+			$callerid = substr($callerid,0,-3);
+		}
+
+		if ($groupid == '') {
+			$query = "SELECT * FROM customer WHERE phone LIKE '%$callerid%' ";
+		}else {
+			$query = "SELECT * FROM customer WHERE phone LIKE '%$callerid%' AND groupid = $groupid ";
+		}
+
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
 	}
 
 	function getSql($searchContent,$searchField,$table){

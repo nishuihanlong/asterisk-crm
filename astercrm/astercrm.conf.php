@@ -69,6 +69,9 @@ stop_work_verify = 0
 ;
 phone_number_length = 0
 
+;how many digits end of callerid remove when incoming call smart matching
+smart_match_remove = 1
+;
 ;
 ; if astercrm trim fellowing prefix, use gamma to sperate
 ; leave it blank if no prefix need to be removed
@@ -115,7 +118,7 @@ firstring = caller
 ;
 ; astercrm will show contact
 ;
-enable_contact = 
+enable_contact = 0
 
 upload_file_path = ./upload/
 

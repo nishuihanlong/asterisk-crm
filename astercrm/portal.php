@@ -105,7 +105,6 @@ require_once('portal.common.php');
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 
-
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
 
@@ -318,6 +317,72 @@ require_once('portal.common.php');
 				} 
 			} 
 		} 
+
+		var divTop,divLeft,divWidth,divHeight,docHeight,docWidth,objTimer,i = 0; 
+
+		function getSmartMatchMsg()
+		{ 
+			try{ 
+				divTop = parseInt(document.getElementById("SmartMatchDiv").style.top,10);			
+				divLeft = parseInt(document.getElementById("SmartMatchDiv").style.left,10); 
+				divHeight = parseInt(document.getElementById("SmartMatchDiv").offsetHeight,10); 
+				divWidth = parseInt(document.getElementById("SmartMatchDiv").offsetWidth,10); 
+				docWidth = document.documentElement.clientWidth; 
+				docHeight = document.documentElement.clientHeight; 
+				document.getElementById("SmartMatchDiv").style.top = parseInt(document.documentElement.scrollTop,10) + docHeight + 10 +'px';// divHeight 
+				document.getElementById("SmartMatchDiv").style.left = parseInt(document.documentElement.scrollLeft,10) + docWidth - divWidth +'px' ;
+				//document.getElementById("SmartMatchDiv").style.display="" ;
+				document.getElementById("SmartMatchDiv").style.visibility="visible";
+				objTimer = window.setInterval("moveDiv()",10) ;
+			} 
+			catch(e){} 
+		} 
+
+		function resizeDiv() 
+		{ 
+			i+=1 
+			//if(i>300) closeDiv() //自动消失
+			try{ 
+				divHeight = parseInt(document.getElementById("SmartMatchDiv").offsetHeight,10);
+				divWidth = parseInt(document.getElementById("SmartMatchDiv").offsetWidth,10);
+				docWidth = document.documentElement.clientWidth; 
+				docHeight = document.documentElement.clientHeight; 
+				document.getElementById("SmartMatchDiv").style.top = docHeight - divHeight + parseInt(document.documentElement.scrollTop,10) +'px';
+				document.getElementById("SmartMatchDiv").style.left = docWidth - divWidth + parseInt(document.documentElement.scrollLeft,10) + 'px';
+			} 
+			catch(e){} 
+		} 
+
+		function moveDiv() 
+		{ 
+			try 
+			{ 
+				if(parseInt(document.getElementById("SmartMatchDiv").style.top,10) <= (docHeight - divHeight + parseInt(document.documentElement.scrollTop,10))) 
+				{ 
+					window.clearInterval(objTimer);
+					objTimer = window.setInterval("resizeDiv()",1);
+				} 
+				divTop = parseInt(document.getElementById("SmartMatchDiv").style.top,10) ;
+				document.getElementById("SmartMatchDiv").style.top = divTop - 1 +'px';
+			} 
+			catch(e){} 
+		} 
+
+		function closeSmartMatch() 
+		{ 
+			//document.getElementById("SmartMatchDiv").style.display="none"; 
+			document.getElementById("SmartMatchDiv").style.visibility="hidden";
+			if(objTimer) window.clearInterval(objTimer);
+		}
+		
+		function showMsgBySmartMatch(msgtype,msg)
+		{		
+			if (document.getElementById(msgtype)){
+				document.getElementById(msgtype).value = msg;
+				return true;
+			}
+			return false;			
+		}
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
@@ -382,7 +447,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>" onclick="xajax_getContact(xajax.$('iptCallerid').value)">
+			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>" onclick="xajax_getContact(xajax.$('iptCallerid').value);">
 		</div>
 		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
@@ -458,6 +523,13 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			</tr>
 		</table>
 	</div>
+	<div id='SmartMatchDiv' style="position:absolute;z-index:99999; left:0px;visibility:hidden;width: 320px;height:240px;"><table width="100%" border="1" align="center" class="adminlist">
+			<tr>
+				<th align="right" valign="center" >
+					<img src="skin/default/images/close.png" onClick='closeSmartMatch();return false;' title="Close Window" style="cursor: pointer; height: 16px;">
+				</th>
+			</tr>			
+			<tr><td><fieldset><legend><?echo $locate->Translate("which customer has similar number"); ?>:</legend><div id="smartMsgDiv" style="width: 280px;height:160px;OVERFLOW-y:auto;OVERFLOW-x:auto;"></div></fieldset></td></tr></table></div>
 	<div id="divCopyright"></div>
 	</body>
 </html>
