@@ -595,7 +595,8 @@ CREATE TABLE IF NOT EXISTS `survey` (
 CREATE TABLE IF NOT EXISTS `surveyoptions` (
   `id` int(11) NOT NULL auto_increment,
   `surveyoption` varchar(50) NOT NULL default '',
-  `optionnote` varchar(255) NOT NULL default '',							#added by solo 2008#1#14
+  `optionnote` varchar(255) NOT NULL default '',	#added by solo 2008#1#14
+  `optiontype` ENUM( 'checkbox', 'radio', 'text' ) NOT NULL DEFAULT 'radio',
   `surveyid` int(11) NOT NULL default '0',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   `creby` varchar(30) NOT NULL default '',
@@ -613,6 +614,10 @@ CREATE TABLE IF NOT EXISTS `surveyresult` (
   `customerid` int(11) NOT NULL default '0',
   `contactid` int(11) NOT NULL default '0',
   `surveyid` int(11) NOT NULL default '0',
+  `surveytitle` VARCHAR( 30 ) NOT NULL,
+  `surveyoptionid` int(11) NOT NULL,
+  `itemid` int(11) NOT NULL,
+  `itemcontent` VARCHAR( 50 ) NOT NULL,
   `surveyoption` varchar(50) NOT NULL default '',
   `surveynote` text NOT NULL,
   `groupid` int(11) NOT NULL default '0',
@@ -620,6 +625,22 @@ CREATE TABLE IF NOT EXISTS `surveyresult` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+##########################################################
+
+## 
+## table `surveyoptionitems`
+## 
+ CREATE TABLE IF NOT EXISTS `surveyoptionitems` (
+`id` int(11) NOT NULL AUTO_INCREMENT ,
+`optionid` INT NOT NULL ,
+`itemtype` ENUM( 'checkbox', 'radio', 'text' ) NOT NULL DEFAULT 'radio',
+`itemcontent` VARCHAR( 254 ) NOT NULL ,
+`creby` VARCHAR( 30 ) NOT NULL ,
+`cretime` DATETIME NOT NULL ,
+PRIMARY KEY ( `id` ) ,
+UNIQUE (`id`)
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ##########################################################
 
