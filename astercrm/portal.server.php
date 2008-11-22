@@ -169,7 +169,7 @@ function init(){
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
-	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
+	//$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 
 	$objResponse->addAssign("btnTransfer","disabled",true);
 
