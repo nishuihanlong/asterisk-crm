@@ -160,7 +160,6 @@ function showDivMainRight($filename){
 	$filePath = $config['system']['upload_file_path'].$filename;
 
 	if(is_file($filePath)){	//check if file exsits
-
 		$dataContent = getGridHTML($filePath);
 		$objResponse->addAssign("divGrid", "innerHTML", $dataContent['gridHTML']);
 
@@ -414,10 +413,7 @@ function csv_string_to_array($str){
 function getSourceData($filePath){  
 	$type = substr($filePath,-3);
 	if($type == 'csv'){  //csv 格式文件
-		$handle = fopen($filePath,"r");  //打开csc文件,得到句柄
-#		while($data = csv_string_to_array($handle, 1000, ",")){
-#			$arrData[] = $data;
-#		}
+		$handle = fopen($filePath,"r");  //打开csv文件,得到句柄
 		while (($data = fgets($handle)) !== FALSE) { 
 			$arrData[] = csv_string_to_array($data);
 		}
