@@ -58,4 +58,6 @@ $update_licence = "更新使用许可";
 $licence = "使用许可";
 $save = "保存";
 $read_group_database_or_system_database = "读取本组信息或是所有信息";
+$status_check_interval	= '页面更新事件的间隔时间(秒)';
+$smart_match_remove	= '来电号码智能匹配时,去除号码未尾数字的位数';
 ?>

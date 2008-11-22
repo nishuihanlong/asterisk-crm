@@ -1,4 +1,4 @@
-<<<<<<< .mine
+<<<<<<< .mine = 
 ;<?
 [database]
 ;
@@ -69,9 +69,14 @@ stop_work_verify = 0
 ;
 phone_number_length = 0
 
-;how many digits end of callerid remove when incoming call smart matching
+;how many digits end of callerid remove when incoming call smart matching, disabled if set it to 0
 smart_match_remove = 1
 ;
+
+;time intervals of update event in pages
+status_check_interval = 2
+;
+
 ;
 ; if astercrm trim fellowing prefix, use gamma to sperate
 ; leave it blank if no prefix need to be removed
@@ -118,7 +123,7 @@ firstring = caller
 ;
 ; astercrm will show contact
 ;
-enable_contact = 0
+enable_contact = 
 
 upload_file_path = ./upload/
 

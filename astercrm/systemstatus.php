@@ -30,12 +30,12 @@ require_once('systemstatus.common.php');
 			var timerShowStatus,timerShowChannelsInfo;
 			function showStatus(){
 				xajax_showStatus();
-				timerShowStatus = setTimeout("showStatus()", 2000);
+				timerShowStatus = setTimeout("showStatus()", xajax.$('check_interval').value);
 			}
 
 			function showChannelsInfo(){
 				xajax_showChannelsInfo();
-				timerShowChannelsInfo = setTimeout("showChannelsInfo()", 2000);
+				timerShowChannelsInfo = setTimeout("showChannelsInfo()", xajax.$('check_interval').value);
 			}
 
 			function init(){
@@ -98,9 +98,10 @@ require_once('systemstatus.common.php');
 		-->
 
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
-		<div id="divStatus" align="center"> </div>
+		<div id="divStatus" align="center"></div>
 		<div id="divActiveCalls" name="divActiveCalls" align="left"> </div>
 		<div id="channels" align="left" class="groupsystem_channel"></div>
 		<div id="divCopyright"></div>
+		<input type="hidden" id="check_interval" name="check_interval" value="2000">
 	</body>
 </html>

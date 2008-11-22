@@ -338,6 +338,28 @@ require_once('preferences.common.php');
 	</td>
   </tr>
   <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top" id="SysSmartMatchRemove" name="SysSmartMatchRemove">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;smart_match_remove
+	</td>
+    <td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysSmartMatchRemove" name="iptSysSmartMatchRemove" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysSmartMatchRemove" name="divSysSmartMatchRemove"></div>
+	</td>
+  </tr>
+  <tr>
+    <td width="230" align="left" valign="top" id="SysStatusCheckInterval" name="SysStatusCheckInterval">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status_check_interval
+	</td>
+    <td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysStatusCheckInterval" name="iptSysStatusCheckInterval" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysStatusCheckInterval" name="divSysStatusCheckInterval"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top" id="SysTrimPrefix" name="SysTrimPrefix">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trim_prefix
 	</td>

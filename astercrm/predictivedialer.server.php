@@ -259,8 +259,10 @@ function predictiveDialer($f){
 		}
 	}
 	//exit;
-	$objResponse->addScript("setTimeout(\"startDial()\", 1500);");
-	
+	$check_interval = 2000;
+	if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
+
+	$objResponse->addScript("setTimeout(\"startDial()\", ".$check_interval.");");	
 
 	return $objResponse;
 }

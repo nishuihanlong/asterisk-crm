@@ -88,6 +88,14 @@ function initIni(){
 			"iptSysPhoneNumberLength",
 			"value",
 			$config["system"]["phone_number_length"]);
+	$objResponse->addAssign(
+			"iptSysSmartMatchRemove",
+			"value",
+			$config["system"]["smart_match_remove"]);
+	$objResponse->addAssign(
+			"iptSysStatusCheckInterval",
+			"value",
+			$config["system"]["status_check_interval"]);
 
 	$objResponse->addAssign(
 			"iptSysTrimPrefix",
@@ -179,6 +187,16 @@ function initLocate(){
 			$locate->Translate('sys_phone_number_length'));
 
 	$objResponse->addAssign(
+			"divSysSmartMatchRemove",
+			"innerHTML",
+			$locate->Translate('smart_match_remove'));
+
+	$objResponse->addAssign(
+			"divSysStatusCheckInterval",
+			"innerHTML",
+			$locate->Translate('status_check_interval'));
+
+	$objResponse->addAssign(
 			"divSysTrimPrefix",
 			"innerHTML",
 			$locate->Translate('sys_trim_prefix'));
@@ -245,6 +263,8 @@ function savePreferences($aFormValues){
 
 
 	$myPreferences['system']['phone_number_length'] = $aFormValues['iptSysPhoneNumberLength'];
+	$myPreferences['system']['smart_match_remove'] = $aFormValues['iptSysSmartMatchRemove'];
+	$myPreferences['system']['status_check_interval'] = $aFormValues['iptSysStatusCheckInterval'];
 	$myPreferences['system']['trim_prefix'] = $aFormValues['iptSysTrimPrefix'];
 	$myPreferences['system']['allow_dropcall'] = $aFormValues['iptSysAllowDropcall'];
 	$myPreferences['system']['allow_same_data'] = $aFormValues['iptSysAllowSameData'];

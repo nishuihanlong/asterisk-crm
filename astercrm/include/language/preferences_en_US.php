@@ -46,4 +46,6 @@ $astercc_path			= 'path of astercc daemon';
 $update_licence_success	= 'licence has been updated,you must reboot server to enable new licence';
 $astercc_conf_non		= 'astercc.conf is not exists in specified directory:';
 $astercc_non		= 'astercc daemon is not exists in specified directory:';
+$status_check_interval	= 'time intervals of update event in pages';
+$smart_match_remove	= 'how many digits end of callerid remove when incoming call smart matching, disabled if set it to 0';
 ?>

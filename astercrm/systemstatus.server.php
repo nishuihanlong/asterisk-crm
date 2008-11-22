@@ -43,7 +43,13 @@ function init(){
 		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI_connection_failed"));
 	}
 	$objResponse->addAssign("msgChannelsInfo", "value", $locate->Translate("msgChannelsInfo"));
-
+	
+	////set time intervals of check system status
+	$check_interval = 2000;
+	if ( is_numeric($config['system']['status_check_interval']) ) {
+		$check_interval = $config['system']['status_check_interval'] * 1000;
+		$objResponse->addAssign("check_interval","value",$check_interval);
+	}
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 

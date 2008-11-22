@@ -240,6 +240,7 @@ function init(){
 *
 */
 function listenCalls($aFormValues){
+	global $config;
 	$objResponse = new xajaxResponse();
 
 	if ($aFormValues['uniqueid'] == ''){
@@ -247,7 +248,11 @@ function listenCalls($aFormValues){
 	} else{
 		$objResponse->loadXML(incomingCalls($aFormValues));
 	}
-	$objResponse->addScript('setTimeout("updateEvents()", 2000);');
+	//set time intervals of update events
+	$check_interval = 2000;
+	if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
+
+	$objResponse->addScript('setTimeout("updateEvents()", '.$check_interval.');');
 	return $objResponse;
 }
 
