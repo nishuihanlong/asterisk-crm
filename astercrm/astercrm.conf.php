@@ -25,7 +25,7 @@ secret = amp111
 monitorpath = /var/spool/asterisk/monitor/
 
 ; gsm,wav
-monitorformat = gsm
+monitorformat = wav
 
 
 [system]
