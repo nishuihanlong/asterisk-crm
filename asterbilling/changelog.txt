@@ -67,6 +67,7 @@ add new field amount and total in table accountgroup to store all selling and al
 ----------------------------------------------------------------------------------
 0.09
 2008-11-17 修正了费率导入的bug
+2008-11-22 修正了当refreshrate 小于0时 asterrc不计费的bug
 
 
 
