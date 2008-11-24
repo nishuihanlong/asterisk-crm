@@ -314,6 +314,8 @@ function save($f){
 	}
 	// check over
 
+	if ($f['usertype'] == 'admin') $f['groupid'] == '';
+
 	$respOk = Customer::insertNewAccount($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
