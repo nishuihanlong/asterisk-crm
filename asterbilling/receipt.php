@@ -33,12 +33,14 @@
 </style>
  <BODY>
 	<div id="divPrint" align="right"><input type="button" onclick="document.getElementById('divPrint').style.display='none';window.print();window.close();" value="<? echo $locate->Translate("Print");?>">&nbsp;&nbsp;</div>
+
 	<div>&nbsp;<? echo $locate->Translate("Reseller");?>:&nbsp;<?echo $reseller;?>
 	   <br>
 	   &nbsp;<? echo $locate->Translate("Callshop");?>:&nbsp;<?echo $callshop;?>
 	   <br>
 	   &nbsp;<? echo $locate->Translate("Operator");?>:&nbsp;<?echo $_SESSION['curuser']['username'];?>
 	</div>
+
   <table  width="100%" border="1" align="center" class="adminlist">
     <tr><td colspan="5">&nbsp;</td></tr>
 	<tr>
