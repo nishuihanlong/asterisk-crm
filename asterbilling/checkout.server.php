@@ -215,7 +215,7 @@ function listCDR($aFormValues){
 						<td>'.$mycdr['duration'].'</td>
 						<td>'.$mycdr['disposition'].'</td>
 						<td>'.$mycdr['billsec'].'</td>
-						<td>'.$rate['destination'].'</td>
+						<td>'.$mycdr['destination'].'</td>
 						<td>'.$ratedesc.'</td>';
 		if ($_SESSION['curuser']['usertype'] == 'operator') {
 			$html .=  '<td>'.$mycdr['credit'].'</td>';

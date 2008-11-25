@@ -64,7 +64,7 @@ upload_file_path = ./upload/
 refreshBalance = 0
 
 ; if we use history cdr(move the billed cdr to historycdr and read the cdr from historycdr)
-useHistoryCdr = 0;
+useHistoryCdr = 0
 
 ; when we set useHistoryCDR = 1, then here set if we move the no answer cdr to historycdr
 keepNoanswerCDR = 1

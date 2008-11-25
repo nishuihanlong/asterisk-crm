@@ -276,7 +276,7 @@ function add(){
 
 function save($f){
 	global $locate,$db;
-	//print_r($f);exit;
+	
 	$objResponse = new xajaxResponse();
 	
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
@@ -314,7 +314,7 @@ function save($f){
 	}
 	// check over
 
-	if ($f['usertype'] == 'admin') $f['groupid'] == '';
+	if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
 
 	$respOk = Customer::insertNewAccount($f); // add a new account
 	if ($respOk){
@@ -373,6 +373,8 @@ function update($f){
 
 		$f['extensions'] = $newextensions;
 	}
+
+	if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
 	// check over
 	$respOk = Customer::updateAccountRecord($f);
 
