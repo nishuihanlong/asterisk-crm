@@ -45,4 +45,9 @@ $normal = "正常";
 $falied_to_lock_or_unlock = "锁定或解锁失败";
 $booth_cleared = "分机清空";
 $callshop_status = "分组状态";
+$reseller = "分销商";
+$callshop = "话吧";
+$operator = "操作员";
+$receipt = "收据";
+$print = "打&nbsp;印";
 ?>

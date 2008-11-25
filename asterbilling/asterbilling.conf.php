@@ -51,7 +51,7 @@ log_file_path = /tmp/astercrmDebug.log
 useindex = admin
 
 ;context when dial out, in trixbox this could be from-internal
-outcontext =  callshop
+outcontext =  from-internal
 
 ; individual: set the limit in credit limit field to the call
 ; balance: set limit in balance to the call

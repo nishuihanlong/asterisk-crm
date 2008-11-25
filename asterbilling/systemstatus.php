@@ -151,6 +151,8 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"hangupOnClick('" + divId + "');return false;\"><?echo $locate->Translate("Hangup");?></a>";
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "');return false;\"><?echo $locate->Translate("Clear");?></a>";
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnCDROnClick('" + divId + "');return false;\"><?echo $locate->Translate("Cdr");?></a>";
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"window.open ('receipt.php?peer="+divId+"', 'newwindow', 'height=300, width=600, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');return false;\"><?echo $locate->Translate("Receipt");?></a>";
+
 	divContainer.appendChild(div);
 
 	container.appendChild(divContainer);
