@@ -89,5 +89,11 @@
 		<td colspan="5" align="right"><? echo $total_price; ?></td>
 	</tr>
   </table>
+  <div id="copyright" style="background-repeat:repeat-x;height:64px;margin-top:10px;text-align:center;">
+				<ul>
+				<li>2007-2008 asterBilling - asterBilling home</li>
+				<li>version: 0.91 </li>
+				</ul>
+  </div>
  </BODY>
 </html>
