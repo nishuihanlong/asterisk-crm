@@ -430,8 +430,8 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	if($type == "delete"){
 		$res = Customer::deleteRecords('groupid',$id,'clid');
 		$res = Customer::deleteRecords('groupid',$id,'rate');
-		$res = Customer::deleteRecords('groupid',$id,'resellerrate');
 		$res = Customer::deleteRecords('groupid',$id,'callshoprate');
+		$res = Customer::deleteRecords('groupid',$id,'account');
 		$res = Customer::deleteRecord($id,'accountgroup');
 
 		if ($res){

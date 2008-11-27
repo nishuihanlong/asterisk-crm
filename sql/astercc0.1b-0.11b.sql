@@ -4,7 +4,10 @@ ALTER TABLE `surveyresult` ADD `surveytitle` VARCHAR( 30 ) NOT NULL AFTER `surve
 ALTER TABLE `surveyresult` ADD `surveyoptionid` INT NOT NULL AFTER `surveytitle` ;
 ALTER TABLE `surveyresult` ADD `itemid` INT NOT NULL AFTER `surveyoption` ;
 ALTER TABLE `surveyresult` ADD `itemcontent` VARCHAR( 50 ) NOT NULL AFTER `itemid` ;
-
+ALTER TABLE `accountgroup` ADD `grouptitle` VARCHAR( 50 ) NOT NULL AFTER `groupname`;
+ALTER TABLE `accountgroup` ADD `grouptagline` VARCHAR( 80 ) NOT NULL AFTER `grouptitle`;
+ALTER TABLE `accountgroup` ADD `grouplogo` VARCHAR( 30 ) NOT NULL AFTER `grouptagline`;
+ALTER TABLE `accountgroup` ADD `grouplogostatus` int(1) NOT NULL default 1 AFTER `grouplogo`;
 
 ## 
 ## table `surveyoptionitems`

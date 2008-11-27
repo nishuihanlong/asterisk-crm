@@ -74,6 +74,7 @@ require_once('accountgroup.common.php');
 				</td>
 			</tr>
 		</table>
+		<iframe name="iframeForUpload" id="iframeForUpload" width="0" height="0" scrolling="no"></iframe>
 		<div id="divCopyright"></div>
 	</body>
 </html>

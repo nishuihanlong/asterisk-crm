@@ -68,14 +68,19 @@
 	  $records = astercc::readUnbilled($peer,$leg,$_SESSION['curuser']['groupid']);
 	  while	($records->fetchInto($myreceipt)) {
 		  $ratedesc = astercc::readRateDesc($myreceipt['memo']).'&nbsp;';
-		  echo '<tr>
-					<td>'.$myreceipt['dst'].'</td>
+		  $content = '<tr>';
+		  if ($peer == $myreceipt['dst'])
+			  $content .= '<td>'.$myreceipt['src'].'-></td>';
+		  else
+			  $content .= '<td>->'.$myreceipt['dst'].'</td>';
+		  $content .= '
 					<td>'.$myreceipt['calldate'].'</td>
 					<td align="right">'.$myreceipt['billsec'].'</td>
 					<td align="right">'.$myreceipt['destination'].'</td>
 					<td align="right">'.$ratedesc.'</td>
 					<td align="right">'.astercc::creditDigits($myreceipt['credit']).'</td>
 				</tr>';
+		  echo $content;
 			$total_price += $myreceipt['credit'];
 	  }
 	  $total_price = astercc::creditDigits($total_price,2);

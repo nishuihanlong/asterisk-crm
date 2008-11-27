@@ -56,6 +56,10 @@ NULL , 'admin', 'admin', 'admin' , now()
 CREATE TABLE IF NOT EXISTS `accountgroup` (
   `id` int(11) NOT NULL auto_increment,
   `groupname` varchar(30) NOT NULL default '',
+  `grouptitle` varchar(50) NOT NULL default '',
+  `grouptagline` varchar(80) NOT NULL default '',
+  `grouplogo` varchar(30) NOT NULL default '',
+  `grouplogostatus` int(1) NOT NULL default 1,
   `accountcode` varchar(20) NOT NULL default '',
   `allowcallback` varchar(10) NOT NULL default '',
   `creditlimit` double(24,4) NOT NULL default '0.0000',

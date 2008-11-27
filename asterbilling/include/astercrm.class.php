@@ -162,6 +162,8 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		$sql= "INSERT INTO accountgroup SET "
 				."groupname='".$f['groupname']."', "
+				."grouptitle='".$f['grouptitle']."', "
+				."grouptagline='".$f['grouptagline']."', "
 				."accountcode='".$f['accountcode']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
@@ -347,6 +349,9 @@ Class astercrm extends PEAR{
 		}
 		$sql= "UPDATE accountgroup SET "
 				."groupname='".$f['groupname']."', "
+				."grouptitle='".$f['grouptitle']."', "
+				."grouptagline='".$f['grouptagline']."', "
+				."grouplogostatus='".$f['grouplogostatus']."', "
 				."resellerid='".$f['resellerid']."', "
 				."curcredit='".$newcurcredit."', "
 				."creditlimit='".$f['creditlimit']."', "
@@ -577,6 +582,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 
 		$sql = "UPDATE $table SET $field='$value' WHERE $fld = '$id'";
+
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;

@@ -422,6 +422,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$res = Customer::deleteRecords('resellerid',$id,'rate');
 		$res = Customer::deleteRecords('resellerid',$id,'callshoprate');
 		$res = Customer::deleteRecords('resellerid',$id,'resellerrate');
+		$res = Customer::deleteRecords('resellerid',$id,'account');
 
 		$res = Customer::deleteRecord($id,'resellergroup');
 		if ($res){

@@ -69,6 +69,9 @@ class astercc extends PEAR
 		$status =  array();
 		while ($curChans->fetchInto($list)) {
 			$status[$list['src']] = $list;
+			$status[$list['src']]['direction'] = 'outbound';
+			$status[$list['dst']] = $list;
+			$status[$list['dst']]['direction'] = 'inbound';
 		}
 		return $status;
 	}
@@ -259,7 +262,7 @@ class astercc extends PEAR
 		global $db;
 
 		if ($leg == null){
-			$query = "SELECT * FROM mycdr WHERE src = '$peer' AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+			$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
 		}else{
 			/*
 			$query = 'SELECT * FROM cdr WHERE 
@@ -316,7 +319,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			if ($peer == "-1"){
 				$query .= " AND LEFT(channel,6) = 'Local/' ";
 			}else{
-				$query .= " AND src LIKE '$peer%' ";
+				$query .= " AND (src = '$peer' OR dst = '$peer') ";
 			}
 		}
 
@@ -364,7 +367,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			if ($booth == '-1'){
 				$query .= " AND LEFT(channel,6) = 'Local/' ";
 			}else{
-				$query .= " AND src = '$booth' ";
+				$query .= " AND src = '$booth' OR dst = '$booth'";
 			}
 		}
 		#print $query;exit;

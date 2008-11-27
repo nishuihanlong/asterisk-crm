@@ -267,6 +267,14 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="groupname" name="groupname" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Title").'</td>
+					<td align="left"><input type="text" id="grouptitle" name="grouptitle" size="25" maxlength="50"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Tagline").'</td>
+					<td align="left"><input type="text" id="grouptagline" name="grouptagline" size="25" maxlength="80"></td>
+				</tr>				
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30">'."(".$locate->Translate("might be useful for callback").")".'</td>
 				</tr>
@@ -371,6 +379,14 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="groupname" name="groupname" size="25" maxlength="30" value="'.$group['groupname'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Title").'</td>
+					<td align="left"><input type="text" id="grouptitle" name="grouptitle" size="25" maxlength="50" value="'.$group['grouptitle'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Tagline").'</td>
+					<td align="left"><input type="text" id="grouptagline" name="grouptagline" size="25" maxlength="80" value="'.$group['grouptagline'].'"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'">'."(".$locate->Translate("might be useful for callback").")".'</td>
 				</tr>
@@ -442,20 +458,37 @@ class Customer extends astercrm
 				$html .=
 					'</select>
 					</td>
-				</tr>';
-
-				$html .='
-				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Display Logo").'</td>
+					<td align="left"><input type="radio" id="grouplogostatus" name="grouplogostatus" value="1" ';
+				if($group['grouplogostatus'] == 1) $html .= 'checked';
+				$html .=
+				'>enable&nbsp;&nbsp;<input type="radio" id="grouplogostatus" name="grouplogostatus" value="0"';
+				if($group['grouplogostatus'] == 0) $html .= 'checked';
+				$html .= '>disable</td>
+				</tr>
+				</table>
+				</form>';
 
-			 </table>
+				$html .= 
+				'<form action="upload.php" method="post" enctype="multipart/form-data" name="formLogoUpload" id="formLogoUpload" target="iframeForUpload">
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+					<td nowrap align="left">'.$locate->Translate("Upload New Logo").'</td>
+					<td><input type="file" name="callshopLogo" id="callshopLogo" size="35"/><input type="hidden" id="LogoUploadFlag" name="LogoUploadFlag" value="1">
+					<input type="hidden" id="group_id" name="group_id" value='.$group['id'].'></td>
+					<tr>
+					<tr>
+						<td  colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f")); document.getElementById("formLogoUpload").submit();return false;\'>'.$locate->Translate("continue").'</button></td>
+					</tr>
+				</table>
+				</form>
 			';
 
 			
 
-		$html .= '
-				</form>
+		$html .= '				
 				*'.$locate->Translate("Obligatory Fields").'
 				';
 

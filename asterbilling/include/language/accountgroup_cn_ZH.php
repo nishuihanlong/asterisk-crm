@@ -28,4 +28,8 @@ $prepaid = "预付费";
 $postpaid = "后付费";
 $please_enter_the_groupname = "请输入分组名称";
 $please_enter_the_resellername = "请输入代理商名称";
+$title = "组标题";
+$tagline = "副标题";
+$display_logo = "显示Logo";
+$upload_new_logo = "上传新Logo";
 ?>

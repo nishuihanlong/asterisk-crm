@@ -29,4 +29,10 @@
 	$select_a_existent_file = "选择已存在的文件";
 	$or = "或者";
 	$all = "全部";
+	$logo_file_is_too_large = "Logo文件容量过大";
+	$logo_upload_faild = "Logo上传失败";
+	$logo_file_size_must_less_than = "Logo 文件大小必需小于";
+	$logo_upload_faild_please_check_your_upload_directory = "Logo上传失败,请检查upload目录权限";
+	$logo_upload_success = "Logo上传成功";
+	$logo_file_must_be_a_image_file = "Logo 必需是一个图片文件";
 ?>

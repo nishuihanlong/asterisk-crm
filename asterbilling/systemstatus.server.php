@@ -25,6 +25,28 @@ function init(){
 		$objResponse->addAssign("AMIStatudDiv", "innerHTML", $locate->Translate("AMI connection failed"));
 	}
 
+	$group_row = astercrm::getRecord($_SESSION['curuser']['groupid'],'accountgroup');
+
+	if ( $group_row['grouplogo'] != '' && $group_row['grouplogostatus'] ){
+		$logoPath = $config['system']['upload_file_path'].'/callshoplogo/'.$group_row['grouplogo'];
+		if (is_file($logoPath)){
+			$titleHtml = '<img src="'.$logoPath.'" style="float:left;" width="80" height="80">';
+		}
+	}
+	if ( $group_row['grouptitle'] != ''){
+		$titleHtml .= '<h1 style="padding: 0 0 0 0;position: relative;font-size: 16pt;">'.$group_row['grouptitle'].'</h1>';
+	}
+	if ( $group_row['grouptagline'] != ''){
+		$titleHtml .= '<h2 style="padding: 0 0 0 0;position: relative;font-size: 11pt;color: #FJDSKB;">'.$group_row['grouptagline'].'</h2>';
+	}
+	if (isset($titleHtml)){
+		$titleHtml .= '<div style="position:absolute;top:85px;left:0px;width:800px"><hr color="#F1F1F1"></div>';
+		$objResponse->addAssign("divTitle", "innerHTML", $titleHtml);
+	}else{
+		$objResponse->addAssign("divTitle", "style.height", '0px');
+		$objResponse->addAssign("divMain", "style.top", '0px');
+	}
+
 	$_SESSION['status'] = array();
 
 	# 获得当前的channel
@@ -185,6 +207,7 @@ function showStatus(){
 	$peers = $_SESSION['curuser']['extensions'];
 	
 	$peerstatus = astercc::checkPeerStatus($_SESSION['curuser']['groupid']);
+	//print_r($peerstatus);exit;
 
 	$event = array('ring' => 1, 'dial' => 2, 'ringing' => 3, 'link' => 4);
 
@@ -198,8 +221,13 @@ function showStatus(){
 				// should reload CDR
 				$objResponse->addScript("removeTr('".$peer."');");
 				$objResponse->addScript('setTimeout("xajax_addUnbilled(\''.$peer.'\')",1000);');	 //wait daemon write data to cdr
-			}else{
-				$objResponse->addAssign($peer.'-phone','innerHTML',$peerstatus[$peer]['dst']);
+			}else{ 
+				if( $peerstatus[$peer]['direction'] == 'outbound'){
+					$objResponse->addAssign($peer.'-phone','innerHTML',"->".$peerstatus[$peer]['dst']);
+				}else{
+					$objResponse->addAssign($peer.'-phone','innerHTML',$peerstatus[$peer]['src']."->");
+					$objResponse->addAssign($peer.'-phone','style.color','green');
+				}
 				$objResponse->addAssign($peer.'-startat','innerHTML',$peerstatus[$peer]['starttime']);
 				$objResponse->addAssign($peer.'-channel','value',$peerstatus[$peer]['srcchan']);
 				if ($peerstatus[$peer]['answertime'] != '0000-00-00 00:00:00'){
@@ -414,7 +442,14 @@ function addUnbilled($peer,$leg = null){
 		$totalprice += $mycdr['credit'];
 		$jsscript .= "cdr['id'] = '".$mycdr['id']."';";
 		$jsscript .= "cdr['clid'] = '".$mycdr['clid']."';";
-		$jsscript .= "cdr['dst'] = '".$mycdr['dst']."';";
+		//check it is inbound or outbound for show Phone in booth
+		if ( $mycdr['src'] == $peer ){
+			$jsscript .= "cdr['dst'] = '".$mycdr['dst']."';";
+			$jsscript .= "cdr['direction'] = 'outbound';";
+		}else{
+			$jsscript .= "cdr['dst'] = '".$mycdr['src']."';";
+			$jsscript .= "cdr['direction'] = 'inbound';";
+		}
 		$jsscript .= "cdr['startat'] = '".$mycdr['calldate']."';";
 		$jsscript .= "cdr['billsec'] = '".$mycdr['billsec']."';";
 		$jsscript .= "cdr['destination'] = '".$mycdr['destination']."';";
