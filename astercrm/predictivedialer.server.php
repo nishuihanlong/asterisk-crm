@@ -56,7 +56,7 @@ function init(){
 
 	while	($groups->fetchInto($group)){
 		// get all enabled campaigns
-		$query = "SELECT id,campaignname,campaignnote,queuename FROM campaign WHERE enable = 1 AND groupid = ".$group['groupid'];
+		$query = "SELECT id,campaignname,campaignnote,queuename,outcontext,incontext,inexten FROM campaign WHERE enable = 1 AND groupid = ".$group['groupid'];
 		$campaigns = $db->query($query);
 
 
@@ -76,14 +76,14 @@ function init(){
 				$campaignHTML .= '<div class="group01content">';
 
 				if ($has_queue != 0){
-					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /> '.$campaign['campaignname'].' ( '.$locate->Translate("queue").': '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </div>
+					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'"> '.$campaign['campaignname'].' ( '.$locate->Translate("queue").': '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' )</acronym> </div>
 				<div class="group01r">
 				<input type="checkbox" name="'.$campaign['id'].'-ckb">'.$locate->Translate("Start").'
 				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked> '.$locate->Translate("Limited by max channel").' <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit">
 				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="agent" > '.$locate->Translate("Limited by agents and increase").' <input type="text" value="10" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="2" maxlength="3" class="inputlimit">%
 				</div>';
 				}else{
-					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /> '.$campaign['campaignname'].' ( '.$locate->Translate("no_queue_for_this_campaign").' ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </div>
+					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'">'.$campaign['campaignname'].' ( '.$locate->Translate("no queue for this campaign").' ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </acronym></div>
 				<div class="group01r">
 				<input type="checkbox" name="'.$campaign['id'].'-ckb">'.$locate->Translate("Start").'
 				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked>

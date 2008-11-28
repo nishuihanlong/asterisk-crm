@@ -37,4 +37,7 @@ $dstchan = "被叫通道";
 $starttime = "开始时间";
 $answertime = "接听时间";
 $disposition = "状态";
+$outcontext = '拨出路由';
+$incontext = '拨入路由';
+$inexten = '回拨分机';
 ?>
