@@ -1,5 +1,6 @@
 <?php
-$add_campaign = "添加一个计划";
+$add_campaign = "添加拨号计划";
+$edit_campaign = "编辑拨号计划";
 $continue	= "继续";
 $group_name = '分组名称';
 $campaign_name = '计划名称';

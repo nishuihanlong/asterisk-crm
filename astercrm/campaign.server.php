@@ -329,7 +329,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_group"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("Edit Campaign"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone

@@ -457,7 +457,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
 		<div id="surveyDiv"  class="formDiv drsElement" 
-			style="left: 20px; top: 20px;width:700px;"></div>			
+			style="left: 20px; top: 20px;"></div>			
 		<div id="formCustomerInfo" class="formDiv drsElement"
 			style="left: 20px; top: 50px;width: 600px"></div>
 		<div id="formContactInfo" class="formDiv drsElement"
@@ -501,7 +501,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 				color:#006600; "></div>
 
 	<div id="divMap" class="drsElement" 
-		style="left: 450px; top: 20px;	width: 300px;height: 340px;
+		style="left: 450px; top: 20px;	width: 300px;
 					position: absolute; 
 					z-index:0;
 					text-align: center; 
@@ -517,13 +517,13 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<tr>
 				<td>
 					<fieldset><legend><?echo $locate->Translate("Google Map")?></legend>
-					<div id="map" style="width: 300px;height: 300px;"></div>
+					<div id="map" style="width: 300px;"></div>
 					</fieldset>
 				</td>
 			</tr>
 		</table>
 	</div>
-	<div id='SmartMatchDiv' style="position:absolute;z-index:99999; left:0px;visibility:hidden;width: 320px;height:240px;"><table width="100%" border="1" align="center" class="adminlist">
+	<div id='SmartMatchDiv' style="position:absolute;z-index:99999; left:0px;visibility:hidden;width: 320px;"><table width="100%" border="1" align="center" class="adminlist">
 			<tr>
 				<th align="right" valign="center" >
 					<img src="skin/default/images/close.png" onClick='closeSmartMatch();return false;' title="Close Window" style="cursor: pointer; height: 16px;">
