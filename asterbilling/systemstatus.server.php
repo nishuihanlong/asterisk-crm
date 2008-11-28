@@ -223,9 +223,9 @@ function showStatus(){
 				$objResponse->addScript('setTimeout("xajax_addUnbilled(\''.$peer.'\')",1000);');	 //wait daemon write data to cdr
 			}else{ 
 				if( $peerstatus[$peer]['direction'] == 'outbound'){
-					$objResponse->addAssign($peer.'-phone','innerHTML',"->".$peerstatus[$peer]['dst']);
+					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/outbound.gif'>".$peerstatus[$peer]['dst']);
 				}else{
-					$objResponse->addAssign($peer.'-phone','innerHTML',$peerstatus[$peer]['src']."->");
+					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/inbound.gif'>".$peerstatus[$peer]['src']);
 					$objResponse->addAssign($peer.'-phone','style.color','green');
 				}
 				$objResponse->addAssign($peer.'-startat','innerHTML',$peerstatus[$peer]['starttime']);

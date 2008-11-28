@@ -68,7 +68,7 @@
 	</div>
 	<div style="position:relative;">
   <table  width="100%" border="1" align="center" class="adminlist">
-    <tr><td colspan="5">&nbsp;</td></tr>
+    <tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
 		<th width="15%"><? echo $locate->Translate("Phone");?></th>		
 		<th width="25%"><? echo $locate->Translate("Start at");?></th>
@@ -94,10 +94,17 @@
 	  while	($records->fetchInto($myreceipt)) {
 		  $ratedesc = astercc::readRateDesc($myreceipt['memo']).'&nbsp;';
 		  $content = '<tr>';
-		  if ($peer == $myreceipt['dst'])
-			  $content .= '<td>'.$myreceipt['src'].'-></td>';
-		  else
-			  $content .= '<td>->'.$myreceipt['dst'].'</td>';
+		  if ($peer == $myreceipt['dst']){
+			  if ($myreceipt['billsec'] == 0)
+				$content .= '<td><img src="images/noanswer.gif">'.$myreceipt['src'].'</td>';
+			  else
+				$content .= '<td><img src="images/inbound.gif">'.$myreceipt['src'].'</td>';
+		  }else{
+			  if ($myreceipt['billsec'] == 0)
+				$content .= '<td><img src="images/noanswer.gif">'.$myreceipt['dst'].'</td>';
+			  else
+				$content .= '<td><img src="images/outbound.gif">'.$myreceipt['dst'].'</td>';
+		  }
 		  $content .= '
 					<td>'.$myreceipt['calldate'].'</td>
 					<td align="right">'.$myreceipt['billsec'].'</td>

@@ -275,13 +275,17 @@ function appendTr(tbodyId,aryValues){
 
 	// caller id
     var td = document.createElement("td");
-	if(trim(aryValues["direction"]) == 'inbound')
-		td.innerHTML = "<acronym title=\"" + "<?echo $locate->Translate("Destination");?>:" + trim(aryValues["destination"]) + "(" + "<?echo $locate->Translate("Rate");?>:" + trim(aryValues["rate"]) + ")" + "\">" + trim(aryValues["dst"]) + "-></acronym>";
-	else
-		td.innerHTML = "<acronym title=\"" + "<?echo $locate->Translate("Destination");?>:" + trim(aryValues["destination"]) + "(" + "<?echo $locate->Translate("Rate");?>:" + trim(aryValues["rate"]) + ")" + "\">->" + trim(aryValues["dst"]) + "</acronym>";
+	if(trim(aryValues["billsec"]) == 0){
+		td.innerHTML = "<acronym title=\"" + "<?echo $locate->Translate("Destination");?>:" + trim(aryValues["destination"]) + "(" + "<?echo $locate->Translate("Rate");?>:" + trim(aryValues["rate"]) + ")" + "\"><img src='images/noanswer.gif'>" + trim(aryValues["dst"]) + "</acronym>";
+	}else{
+		if(trim(aryValues["direction"]) == 'inbound')
+			td.innerHTML = "<acronym title=\"" + "<?echo $locate->Translate("Destination");?>:" + trim(aryValues["destination"]) + "(" + "<?echo $locate->Translate("Rate");?>:" + trim(aryValues["rate"]) + ")" + "\"><img src='images/inbound.gif'>" + trim(aryValues["dst"]) + "</acronym>";
+		else
+			td.innerHTML = "<acronym title=\"" + "<?echo $locate->Translate("Destination");?>:" + trim(aryValues["destination"]) + "(" + "<?echo $locate->Translate("Rate");?>:" + trim(aryValues["rate"]) + ")" + "\"><img src='images/outbound.gif'>" + trim(aryValues["dst"]) + "</acronym>";
+	}
 //	td.innerHTML = trim(aryValues["dst"]);
 //	td.style.width = "70px";
-	if(trim(aryValues["direction"]) == 'inbound') td.style.color = "green";
+//	if(trim(aryValues["direction"]) == 'inbound') td.style.color = "green";
 	tr.appendChild(td);
 	
  	// duration

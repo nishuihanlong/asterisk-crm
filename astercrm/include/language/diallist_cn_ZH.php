@@ -12,4 +12,5 @@ $edit_record = "修改记录";
 $dialed = '已拨列表';
 $campaign = '拨号计划';
 $obligatory_fields = '* 为必填项';
+$all = "全部";
 ?>
