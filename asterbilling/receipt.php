@@ -1,13 +1,31 @@
 <?  
 	header('Content-Type: text/html; charset=utf-8');
 	require_once ("db_connect.php");
-	require_once ('include/asterevent.class.php');
+	require_once('systemstatus.server.php');
+	//require_once ('include/asterevent.class.php');
 
 	$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'systemstatus');
 
 	$reseller = astercc::readField('resellergroup','resellername','id',$_SESSION['curuser']['resellerid']);
 	
 	$callshop = astercc::readField('accountgroup','groupname','id',$_SESSION['curuser']['groupid']);
+	
+	$group_row = astercrm::getRecord($_SESSION['curuser']['groupid'],'accountgroup');	
+	
+	if ( $group_row['grouplogo'] != '' && $group_row['grouplogostatus'] ){
+		$logoPath = $config['system']['upload_file_path'].'/callshoplogo/'.$group_row['grouplogo'];
+		if (is_file($logoPath)){
+			$titleHtml = '<img src="'.$logoPath.'" style="float:left;" width="80" height="80">';
+		}
+	}
+	if ( $group_row['grouptitle'] != ''){
+		$titleHtml .= '<h1 style="padding: 0 0 0 0;position: relative;font-size: 16pt;">'.$group_row['grouptitle'].'</h1>';
+	}
+	if ( $group_row['grouptagline'] != ''){
+		$titleHtml .= '<h2 style="padding: 0 0 0 0;position: relative;font-size: 11pt;color: #FJDSKB;">'.$group_row['grouptagline'].'</h2>';
+	}
+	
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -33,15 +51,22 @@
 	}
 </style>
  <BODY>
+ <? if (isset($titleHtml)){
+		$titleHtml .= '';
+		echo '<div id="divReceiptTitle" name="divReceiptTitle" style="position:relative;top:2px;height:80px;">'.$titleHtml.'</div><div style="position:relative;left:0px;display:block;"><hr color="#F1F1F1"></div>';
+	}
+?> 
 	<div id="divPrint" align="right"><input type="button" onclick="document.getElementById('divPrint').style.display='none';window.print();window.close();" value="<? echo $locate->Translate("Print");?>">&nbsp;&nbsp;</div>
 
+	<div id="divMain" style="position:relative;">
 	<div>&nbsp;<? echo $locate->Translate("Reseller");?>:&nbsp;<?echo $reseller;?>
 	   <br>
 	   &nbsp;<? echo $locate->Translate("Callshop");?>:&nbsp;<?echo $callshop;?>
 	   <br>
 	   &nbsp;<? echo $locate->Translate("Operator");?>:&nbsp;<?echo $_SESSION['curuser']['username'];?>
 	</div>
-
+	</div>
+	<div style="position:relative;">
   <table  width="100%" border="1" align="center" class="adminlist">
     <tr><td colspan="5">&nbsp;</td></tr>
 	<tr>
@@ -94,6 +119,7 @@
 				<li>2007-2008 asterBilling - asterBilling home</li>
 				<li>version: 0.91 </li>
 				</ul>
+  </div>
   </div>
  </BODY>
 </html>
