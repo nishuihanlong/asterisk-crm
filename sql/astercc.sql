@@ -1,11 +1,6 @@
 
-## last modified by solo 2008-11-10
-## added table `qagent`,`qname`, `queue_stats`, `queue_agent`, `qagent_event`, `queue_caller`
-## last modified by solo 2008#10#23
-## add fields astercrm_account.firstname, astercrm_account.lastname, astercrm_account.agent,
-## astercrm_accountgroup.groupnote, contact.fax_ext, customer.country, customer.fax_ext, customer.phone_ext
-
-## change filed, customer.category, astercrm_account.extension
+###########   Table structure for asterCC database   ################
+###########   astercc current version: 0.11 beta     ################
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -15,13 +10,15 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 ############ For astercc ####################################
 
-## ########################################################
+#############################################################
 
 ## 
 ## table `account`
 ## 
 
-CREATE TABLE IF NOT EXISTS `account` (
+DROP TABLE IF EXISTS `account`;
+
+CREATE TABLE `account` (
   `id` int(11) NOT NULL auto_increment,
   `username` varchar(30) NOT NULL default '',
   `password` varchar(30) NOT NULL default '',
@@ -53,7 +50,9 @@ NULL , 'admin', 'admin', 'admin' , now()
 ## table `accountgroup`
 ## 
 
-CREATE TABLE IF NOT EXISTS `accountgroup` (
+DROP TABLE IF EXISTS `accountgroup`;
+
+CREATE TABLE `accountgroup` (
   `id` int(11) NOT NULL auto_increment,
   `groupname` varchar(30) NOT NULL default '',
   `grouptitle` varchar(50) NOT NULL default '',
@@ -80,7 +79,9 @@ CREATE TABLE IF NOT EXISTS `accountgroup` (
 ## table `callback`
 ## 
 
-CREATE TABLE IF NOT EXISTS `callback` (
+DROP TABLE IF EXISTS `callback`;
+
+CREATE TABLE `callback` (
   `id` int(11) NOT NULL auto_increment,
   `lega` varchar(30) NOT NULL default '0',
   `legb` varchar(30) NOT NULL default '',
@@ -98,7 +99,9 @@ CREATE TABLE IF NOT EXISTS `callback` (
 ## table `callshoprate`
 ## 
 
-CREATE TABLE IF NOT EXISTS `callshoprate` (
+DROP TABLE IF EXISTS `callshoprate`;
+
+CREATE TABLE `callshoprate` (
   `id` int(11) NOT NULL auto_increment,
   `dialprefix` varchar(20) NOT NULL default '',
   `numlen` int(11) NOT NULL default '0',
@@ -120,7 +123,9 @@ CREATE TABLE IF NOT EXISTS `callshoprate` (
 ## table `clid`
 ## 
 
-CREATE TABLE IF NOT EXISTS `clid` (
+DROP TABLE IF EXISTS `clid`;
+
+CREATE TABLE `clid` (
   `id` int(11) NOT NULL auto_increment,
   `clid` varchar(20) NOT NULL default '',
   `pin` varchar(30) NOT NULL default '',
@@ -148,7 +153,9 @@ CREATE TABLE IF NOT EXISTS `clid` (
 ## table `myrate`
 ## 
 
-CREATE TABLE IF NOT EXISTS `myrate` (
+DROP TABLE IF EXISTS `myrate`;
+
+CREATE TABLE `myrate` (
   `id` int(11) NOT NULL auto_increment,
   `dialprefix` varchar(20) NOT NULL default '',
   `numlen` int(11) NOT NULL default '0',
@@ -170,7 +177,9 @@ CREATE TABLE IF NOT EXISTS `myrate` (
 ## table `resellergroup`
 ## 
 
-CREATE TABLE IF NOT EXISTS `resellergroup` (
+DROP TABLE IF EXISTS `resellergroup`;
+
+CREATE TABLE `resellergroup` (
   `id` int(11) NOT NULL auto_increment,
   `resellername` varchar(30) NOT NULL default '',
   `accountcode` varchar(20) NOT NULL default '',
@@ -193,7 +202,9 @@ CREATE TABLE IF NOT EXISTS `resellergroup` (
 ## table `resellerrate`
 ## 
 
-CREATE TABLE IF NOT EXISTS `resellerrate` (
+DROP TABLE IF EXISTS `resellerrate`;
+
+CREATE TABLE `resellerrate` (
   `id` int(11) NOT NULL auto_increment,
   `dialprefix` varchar(20) NOT NULL default '',
   `numlen` int(11) NOT NULL default '0',
@@ -214,7 +225,9 @@ CREATE TABLE IF NOT EXISTS `resellerrate` (
 ## table `credithistory`
 ## 
 
-CREATE TABLE IF NOT EXISTS `credithistory` (
+DROP TABLE IF EXISTS `credithistory`;
+
+CREATE TABLE `credithistory` (
   `id` int(11) NOT NULL auto_increment,
   `modifytime` datetime NOT NULL default '0000-00-00 00:00:00',
   `resellerid` int(11) NOT NULL default '0',
@@ -228,19 +241,20 @@ CREATE TABLE IF NOT EXISTS `credithistory` (
   key `resellerid` (`resellerid`,`groupid`,`clidid`,`modifytime`,`modifystatus`,`modifyamount`,`operator`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
-##########################################################
 
 ###############################################################
 
 ############### Both for astercc and astercrm #################
 
-##########################################################
+###############################################################
 
 ## 
 ## table `peerstatus`
 ## 
 
-CREATE TABLE IF NOT EXISTS `peerstatus` (
+DROP TABLE IF EXISTS `peerstatus`;
+
+CREATE TABLE `peerstatus` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `status` VARCHAR( 50 ) NOT NULL ,
  `peer` VARCHAR( 100 ) NOT NULL ,
@@ -254,7 +268,9 @@ UNIQUE (`id`)
 ## table `curcdr`
 ## 
 
-CREATE TABLE IF NOT EXISTS `curcdr` (
+DROP TABLE IF EXISTS `curcdr`;
+
+CREATE TABLE `curcdr` (
   `id` int(11) NOT NULL auto_increment,
   `src` varchar(20) NOT NULL default '',
   `dst` varchar(20) NOT NULL default '',  
@@ -285,7 +301,9 @@ CREATE TABLE IF NOT EXISTS `curcdr` (
 ## table `mycdr`
 ## 
 
-CREATE TABLE IF NOT EXISTS `mycdr` (
+DROP TABLE IF EXISTS `mycdr`;
+
+CREATE TABLE `mycdr` (
   `id` int(11) NOT NULL auto_increment,
   `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
   `src` varchar(30) NOT NULL default '',
@@ -319,7 +337,9 @@ CREATE TABLE IF NOT EXISTS `mycdr` (
 ## table `historycdr`
 ## 
 
-CREATE TABLE IF NOT EXISTS `historycdr` (
+DROP TABLE IF EXISTS `historycdr`;
+
+CREATE TABLE `historycdr` (
   `id` int(11) NOT NULL auto_increment,
   `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
   `src` varchar(80) NOT NULL default '',
@@ -357,7 +377,9 @@ CREATE TABLE IF NOT EXISTS `historycdr` (
 ## table `astercrm_account`
 ## 
 
-CREATE TABLE IF NOT EXISTS `astercrm_account` (
+DROP TABLE IF EXISTS `astercrm_account`;
+
+CREATE TABLE `astercrm_account` (
  `id` int(11) NOT NULL auto_increment,
  `username` varchar(30) NOT NULL default '',
  `password` varchar(30) NOT NULL default '',
@@ -395,7 +417,9 @@ VALUES (
 ## table `queuestatus`
 ## 
 
-CREATE TABLE IF NOT EXISTS `queuestatus` (
+DROP TABLE IF EXISTS `queuestatus`;
+
+CREATE TABLE `queuestatus` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `channel` VARCHAR( 60 ) NOT NULL ,
  `callerid` VARCHAR( 40 ) NOT NULL ,
@@ -413,7 +437,9 @@ CREATE TABLE IF NOT EXISTS `queuestatus` (
 ## table `astercrm_accountgroup`
 ## 
 
-CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
+DROP TABLE IF EXISTS `astercrm_accountgroup`;
+
+CREATE TABLE `astercrm_accountgroup` (
  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
  `groupname` VARCHAR( 30 ) NOT NULL ,
  `groupnote` VARCHAR( 255 ) NOT NULL ,				
@@ -433,7 +459,9 @@ CREATE TABLE IF NOT EXISTS `astercrm_accountgroup` (
 ## table `campaign`
 ## 
 
-CREATE TABLE IF NOT EXISTS `campaign` ( #added by solo 2008#2#5
+DROP TABLE IF EXISTS `campaign`;
+
+CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `id` int(11) NOT NULL auto_increment,
  `groupid` int(11) NOT NULL default '0',
  `campaignname` varchar(30) NOT NULL default '',
@@ -458,7 +486,9 @@ CREATE TABLE IF NOT EXISTS `campaign` ( #added by solo 2008#2#5
 ## table `contact`
 ## 
 
-CREATE TABLE IF NOT EXISTS `contact` (
+DROP TABLE IF EXISTS `contact`;
+
+CREATE TABLE `contact` (
  `id` int(11) NOT NULL auto_increment,
  `contact` varchar(30) NOT NULL default '',
  `gender` varchar(10) NOT NULL default 'unknown',	#add 2007#10#5 by solo
@@ -486,7 +516,9 @@ CREATE TABLE IF NOT EXISTS `contact` (
 ## table `customer`
 ## 
 
-CREATE TABLE IF NOT EXISTS `customer` (
+DROP TABLE IF EXISTS `customer`;
+
+CREATE TABLE `customer` (
  `id` int(11) NOT NULL auto_increment,
  `customer` varchar(120) NOT NULL default '',
  `address` varchar(200) NOT NULL default '',
@@ -520,7 +552,9 @@ CREATE TABLE IF NOT EXISTS `customer` (
 ## table `dialedlist`
 ## 
 
-CREATE TABLE IF NOT EXISTS `dialedlist` (
+DROP TABLE IF EXISTS `dialedlist`;
+
+CREATE TABLE `dialedlist` (
   `id` int(11) NOT NULL auto_increment,
   `dialednumber` varchar(30) NOT NULL default '',
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008#2#1
@@ -543,8 +577,10 @@ CREATE TABLE IF NOT EXISTS `dialedlist` (
 ## table `diallist`
 ## 
 
+DROP TABLE IF EXISTS `diallist`;
+
 #store Predictive dialer phone list
-CREATE TABLE IF NOT EXISTS `diallist` (
+CREATE TABLE `diallist` (
   `id` int(11) NOT NULL auto_increment,
   `dialnumber` varchar(30) NOT NULL default '',
   `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008/05/04
@@ -564,7 +600,9 @@ CREATE TABLE IF NOT EXISTS `diallist` (
 ## table `events`
 ## 
 
-CREATE TABLE IF NOT EXISTS `events` (
+DROP TABLE IF EXISTS `events`;
+
+CREATE TABLE `events` (
   `id` int(16) NOT NULL auto_increment,
   `timestamp` datetime default NULL,
   `event` varchar(255) default NULL,
@@ -579,7 +617,9 @@ CREATE TABLE IF NOT EXISTS `events` (
 ## table `survey`
 ## 
 
-CREATE TABLE IF NOT EXISTS `survey` (
+DROP TABLE IF EXISTS `survey`;
+
+CREATE TABLE `survey` (
   `id` int(11) NOT NULL auto_increment,
   `surveyname` varchar(30) NOT NULL default '',
   `surveynote` varchar(255) NOT NULL default '',							#add 2008#1#11 by solo
@@ -596,7 +636,9 @@ CREATE TABLE IF NOT EXISTS `survey` (
 ## table `surveyoptions`
 ## 
 
-CREATE TABLE IF NOT EXISTS `surveyoptions` (
+DROP TABLE IF EXISTS `surveyoptions`;
+
+CREATE TABLE `surveyoptions` (
   `id` int(11) NOT NULL auto_increment,
   `surveyoption` varchar(50) NOT NULL default '',
   `optionnote` varchar(255) NOT NULL default '',	#added by solo 2008#1#14
@@ -613,7 +655,9 @@ CREATE TABLE IF NOT EXISTS `surveyoptions` (
 ## table `surveyresult`
 ## 
 
-CREATE TABLE IF NOT EXISTS `surveyresult` (
+DROP TABLE IF EXISTS `surveyresult`;
+
+CREATE TABLE `surveyresult` (
   `id` int(11) NOT NULL auto_increment,
   `customerid` int(11) NOT NULL default '0',
   `contactid` int(11) NOT NULL default '0',
@@ -635,7 +679,10 @@ CREATE TABLE IF NOT EXISTS `surveyresult` (
 ## 
 ## table `surveyoptionitems`
 ## 
- CREATE TABLE IF NOT EXISTS `surveyoptionitems` (
+
+DROP TABLE IF EXISTS `surveyoptionitems`;
+
+CREATE TABLE `surveyoptionitems` (
 `id` int(11) NOT NULL AUTO_INCREMENT ,
 `optionid` INT NOT NULL ,
 `itemtype` ENUM( 'checkbox', 'radio', 'text' ) NOT NULL DEFAULT 'radio',
@@ -650,9 +697,11 @@ UNIQUE (`id`)
 
 ## 
 ## table `note`
-## 
+##
 
-CREATE TABLE IF NOT EXISTS `note` (
+DROP TABLE IF EXISTS `note`;
+
+CREATE TABLE `note` (
   `id` int(11) NOT NULL auto_increment,
   `note` text character set utf8 collate utf8_unicode_ci NOT NULL,
   `priority` int(11) NOT NULL default '0',
@@ -671,7 +720,9 @@ CREATE TABLE IF NOT EXISTS `note` (
 ## table `remind`
 ## 
 
-CREATE TABLE IF NOT EXISTS `remind` (
+DROP TABLE IF EXISTS `remind`;
+
+CREATE TABLE `remind` (
  `id` int(11) NOT NULL auto_increment,
  `title` varchar(100) NOT NULL default '',	
  `content` text NOT NULL default '',		
@@ -693,7 +744,9 @@ CREATE TABLE IF NOT EXISTS `remind` (
 ## table `monitorrecord`
 ## 
 
-CREATE TABLE IF NOT EXISTS `monitorrecord` (
+DROP TABLE IF EXISTS `monitorrecord`;
+
+CREATE TABLE `monitorrecord` (
  `id` INT NOT NULL AUTO_INCREMENT,
  `callerid` VARCHAR( 20 ) NOT NULL DEFAULT '',
  `filename` VARCHAR( 128 ) NOT NULL DEFAULT '',
@@ -713,7 +766,9 @@ KEY `monitorid`(`uniqueid`,`filename`,`creby`)
 ## table `trunkinfo`
 ## 
 
-CREATE TABLE IF NOT EXISTS `trunkinfo` (
+DROP TABLE IF EXISTS `trunkinfo`;
+
+CREATE TABLE `trunkinfo` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `trunkname` VARCHAR( 30 ) NOT NULL ,
  `trunkchannel` VARCHAR( 50 ) NOT NULL ,
@@ -732,7 +787,9 @@ CREATE TABLE IF NOT EXISTS `trunkinfo` (
 ## table `asteriskcalls`
 ## 
 
-CREATE TABLE IF NOT EXISTS `asteriskcalls` (
+DROP TABLE IF EXISTS `asteriskcalls`;
+
+CREATE TABLE `asteriskcalls` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `asteriskcallsname` VARCHAR( 50 ) NOT NULL ,
  `outcontext` VARCHAR( 50 ) NOT NULL ,
@@ -750,7 +807,9 @@ CREATE TABLE IF NOT EXISTS `asteriskcalls` (
 ## table `remindercalls`
 ## 
 
-CREATE TABLE IF NOT EXISTS `remindercalls` (
+DROP TABLE IF EXISTS `remindercalls`;
+
+CREATE TABLE `remindercalls` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `customerid` INT NOT NULL ,
  `contactid` INT NOT NULL ,
@@ -772,7 +831,9 @@ CREATE TABLE IF NOT EXISTS `remindercalls` (
 ## table `speeddial`
 ## 
 
-CREATE TABLE IF NOT EXISTS `speeddial` (
+DROP TABLE IF EXISTS `speeddial`;
+
+CREATE TABLE `speeddial` (
   `id` int(11) NOT NULL auto_increment,
   `description` varchar(30) NOT NULL default '',
   `number` varchar(20) NOT NULL default '',
@@ -782,9 +843,15 @@ CREATE TABLE IF NOT EXISTS `speeddial` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+##########################################################
 
+## 
+## table `sip_show_peers`
+## 
 
-CREATE TABLE IF NOT EXISTS `sip_show_peers` (
+DROP TABLE IF EXISTS `sip_show_peers`;
+
+CREATE TABLE `sip_show_peers` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `username` varchar(50) NOT NULL default '',
   `host` varchar(50) NOT NULL default '',
@@ -801,7 +868,13 @@ CREATE TABLE IF NOT EXISTS `sip_show_peers` (
 
 ####### FOR QUEUE STATS ###########
 
-CREATE TABLE IF NOT EXISTS `qagent` (
+##
+## Table structure for table `qagent`
+##
+
+DROP TABLE IF EXISTS `qagent`;
+
+CREATE TABLE `qagent` (
   agent_id int(6) NOT NULL auto_increment,
   agent varchar(40) NOT NULL default '',
   PRIMARY KEY  (agent_id)
@@ -811,7 +884,9 @@ CREATE TABLE IF NOT EXISTS `qagent` (
 ## Table structure for table `qevent`
 ##
 
-CREATE TABLE IF NOT EXISTS `qevent` (
+DROP TABLE IF EXISTS `qevent`;
+
+CREATE TABLE `qevent` (
   event_id int(2) NOT NULL default '0',
   event varchar(40) default NULL,
   PRIMARY KEY  (event_id)
@@ -847,7 +922,9 @@ INSERT INTO qevent VALUES (19,'RINGNOANSWER');
 ## Table structure for table `qname`
 ##
 
-CREATE TABLE IF NOT EXISTS `qname` (
+DROP TABLE IF EXISTS `qname`;
+
+CREATE TABLE `qname` (
   qname_id int(6) NOT NULL auto_increment,
   queue varchar(40) NOT NULL default '',
   PRIMARY KEY  (qname_id)
@@ -857,7 +934,9 @@ CREATE TABLE IF NOT EXISTS `qname` (
 ## Table structure for table `queue_stats`
 ##
 
-CREATE TABLE IF NOT EXISTS `queue_stats` (
+DROP TABLE IF EXISTS `queue_stats`;
+
+CREATE TABLE `queue_stats` (
   queue_stats_id int(12) NOT NULL auto_increment,
   uniqueid varchar(40) default NULL,
   datetime datetime NOT NULL default '0000-00-00 00:00:00',
@@ -877,7 +956,9 @@ CREATE TABLE IF NOT EXISTS `queue_stats` (
 ## table `queue_name`
 ## 
 
-CREATE TABLE IF NOT EXISTS `queue_name` (
+DROP TABLE IF EXISTS `queue_name`;
+
+CREATE TABLE `queue_name` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
   `curcalls` int NOT NULL default 0,
@@ -899,7 +980,9 @@ CREATE TABLE IF NOT EXISTS `queue_name` (
 ## table `queue_agent`
 ## 
 
-CREATE TABLE IF NOT EXISTS `queue_agent` (
+DROP TABLE IF EXISTS `queue_agent`;
+
+CREATE TABLE `queue_agent` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
   `agent` varchar(32) NOT NULL default '',
@@ -915,7 +998,9 @@ CREATE TABLE IF NOT EXISTS `queue_agent` (
 ## table `queue_caller`
 ## 
 
-CREATE TABLE IF NOT EXISTS `queue_caller` (
+DROP TABLE IF EXISTS `queue_caller`;
+
+CREATE TABLE `queue_caller` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
   `corder` int NOT NULL default 0,

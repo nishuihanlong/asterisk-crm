@@ -97,12 +97,27 @@ if [ "X${dbbin}" == "X" ];
 then
   dbbin="/usr/bin"
 fi
-echo ${dbpasswd}
+
 ${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ping
+
+echo "If database:'"${dbname}"' is not exists, press 'y' to create," && echo -n "else press 'n' to skip this step:" 
+read dbexisist
+
+if [ "X${dbexisist}" == "Xy" -o "X${dbexisist}" == "XY" ]
+then
+	${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} create ${dbname}
+else
+	echo "Warning: All data could be lost in "${dbname}" by next step," && echo -n "are you sure to continue?[y/n]:" 
+	read createTable
+
+	if [ "X${createTable}" != "Xy" -a "X${createTable}" != "XY" ]
+	then exit
+	fi
+fi
 
 if [ $? -ne 0 ];
 then
-  echo "database connect error"
+  echo "database operation failed!"
   exit
 else
   ${dbbin}/mysql --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ${dbname} < $curpath/sql/astercc.sql
