@@ -11,7 +11,7 @@ $logout="登出 ";
 $transfer="转接";
 $talking_to	=	"正在通话";
 $manager	=	"管理";
-$dial			= "拨号";
+$dial			= "拨叫";
 $search			= "查找";
 $stand_by="请稍候";
 $incoming="你有新的来电";
@@ -91,4 +91,6 @@ $callee_id = "被叫号码";
 $record = "录音";
 $google_map = "Google地图";
 $failed_when_connect_to_AMI = "连接AMI失败";
+$spy = "监听";
+$whisper = "秘语";
 ?>

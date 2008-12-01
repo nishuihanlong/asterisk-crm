@@ -79,7 +79,7 @@ $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("showCustomer");
 $xajax->registerFunction("showContact");
 
-define(ROWSXPAGE, 15); // Number of rows show it per page.
-define(MAXROWSXPAGE, 30);  // Total number of rows show it when click on "Show All" button.
+define("ROWSXPAGE", 15); // Number of rows show it per page.
+define("MAXROWSXPAGE", 30);  // Total number of rows show it when click on "Show All" button.
 
 ?>

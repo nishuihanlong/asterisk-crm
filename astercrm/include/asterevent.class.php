@@ -426,6 +426,7 @@ class asterEvent extends PEAR
 	*/
 	function &tableStatus($phones,$status,$callerid,$direction,$srcchan = null,$dstchan = null){
 		//print_r($srcchan);exit;
+		global $locate;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		$action .= '<tr>';
 		$i=0;
@@ -439,18 +440,18 @@ class asterEvent extends PEAR
 			$action .= "<td align=center ><br><div id='div_exten'>";
 			if (isset($status[$username])) {
 				if ($status[$username] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 				}else {
 					if ($status[$username] == 1) {
-						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."');return false;\">&nbsp;-<font size='2px'>Spy</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."','w');return false;\" >&nbsp;-<font size='2px'>Whisper</font>-</A><A href='###' onclick=\"hangup ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>Hangup</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A><A href='###' onclick=\"hangup ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Hangup')."</font>-</A></UL></LI>";
 					}
 					else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnG'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 					}
 				}
 			}
 			else {
-				$action .= "<UL id='extenBtnB'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+				$action .= "<UL id='extenBtnB'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 			}
 			$action .= "</UL></div>";
 
@@ -473,6 +474,7 @@ class asterEvent extends PEAR
 	*/
 
 	function &listStatus($phones,$status,$callerid,$direction){
+		global $locate;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $username => $row) {
 			//print_r($username);exit;
@@ -480,22 +482,22 @@ class asterEvent extends PEAR
 	
 			if (isset($status[$username])) {
 				if ($status[$username] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";					
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";					
 				}else {
 					if ($status[$username] == 1) {
 						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A>";
 						if($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin')
-						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."');return false;\">&nbsp;-<font size='2px'>Spy</font>-</A>";
-						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."','w');return false;\" >&nbsp;-<font size='2px'>Whisper</font>-</A></UL></LI>";					
+						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A>";
+						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A></UL></LI>";					
 					}else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 					}
 				}
 			}else {
 				$action .= "<UL id='extenBtnB'>
 												<LI><a href='###' >".$username."</a>
 													<UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A>
-														<A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>Dial</font>-</A>
+														<A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A>
 													</UL>
 												</LI>";
 			}

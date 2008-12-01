@@ -65,10 +65,10 @@
 ********************************************************************************/
 
 require_once ("db_connect.php");
+require_once ("portal.common.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('astercrm.server.common.php');
-require_once ("portal.common.php");
 require_once ('include/xajaxGrid.inc.php');
 require_once ('portal.grid.inc.php');
 require_once ('include/phoogle.php');

@@ -69,7 +69,7 @@ $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("recycle");
 $xajax->registerFunction("deleteByButton");
 
-define(ROWSXPAGE, 50); // Number of rows show it per page.
+define("ROWSXPAGE", 50); // Number of rows show it per page.
 // Total number of rows show it when click on "Show All" button.
-define(MAXROWSXPAGE, 100);
+define("MAXROWSXPAGE", 100);
 ?>

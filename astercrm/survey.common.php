@@ -78,7 +78,7 @@ $xajax->registerFunction("updateOption");
 $xajax->registerFunction("showItem");
 $xajax->registerFunction("addItem");
 
-define(ROWSXPAGE, 25); // Number of rows show it per page.
+define("ROWSXPAGE", 25); // Number of rows show it per page.
 // Total number of rows show it when click on "Show All" button.
-define(MAXROWSXPAGE, 50);
+define("MAXROWSXPAGE", 50);
 ?>

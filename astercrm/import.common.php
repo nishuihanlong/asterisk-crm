@@ -44,6 +44,6 @@ $xajax->registerFunction("showDivMainRight");
 $xajax->registerFunction("setCampaign");
 
 
-define(ROWSXPAGE, 5); // Number of rows show it per page.
-define(MAXROWSXPAGE, 25);  // Total number of rows show it when click on "Show All" button.
+define("ROWSXPAGE", 5); // Number of rows show it per page.
+define("MAXROWSXPAGE", 25);  // Total number of rows show it when click on "Show All" button.
 ?>

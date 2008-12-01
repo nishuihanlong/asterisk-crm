@@ -255,7 +255,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
 						<td align="left">
-							<input type="text" name="dialtime" size="20" value="'.date("Y-m-d H:i",time()).'">
+							<input type="text" name="dialtime" id="dialtime" size="20" value="'.date("Y-m-d H:i",time()).'">
 			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
 						</td>
 					</tr>';
@@ -328,7 +328,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
 						<td align="left">
-							<input type="text" name="dialtime" size="20" value="'.$diallist['dialtime'].'">
+							<input type="text" name="dialtime" id="dialtime" size="20" value="'.$diallist['dialtime'].'">
 			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
 						</td>
 					</tr>';

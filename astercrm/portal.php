@@ -461,7 +461,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formCustomerInfo" class="formDiv drsElement"
 			style="left: 20px; top: 50px;width: 600px"></div>
 		<div id="formContactInfo" class="formDiv drsElement"
-			style="left: 20px; top: 330px;"></div>
+			style="left: 20px; top: 330px;width: 600px"></div>
 		<div id="formCdr" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 900px"></div>
 		<div id="formRecentCdr" class="formDiv drsElement"
