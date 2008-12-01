@@ -173,7 +173,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("ID").'<br/>';
 	$headers[] = $locate->Translate("Name");
 	$headers[] = $locate->Translate("Reseller");
-	$headers[] = $locate->Translate("Account Code");
+	$headers[] = $locate->Translate("Inbound");
 	$headers[] = $locate->Translate("Callback");
 	$headers[] = $locate->Translate("Credit Limit");
 	$headers[] = $locate->Translate("Limit Type");
@@ -218,7 +218,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","accountcode","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","inboundrate","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","allowcallback","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creditlimit","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","limittype","'.$divName.'","ORDERING");return false;\'';
@@ -269,7 +269,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['resellername'];
-		$rowc[] = $row['accountcode'];
+		$rowc[] = $row['inboundrate'];
 		$rowc[] = $row['allowcallback'];
 		$rowc[] = $row['creditlimit'];
 		$rowc[] = $row['limittype'];

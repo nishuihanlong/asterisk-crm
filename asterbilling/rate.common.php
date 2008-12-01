@@ -21,7 +21,6 @@ registed function:
 * Desc: page created
 
 ********************************************************************************/
-
 header('Content-Type: text/html; charset=utf-8');
 header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');

@@ -78,7 +78,7 @@ require_once('clid.common.php');
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
 	</head>
-	<body onload="init();">
+	<body onload="init();" id="clid">
 		<div id="divNav"></div><br>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>

@@ -145,7 +145,7 @@ require_once('checkout.common.php');
 
 	</head>
 
-	<body onload="init();">
+	<body onload="init();" id="report">
 		<div id="divNav"></div>
 		<br>
 		<div id="divLimitStatus" name="divLimitStatus">

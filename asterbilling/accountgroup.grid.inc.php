@@ -313,6 +313,10 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Inbound Rate").'</td>
+					<td align="left"><input type="text" id="inboundrate" name="inboundrate" size="25" maxlength="30" value="0.0000"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -414,7 +418,6 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Credit Limit").'*</td>
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30" value="'.$group['creditlimit'].'"></td>
 				</tr>
-
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Cur Credit").'</td>
 					<td align="left">

@@ -167,13 +167,14 @@
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 
 	</head>
-	<body onload="init();">
+	<body onload="init();" id="import">
 		<div id="divNav"></div>
+		<br><br>
 		<center>
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" id="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
-					<span id="spanSelectFile"></span>: <input type="file" name="excel" id="excel"/>&nbsp;<b><?echo $locate->Translate('or');?></b>&nbsp;<select name="filelist" id="filelist"></select>
+					<span id="spanSelectFile"></span>: <input type="file" name="excel" id="excel"/>&nbsp;<b><?echo $locate->Translate('Or');?></b>&nbsp;<select name="filelist" id="filelist"></select>
 					<br /><br />
 					<input type="submit" value="" id="btnUpload" name="btnUpload" style="width:150px;"/>
 					<input id="hidOnUploadMsg" name="hidOnUploadMsg" type="hidden" value=""/>
@@ -225,7 +226,7 @@
 					</tr>
 					<tr>
 						<td height="30px">
-							<div style="width:100%;height:auto;lin-height:30px;text-align:left;" id="divResultMsg" name="divResultMsg"></div>
+							<div style="width:100%;height:auto;line-height:30px;text-align:left;" id="divResultMsg" name="divResultMsg"></div>
 						</td>
 					</tr>
 				</table>

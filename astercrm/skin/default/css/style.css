@@ -142,21 +142,6 @@ A IMG {
 	LINE-HEIGHT: 100%; BORDER-BOTTOM: #dddddd 1px dotted
 }
 
-TABLE.rbox {
-	border-spacing: 0
-}
-TABLE.rbox TD.xtl {
-	PADDING-LEFT: 12px; BACKGROUND-IMAGE: url(/pics/boxtl.gif); PADDING-TOP: 12px; BACKGROUND-REPEAT: no-repeat
-}
-TABLE.rbox TD.xtr {
-	BACKGROUND-IMAGE: url(/pics/boxtr.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat
-}
-TABLE.rbox TD.xbl {
-	FONT-SIZE: 4px; BACKGROUND-IMAGE: url(/pics/boxbl.gif); BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
-}
-TABLE.rbox TD.xbr {
-	FONT-SIZE: 4px; BACKGROUND-IMAGE: url(/pics/boxbr.gif); BACKGROUND-REPEAT: no-repeat
-}
 .paginator {
 	MARGIN-TOP: 10px; MARGIN-BOTTOM: 5px; FONT: 14px/150% normal Arial, Helvetica, sans-serif; COLOR: #666666; BACKGROUND-COLOR: #eeffee; TEXT-ALIGN: center
 }
@@ -275,28 +260,6 @@ TABLE.rbox TD.xbr {
     display: inline;
 }
 
-
-table#toolbar {
-	margin-right: 10px;
-}
-
-table#toolbar a.toolbar {
-	color : #808080;
-	text-decoration : none;
-	display: block;
-	border: 1px solid #DDD;
-	width: 55px;
-	padding: 2px 1px 2px 1px;
-}
-table#toolbar a.toolbar:hover {
-	color : #C64934;
-	border: 1px solid #c24733;
-	background-color: #f1e8e6;
-	padding: 3px 0px 1px 2px;
-}
-table#toolbar a.toolbar:active {
-	color : #FF9900;
-}
 .pagenav {
 	font-size : 12px;
 }

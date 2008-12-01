@@ -9,6 +9,7 @@ ALTER TABLE `accountgroup` ADD `grouptagline` VARCHAR( 80 ) NOT NULL AFTER `grou
 ALTER TABLE `accountgroup` ADD `grouplogo` VARCHAR( 30 ) NOT NULL AFTER `grouptagline`;
 ALTER TABLE `accountgroup` ADD `grouplogostatus` int(1) NOT NULL default 1 AFTER `grouplogo`;
 
+
 ## 
 ## table `surveyoptionitems`
 ## 

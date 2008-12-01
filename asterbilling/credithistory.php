@@ -52,7 +52,7 @@ require_once('credithistory.common.php');
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
 	</head>
-	<body onload="init();">
+	<body onload="init();" id="credithistory">
 		<div id="divNav"></div><br>
 		<div name="divClid" id="divClid" style="visibility:hidden">
 		&nbsp;<?echo $locate->Translate("Total Cost")?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit")?>:&nbsp;<span id="spanLimit" name="spanLimit"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Current cost")?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>

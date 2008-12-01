@@ -52,8 +52,8 @@ class Common{
 					<table class="copyright" id="tblCopyright">
 					<tr>
 						<td>
-							©2007 astercc - <a href="http://www.astercc.org" target="_blank">astercc home</a><br>
-							version: 0.09
+							©2007 astercc - <a href="http://www.astercc.org" target="_blank">asterbilling home</a><br>
+							version: 0.095
 						</td>
 					</tr>
 					</table>
@@ -76,37 +76,64 @@ class Common{
 		$html .= "<a href='diallist.php' >".$locate_common->Translate("diallist_manager")."</a> | ";
 
 */
+		$html .= '<div id="pagewidth">';
 		$html .= '<div class="">';
 		$html .= $locate_common->Translate("Username").':'.$_SESSION['curuser']['username'];
 		$html .= '&nbsp;&nbsp;'.$locate_common->Translate("User Type").':'.$_SESSION['curuser']['usertype'];
 		$html .= '</div>';
 
-		$html .= '<div class="">';
+		$html .= '<div id="header"><ul>';
 
+		$aryMenu = array();
+		$aryMenu['account'] = array("link"=>"account.php","title"=> $locate_common->Translate("Account"));
+		$aryMenu['accountgroup'] = array("link"=>"accountgroup.php","title"=> $locate_common->Translate("Account Group"));
+		$aryMenu['resellergroup'] = array("link"=>"resellergroup.php","title"=> $locate_common->Translate("Reseller Group"));
+		$aryMenu['report'] = array("link"=>"checkout.php","title"=> $locate_common->Translate("Report"));
+		$aryMenu['customerrate'] = array("link"=>"rate.php","title"=> $locate_common->Translate("Rate to Customer"));
+		$aryMenu['callshoprate'] = array("link"=>"callshoprate.php","title"=> $locate_common->Translate("Rate to Callshop"));
+		$aryMenu['resellerrate'] = array("link"=>"resellerrate.php","title"=> $locate_common->Translate("Rate to Reseller"));
+		$aryMenu['clid'] = array("link"=>"clid.php","title"=> $locate_common->Translate("Clid"));
+		$aryMenu['import'] = array("link"=>"import.php","title"=> $locate_common->Translate("Import"));
+		$aryMenu['cdr'] = array("link"=>"cdr.php","title"=> $locate_common->Translate("CDR"));
+		$aryMenu['credithistory'] = array("link"=>"credithistory.php","title"=> $locate_common->Translate("Credit History"));
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$html .= '
-							<a href="account.php">'.$locate_common->Translate("Account").'</a> | <a href="accountgroup.php">'.$locate_common->Translate("Account Group").'</a> | <a href="resellergroup.php">'.$locate_common->Translate("Reseller Group").'</a> | <a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a> | <a href="callshoprate.php">'.$locate_common->Translate("Rate to Callshop").'</a> | <a href="resellerrate.php">'.$locate_common->Translate("Rate to Reseller").'</a> | <a href="clid.php">'.$locate_common->Translate("Clid").'</a> | <a href="import.php">'.$locate_common->Translate("Import").'</a> | <a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a>';
+			$html .= common::generateNavMenu($aryMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
-			$html .= '
-							<a href="account.php">'.$locate_common->Translate("Account").'</a> | <a href="accountgroup.php">'.$locate_common->Translate("Account Group").'</a> | <a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a> | <a href="callshoprate.php">'.$locate_common->Translate("Rate to Callshop").'</a> | <a href="resellerrate.php">'.$locate_common->Translate("Rate to Reseller").'</a> | <a href="clid.php">'.$locate_common->Translate("Clid").'</a> | <a href="import.php">'.$locate_common->Translate("Import").'</a> | <a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a>';
+			$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory');
+			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
-			$html .= '
-							<a href="account.php">'.$locate_common->Translate("Account").'</a> | <a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="callshoprate.php">'.$locate_common->Translate("Rate to Callshop").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a>  | <a href="clid.php">'.$locate_common->Translate("Clid").'</a> | <a href="import.php">'.$locate_common->Translate("Import").'</a> | <a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a>';
+			$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory');
+			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
-			$html .= '&nbsp;&nbsp;<a href="cdr.php">'.$locate_common->Translate("CDR").'</a> | <a href="credithistory.php">'.$locate_common->Translate("Credit history").'</a> ';
+			$aryCurMenu = array('cdr','credithistory');
+			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}else{
-			// for operator 
-			$html .= '
-							<a href="checkout.php" >'.$locate_common->Translate("Report").'</a> | <a href="rate.php" >'.$locate_common->Translate("Rate to Customer").'</a>';
+			$aryCurMenu = array('report','customerrate');
+			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}
-		if($_SESSION['curuser']['usertype'] == 'clid'){
-			$html .= ' | <a href="login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</a>';
-		}else{
-			$html .= ' | <a href="manager_login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</a>';
-		}
-		$html .= '</div>';
 
+		if($_SESSION['curuser']['usertype'] == 'clid'){
+			$html .= '<li><a href="login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</li>';
+		}else{
+			$html .= '<li><a href="manager_login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</li>';
+		}
+		$html .= '</ul></div>';
+		$html .= '</div>';
+		return $html;
+	}
+
+	function generateNavMenu($aryMenu,$aryCurMenu = ''){
+		$html = '';
+		if ($aryCurMenu == ""){
+			foreach ($aryMenu as $key=>$val){
+				$html  .= '<li><a title="'.$aryMenu[$key]['title'].'" href="'.$aryMenu[$key]['link'].'" class="'.$key.'">'.$aryMenu[$key]['title'].'</a></li>';
+			}
+		}else{
+			foreach ($aryCurMenu as $key){
+				$html  .= '<li><a title="'.$aryMenu[$key]['title'].'" href="'.$aryMenu[$key]['link'].'" class="'.$key.'">'.$aryMenu[$key]['title'].'</a></li>';
+			}
+		}
 		return $html;
 	}
 

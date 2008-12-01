@@ -168,6 +168,7 @@ Class astercrm extends PEAR{
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
 				."limittype= '".$f['limittype']."', "
+				."inboundrate= '".$f['inboundrate']."', "
 				."resellerid= ".$f['resellerid'].", "
 				."addtime = now() ";
 		astercrm::events($sql);
@@ -356,6 +357,7 @@ Class astercrm extends PEAR{
 				."curcredit='".$newcurcredit."', "
 				."creditlimit='".$f['creditlimit']."', "
 				."limittype='".$f['limittype']."', "
+				."inboundrate='".$f['inboundrate']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."addtime= now(), "
 				."accountcode='".$f['accountcode']."' "
