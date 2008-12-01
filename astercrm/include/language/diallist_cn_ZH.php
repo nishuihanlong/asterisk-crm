@@ -13,4 +13,5 @@ $dialed = '已拨列表';
 $campaign = '拨号计划';
 $obligatory_fields = '* 为必填项';
 $all = "全部";
+$dial_number_must_be_digits = "号码必须为数字";
 ?>

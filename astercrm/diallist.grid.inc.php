@@ -247,7 +247,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Assign To").'*</td>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35"">
 						</td>
@@ -320,7 +320,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						</td>
 					</tr>
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Assign To").'*</td>
+						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35" value="'.$diallist['assign'].'">
 						</td>

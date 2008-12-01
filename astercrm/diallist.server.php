@@ -251,7 +251,13 @@ function edit($id){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
-	if(trim($f['dialnumber']) == '' || trim($f['assign']) == '' || trim($f['groupid']) == '' || trim($f['campaignid']) == ''){
+	
+	if(trim(astercrm::getDigitsInStr($f['dialnumber'])) == ''){
+		$objResponse->addAlert($locate->Translate("dial number must be digits"));
+		return $objResponse->getXML();
+	}
+
+	if(trim(astercrm::getDigitsInStr($f['dialnumber'])) == '' || trim($f['groupid']) == '' || trim($f['campaignid']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
@@ -283,7 +289,13 @@ function setCampaign($groupid){
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
-	if(trim($f['dialnumber']) == '' || trim($f['assign']) == '' || trim($f['groupid']) == '' || trim($f['campaignid']) == ''){
+
+	if(trim(astercrm::getDigitsInStr($f['dialnumber'])) == ''){
+		$objResponse->addAlert($locate->Translate("dial number must be digits"));
+		return $objResponse->getXML();
+	}
+
+	if(trim(astercrm::getDigitsInStr($f['dialnumber'])) == '' || trim($f['groupid']) == '' || trim($f['campaignid']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}

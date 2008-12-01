@@ -251,6 +251,15 @@ Class astercrm extends PEAR{
 		}
 		return $newVar;
 	}
+	
+	/*
+	* romove character which not a digit in string
+	*/
+
+	function getDigitsInStr($str){
+		$digits = preg_replace('/\D/','',$str);
+		return $digits;
+	}
 
 	/**
 	*  insert a record to customer table
@@ -272,16 +281,16 @@ Class astercrm extends PEAR{
 				."state='".$f['state']."', "
 				."contact='".$f['customerContact']."', "
 				."contactgender='".$f['customerContactGender']."', "
-				."phone='".$f['customerPhone']."', "
-				."phone_ext='".$f['customerPhone_ext']."', "
+				."phone='".astercrm::getDigitsInStr($f['customerPhone'])."', "
+				."phone_ext='".astercrm::getDigitsInStr($f['customerPhone_ext'])."', "
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
 				."bankaccount='".$f['bankaccount']."', "
 				."bankaccountname='".$f['bankaccountname']."', "
-				."fax='".$f['mainFax']."', "
-				."fax_ext='".$f['mainFax_ext']."', "
-				."mobile='".$f['mainMobile']."', "
+				."fax='".astercrm::getDigitsInStr($f['mainFax'])."', "
+				."fax_ext='".astercrm::getDigitsInStr($f['mainFax_ext'])."', "
+				."mobile='".astercrm::getDigitsInStr($f['mainMobile'])."', "
 				."email='".$f['mainEmail']."', "
 				."cretime=now(), "
 				."groupid = ".$_SESSION['curuser']['groupid'].", "
@@ -309,15 +318,15 @@ Class astercrm extends PEAR{
 				."contact='".$f['contact']."', "
 				."gender='".$f['gender']."', "
 				."position='".$f['position']."', "
-				."phone='".$f['phone']."', "
-				."ext='".$f['ext']."', "
-				."phone1='".$f['phone1']."', "
-				."ext1='".$f['ext1']."', "
-				."phone2='".$f['phone2']."', "
-				."ext2='".$f['ext2']."', "
-				."mobile='".$f['mobile']."', "
-				."fax='".$f['fax']."', "
-				."fax_ext='".$f['fax_ext']."', "
+				."phone='".astercrm::getDigitsInStr($f['phone'])."', "
+				."ext='".astercrm::getDigitsInStr($f['ext'])."', "
+				."phone1='".astercrm::getDigitsInStr($f['phone1'])."', "
+				."ext1='".astercrm::getDigitsInStr($f['ext1'])."', "
+				."phone2='".astercrm::getDigitsInStr($f['phone2'])."', "
+				."ext2='".astercrm::getDigitsInStr($f['ext2'])."', "
+				."mobile='".astercrm::getDigitsInStr($f['mobile'])."', "
+				."fax='".astercrm::getDigitsInStr($f['fax'])."', "
+				."fax_ext='".astercrm::getDigitsInStr($f['fax_ext'])."', "
 				."email='".$f['email']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
@@ -432,7 +441,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		
 		$query= "INSERT INTO diallist SET "
-				."dialnumber='".$f['dialnumber']."', "
+				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
 				."groupid='".$f['groupid']."', "
 				."dialtime='".$f['dialtime']."', "
 				."creby='".$_SESSION['curuser']['username']."', "
@@ -471,8 +480,8 @@ Class astercrm extends PEAR{
 				."country='".$f['country']."', "
 				."address='".$f['address']."', "
 				."zipcode='".$f['zipcode']."', "
-				."phone='".$f['customerPhone']."', "
-				."phone_ext='".$f['customerPhone_ext']."', "
+				."phone='".astercrm::getDigitsInStr($f['customerPhone'])."', "
+				."phone_ext='".astercrm::getDigitsInStr($f['customerPhone_ext'])."', "
 				."contact='".$f['customerContact']."', "
 				."contactgender='".$f['customerContactGender']."', "
 				."state='".$f['state']."', "
@@ -480,9 +489,9 @@ Class astercrm extends PEAR{
 				."category='".$f['category']."', "
 				."bankname='".$f['bankname']."', "
 				."bankzip='".$f['bankzip']."', "
-				."fax='".$f['mainFax']."', "
-				."fax_ext='".$f['mainFax_ext']."', "
-				."mobile='".$f['mainMobile']."', "
+				."fax='".astercrm::getDigitsInStr($f['mainFax'])."', "
+				."fax_ext='".astercrm::getDigitsInStr($f['mainFax_ext'])."', "
+				."mobile='".astercrm::getDigitsInStr($f['mainMobile'])."', "
 				."email='".$f['mainEmail']."', "
 				."bankaccount='".$f['bankaccount']."', "
 				."bankaccountname='".$f['bankaccountname']."' "
@@ -508,15 +517,15 @@ Class astercrm extends PEAR{
 				."contact='".$f['contact']."', "
 				."gender='".$f['contactGender']."', "
 				."position='".$f['position']."', "
-				."phone='".$f['phone']."', "
-				."ext='".$f['ext']."', "
-				."phone1='".$f['phone1']."', "
-				."ext1='".$f['ext1']."', "
-				."phone2='".$f['phone2']."', "
-				."ext2='".$f['ext2']."', "
-				."mobile='".$f['mobile']."', "
-				."fax='".$f['fax']."', "
-				."fax_ext='".$f['fax_ext']."', "
+				."phone='".astercrm::getDigitsInStr($f['phone'])."', "
+				."ext='".astercrm::getDigitsInStr($f['ext'])."', "
+				."phone1='".astercrm::getDigitsInStr($f['phone1'])."', "
+				."ext1='".astercrm::getDigitsInStr($f['ext1'])."', "
+				."phone2='".astercrm::getDigitsInStr($f['phone2'])."', "
+				."ext2='".astercrm::getDigitsInStr($f['ext2'])."', "
+				."mobile='".astercrm::getDigitsInStr($f['mobile'])."', "
+				."fax='".astercrm::getDigitsInStr($f['fax'])."', "
+				."fax_ext='".astercrm::getDigitsInStr($f['fax_ext'])."', "
 				."email='".$f['email']."' "
 				."WHERE id='".$f['contactid']."'";
 		astercrm::events($query);
@@ -617,7 +626,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		
 		$query= "UPDATE diallist SET "
-				."dialnumber='".$f['dialnumber']."', "
+				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
 				."groupid='".$f['groupid']."', "
 				."dialtime='".$f['dialtime']."', "
 				."campaignid= ".$f['campaignid'].", "
