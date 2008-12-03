@@ -139,6 +139,7 @@ A IMG {
 	LINE-HEIGHT: 100%; BORDER-BOTTOM: #dddddd 1px dotted
 }
 
+
 .paginator {
 	MARGIN-TOP: 10px; MARGIN-BOTTOM: 5px; FONT: 14px/150% normal Arial, Helvetica, sans-serif; COLOR: #666666; BACKGROUND-COLOR: #eeffee; TEXT-ALIGN: center
 }
@@ -213,7 +214,7 @@ A IMG {
 
 #header ul a {
 	display: block;
-	font: bold 0.9em Trebuchet MS, Arial, sans-serif;
+	font: bold 0.75em Trebuchet MS, Arial, sans-serif;
 	color: #fff;
 	text-transform: uppercase;
 }
@@ -245,6 +246,7 @@ outline: none;
           #accountgroup #header ul a.accountgroup,
           #resellergroup #header ul a.resellergroup,
           #report #header ul a.report,
+          #statistic #header ul a.statistic,
           #customerrate #header ul a.customerrate,
           #callshoprate #header ul a.callshoprate,
           #resellerrate #header ul a.resellerrate,
@@ -296,6 +298,15 @@ a.pagenav:active {
         z-index: -3;
         font-size: 12px;
 }
+
+div.box{
+	padding-left:10px;
+	float:left;
+	width:200px;
+	height:180px;
+	border : 1px solid #ccc;
+}
+
 .text_area {
         border : 1px solid #ccc;
         z-index: -3;
@@ -601,6 +612,7 @@ table.cpanel td {
 }
 
 div.centermain {
+	MARGIN: 10px 10px 10px 10px;
 	padding: 0 10px;
 }
 

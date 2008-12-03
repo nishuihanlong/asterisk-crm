@@ -48,6 +48,7 @@ class Common{
 		global $locate_common;
 
 		$html .='
+				<hr style="clear:both;border: 0px;width: 80%;">
 				<div align="center">
 					<table class="copyright" id="tblCopyright">
 					<tr>
@@ -89,6 +90,7 @@ class Common{
 		$aryMenu['accountgroup'] = array("link"=>"accountgroup.php","title"=> $locate_common->Translate("Account Group"));
 		$aryMenu['resellergroup'] = array("link"=>"resellergroup.php","title"=> $locate_common->Translate("Reseller Group"));
 		$aryMenu['report'] = array("link"=>"checkout.php","title"=> $locate_common->Translate("Report"));
+//		$aryMenu['statistic'] = array("link"=>"statistic.php","title"=> $locate_common->Translate("Statistic"));
 		$aryMenu['customerrate'] = array("link"=>"rate.php","title"=> $locate_common->Translate("Rate to Customer"));
 		$aryMenu['callshoprate'] = array("link"=>"callshoprate.php","title"=> $locate_common->Translate("Rate to Callshop"));
 		$aryMenu['resellerrate'] = array("link"=>"resellerrate.php","title"=> $locate_common->Translate("Rate to Reseller"));
@@ -108,7 +110,7 @@ class Common{
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$aryCurMenu = array('cdr','credithistory');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
-		}else{
+		}else{ // operator
 			$aryCurMenu = array('report','customerrate');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}

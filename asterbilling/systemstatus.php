@@ -413,10 +413,12 @@ function searchRate(){
 	<body onload="init();">
 		<div id="divTitle" name="divTitle" style="position:absolute;top:2px;height:80px;width:800px;"></div>
 		<div id="divPanel" name="divPanel" class="divPanel">
-			<a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a><br>
-			<a href="checkout.php" target="_blank"><?echo $locate->Translate("Report");?></a><br>
-			<a href="clid.php" target="_blank"><?echo $locate->Translate("Clid");?></a><br>
-			<a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a>
+			<ul id="nav">
+				<li><a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a></li>
+				<li><a href="checkout.php" target="_blank"><?echo $locate->Translate("Report");?></a></li>
+				<li><a href="clid.php" target="_blank"><?echo $locate->Translate("Clid");?></a></li>
+				<li><a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a></li>
+			</ul>
 		</div>
 		<div id="divMain" style="position:absolute;top:100px;">
 		<div id="divNav"></div>

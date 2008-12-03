@@ -63,21 +63,6 @@ div.lable{
 */
 }
 
-div.divPanel {
-	/*width: 100px; */
-	/* height: 400px;  */
-	border: thin solid #767676; 
-/*	border-right-width: medium; 
-	border-right-color: #767676; 
-	border-bottom-width: medium; 
-	border-bottom-color: #767676; 
-*/
-	position: absolute; 
-	right: 0%; 
-	top: 0px;
-	background-color: #F1F1F1;
-	overflow: auto;
-}
 
 table.calllog {
 }
@@ -233,3 +218,59 @@ acronym {
 	FONT-SIZE: 14px;
 }
 /**********说明标记CSS结束**********/
+
+
+
+div.divPanel {
+	width: 120px;
+	/* height: 400px;  */
+	border: thin solid #767676; 
+/*	border-right-width: medium; 
+	border-right-color: #767676; 
+	border-bottom-width: medium; 
+	border-bottom-color: #767676; 
+*/
+	position: absolute; 
+	right: 0%; 
+	top: 0px;
+	background-color: #BED1DF;
+}
+
+#nav {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	position: absolute;
+	height: 100%;
+	border-top: 4px solid #FF881A;
+	width: 100%;
+	padding-top: 10px;
+    /*定义整个ul菜单的行高和背景色*/
+}
+/*==================一级目录===================*/
+#nav a {
+ width: 160px; 
+ display: block;
+ padding-left:0px;
+ /*Width(一定要)，否则下面的Li会变形*/
+}
+#nav li {
+ float:left;
+ /*float：left,本不应该设置，但由于在Firefox不能正常显示
+ 继承Nav的width,限制宽度，li自动向下延伸*/
+}
+#nav li a:hover{
+	background-color: #5a5a5a;
+	outline: none;
+	-moz-border-radius: 3px;
+	-webkit-border-radius : 3px;
+}
+#nav a:link  {
+ color:#666; text-decoration:none;
+}
+#nav a:visited  {
+ color:#666;text-decoration:none;
+}
+#nav a:hover  {
+ color:#FFF;text-decoration:none;font-weight:bold;
+}

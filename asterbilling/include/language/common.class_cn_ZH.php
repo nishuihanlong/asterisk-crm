@@ -5,6 +5,7 @@ $account = "用户管理";
 $account_group = "分组管理";
 $reseller_group = "代理商管理";
 $report = "报告";
+$statistic = "统计";
 $rate_to_customer = "用户费率";
 $rate_to_callshop = "分组费率";
 $rate_to_reseller = "代理商费率";

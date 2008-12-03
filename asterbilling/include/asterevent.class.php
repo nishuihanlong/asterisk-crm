@@ -337,12 +337,17 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 	$res = $db->query($query);
 	return $res;
 }
-	function readReport($resellerid, $groupid, $booth, $sdate, $edate){
+	function readReport($resellerid, $groupid, $booth, $sdate, $edate, $groupby = ''){
 		global $db;
+		$table = 'mycdr';
 		if($config['system']['useHistoryCdr'] == 1){
-			$query = "SELECT sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM historycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+			$table = 'historycdr';
+		}
+
+		if ($groupby == ""){
+			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 		}else{
-			$query = "SELECT sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, $groupby FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 		}
 		
 		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
@@ -372,6 +377,10 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		}
 		#print $query;exit;
 		#exit;
+		if ($groupby != ""){
+			$query .= " GROUP BY $groupby";
+		}
+
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;

@@ -107,6 +107,40 @@ function setGroup($resellerid){
 	return $objResponse;
 }
 
+function parseReport($myreport){
+	global $locate;
+	$ary['recordNum'] = $myreport['recordNum'];
+	$ary['seconds'] = $myreport['seconds'];
+	$ary['credit'] = $myreport['credit'];
+	$ary['callshopcredit'] = $myreport['callshopcredit'];
+	$ary['resellercredit'] = $myreport['resellercredit'];
+	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."<br>";
+		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
+		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
+		$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
+		$html .= $locate->Translate("Markup").": ". ($myreport['callshopcredit'] - $myreport['resellercredit']) ."<br>";
+		$ary['markup'] = $myreport['callshopcredit'] - $myreport['resellercredit'];
+
+	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."<br>";
+		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
+		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
+		$html .= $locate->Translate("Markup").": ". ($myreport['credit'] - $myreport['callshopcredit']) ."<br>";
+		$ary['markup'] = $myreport['credit'] - $myreport['callshopcredit'];
+	}else if ($_SESSION['curuser']['usertype'] == 'operator'){
+		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."<br>";
+		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
+	}
+
+	$result['html'] = $html;
+	$result['data'] = $ary;
+	return $result;
+}
+
 function setClid($groupid){
 	global $locate;
 	$objResponse = new xajaxResponse();
@@ -126,21 +160,216 @@ function listCDR($aFormValues){
 	if ($aFormValues['sltBooth'] == '' && $aFormValues['hidCurpeer'] != ''){
 		$aFormValues['sltBooth'] = $aFormValues['hidCurpeer'];
 	}
-	if ($aFormValues['ckbDetail'] == ""){
+
+	list ($syear,$smonth,$sday) = split("[ -]",$aFormValues['sdate']);
+	$syear = (int)$syear;
+	$smonth = (int)$smonth;
+	$sday = (int)$sday;
+
+	list ($eyear,$emonth,$eday) = split("[ -]",$aFormValues['edate']);
+	$eyear = (int)$eyear;
+	$emonth = (int)$emonth;
+	$eday = (int)$eday;
+
+	$ary = array();
+
+
+	if ($aFormValues['listType'] == "none"){
 		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 
 		if ($res->fetchInto($myreport)){
-			if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-				$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
-				$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
-				$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
-			}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-				$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
-				$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
-			}else if ($_SESSION['curuser']['usertype'] == 'operator'){
-				$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
+			$result = parseReport($myreport); 
+			$html .= $result['html'];
+		}
+		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		return $objResponse;
+	}elseif ($aFormValues['listType'] == "sumyear"){
+		for ($year = $syear; $year<=$eyear;$year++){
+			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
+			if ($res->fetchInto($myreport)){
+				$html .= "<div class='box'>";
+				$html .= "$year :<br/>";
+				$html .= "<div>";
+				$result = parseReport($myreport); 
+				$html .= $result['html'];
+				$html .= "</div>";
+				$html .= "</div>";
+				$ary['recordNum'] += $result['data']['recordNum'];
+				$ary['seconds'] = $result['data']['seconds'];
+				$ary['credit'] = $result['data']['credit'];
+				$ary['callshopcredit'] = $result['data']['callshopcredit'];
+				$ary['resellercredit'] = $result['data']['resellercredit'];
 			}
 		}
+		$html .= "<div class='box'>";
+		$html .= "total :<br/>";
+		$html .= "<div>";
+		$result = parseReport($ary); 
+		$html .= $result['html'];
+		$html .= "</div>";
+		$html .= "</div>";
+
+		$html .= "<div style='clear:both;'></div>";
+		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		return $objResponse;
+	}elseif ($aFormValues['listType'] == "summonth"){
+		for ($year = $syear; $year<=$eyear;$year++){
+			for ($month = $smonth;$month<=$emonth;$month++){
+				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
+				if ($res->fetchInto($myreport)){
+					$html .= "<div class='box'>";
+					$html .= "$year-$month :<br/>";
+					$html .= "<div>";
+					$result = parseReport($myreport); 
+					$html .= $result['html'];
+					$html .= "</div>";
+					$html .= "</div>";
+					$ary['recordNum'] += $result['data']['recordNum'];
+					$ary['seconds'] = $result['data']['seconds'];
+					$ary['credit'] = $result['data']['credit'];
+					$ary['callshopcredit'] = $result['data']['callshopcredit'];
+					$ary['resellercredit'] = $result['data']['resellercredit'];
+				}
+			}
+		}
+		$html .= "<div class='box'>";
+		$html .= "total :<br/>";
+		$html .= "<div>";
+		$result = parseReport($ary); 
+		$html .= $result['html'];
+		$html .= "</div>";
+		$html .= "</div>";
+
+		$html .= "<div style='clear:both;'></div>";
+		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		return $objResponse;
+	}elseif ($aFormValues['listType'] == "sumday"){
+		for ($day = $sday;$day<=31;$day++){
+			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
+			if ($res->fetchInto($myreport)){
+				$html .= "<div class='box'>";
+				$html .= "$syear-$smonth-$day :<br/>";
+				$html .= "<div>";
+				$result = parseReport($myreport); 
+				$html .= $result['html'];
+				$html .= "</div>";
+				$html .= "</div>";
+				$ary['recordNum'] += $result['data']['recordNum'];
+				$ary['seconds'] = $result['data']['seconds'];
+				$ary['credit'] = $result['data']['credit'];
+				$ary['callshopcredit'] = $result['data']['callshopcredit'];
+				$ary['resellercredit'] = $result['data']['resellercredit'];
+			}
+		}
+		$html .= "<div class='box'>";
+		$html .= "total :<br/>";
+		$html .= "<div>";
+		$result = parseReport($ary); 
+		$html .= $result['html'];
+		$html .= "</div>";
+		$html .= "</div>";
+
+		$html .= "<div style='clear:both;'></div>";
+		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		return $objResponse;
+	}elseif ($aFormValues['listType'] == "sumhour"){
+		for ($hour = 0;$hour<=23;$hour++){
+			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
+			if ($res->fetchInto($myreport)){
+				$html .= "<div class='box'>";
+				$html .= "$syear-$smonth-$sday $hour:<br/>";
+				$html .= "<div>";
+				$result = parseReport($myreport); 
+				$html .= $result['html'];
+				$html .= "</div>";
+				$html .= "</div>";
+				$ary['recordNum'] += $result['data']['recordNum'];
+				$ary['seconds'] = $result['data']['seconds'];
+				$ary['credit'] = $result['data']['credit'];
+				$ary['callshopcredit'] = $result['data']['callshopcredit'];
+				$ary['resellercredit'] = $result['data']['resellercredit'];
+			}
+		}
+		$html .= "<div class='box'>";
+		$html .= "total :<br/>";
+		$html .= "<div>";
+		$result = parseReport($ary); 
+		$html .= $result['html'];
+		$html .= "</div>";
+		$html .= "</div>";
+
+		$html .= "<div style='clear:both;'></div>";
+		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		return $objResponse;
+	}elseif ($aFormValues['listType'] == "sumdest"){
+		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate'],'destination');
+		$html .= '<form action="" name="f" id="f">';
+		$html .= '<table width="99%">';
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+			$html .= '<tr>
+					<td width="60"></td>
+					<td width="160">'.$locate->Translate("Destination").'</td>
+					<td width="120">'.$locate->Translate("Calls").'</td>
+					<td width="120">'.$locate->Translate("Billsec").'</td>
+					<td width="120">'.$locate->Translate("Sells").'</td>
+					<td width="70">'.$locate->Translate("Callshop Cost").'</td>
+					<td width="90">'.$locate->Translate("Reseller Cost").'</td>
+					<td width="90">'.$locate->Translate("Markup").'</td>
+					</tr>';
+		}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$html .= '<tr>
+					<td width="60"></td>
+					<td width="160">'.$locate->Translate("Destination").'</td>
+					<td width="120">'.$locate->Translate("Calls").'</td>
+					<td width="120">'.$locate->Translate("Billsec").'</td>
+					<td width="120">'.$locate->Translate("Sells").'</td>
+					<td width="70">'.$locate->Translate("Callshop Cost").'</td>
+					<td width="90">'.$locate->Translate("Markup").'</td>
+					</tr>';
+		}else if ($_SESSION['curuser']['usertype'] == 'operator'){
+			$html .= '<tr>
+					<td width="60"></td>
+					<td width="160">'.$locate->Translate("Destination").'</td>
+					<td width="120">'.$locate->Translate("Calls").'</td>
+					<td width="120">'.$locate->Translate("Billsec").'</td>
+					<td width="120">'.$locate->Translate("Sells").'</td>
+					</tr>';
+		}
+
+		while	($res->fetchInto($row)){
+			if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+				$html .= '<tr>
+						<td width="60"></td>
+						<td width="160">'.$row['destination'].'</td>
+						<td width="120">'.$row['recordNum'].'</td>
+						<td width="120">'.$row['seconds'].'</td>
+						<td width="120">'.$row['credit'].'</td>
+						<td width="120">'.$row['callshopcredit'].'</td>
+						<td width="120">'.$row['resellercredit'].'</td>
+						<td width="120">'.($row['callshopcredit'] - $row['resellercredit']).'</td>
+						</tr>';		
+			}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				$html .= '<tr>
+						<td width="60"></td>
+						<td width="160">'.$row['destination'].'</td>
+						<td width="120">'.$row['recordNum'].'</td>
+						<td width="120">'.$row['seconds'].'</td>
+						<td width="120">'.$row['credit'].'</td>
+						<td width="120">'.$row['callshopcredit'].'</td>
+						<td width="120">'.($row['credit'] - $row['callshopcredit']).'</td>
+						</tr>';		
+			}else if ($_SESSION['curuser']['usertype'] == 'operator'){
+				$html .= '<tr>
+						<td width="60"></td>
+						<td width="160">'.$row['destination'].'</td>
+						<td width="120">'.$row['recordNum'].'</td>
+						<td width="120">'.$row['seconds'].'</td>
+						<td width="120">'.$row['credit'].'</td>
+						</tr>';		
+			}
+		}
+		$html .= '</table>';
+		$html .= '</form>';
 		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		return $objResponse;
 	}

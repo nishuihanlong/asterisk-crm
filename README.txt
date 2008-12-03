@@ -105,8 +105,10 @@ Installation:
 
   5) modify config file
 	
-	modity /var/www/html/astercc/astercrm/astercrm.conf.php to fit your configration
-	modity /var/www/html/astercc/astercrm/astercc.conf.php to fit your configration
+	for asterCRM:
+		modity /var/www/html/astercc/astercrm/astercrm.conf.php to fit your configration
+	for asterCC:
+		modity /var/www/html/astercc/asterbilling/asterbilling.conf.php to fit your configration
 
   6) Start Asterisk and daemon
 
@@ -120,7 +122,7 @@ Installation:
 		mainly database setting and AMI setting.
 		
 		run astercc for test
-		/opt/asterisk/scripts/eventsdaemon/astercc
+		/opt/asterisk/scripts/astercc/astercc
 
 	if you could read like following line:
 		"Connecting to mysql database on 127.0.0.1:
@@ -192,11 +194,11 @@ Installation:
 
 	if asterisk and astercrm running in one server,you could make a soft link to 
 	astercrm web directory for listening monitor records online. 
-	ln -s /var/spool/asterisk/monitor/ /vavr/www/html/astercc/astercrm/monitor
+	ln -s /var/spool/asterisk/monitor/ /var/www/html/astercc/astercrm/monitor
 	note: astercrm support listen monitors online only can be wav format file.
 
 	for asterbilling
-	chmod 777 /var/www/html/astercc/astercbilling/upload
+	chmod 777 /var/www/html/astercc/asterbilling/upload
 
   8) web browsing 
 	for astercc guide

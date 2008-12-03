@@ -167,13 +167,21 @@ require_once('checkout.common.php');
 			<INPUT onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
 			<?echo $locate->Translate("To")?>:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>">
 			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
-			<input type="checkbox" value="detail" id="ckbDetail" name="ckbDetail"><?echo $locate->Translate("List Detail")?>
+			<SELECT id="listType" name="listType">
+				<OPTION value="none"><?echo $locate->Translate("None")?></OPTION>
+				<OPTION value="listdetail"><?echo $locate->Translate("List Detail")?></OPTION>
+				<OPTION value="sumyear"><?echo $locate->Translate("Sum By Year")?></OPTION>
+				<OPTION value="summonth"><?echo $locate->Translate("Sum By Month")?></OPTION>
+				<OPTION value="sumday"><?echo $locate->Translate("Sum By Day")?></OPTION>
+				<OPTION value="sumhour"><?echo $locate->Translate("Sum By Hour")?></OPTION>
+				<OPTION value="sumdest"><?echo $locate->Translate("Sum By Destination")?></OPTION>
+			</SELECT>
 			<br>
 			<input type="button" onclick="listCDR();return false;" value="<?echo $locate->Translate("List")?>">
 			<input type="hidden" id="hidCurpeer" name="hidCurpeer" value="<?echo $_REQUEST['peer']?>">
 		</div>
 		</form>
-
+		<div id="divSum"></div>
 		<div id="divUnbilledList" name="divUnbilledList">
 		</div>
 		

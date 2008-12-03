@@ -70,7 +70,7 @@ $xajax->registerFunction("generateSipFile");
 $xajax->registerFunction("reloadSip");
 $xajax->registerFunction("setGroup");
 
-define(ROWSXPAGE, 25); // Number of rows show it per page.
-define(MAXROWSXPAGE, 50);  // Total number of rows show it when click on "Show All" button.
+define("ROWSXPAGE", 25); // Number of rows show it per page.
+define("MAXROWSXPAGE", 50);  // Total number of rows show it when click on "Show All" button.
 
 ?>
