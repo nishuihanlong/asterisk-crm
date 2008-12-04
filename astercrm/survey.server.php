@@ -374,9 +374,9 @@ function showDetail($surveyid){
 						$item = $row['itemcontent'];
 					}
 					$html .= "<tr><td>".$item."</td><td>".$row['number']."</td></tr>";
-					$totalreocrds += $row['number'];
+					$totalrecords += $row['number'];
 				}
-				$html .= "<tr><td colspan=2>".$locate->Translate("total").": ".$totalreocrds."</td></tr>";
+				$html .= "<tr><td colspan=2>".$locate->Translate("total").": ".$totalrecords."</td></tr>";
 				$html .= "</table></div>";
 			}
 	}
