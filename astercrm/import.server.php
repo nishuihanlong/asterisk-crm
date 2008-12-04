@@ -229,7 +229,21 @@ function submitForm($aFormValues){
 		}
 	}
 
-	$tableStructure = astercrm::getTableStructure($tableName);
+	$tableStructure_source = astercrm::getTableStructure($tableName);
+	$tableStructure = array();
+	foreach($tableStructure_source as $row) {
+		$type_arr = explode(' ',$row['flags']);
+		if(!in_array('auto_increment',$type_arr))
+		{
+				if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
+
+				}else{
+					$tableStructure[]= $row;
+				}
+		}
+	}
+
+	//print_r($tableStructure);exit;
 	$filePath = $config['system']['upload_file_path'].$fileName;//数据文件存放路径
 
 	$affectRows= 0;  //计数据库影响结果变量
@@ -359,15 +373,18 @@ function getImportResource($filePath,$order,$tableName,$tableStructure,$dialList
 	foreach($arrData as $arrRow){
 		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid);
 	}
+	print_r($arrAll);exit;
 	return $arrAll;
 }
 
 //循环列数据，得到sql
 function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid){
+	
 	$fieldName = '';
 	$strData = '';
-	//print_r($tableStructure);
-	//exit;
+
+	$phone_field = array( 0 => 'phone',1 => 'phone_ext', 2 => 'fax',3 => 'fax_ext',4 => 'mobile',5 => 'ext',6 => 'phone1',7 => 'ext1',8 => 'phone2',9 => 'ext2');
+
 	for ($j=0;$j<count($arrRow);$j++)
 	{
 //		if ($arrRow[$j] != mb_convert_encoding($arrRow[$j],"UTF-8","UTF-8"))
@@ -377,19 +394,21 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 		$fieldOrder = trim($order[$j]);//得到字段顺序号
 
 		if($fieldOrder != ''){
-			//print $filedOrder;
 			$fieldName .= $tableStructure[$fieldOrder]['name'].',';
+			if (in_array($tableStructure[$fieldOrder]['name'],$phone_field)){
+				$arrRow[$j] = astercrm::getDigitsInStr($arrRow[$j]);
+			}
 			$strData .= '"'.$arrRow[$j].'"'.',';
 		}
 		if(isset($dialListField) && $dialListField != ''){
 			if($dialListField == $j)
-				$dialListValue = $arrRow[$j];
+				$dialListValue = astercrm::getDigitsInStr($arrRow[$j]);
 		}
 	}
 	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
 	$strData = substr($strData,0,strlen($strData)-1);
 	if ($fieldName != "")
-		$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$_SESSION['curuser']['groupid'].")";
+		$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$groupid.")";
 	//print $strSql;
 	//exit;
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);
