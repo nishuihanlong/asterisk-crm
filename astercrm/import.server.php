@@ -373,7 +373,7 @@ function getImportResource($filePath,$order,$tableName,$tableStructure,$dialList
 	foreach($arrData as $arrRow){
 		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid);
 	}
-	print_r($arrAll);exit;
+	//print_r($arrAll);exit;
 	return $arrAll;
 }
 
