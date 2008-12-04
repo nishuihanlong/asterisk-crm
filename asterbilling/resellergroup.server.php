@@ -170,10 +170,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("ID").'<br>';
 	$headers[] = $locate->Translate("Name").'<br>';
-	$headers[] = $locate->Translate("Account Code").'<br>';
 	$headers[] = $locate->Translate("Callback").'<br>';
 	$headers[] = $locate->Translate("Credit Limit").'<br>';
 	$headers[] = $locate->Translate("Limit Status").'<br>';
+	$headers[] = $locate->Translate("Billsec Multiple").'<br>';
 	$headers[] = $locate->Translate("Curcredit").'<br>';
 	$headers[] = $locate->Translate("Clid Credit").'<br>';
 	$headers[] = $locate->Translate("Group Credit").'<br>';
@@ -212,10 +212,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","accountcode","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","allowcallback","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creditlimit","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","limittype","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","multiple","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","curcredit","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_clid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_group","'.$divName.'","ORDERING");return false;\'';
@@ -230,6 +230,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'creditlimit';
 	$fieldsFromSearch[] = 'curcredit';
 	$fieldsFromSearch[] = 'limittype';
+	$fieldsFromSearch[] = 'multiple';
 	$fieldsFromSearch[] = 'credit_clid';
 	$fieldsFromSearch[] = 'credit_group';
 	$fieldsFromSearch[] = 'credit_reseller';
@@ -243,6 +244,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Credit Limit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Cur Credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Limit Status");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Billsec Multiple");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid Credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Reseller Credit");
@@ -260,10 +262,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['id'];
 		$rowc[] = $row['resellername'];
-		$rowc[] = $row['accountcode'];
 		$rowc[] = $row['allowcallback'];
 		$rowc[] = $row['creditlimit'];
 		$rowc[] = $row['limittype'];
+		$rowc[] = $row['multiple'];
 		$rowc[] = $row['curcredit'];
 		$rowc[] = $row['credit_clid'];
 		$rowc[] = $row['credit_group'];
@@ -322,7 +324,7 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_reseller"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Add Reseller"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
@@ -369,7 +371,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_reseller"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("Edit Reseller"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone

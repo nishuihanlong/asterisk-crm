@@ -166,14 +166,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'credit_clid';
 	$fields[] = 'credit_group';
 	$fields[] = 'credit_reseller';
-	$fields[] = 'addtime';
+	$fields[] = 'group_multiple';
 
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("ID").'<br/>';
 	$headers[] = $locate->Translate("Name");
 	$headers[] = $locate->Translate("Reseller");
-	$headers[] = $locate->Translate("Inbound");
 	$headers[] = $locate->Translate("Callback");
 	$headers[] = $locate->Translate("Credit Limit");
 	$headers[] = $locate->Translate("Limit Type");
@@ -181,12 +180,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Clid Credit");
 	$headers[] = $locate->Translate("Group Credit");
 	$headers[] = $locate->Translate("Reseller Credit");
-	$headers[] = $locate->Translate("Last Update");
+	$headers[] = $locate->Translate("Group Billsec Multiple");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
 	$attribsHeader[] = 'width="5%"';
-	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -211,14 +209,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","inboundrate","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","allowcallback","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creditlimit","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","limittype","'.$divName.'","ORDERING");return false;\'';
@@ -226,7 +222,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_clid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_group","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_reseller","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","group_multiple","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -240,6 +236,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'accountgroup.credit_clid';
 	$fieldsFromSearch[] = 'accountgroup.credit_group';
 	$fieldsFromSearch[] = 'accountgroup.credit_reseller';
+	$fieldsFromSearch[] = 'accountgroup.group_multiple';
+	$fieldsFromSearch[] = 'accountgroup.customer_multiple';
 	$fieldsFromSearch[] = 'accountgroup.addtime';
 
 	// Selecct Box: Labels showed on search select box.
@@ -254,6 +252,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid Credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Reseller Credit");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group Billsec Multiple");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Customer Billsec Multiple");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Last Update");
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -269,7 +269,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['resellername'];
-		$rowc[] = $row['inboundrate'];
 		$rowc[] = $row['allowcallback'];
 		$rowc[] = $row['creditlimit'];
 		$rowc[] = $row['limittype'];
@@ -278,7 +277,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['credit_group'];
 		$rowc[] = $row['credit_reseller'];
 			//astercc::readAmount($row['id'],null,$row['billingtime'],null,'callshopcredit');
-		$rowc[] = $row['addtime'];
+		$rowc[] = $row['group_multiple'];
 		$table->addRow("accountgroup",$rowc,1,1,0,$divName,$fields);
  	}
  	

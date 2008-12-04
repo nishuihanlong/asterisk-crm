@@ -66,6 +66,90 @@ class Customer extends astercrm
 		return $res;
 	}
 	
+		/**
+	*  insert a record to accountgroup table
+	*
+	*	@param $f			(array)		array contain customer fields.
+	*	@return $res	(object) 	
+	*/
+	
+	function insertNewAccountgroup($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$sql= "INSERT INTO accountgroup SET "
+				."groupname='".$f['groupname']."', "
+				."grouptitle='".$f['grouptitle']."', "
+				."grouptagline='".$f['grouptagline']."', "
+				."accountcode='".$f['accountcode']."', "
+				."allowcallback='".$f['allowcallback']."', "
+				."creditlimit= ".$f['creditlimit'].", "
+				."limittype= '".$f['limittype']."', "
+				."group_multiple= '".$f['group_multiple']."', "
+				."customer_multiple= '".$f['customer_multiple']."', "
+				."resellerid= ".$f['resellerid'].", "
+				."addtime = now() ";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+
+	/**
+	*  update accountgroup table
+	*
+	*	@param $f			(array)		array contain customer fields.
+	*	@return $res		(object) 		object
+	*/
+	
+	function updateAccountgroupRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		if ( $f['creditmodtype'] == '' ){
+			$newcurcredit = $f['curcredit'];
+		}elseif ( $f['creditmodtype'] == 'add' ){
+			$newcurcredit = $f['curcredit'] + $f['creditmod'];
+			$historysql = "INSERT INTO credithistory SET "
+							."modifytime= now(), "
+							."resellerid='".$f['resellerid']."', "
+							."groupid='".$f['groupid']."', "
+							."srccredit='".$f['curcredit']."', "
+							."modifystatus= 'add', "
+							."modifyamount='".$f['creditmod']."', "
+							."operator='".$_SESSION['curuser']['userid']."'";
+			$historyres =& $db->query($historysql);
+		}elseif ( $f['creditmodtype'] == 'reduce' ){
+			$newcurcredit = $f['curcredit'] - $f['creditmod'];
+			$historysql = "INSERT INTO credithistory SET "
+							."modifytime= now(), "
+							."resellerid='".$f['resellerid']."', "
+							."groupid='".$f['groupid']."', "
+							."srccredit='".$f['curcredit']."', "
+							."modifystatus= 'reduce', "
+							."modifyamount='".$f['creditmod']."', "
+							."operator='".$_SESSION['curuser']['userid']."'";
+			$historyres =& $db->query($historysql);
+		}
+		$sql= "UPDATE accountgroup SET "
+				."groupname='".$f['groupname']."', "
+				."grouptitle='".$f['grouptitle']."', "
+				."grouptagline='".$f['grouptagline']."', "
+				."grouplogostatus='".$f['grouplogostatus']."', "
+				."resellerid='".$f['resellerid']."', "
+				."curcredit='".$newcurcredit."', "
+				."creditlimit='".$f['creditlimit']."', "
+				."limittype='".$f['limittype']."', "
+				."group_multiple= '".$f['group_multiple']."', "
+				."customer_multiple= '".$f['customer_multiple']."', "
+				."allowcallback='".$f['allowcallback']."', "
+				."addtime= now(), "
+				."accountcode='".$f['accountcode']."' "
+				."WHERE id='".$f['groupid']."'";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	/**
 	*  Obtiene todos registros de la tabla paginados y aplicando un filtro
 	*
@@ -242,6 +326,8 @@ class Customer extends astercrm
 				$reselleroptions .= "<OPTION value='".$row['id']."'>".$row['resellername']."</OPTION>";
 			}
 			$reselleroptions .= '</select>';
+
+
 		}else{
 			while	($reseller->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['resellerid']){
@@ -249,6 +335,8 @@ class Customer extends astercrm
 					break;
 				}
 			}
+
+
 		}
 
 	$html = '
@@ -313,8 +401,16 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Inbound Rate").'</td>
-					<td align="left"><input type="text" id="inboundrate" name="inboundrate" size="25" maxlength="30" value="0.0000"></td>
+					<td nowrap align="left">'.$locate->Translate("Group Billsec Multiple").'</td>
+					<td align="left">
+						<input type="text" id="group_multiple" name="group_multiple" size="6" maxlength="6" value="1.0000">
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Customer Billsec Multiple").'</td>
+					<td align="left">
+						<input type="text" id="customer_multiple" name="customer_multiple" size="6" maxlength="6" value="1.0000">
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
@@ -460,6 +556,18 @@ class Customer extends astercrm
 
 				$html .=
 					'</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Group Billsec Multiple").'</td>
+					<td align="left">
+						<input type="text" id="group_multiple" name="group_multiple" size="6" maxlength="6" value="'.$group['group_multiple'].'">
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Customer Billsec Multiple").'</td>
+					<td align="left">
+						<input type="text" id="customer_multiple" name="customer_multiple" size="6" maxlength="6" value="'.$group['customer_multiple'].'">
 					</td>
 				</tr>
 				<tr>

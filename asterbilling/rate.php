@@ -41,6 +41,12 @@ require_once('rate.common.php');
 				xajax_setGroup(resellerid);
 		}
 
+		function updateCustomerMultiple(){
+			if (confirm("<?echo $locate->Translate("are you sure to update this value");?>")){
+				xajax_updateCustomerMultiple(document.getElementById("customer_multiple").value);
+			}
+		}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
@@ -56,6 +62,18 @@ require_once('rate.common.php');
 			<tr>
 				<td style="padding: 0px;">
 					<fieldset>
+		<?
+			// when it's groupadmin we allow him set Customer Billsec Multiple 	
+			if ($_SESSION['curuser']['usertype'] == "groupadmin") {
+		?>
+			<div class="centermain">
+				<?echo $locate->Translate("Customer Billsec Multiple");?>
+				<input type="text" id="customer_multiple" name="customer_multiple" value="" size="6" maxlength="6" >
+				<input type="button" value="Update" onclick="updateCustomerMultiple();">
+			</div>
+		<?
+			}		
+		?>
 			<div id="formDiv"  class="formDiv drsElement" 
 				style="left: 450px; top: 50px;"></div>
 			<div id="grid" name="grid" align="center"> </div>
@@ -64,6 +82,7 @@ require_once('rate.common.php');
 				</td>
 			</tr>
 		</table>
+
 		<form name="exportForm" id="exportForm" action="dataexport.php" >
 			<input type="hidden" value="" id="hidSql" name="hidSql" />
 		</form>

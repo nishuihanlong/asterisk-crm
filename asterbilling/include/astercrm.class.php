@@ -12,7 +12,6 @@
 			insertNewSurveyResult	向surveyresult表插入数据
 			insertNewAccount
 			insertNewDiallist
-			insertNewResellergroup    向resellergroup表插入数据
 
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
@@ -150,53 +149,7 @@ Class astercrm extends PEAR{
 		return $newVar;
 	}
 
-	/**
-	*  insert a record to accountgroup table
-	*
-	*	@param $f			(array)		array contain customer fields.
-	*	@return $res	(object) 	
-	*/
-	
-	function insertNewAccountgroup($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		$sql= "INSERT INTO accountgroup SET "
-				."groupname='".$f['groupname']."', "
-				."grouptitle='".$f['grouptitle']."', "
-				."grouptagline='".$f['grouptagline']."', "
-				."accountcode='".$f['accountcode']."', "
-				."allowcallback='".$f['allowcallback']."', "
-				."creditlimit= ".$f['creditlimit'].", "
-				."limittype= '".$f['limittype']."', "
-				."inboundrate= '".$f['inboundrate']."', "
-				."resellerid= ".$f['resellerid'].", "
-				."addtime = now() ";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
 
-	/**
-	*  insert a record to accountgroup table
-	*
-	*	@param $f			(array)		array contain customer fields.
-	*	@return $res	(object) 	
-	*/
-	
-	function insertNewResellergroup($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		$sql= "INSERT INTO resellergroup SET "
-				."resellername='".$f['resellername']."', "
-				."accountcode='".$f['accountcode']."', "
-				."allowcallback='".$f['allowcallback']."', "
-				."creditlimit= ".$f['creditlimit'].", "
-				."limittype= '".$f['limittype']."', "
-				."addtime = now() ";
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
 
 	/**
 	*  insert a record to contact table
@@ -313,109 +266,7 @@ Class astercrm extends PEAR{
 	}
 
 
-	/**
-	*  update accountgroup table
-	*
-	*	@param $f			(array)		array contain customer fields.
-	*	@return $res		(object) 		object
-	*/
-	
-	function updateAccountgroupRecord($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		if ( $f['creditmodtype'] == '' ){
-			$newcurcredit = $f['curcredit'];
-		}elseif ( $f['creditmodtype'] == 'add' ){
-			$newcurcredit = $f['curcredit'] + $f['creditmod'];
-			$historysql = "INSERT INTO credithistory SET "
-							."modifytime= now(), "
-							."resellerid='".$f['resellerid']."', "
-							."groupid='".$f['groupid']."', "
-							."srccredit='".$f['curcredit']."', "
-							."modifystatus= 'add', "
-							."modifyamount='".$f['creditmod']."', "
-							."operator='".$_SESSION['curuser']['userid']."'";
-			$historyres =& $db->query($historysql);
-		}elseif ( $f['creditmodtype'] == 'reduce' ){
-			$newcurcredit = $f['curcredit'] - $f['creditmod'];
-			$historysql = "INSERT INTO credithistory SET "
-							."modifytime= now(), "
-							."resellerid='".$f['resellerid']."', "
-							."groupid='".$f['groupid']."', "
-							."srccredit='".$f['curcredit']."', "
-							."modifystatus= 'reduce', "
-							."modifyamount='".$f['creditmod']."', "
-							."operator='".$_SESSION['curuser']['userid']."'";
-			$historyres =& $db->query($historysql);
-		}
-		$sql= "UPDATE accountgroup SET "
-				."groupname='".$f['groupname']."', "
-				."grouptitle='".$f['grouptitle']."', "
-				."grouptagline='".$f['grouptagline']."', "
-				."grouplogostatus='".$f['grouplogostatus']."', "
-				."resellerid='".$f['resellerid']."', "
-				."curcredit='".$newcurcredit."', "
-				."creditlimit='".$f['creditlimit']."', "
-				."limittype='".$f['limittype']."', "
-				."inboundrate='".$f['inboundrate']."', "
-				."allowcallback='".$f['allowcallback']."', "
-				."addtime= now(), "
-				."accountcode='".$f['accountcode']."' "
-				."WHERE id='".$f['groupid']."'";
 
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-
-	/**
-	*  update resellergroup table
-	*
-	*	@param $f			(array)		array contain customer fields.
-	*	@return $res		(object) 		object
-	*/
-
-	function updateResellergroupRecord($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		if ( $f['creditmodtype'] == '' ){
-			$newcurcredit = $f['curcredit'];
-		}elseif ( $f['creditmodtype'] == 'add' ){
-			$newcurcredit = $f['curcredit'] + $f['creditmod'];
-			$historysql = "INSERT INTO credithistory SET "
-							."modifytime= now(), "
-							."resellerid='".$f['resellerid']."', "
-							."srccredit='".$f['curcredit']."', "
-							."modifystatus= 'add', "
-							."modifyamount='".$f['creditmod']."', "
-							."operator='".$_SESSION['curuser']['userid']."'";
-							$historyres =& $db->query($historysql);
-		}elseif ( $f['creditmodtype'] == 'reduce' ){
-			$newcurcredit = $f['curcredit'] - $f['creditmod'];
-			$historysql = "INSERT INTO credithistory SET "
-							."modifytime= now(), "
-							."resellerid='".$f['resellerid']."', "
-							."srccredit='".$f['curcredit']."', "
-							."modifystatus= 'reduce', "
-							."modifyamount='".$f['creditmod']."', "
-							."operator='".$_SESSION['curuser']['userid']."'";
-							$historyres =& $db->query($historysql);
-		}
-
-		$sql= "UPDATE resellergroup SET "
-				."resellername='".$f['resellername']."', "
-				."accountcode='".$f['accountcode']."', "
-				."curcredit='".$newcurcredit."', "
-				."creditlimit='".$f['creditlimit']."', "
-				."limittype='".$f['limittype']."', "
-				."allowcallback='".$f['allowcallback']."', "
-				."addtime= now() "
-				."WHERE id='".$f['resellerid']."'";
-
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
 
 	/**
 	*  update clid table

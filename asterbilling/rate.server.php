@@ -33,7 +33,20 @@ function init(){
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
+	if ($_SESSION['curuser']['usertype'] == "groupadmin") {
+		$row = astercrm::getRecordById($_SESSION['curuser']['groupid'],"accountgroup");
+		$objResponse->addAssign("customer_multiple","value", $row['customer_multiple']);
+	}
 
+	return $objResponse;
+}
+
+function updateCustomerMultiple($val){
+	global $db,$locate;
+	$objResponse = new xajaxResponse();
+	$query = "UPDATE accountgroup SET customer_multiple = '$val' , addtime = now() WHERE id = ".$_SESSION['curuser']['groupid'];
+	$db->query($query);
+	$objResponse->addAlert($locate->Translate("Customer Billsec Mutiple updated"));
 	return $objResponse;
 }
 
