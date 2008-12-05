@@ -474,6 +474,10 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `incontext` varchar(60) NOT NULL default '',
  `inexten` varchar(30) NOT NULL default '',
  `queuename` varchar(15) NOT NULL default '',
+ `limit_type` varchar(15) NOT NULL default 'channel',
+ `max_channel` int(4) NOT NULL default '5',
+ `queue_increasement` float(8,2) NOT NULL default '1.00',
+ `status` varchar(4) NOT NULL default 'idle',
  `fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `end_fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008#5#4

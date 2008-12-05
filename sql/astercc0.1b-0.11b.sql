@@ -13,6 +13,11 @@ ALTER TABLE `accountgroup` ADD `group_multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT 
 ADD `customer_multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT '1.0000' AFTER `group_multiple` ;
 ALTER TABLE `resellergroup` ADD `multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT '1.0000' AFTER `limittype` ;
 
+ALTER TABLE `campaign` ADD `limit_type` varchar(15) NOT NULL default 'channel' AFTER `queuename`;
+ALTER TABLE `campaign` ADD `max_channel` int(4) NOT NULL default '5' AFTER `limit_type`;
+ALTER TABLE `campaign` ADD `queue_increasement` float(8,2) NOT NULL default '1.00' AFTER `max_channel`;
+ALTER TABLE `campaign` ADD `status`  varchar(4) NOT NULL default 'idle' AFTER `queue_increasement`;
+
 
 ## 
 ## table `surveyoptionitems`
