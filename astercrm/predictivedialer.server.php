@@ -56,7 +56,7 @@ function init(){
 
 	while	($groups->fetchInto($group)){
 		// get all enabled campaigns
-		$query = "SELECT id,campaignname,campaignnote,queuename,outcontext,incontext,inexten FROM campaign WHERE enable = 1 AND groupid = ".$group['groupid'];
+		$query = "SELECT * FROM campaign WHERE enable = 1 AND groupid = ".$group['groupid'];
 		$campaigns = $db->query($query);
 
 
@@ -73,21 +73,37 @@ function init(){
 					$has_queue = $db->getOne($query);
 				}
 
+				$status = "";
+				$channel_checked = "";
+				$queue_checked = "";
+
+				if ($campaign['status'] == "busy"){
+					$status = "checked'";
+				}
+
+				if ($campaign['limit_type'] == "channel"){
+					$channel_checked = "checked";
+				}else if ($campaign['limit_type'] == "queue"){
+					$queue_checked = "checked";
+				}
+
 				$campaignHTML .= '<div class="group01content">';
 
 				if ($has_queue != 0){
 					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'"> '.$campaign['campaignname'].' ( '.$locate->Translate("queue").': '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' )</acronym> </div>
 				<div class="group01r">
-				<input type="checkbox" name="'.$campaign['id'].'-ckb">'.$locate->Translate("Start").'
-				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked> '.$locate->Translate("Limited by max channel").' <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit">
-				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="agent" > '.$locate->Translate("Limited by agents and increase").' <input type="text" value="10" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="2" maxlength="3" class="inputlimit">%
+				<input type="checkbox" onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
+				<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="channel" '.$channel_checked.'> '.$locate->Translate("Limited by max channel").' 
+				<input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit" onblur="setMaxChannel(this);">
+				<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="queue" '.$queue_checked.'> '.$locate->Translate("Limited by agents and multipled by").' 
+				<input type="text" value="'.$campaign['queue_increasement'].'" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="4" maxlength="4" class="inputlimit" onblur="setQueueRate(this);">
 				</div>';
 				}else{
 					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'">'.$campaign['campaignname'].' ( '.$locate->Translate("no queue for this campaign").' ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </acronym></div>
 				<div class="group01r">
-				<input type="checkbox" name="'.$campaign['id'].'-ckb">'.$locate->Translate("Start").'
-				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" checked>
-				'.$locate->Translate("Limited by Max Channel").' <input type="text" value="5" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit">
+				<input type="checkbox"  onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
+				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" '.$channel_checked.'>
+				'.$locate->Translate("Limited by Max Channel").' <input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit" onblur="setMaxChannel(this);">
 				</div>';
 				}
 				$campaignHTML .= '</div>';
@@ -101,6 +117,14 @@ function init(){
 											 </div>';
 	}
 	$objResponse->addAssign("divMain","innerHTML",$divGroup);
+	return $objResponse;
+}
+
+function setStatus($campaignid, $field, $value){
+	global $db;
+	$objResponse = new xajaxResponse();
+	$query = "UPDATE campaign SET $field = '$value' WHERE id = $campaignid";
+	$db->query($query);
 	return $objResponse;
 }
 
@@ -155,7 +179,7 @@ function predictiveDialer($f){
 						}
 					}else{
 						// check if src/dst belongs to any group
-						$query = "SELECT groupid FROM astercrm_account WHERE extension = '".$row['dst']."' OR extension = '".$row['dst']."' OR extension = '".$row['src']."' OR extension = '".$row['src']."' GROUP BY groupid ORDER BY groupid DESC LIMIT 0,1";
+						$query = "SELECT groupid FROM astercrm_account WHERE extension = '".$row['dst']."' OR extension = '".$row['dst']."'  GROUP BY groupid ORDER BY groupid DESC LIMIT 0,1";
 						$groupid = $db->getOne($query);
 						if ( $groupid > 0 ){
 							$groupCDR[$groupid][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
@@ -180,6 +204,7 @@ function predictiveDialer($f){
 		// clear all campaign
 		$campaigns = astercrm::getAll("campaign");
 		while	($campaigns->fetchInto($campaign)){
+
 			$campaign_queue_name[$campaign['id']] = $campaign['queuename'];
 			$objResponse->addAssign("campaign".$campaign['id'], "innerHTML", "");
 		}
@@ -202,7 +227,7 @@ function predictiveDialer($f){
 				$objResponse->addAssign("campaign$key", "innerHTML", "");
 			}
 		}
-	
+	/*
 	// 将$f按组别分类
 	foreach ($f as $key => $value){
 		list ($campaignid, $field) = split("-",$key);
@@ -258,6 +283,7 @@ function predictiveDialer($f){
 			unset($predial_campaigns[$key]);
 		}
 	}
+	*/
 	//exit;
 	$check_interval = 2000;
 	if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;

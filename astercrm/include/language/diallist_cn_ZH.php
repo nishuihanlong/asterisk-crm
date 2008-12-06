@@ -14,4 +14,5 @@ $campaign = '拨号计划';
 $obligatory_fields = '* 为必填项';
 $all = "全部";
 $dial_number_must_be_digits = "号码必须为数字";
+$empty_means_no_scheduler = "字段为空表示不使用定时拨号";
 ?>

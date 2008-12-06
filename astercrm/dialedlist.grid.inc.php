@@ -13,7 +13,6 @@
 	getAllRecords				获取所有记录
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
-	formAdd						生成添加dialedlist的HTML语句
 	insertNewSurvey				保存survey
 	insertNewOption				保存option
 	setSurveyEnable				设定survey的可用情况

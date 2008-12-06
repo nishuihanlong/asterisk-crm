@@ -56,6 +56,31 @@ require_once('predictivedialer.common.php');
 				startDial();
 			}
 
+			function setStatus(obj){
+				campaignid = obj.id.split("-");
+				if (obj.checked){
+					status = 'busy';
+				}else{
+					status = 'idle';
+				}
+				xajax_setStatus(campaignid[0],"status",status);
+			}
+
+			function setMaxChannel(obj){
+				campaignid = obj.id.split("-");
+				xajax_setStatus(campaignid[0],"max_channel",obj.value);
+			}
+
+			function setQueueRate(obj){
+				campaignid = obj.id.split("-");
+				xajax_setStatus(campaignid[0],"queue_increasement",obj.value);
+			}
+
+			function setLimitType(obj){
+				campaignid = obj.id.split("-");
+				xajax_setStatus(campaignid[0],"limit_type",obj.value);
+			}
+
 			function get_radio_value(field){ 
 				if (field && field.length){
 						for (var i = 0; i < field.length; i++){ 
@@ -69,8 +94,6 @@ require_once('predictivedialer.common.php');
 			}
 
 			function startDial(){
-
-
 				xajax_predictiveDialer(xajax.getFormValues("f"));
 			}
 			

@@ -473,6 +473,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `outcontext` varchar(60) NOT NULL default '',
  `incontext` varchar(60) NOT NULL default '',
  `inexten` varchar(30) NOT NULL default '',
+ `callerid` varchar(30) NOT NULL default '',
  `queuename` varchar(15) NOT NULL default '',
  `limit_type` varchar(15) NOT NULL default 'channel',
  `max_channel` int(4) NOT NULL default '5',
@@ -564,6 +565,7 @@ DROP TABLE IF EXISTS `dialedlist`;
 CREATE TABLE `dialedlist` (
   `id` int(11) NOT NULL auto_increment,
   `dialednumber` varchar(30) NOT NULL default '',
+  `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008/05/04
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008#2#1
   `duration` int(11) NOT NULL default '0',												#added by solo 2008#2#1
   `transfertime` int(11) NOT NULL default '0',				#added by solo 2008#5#4										#added by solo 2008#2#1

@@ -428,6 +428,7 @@ Class astercrm extends PEAR{
 				."inexten='".$f['inexten']."', "
 				."queuename='".$f['queuename']."', "
 				."maxtrytime='".$f['maxtrytime']."', "
+				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
@@ -650,6 +651,7 @@ Class astercrm extends PEAR{
 				."inexten='".$f['inexten']."', "
 				."queuename='".$f['queuename']."', "
 				."maxtrytime='".$f['maxtrytime']."', "
+				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
 		astercrm::events($query);
