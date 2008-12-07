@@ -14,6 +14,7 @@ new features in 0.05
 	system status monitor by groupadmin
 	predictive dial by groupadmin
 	multi mode search(like,=,<,>)
+
 0.05 新特性
 
 	支持动态座席模式

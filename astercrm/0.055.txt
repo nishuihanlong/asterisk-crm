@@ -1,9 +1,12 @@
-new features in 0.051
+new features in 0.055
 	advance survey
 	callerid smart mathcing
+	use daemon for predictive dialer
+
 0.051新特性
 	高级问卷功能
 	来电号码智能匹配
+	进程拨号
 
 astercrm features(0.051)
 
