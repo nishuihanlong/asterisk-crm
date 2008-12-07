@@ -133,7 +133,7 @@ CREATE TABLE `clid` (
   `pin` varchar(30) NOT NULL default '',
   `creditlimit` DOUBLE NOT NULL default '0.0000',
   `curcredit` DOUBLE NOT NULL default '0.0000',
-  `limittype` VARCHAR( 20 ) NOT NULL,
+  `limittype` VARCHAR( 10 ) NOT NULL,
   `credit_clid` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_group` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_reseller` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
