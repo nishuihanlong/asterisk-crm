@@ -45,7 +45,8 @@ require_once('login.common.php');
 	 		<div id="formDiv">
 			<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
 		  <div class="login_in">
-				<div class="login_in_logo" align="right"><br /><div id="titleDiv"></div></div>
+				<div id="titleDiv"></div>
+				<div class="left">
 				<div class="left">
 			<table width="385" height="143" border="0" cellpadding="0" cellspacing="0">
 			  <tr>

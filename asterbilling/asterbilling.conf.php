@@ -67,7 +67,7 @@ refreshBalance = 0
 useHistoryCdr = 1
 
 ; when we set useHistoryCDR = 1, then here set if we move the no answer cdr to historycdr
-keepNoanswerCDR = 1
+keepNoAnswerCDR = 1
 
 ; if we set clid credit
 setclid = 1

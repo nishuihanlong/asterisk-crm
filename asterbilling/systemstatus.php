@@ -412,7 +412,7 @@ function searchRate(){
 	</head>
 	<body onload="init();">
 		<div id="divTitle" name="divTitle" style="position:absolute;top:2px;height:80px;width:800px;"></div>
-		<div id="divPanel" name="divPanel" class="divPanel">
+		<div id="divPanel" name="divPanel" class="divPanel" style="z-index:999;">
 			<ul id="nav">
 				<li><a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a></li>
 				<li><a href="checkout.php" target="_blank"><?echo $locate->Translate("Report");?></a></li>

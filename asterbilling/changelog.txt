@@ -65,10 +65,16 @@ add new field amount and total in table accountgroup to store all selling and al
 2008-11-10 support use "like", ">", "<" , "=" when search
 2008-11-10 support billing on clid
 ----------------------------------------------------------------------------------
-0.09
-2008-11-17 修正了费率导入的bug
-2008-11-22 修正了当refreshrate 小于0时 asterrc不计费的bug
-
+0.095
+2008-11-17 fixed the import bug
+2008-11-22 fixed the bug that when refreshrate is less than 0, asterrc doesnt bill
+2008-12-1	 added new stastic reports
+2008-12-1   added inbound billing
+2008-12-1   added manager login page and clid login page
+2008-12-1	 added group logo, group name and could be displayed on callshop page
+2008-12-1	 added group logo, group name and could be displayed on callshop page
+2008-12-1	 added receipt feature
+2008-12-1   added billing second multiple
 
 
 import时如果数据量大会报错
