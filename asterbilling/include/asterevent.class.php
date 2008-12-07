@@ -338,7 +338,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 	return $res;
 }
 	function readReport($resellerid, $groupid, $booth, $sdate, $edate, $groupby = ''){
-		global $db;
+		global $db,$config;
 		$table = 'mycdr';
 		if($config['system']['useHistoryCdr'] == 1){
 			$table = 'historycdr';

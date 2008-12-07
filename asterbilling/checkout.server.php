@@ -157,6 +157,9 @@ function setClid($groupid){
 function listCDR($aFormValues){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	
+	$objResponse->addAssign("divMsg","style.visibility","hidden");
+
 	if ($aFormValues['sltBooth'] == '' && $aFormValues['hidCurpeer'] != ''){
 		$aFormValues['sltBooth'] = $aFormValues['hidCurpeer'];
 	}
@@ -377,7 +380,7 @@ function listCDR($aFormValues){
 
 	//$records = astercc::readAll($aFormValues['sltBooth'], -1,$aFormValues['sdate'],$aFormValues['edate']);
 	
-	$records = astercc::readAll($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
+	$records = astercc::readAll($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'],$aFormValues['sdate'],$aFormValues['edate']);
 
 	$html .= '<form action="" name="f" id="f">';
 	$html .= '<table width="99%">';
@@ -475,7 +478,9 @@ function listCDR($aFormValues){
 						<td colspan="11" height="1"></td>
 					</tr>
 				';
+		$i++;
 	}
+
 	$html .= '<tr>
 			<td width="60">
 				<input type="checkbox" onclick="ckbAllOnClick(this);" id="ckbAll[]" name="ckbAll[]">'.$locate->Translate("All").'

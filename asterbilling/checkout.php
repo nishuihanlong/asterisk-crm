@@ -41,7 +41,7 @@ require_once('checkout.common.php');
 	} 
 
 	function listCDR(){
-
+		document.getElementById("divMsg").style.visibility="visible";
 		xajax_listCDR(xajax.getFormValues("frmFilter"));
 	}
 
@@ -198,7 +198,9 @@ require_once('checkout.common.php');
 			<input type="button" value="Check Out" name="btnCheckOut" id="btnCheckOut" onclick="xajax_checkOut(xajax.getFormValues('f'));">
 		</div>
 		</center>
-
-		<div id="divCopyright"></div>
+	<div id="divMsg">
+		Processing, please wait ...
+	</div>
+	<div id="divCopyright"></div>
 	</body>
 </html>
