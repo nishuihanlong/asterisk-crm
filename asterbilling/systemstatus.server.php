@@ -137,7 +137,7 @@ function setGroupBalance(){
 			$creditlimit = $locate->Translate("no limit");
 			$objResponse->addAssign("spanLimitStatus","innerHTML",$creditlimit);
 	}else{
-		$balance = $creditlimit - $callshopcredit ;
+		$balance = $creditlimit - $curcredit ;
 		if ($balance <= 50) {
 			if ($balance <= 0)
 				$objResponse->addAssign("spanLimitStatus","innerHTML",$locate->Translate("no credit left all booth locked"));
