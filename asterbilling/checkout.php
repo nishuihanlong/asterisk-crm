@@ -25,7 +25,7 @@ require_once('checkout.common.php');
 		curpeer = document.getElementById("hidCurpeer").value;
 		xajax_init(curpeer);
 		if (curpeer != ''){
-			document.getElementById('ckbDetail').checked = true;
+			document.getElementById('listType').value = "listdetail";
 		}
 		listCDR();
 	}
