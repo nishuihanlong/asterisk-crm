@@ -122,6 +122,11 @@ function searchRate($dialprefix){
 function setGroupBalance(){
 	global $config, $locate;
 	$objResponse = new xajaxResponse();
+	# 检查session是否存在
+	if ($_SESSION['curuser']['groupid'] == ""){
+		return $objResponse;
+	}
+
 	$group = astercrm::getRecordByField("id",$_SESSION['curuser']['groupid'],'accountgroup');
 
 	$amount = $group['credit_clid'];	//  income
@@ -204,6 +209,10 @@ function showStatus(){
 	// get old status
 	$cstatus = $_SESSION['status'];
 	$objResponse = new xajaxResponse();
+	if ($_SESSION['curuser']['groupid'] == ""){
+		return $objResponse;
+	}
+
 	$peers = $_SESSION['curuser']['extensions'];
 	
 	$peerstatus = astercc::checkPeerStatus($_SESSION['curuser']['groupid']);
@@ -421,7 +430,9 @@ function invite($src,$dest,$creditLimit){
 
 function addUnbilled($peer,$leg = null){
 	$objResponse = new xajaxResponse();
-
+	if ($_SESSION['curuser']['groupid'] ==""){
+		return $objResponse;
+	}
 	$records = astercc::readUnbilled($peer,$leg,$_SESSION['curuser']['groupid']);
 	if ($leg != null){
 		$peer = 'Local/'.$peer;
