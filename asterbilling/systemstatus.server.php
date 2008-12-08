@@ -227,10 +227,18 @@ function showStatus(){
 				// a hangup event
 				$objResponse->addScript("clearCurchannel('".$peer."');");
 
+				// set display name
+				$objResponse->addAssign("$peer-displayname","style.color","");
+				$objResponse->addAssign("$peer-displayname","style.font-weight","");
+
 				// should reload CDR
 				$objResponse->addScript("removeTr('".$peer."');");
 				$objResponse->addScript('setTimeout("xajax_addUnbilled(\''.$peer.'\')",1000);');	 //wait daemon write data to cdr
 			}else{ 
+				// set display name
+				$objResponse->addAssign("$peer-displayname","style.color","red");
+				$objResponse->addAssign("$peer-displayname","style.font-weight","bold");
+
 				if( $peerstatus[$peer]['direction'] == 'outbound'){
 					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/outbound.gif'>".$peerstatus[$peer]['dst']);
 				}else{

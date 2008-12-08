@@ -57,7 +57,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	if (num != '')
 	{
-		div.innerHTML += "&nbsp;No." + num + ":" + displayname + "<div id='divStatus'></div>";
+		div.innerHTML += "<div id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</div>";
 	}else{
 		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
 	}
@@ -181,7 +181,7 @@ function addSimpleDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	if (num != '')
 	{
-		div.innerHTML += "&nbsp;No." + num + ":" + displayname;
+		div.innerHTML += "<div id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</div>";
 	}else{
 		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
 	}
