@@ -2,7 +2,7 @@
 $like = "包含";
 $prefix = "号码前缀";
 $length = "号码长度";
-$dest = "目标";
+$destination = "目标";
 $connect_charge = "初始收费";
 $init_block = "初始时长";
 $rate = "费率";

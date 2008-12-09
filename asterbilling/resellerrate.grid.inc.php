@@ -274,7 +274,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="numlen" name="numlen" size="10" maxlength="10" value="0"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Dest").'</td>
+					<td nowrap align="left">'.$locate->Translate("Destination").'</td>
 					<td align="left"><input type="text" id="destination" name="destination" size="25" maxlength="30"></td>
 				</tr>
 				<tr>

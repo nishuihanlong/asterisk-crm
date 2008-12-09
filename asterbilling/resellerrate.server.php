@@ -145,7 +145,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("Prefix");
 	$headers[] = $locate->Translate("Length");
-	$headers[] = $locate->Translate("Dest");
+	$headers[] = $locate->Translate("Destination");
 	$headers[] = $locate->Translate("Connect Charge");
 	$headers[] = $locate->Translate("Init Block");
 	$headers[] = $locate->Translate("Rate");
@@ -215,14 +215,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("dialprefix");
-	$fieldsFromSearchShowAs[] = $locate->Translate("numlen");
+	$fieldsFromSearchShowAs[] = $locate->Translate("prefix");
+	$fieldsFromSearchShowAs[] = $locate->Translate("length");
 	$fieldsFromSearchShowAs[] = $locate->Translate("destination");
-	$fieldsFromSearchShowAs[] = $locate->Translate("rateinitial");
-	$fieldsFromSearchShowAs[] = $locate->Translate("initblock");
-	$fieldsFromSearchShowAs[] = $locate->Translate("billingblock");
-	$fieldsFromSearchShowAs[] = $locate->Translate("connectcharge");
-	$fieldsFromSearchShowAs[] = $locate->Translate("resellername");
+	$fieldsFromSearchShowAs[] = $locate->Translate("rate");
+	$fieldsFromSearchShowAs[] = $locate->Translate("init block");
+	$fieldsFromSearchShowAs[] = $locate->Translate("billing block");
+	$fieldsFromSearchShowAs[] = $locate->Translate("connect charge");
+	$fieldsFromSearchShowAs[] = $locate->Translate("reseller");
 	$fieldsFromSearchShowAs[] = $locate->Translate("addtime");
 
 

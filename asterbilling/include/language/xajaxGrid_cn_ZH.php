@@ -19,4 +19,5 @@ $delete_confirm	= "确定要删除该项目么?";
 $add_search = "增加选项";
 $export = "导出";
 $select_option = "选择操作";
+$searchdelete_confirm="你确定要删除这些记录吗?\\n如果你没有选择字段或搜索内容,将会删除所有记录!";
 ?>

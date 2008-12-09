@@ -267,15 +267,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Diaplay");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Display");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Creditlimit");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Curcredit");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Limittype");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Credit Limit");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Cur credit");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Limit type");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Clid Credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Reseller");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Addtime");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Last Update");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -330,7 +330,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top($locate->Translate("adding_pin"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("add_clid"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();

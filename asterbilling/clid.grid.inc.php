@@ -340,7 +340,7 @@ class Customer extends astercrm
 
 		$html .='
 			</form>
-			'.$locate->Translate("obligatory_fields").'
+			*'.$locate->Translate("obligatory_fields").'
 			';
 		
 		return $html;

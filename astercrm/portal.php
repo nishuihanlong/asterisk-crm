@@ -455,9 +455,9 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 				<td style="padding: 0px;">
 					<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;"></div>
+			style="left: 450px; top: 50px;width: 450px"></div>
 		<div id="surveyDiv"  class="formDiv drsElement" 
-			style="left: 20px; top: 20px;"></div>			
+			style="left: 20px; top: 20px;width: 500px"></div>			
 		<div id="formCustomerInfo" class="formDiv drsElement"
 			style="left: 20px; top: 50px;width: 600px"></div>
 		<div id="formContactInfo" class="formDiv drsElement"
@@ -479,7 +479,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formWorkoff" class="formDiv  drsElement"
 			style="left: 300px; top: 0px; z-index: 999; "></div>
 		<div id="formEditInfo" class="formDiv drsElement"
-			style="left: 450px; top: 50px;"></div>
+			style="left: 450px; top: 50px;width: 450px"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width: 350px; z-index:200"></div>
 		<div id="grid" align="center"></div>

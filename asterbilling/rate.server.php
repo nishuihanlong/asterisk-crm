@@ -159,7 +159,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("Prefix");
 	$headers[] = $locate->Translate("Length");
-	$headers[] = $locate->Translate("Dest");
+	$headers[] = $locate->Translate("Destination");
 	$headers[] = $locate->Translate("Connect Charge");
 	$headers[] = $locate->Translate("Init Block");
 	$headers[] = $locate->Translate("Rate");
@@ -224,7 +224,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Prefix");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Length");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dest");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Destination");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Rate");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Init block");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Billing block");
