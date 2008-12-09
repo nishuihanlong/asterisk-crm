@@ -59,11 +59,27 @@
 				}
 			}
 
+			function selectTimecolumn(){
+				if(document.getElementById('dialListTime').value != ""){
+					document.getElementById('dialtime').value = '';
+					document.getElementById('dialtime').disabled = true;
+					document.getElementById('cal').disabled = true;
+				}else{
+					document.getElementById('dialtime').value = '';
+					document.getElementById('dialtime').disabled = false;
+					document.getElementById('cal').disabled = false;
+				}
+			}
+
 			function chkAddOnClick(){
 				if(document.getElementsByName('chkAdd')[0].checked == true) 
 				{ 
 					document.getElementById('dialListField').value = "";
 					document.getElementById('dialListField').disabled = false;
+					document.getElementById('dialListTime').value = "";
+					document.getElementById('dialListTime').disabled = false;
+					document.getElementById('dialtime').disabled = false;
+					document.getElementById('cal').disabled = false;
 					document.getElementById('dialListField').style.border = "1px double #000000";
 					document.getElementById('dialListField').focus(); 
 					document.getElementsByName('chkAssign')[0].disabled = false;
@@ -72,6 +88,10 @@
 				{ 
 					document.getElementById('dialListField').value = "";
 					document.getElementById('dialListField').disabled = true;
+					document.getElementById('dialListTime').value = "";
+					document.getElementById('dialListTime').disabled = true;
+					document.getElementById('dialtime').disabled = true;
+					document.getElementById('cal').disabled = true;
 					document.getElementById('dialListField').style.border = "1px double #cccccc";
 					document.getElementsByName('chkAssign')[0].disabled = true;
 					document.getElementsByName('chkAssign')[0].checked = false;
@@ -177,7 +197,8 @@
 }
 </style>
 		<script language="JavaScript" src="js/astercrm.js"></script>
-
+		<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
+	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 
@@ -186,7 +207,7 @@
 		<div id="divNav"></div><br>
 		<center>
 			<div id="mainform">
-				<form action="upload.php" method="post" enctype="multipart/form-data" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
+				<form action="upload.php" method="post" enctype="multipart/form-data" id="formUpload" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
 					<?echo $locate->Translate("please_select_file");?>: <input type="file" name="excel" id="excel" onchange="if (this.value != 0){document.getElementById('filelist').value=0;}"/>&nbsp;<?echo $locate->Translate("or");?>&nbsp;<select name="filelist" id="filelist" onchange="if (this.value != 0){document.getElementById('excel').value='';}"></select>
 					<br/><br/>

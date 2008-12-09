@@ -253,7 +253,9 @@ function submitForm($aFormValues){
 	$campaignid = $aFormValues['campaignid'];
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
 		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
-
+		$dialListTime = trim($aFormValues['dialListTime']); //数字,下拉列表选择将哪列做为dialtime添加到拨号列表
+		$dialTimeInput = trim($aFormValues['dialtime']); //手动指定唯一的拨号时间组拨号列表
+		
 		if($aFormValues['chkAssign'] != '' && $aFormValues['chkAssign'] == '1'){ //是否添加分区assign
 			$tmpStr = trim($aFormValues['assign']); //分区,以','号分隔的字符串
 			if($tmpStr != ''){
@@ -289,12 +291,20 @@ function submitForm($aFormValues){
 		}
 	}
 	$x = 0;
-	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid);
+	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$dialListTime,$date,$groupid);
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句
 		//print $strSql;
 		//exit;
-		$dialListValue = $data['dialListValue'];	//以及要导入diallist的sql语句
+		$dialListNum = $data['dialListNum'];	//以及要导入diallist的sql语句
+		$dialListTime = $data['dialListTime'];
+		if($dialTimeInput != '' ){
+			$dialtime = $dialTimeInput;
+		}elseif($dialListTime != '' ){
+			$dialtime = $dialListTime;
+		}else{
+			$dialtime = '';
+		}
 		if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
 			while ($arryAssign[$x] == ''){
 				if($x >$assignNum){
@@ -303,12 +313,12 @@ function submitForm($aFormValues){
 					$x ++;
 				}
 			}
-			$query = "INSERT INTO diallist (dialnumber,assign,groupid,campaignid, cretime,creby) VALUES ('".$dialListValue."','".$arryAssign[$x]."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
-			
+			$query = "INSERT INTO diallist (dialnumber,dialtime,assign,groupid,campaignid, cretime,creby) VALUES ('".$dialListNum."','".$dialtime."','".$arryAssign[$x]."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
+			//echo $query;exit;
 			$x++;
 
 		}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
-			$query = "INSERT INTO diallist (dialnumber,groupid,campaignid,cretime,creby) VALUES ('".$dialListValue."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
+			$query = "INSERT INTO diallist (dialnumber,dialtime,groupid,campaignid,cretime,creby) VALUES ('".$dialListNum."','".$dialtime."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
 		}
 		$tmpRs =@ $db->query($query);  // 插入diallist表
 		$diallistAffectRows += $db->affectedRows();
@@ -318,6 +328,7 @@ function submitForm($aFormValues){
 			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
 		}
 	}
+
 	if($tableAffectRows< 0){
 		$tableAffectRows= 0;
 	}
@@ -351,35 +362,39 @@ function getDiallistBar($columnNum){
 						<tr>
 							<td>
 								<input type='checkbox' value='1' name='chkAdd' id='chkAdd' onclick='chkAddOnClick();'/>
-								&nbsp;&nbsp; ".$locate->Translate('add')."
+								&nbsp;".$locate->Translate('add')."
 								<select name='dialListField' id='dialListField' disabled>
 									<option value=''></option>";
 	for ($c=0; $c < $columnNum; $c++) {
 		$HTML .= "<option value='$c'>$c</option>";
 	}
-	$HTML .= "
-								</select> ".$locate->Translate('todiallist')." &nbsp;&nbsp;
+	$HTML .="</select>&nbsp;".$locate->Translate('scheduler').": <select name='dialListTime' id='dialListTime' onchange='selectTimecolumn();' disabled><option value=''></option>";
+	for ($c=0; $c < $columnNum; $c++) {
+		$HTML .= "<option value='$c'>$c</option>";
+	}
+	$HTML .= '</select>&nbsp;/&nbsp;<input type="text" name="dialtime" id="dialtime" size="20" value="" disabled><INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal" id="cal" name="cal" disabled>&nbsp;';
+	$HTML .= $locate->Translate('todiallist')." &nbsp;
 								<input type='checkbox' value='1' name='chkAssign' id='chkAssign' onclick='chkAssignOnClick();' disabled/> ".$locate->Translate('area')."
-								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:200px;heiht:12px;' disabled />
+								<input type='text' name='assign' id='assign' style='border:1px double #cccccc;width:100px;heiht:12px;' disabled />
 							</td>
 						</tr>
 					</table>";
+	//echo $HTML;exit;
 	return $HTML;
 }
 
 
-function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid){
+function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$dialListTime,$date,$groupid){
 	$arrData = getSourceData($filePath);
 	foreach($arrData as $arrRow){
-		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid);
+		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid);
 	}
 	//print_r($arrAll);exit;
 	return $arrAll;
 }
 
 //循环列数据，得到sql
-function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid){
-	
+function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid){
 	$fieldName = '';
 	$strData = '';
 
@@ -402,7 +417,11 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 		}
 		if(isset($dialListField) && $dialListField != ''){
 			if($dialListField == $j)
-				$dialListValue = astercrm::getDigitsInStr($arrRow[$j]);
+				$dialNum = astercrm::getDigitsInStr($arrRow[$j]);
+		}
+		if(isset($dialListTime) && $dialListTime != ''){
+			if($dialListTime == $j)
+				$dialTime = trim($arrRow[$j]);			
 		}
 	}
 	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
@@ -411,7 +430,7 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 		$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$groupid.")";
 	//print $strSql;
 	//exit;
-	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);
+	return array('strSql'=>$strSql,'dialListNum'=>$dialNum,'dialListTime'=>$dialTime);
 }
 
 function csv_string_to_array($str){

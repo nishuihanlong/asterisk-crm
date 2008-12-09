@@ -113,7 +113,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on searchtype select box.
 	$typeFromSearchShowAs = array();
-	$typeFromSearchShowAs[] = 'like';
+	$typeFromSearchShowAs[] = $locate->Translate("like");
 	$typeFromSearchShowAs[] = '=';
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';
@@ -124,6 +124,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'dialnumber';
 	$fields[] = 'assign';
+	$fields[] = 'dialtime';
 	$fields[] = 'groupname';
 	$fields[] = 'campaignname';
 	$fields[] = 'cretime';
@@ -132,8 +133,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";
-	$headers[] = $locate->Translate("number");
-	$headers[] = $locate->Translate("assign to");
+	$headers[] = $locate->Translate("Number");
+	$headers[] = $locate->Translate("Assign to");
+	$headers[] = $locate->Translate("Dialtime");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Campaign Name");
 	$headers[] = $locate->Translate("Create time");
@@ -162,6 +164,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","assign","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
@@ -172,6 +175,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'diallist.dialnumber';
 	$fieldsFromSearch[] = 'diallist.assign';
+	$fieldsFromSearch[] = 'diallist.dialtime';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'campaignname';
 	$fieldsFromSearch[] = 'diallist.cretime';
@@ -182,6 +186,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("assign_to");
+	$fieldsFromSearchShowAs[] = $locate->Translate("dialtime");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create Time");
@@ -204,6 +209,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['dialnumber'];
 		$rowc[] = $row['assign'];
+		$rowc[] = $row['dialtime'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['cretime'];

@@ -29,4 +29,5 @@
 	$records_inserted = '条记录，录入成功';
 	$or = "或是";
 	$select_a_existent_file = "选择已存在的文件";
+	$scheduler = "拨号时间";
 ?>
