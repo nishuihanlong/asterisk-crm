@@ -123,7 +123,11 @@ function init($aFormValue){
 */
 function processAccountData($aFormValues)
 {
-	global $db,$locate,$config;
+	global $db,$config;
+
+	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
+	//get locate parameter
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
 
 	$objResponse = new xajaxResponse();
 	
@@ -204,12 +208,14 @@ function processAccountData($aFormValues)
 			} else{
 				$loginError = true;
 			}			
+		}else{
+			$loginError = true;
 		}
 
 		if (!$loginError){
 			return $objResponse;
 		} else {
-			$objResponse->addAlert($locate->Translate("login_failed"));
+			$objResponse->addAlert($locate->Translate("login failed"));
 			$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 			$objResponse->addAssign("loginButton","disabled",false);
 			return $objResponse;

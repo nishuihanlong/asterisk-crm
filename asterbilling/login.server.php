@@ -21,6 +21,10 @@ function processForm($aFormValues)
 {
 	global $config;
 
+	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
+	//get locate parameter
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
+
 	$objResponse = new xajaxResponse();
 	global $locate;
 	if ($config['system']['validcode'] == 'yes'){
@@ -119,7 +123,11 @@ function init($aFormValue){
 */
 function processAccountData($aFormValues)
 {
-	global $db,$locate,$config;
+	global $db,$config;
+
+	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
+	//get locate parameter
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
 
 	$objResponse = new xajaxResponse();
 	

@@ -172,9 +172,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Name").'<br>';
 	$headers[] = $locate->Translate("Callback").'<br>';
 	$headers[] = $locate->Translate("Credit Limit").'<br>';
-	$headers[] = $locate->Translate("Limit Status").'<br>';
+	$headers[] = $locate->Translate("Limit Type").'<br>';
 	$headers[] = $locate->Translate("Billsec Multiple").'<br>';
-	$headers[] = $locate->Translate("Curcredit").'<br>';
+	$headers[] = $locate->Translate("Cur credit").'<br>';
 	$headers[] = $locate->Translate("Clid Credit").'<br>';
 	$headers[] = $locate->Translate("Group Credit").'<br>';
 	$headers[] = $locate->Translate("Reseller Credit").'<br>';
@@ -291,7 +291,7 @@ function add(){
 	$objResponse = new xajaxResponse();
 
 
-	$html = Table::Top($locate->Translate("Add group"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("Add reseller"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
