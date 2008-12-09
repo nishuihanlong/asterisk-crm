@@ -475,6 +475,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `inexten` varchar(30) NOT NULL default '',
  `callerid` varchar(30) NOT NULL default '',
  `queuename` varchar(15) NOT NULL default '',
+ `bindqueue` BOOL NOT NULL DEFAULT '0',
  `limit_type` varchar(15) NOT NULL default 'channel',
  `max_channel` int(4) NOT NULL default '5',
  `queue_increasement` float(8,2) NOT NULL default '1.00',

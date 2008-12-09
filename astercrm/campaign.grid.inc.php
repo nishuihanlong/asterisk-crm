@@ -128,6 +128,62 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function insertNewCampaign($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$bindqueue = 0;
+		if ($f['bindqueue'] =="on"){
+			$bindqueue = 1;
+		}
+
+		$query= "INSERT INTO campaign SET "
+				."campaignname='".$f['campaignname']."', "
+				."campaignnote='".$f['campaignnote']."', "
+				."enable='".$f['enable']."', "
+				."outcontext='".$f['outcontext']."', "
+				."incontext='".$f['incontext']."', "
+				."inexten='".$f['inexten']."', "
+				."queuename='".$f['queuename']."', "
+				."bindqueue='".$bindqueue."', "
+				."maxtrytime='".$f['maxtrytime']."', "
+				."callerid='".$f['callerid']."', "
+				."groupid='".$f['groupid']."', "
+				."creby = '".$_SESSION['curuser']['username']."',"
+				."cretime = now()";
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
+
+	function updateCampaignRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$bindqueue = 0;
+		if ($f['bindqueue'] =="on"){
+			$bindqueue = 1;
+		}
+
+		$query= "UPDATE campaign SET "
+				."campaignname='".$f['campaignname']."', "
+				."campaignnote='".$f['campaignnote']."', "
+				."enable='".$f['enable']."', "				
+				."outcontext='".$f['outcontext']."', "
+				."incontext='".$f['incontext']."', "
+				."inexten='".$f['inexten']."', "
+				."queuename='".$f['queuename']."', "
+				."bindqueue='".$bindqueue."', "
+				."maxtrytime='".$f['maxtrytime']."', "
+				."callerid='".$f['callerid']."', "
+				."groupid='".$f['groupid']."' "
+				."WHERE id=".$f['id'];
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
+
 	/**
 	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
@@ -282,12 +338,17 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Queue name").'</td>
-					<td align="left"><input type="text" id="queuename" name="queuename" size="30" maxlength="15"></td>
+					<td align="left">
+						<input type="text" id="queuename" name="queuename" size="15" maxlength="15">
+						<input type="checkbox" name="bindqueue" id="bindqueue">'.$locate->Translate("send calls to this queue directly").'
+					</td>
 				</tr>
+				<!--
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30"></td>
 				</tr>
+				-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>
@@ -339,6 +400,10 @@ class Customer extends astercrm
 				
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input type="hidden" name="groupid" id="groupid" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
+		$bindqueue = "";
+		if ($campaign['bindqueue'] == 1){
+			$bindqueue = "checked";
+		}
 
 		$html = '
 			<!-- No edit the next line -->
@@ -375,12 +440,18 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Queue name").'</td>
-					<td align="left"><input type="text" id="queuename" name="queuename" size="30" maxlength="30" value="'.$campaign['queuename'].'"></td>
+					<td align="left">
+						<input type="text" id="queuename" name="queuename" size="30" maxlength="30" value="'.$campaign['queuename'].'">
+						<input type="checkbox" name="bindqueue" id="bindqueue" '.$bindqueue.'>'.$locate->Translate("send calls to this queue directly").'						
+						</td>
 				</tr>
+
+				<!--
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>
 				</tr>
+				-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>

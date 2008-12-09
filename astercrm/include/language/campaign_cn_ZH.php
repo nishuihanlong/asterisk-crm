@@ -19,4 +19,6 @@ $max_trytime = '最大重拨次数';
 $queue_name = '队列名称';
 $disable = '不可用';
 $enable = '可用';
+$send_calls_to_this_queue_directly = "直接将呼叫转入此队列";
+$please_enter_the_queue_name = "请输入队列名称";
 ?>

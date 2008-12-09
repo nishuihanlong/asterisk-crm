@@ -20,7 +20,7 @@ ALTER TABLE `campaign` ADD `queue_increasement` float(8,2) NOT NULL default '1.0
 ALTER TABLE `campaign` ADD `status`  varchar(4) NOT NULL default 'idle' AFTER `queue_increasement`;
 ALTER TABLE `dialedlist` ADD `dialtime` datetime NOT NULL default '0000-00-00 00:00:00' AFTER `dialednumber`;
 ALTER TABLE `campaign` ADD `callerid` varchar(30) NOT NULL default '' AFTER `inexten`;
-
+ALTER TABLE `campaign` ADD `bindqueue` BOOL NOT NULL DEFAULT '0' AFTER `queuename` ;
 
 ## 
 ## table `surveyoptionitems`

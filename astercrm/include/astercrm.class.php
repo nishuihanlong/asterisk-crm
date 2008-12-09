@@ -416,27 +416,6 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function insertNewCampaign($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		$query= "INSERT INTO campaign SET "
-				."campaignname='".$f['campaignname']."', "
-				."campaignnote='".$f['campaignnote']."', "
-				."enable='".$f['enable']."', "
-				."outcontext='".$f['outcontext']."', "
-				."incontext='".$f['incontext']."', "
-				."inexten='".$f['inexten']."', "
-				."queuename='".$f['queuename']."', "
-				."maxtrytime='".$f['maxtrytime']."', "
-				."callerid='".$f['callerid']."', "
-				."groupid='".$f['groupid']."', "
-				."creby = '".$_SESSION['curuser']['username']."',"
-				."cretime = now()";
-		astercrm::events($query);
-		$res =& $db->query($query);
-		return $res;
-	}
-
 	function insertNewDiallist($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
@@ -633,27 +612,6 @@ Class astercrm extends PEAR{
 				."campaignid= ".$f['campaignid'].", "
 				."assign='".$f['assign']."'"
 				."WHERE id='".$f['id']."'";
-		astercrm::events($query);
-		$res =& $db->query($query);
-		return $res;
-	}
-
-	function updateCampaignRecord($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		
-		$query= "UPDATE campaign SET "
-				."campaignname='".$f['campaignname']."', "
-				."campaignnote='".$f['campaignnote']."', "
-				."enable='".$f['enable']."', "				
-				."outcontext='".$f['outcontext']."', "
-				."incontext='".$f['incontext']."', "
-				."inexten='".$f['inexten']."', "
-				."queuename='".$f['queuename']."', "
-				."maxtrytime='".$f['maxtrytime']."', "
-				."callerid='".$f['callerid']."', "
-				."groupid='".$f['groupid']."' "
-				."WHERE id=".$f['id'];
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;

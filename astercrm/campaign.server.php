@@ -279,6 +279,11 @@ function save($f){
 		return $objResponse->getXML();
 	}
 
+	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
+		$objResponse->addAlert($locate->Translate("Please enter the queue name"));
+		return $objResponse->getXML();
+	}
+
 	$respOk = Customer::insertNewCampaign($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -304,6 +309,10 @@ function update($f){
 	$objResponse = new xajaxResponse();
 	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
+		$objResponse->addAlert($locate->Translate("Please enter the queue name"));
 		return $objResponse->getXML();
 	}
 
