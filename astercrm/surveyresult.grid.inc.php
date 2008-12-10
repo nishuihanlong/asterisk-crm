@@ -158,5 +158,59 @@ class Customer extends astercrm
 //		exit;
 		return $res;
 	}
+
+	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content,$stype, $order,$table, $ordering = ""){
+		global $db;
+
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+		$sql = "SELECT  surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid WHERE ";
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1 ";
+		}else{
+			$sql .= " surveyresult.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+	
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function &getNumRowsMorewithstype($filter = null, $content = null,$stype,$table){
+		global $db;
+		
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+
+			$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  WHERE ";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " ";
+			}else{
+				$sql .= " surveyresult.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+			}
+
+			if ($joinstr!=''){
+				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+				$sql .= " ".$joinstr;
+			}else {
+				$sql .= " 1";
+			}
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+//		print $sql;
+//		print "\n";
+//		print $res;
+//		exit;
+		return $res;
+	}
+
 }
 ?>
