@@ -409,8 +409,8 @@ Class astercrm extends PEAR{
 				."monitorforce='".$f['monitorforce']."',"
 				."agentinterval='".$f['agentinterval']."',"
 				."groupnote='".$f['groupnote']."',"
-				."pdcontext='".$f['pdcontext']."',"
-				."pdextension='".$f['pdextensions']."' ";		// added 2007/10/30 by solo
+				."incontext='".$f['incontext']."',"
+				."outcontext='".$f['outcontext']."' ";		// added 2007/10/30 by solo
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -592,8 +592,8 @@ Class astercrm extends PEAR{
 				."monitorforce='".$f['monitorforce']."', "
 				."agentinterval='".$f['agentinterval']."', "
 				."groupnote='".$f['groupnote']."',"
-				."pdcontext='".$f['pdcontext']."', "
-				."pdextension='".$f['pdextensions']."' "
+				."incontext='".$f['incontext']."', "
+				."outcontext='".$f['outcontext']."' "
 				."WHERE id='".$f['id']."'";
 		
 		astercrm::events($query);

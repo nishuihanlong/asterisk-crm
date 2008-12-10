@@ -153,15 +153,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'groupname';
 	$fields[] = 'groupid';
-	$fields[] = 'pdcontext';
-	$fields[] = 'pdextension';
+	$fields[] = 'incontext';
+	$fields[] = 'outcontext';
 
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("groupname");
 	$headers[] = $locate->Translate("groupid");
-	$headers[] = $locate->Translate("pdcontext");
-	$headers[] = $locate->Translate("pdextensions");
+	$headers[] = $locate->Translate("incontext");
+	$headers[] = $locate->Translate("outcontext");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -181,22 +181,22 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupid","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pdcontext","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pdextensions","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","incontext","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","outcontext","'.$divName.'","ORDERING");return false;\'';
 	
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'groupid';
-	$fieldsFromSearch[] = 'pdcontext';
-	$fieldsFromSearch[] = 'pdextension';
+	$fieldsFromSearch[] = 'incontext';
+	$fieldsFromSearch[] = 'outcontext';
 	
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("groupname");
 	$fieldsFromSearchShowAs[] = $locate->Translate("groupid");
-	$fieldsFromSearchShowAs[] = $locate->Translate("pdcontext");
-	$fieldsFromSearchShowAs[] = $locate->Translate("pdextensions");
+	$fieldsFromSearchShowAs[] = $locate->Translate("incontext");
+	$fieldsFromSearchShowAs[] = $locate->Translate("outcontext");
 
 	//echo 'dddddddddddddd';
 	// Create object whit 5 cols and all data arrays set before.
@@ -212,8 +212,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['groupid'];
-		$rowc[] = $row['pdcontext'];
-		$rowc[] = $row['pdextension'];
+		$rowc[] = $row['incontext'];
+		$rowc[] = $row['outcontext'];
 		$table->addRow("group",$rowc,1,1,1,$divName,$fields);
  	}
  	

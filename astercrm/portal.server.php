@@ -849,16 +849,20 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 	$objResponse = new xajaxResponse();
 	if(trim($myValue['curid']) > 0) $curid = trim($myValue['curid']) - 1;
 	else $curid = trim($myValue['curid']);
-	if ($_SESSION['curuser']['channel'] == '')
-		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['extension']);
-	else
-		$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
 
+	$call = asterEvent::checkNewCall($curid,$curid,$_SESSION['curuser']['extension'],$_SESSION['curuser']['channel'],$_SESSION['curuser']['agent']);
+	
 	if($call['status'] != '') {
 		$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 		$objResponse->addScript("alert('".$locate->Translate("Exten in use")."')");
 		return $objResponse->getXML();
 	}
+	$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+
+	if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+	else $incontext = $config['system']['incontext'];
+	if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
+	else $outcontext = $config['system']['outcontext'];
 
 	if ($dtmf != '') {
 		$app = 'Dial';
@@ -877,23 +881,23 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 	if ($first == 'caller'){	//caller will ring first
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 								'WaitTime'=>30,
 								'Exten'=>$phoneNum,
-								'Context'=>$config['system']['outcontext'],
+								'Context'=>$outcontext,
 								'Account'=>$_SESSION['curuser']['accountcode'],
 								'Variable'=>"$strVariable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
 								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
+			$myAsterisk->sendCall($strChannel,$phoneNum,$outcontext,1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+		$strChannel = "Local/".$phoneNum."@".$outcontext."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 
@@ -905,14 +909,14 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 								'WaitTime'=>30,
 								'Exten'=>$_SESSION['curuser']['extension'],
-								'Context'=>$config['system']['incontext'],
+								'Context'=>$incontext,
 								'Account'=>$_SESSION['curuser']['accountcode'],
 								'Variable'=>"$strVariable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
 								'CallerID'=>$_SESSION['curuser']['extension']));
 		}else{
-			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$config['system']['incontext'],1,$app,$data,30,$_SESSION['curuser']['extension'],NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$incontext,1,$app,$data,30,$_SESSION['curuser']['extension'],NULL,NULL);
 		}
 	}
 	//$myAsterisk->disconnect();
@@ -954,8 +958,12 @@ function invite($src,$dest,$campaignid=''){
 		else $outcontext = $config['system']['outcontext'];
 		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
 	}else{
-		$incontext = $config['system']['incontext'];
-		$outcontext = $config['system']['outcontext'];
+		$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+
+		if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+		else $incontext = $config['system']['incontext'];
+		if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
+		else $outcontext = $config['system']['outcontext'];
 	}
 	$strChannel = "Local/".$src."@".$incontext."/n";
 

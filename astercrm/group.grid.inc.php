@@ -220,12 +220,12 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="groupid" name="groupid" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("pdcontext").'</td>
-					<td align="left"><input type="text" id="pdcontext" name="pdcontext" size="25" maxlength="30"></td>
+					<td nowrap align="left">'.$locate->Translate("incontext").'</td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("pdextensions").'</td>
-					<td align="left"><input type="text" id="pdextensions" name="pdextensions" size="25" maxlength="100"></td>
+					<td nowrap align="left">'.$locate->Translate("outcontext").'</td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="25" maxlength="100"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("force monitor").'</td>
@@ -280,12 +280,12 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="groupid" name="groupid" size="25" maxlength="30" value="'.$account['groupid'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("pdcontext").'</td>
-					<td align="left"><input type="text" id="pdcontext" name="pdcontext" size="25" maxlength="30" value="'.$account['pdcontext'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("incontext").'</td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="25" maxlength="30" value="'.$account['incontext'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("pdextensions").'</td>
-					<td align="left"><input type="text" id="pdextensions" name="pdextensions" size="25" maxlength="100" value="'.$account['pdextension'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("outcontext").'</td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="25" maxlength="100" value="'.$account['outcontext'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("force monitor").'</td>

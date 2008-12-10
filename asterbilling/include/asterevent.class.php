@@ -374,13 +374,12 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			}else{
 				$query .= " AND src = '$booth' OR dst = '$booth'";
 			}
-		}
-		#print $query;exit;
+		}		
 		#exit;
 		if ($groupby != ""){
 			$query .= " GROUP BY $groupby";
 		}
-
+		print $query;exit;
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;

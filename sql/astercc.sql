@@ -367,7 +367,12 @@ CREATE TABLE `historycdr` (
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
-  KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`duration`,`billsec`,`disposition`)
+  KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`),
+  INDEX `dst` (`dst`),
+  INDEX `destination` (`destination`),
+  INDEX `calldate` (`calldate`),
+  INDEX `resellerid` (`resellerid`),
+  INDEX `groupid` (`groupid`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ##########################################################
@@ -447,8 +452,8 @@ CREATE TABLE `astercrm_accountgroup` (
  `groupname` VARCHAR( 30 ) NOT NULL ,
  `groupnote` VARCHAR( 255 ) NOT NULL ,				
  `groupid` INT NOT NULL ,
- `pdcontext` VARCHAR( 30 ) NOT NULL  ,
- `pdextension` VARCHAR( 30 ) NOT NULL  ,
+ `incontext` VARCHAR( 50 ) NOT NULL  ,
+ `outcontext` VARCHAR( 50 ) NOT NULL  ,
  `monitorforce` INT(1) NOT NULL default 0,
  `agentinterval` int(5) NULL,
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
