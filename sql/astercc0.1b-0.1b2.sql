@@ -23,7 +23,7 @@ ALTER TABLE `accountgroup` ADD `grouplogo` VARCHAR( 30 ) NOT NULL AFTER `groupta
 ALTER TABLE `accountgroup` ADD `grouplogostatus` int(1) NOT NULL default 1 AFTER `grouplogo`;
 
 
-ALTER TABLE `accountgroup` ADD `group_multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT '1.0000' AFTER `limittype` ,
+ALTER TABLE `accountgroup` ADD `group_multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT '1.0000' AFTER `limittype` ;
 ALTER TABLE `accountgroup` ADD `customer_multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT '1.0000' AFTER `group_multiple` ;
 ALTER TABLE `resellergroup` ADD `multiple` DOUBLE( 8, 4 ) NOT NULL DEFAULT '1.0000' AFTER `limittype` ;
 
