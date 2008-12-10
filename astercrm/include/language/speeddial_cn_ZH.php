@@ -7,4 +7,5 @@ $add_speeddial_number = '添加新记录';
 $description = '描述';
 $edit_speeddial =  '编辑';
 $obligatory_fields = '* 为必填项';
+$like = "包含";
 ?>

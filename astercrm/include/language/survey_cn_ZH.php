@@ -3,7 +3,8 @@ require('astercrm_cn_ZH.php');
 $add_survey		= "添加问卷";
 $add_option = "添加选项";
 $add_item = "添加选项";
-
+$survey_option = "问卷题目";
+$survey_item = "问卷选项";
 $edit_survey	= "修改问卷";
 $please_enter_survey	= "请添写问卷标题";
 $survey_title	= "问卷标题";

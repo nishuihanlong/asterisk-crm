@@ -28,4 +28,5 @@ $dynamic_agent = "动态座席";
 $first_name = "名字";
 $last_name = "姓氏";
 $can_not_delete_your_own_account = "不能删除自己的账户";
+$like = "包含";
 ?>

@@ -21,4 +21,5 @@ $disable = '不可用';
 $enable = '可用';
 $send_calls_to_this_queue_directly = "直接将呼叫转入此队列";
 $please_enter_the_queue_name = "请输入队列名称";
+$like = "包含";
 ?>

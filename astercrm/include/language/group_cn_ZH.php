@@ -22,4 +22,5 @@ $group_note = "组信息";
 $disable = '否';
 $enable = '是';
 $force_monitor = '强制录音';
+$like = "包含";
 ?>

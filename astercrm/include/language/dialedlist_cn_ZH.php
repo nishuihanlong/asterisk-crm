@@ -12,4 +12,5 @@ $delete = "删除";
 $dial_list = '拨号列表';
 $campaign = '拨号计划';
 $all = "全部";
+$like = "包含";
 ?>

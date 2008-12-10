@@ -135,6 +135,22 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		}
 	}
 
+	
+	// Select Box: type table.
+	$typeFromSearch = array();
+	$typeFromSearch[] = 'like';
+	$typeFromSearch[] = 'equal';
+	$typeFromSearch[] = 'more';
+	$typeFromSearch[] = 'less';
+
+	// Selecct Box: Labels showed on searchtype select box.
+	$typeFromSearchShowAs = array();
+	$typeFromSearchShowAs[] = $locate->Translate('like');
+	$typeFromSearchShowAs[] = '=';
+	$typeFromSearchShowAs[] = '>';
+	$typeFromSearchShowAs[] = '<';
+
+
 	// Editable zone
 
 	// Databse Table: fields
