@@ -17,7 +17,7 @@ then
 fi
 
 curpath=`pwd`
-echo "${curpath}/astercrm"
+#echo "${curpath}/astercrm"
 if [ ! -d"${curpath}/astercrm" ]
 then
   echo -n 'astercrm directory not in here, are you sure contiue?(y/n):'
@@ -100,6 +100,12 @@ fi
 
 ${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ping
 
+if [ $? -ne 0 ]
+then
+  echo "database connection failed!"
+  exit
+fi
+
 echo "If database:'"${dbname}"' is not exists, press 'y' to create," && echo -n "else press 'n' to skip this step:" 
 read dbexisist
 
@@ -111,7 +117,9 @@ else
 	read createTable
 
 	if [ "X${createTable}" != "Xy" -a "X${createTable}" != "XY" ]
-	then exit
+	then 
+		echo "User cancel"
+		exit
 	fi
 fi
 
