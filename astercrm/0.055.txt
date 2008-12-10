@@ -2,13 +2,16 @@ new features in 0.055
 	advance survey
 	callerid smart mathcing
 	use daemon for predictive dialer
+	predictive dialer direct to queue
 
-0.051新特性
+
+0.055新特性
 	高级问卷功能
 	来电号码智能匹配
 	进程拨号
+	预拨号直接进队列
 
-astercrm features(0.051)
+astercrm features(0.055)
 
 	pop-up when incoming calls 
 	pop-up when outbound calls
@@ -70,3 +73,4 @@ astercrm features(0.051)
 	multi mode search(like,=,<,>)
 	advance survey
 	callerid smart mathcing
+	predictive dialer direct to queue

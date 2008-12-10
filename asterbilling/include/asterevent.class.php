@@ -379,7 +379,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		if ($groupby != ""){
 			$query .= " GROUP BY $groupby";
 		}
-		print $query;exit;
+		//print $query;exit;
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;

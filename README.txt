@@ -38,7 +38,6 @@ Installation:
   In this way, just to run 
 	/bin/sh install.sh
   as root in astercc main directory and enter some parameter require by it.
-  attention: You have to create dababase for astercc before run install.sh.
 
  B install manual
   1) Download and unzip the source (assuming your WEB root is /var/www/html)
@@ -307,6 +306,9 @@ however, multiple servers enhance performance.
 	system status monitor by groupadmin
 	predictive dial by groupadmin
 	multi mode search(like,=,<,>)
+	advance survey
+	callerid smart mathcing
+	predictive dialer direct to queue
 
 *Manager Interface 
 
@@ -413,3 +415,9 @@ asterBilling features:
   17. Grid layout
   18. CDR search/browser
   19. 5 free channels license
+  20. credit operation history
+  21. print receipt
+  22. agi for calling card and internal pbx billing
+  23. billing for clid
+  24. inbound billing 
+  25. multi language support[Simplified Chinese/English]

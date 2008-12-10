@@ -75,6 +75,10 @@ add new field amount and total in table accountgroup to store all selling and al
 2008-12-1	 added group logo, group name and could be displayed on callshop page
 2008-12-1	 added receipt feature
 2008-12-1   added billing second multiple
+2008-12-1   fixed do not delete group account when delete a group
+2008-12-5   fixed astercclock always generate log
+2008-12-5   change the navigation
+
 
 
 import时如果数据量大会报错
@@ -119,8 +123,12 @@ astercc features:
 	CDR search/browser
 	5 free channels license
 	credit operation history
+	print receipt
 	agi for calling card and internal pbx billing
 	billing for clid
+	inbound billing 
+	multi language support[Simplified Chinese/English]
+
 
 astercc特点
 
@@ -148,5 +156,6 @@ astercc特点
 	提供了可以用作电话卡或内部pbx计费的agi脚本
 	单独分机计费
         充值信息记录
+	收据打印
         分机可登陆系统查询通话记录
-        多语言支持[中英]
+        多语言支持[中/英]
