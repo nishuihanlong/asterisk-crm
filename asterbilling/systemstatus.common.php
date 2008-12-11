@@ -41,7 +41,7 @@ session_set_cookie_params(0);
 if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
-if ($_SESSION['curuser']['usertype'] != 'groupadmin' && $_SESSION['curuser']['usertype'] == 'operator')
+if ($_SESSION['curuser']['usertype'] != 'groupadmin' && $_SESSION['curuser']['usertype'] != 'operator')
 	header("Location: index.php");
 
 
