@@ -416,7 +416,6 @@ function waitingCalls($myValue){
 	//else
 	//	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
 	//  end
-
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
 		$status	= 'idle';
@@ -1137,6 +1136,34 @@ function chanspy($exten,$spyexten,$pam = ''){
 		return;
 	}
 	$myAsterisk->chanSpy($exten,"SIP/".$spyexten,$pam);
+	return $objResponse;
+}
+
+function bargeInvite($srcchan,$dstchan,$exten){
+	//echo $srcchan,$dstchan,$exten;exit;
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+
+	$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+
+	if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+	else $incontext = $config['system']['incontext'];
+	//if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
+	//else $outcontext = $config['system']['outcontext'];
+
+	$strChannel = "Local/".$exten."@".$incontext."/n";
+	$myAsterisk->Originate($strChannel,'','',1,'meetme',$exten."|pqdx",30,$exten,NULL,NULL);
+
+	$myAsterisk->Redirect($srcchan,$dstchan,$exten,"astercc-barge","1");
+
+	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse;
 }
 

@@ -108,6 +108,7 @@ $xajax->registerFunction("monitor");
 $xajax->registerFunction("invite");
 $xajax->registerFunction("hangup");
 $xajax->registerFunction("chanspy");
+$xajax->registerFunction("bargeInvite");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("displayMap");
 $xajax->registerFunction("workstart");

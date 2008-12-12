@@ -8,7 +8,7 @@ new features in 0.055
 0.055新特性
 	高级问卷功能
 	来电号码智能匹配
-	进程拨号
+	进程预拨号
 	预拨号直接进队列
 
 astercrm features(0.055)

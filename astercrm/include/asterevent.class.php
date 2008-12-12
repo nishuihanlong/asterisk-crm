@@ -398,7 +398,7 @@ class asterEvent extends PEAR
 				$phones = $panellist;
 			}
 			//print_r($phones);print_r($status);print_r($callerid);print_r($direction);exit;
-			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction);
+			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction,$srcchan,$dstchan);
 		}else{
 			//$_SESSION['curuser']['extensions_session'] = $phones;
 			$action =& asterEvent::tableStatus($panellist,$status,$callerid,$direction,$srcchan,$dstchan);
@@ -443,7 +443,7 @@ class asterEvent extends PEAR
 					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 				}else {
 					if ($status[$username] == 1) {
-						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A><A href='###' onclick=\"hangup ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Hangup')."</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$exten."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A><A href='###' onclick=\"xajax_barge ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A><A href='###' onclick=\"hangup ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Hangup')."</font>-</A></UL></LI>";
 					}
 					else {
 						$action .= "<UL id='extenBtnG'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
@@ -473,7 +473,7 @@ class asterEvent extends PEAR
 	allow to spy extension (when busy) and click-to-call (when idle)
 	*/
 
-	function &listStatus($phones,$status,$callerid,$direction){
+	function &listStatus($phones,$status,$callerid,$direction,$srcchan,$dstchan){
 		global $locate;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
 		foreach ($phones as $username => $row) {
@@ -482,7 +482,7 @@ class asterEvent extends PEAR
 	
 			if (isset($status[$username])) {
 				if ($status[$username] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";					
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A></UL></LI>";					
 				}else {
 					if ($status[$username] == 1) {
 						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A>";
@@ -490,14 +490,14 @@ class asterEvent extends PEAR
 						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A>";
 						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A></UL></LI>";					
 					}else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A></UL></LI>";
 					}
 				}
 			}else {
 				$action .= "<UL id='extenBtnB'>
 												<LI><a href='###' >".$username."</a>
 													<UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A>
-														<A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A>
+														<A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A>
 													</UL>
 												</LI>";
 			}

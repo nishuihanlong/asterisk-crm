@@ -244,5 +244,30 @@ function dial($phoneNum,$first = ''){
 	return;
 }
 
+function barge($srcchan,$dstchan){
+	global $config,$locate;
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+
+	$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+
+	if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+	else $incontext = $config['system']['incontext'];
+	//if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
+	//else $outcontext = $config['system']['outcontext'];
+
+	$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
+	$myAsterisk->Originate($strChannel,'','',1,'meetme',$_SESSION['curuser']['extension']."|pqdx",30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+
+	$myAsterisk->Redirect($srcchan,$dstchan,$_SESSION['curuser']['extension'],"astercc-barge","1");
+	return $objResponse;
+}
+
 $xajax->processRequests();
 ?>

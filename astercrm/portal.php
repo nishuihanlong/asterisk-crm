@@ -300,6 +300,19 @@ require_once('portal.common.php');
 			}
 		}
 
+		function bargeInvite(exten){
+			if (document.getElementById("callerChannel").value == '' || document.getElementById("callerChannel").value == 'calleeChannel')
+				return false;
+			srcchan = trim(xajax.$('callerChannel').value);
+			dstchan = trim(xajax.$('calleeChannel').value);
+			inviteExten = exten;
+			
+			xajax.$("divMsg").style.visibility = 'visible';
+			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Inviting ");?>" + " " + exten;
+
+			setTimeout("xajax_bargeInvite(srcchan,dstchan,inviteExten)",1000);
+		}
+
 		function menuFix() { 
 			var sfEls = document.getElementById("divExtension").getElementsByTagName("li"); 
 			for (var i=0; i<sfEls.length; i++) { 

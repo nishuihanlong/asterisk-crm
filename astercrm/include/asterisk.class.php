@@ -90,8 +90,7 @@ class Asterisk extends AGI_AsteriskManager{
                 //exit;
       fwrite($this->socket, $req);
           return;
-        }
-
+	 }	 
 
 	function getSipChannels(){
 		global $config;
