@@ -39,6 +39,16 @@ Installation:
 	/bin/sh install.sh
   as root in astercc main directory and enter some parameter require by it.
 
+  Update asterisk dialplan for barge(If you want to use barge function in asterCRM)
+	add following line to asterisk extensions.conf(might any other extensions file you use,in freepbx could be extensions_custom.conf)
+	;;;for asterCRM barge in
+	;;;start astercc-barge;;;
+	[astercc-barge]
+	exten => _X.,1,NoOP(${EXTEN})
+	exten => _X.,n,meetme(${EXTEN}|pqdx)
+	exten => _X.,n,hangup
+	;;;end astercc-barge;;;
+
  B install manual
   1) Download and unzip the source (assuming your WEB root is /var/www/html)
 
@@ -87,7 +97,17 @@ Installation:
 	; use your astercc ip to replace 127.0.0.1 or add a new line
 	permit=127.0.0.1/255.255.255.0
 
-  4) Create the directories and move daemon scripts:
+  4) Update asterisk dialplan for barge(If you want to use barge function in asterCRM)
+	add following line to asterisk extensions.conf(might any other extensions file you use,in freepbx could be extensions_custom.conf)
+	;;;for asterCRM barge in
+	;;;start astercc-barge;;;
+	[astercc-barge]
+	exten => _X.,1,NoOP(${EXTEN})
+	exten => _X.,n,meetme(${EXTEN}|pqdx)
+	exten => _X.,n,hangup
+	;;;end astercc-barge;;;
+
+  5) Create the directories and move daemon scripts:
 
 	mkdir -p /opt/asterisk/scripts/astercc 
 	mv /var/www/html/astercc/script/* /opt/asterisk/scripts/astercc
@@ -102,14 +122,14 @@ Installation:
 	chmod +x /opt/asterisk/scripts/astercc/asterccdaemon
 	chmod +x /opt/asterisk/scripts/astercc/asterccd
 
-  5) modify config file
+  6) modify config file
 	
 	for asterCRM:
 		modity /var/www/html/astercc/astercrm/astercrm.conf.php to fit your configration
 	for asterCC:
 		modity /var/www/html/astercc/asterbilling/asterbilling.conf.php to fit your configration
 
-  6) Start Asterisk and daemon
+  7) Start Asterisk and daemon
 
 	There are two daemon modes you can choose, 
 	astercc mode or eventsdaemon(can be used for astercrm only) mode
@@ -185,7 +205,7 @@ Installation:
 
 	so that everytime your server start, eventsdaemon would be loaded
 
-  7) set file&folder access 
+  8) set file&folder access 
 	
 	for astercrm
 	chmod 777 /var/www/html/astercc/astercrm/upload
@@ -199,7 +219,7 @@ Installation:
 	for asterbilling
 	chmod 777 /var/www/html/astercc/asterbilling/upload
 
-  8) web browsing 
+  9) web browsing 
 	for astercc guide
 	http://localhost/astercc
 
