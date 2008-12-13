@@ -1,4 +1,5 @@
 ############database of astercc0.1-beta update to astercc0.11-beta#############
+ALTER TABLE `surveyoptions` ADD `optiontype` ENUM( 'checkbox', 'radio', 'text' ) NOT NULL DEFAULT 'radio' AFTER `optionnote` ;
 
 ALTER TABLE `surveyresult` ADD `surveytitle` VARCHAR( 30 ) NOT NULL AFTER `surveyid` ;
 ALTER TABLE `surveyresult` ADD `surveyoptionid` INT NOT NULL AFTER `surveytitle` ;
