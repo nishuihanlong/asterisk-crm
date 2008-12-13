@@ -61,7 +61,7 @@ function init(){
 }
 
 function generateSipFile(){
-	global $db;
+	global $locate;
 	$objResponse = new xajaxResponse();
 	astercc::generatePeersFile();
 	$objResponse->addAlert($locate->Translate("sip conf file generated"));
@@ -69,6 +69,7 @@ function generateSipFile(){
 }
 
 function reloadSip(){
+	global $locate;
 	$objResponse = new xajaxResponse();
 	$myAsterisk = new Asterisk();
 	$myAsterisk->execute("sip reload");
