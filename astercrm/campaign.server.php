@@ -280,7 +280,7 @@ function save($f){
 	}
 
 	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
-		$objResponse->addAlert($locate->Translate("Please enter the queue name"));
+		$objResponse->addAlert($locate->Translate("Please enter the queue number"));
 		return $objResponse->getXML();
 	}
 
@@ -312,7 +312,7 @@ function update($f){
 		return $objResponse->getXML();
 	}
 	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
-		$objResponse->addAlert($locate->Translate("Please enter the queue name"));
+		$objResponse->addAlert($locate->Translate("Please enter the queue number"));
 		return $objResponse->getXML();
 	}
 

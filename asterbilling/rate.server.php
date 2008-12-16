@@ -237,6 +237,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
+		$table->deleteFlag = '1';//对导出标记进行赋值
+		$table->multiEditFlag = '1';//对批量修改标记进行赋值
 	}else{
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
 	}
@@ -244,7 +246,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
-	$table->deleteFlag = '1';//对导出标记进行赋值
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin')
 		$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -287,11 +288,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 function setGroup($resellerid){
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
-	$objResponse->addScript("addOption('groupid','0','"."All"."');");
-	//添加option
-	while ($res->fetchInto($row)) {
-		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
+	if($resellerid != '' ){
+		$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
+		$objResponse->addScript("addOption('groupid','0','"."All"."');");
+		//添加option
+		while ($res->fetchInto($row)) {
+			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
+		}
+	}else{
+		$objResponse->addScript("addOption('groupid','','');");
 	}
 	return $objResponse;
 }
@@ -424,16 +429,25 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
-	if($exportFlag == "1" || $optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,'myrate'); //得到要导出的sql语句
+	if($optionFlag == "export"){
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'myrate'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
-	}elseif($deleteFlag == "1" || $optionFlag == "delete"){
-		astercrm::deletefromsearch($searchContent,$searchField,'myrate');
+	}elseif($optionFlag == "delete"){
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'myrate');
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,$searchType);
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
+	}elseif($optionFlag == "multiEdit"){
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType);
+		$showMutiEdit = Table::Top($locate->Translate("Multi Edit"),"formDiv");
+		$showMutiEdit .= astercrm::formMutiEdit($searchContent,$searchField,$searchType,'myrate');
+		$showMutiEdit .= Table::Footer();		
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
+		$objResponse->addAssign('formDiv', "innerHTML", $showMutiEdit);
+		$objResponse->addAssign('formDiv', "style.visibility", 'visible');
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'myrate');
@@ -451,6 +465,261 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
 	return $objResponse->getXML();
+}
+
+function multiEditUpdate($searchContent = array(),$searchField = array(),$searchType = array(),$table,$f){
+	global $db,$locate;
+
+	$objResponse = new xajaxResponse();
+
+	$searchContent = split(',',$searchContent);
+	$searchField = split(',',$searchField);
+	$searchType = split(',',$searchType);
+	$i = 0;
+
+	foreach($searchField as $field){
+
+		if(trim($searchType[$i]) != '' && trim($searchContent[$i]) != ''){
+
+			if($field == 'resellername' && trim($searchType[$i]) != '' && trim($searchContent[$i]) != ''){
+
+				if(trim($searchType[$i]) == "like" ){
+					$whereResellername .= "AND resellername LIKE '%".$searchContent[$i]."%' ";
+				}elseif(trim($searchType[$i]) == "equal" ){
+					$whereResellername .= "AND resellername = '".$searchContent[$i]."' ";
+				}elseif(trim($searchType[$i]) == "more" ){
+					$whereResellername .= "AND resellername > '".$searchContent[$i]."' ";
+				}elseif(trim($searchType[$i]) == "less" ){
+					$whereResellername .= "AND resellername < '".$searchContent[$i]."' ";
+				}
+				$searchField[$i] = '';
+
+			}elseif( $field == 'groupname' ){
+
+				if(trim($searchType[$i]) == "like" ){
+					$whereGroupname .= "AND groupname like '%".$searchContent[$i]."%' ";
+				}elseif(trim($searchType[$i]) == "equal" ){
+					$whereGroupname .= "AND groupname = '".$searchContent[$i]."' ";
+				}elseif(trim($searchType[$i]) == "more" ){
+					$whereGroupname .= "AND groupname > '".$searchContent[$i]."' ";
+				}elseif(trim($searchType[$i]) == "less" ){
+					$whereGroupname .= "AND groupname < '".$searchContent[$i]."' ";
+				}
+				$searchField[$i] = '';
+			}
+			$i++;
+		}
+	}
+
+	if($whereResellername != ''){
+		$sql = "SELECT id FROM resellergroup WHERE 1 ".$whereResellername;
+		$resellerRes =& $db->query($sql);
+		while($resellerRes->fetchInto($row)){
+			$resellerJoinStr .= "AND resellerid = ".$row['id']." ";
+		}
+	}
+
+	if($whereGroupname != ''){
+		$sql = "SELECT id FROM accountgroup WHERE 1 ".$whereGroupname;
+		$groupRes =& $db->query($sql);
+		while($groupRes->fetchInto($row)){
+			$groupJoinStr .= "AND groupid = ".$row['id']." ";
+		}
+	}
+
+	$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType);
+	
+	list($field,$fieldType) = split(',',$f['multieditField']);
+
+	$sucessNum = 0;
+
+	if($f['multioption'] == 'modify'){
+
+		$query = "SELECT id,".trim($field)." FROM ".$table." WHERE 1 ".$joinstr.$groupJoinStr.$resellerJoinStr;
+		astercrm::events($query);
+		$res = $db->query($query);
+			
+		while($res->fetchInto($row)){
+			if($f['multieditcontent'] != ''){
+				if($f['multieditType'] == 'to'){
+					if($fieldType == 'int' || $fieldType == 'real'){
+						if(!is_numeric($f['multieditcontent'])){
+							$objResponse->addAlert($locate->Translate("Must fill number in blank for field").":".$field);
+							return $objResponse;
+						}
+					}
+
+					$newValue = $f['multieditcontent'];
+
+				}else{
+					if(!is_numeric($f['multieditcontent'])){
+						$objResponse->addAlert($locate->Translate("Must fill number in blank for field").":".$field);
+						return $objResponse;
+					}
+					if($f['multieditType'] == 'plus'){
+						$newValue = $row[$field] + $f['multieditcontent'];
+					}elseif($f['multieditType'] == 'minus'){
+						$newValue = $row[$field] - $f['multieditcontent'];
+					}elseif($f['multieditType'] == 'mutiply'){
+						$newValue = $row[$field] * $f['multieditcontent'];
+					}
+				}
+				
+				$updateSql = "UPDATE ".$table." SET ".trim($field)." = '".$newValue."'";
+				
+				if( $f['resellerid'] != '' ){
+					if($_SESSION['curuser']['usertype'] != 'reseller' ){
+						 $updateSql .= ", resellerid =".$f['resellerid'].", groupid =".$f['groupid'];
+					}elseif($f['groupid'] !=''){
+						$updateSql .= ", resellerid =".$f['resellerid'].", groupid =".$f['groupid'];
+					}
+				}
+					$updateSql .= ",addtime = now() WHERE id = ".$row['id'];
+			}else{
+				if( $f['resellerid'] != '' ){
+					if($_SESSION['curuser']['usertype'] != 'reseller' ){
+						$updateSql ="UPDATE ".$table." SET resellerid =".$f['resellerid'].", groupid =".$f['groupid'].",addtime = now() WHERE id = ".$row['id'];
+					}elseif($f['groupid'] !=''){
+						$updateSql .= ", resellerid =".$f['resellerid'].", groupid =".$f['groupid'];
+					}else{
+						$objResponse->addAlert($locate->Translate("No Option"));
+						return $objResponse;
+					}
+				}else{
+					$objResponse->addAlert($locate->Translate("No Option"));
+					return $objResponse;
+				}
+			}
+
+			astercrm::events($updateSql);
+			$updateRes = $db->query($updateSql);
+			if($updateRes === 1) $sucessNum++;
+		}
+		
+		$objResponse->addAlert($sucessNum.$locate->Translate("records have been changed"));
+
+	}elseif($f['multioption'] == 'duplicate'){
+
+		$query = "SELECT * FROM ".$table." WHERE 1 ".$joinstr.$groupJoinStr.$resellerJoinStr;
+		astercrm::events($query);
+		$res =& $db->query($query);
+
+		while($res->fetchInto($row)){
+			$insertField = '';
+			$insertValue = '';
+			if($f['multieditcontent'] != ''){
+				if($f['multieditType'] == 'to'){
+					if($fieldType == 'int' || $fieldType == 'real'){
+						if(!is_numeric($f['multieditcontent'])){
+							$objResponse->addAlert($locate->Translate("Must fill number in blank for field").":".$field);
+							return $objResponse;
+						}
+					}
+
+					$newValue = $f['multieditcontent'];
+
+				}else{
+					if(!is_numeric($f['multieditcontent'])){
+						$objResponse->addAlert($locate->Translate("Must fill number in blank for field").":".$field);
+						return $objResponse;
+					}
+					if($f['multieditType'] == 'plus'){
+						$newValue = $row[$field] + $f['multieditcontent'];
+					}elseif($f['multieditType'] == 'minus'){
+						$newValue = $row[$field] - $f['multieditcontent'];
+					}elseif($f['multieditType'] == 'mutiply'){
+						$newValue = $row[$field] * $f['multieditcontent'];
+					}
+				}
+				foreach($row as $key => $value){
+					if(!preg_match("/id$/",$key) && $key != 'addtime' ){
+						$insertField .= $key.",";
+						if($key != $field)
+							$insertValue .= "'".$value."',";
+						else
+							$insertValue .= "'".$newValue."',";
+					}
+				}
+				
+				$insertField .= "resellerid,groupid";
+				
+				if( $f['resellerid'] != '' ){
+					if($_SESSION['curuser']['usertype'] == 'reseller' ){
+						if($f['groupid'] !=''){
+							$insertValue .= $f['resellerid'].",".$f['groupid'];
+						}else{
+							$insertValue .= $row['resellerid'].",".$row['groupid'];
+						}
+					}else{
+						$insertValue .= $f['resellerid'].",".$f['groupid'];
+					}
+				}else{
+					$insertValue .= $row['resellerid'].",".$row['groupid'];
+				}		
+			
+			}else{
+				foreach($row as $key => $value){
+					if(!preg_match("/id$/",$key) && $key != 'addtime' ){
+						$insertField .= $key.",";
+						$insertValue .= "'".$value."',";						
+					}
+				}
+
+				if( $f['resellerid'] != '' ){
+					$insertField .= " resellerid,groupid";
+					if($_SESSION['curuser']['usertype'] == 'reseller' ){
+						if($f['groupid'] !=''){
+							$insertValue .= $f['resellerid'].",".$f['groupid'];
+						}else{
+							$objResponse->addAlert($locate->Translate("No Option"));
+							return $objResponse;
+						}
+					}else{
+						$insertValue .= $f['resellerid'].",".$f['groupid'];
+					}
+	
+				}else{
+					$objResponse->addAlert($locate->Translate("No Option"));
+					return $objResponse;
+				}
+			}
+
+			$insertField = "(".$insertField.",addtime)";
+			$insertValue = "(".$insertValue.",now())";
+
+			$insertSql = "INSERT INTO ".$table." ".$insertField." VALUES ".$insertValue;
+
+			astercrm::events($insertSql);
+			$insertRes = $db->query($insertSql);			
+			if($insertRes === 1) $sucessNum++;
+		}
+		$objResponse->addAlert($sucessNum.$locate->Translate("records have been added"));		
+	}
+
+	$html = createGrid(0, 25,$searchField, $searchContent, $searchField, 'grid', "",1,1,$searchType);
+
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign('grid', "innerHTML", $html);
+	return $objResponse;
+}
+
+function setMultieditType($fields){
+	global $locate;
+
+	$objResponse = new xajaxResponse();
+	list($field,$type) = split(',',$fields);
+	if($type == 'int' || $type == 'real'){
+		$objResponse->assign("multieditType","options.length",'0');
+		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");
+		$objResponse->addScript("addOption('multieditType','plus','".$locate->Translate("plus")."');");
+		$objResponse->addScript("addOption('multieditType','minus','".$locate->Translate("minus")."');");
+		$objResponse->addScript("addOption('multieditType','mutiply','".$locate->Translate("mutiply")."');");		
+	}else{
+		$objResponse->assign("multieditType","options.length",'0');
+		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");
+	}
+
+	return $objResponse;
 }
 
 $xajax->processRequests();

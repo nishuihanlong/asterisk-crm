@@ -337,7 +337,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Queue name").'</td>
+					<td nowrap align="left">'.$locate->Translate("Queue number").'</td>
 					<td align="left">
 						<input type="text" id="queuename" name="queuename" size="15" maxlength="15">
 						<input type="checkbox" name="bindqueue" id="bindqueue">'.$locate->Translate("send calls to this queue directly").'
@@ -439,7 +439,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30" value="'.$campaign['inexten'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Queue name").'</td>
+					<td nowrap align="left">'.$locate->Translate("Queue number").'</td>
 					<td align="left">
 						<input type="text" id="queuename" name="queuename" size="30" maxlength="30" value="'.$campaign['queuename'].'">
 						<input type="checkbox" name="bindqueue" id="bindqueue" '.$bindqueue.'>'.$locate->Translate("send calls to this queue directly").'						

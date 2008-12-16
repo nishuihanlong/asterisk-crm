@@ -33,8 +33,10 @@ require_once('rate.common.php');
 
 		function setGroup(){
 			var resellerid = xajax.$('resellerid').value;
-			if (resellerid == '')
+			if (resellerid == ''){
+				document.getElementById("groupid").options.length = 1;
 				return;
+			}
 			//清空campaignid
 			document.getElementById("groupid").options.length = 1;
 			if (resellerid != 0)

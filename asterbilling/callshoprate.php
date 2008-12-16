@@ -33,11 +33,13 @@ require_once('callshoprate.common.php');
 
 		function setGroup(){
 			var resellerid = xajax.$('resellerid').value;
-			if (resellerid == '')
+			if (resellerid == ''){
+				document.getElementById("groupid").options.length = 1;
 				return;
+			}
 			//清空campaignid
 			document.getElementById("groupid").options.length = 0;
-			if (resellerid != 0)
+			//if (resellerid != 0)
 				xajax_setGroup(resellerid);
 		}
 

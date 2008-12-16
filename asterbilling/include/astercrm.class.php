@@ -890,19 +890,11 @@ Class astercrm extends PEAR{
 		return $customerid;
 	}
 
-	function getSql($searchContent,$searchField,$table){
+	function getSql($searchContent,$searchField,$searchType,$table){
 		global $db;
-		$i=0;
-		$joinstr='';
-		foreach ($searchContent as $value){
-			$value=trim($value);
-			if (strlen($value)!=0 && $searchField[$i] != null){
-				//if ($value != mb_convert_encoding($value,"UTF-8","UTF-8"))
-				//	$value='"'.mb_convert_encoding($value,"UTF-8","GB2312").'"';
-				$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-			}
-			$i++;
-		}
+
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType);
+		
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
 			$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
@@ -915,32 +907,9 @@ Class astercrm extends PEAR{
 		return $sql;
 	}
 
-	function deletefromsearch($searchContent,$searchField,$table,$searchtype=""){
+	function deletefromsearch($searchContent,$searchField,$searchType="",$table){
 		global $db;
-		$i = 0;
-		$joinstr='';
-		if($searchtype != ''){
-			foreach($stype as $type){
-				if($type == "equal" && $filter[$i] != '' && trim($content[$i]) != ''){
-					$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
-				}elseif($type == "more" && $filter[$i] != '' && trim($content[$i]) != ''){
-					$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
-				}elseif($type == "less" && $filter[$i] != '' && trim($content[$i]) != ''){
-					$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
-				}elseif($type == "like" && $filter[$i] != '' && trim($content[$i]) != ''){
-					$joinstr.="AND $filter[$i] like '".trim($content[$i])."' ";
-				}
-				$i++;
-			}
-		}else{
-			foreach ($searchContent as $value){
-				$value=trim($value);
-				if (strlen($value)!=0 && $searchField[$i] != null){
-					$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-				}
-				$i++;
-			}
-		}
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType);
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
@@ -953,6 +922,114 @@ Class astercrm extends PEAR{
 		$res =& $db->query($sql);
 
 		return $res;
+	}
+
+	function formMutiEdit($searchContent,$searchField,$searchType,$table){
+		global $locate;
+		
+		$reselleroptions = '';
+		$reseller = astercrm::getAll('resellergroup');
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$reselleroptions .= '<select id="resellerid" name="resellerid"'; 
+			if($table != "resellerrate") $reselleroptions .= 'onchange="setGroup();"';
+			$reselleroptions .= '><option value=""></option>';
+			$reselleroptions .= '<option value="0">'.$locate->Translate("All").'</option>';
+			while	($reseller->fetchInto($row)){
+				$reselleroptions .= "<OPTION value='".$row['id']."'>".$row['resellername']."</OPTION>";
+			}
+			$reselleroptions .= '</select>';
+		}else{
+			while	($reseller->fetchInto($row)){
+				if ($row['id'] == $_SESSION['curuser']['resellerid']){
+					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
+					break;
+				}
+			}
+		}
+		if($table != "resellerrate"){
+			$group = astercrm::getAll('accountgroup','resellerid',$_SESSION['curuser']['resellerid']);
+			if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+				$groupoptions .= '<select id="groupid" name="groupid">';
+				if( $_SESSION['curuser']['usertype'] == 'reseller')	$groupoptions .= "<OPTION value=''></OPTION>";
+				$groupoptions .= "<OPTION value='0'>".$locate->Translate("All")."</OPTION>";
+				while	($group->fetchInto($row)){
+					$groupoptions .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
+				}
+				$groupoptions .= '</select>';
+			}else{
+				while	($group->fetchInto($row)){
+					if ($row['id'] == $_SESSION['curuser']['groupid']){
+						$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
+						break;
+					}
+				}
+			}
+		}		
+		//可修改字段
+		$tableField = astercrm::getTableStructure('myrate');
+
+		foreach($tableField as $row ){
+			if($row['name'] != 'id' && $row['name'] != 'resellerid' && $row['name'] != 'groupid' && $row['name'] != 'addtime'){
+				$fieldOption .= '<option value="'.$row['name'].','.$row['type'].'">'.$row['name'].'</option>'; 
+			}
+		}
+
+		//将条件重置成字符串，通过post传递
+		$i = 0;
+		foreach($searchContent as $content){
+			if(trim($content) != '' && trim($searchField[$i]) != ''){
+				$searchContentStr .= $content.",";
+				$searchFieldStr .= $searchField[$i].",";
+				$searchTypeStr .= $searchType[$i].",";
+			}
+			$i++;
+		}
+		//echo $searchContentStr.$searchFieldStr.$searchTypeStr;exit;
+//print_r($searchField);exit;
+
+
+		$html = '
+			<!-- No edit the next line -->
+			<form method="post" name="f" id="f">
+			
+			<table border="1" width="100%" class="adminlist">
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Option").'</td>
+					<td align="left"><input type="radio" name="multioption" id="multioption" value="modify" checked>&nbsp;'.$locate->Translate("Modify").'&nbsp;&nbsp;<input type="radio" name="multioption" id="multioption" value="duplicate">&nbsp;'.$locate->Translate("Duplicate").'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Change").'</td>
+					<td align="left"><select id="multieditField" name="multieditField" onchange=\'xajax_setMultieditType(this.value)\'>'.$fieldOption.'</select>&nbsp;&nbsp;
+					<select id="multieditType" name="multieditType" >
+						<option value="to">'.$locate->Translate("to").'</option>
+					</select>&nbsp;&nbsp;<input type="text" id="multieditcontent" name="multieditcontent" size="15"></td>
+				</tr>
+				
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Reseller").'</td>
+					<td align="left">'
+						.$reselleroptions.
+					'</td>
+				</tr>';
+
+				if($table != "resellerrate"){
+					$html .= '<tr><td nowrap align="left">'.$locate->Translate("Group").'</td><td align="left">'.$groupoptions.'</td></tr>';
+				}
+
+				$html .= '<tr>
+					<td colspan="2" align="center">
+						<button id="submitButton" onClick=\'xajax_multiEditUpdate("'.$searchContentStr.'","'.$searchFieldStr.'","'.$searchTypeStr.'","'.$table.'",xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button>
+					</td>
+				</tr>
+
+			 </table>
+			';
+
+		$html .='
+			</form>';
+		//echo $html;exit;
+		return $html;
 	}
 
 }

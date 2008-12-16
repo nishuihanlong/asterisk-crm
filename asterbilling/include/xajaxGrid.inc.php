@@ -118,6 +118,7 @@ class ScrollTable{
 
 	var $deleteFlag;
 
+	var $multiEditFlag;
 	/**
 	 * Constructor.
 	 *
@@ -343,7 +344,7 @@ class ScrollTable{
 			<tr>
 				<td align="left" width="10%">';
 				if($withNewButton){
-					$this->search .= '<button id="submitButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
+					$this->search .= '<button id="addButton" onClick="xajax_add();return false;">'.$local_grid->Translate("add_record").'</button>';
 				}
 		$this->search .= '
 				</td>
@@ -386,7 +387,7 @@ class ScrollTable{
 			<tr>
 				<td align="left" width="10%">';
 				if($withNewButton){
-					$this->search .= '<input type="button" id="submitButton" value="'.$local_grid->Translate("add_record").'" onClick="xajax_add();return false;">';
+					$this->search .= '<input type="button" id="addButton" value="'.$local_grid->Translate("add_record").'" onClick="xajax_add();return false;">';
 				}
 		$this->search .= '
 				</td>
@@ -465,27 +466,31 @@ class ScrollTable{
 				<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
 				<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
 				&nbsp;&nbsp;';
-		if($this->deleteFlag !=''){	
-			$this->search .='<input type="submit" id="submitButton" name="submitButton" onclick ="if(document.getElementById(\'optionFlag\').value==\'delete\') {if (confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) {return true;}else{return false;}}" value="'.$local_grid->Translate("continue").'"/>
+
+		$this->search .='<input type="submit" id="submitButton" name="submitButton"  value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/>
 				</td>';
+
+		if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->multiEditFlag != 1){
 		}else{
-			$this->search .='<input type="submit" id="submitButton" name="submitButton"  value="'.$local_grid->Translate("continue").'"/>
-				</td>';
-		}
-		if($this->deleteFlag !='' && $this->exportFlag != ''){
+			$option = '<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>';
+			
+			if($this->exportFlag == 1){
+				$option .= '<option value="export">'.$local_grid->Translate("Export").'</option>';
+				$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("Export").'\';}';
+			}
+			if($this->multiEditFlag == 1){
+				$option .= '<option value="multiEdit">'.$local_grid->Translate("Multi Edit").'</option>';
+				$optionOnchange .= 'if(this.value==\'multiEdit\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("Multi Edit").'\';}';
+			}
+			if($this->deleteFlag == 1){
+				$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
+				$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("delete").'\';}';				
+			}
 			$this->search .='<td>
-								<select name="optionFlag" id="optionFlag" Onchange="if(this.value==\'delete\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("delete").'\';}else{if(this.value==\'export\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("export").'\';}else{document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("add").'\';}}">
-								<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>
-								<option value="delete">'.$local_grid->Translate("Delete").'</option>
-								<option value="export">'.$local_grid->Translate("Export").'</option>
-								</select>
-					         </td>';
-		}elseif($this->exportFlag != ''){
-			$this->search .='<td>
-								<input type="checkbox" value="1" name="exportFlag" id="exportFlag" onclick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("export").'\';"/>
-						'.$local_grid->Translate("export").'
-					         </td>';
+								<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';
+								//echo $option;exit;
 		}
+
 		$this->search .='</tr>
 
 		</table></form>';

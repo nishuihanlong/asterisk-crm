@@ -23,6 +23,14 @@ require_once('resellerrate.common.php');
 			return false;
 		}
 
+		function  addOption(objId,optionVal,optionText)  {
+			objSelect = document.getElementById(objId);
+			var _o = document.createElement("OPTION");
+			_o.text = optionText;
+			_o.value = optionVal;
+			objSelect.options.add(_o);
+		}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>

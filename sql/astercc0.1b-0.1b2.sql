@@ -49,3 +49,9 @@ UNIQUE (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ###############################################################################
+
+
+
+ALTER TABLE myrate ADD UNIQUE rate (dialprefix,numlen,resellerid,groupid);
+ALTER TABLE callshoprate ADD UNIQUE rate (dialprefix,numlen,resellerid,groupid);
+ALTER TABLE resellerrate ADD UNIQUE rate (dialprefix,numlen,resellerid);

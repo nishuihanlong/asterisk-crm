@@ -274,7 +274,19 @@ function submitForm($aFormValues){
 		}
 	}
 
-	$tableStructure = astercrm::getTableStructure($tableName);
+	$tableStructure_source = astercrm::getTableStructure($tableName);
+	$tableStructure = array();
+	foreach($tableStructure_source as $row) {
+		$type_arr = explode(' ',$row['flags']);
+		if(!in_array('auto_increment',$type_arr))
+		{
+				if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
+
+				}else{
+					$tableStructure[]= $row;
+				}
+		}
+	}
 	$filePath = $config['system']['upload_file_path'].$fileName;//数据文件存放路径
 
 	$affectRows= 0;  //计数据库影响结果变量
@@ -347,6 +359,7 @@ function getImportResource($filePath,$order,$tableName,$tableStructure,$dialList
 	foreach($arrData as $arrRow){
 		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid,$resellerid);
 	}
+	
 	return $arrAll;
 }
 
