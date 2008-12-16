@@ -560,7 +560,7 @@ function multiEditUpdate($searchContent = array(),$searchField = array(),$search
 						$newValue = $row[$field] + $f['multieditcontent'];
 					}elseif($f['multieditType'] == 'minus'){
 						$newValue = $row[$field] - $f['multieditcontent'];
-					}elseif($f['multieditType'] == 'mutiply'){
+					}elseif($f['multieditType'] == 'multiply'){
 						$newValue = $row[$field] * $f['multieditcontent'];
 					}
 				}
@@ -627,7 +627,7 @@ function multiEditUpdate($searchContent = array(),$searchField = array(),$search
 						$newValue = $row[$field] + $f['multieditcontent'];
 					}elseif($f['multieditType'] == 'minus'){
 						$newValue = $row[$field] - $f['multieditcontent'];
-					}elseif($f['multieditType'] == 'mutiply'){
+					}elseif($f['multieditType'] == 'multiply'){
 						$newValue = $row[$field] * $f['multieditcontent'];
 					}
 				}
@@ -713,7 +713,7 @@ function setMultieditType($fields){
 		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");
 		$objResponse->addScript("addOption('multieditType','plus','".$locate->Translate("plus")."');");
 		$objResponse->addScript("addOption('multieditType','minus','".$locate->Translate("minus")."');");
-		$objResponse->addScript("addOption('multieditType','mutiply','".$locate->Translate("mutiply")."');");		
+		$objResponse->addScript("addOption('multieditType','multiply','".$locate->Translate("multiply")."');");		
 	}else{
 		$objResponse->assign("multieditType","options.length",'0');
 		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");

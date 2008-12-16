@@ -51,7 +51,7 @@ UNIQUE (`id`)
 ###############################################################################
 
 
-
+##########################0.1#################################################
 ALTER TABLE myrate ADD UNIQUE rate (dialprefix,numlen,resellerid,groupid);
 ALTER TABLE callshoprate ADD UNIQUE rate (dialprefix,numlen,resellerid,groupid);
 ALTER TABLE resellerrate ADD UNIQUE rate (dialprefix,numlen,resellerid);

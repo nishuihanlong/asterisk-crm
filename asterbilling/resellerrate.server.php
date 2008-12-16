@@ -236,7 +236,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
 	}
 	$table->setAttribsCols($attribsCols);
-	$table->exportFlag = '1';//对批量修改标记进行赋值
+	$table->exportFlag = '1';//对导出标记进行赋值
 	
 	if ($_SESSION['curuser']['usertype'] == 'admin')
 		$table->addRowSearchMore("resellerrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -382,8 +382,9 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
 	if($exportFlag == "1" || $optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,'resellerrate'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'resellerrate'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
+		
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($deleteFlag == "1" || $optionFlag == "delete"){
@@ -491,7 +492,7 @@ function multiEditUpdate($searchContent = array(),$searchField = array(),$search
 						$newValue = $row[$field] + $f['multieditcontent'];
 					}elseif($f['multieditType'] == 'minus'){
 						$newValue = $row[$field] - $f['multieditcontent'];
-					}elseif($f['multieditType'] == 'mutiply'){
+					}elseif($f['multieditType'] == 'multiply'){
 						$newValue = $row[$field] * $f['multieditcontent'];
 					}
 				}
@@ -547,7 +548,7 @@ function multiEditUpdate($searchContent = array(),$searchField = array(),$search
 						$newValue = $row[$field] + $f['multieditcontent'];
 					}elseif($f['multieditType'] == 'minus'){
 						$newValue = $row[$field] - $f['multieditcontent'];
-					}elseif($f['multieditType'] == 'mutiply'){
+					}elseif($f['multieditType'] == 'multiply'){
 						$newValue = $row[$field] * $f['multieditcontent'];
 					}
 				}
@@ -614,7 +615,7 @@ function setMultieditType($fields){
 		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");
 		$objResponse->addScript("addOption('multieditType','plus','".$locate->Translate("plus")."');");
 		$objResponse->addScript("addOption('multieditType','minus','".$locate->Translate("minus")."');");
-		$objResponse->addScript("addOption('multieditType','mutiply','".$locate->Translate("mutiply")."');");		
+		$objResponse->addScript("addOption('multieditType','multiply','".$locate->Translate("multiply")."');");		
 	}else{
 		$objResponse->assign("multieditType","options.length",'0');
 		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");

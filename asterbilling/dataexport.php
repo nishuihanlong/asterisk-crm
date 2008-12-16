@@ -10,8 +10,8 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype'] != 'groupadmin' &&$_SESSION['curuser']['usertype'] != 'reseller') 
-	header("Location: index.php");
+if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin' && $_SESSION['curuser']['usertype'] != 'reseller') 
+	header("Location: systemstatus.php");
 
 require_once ("db_connect.php");
 require_once ('include/astercrm.class.php');
@@ -21,11 +21,19 @@ $sql = $_SESSION['export_sql'];
 if ($sql == '') exit;
 	
 if ($_SESSION['curuser']['usertype'] != 'admin'){
-	if (strpos(strtolower($sql),'where'))
-		$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
-	else
-		$sql .= " where groupid = ".$_SESSION['curuser']['groupid'];
+	if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		if (strpos(strtolower($sql),'where'))
+			$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
+		else
+			$sql .= " where groupid = ".$_SESSION['curuser']['groupid'];
+	}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
+		if (strpos(strtolower($sql),'where'))
+			$sql .= " and resellerid = ".$_SESSION['curuser']['resellerid'];
+		else
+			$sql .= " where resellerid = ".$_SESSION['curuser']['resellerid'];
+	}
 }
+
 ob_start();
 header("charset=uft-8");   
 header('Content-type:  application/force-download');

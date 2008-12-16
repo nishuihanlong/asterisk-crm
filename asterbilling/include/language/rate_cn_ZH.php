@@ -23,4 +23,13 @@ $record_cannot_be_deleted = "无法删除记录";
 $obligatory_fields = "必填字段";
 $continue = "继续";
 $all = "全部";
+$option = "操作";
+$modify = "修改";
+$duplicate = "复制";
+$change = "修改";
+$to = "为";
+$plus = "加上";
+$minus = "减去";
+$multiply = "乘以";
+$multi_edit = "批量操作";
 ?>

@@ -221,6 +221,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$tableGrid = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
 	$tableGrid->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 	$tableGrid->setAttribsCols($attribsCols);
+	$tableGrid->exportFlag = '1';//对导出标记进行赋值
 	$tableGrid->addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -248,16 +249,28 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
 	$searchType = array();
+	$optionFlag = $searchFormValue['optionFlag'];
+	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
-	if($type == "delete"){
+	if($exportFlag == "1" || $optionFlag == "export"){
+		if($config['system']['useHistoryCdr'] == 1) $table='historycdr';
+		else $table='mycdr';
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,$table); //得到要导出的sql语句
+
+		$_SESSION['export_sql'] = $sql;
+		
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
+		return $objResponse->getXML();
+	}elseif($type == "delete"){
 		$res = '';
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
