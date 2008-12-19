@@ -222,6 +222,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$tableGrid->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 	$tableGrid->setAttribsCols($attribsCols);
 	$tableGrid->exportFlag = '1';//对导出标记进行赋值
+	if ($_SESSION['curuser']['usertype'] == 'admin') $tableGrid->deleteFlag = '1';//对导出标记进行赋值
 	$tableGrid->addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -270,6 +271,13 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 		return $objResponse->getXML();
+	}elseif($optionFlag == "delete"){
+		if($config['system']['useHistoryCdr'] == 1) $table='historycdr';
+		else $table='mycdr';
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,$table);
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",$searchType);
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($type == "delete"){
 		$res = '';
 		if ($res){

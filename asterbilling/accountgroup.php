@@ -75,6 +75,9 @@ require_once('accountgroup.common.php');
 			</tr>
 		</table>
 		<iframe name="iframeForUpload" id="iframeForUpload" width="0" height="0" scrolling="no"></iframe>
+		<form name="exportForm" id="exportForm" action="dataexport.php" >
+			<input type="hidden" value="" id="hidSql" name="hidSql" />
+		</form>
 		<div id="divCopyright"></div>
 	</body>
 </html>

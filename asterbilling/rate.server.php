@@ -237,15 +237,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
-		$table->deleteFlag = '1';//对导出标记进行赋值
+		$table->deleteFlag = '1';//对删除标记进行赋值
 		$table->multiEditFlag = '1';//对批量修改标记进行赋值
+		$table->exportFlag = '1';//对导出标记进行赋值
 	}else{
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
 	}
 
 
 	$table->setAttribsCols($attribsCols);
-	$table->exportFlag = '1';//对导出标记进行赋值
+	
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'groupadmin')
 		$table->addRowSearchMore("myrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -436,7 +437,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'myrate');
-		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,$searchType);
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,'');
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($optionFlag == "multiEdit"){
@@ -453,7 +454,6 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$res = Customer::deleteRecord($id,'myrate');
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType);
-				$objResponse = new xajaxResponse();
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted")); 
 			}else{
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be deleted")); 

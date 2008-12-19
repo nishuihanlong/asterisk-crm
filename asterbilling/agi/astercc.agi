@@ -39,11 +39,13 @@ exit;
 
 #check if callerid in clid table
 sub checkclid{
-	my $curclid = $AGI{'callerid'};
+	my	$exten = $AGI{'extension'};
+	my $curclid = $AGI{'callerid'};	
 	my $query = "SELECT * FROM clid WHERE clid = '$curclid' ";
 	my $clid = &executeQuery($query,'getrow');
 	if($clid) {
-		checkbalance($clid);
+	my	$exten = $AGI{'extension'};
+		checkbalance($clid,$exten);
 	}else{
 		promptPin();
 	}
@@ -59,7 +61,8 @@ sub promptPin{
 
 	if ($clid) {
 		# check clid status
-		checkbalance($clid);
+	my	$exten = '';
+		checkbalance($clid,$exten);
 	}else{
 		# dont get a match for the pin		
 		$myAGI->stream_file('your-pin-incorrect','*');
@@ -71,6 +74,7 @@ sub promptPin{
 #check clid if be allowed dial out
 sub checkbalance{
 	my $clid = shift;
+	my $exten = shift;
 
 	# check clid status
 	if ($clid->{"status"} != 1) {
@@ -107,7 +111,7 @@ sub checkbalance{
 	}
 		
 	# prompt for destination
-	&promptDestination($clid->{'clid'}, $clid->{'groupid'},$clid->{'resellerid'},$balance);
+	&promptDestination($clid->{'clid'}, $clid->{'groupid'},$clid->{'resellerid'},$exten,$balance);
 }
 
 # Prompt the dst number and dial
@@ -115,16 +119,21 @@ sub promptDestination{
 	my $clid = shift;
 	my $groupid = shift;
 	my $resellerid = shift;
+	my $exten = shift;
 	my $balance = shift;
+	
 
-	my $dst = $myAGI->get_data('pls-enter-dst-number', 15000 , 20 ,'#');
+	my $dst = '';
+	if($exten == '' ){
+		$dst = $myAGI->get_data('pls-enter-dst-number', 15000 , 20 ,'#');
+	}else{
+		$dst = $exten;
+	}
 
 	# start dial
 	$myAGI->set_callerid($clid);
-	$myAGI->exec('NoOp', "$dst");
 	$myAGI->set_extension($dst);
 	$myAGI->set_context("$context");
-	$myAGI->set_variable("dst",$dst);
 	$myAGI->exec('Dial', "$dst@$context/n");
 }
 

@@ -385,7 +385,7 @@ class ScrollTable{
 			<table width="99%" border="0" style="line-height:30px;">
 
 			<tr>
-				<td align="left" width="10%">';
+				<td align="left" width="5%">';
 				if($withNewButton){
 					$this->search .= '<input type="button" id="addButton" value="'.$local_grid->Translate("add_record").'" onClick="xajax_add();return false;">';
 				}
@@ -486,6 +486,7 @@ class ScrollTable{
 				$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
 				$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("delete").'\';}';				
 			}
+			$optionOnchange .= 'if(this.value==\'\'){document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';}';
 			$this->search .='<td>
 								<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';
 								//echo $option;exit;
