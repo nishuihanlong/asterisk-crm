@@ -84,7 +84,7 @@ require_once('account.common.php');
 			<td style="padding: 0px;">
 				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;"></div>
+			style="left: 450px; top: 50px;width:500px;"></div>
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 				</fieldset>

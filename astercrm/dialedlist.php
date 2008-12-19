@@ -71,7 +71,7 @@ require_once('dialedlist.common.php');
 			<td style="padding: 0px;">
 				<fieldset>
 					<div id="formDiv"  class="formDiv drsElement" 
-						style="left: 450px; top: 50px;"></div>
+						style="left: 450px; top: 50px;width: 500px;"></div>
 					<div id="optionDiv"  class="formDiv drsElement" 
 						style="left: 450px; top: 80px;"></div>
 					<div id="grid" align="center"> </div>

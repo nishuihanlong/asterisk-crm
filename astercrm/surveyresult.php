@@ -56,12 +56,12 @@ require_once('surveyresult.common.php');
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
-					<div id="formDiv" class="formDiv"></div>
+					<div id="formDiv" class="formDiv" style="left: 450px; top: 50px;width: 500px"></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
 					<div id="divSurveyStatistc" align="divSurveyStatistc"> </div>
 					<div id="formCustomerInfo" class="formDiv drsElement"
-						style="left: 20px; top: 50px;"></div>
+						style="left: 20px; top: 50px;width: 500px"></div>
 					<div id="formContactInfo" class="formDiv drsElement"
 						style="left: 20px; top: 330px;"></div>
 				</fieldset>
