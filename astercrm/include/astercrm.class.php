@@ -402,8 +402,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		$query= "INSERT INTO astercrm_accountgroup SET "
-				."groupname='".$f['groupname']."', "
-				."groupid='".$f['groupid']."', "
+				."groupname='".$f['groupname']."', "				
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now(),"
 				."monitorforce='".$f['monitorforce']."',"
@@ -413,6 +412,10 @@ Class astercrm extends PEAR{
 				."outcontext='".$f['outcontext']."' ";		// added 2007/10/30 by solo
 		astercrm::events($query);
 		$res =& $db->query($query);
+		
+		$sql = "UPDATE astercrm_accountgroup SET groupid = id";
+		astercrm::events($sql);
+		$ures =& $db->query($sql);
 		return $res;
 	}
 
@@ -588,7 +591,6 @@ Class astercrm extends PEAR{
 		
 		$query= "UPDATE astercrm_accountgroup SET "
 				."groupname='".$f['groupname']."', "
-				."groupid='".$f['groupid']."', "
 				."monitorforce='".$f['monitorforce']."', "
 				."agentinterval='".$f['agentinterval']."', "
 				."groupnote='".$f['groupnote']."',"
@@ -612,6 +614,7 @@ Class astercrm extends PEAR{
 				."campaignid= ".$f['campaignid'].", "
 				."assign='".$f['assign']."'"
 				."WHERE id='".$f['id']."'";
+
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -2120,33 +2123,68 @@ Class astercrm extends PEAR{
 		return $txtstr;
 	}
 
+	function getFieldsByField($fields,$field,$content,$table,$stype=''){
+		global $db;
+		if ($stype != '' ){
+			if($stype == "equal"){
+				$query = "SELECT $fields FROM $table WHERE $field = '".$content."'";
+			}elseif($stype == "more"){
+				$query = "SELECT $fields FROM $table WHERE $field > '".$content."'";
+			}elseif($stype == "less"){
+				$query = "SELECT $fields FROM $table WHERE $field < '".$content."'";
+			}else{
+				$query = "SELECT $fields FROM $table WHERE $field LIKE '%".$content."%'";
+			}
+		}else{
+			$query = "SELECT groupid FROM $table WHERE $field = $content";
+		}
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
 	/**
-	*  create a 'where string' with 'like,<,>,=' assign by stype 
+	*  create a 'where string' with 'like,<,>,=' assign by stype
 	*
 	*	@param $stype		(array)		assign search type
 	*	@param $filter		(array) 	filter in sql
 	*	@param $content		(array)		content in sql
 	*	@return $joinstr	(string)	sql where string
 	*/
-	function createSqlWithStype($filter,$content,$stype){
+	function createSqlWithStype($filter,$content,$stype,$table=''){
 
 		$i=0;
 		$joinstr='';
 		foreach($stype as $type){
 			$content[$i] = preg_replace("/'/","\\'",$content[$i]);
 			if($filter[$i] != '' && trim($content[$i]) != ''){
-				if($type == "equal"){
-					$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
-				}elseif($type == "more"){
-					$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
-				}elseif($type == "less"){
-					$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
+
+				if($filter[$i] == 'groupname' and $table != "astercrm_accountgroup" and $table != ""){
+					$group_res = astercrm::getFieldsByField('id','groupname',$content[$i],'astercrm_accountgroup',$type);
+					
+					while ($group_res->fetchInto($group_row)){
+						$group_str.="OR $table.groupid = '".$group_row['id']."' ";					
+					}					
 				}else{
-					$joinstr.="AND $filter[$i] like '%".trim($content[$i])."%' ";
+				
+					if($type == "equal"){
+						$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
+					}elseif($type == "more"){
+						$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
+					}elseif($type == "less"){
+						$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
+					}else{
+						$joinstr.="AND $filter[$i] like '%".trim($content[$i])."%' ";
+					}
 				}
 			}
 			$i++;
 		}
+		if($group_str != '' ){
+			$group_str = ltrim($group_str,'OR');
+			$joinstr.= "AND (".$group_str.")";
+		}	
+		//echo $joinstr;exit;
 		return $joinstr;
 	}
 
@@ -2227,19 +2265,11 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function getSql($searchContent,$searchField,$table){
+	function getSql($searchContent,$searchField,$searchType,$table){
 		global $db;
-		$i=0;
-		$joinstr='';
-		foreach ($searchContent as $value){
-			$value=trim($value);
-			if (strlen($value)!=0 && $searchField[$i] != null){
-				//if ($value != mb_convert_encoding($value,"UTF-8","UTF-8"))
-				//	$value='"'.mb_convert_encoding($value,"UTF-8","GB2312").'"';
-				$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-			}
-			$i++;
-		}
+
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
+
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
 			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
@@ -2248,8 +2278,26 @@ Class astercrm extends PEAR{
 		}
 		//if ($query != mb_convert_encoding($query,"UTF-8","UTF-8")){
 		//	$query='"'.mb_convert_encoding($query,"UTF-8","GB2312").'"';
-		//}		
+		//}
+
 		return $query;
+	}
+
+	function deletefromsearch($searchContent,$searchField,$searchType="",$table){
+		global $db;
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND');
+			$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr;
+		}else{
+			$sql = 'TRUNCATE '.$table;
+		}
+
+		Customer::events($sql);
+		$res =& $db->query($sql);
+
+		return $res;
 	}
 
 	function addNewRemind($f){ //增加提醒

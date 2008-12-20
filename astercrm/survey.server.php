@@ -172,6 +172,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,1);
 	$table->setAttribsCols($attribsCols);
+	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("survey",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -298,25 +299,33 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$optionFlag = $searchFormValue['optionFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
-	if($type == "delete"){
+	if($optionFlag == "export"){
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'survey'); //得到要导出的sql语句
+		$_SESSION['export_sql'] = $sql;
+		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}elseif($type == "delete"){
 		$res = Customer::deleteRecord($id,'survey');
 		$res = Customer::deleteRecords("surveyid",$id,'surveyoptions');
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			$objResponse->addAssign($divName, "innerHTML", $html);
 		}else{
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
 		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$searchType);
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}
-	$objResponse->addClear("msgZone", "innerHTML");
-	$objResponse->addAssign($divName, "innerHTML", $html);
+	
 	return $objResponse->getXML();
 }
 

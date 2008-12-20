@@ -241,7 +241,7 @@ class Customer extends astercrm
 	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
 		global $db;
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
 
 		$sql = "SELECT campaign.*, groupname FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -265,7 +265,7 @@ class Customer extends astercrm
 	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
 		global $db;
 		
-			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
 
 			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){

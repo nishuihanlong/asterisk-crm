@@ -214,11 +214,7 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("groupname").'*</td>
 					<td align="left"><input type="text" id="groupname" name="groupname" size="25" maxlength="30"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("groupid").'*</td>
-					<td align="left"><input type="text" id="groupid" name="groupid" size="25" maxlength="30"></td>
-				</tr>
+				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("incontext").'</td>
 					<td align="left"><input type="text" id="incontext" name="incontext" size="25" maxlength="30"></td>
@@ -274,11 +270,7 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("groupname").'*</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $account['id'].'"><input type="text" id="groupname" name="groupname" size="25" maxlength="30" value="'.$account['groupname'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("groupid").'*</td>
-					<td align="left"><input type="text" id="groupid" name="groupid" size="25" maxlength="30" value="'.$account['groupid'].'"></td>
-				</tr>
+				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("incontext").'</td>
 					<td align="left"><input type="text" id="incontext" name="incontext" size="25" maxlength="30" value="'.$account['incontext'].'"></td>

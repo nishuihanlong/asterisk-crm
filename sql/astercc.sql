@@ -44,7 +44,7 @@ VALUES (
 NULL , 'admin', 'admin', 'admin' , now()
 );
 
-## ########################################################
+##########################################################
 
 ## 
 ## table `accountgroup`
@@ -75,7 +75,7 @@ CREATE TABLE `accountgroup` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
-## ########################################################
+##########################################################
 
 ## 
 ## table `callback`

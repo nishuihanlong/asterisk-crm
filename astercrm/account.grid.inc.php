@@ -169,7 +169,7 @@ class Customer extends astercrm
 	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
 		global $db;
 		
-			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'astercrm_account');
 
 			$sql = "SELECT COUNT(*) FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = astercrm_account.groupid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -192,7 +192,7 @@ class Customer extends astercrm
 	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
 		global $db;		
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'astercrm_account');
 
 		$sql = "SELECT astercrm_account.*, groupname FROM astercrm_account LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = astercrm_account.groupid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -328,8 +328,7 @@ class Customer extends astercrm
 		$account =& Customer::getRecordByID($id,'astercrm_account');
 
 	if ($_SESSION['curuser']['usertype'] == 'admin'){ 
-			$grouphtml .=	'<select name="groupid" id="groupid" >
-															<option value=""></option>';
+			$grouphtml .=	'<select name="groupid" id="groupid" >';
 			$res = Customer::getGroups();
 			while ($row = $res->fetchRow()) {
 				$grouphtml .= '<option value="'.$row['groupid'].'"';

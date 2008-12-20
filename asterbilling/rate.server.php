@@ -444,7 +444,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType);
 		$showMutiEdit = Table::Top($locate->Translate("Multi Edit"),"formDiv");
 		$showMutiEdit .= astercrm::formMutiEdit($searchContent,$searchField,$searchType,'myrate');
-		$showMutiEdit .= Table::Footer();		
+		$showMutiEdit .= Table::Footer();
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 		$objResponse->addAssign('formDiv', "innerHTML", $showMutiEdit);

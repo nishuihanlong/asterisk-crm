@@ -168,7 +168,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
-	$fields[] = 'surveyname';
+	$fields[] = 'surveytitle';
 	$fields[] = 'surveyoption';
 	$fields[] = 'surveynote';
 	$fields[] = 'customer';
@@ -217,7 +217,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'surveyname';
+	$fieldsFromSearch[] = 'surveytitle';
 	$fieldsFromSearch[] = 'surveyoption';
 	$fieldsFromSearch[] = 'itemcontent';
 	$fieldsFromSearch[] = 'surveyresult.surveynote';
@@ -243,7 +243,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
-	$table->addRowSearchMore("surveyresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->deleteFlag = '1';//对删除标记进行赋值
+	$table->addRowSearchMore("surveyresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -307,16 +308,22 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$optionFlag = $searchFormValue['optionFlag'];
 	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	$searchType =  $searchFormValue['searchType'];
-	if($exportFlag == "1"){
-		$sql = astercrm::getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+	if($exportFlag == "1" || $optionFlag == "export"){
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'surveyresult'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}elseif($optionFlag == "delete"){
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'surveyresult');
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,'');
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'surveyresult');

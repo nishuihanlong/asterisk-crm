@@ -250,6 +250,13 @@ class ScrollTable{
 		$nameRow = $divName."Row".$arr[0];
 	    $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
 		$ind = 0;
+		if($table == "group" ){
+		   $deleteAlert = $local_grid->Translate("delete_confirm_group");
+		}elseif($table == "campaign" ){
+		   $deleteAlert = $local_grid->Translate("delete_confirm_campaign");
+		}else{
+		   $deleteAlert = $local_grid->Translate("delete_confirm");
+		}
 
 	   foreach ($arr as $key => $value) {
 	   	$nameCell = $nameRow."Col".$ind;
@@ -297,7 +304,7 @@ class ScrollTable{
 			if($delete)
 				$row .= '
 						<td align="center" width="5%" nowrap>
-							<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){  xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
+							<a href="?" onClick="if (confirm(\''.$deleteAlert.'\')){  xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
 						</td>';
 			if($detail)
 				$row .= '
@@ -521,13 +528,29 @@ class ScrollTable{
 				<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
 				<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
 				&nbsp;&nbsp;
-				<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'"/>
+				<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/>
 				</td>';
-		if($this->exportFlag != ''){
+		
+		if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->multiEditFlag != 1){
+		}else{
+			$option = '<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>';
+			
+			if($this->exportFlag == 1){
+				$option .= '<option value="export">'.$local_grid->Translate("Export").'</option>';
+				$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Export").'\';}';
+			}
+			if($this->multiEditFlag == 1){
+				$option .= '<option value="multiEdit">'.$local_grid->Translate("Multi Edit").'</option>';
+				$optionOnchange .= 'if(this.value==\'multiEdit\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Multi Edit").'\';}';
+			}
+			if($this->deleteFlag == 1){
+				$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
+				$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("delete").'\';}';				
+			}
+			$optionOnchange .= 'if(this.value==\'\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("continue").'\';}';
 			$this->search .='<td>
-								<input type="checkbox" value="1" name="exportFlag" id="exportFlag"/>
-						'.$local_grid->Translate("export").'
-					         </td>';
+								<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';
+								//echo $option;exit;
 		}
 		$this->search .='</tr>
 

@@ -200,6 +200,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	//$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	
 	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -341,16 +342,22 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$optionFlag = $searchFormValue['optionFlag'];
 	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
-	if($exportFlag == "1"){
-		$sql = astercrm::getSql($searchContent,$searchField,'diallist'); //得到要导出的sql语句
+	if($optionFlag == "export"){
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'diallist'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}elseif($optionFlag == "delete"){
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'diallist');
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",'');
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'diallist');

@@ -174,7 +174,7 @@ class Customer extends astercrm
 function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
 		global $db;
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"diallist");
 
 		$sql = "SELECT diallist.*, groupname,campaignname FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
 
@@ -191,8 +191,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-//		print $sql;
-//		exit;
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -201,7 +200,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
 		global $db;
 		
-			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"diallist");
 
 			$sql = "SELECT COUNT(*) FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -302,7 +301,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 
 		$campaignlist =  Customer::getAll("campaign","groupid", $diallist['groupid']);
 		while ($row = $campaignlist->fetchRow()) {
-			$campaign_options .= '<option value="'.$row['groupid'].'"';
+			$campaign_options .= '<option value="'.$row['id'].'"';
 			if ($diallist['campaignid']  == $row['id'])
 				$campaign_options .= ' selected';
 			$campaign_options .='>'.$row['campaignname'].'</option>';

@@ -17,4 +17,7 @@ $show_all = "Show All";
 $delete_confirm	= "Are you sure you want to delete this record?";
 $add_search = "Add Search Object";
 $export = "export";
+$searchdelete_confirm="Are you sure to delete these records?\\nIf you did not select the search content and search filed, it will delete all record!";
+$delete_confirm_campaign="The diallist which blong to this campaign also could be deleted,\\n Are you sure to delete this campaign?";
+$delete_confirm_group="The account and campaign which blong to this campaign also could be deleted,\\n Are you sure to delete this group?";
 ?>
