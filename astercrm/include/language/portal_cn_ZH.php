@@ -93,4 +93,5 @@ $google_map = "Google地图";
 $failed_when_connect_to_AMI = "连接AMI失败";
 $spy = "监听";
 $whisper = "秘语";
+$invite = "邀请";
 ?>

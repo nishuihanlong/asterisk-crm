@@ -482,7 +482,7 @@ class asterEvent extends PEAR
 	
 			if (isset($status[$username])) {
 				if ($status[$username] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A></UL></LI>";					
+					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Invite')."</font>-</A></UL></LI>";					
 				}else {
 					if ($status[$username] == 1) {
 						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A>";
@@ -490,14 +490,14 @@ class asterEvent extends PEAR
 						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A>";
 						$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$row['extension']."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A></UL></LI>";					
 					}else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnG'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Invite')."</font>-</A></UL></LI>";
 					}
 				}
 			}else {
 				$action .= "<UL id='extenBtnB'>
 												<LI><a href='###' >".$username."</a>
 													<UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A>
-														<A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A>
+														<A href='###' onclick=\"dial('".$row['extension']."','');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A><A href='###' onclick=\"bargeInvite ('".$row['extension']."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Invite')."</font>-</A>
 													</UL>
 												</LI>";
 			}

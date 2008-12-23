@@ -293,27 +293,46 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
 	}
-	
-	// check if the assign number belong to this group
-	if ($_SESSION['curuser']['usertype'] != 'admin'){
-		$myusernames = split(",",$f['extensions']);
-		$newextensions = "";
 
-		foreach ($myusernames as $myusername){
-			foreach ($_SESSION['curuser']['memberNames'] as $username){
-				if ($username == $myusername){
+	if($f['extensions'] != ""){
+		$myExtensions = split(",",astercrm::dbcToSbc($f['extensions']));
+
+		if($f['extensType'] != "username" ){
+		
+			foreach($myExtensions as $exten){
+				$sqlStr .= "OR extension = '$exten'";
+			}
+			$sqlStr = ltrim($sqlStr,"OR");
+			$query = "SELECT username From astercrm_account WHERE $sqlStr";
+			astercrm::events($query);
+			$res =& $db->query($query);
+			$myExtensions = array();
+			while($res->fetchInto($row)){
+				$myExtensions[] = $row['username'];
+				$newextensions .= ",".$row['username'];
+			}
+			$f['extensions'] = ltrim($newextensions,',');
+		}
+
+		// check the assign username if belong to this group
+		if ($_SESSION['curuser']['usertype'] != 'admin'){
+			$myusernames = $myExtensions;
+			$newextensions = "";
+			
+			$groupList = astercrm::getGroupMemberListByID($_SESSION['curuser']['groupid']);
+			while	($groupList->fetchInto($groupRow)){
+				$memberNames[] = $groupRow['username'];
+			}
+
+			foreach ($myusernames as $myusername){
+				if(in_array($myusername,$memberNames)){
 					$newextensions .= ",$myusername";
-					break;
 				}
 			}
-		}
-
-		if ($newextensions != ''){
-			$newextensions = substr($newextensions,1);
-		}
-
-		$f['extensions'] = $newextensions;
+			$f['extensions'] = ltrim($newextensions,',');
+		}	
 	}
+
 	// check over
 
 	if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
@@ -339,7 +358,7 @@ function save($f){
 */
 
 function update($f){
-	global $locate;
+	global $locate,$db;
 	$objResponse = new xajaxResponse();
 
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
@@ -355,25 +374,46 @@ function update($f){
 		return $objResponse->getXML();
 	}
 
-	if ($_SESSION['curuser']['usertype'] != 'admin'){
-		// check if the assign number belong to this group
-		$myusernames = split(",",$f['extensions']);
-		$newextensions = "";
 
-		foreach ($myusernames as $myusername){
-			foreach ($_SESSION['curuser']['memberNames'] as $username){
-				if ($username == $myusername){
+	if($f['extensions'] != ""){
+
+		$f['extensions'] = astercrm::dbcToSbc($f['extensions']);
+		$myExtensions = split(",",$f['extensions']);
+
+		if( $f['extensType'] != "username" ){
+		
+			foreach($myExtensions as $exten){
+				$sqlStr .= "OR extension = '$exten'";
+			}
+			$sqlStr = ltrim($sqlStr,"OR");
+			$query = "SELECT username From astercrm_account WHERE $sqlStr";
+			astercrm::events($query);
+			$res =& $db->query($query);
+			$myExtensions = array();
+			while($res->fetchInto($row)){
+				$myExtensions[] = $row['username'];
+				$newextensions .= ",".$row['username'];
+			}
+			$f['extensions'] = ltrim($newextensions,',');
+		}
+
+		// check the assign username if belong to this group
+		if ($_SESSION['curuser']['usertype'] != 'admin'){
+			$myusernames = $myExtensions;
+			$newextensions = "";
+			
+			$groupList = astercrm::getGroupMemberListByID($_SESSION['curuser']['groupid']);
+			while	($groupList->fetchInto($groupRow)){
+				$memberNames[] = $groupRow['username'];
+			}
+			foreach ($myusernames as $myusername){
+				if(in_array($myusername,$memberNames)){
 					$newextensions .= ",$myusername";
-					break;
 				}
 			}
+			
+			$f['extensions'] = ltrim($newextensions,',');
 		}
-
-		if ($newextensions != ''){
-			$newextensions = substr($newextensions,1);
-		}
-
-		$f['extensions'] = $newextensions;
 	}
 
 	if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
@@ -483,6 +523,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+			$objResponse->addAssign($divName, "innerHTML", $html);
 		}else{
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}

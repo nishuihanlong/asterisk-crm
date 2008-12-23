@@ -267,7 +267,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
-					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100"></td>
+					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100">&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("channel").'</td>
@@ -375,7 +375,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
-					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100" value="'.$account['extensions'].'"></td>
+					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100" value="'.$account['extensions'].'">&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("channel").'</td>
