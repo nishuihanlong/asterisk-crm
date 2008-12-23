@@ -41,12 +41,13 @@ session_set_cookie_params(0);
 if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
+require_once ('include/localization.class.php');
+
 if ($_SESSION['curuser']['usertype'] != 'groupadmin' && $_SESSION['curuser']['usertype'] != 'operator')
 	header("Location: index.php");
 
 
 require_once ("include/xajax.inc.php");
-require_once ('include/localization.class.php');
 
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'systemstatus');
 
