@@ -479,9 +479,7 @@ do
 	cat <<EOF
 
 start      - start astercc,asterrc,astercclock and astercctools
-startbilling - start astercc,asterrc and astercclock
-startcrm - start astercc and astercctools
-stop       - stop astercc and asterrc
+stop       - stop astercc,asterrc,astercclock and astercctools
 restart    - restart astercc and asterrc if running by sending a SIGHUP or start if not running
 help       - this screen
 

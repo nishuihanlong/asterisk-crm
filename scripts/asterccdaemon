@@ -62,19 +62,19 @@ while   [   1   ]
 				$asterccdpath > /dev/null
 				if [ $? -ne 0 ];then				  
 				  echo "start asterccd faild at "`date`" ERROR="$? >> $monitorlogpath/asterccmonitor.log
-				  break_tip=`grep "^break_tip.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				  tip_times=`grep "^tip_times.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				  break_tip=`grep "^break_tip.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				  tip_times=`grep "^tip_times.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
 				  tip_limit=`sed -n -e"1p" $monitorlogpath/asterccmonitor.log`
 				  if [ $break_tip -ne 0 -a $tip_limit -lt $tip_times ];then
 				    let tip_limit=tip_limit+1
 				    sed -i '1d' $monitorlogpath/asterccmonitor.log
 				    sed -i '1i'${tip_limit} $monitorlogpath/asterccmonitor.log
-				    host=`grep "^server.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`     #for asterisk host IP and port
-				    port=`grep "^port.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    ami_admin=`grep "^admin_amiuser.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    ami_secret=`grep "^admin_amisecret.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    admin_context=`grep "^admin_context.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    admin_phone=`grep "^admin_phone.*=" astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    host=`grep "^server.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`     #for asterisk host IP and port
+				    port=`grep "^port.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    ami_admin=`grep "^admin_amiuser.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    ami_secret=`grep "^admin_amisecret.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    admin_context=`grep "^admin_context.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    admin_phone=`grep "^admin_phone.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
 				    (echo Action: login
 				    sleep 1
 				    echo Username: $ami_admin               
