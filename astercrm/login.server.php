@@ -71,7 +71,7 @@ function processForm($aFormValues)
 
 	if (array_key_exists("username",$aFormValues))
 	{
-		if (ereg("[0-9a-zA-Z]+",$aFormValues['username']) && ereg("[0-9a-zA-Z]+",$aFormValues['password']))
+		if (ereg("[0-9a-zA-Z\@\.]+",$aFormValues['username']) && ereg("[0-9a-zA-Z]+",$aFormValues['password']))
 		{
 		  // passed
 			return processAccountData($aFormValues);
