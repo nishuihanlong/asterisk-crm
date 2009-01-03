@@ -12,7 +12,7 @@ if (ereg("[0-9a-zA-Z\@\.]+",$username) && ereg("[0-9a-zA-Z]+",$passwd)){
 	$url = $_SERVER['SERVER_NAME'];
 	$url .= substr($_SERVER['SCRIPT_NAME'],0,strrpos($_SERVER['SCRIPT_NAME'],"/"));
 	if ($passwd == $account['password']){
-		echo "200|http://$url/astercrmclient.php|$url/astercrmclientstatus.php";
+		echo "200|http://$url/astercrmclient.php|http://$url/astercrmclientstatus.php";
 	}else{
 		echo "404";
 	}
