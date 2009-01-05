@@ -759,6 +759,7 @@ function addWithPhoneNumber(){
 		astercrm::deleteRecord($row['id'],"diallist");
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
+		$row['trytime'] = $row['trytime'] + 1;
 		astercrm::insertNewDialedlist($row);
 	}
 
@@ -776,7 +777,7 @@ function checkworkexten() {
 		$row = astercrm::getRecordByField("peer",$_SESSION['curuser']['channel'],"peerstatus");
 	}
 	if($row['status'] != 'reachable') {
-		$objResponse->addAssign("workingextenstatus","value", "it seems ur extension is not avaiable, are u sure to procress?" );
+		$objResponse->addAssign("workingextenstatus","value", $locate->Translate("extension_unavailable") );
 	}else{
 		$objResponse->addAssign("workingextenstatus","value", "ok" );
 	}

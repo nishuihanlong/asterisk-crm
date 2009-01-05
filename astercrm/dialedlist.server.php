@@ -63,9 +63,17 @@ function init(){
 	return $objResponse;
 }
 
-function recycle(){
+function recycle($f){
+	global $locate;
 	$objResponse = new xajaxResponse();
-	Customer::recycleDialedlist();
+	if(is_array($f['ckb'])){
+		foreach($f['ckb'] as $value){
+			$num = Customer::recycleDialedlistById($value);
+		}
+	}else{
+		$num = Customer::recycleDialedlist();
+	}
+	$objResponse->addALert($num." ".$locate->Translate("number have been recycled"));
 	$objResponse->addScript("init()");
 	return $objResponse;
 }
@@ -262,6 +270,14 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",'');
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
+	}elseif($optionFlag == "recycle"){
+		$num = Customer::recyclefromsearch($searchContent,$searchField,$searchType,'dialedlist');
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",'');
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addALert($num." ".$locate->Translate("number have been recycled"));
+		$objResponse->addAssign($divName, "innerHTML", $html);
+		$noanswer = Customer::getNoanswerCallsNumber();
+		$objResponse->addAssign("spanRecycle","innerHTML","No answer calls: $noanswer");
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'dialedlist');

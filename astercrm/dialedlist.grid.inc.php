@@ -112,6 +112,63 @@ class Customer extends astercrm
 		return $i;
 	}
 
+	function recycleDialedlistById($id){
+		global $db;
+		$i = 0;
+		//get phone numbers
+
+		$sql = "SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id WHERE dialedlist.id=$id";
+
+		Customer::events($sql);
+		$row =& $db->getRow($sql);
+		$creby = $_SESSION['curuser']['username'];
+		
+		$number = $row["dialednumber"];
+		$groupid = $row["groupid"];
+		$assign = $row["assign"];
+		$campaignid = $row["campaignid"];
+		$trytime = $row["trytime"];
+		//if($row['maxtrytime'] > $row["trytime"]){
+			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+			$db->query($query);
+			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
+			$db->query($query);	
+			$i++;
+		//}
+		return $i;
+	}
+
+	function recyclefromsearch($searchContent,$searchField,$searchType="",$table){
+		global $db;
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
+		$i = 0;
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND');
+			$sql = 'SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id WHERE '.$joinstr;
+		}else{
+			$sql = 'SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id';
+		}
+
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		$creby = $_SESSION['curuser']['username'];
+		while ($res->fetchInto($row)) {
+			$number = $row["dialednumber"];
+			$groupid = $row["groupid"];
+			$assign = $row["assign"];
+			$campaignid = $row["campaignid"];
+			$trytime = $row["trytime"];
+			//if($row['maxtrytime'] > $row["trytime"]){
+				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+				$db->query($query);
+				$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
+				$db->query($query);	
+				$i++;
+			//}					
+		}
+		return $i;
+	}
+
 	/**
 	*  Obtiene todos registros de la tabla paginados y aplicando un filtro
 	*

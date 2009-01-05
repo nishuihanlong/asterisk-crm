@@ -275,7 +275,7 @@ function submitForm($aFormValues){
 				//print $assignNum;
 			}else{
 				if ($_SESSION['curuser']['usertype'] == 'admin'){
-					$res = astercrm::getGroupMemberListByID();
+					$res = astercrm::getGroupMemberListByID($groupid);
 					while ($row = $res->fetchRow()) {
 						$arryAssign[] = $row['extension']; //$array_extension数组,存放extension数据
 					}
@@ -291,6 +291,7 @@ function submitForm($aFormValues){
 		}
 	}
 	$x = 0;
+
 	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$dialListTime,$date,$groupid);
 	foreach($arrData as $data){
 		$strSql = $data['strSql'];					//得到插入选择表的sql语句

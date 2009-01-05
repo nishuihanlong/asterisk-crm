@@ -448,7 +448,7 @@ class ScrollTable{
 			}
 			if($withDelButton){
 				$this->search .= '&nbsp;&nbsp;<input type="button" id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'delGrid\'),xajax.getFormValues(\'searchForm\'));}return false;" value="'.$local_grid->Translate("delete").'">';
-			}
+			}			
 		}
 		
 		$this->search .= '
@@ -546,6 +546,10 @@ class ScrollTable{
 			if($this->deleteFlag == 1){
 				$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
 				$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("delete").'\';}';				
+			}
+			if($table == "dialedlist"){
+				$option .= '<option value="recycle">'.$local_grid->Translate("recycle").'</option>';
+				$optionOnchange .= 'if(this.value==\'recycle\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("recycle").'\';}';
 			}
 			$optionOnchange .= 'if(this.value==\'\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("continue").'\';}';
 			$this->search .='<td>

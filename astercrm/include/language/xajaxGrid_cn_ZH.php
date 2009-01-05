@@ -21,4 +21,5 @@ $select_option = "选择操作";
 $searchdelete_confirm="你确定要删除这些记录吗?\\n如果你没有选择字段或搜索内容,将会删除所有记录!";
 $delete_confirm_campaign="删除此条计划的同时将删除所有使用此计划的拨表列表记录,确定要删除吗?";
 $delete_confirm_group="删除这个组的同时将删除本组所有相关帐户、拨号计划及拨号列表,确定要删除吗?";
+$recycle = "号码回收";
 ?>

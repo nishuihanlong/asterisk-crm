@@ -94,4 +94,5 @@ $failed_when_connect_to_AMI = "连接AMI失败";
 $spy = "监听";
 $whisper = "秘语";
 $invite = "邀请";
+$extension_unavailable = "您的分机可能不在线,是否继续?";
 ?>

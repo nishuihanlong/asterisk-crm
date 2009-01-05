@@ -39,7 +39,7 @@ require_once('dialedlist.common.php');
 		}
 		
 		function recycle(){
-			xajax_recycle();
+			xajax_recycle(xajax.getFormValues('delGrid'));
 		}
 		
 		function ckbAllOnClick(objCkb){
@@ -79,7 +79,7 @@ require_once('dialedlist.common.php');
 					<div>
 						<span id="spanRecycle" name="spanRecycle"></span>
 					</div>
-					<input type="button" value="Recycle" name="btnRecycle" id="btnRecycle" onclick="recycle();">
+					<input type="button" value="<?echo $locate->Translate("recycle")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">
 				</fieldset>
 			</td>
 		</tr>
