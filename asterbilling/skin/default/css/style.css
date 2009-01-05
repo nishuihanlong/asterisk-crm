@@ -865,4 +865,5 @@ a.info:hover span{
 	color:#7D8288;
 	list-style:none;
 }
-
+/* add-flash */
+.jin-fl{margin:5px; border:1px solid #CCC; float:left;}

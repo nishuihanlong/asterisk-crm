@@ -30,4 +30,5 @@ $sum_by_month = "按月统计";
 $sum_by_day = "按天统计";
 $sum_by_hour = "按小时统计";
 $sum_by_destination = "按目标统计";
+$year = "年";
 ?>

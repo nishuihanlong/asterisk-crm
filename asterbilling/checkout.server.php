@@ -26,6 +26,7 @@ require_once ('include/asterisk.class.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
+
 function init($curpeer){
 	global $locate;
 	$objResponse = new xajaxResponse();
@@ -156,6 +157,7 @@ function setClid($groupid){
 
 function listCDR($aFormValues){
 	global $locate;
+	
 	$objResponse = new xajaxResponse();
 	
 	$objResponse->addAssign("divMsg","style.visibility","hidden");
@@ -175,10 +177,11 @@ function listCDR($aFormValues){
 	$eday = (int)$eday;
 
 	$ary = array();
-
+    $aFormValues['sdate']=$syear."-".$smonth."-".$sday;
+    $aFormValues['edate']=$eyear."-".$emonth."-".$eday;
 
 	if ($aFormValues['listType'] == "none"){
-		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
+		$res = astercc::readReport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 
 		if ($res->fetchInto($myreport)){
 			$result = parseReport($myreport); 
@@ -187,41 +190,16 @@ function listCDR($aFormValues){
 		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		return $objResponse;
 	}elseif ($aFormValues['listType'] == "sumyear"){
-		for ($year = $syear; $year<=$eyear;$year++){
-			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
-			if ($res->fetchInto($myreport)){
-				$html .= "<div class='box'>";
-				$html .= "$year :<br/>";
-				$html .= "<div>";
-				$result = parseReport($myreport); 
-				$html .= $result['html'];
-				$html .= "</div>";
-				$html .= "</div>";
-				$ary['recordNum'] += $result['data']['recordNum'];
-				$ary['seconds'] = $result['data']['seconds'];
-				$ary['credit'] = $result['data']['credit'];
-				$ary['callshopcredit'] = $result['data']['callshopcredit'];
-				$ary['resellercredit'] = $result['data']['resellercredit'];
-			}
-		}
-		$html .= "<div class='box'>";
-		$html .= "total :<br/>";
-		$html .= "<div>";
-		$result = parseReport($ary); 
-		$html .= $result['html'];
-		$html .= "</div>";
-		$html .= "</div>";
-
-		$html .= "<div style='clear:both;'></div>";
-		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
-		return $objResponse;
-	}elseif ($aFormValues['listType'] == "summonth"){
-		for ($year = $syear; $year<=$eyear;$year++){
-			for ($month = $smonth;$month<=$emonth;$month++){
-				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
+		if ($aFormValues['reporttype'] == "flash"){
+			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
+			$html = "";
+		}else{
+			for ($year = $syear; $year<=$eyear;$year++){
+			
+				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
-					$html .= "$year-$month :<br/>";
+					$html .= "$year :<br/>";
 					$html .= "<div>";
 					$result = parseReport($myreport); 
 					$html .= $result['html'];
@@ -234,75 +212,118 @@ function listCDR($aFormValues){
 					$ary['resellercredit'] = $result['data']['resellercredit'];
 				}
 			}
+			$html .= "<div class='box'>";
+			$html .= "total :<br/>";
+			$html .= "<div>";
+			$result = parseReport($ary); 
+			$html .= $result['html'];
+			$html .= "</div>";
+			$html .= "</div>";
+			$html .= "<div style='clear:both;'></div>";
+			$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		}
-		$html .= "<div class='box'>";
-		$html .= "total :<br/>";
-		$html .= "<div>";
-		$result = parseReport($ary); 
-		$html .= $result['html'];
-		$html .= "</div>";
-		$html .= "</div>";
+		return $objResponse;
 
-		$html .= "<div style='clear:both;'></div>";
-		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+	}elseif ($aFormValues['listType'] == "summonth"){
+		if ($aFormValues['reporttype'] == "flash"){
+			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
+		}else{
+			for ($year = $syear; $year<=$eyear;$year++){
+				for ($month = $smonth;$month<=$emonth;$month++){
+					$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
+					if ($res->fetchInto($myreport)){
+						$html .= "<div class='box'>";
+						$html .= "$year-$month :<br/>";
+						$html .= "<div>";
+						$result = parseReport($myreport); 
+						$html .= $result['html'];
+						$html .= "</div>";
+						$html .= "</div>";
+						$ary['recordNum'] += $result['data']['recordNum'];
+						$ary['seconds'] = $result['data']['seconds'];
+						$ary['credit'] = $result['data']['credit'];
+						$ary['callshopcredit'] = $result['data']['callshopcredit'];
+						$ary['resellercredit'] = $result['data']['resellercredit'];
+					}
+				}
+			}
+			$html .= "<div class='box'>";
+			$html .= "total :<br/>";
+			$html .= "<div>";
+			$result = parseReport($ary); 
+			$html .= $result['html'];
+			$html .= "</div>";
+			$html .= "</div>";
+			$html .= "<div style='clear:both;'></div>";
+			$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		}
+      
 		return $objResponse;
 	}elseif ($aFormValues['listType'] == "sumday"){
-		for ($day = $sday;$day<=31;$day++){
-			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
-			if ($res->fetchInto($myreport)){
-				$html .= "<div class='box'>";
-				$html .= "$syear-$smonth-$day :<br/>";
-				$html .= "<div>";
-				$result = parseReport($myreport); 
-				$html .= $result['html'];
-				$html .= "</div>";
-				$html .= "</div>";
-				$ary['recordNum'] += $result['data']['recordNum'];
-				$ary['seconds'] = $result['data']['seconds'];
-				$ary['credit'] = $result['data']['credit'];
-				$ary['callshopcredit'] = $result['data']['callshopcredit'];
-				$ary['resellercredit'] = $result['data']['resellercredit'];
+		if ($aFormValues['reporttype'] == "flash"){
+			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
+		}else{
+			for ($day = $sday;$day<=31;$day++){
+				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
+				if ($res->fetchInto($myreport)){
+					$html .= "<div class='box'>";
+					$html .= "$syear-$smonth-$day :<br/>";
+					$html .= "<div>";
+					$result = parseReport($myreport); 
+					$html .= $result['html'];
+					$html .= "</div>";
+					$html .= "</div>";
+					$ary['recordNum'] += $result['data']['recordNum'];
+					$ary['seconds'] = $result['data']['seconds'];
+					$ary['credit'] = $result['data']['credit'];
+					$ary['callshopcredit'] = $result['data']['callshopcredit'];
+					$ary['resellercredit'] = $result['data']['resellercredit'];
+				}
 			}
+			$html .= "<div class='box'>";
+			$html .= "total :<br/>";
+			$html .= "<div>";
+			$result = parseReport($ary); 
+			$html .= $result['html'];
+			$html .= "</div>";
+			$html .= "</div>";
+			$html .= "<div style='clear:both;'></div>";
+			$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		}
-		$html .= "<div class='box'>";
-		$html .= "total :<br/>";
-		$html .= "<div>";
-		$result = parseReport($ary); 
-		$html .= $result['html'];
-		$html .= "</div>";
-		$html .= "</div>";
 
-		$html .= "<div style='clear:both;'></div>";
-		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		return $objResponse;
 	}elseif ($aFormValues['listType'] == "sumhour"){
-		for ($hour = 0;$hour<=23;$hour++){
-			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
-			if ($res->fetchInto($myreport)){
-				$html .= "<div class='box'>";
-				$html .= "$syear-$smonth-$sday $hour:<br/>";
-				$html .= "<div>";
-				$result = parseReport($myreport); 
-				$html .= $result['html'];
-				$html .= "</div>";
-				$html .= "</div>";
-				$ary['recordNum'] += $result['data']['recordNum'];
-				$ary['seconds'] = $result['data']['seconds'];
-				$ary['credit'] = $result['data']['credit'];
-				$ary['callshopcredit'] = $result['data']['callshopcredit'];
-				$ary['resellercredit'] = $result['data']['resellercredit'];
+		if ($aFormValues['reporttype'] == "flash"){
+			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
+		}else{
+			for ($hour = 0;$hour<=23;$hour++){
+				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
+				if ($res->fetchInto($myreport)){
+					$html .= "<div class='box'>";
+					$html .= "$syear-$smonth-$sday $hour:<br/>";
+					$html .= "<div>";
+					$result = parseReport($myreport); 
+					$html .= $result['html'];
+					$html .= "</div>";
+					$html .= "</div>";
+					$ary['recordNum'] += $result['data']['recordNum'];
+					$ary['seconds'] = $result['data']['seconds'];
+					$ary['credit'] = $result['data']['credit'];
+					$ary['callshopcredit'] = $result['data']['callshopcredit'];
+					$ary['resellercredit'] = $result['data']['resellercredit'];
+				}
 			}
-		}
-		$html .= "<div class='box'>";
-		$html .= "total :<br/>";
-		$html .= "<div>";
-		$result = parseReport($ary); 
-		$html .= $result['html'];
-		$html .= "</div>";
-		$html .= "</div>";
+			$html .= "<div class='box'>";
+			$html .= "total :<br/>";
+			$html .= "<div>";
+			$result = parseReport($ary); 
+			$html .= $result['html'];
+			$html .= "</div>";
+			$html .= "</div>";
 
-		$html .= "<div style='clear:both;'></div>";
-		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+			$html .= "<div style='clear:both;'></div>";
+			$objResponse->addAssign("divUnbilledList","innerHTML",$html);
+		}
 		return $objResponse;
 	}elseif ($aFormValues['listType'] == "sumdest"){
 		$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate'],'destination');

@@ -99,7 +99,7 @@ if (!isset($_SESSION['callbacks']))
 	$objResponse->addScript("checkHangup()");
 
 	$objResponse->addScript("xajax_setGroupBalance();");
-	//$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
+	$objResponse->addAssign("creditlimittype","value",$config['system']['creditlimittype']);
 	return $objResponse;
 }
 

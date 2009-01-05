@@ -139,7 +139,52 @@ require_once('checkout.common.php');
 
 		<script language="JavaScript" src="js/astercrm.js"></script>
 		<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
+        <script type="text/javascript" src="openflash/js/swfobject.js"></script>
+        <script type="text/javascript">
 
+
+function actionFlash(resellerid,groupid,sltBooth,sdate,edate,listType,hidCurpeer){
+	
+	//数量
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "num_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  //{"data-file":"checkout.server.flash.php?action=num12 3:2r/"+listType} );
+   {"data-file":"checkout.server.flash.php?action=numV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+// 计费时长
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "time_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.flash.php?action=timeV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+  
+//   合计
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "total_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.flash.php?action=totalV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+//   分组
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "group_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.flash.php?action=groupV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+//   代理商成本
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "cost_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.flash.php?action=costV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+ //  利润
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "gain_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.flash.php?action=gainV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+}
+ 
+</script>
+       
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 
@@ -177,6 +222,8 @@ require_once('checkout.common.php');
 				<OPTION value="sumdest"><?echo $locate->Translate("Sum By Destination")?></OPTION>
 			</SELECT>
 			<br>
+			<input type="radio" value="text" name="reporttype" checked><?echo $locate->Translate("Text")?>
+			<input type="radio" value="flash" name="reporttype"><?echo $locate->Translate("Flash")?>
 			<input type="button" onclick="listCDR();return false;" value="<?echo $locate->Translate("List")?>">
 			<input type="hidden" id="hidCurpeer" name="hidCurpeer" value="<?echo $_REQUEST['peer']?>">
 		</div>
@@ -186,7 +233,14 @@ require_once('checkout.common.php');
 		</div>
 		
 		<center>
-		<div>
+			<div style="overflow:hidden; zoom:1; margin:auto; width:830px;">
+				<div class="jin-fl"><div id='num_chart'></div></div>
+				<div class="jin-fl"><div id='time_chart'></div></div>
+				<div class="jin-fl"><div id='total_chart'></div></div>
+				<div class="jin-fl"><div id='group_chart'></div></div>
+				<div class="jin-fl"><div id='cost_chart'></div></div>
+				<div class="jin-fl"><div id='gain_chart'></div></div>
+			</div>
 			<div style="display:none;">
 				<?echo $locate->Translate("Amount")?>: <span id="spanTotal" name="spanTotal">0</span> 
 				<?echo $locate->Translate("Callshop Cost")?>: <span id="spanCallshopCost" name="spanCallshopCost">0</span>
