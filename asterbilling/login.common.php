@@ -27,4 +27,5 @@ else
 $xajax = new xajax("login.server.php");
 $xajax->registerFunction("processForm");	 //registe xajax_processForm
 $xajax->registerFunction("init");				//registe xajax_init
+$xajax->registerFunction("setLang");
 ?>
