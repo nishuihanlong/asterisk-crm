@@ -83,6 +83,10 @@ require_once('login.common.php');
 			xajax_init(xajax.getFormValues("loginForm"));
 			return false;
 		}
+		function setlanguage(){
+			xajax_setLang(xajax.getFormValues("loginForm"));			
+			return false;
+		}
 		</script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	
@@ -107,13 +111,13 @@ require_once('login.common.php');
 			  <td>&nbsp;</td>
 			</tr>
 			<tr>
-			  <td>&nbsp;</td>
-			  <td>&nbsp;</td>
+			  <td><div name="remembermeboxDiv" id="remembermeboxDiv" align="right"><input type="checkbox" value="forever" id="rememberme" name="rememberme"></div></td>
+			  <td><div name="remembermeDiv" id="remembermeDiv" align="left"></div></td>
 			  <td>&nbsp;</td>
 			</tr>
 			<tr>
 			  <td><div name="languageDiv" id="languageDiv" align="right"></div></td>
-			  <td><SELECT name="locate" id="locate" onchange="init();" class="select">
+			  <td><SELECT name="locate" id="locate" onchange="setlanguage();" class="select">
 					 <OPTION value="en_US">English</OPTION>
 					 <OPTION value="cn_ZH">简体中文</OPTION>
 					 <OPTION value="de_GER">Germany</OPTION>

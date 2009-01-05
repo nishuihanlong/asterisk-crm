@@ -19,4 +19,5 @@ $invalid_string		= "输入数据中含有非法字符，仅允许字符或者数
 $choose_user_mode	= "您确定以动态座席模式登录吗?";
 $language			="语言";
 $logintip			="请输入您的用户名和密码";
+$remember_me		="记住我";
 ?>

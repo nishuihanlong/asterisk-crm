@@ -104,12 +104,17 @@ function processForm($aFormValues)
 */
 
 function init($aFormValue){
+
 	$objResponse = new xajaxResponse();
-	
 	global $locate,$config;
 	
-
-	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValue['locate']);	
+	if (isset($_COOKIE["language"])) {
+		$language = $_COOKIE["language"];	
+	}else{
+		$language = $aFormValue['locate'];
+	}
+	
+	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $language);	
 	
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
@@ -120,16 +125,37 @@ function init($aFormValue){
 	$objResponse->addAssign("logintip","innerHTML",$locate->Translate("logintip"));
 	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("Username"));
 	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("Password"));
+	$objResponse->addAssign("remembermeDiv","innerHTML",$locate->Translate("Remember me"));
 	$objResponse->addAssign("languageDiv","innerHTML",$locate->Translate("Language"));
 	$objResponse->addAssign("loginDiv","innerHTML",$login_div);
 	//$objResponse->addAssign("loginButton","value",$locate->Translate("Submit"));
 	//$objResponse->addAssign("loginButton","disabled",false);
 	//$objResponse->addAssign("onclickMsg","value",$locate->Translate("Please waiting"));
+
 	$objResponse->addScript("xajax.$('username').focus();");
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
+	//print_r($_COOKIE);exit;
+	if (isset($_COOKIE["username"])){
+		$username = $_COOKIE["username"];
+		$checked = true;
+	}
+	if (isset($_COOKIE["password"])) $password = $_COOKIE["password"];
+	
+	$objResponse->addAssign("username","value",$username);
+	$objResponse->addAssign("password","value",$password);
+	$objResponse->addAssign("rememberme","checked",$checked);
+	$objResponse->addAssign("locate","value",$language);
 
 	unset($_SESSION['curuser']);
 	unset($_SESSION['status']);
+
+	return $objResponse;
+}
+
+function setLang($f){
+	$objResponse = new xajaxResponse();
+	if (isset($_COOKIE["language"])) setcookie("language", $f['locate'], time() + 94608000);	
+	$objResponse->addScript("init()");
 	return $objResponse;
 }
 
@@ -171,6 +197,22 @@ function processAccountData($aFormValues)
 		if ($row['id'] != '' ){
 			if ($row['password'] == $aFormValues['password'])
 			{
+				if ($aFormValues['rememberme'] == "forever"){
+				// set cookies for three years
+					setcookie("username", $aFormValues['username'], time() + 94608000);
+					setcookie("password", $aFormValues['password'], time() + 94608000);
+					setcookie("language", $aFormValues['locate'], time() + 94608000);
+				}else{
+				// destroy cookies
+					setcookie("username", "", time()-3600);
+					setcookie("password", "", time()-3600);
+					setcookie("language", "", time()-3600);
+					$username = '';
+					$password = '';
+					$language = 'en_US';
+					$checked = false;
+				}
+
 				$_SESSION = array();
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $row['extension'];

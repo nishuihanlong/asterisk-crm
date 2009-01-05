@@ -43,5 +43,6 @@ else
 $xajax = new xajax("login.server.php");
 $xajax->registerFunction("processForm");	 //register xajax_processForm
 $xajax->registerFunction("init");				//register xajax_init
+$xajax->registerFunction("setLang");
 $xajax->registerFunction("clearDynamicMode");
 ?>
