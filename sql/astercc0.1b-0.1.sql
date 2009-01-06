@@ -1,4 +1,4 @@
-############database of astercc0.1-beta update to astercc0.11-beta#############
+############database of astercc0.1-beta update to astercc0.1#############
 ALTER TABLE `surveyoptions` ADD `optiontype` ENUM( 'checkbox', 'radio', 'text' ) NOT NULL DEFAULT 'radio' AFTER `optionnote` ;
 
 ALTER TABLE `surveyresult` ADD `surveytitle` VARCHAR( 30 ) NOT NULL AFTER `surveyid` ;
@@ -55,3 +55,19 @@ UNIQUE (`id`)
 ALTER TABLE myrate ADD UNIQUE rate (dialprefix,numlen,resellerid,groupid);
 ALTER TABLE callshoprate ADD UNIQUE rate (dialprefix,numlen,resellerid,groupid);
 ALTER TABLE resellerrate ADD UNIQUE rate (dialprefix,numlen,resellerid);
+
+DROP TABLE IF EXISTS `parkedcalls`;
+
+ CREATE TABLE `parkedcalls` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`Num` VARCHAR( 10 ) NOT NULL ,
+`Channel` VARCHAR( 50 ) NOT NULL ,
+`Context` VARCHAR( 50 ) NOT NULL ,
+`Extension` VARCHAR( 50 ) NOT NULL ,
+`Pri` VARCHAR( 50 ) NOT NULL ,
+`Timeout` VARCHAR( 10 ) NOT NULL ,
+PRIMARY KEY ( `id` ) ,
+UNIQUE (
+`id`
+)
+) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci; 
