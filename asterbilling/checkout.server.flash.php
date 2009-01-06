@@ -176,9 +176,10 @@
 	}elseif ($aFormValues['listType'] == "summonth"){
 		$x_title=$locate->Translate("Sum by Month");
 
-		for ($year = $syear; $year<=$eyear;$year++){
-			for ($month = $smonth;$month<=$emonth;$month++){
-				$x_date[]="".$year.','.$month;
+		//for ($year = $syear; $year<=$eyear;$year++){
+			$year = $syear;
+			for ($month = 1;$month<=12;$month++){
+				$x_date[]="".substr($year,-2).','.$month;
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
 				if ($res->fetchInto($myreport)){
 					$result = parseReport($myreport);
@@ -218,7 +219,7 @@
 				}
 			}
 
-		}
+		//}
 
 	}elseif ($aFormValues['listType'] == "sumday"){
 		$x_title=$locate->Translate("Sum by Day");

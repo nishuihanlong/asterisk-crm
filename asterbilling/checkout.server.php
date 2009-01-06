@@ -228,8 +228,9 @@ function listCDR($aFormValues){
 		if ($aFormValues['reporttype'] == "flash"){
 			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
 		}else{
-			for ($year = $syear; $year<=$eyear;$year++){
-				for ($month = $smonth;$month<=$emonth;$month++){
+			//for ($year = $syear; $year<=$eyear;$year++){
+				$year = $syear;
+				for ($month = 1;$month<=12;$month++){
 					$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
 					if ($res->fetchInto($myreport)){
 						$html .= "<div class='box'>";
@@ -246,7 +247,7 @@ function listCDR($aFormValues){
 						$ary['resellercredit'] = $result['data']['resellercredit'];
 					}
 				}
-			}
+			//}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
