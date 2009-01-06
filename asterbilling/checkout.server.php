@@ -206,10 +206,10 @@ function listCDR($aFormValues){
 					$html .= "</div>";
 					$html .= "</div>";
 					$ary['recordNum'] += $result['data']['recordNum'];
-					$ary['seconds'] = $result['data']['seconds'];
-					$ary['credit'] = $result['data']['credit'];
-					$ary['callshopcredit'] = $result['data']['callshopcredit'];
-					$ary['resellercredit'] = $result['data']['resellercredit'];
+					$ary['seconds'] += $result['data']['seconds'];
+					$ary['credit'] += $result['data']['credit'];
+					$ary['callshopcredit'] += $result['data']['callshopcredit'];
+					$ary['resellercredit'] += $result['data']['resellercredit'];
 				}
 			}
 			$html .= "<div class='box'>";
@@ -241,10 +241,10 @@ function listCDR($aFormValues){
 						$html .= "</div>";
 						$html .= "</div>";
 						$ary['recordNum'] += $result['data']['recordNum'];
-						$ary['seconds'] = $result['data']['seconds'];
-						$ary['credit'] = $result['data']['credit'];
-						$ary['callshopcredit'] = $result['data']['callshopcredit'];
-						$ary['resellercredit'] = $result['data']['resellercredit'];
+						$ary['seconds'] += $result['data']['seconds'];
+						$ary['credit'] += $result['data']['credit'];
+						$ary['callshopcredit'] += $result['data']['callshopcredit'];
+						$ary['resellercredit'] += $result['data']['resellercredit'];
 					}
 				}
 			//}
@@ -275,10 +275,10 @@ function listCDR($aFormValues){
 					$html .= "</div>";
 					$html .= "</div>";
 					$ary['recordNum'] += $result['data']['recordNum'];
-					$ary['seconds'] = $result['data']['seconds'];
-					$ary['credit'] = $result['data']['credit'];
-					$ary['callshopcredit'] = $result['data']['callshopcredit'];
-					$ary['resellercredit'] = $result['data']['resellercredit'];
+					$ary['seconds'] += $result['data']['seconds'];
+					$ary['credit'] += $result['data']['credit'];
+					$ary['callshopcredit'] += $result['data']['callshopcredit'];
+					$ary['resellercredit'] += $result['data']['resellercredit'];
 				}
 			}
 			$html .= "<div class='box'>";
@@ -308,10 +308,10 @@ function listCDR($aFormValues){
 					$html .= "</div>";
 					$html .= "</div>";
 					$ary['recordNum'] += $result['data']['recordNum'];
-					$ary['seconds'] = $result['data']['seconds'];
-					$ary['credit'] = $result['data']['credit'];
-					$ary['callshopcredit'] = $result['data']['callshopcredit'];
-					$ary['resellercredit'] = $result['data']['resellercredit'];
+					$ary['seconds'] += $result['data']['seconds'];
+					$ary['credit'] += $result['data']['credit'];
+					$ary['callshopcredit'] += $result['data']['callshopcredit'];
+					$ary['resellercredit'] += $result['data']['resellercredit'];
 				}
 			}
 			$html .= "<div class='box'>";
@@ -455,7 +455,6 @@ function listCDR($aFormValues){
 			$reseller_cost = $mycdr['resellercredit'];
 
 		}
-
 		$html .= '	<tr align="left" id="tr-'.$mycdr['id'].'">
 						<td align="right">
 							<input type="checkbox" id="ckb[]" name="ckb[]" value="'.$mycdr['id'].'" onclick="ckbOnClick(this);">
@@ -478,7 +477,6 @@ function listCDR($aFormValues){
 		}else if($_SESSION['curuser']['usertype'] == 'admin') {
 			$html .=  '<td>'.$mycdr['credit'].'<br>'.'('.$callshop_cost.')'.'<br>'.'('.$reseller_cost.')</td>';
 		}
-
 
 		if ($peer == '-1'){
 			if ($mycdr['dst'] == $mycdr['src']){
