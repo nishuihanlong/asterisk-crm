@@ -1,0 +1,70 @@
+new features in 0.056
+	barge-in and invite
+
+0.056新功能
+	强插和邀请功能
+
+astercrm features(0.055)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	list and listen to the monitor records
+	check history phone recorded on line
+	customer call history
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list
+	scheduler dialer
+	customer dialer
+	could work with astercc
+	cdr(in astercc mode)
+	DID inforamtion when pop up
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)
+	support dynamic agent mode
+	extension whisper
+	DID number display
+	support predictive dial dial out strategy
+	support import file which exist in server
+	recent cdr bind to monitor records
+	fax ext
+	support play gsm file in web
+	force monitor by group
+	update licence in web
+	auto install
+	system status monitor by groupadmin
+	predictive dial by groupadmin
+	multi mode search(like,=,<,>)
+	advance survey
+	callerid smart mathcing
+	barge-in and invite
+	predictive dialer direct to queue

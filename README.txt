@@ -440,4 +440,6 @@ asterBilling features:
   22. agi for calling card and internal pbx billing
   23. billing for clid
   24. inbound billing 
-  25. multi language support[Simplified Chinese/English]
+  25. advance report(flash chart)
+  26. multiple updating rate
+  27. multi language support[Simplified Chinese/English]

@@ -1,4 +1,4 @@
-﻿0.035beta:
+0.035beta:
 
 fixed some bugs in web script
 add new parameter in astercc.conf
@@ -77,8 +77,17 @@ add new field amount and total in table accountgroup to store all selling and al
 2008-12-1   fixed do not delete group account when delete a group
 2008-12-5   fixed astercclock always generate log
 2008-12-5   change the navigation
-
-
+----------------------------------------------------------------------------------
+0.096
+2008-12-10  added multiple updating rate function for rate
+2008-12-12  added delete and export through search in all page
+2008-12-15  added advance report
+2008-12-15  fixed sip_generate error in reseller interface
+2008-12-17  fixed asterrc bug(don't check prefix when set numlen)
+2008-12-19  fixed systemstatus page display bug in IE
+2008-12-29  added flash chart for report
+2009-1-5    added remember me in login page
+----------------------------------------------------------------------------------
 
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能
@@ -125,7 +134,9 @@ astercc features:
 	print receipt
 	agi for calling card and internal pbx billing
 	billing for clid
-	inbound billing 
+	inbound billing
+	advance report(flash chart)
+	multiple updating rate
 	multi language support[Simplified Chinese/English]
 
 
@@ -157,4 +168,5 @@ astercc特点
         充值信息记录
 	收据打印
         分机可登陆系统查询通话记录
+	高级报告(支持flash报表)
         多语言支持[中/英]
