@@ -1014,7 +1014,7 @@ function getContact($callerid){
 	global $db,$locate,$config;	
 	$mycallerid = $callerid;
 	$objResponse = new xajaxResponse();
-
+	$objResponse->addAssign("iptCallerid", "value", $callerid);
 	if ( $config['system']['trim_prefix'] != ''){
 		$prefix = split(",",$config['system']['trim_prefix']);
 		foreach ($prefix as $myprefix ) {

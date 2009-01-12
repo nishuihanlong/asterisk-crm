@@ -1,64 +1,11 @@
 <?php
-
 	require_once ("checkout.common.php");
 	require_once ("db_connect.php");
 	require_once ('include/asterevent.class.php');
 	require_once ('include/common.class.php');
 	include ('openflash/php-ofc-library/open-flash-chart.php');
-
-	
 	global $locate;
-	$v='{
-  "title":{
-    "text":  "Many data lines",
-    "style": "{font-size: 20px; color:#0000ff; font-family: Verdana; text-align: center;}"
-  },
- 
-  "y_legend":{
-    "text": "Open Flash Chart",
-    "style": "{color: #736AFF; font-size: 12px;}"
-  },
- 
-  "elements":[
-    {
-      "type":      "bar",
-      "alpha":     0.5,
-      "colour":    "#9933CC",
-      "text":      "Page views",
-      "font-size": 10,
-      "values" :   [9,6,7,9,5,7,6,9,7]
-    },
-    {
-      "type":      "bar",
-      "alpha":     0.5,
-      "colour":    "#CC9933",
-      "text":      "Page views 2",
-      "font-size": 10,
-      "values" :   [6,7,9,5,7,6,9,7,3]
-    }
-  ],
- 
-  "x_axis":{
-    "stroke":1,
-    "tick_height":10,
-    "colour":"#d000d0",
-    "grid_colour":"#00ff00",
-    "labels": ["January","February","March","April","May","June","July","August","Spetember"]
-   },
- 
-  "y_axis":{
-    "stroke":      4,
-    "tick_length": 3,
-    "colour":      "#d000d0",
-    "grid_colour": "#00ff00",
-    "offset":      0,
-    "max":         20
-  }
-}
- 
-';
-  //  echo $v;
-   // exit;
+
 	function arr_max($arr)
 	{
 		if(!is_array($arr))
@@ -175,8 +122,6 @@
 		}
 	}elseif ($aFormValues['listType'] == "summonth"){
 		$x_title=$locate->Translate("Sum by Month");
-
-		//for ($year = $syear; $year<=$eyear;$year++){
 			$year = $syear;
 			for ($month = 1;$month<=12;$month++){
 				$x_date[]="".substr($year,-2).','.$month;
@@ -214,13 +159,9 @@
 							$title= $locate->Translate("Markup");
 							$data[]=intval($ary['markup']);
 							break;
-
 					}
 				}
 			}
-
-		//}
-
 	}elseif ($aFormValues['listType'] == "sumday"){
 		$x_title=$locate->Translate("Sum by Day");
 		for ($day = $sday;$day<=31;$day++){

@@ -88,7 +88,8 @@
 ********************************************************************************/
 require_once('config.php');
 require_once('portal.common.php');
-
+//get post parm
+$clientDst = $_REQUEST['clientdst'];
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -107,7 +108,12 @@ require_once('portal.common.php');
 
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
-
+		var clientDst = "<?echo $clientDst ?>";
+		if(clientDst != ''){
+			//document.getElementById("iptCallerid").value=clentDst;
+			xajax_getContact(clientDst);
+		}
+		
 		function dial(phonenum,first,myvalue,dtmf){
 			myFormValue = xajax.getFormValues("myForm");
 			dialnum = phonenum;

@@ -3842,5 +3842,21 @@ Class astercrm extends PEAR{
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getAllSpeedDialRecords(){
+		global $db;
+
+		$sql = "SELECT number,description FROM speeddial ";
+
+
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 }
 ?>

@@ -95,4 +95,7 @@ $spy = "监听";
 $whisper = "秘语";
 $invite = "邀请";
 $extension_unavailable = "您的分机可能不在线,是否继续?";
+$hang_up_call_from = "已挂机";
+$no_information_get_for_trunk = "没有线路信息";
+$portal = "工作台";
 ?>

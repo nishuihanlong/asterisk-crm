@@ -149,8 +149,7 @@ function actionFlash(resellerid,groupid,sltBooth,sdate,edate,listType,hidCurpeer
 swfobject.embedSWF(
   "openflash/open-flash-chart.swf", "num_chart",
   "400", "300", "9.0.0", "expressInstall.swf",
-  //{"data-file":"checkout.server.flash.php?action=num12 3:2r/"+listType} );
-   {"data-file":"checkout.server.flash.php?action=numV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+    {"data-file":"checkout.server.flash.php?action=numV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
 
 // 计费时长
 swfobject.embedSWF(
@@ -182,8 +181,139 @@ swfobject.embedSWF(
   {"data-file":"checkout.server.flash.php?action=gainV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
 
 }
+
+function actionPie1(resellerid,groupid,sltBooth,sdate,edate,listType,hidCurpeer){
+	
+	//数量
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "num_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+    {"data-file":"checkout.server.pie.php?action=recordNumV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+// 计费时长
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "time_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=secondsV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+  
+//   合计
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "total_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=creditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+//   分组
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "group_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=callshopcreditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+//   代理商成本
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "cost_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=resellercreditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+ //  利润
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "gain_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=markupV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+}
+
+function actionPie2(resellerid,groupid,sltBooth,sdate,edate,listType,hidCurpeer){
+	
+	//数量
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "num_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+    {"data-file":"checkout.server.pie.php?action=recordNumV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+// 计费时长
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "time_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=secondsV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+  
+//   合计
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "total_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=creditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+//   分组
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "group_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=callshopcreditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "gain_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=callshopcreditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+}
+
+function actionPie3(resellerid,groupid,sltBooth,sdate,edate,listType,hidCurpeer){
+	
+	//数量
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "num_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+    {"data-file":"checkout.server.pie.php?action=recordNumV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+// 计费时长
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "time_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=secondsV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+  
+//   合计
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "total_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.pie.php?action=creditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+}
+
+function actionPieGroup(resellerid,groupid,sltBooth,sdate,edate,listType,hidCurpeer){
+	
+	//数量
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "num_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+    {"data-file":"checkout.server.piegroup.php?action=recordNumV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+// 计费时长
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "time_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.piegroup.php?action=secondsV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
  
+//   合计
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "total_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.piegroup.php?action=creditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+//   分组
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "group_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.piegroup.php?action=callshopcreditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+//   代理商成本
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "cost_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.piegroup.php?action=resellercreditV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+ //  利润
+swfobject.embedSWF(
+  "openflash/open-flash-chart.swf", "gain_chart",
+  "400", "300", "9.0.0", "expressInstall.swf",
+  {"data-file":"checkout.server.piegroup.php?action=markupV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
+
+}
 </script>
+
        
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
@@ -220,6 +350,7 @@ swfobject.embedSWF(
 				<OPTION value="sumday"><?echo $locate->Translate("Sum By Day")?></OPTION>
 				<OPTION value="sumhour"><?echo $locate->Translate("Sum By Hour")?></OPTION>
 				<OPTION value="sumdest"><?echo $locate->Translate("Sum By Destination")?></OPTION>
+				<OPTION value="sumgroup"><?echo $locate->Translate("Sum By Group")?></OPTION>
 			</SELECT>
 			<br>
 			<input type="radio" value="text" name="reporttype" checked><?echo $locate->Translate("Text")?>

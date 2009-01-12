@@ -337,7 +337,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 	$res = $db->query($query);
 	return $res;
 }
-	function readReport($resellerid, $groupid, $booth, $sdate, $edate, $groupby = ''){
+	function readReport($resellerid, $groupid, $booth, $sdate, $edate, $groupby = '',$orderby='',$limit=''){
 		global $db,$config;
 		$table = 'mycdr';
 		if($config['system']['useHistoryCdr'] == 1){
@@ -378,6 +378,12 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		#exit;
 		if ($groupby != ""){
 			$query .= " GROUP BY $groupby";
+		}
+		if ($orderby != ""){
+			$query .= " ORDER BY $orderby desc";
+		}
+		if ($limit == "limit"){
+			$query .= " limit 0,10 ";
 		}
 		//print $query;exit;
 		astercc::events($query);
@@ -521,6 +527,69 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		}
 
 		return $price;
+	}
+	
+	function readReportPie($resellerid, $groupid, $booth, $sdate, $edate, $groupby = '',$orderby=''){
+		global $db,$config;
+		$table = 'mycdr';
+		if($config['system']['useHistoryCdr'] == 1){
+			$table = 'historycdr';
+		}
+       if ($resellerid == 0 || $resellerid == ''){
+			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, resellerid as gid  FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+		}
+		else{
+			if ($groupid == 0 || $groupid == ''){
+				$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, groupid as gid FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+				}else{
+				$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, src as gid FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";	
+				}
+		}
+				
+		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
+			$groupid = $_SESSION['curuser']['groupid'];
+		}
+
+		if ( ($resellerid == '' || $resellerid == 0) && $_SESSION['curuser']['usertype'] == 'reseller' ){
+			$resellerid = $_SESSION['curuser']['resellerid'];
+		}
+
+		if ($resellerid != 0 && $resellerid != '')
+			$query .= " AND resellerid = $resellerid ";
+		else
+			$query .= " AND resellerid != -1 ";
+
+		if ($groupid != 0 && $groupid != '')
+			$query .= " AND groupid = $groupid ";
+		else
+			$query .= " AND groupid != -1 ";
+
+		if ($booth != 0 && $booth != ''){
+			if ($booth == '-1'){
+				$query .= " AND LEFT(channel,6) = 'Local/' ";
+			}else{
+				$query .= " AND src = '$booth' OR dst = '$booth'";
+			}
+		}		
+	
+		if ($resellerid == 0 || $resellerid == ''){
+			$query .= " group by resellerid ";
+		}
+		else{
+			if ($groupid == 0 || $groupid == ''){
+			$query .= " group by groupid ";
+			}else{
+			$query .= " group by src ";	
+			}
+		}
+		
+		if ($orderby != ""){
+			$query .= " ORDER BY $orderby desc";
+		}
+		
+		astercc::events($query);
+		$res = $db->query($query);
+		return $res;
 	}
 }
 ?>
