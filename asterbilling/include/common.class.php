@@ -98,6 +98,7 @@ class Common{
 		$aryMenu['import'] = array("link"=>"import.php","title"=> $locate_common->Translate("Import"));
 		$aryMenu['cdr'] = array("link"=>"cdr.php","title"=> $locate_common->Translate("CDR"));
 		$aryMenu['credithistory'] = array("link"=>"credithistory.php","title"=> $locate_common->Translate("Credit History"));
+		$aryMenu['customers'] = array("link"=>"customers.php","title"=> $locate_common->Translate("customers"));
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$html .= common::generateNavMenu($aryMenu);
@@ -122,6 +123,7 @@ class Common{
 		}
 		$html .= '</ul></div>';
 		$html .= '</div>';
+		echo $html;exit;
 		return $html;
 	}
 

@@ -19,4 +19,5 @@ $continue			= "继续";
 $no_pass			= "失败, 请检查服务器配置文件";
 $invalid_string		= "输入数据中含有非法字符，仅允许字符或者数字";
 $valid_code		= "验证码";
+$remember_me	= "记住我";
 ?>

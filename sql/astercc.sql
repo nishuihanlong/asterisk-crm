@@ -225,6 +225,42 @@ CREATE TABLE `resellerrate` (
 ## ########################################################
 
 ## 
+## table `callshop_customers`
+## 
+
+DROP TABLE IF EXISTS `callshop_customers`;
+
+CREATE TABLE `callshop_customers` (
+  `id` int(11) NOT NULL auto_increment,
+  `pin` varchar(30) NOT NULL default '',
+  `first_name` varchar(50) NOT NULL default '',
+  `last_name` varchar(50) NOT NULL default '',
+  `balance` double(24,4) NOT NULL default '0.0000',  
+  `category_id` int(11) NOT NULL default '0',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`),
+  UNIQUE `pin` (`pin`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## ########################################################
+
+## 
+## table `callshop_customer_categorys`
+## 
+
+DROP TABLE IF EXISTS `callshop_customer_categorys`;
+
+CREATE TABLE `callshop_customer_categorys` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(30) NOT NULL default '',
+  `discount` double(8,4) NOT NULL default '1.0000',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+## ########################################################
+
+## 
 ## table `credithistory`
 ## 
 
