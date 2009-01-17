@@ -337,10 +337,16 @@ swfobject.embedSWF(
 			<select id="sltBooth" name="sltBooth" onchange="listCDR();">
 			</select>
 			<br>
-			
-			<?echo $locate->Translate("From")?>: <input type="text" name="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>">
+			<a href="###" onclick="xajax_speedDate('td')"><?echo $locate->Translate("Today")?></a>&nbsp;|
+			<a href="###" onclick="xajax_speedDate('tw')"><?echo $locate->Translate("This week")?></a>&nbsp;|
+			<a href="###" onclick="xajax_speedDate('tm')"><?echo $locate->Translate("This month")?></a>&nbsp;|
+			<a href="###" onclick="xajax_speedDate('l3m')"><?echo $locate->Translate("Last 3 months")?></a>&nbsp;|
+			<a href="###" onclick="xajax_speedDate('ty')"><?echo $locate->Translate("This year")?></a>&nbsp;|
+			<a href="###" onclick="xajax_speedDate('ly')"><?echo $locate->Translate("Last year")?></a>
+			<br />
+			<?echo $locate->Translate("From")?>: <input type="text" name="sdate" id="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>">
 			<INPUT onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
-			<?echo $locate->Translate("To")?>:<input type="text" name="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>">
+			<?echo $locate->Translate("To")?>:<input type="text" name="edate" id="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>">
 			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
 			<SELECT id="listType" name="listType">
 				<OPTION value="none"><?echo $locate->Translate("None")?></OPTION>

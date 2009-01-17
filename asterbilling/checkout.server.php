@@ -623,5 +623,47 @@ function checkOut($aFormValues){
 	return $objResponse;
 }
 
+function speedDate($date_type){
+	switch($date_type){
+		case "td":
+			$start_date = date("Y-m-d")." 00:00";
+			$end_date = date("Y-m-d")." 23:59";
+			break;
+		case "tw":
+			$date = date("Y-m-d");
+			$end_date = date("Y-m-d",strtotime("$date Sunday"))." 23:59";
+			$start_date = date("Y-m-d",strtotime("$end_date -6 days"))." 00:00";
+			break;
+		case "tm":
+			$date = date("Y-m-d");
+			$start_date = date("Y-m-01",strtotime($date))." 00:00";
+			$end_date = date("Y-m-d",strtotime("$start_date +1 month -1 day"))." 23:59";
+			break;
+		case "l3m":
+			$date = date("Y-m-d");
+			$start_date = date("Y-m-01",strtotime("$date - 2 month"))." 00:00";	
+			$date = date("Y-m-01");
+			$end_date = date("Y-m-d",strtotime("$date +1 month -1 day"))." 23:59";
+			break;
+		case "ty":
+			$start_date = date("Y-01-01")." 00:00";
+			$end_date = date("Y-12-31")." 23:59";
+			break;
+		case "ly":
+			$year = date("Y") - 1;
+			$start_date = date("$year-01-01")." 00:00";
+			$end_date = date("$year-12-31")." 23:59";			
+			break;
+			
+	}
+
+	$objResponse = new xajaxResponse();
+	if(isset($start_date)) $objResponse->addAssign("sdate","value",$start_date);
+
+	if(isset($end_date)) $objResponse->addAssign("edate","value",$end_date);
+
+	return $objResponse;
+}
+
 $xajax->processRequests();
 ?>

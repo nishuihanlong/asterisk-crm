@@ -22,7 +22,7 @@ registed function:
 * Desc: page created
 
 ********************************************************************************/
-
+error_reporting(0);
 header('Content-Type: text/html; charset=utf-8');
 header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
@@ -52,4 +52,5 @@ $xajax->registerFunction("listCDR");
 $xajax->registerFunction("checkOut");
 $xajax->registerFunction("setGroup");
 $xajax->registerFunction("setClid");
+$xajax->registerFunction("speedDate");
 ?>

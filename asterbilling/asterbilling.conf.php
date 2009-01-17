@@ -2,11 +2,11 @@
 [database]
 ;
 dbtype = mysql
-dbhost = 127.0.0.1
+dbhost = localhost
 dbname = astercc
 dbport = 3306
-username = root
-password = 
+username = astercc
+password = asterccsecret
 
 tb_curchan = curcdr
 tb_cdr = mycdr
