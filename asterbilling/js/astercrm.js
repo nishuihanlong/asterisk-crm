@@ -94,10 +94,17 @@ function setCurrency(s){
 function calculateBalance(divId){
 	credit = document.getElementById(divId + '-iptCredit').value;
 	unbilled = parseFloat(document.getElementById(divId + '-unbilled').innerHTML);
+	customerid = document.getElementById(divId + '-CustomerId').value;
+
 	if (credit == ''){
 		credit = 0.00;
 	}else{
 		credit = parseFloat(credit);
+		//alert(document.getElementById(divId+'-CustomerId').value);
+		if( customerid != '' ){
+			discount = 1 + parseFloat(document.getElementById(divId+'-CustomerDiscount').value);
+			credit = credit*discount;
+		}
 	}
 
 	if (document.getElementById(divId+'-ckbCredit').checked && document.getElementById('creditlimittype').value == 'balance' && (unbilled - credit)  >= -0.001 )
@@ -124,6 +131,13 @@ function removeTr(divId){
 
 function btnCDROnClick(divId){
 	window.open("checkout.php?peer=" + divId ,"CheckOutPage");
+}
+
+function btnReceiptOnClick(divId){
+	customerid = document.getElementById(divId + '-CustomerId').value;
+	customername = document.getElementById(divId + '-CustomerName').value;
+	discount = document.getElementById(divId + '-CustomerDiscount').value;
+	window.open ("receipt.php?peer="+divId+"&customername="+customername+"&discount="+discount+"", 'Receipt', 'height=300, width=600, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
 }
 
 function hangup(channel){

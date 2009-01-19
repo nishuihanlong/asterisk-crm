@@ -9,6 +9,14 @@ require_once ('include/asterisk.class.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
+// define database connection string
+define('SQLC', $config['customers']['dbtype']."://".$config['customers']['username'].":".$config['customers']['password']."@".$config['customers']['dbhost']."/".$config['customers']['dbname']."");
+
+// set a global variable to save customers database connection
+$GLOBALS['customers_db'] = DB::connect(SQLC);
+
+$GLOBALS['customers_db']->setFetchMode(DB_FETCHMODE_ASSOC);
+
 /**
 *  initialize page elements
 *
@@ -481,19 +489,82 @@ function addUnbilled($peer,$leg = null){
 }
 
 function checkOut($aFormValues,$divId){
-	global $locate;
+	global $locate,$customers_db,$db,$config;
+	//print_r($aFormValues);exit;
+	$iptCustomerId = $divId."-CustomerId";
+	$iptDiscount = $divId."-CustomerDiscount";
+	if($aFormValues[$iptCustomerId] != '' && $aFormValues[$iptDiscount] != 0){
+		$customerid = $aFormValues[$iptCustomerId];
+		$discount = $aFormValues[$iptDiscount];
+	}else{
+		$customerid = 0;
+		$discount = 0;
+	}
 	$objResponse = new xajaxResponse();
 	if (isset($aFormValues['cdrid'])){
 		foreach ($aFormValues['cdrid'] as $id){
-			$res =  astercc::setBilled($id);
-			}
+			$res =  astercc::setBilled($id,$customerid,$discount);
+			$credit += $res;
+		}
 		$objResponse->addAlert($locate->Translate("booth_cleared"));
 		$objResponse->addAssign($divId."-unbilled","innerHTML",0);
+	}
+
+	if( $customerid != 0 ){
+		$objResponse->addAssign($divId."-CustomerName",'value','');
+		$objResponse->addAssign($divId."-CustomerId",'value','');
+		$objResponse->addAssign($divId."-CustomerDiscount",'value','0');
+		$objResponse->addAssign($divId."-btnCustomer",'value',$locate->Translate("Update"));
+
+		$sql = "SELECT amount FROM ".$config['customers']['customertable']." WHERE id = $customerid ";
+
+		$curamount = $customers_db->getOne($sql);
+
+		$amount = $curamount + $credit * (1-$discount);
+
+		$query = "UPDATE ".$config['customers']['customertable']." SET amount = $amount WHERE id = $customerid";
+		$curamount = $customers_db->query($query);
 	}
 	$objResponse->addScript("removeTr('".$divId."');");
 	$objResponse->addScript("calculateBalance('".$divId."');");
 	return $objResponse;
 }
 
+function checkCustomer($pin,$divId){
+	global $db,$customers_db,$locate,$config;
+
+	$objResponse = new xajaxResponse();
+	if( $pin == '' ) {
+		$objResponse->addAssign($divId."-CustomerName",'value','');
+		$objResponse->addAssign($divId."-CustomerId",'value','');
+		$objResponse->addAssign($divId."-CustomerDiscount",'value','0');
+		$objResponse->addAssign($divId."-btnCustomer",'value',$locate->Translate("Update"));
+		$objResponse->addScript("calculateBalance('".$divId."');");
+		return $objResponse;
+	}
+
+	$query = "SELECT * FROM ".$config['customers']['customertable']." WHERE pin='".$pin."'";
+	$row =& $customers_db->getRow($query);
+
+	if($row['id'] == ''){
+		$objResponse->addAssign($divId."-CustomerName",'value','');
+		$objResponse->addAssign($divId."-CustomerId",'value','');
+		$objResponse->addAssign($divId."-CustomerDiscount",'value','0');
+		$objResponse->addAssign($divId."-btnCustomer",'value',$locate->Translate("Update"));
+		$objResponse->addScript("calculateBalance('".$divId."');");
+		return $objResponse;
+	}
+	
+	$objResponse->addAssign($divId."-CustomerName",'value',$row['first_name']." ".$row['last_name']);
+	$objResponse->addAssign($divId."-CustomerId",'value',$row['id']);
+	$objResponse->addAssign($divId."-btnCustomer",'value',$locate->Translate("Reset"));
+
+	$query = "SELECT discount FROM ".$config['customers']['discounttable']." WHERE amount < '".$row['amount']."' ORDER BY amount DESC";
+	$discount = & $customers_db->getOne($query);
+	if( $discount == '' ) $discount = 0;
+	$objResponse->addAssign($divId."-CustomerDiscount",'value',$discount);
+	$objResponse->addScript("calculateBalance('".$divId."');");
+	return $objResponse;
+}
 $xajax->processRequests();
 ?>

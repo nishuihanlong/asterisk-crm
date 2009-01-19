@@ -105,11 +105,8 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 															"</table>" +
 															"<form action=\"\" name=\"" + divId + "-form\" id=\"" + divId + "-form\">" +
 															"<table width=\"500\" class=\"calllog\">" +
-																"<tbody id=\"" + divId + "-calllog-tbody\">" +
-																"</tbody>" +
-															"</table>" +
-															"</form>";
-
+																"<tbody id=\"" + divId + "-calllog-tbody\">"+"<input id=\"" + divId + "-CustomerId\" name=\"" + divId + "-CustomerId\" type=\"hidden\" value=\"\">"+ "<input id=\"" + divId + "-CustomerDiscount\" name=\"" + divId + "-CustomerDiscount\" type=\"hidden\" value=\"0\">" +
+																"</tbody>"+"</table>" +"</form>";							
 	divContainer.appendChild(div);
 
 	// add unbilled div
@@ -117,6 +114,13 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	div.innerHTML += "&nbsp;&nbsp;U:&nbsp;<span id=\""+divId+"-unbilled\">0</span>";
 	div.innerHTML += "&nbsp;&nbsp;B:&nbsp;<span name=\"" + divId + "-balance\" id = \"" + divId + "-balance\" style=\"CURSOR: pointer;\" onclick=\"calculateBalance('" + divId + "')\"></span>";
+	divContainer.appendChild(div);
+
+	// add customer div
+	var div = document.createElement("div");
+	div.className = "lable";	
+	div.innerHTML += "&nbsp;<span id=\"" + divId + "-spanCustomers\"><?echo $locate->Translate("Member");?></span>: <input id=\"" + divId + "-CustomerName\" name=\"" + divId + "-CustomerName\" type=\"text\" value=\"\" size=\"15\" maxlength=\"20\">";	
+	div.innerHTML += " <input type=\"button\" value=\"<?echo $locate->Translate("Update");?>\" id=\"" + divId + "-btnCustomer\" name=\"" + divId + "-btnCustomer\" onclick=\"xajax_checkCustomer(document.getElementById('" + divId + "-CustomerName').value,'" + divId + "')\">";
 	divContainer.appendChild(div);
 
 	// add creditlimit div
@@ -129,7 +133,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId + "-ckbCredit\" name=\"" + divId + "-ckbCredit\" value=\"" + divId + "\" checked onclick=\"ckbCreditOnClick(this);\">";
 		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Translate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"" + creditLimit + "\" size=\"9\" maxlength=\"7\" readonly>";
 	}
-	divContainer.appendChild(div);
+	divContainer.appendChild(div);	
 
 	//add lock div
 	var div = document.createElement("div");
@@ -151,7 +155,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"hangupOnClick('" + divId + "');return false;\"><?echo $locate->Translate("Hangup");?></a>";
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "');return false;\"><?echo $locate->Translate("Clear");?></a>";
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnCDROnClick('" + divId + "');return false;\"><?echo $locate->Translate("Cdr");?></a>";
-	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"window.open ('receipt.php?peer="+divId+"', 'newwindow', 'height=300, width=600, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');return false;\"><?echo $locate->Translate("Receipt");?></a>";
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnReceiptOnClick('"+divId+"');return false;\"><?echo $locate->Translate("Receipt");?></a>";
 
 	divContainer.appendChild(div);
 

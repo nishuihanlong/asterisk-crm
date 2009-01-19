@@ -81,4 +81,15 @@ sipfile = /etc/asterisk/sip_astercc
 
 ; if require valid code when login
 validcode = no
+
+[customers]
+dbtype = mysql
+dbhost = localhost
+dbname = astercc
+dbport = 3306
+customertable = callshop_customers
+discounttable = discount
+username = astercc
+password = asterccsecret
+
 #?>

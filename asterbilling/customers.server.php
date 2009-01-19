@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************
-* clid.server.php
+* customers.server.php
 
 * 账户管理系统后台文件
-* clid background management script
+* customers background management script
 
 * Function Desc
-	provide clid management script
+	provide customers management script
 
 * 功能描述
 	提供帐户管理脚本
@@ -23,26 +23,18 @@
 							当前返回空值
 		searchFormSubmit    根据提交的搜索信息重构显示页面
 
-* Revision 0.0456  2007/10/30 13:47:00  last modified by solo
-* Desc: modify function showDetail, make it show clid detail when click detail
-
-
-* Revision 0.045  2007/10/19 10:01:00  last modified by solo
-* Desc: modify extensions description
-
-* Revision 0.045  2007/10/18 12:40:00  last modified by solo
 * Desc: page created
 
 ********************************************************************************/
 
 require_once ("db_connect.php");
-require_once ('clid.grid.inc.php');
+require_once ('customers.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('include/common.class.php');
-require_once ("clid.common.php");
+require_once ("customers.common.php");
 
 /**
 *  initialize page elements
@@ -57,34 +49,6 @@ function init(){
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
-	return $objResponse;
-}
-
-function generateSipFile(){
-	global $locate;
-	$objResponse = new xajaxResponse();
-	astercc::generatePeersFile();
-	$objResponse->addAlert($locate->Translate("sip conf file generated"));
-	return $objResponse;
-}
-
-function reloadSip(){
-	global $locate;
-	$objResponse = new xajaxResponse();
-	$myAsterisk = new Asterisk();
-	$myAsterisk->execute("sip reload");
-	$objResponse->addAlert($locate->Translate("sip conf reloaded"));
-	return $objResponse;
-}
-
-function setGroup($resellerid){
-	global $locate;
-	$objResponse = new xajaxResponse();
-	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
-	//添加option
-	while ($res->fetchInto($row)) {
-		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
-	}
 	return $objResponse;
 }
 
@@ -155,12 +119,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1 ){
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"clid");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"clid");
+			$numRows =& Customer::getNumRowsMore($filter, $content,"callshop_customers");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"callshop_customers");
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
-			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
+			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,'callshop_customers');
+			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,'callshop_customers');
 		}
 	}
 		
@@ -182,31 +146,19 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
-	$fields[] = 'clid';
 	$fields[] = 'pin';
-	$fields[] = 'display';
-	$fields[] = 'status';
-	$fields[] = 'creditlimit';
-	$fields[] = 'curcredit';
-	$fields[] = 'limittype';
-	$fields[] = 'credit_clid';
-	$fields[] = 'groupname';
-	$fields[] = 'resellername';
-	$fields[] = 'addtime';
-
+	$fields[] = 'first_name';
+	$fields[] = 'last_name';
+	$fields[] = 'amount';
+	$fields[] = 'cretime';
+	
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("Clid")."<br>";
-	$headers[] = $locate->Translate("Pin")."<br>";
-	$headers[] = $locate->Translate("Display")."<br>";
-	$headers[] = $locate->Translate("Status")."<br>";
-	$headers[] = $locate->Translate("Credit Limit")."<br>";
-	$headers[] = $locate->Translate("Cur Credit")."<br>";
-	$headers[] = $locate->Translate("Limit Type")."<br>";
-	$headers[] = $locate->Translate("Clid Credit")."<br>";
-	$headers[] = $locate->Translate("Group")."<br>";
-	$headers[] = $locate->Translate("Reseller")."<br>";
-	$headers[] = $locate->Translate("Last Update")."<br>";
+	$headers[] = $locate->Translate("Pin");
+	$headers[] = $locate->Translate("First name");
+	$headers[] = $locate->Translate("Last name");
+	$headers[] = $locate->Translate("Amount");
+	$headers[] = $locate->Translate("Create time");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -215,12 +167,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
+	
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -229,56 +176,31 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-
+	
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","clid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","display","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creditlimit","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","curcredit","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","limittype","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_clid","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
-
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","first_name","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","last_name","'.$divName.'","ORDERING");return false;\'';	
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","amount","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+	
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'clid';
 	$fieldsFromSearch[] = 'pin';
-	$fieldsFromSearch[] = 'display';
-	$fieldsFromSearch[] = 'status';
-	$fieldsFromSearch[] = 'clid.creditlimit';
-	$fieldsFromSearch[] = 'clid.curcredit';
-	$fieldsFromSearch[] = 'clid.limittype';	
-	$fieldsFromSearch[] = 'clid.credit_clid';
-	$fieldsFromSearch[] = 'groupname';
-	$fieldsFromSearch[] = 'resellername';
-	$fieldsFromSearch[] = 'clid.addtime';
+	$fieldsFromSearch[] = 'first_name';
+	$fieldsFromSearch[] = 'last_name';
+	$fieldsFromSearch[] = 'amount';
+	$fieldsFromSearch[] = 'cretime';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Display");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Status");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Credit Limit");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Cur credit");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Limit type");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Clid Credit");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Reseller");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Last Update");
-
-
+	$fieldsFromSearchShowAs[] = $locate->Translate("First name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Last name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Amount");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Create time");
+	
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 
@@ -286,42 +208,29 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
-		$table->deleteFlag = '1';//对删除标记进行赋值
-		$table->exportFlag = '1';//对导出标记进行赋值
-		$table->addRowSearchMore("clid",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		//$table->deleteFlag = '1';//对删除标记进行赋值
+		//$table->exportFlag = '1';//对导出标记进行赋值
+		$table->addRowSearchMore("callshop_customers",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}else{
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,0,0);
 		if($_SESSION['curuser']['usertype'] == 'groupadmin') $table->exportFlag = '1';//对导出标记进行赋值
-		$table->addRowSearchMore("clid",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore("callshop_customers",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}
-
-	
-
-//	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-//		$table->addRowSearchMore("clid",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
-//	}else{
-//		$table->addRowSearchMore("clid",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
-//	}
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['clid'];
 		$rowc[] = $row['pin'];
-		$rowc[] = $row['display'];
-		$rowc[] = $row['status'];
-		$rowc[] = $row['creditlimit'];
-		$rowc[] = $row['curcredit'];
-		$rowc[] = $row['limittype'];
-		$rowc[] = $row['credit_clid'];
-		$rowc[] = $row['groupname'];
-		$rowc[] = $row['resellername'];
-		$rowc[] = $row['addtime'];
+		$rowc[] = $row['first_name'];
+		$rowc[] = $row['last_name'];
+		$rowc[] = $row['amount'];
+		$rowc[] = $row['cretime'];
+		
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-			$table->addRow("clid",$rowc,1,1,0,$divName,$fields);
+			$table->addRow("callshop_customers",$rowc,1,1,0,$divName,$fields);
 		}else{
-			$table->addRow("clid",$rowc,1,0,0,$divName,$fields);
+			$table->addRow("callshop_customers",$rowc,1,0,0,$divName,$fields);
 		}
  	}
  	
@@ -341,7 +250,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top($locate->Translate("add_clid"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("add_customer"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -360,36 +269,14 @@ function add(){
 function save($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
-	//check clid could only be numuric
-	if (!is_numeric($f['clid'])){
-		$objResponse->addAlert("clid must be numeric");
-		return $objResponse;
-	}
-
+	
 	if ( trim($f['pin']) == '' ){
 		$objResponse->addAlert("pin field cant be null");
 		return $objResponse;
 	}
 
-	if ($f['groupid'] == 0 || $f['resellerid'] == 0){
-		$objResponse->addAlert($locate->Translate("Please choose reseller and group"));
-		return $objResponse->getXML();
-	}
-
-	// check if clid duplicate
-	$res = astercrm::checkValues("clid","clid",$f['clid']);
-
-	if ($res != ''){
-		$objResponse->addAlert($locate->Translate("clid duplicate"));
-		return $objResponse->getXML();
-	}
-
-	if ($f['display'] == '') {
-		$f['display'] = $f['clid'];
-	}
-
 	// check if pin duplicate
-	$res = astercrm::checkValues("clid","pin",$f['pin']);
+	$res = Customer::checkValues($f['pin']);
 
 	if ($res != ''){
 		$objResponse->addAlert($locate->Translate("pin duplicate"));
@@ -397,7 +284,7 @@ function save($f){
 	}
 
 
-	$respOk = Customer::insertNewClid($f); // add a new account
+	$respOk = Customer::insertNewCustomer($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
@@ -421,46 +308,12 @@ function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
-	if (!is_numeric($f['clid'])){
-		$objResponse->addAlert($locate->Translate("clid must be numeric"));
-		return $objResponse;
-	}
-
 	if ( trim($f['pin']) == '' ){
 		$objResponse->addAlert($locate->Translate("pin field cant be null"));
 		return $objResponse;
-	}
+	}	
 
-	if ($f['groupid'] == 0 || $f['resellerid'] == 0){
-		$objResponse->addAlert($locate->Translate("Please choose reseller and group"));
-		return $objResponse->getXML();
-	}
-
-	// check if clid duplicate
-	$res = astercrm::checkValuesNon($f['id'],"clid","clid",$f['clid']);
-
-	if ($res != ''){
-		$objResponse->addAlert($locate->Translate("clid duplicate"));
-		return $objResponse->getXML();
-	}
-
-
-	// check if pin duplicate
-	if ($f['pin'] != ''){
-		$res = astercrm::checkValuesNon($f['id'],"clid","pin",$f['pin'],"string","groupid",$f['groupid']);
-		if ($res != ''){
-			$objResponse->addAlert($locate->Translate("pin duplicate in same group"));
-			return $objResponse->getXML();
-		}
-	}
-
-	if ($f['display'] == '') {
-		$f['display'] = $f['clid'];
-	}
-
-//	$res = astercrm::checkValues("clid","clid",$f['clid']);
-
-	$respOk = Customer::updateClidRecord($f);
+	$respOk = Customer::updateCustomer($f);
 
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -482,7 +335,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_clid"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("edit_customer"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
@@ -514,7 +367,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecord($id,'clid');
+		$res = Customer::deleteCustomer($id);
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted"));

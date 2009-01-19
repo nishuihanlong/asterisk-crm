@@ -123,7 +123,6 @@ class Common{
 		}
 		$html .= '</ul></div>';
 		$html .= '</div>';
-		echo $html;exit;
 		return $html;
 	}
 

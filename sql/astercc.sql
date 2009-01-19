@@ -116,6 +116,7 @@ CREATE TABLE `callshoprate` (
   `resellerid` int(11) NOT NULL default '0',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
+  UNIQUE rate (dialprefix,numlen,resellerid,groupid),
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -170,6 +171,7 @@ CREATE TABLE `myrate` (
   `resellerid` int(11) NOT NULL default '0',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
+  UNIQUE rate (dialprefix,numlen,resellerid,groupid),
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -219,6 +221,7 @@ CREATE TABLE `resellerrate` (
   `resellerid` int(11) NOT NULL default '0',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
+  UNIQUE rate (dialprefix,numlen,resellerid),
   KEY `dialprefix` (`dialprefix`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -235,8 +238,7 @@ CREATE TABLE `callshop_customers` (
   `pin` varchar(30) NOT NULL default '',
   `first_name` varchar(50) NOT NULL default '',
   `last_name` varchar(50) NOT NULL default '',
-  `balance` double(24,4) NOT NULL default '0.0000',  
-  `category_id` int(11) NOT NULL default '0',
+  `amount` double(24,4) NOT NULL default '0.0000',  
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   UNIQUE `pin` (`pin`)
@@ -245,16 +247,18 @@ CREATE TABLE `callshop_customers` (
 ## ########################################################
 
 ## 
-## table `callshop_customer_categorys`
+## table `discount`
 ## 
 
-DROP TABLE IF EXISTS `callshop_customer_categorys`;
+DROP TABLE IF EXISTS `discount`;
 
-CREATE TABLE `callshop_customer_categorys` (
+CREATE TABLE `discount` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(30) NOT NULL default '',
-  `discount` double(8,4) NOT NULL default '1.0000',
-  UNIQUE KEY `id` (`id`)
+  `amount` double(24,4) NOT NULL default '0.0000',  
+  `discount` double(8,4) NOT NULL default '0.0000',  
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`),
+  UNIQUE `discount` (`discount`,`amount`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
@@ -402,6 +406,8 @@ CREATE TABLE `historycdr` (
   `userid` int(11) NOT NULL default '0',
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
+  `customerid` int(11) NOT NULL default 0,
+  `discount` double(8,4) NOT NULL default '0.0000',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`),
   INDEX `dst` (`dst`),

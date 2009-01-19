@@ -1,9 +1,9 @@
 <?php
 /*******************************************************************************
-* clid.php
+* customers.php
 
 * 账户管理界面文件
-* account management interface
+* customers management interface
 
 * Function Desc
 	provide an account management interface
@@ -30,7 +30,7 @@
 
 ********************************************************************************/
 
-require_once('clid.common.php');
+require_once('customers.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -78,7 +78,7 @@ require_once('clid.common.php');
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
 	</head>
-	<body onload="init();" id="clid">
+	<body onload="init();" id="customers">
 		<div id="divNav"></div><br>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>

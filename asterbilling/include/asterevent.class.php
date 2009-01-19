@@ -229,7 +229,7 @@ class astercc extends PEAR
 		}
 	}
 
-	function setBilled($id){
+	function setBilled($id,$costomerid,$discount){
 		global $db,$config;
 		// move the record from mycdr to historycdr
 
@@ -237,13 +237,14 @@ class astercc extends PEAR
 		$sql = "SELECT * FROM mycdr WHERE id = $id ";
 		astercc::events($sql);
 		$cdr = &$db->getRow($sql);
+		$credit = $cdr['credit'];
 //		print_r($cdr);exit;
 
 		// insert the record to historycdr
 		if($config['system']['useHistoryCdr'] == 1){
-			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."' ";
+			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',customerid = $costomerid, discount = $discount ";
 		}else {
-			$sql = "UPDATE mycdr SET userfield = 'BILLED' WHERE id = $id ";
+			$sql = "UPDATE mycdr SET userfield = 'BILLED' ,customerid = $costomerid, discount = $discount WHERE id = $id ";
 		}
 		//echo $sql;exit;
 		astercc::events($sql);
@@ -255,7 +256,7 @@ class astercc extends PEAR
 			astercc::events($sql);
 			$res = $db->query($sql);
 		}
-		return ;
+		return $credit;
 	}
 
 	function readUnbilled($peer,$leg = null,$groupid){

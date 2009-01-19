@@ -1,6 +1,5 @@
 <?  
 	header('Content-Type: text/html; charset=utf-8');
-	require_once ("db_connect.php");
 	require_once('systemstatus.server.php');
 	//require_once ('include/asterevent.class.php');
 
@@ -24,7 +23,6 @@
 	if ( $group_row['grouptagline'] != ''){
 		$titleHtml .= '<h2 style="padding: 0 0 0 0;position: relative;font-size: 11pt;color: #FJDSKB;">'.$group_row['grouptagline'].'</h2>';
 	}
-	
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -64,6 +62,7 @@
 	   &nbsp;<? echo $locate->Translate("Callshop");?>:&nbsp;<?echo $callshop;?>
 	   <br>
 	   &nbsp;<? echo $locate->Translate("Operator");?>:&nbsp;<?echo $_SESSION['curuser']['username'];?>
+	   <? if($_REQUEST['customername'] != '') echo "<br>&nbsp;".$locate->Translate("Member");?>:&nbsp;<?echo $_REQUEST['customername'];?>
 	</div>
 	</div>
 	<div style="position:relative;">
@@ -71,11 +70,12 @@
     <tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
 		<th width="15%"><? echo $locate->Translate("Phone");?></th>		
-		<th width="25%"><? echo $locate->Translate("Start at");?></th>
+		<th width="20%"><? echo $locate->Translate("Start at");?></th>
 		<th width="10%" align="center"><? echo $locate->Translate("Sec");?></th>
 		<th width="15%"><? echo $locate->Translate("Destination");?></th>
-		<th width="25%"><? echo $locate->Translate("Rate");?></th>
-		<th width="10%" align="center"><? echo $locate->Translate("Price");?></th>		
+		<th width="20%"><? echo $locate->Translate("Rate");?></th>
+		<th width="10%" align="center"><? echo $locate->Translate("Price");?></th>
+		<th width="10%" align="center"><? echo $locate->Translate("Discount");?></th>
 	</tr>
 	<?
 	if (strstr($_REQUEST['peer'],'Local/')) { //for callback
@@ -111,10 +111,12 @@
 					<td align="right">'.$myreceipt['destination'].'</td>
 					<td align="right">'.$ratedesc.'</td>
 					<td align="right">'.astercc::creditDigits($myreceipt['credit']).'</td>
+					<td align="right">'.astercc::creditDigits($_REQUEST['discount'],3).'</td>
 				</tr>';
 		  echo $content;
 			$total_price += $myreceipt['credit'];
 	  }
+      $total_price = $total_price * (1-$_REQUEST['discount']);
 	  $total_price = astercc::creditDigits($total_price,2);
 	?>
 	<tr><td><? echo $locate->Translate("Total");?>:</td>

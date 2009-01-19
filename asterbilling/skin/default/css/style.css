@@ -253,6 +253,7 @@ outline: none;
           #clid #header ul a.clid,
           #import #header ul a.import,
           #cdr #header ul a.cdr,
+		  #customers #header ul a.customers,
           #credithistory #header ul a.credithistory {
 			  background-color: #000000;
 			  color: #67A7E3;
