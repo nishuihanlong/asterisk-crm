@@ -28,13 +28,13 @@
 ********************************************************************************/
 
 require_once ("db_connect.php");
-require_once ('customers.grid.inc.php');
+require_once ('discount.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('include/common.class.php');
-require_once ("customers.common.php");
+require_once ("discount.common.php");
 
 /**
 *  initialize page elements
@@ -119,12 +119,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1 ){
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,$config['customers']['customertable']);
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,$config['customers']['customertable']);
+			$numRows =& Customer::getNumRowsMore($filter, $content,$config['customers']['discounttable']);
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,$config['customers']['discounttable']);
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$config['customers']['customertable']);
-			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$config['customers']['customertable']);
+			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$config['customers']['discounttable']);
+			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$config['customers']['discounttable']);
 		}
 	}
 		
@@ -146,18 +146,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
-	$fields[] = 'pin';
-	$fields[] = 'first_name';
-	$fields[] = 'last_name';
 	$fields[] = 'amount';
+	$fields[] = 'discount';
 	$fields[] = 'cretime';
 	
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("Pin");
-	$headers[] = $locate->Translate("First name");
-	$headers[] = $locate->Translate("Last name");
 	$headers[] = $locate->Translate("Amount");
+	$headers[] = $locate->Translate("Discount");
 	$headers[] = $locate->Translate("Create time");
 
 	// HTML table: hearders attributes
@@ -165,8 +161,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
+
 	
 
 	// HTML Table: columns attributes
@@ -174,31 +169,24 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
 	
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","first_name","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","last_name","'.$divName.'","ORDERING");return false;\'';	
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","amount","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","discount","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';	
+	
 	
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'pin';
-	$fieldsFromSearch[] = 'first_name';
-	$fieldsFromSearch[] = 'last_name';
 	$fieldsFromSearch[] = 'amount';
+	$fieldsFromSearch[] = 'discount';
 	$fieldsFromSearch[] = 'cretime';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
-	$fieldsFromSearchShowAs[] = $locate->Translate("First name");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Last name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Amount");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Discount");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create time");
 	
 	// Create object whit 5 cols and all data arrays set before.
@@ -210,27 +198,25 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 		//$table->deleteFlag = '1';//对删除标记进行赋值
 		//$table->exportFlag = '1';//对导出标记进行赋值
-		$table->addRowSearchMore($config['customers']['customertable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore($config['customers']['discounttable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}else{
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,0,0);
 		if($_SESSION['curuser']['usertype'] == 'groupadmin') $table->exportFlag = '1';//对导出标记进行赋值
-		$table->addRowSearchMore($config['customers']['customertable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore($config['customers']['discounttable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['pin'];
-		$rowc[] = $row['first_name'];
-		$rowc[] = $row['last_name'];
 		$rowc[] = $row['amount'];
+		$rowc[] = $row['discount'];
 		$rowc[] = $row['cretime'];
 		
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-			$table->addRow($config['customers']['customertable'],$rowc,1,1,0,$divName,$fields);
+			$table->addRow($config['customers']['discounttable'],$rowc,1,1,0,$divName,$fields);
 		}else{
-			$table->addRow($config['customers']['customertable'],$rowc,1,0,0,$divName,$fields);
+			$table->addRow($config['customers']['discounttable'],$rowc,1,0,0,$divName,$fields);
 		}
  	}
  	
@@ -250,7 +236,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$html = Table::Top($locate->Translate("add_customer"),"formDiv");  // <-- Set the title for your form.
+	$html = Table::Top($locate->Translate("add_discount"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
 	$html .= Table::Footer();
@@ -270,25 +256,28 @@ function save($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	
-	if ( trim($f['pin']) == '' ){
-		$objResponse->addAlert("pin field cant be null");
+	if ( !is_numeric(trim($f['amount']))){
+		$objResponse->addAlert("amount must be numeric");
 		return $objResponse;
 	}
 
-	// check if pin duplicate
-	$res = Customer::checkValues($f['pin']);
-
-	if ($res != ''){
-		$objResponse->addAlert($locate->Translate("pin duplicate"));
-		return $objResponse->getXML();
+	if ( !is_numeric(trim($f['discount'])) ){
+		$objResponse->addAlert("discount must be numeric");
+		return $objResponse;
 	}
 
+	$res = Customer::checkValues($f['amount']);
 
-	$respOk = Customer::insertNewCustomer($f); // add a new account
+	if ($res != ''){
+		$objResponse->addAlert($locate->Translate("amount duplicate"));
+		return $objResponse->getXML();
+	}
+	
+	$respOk = Customer::insertNewDiscount($f); // add a new account
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_customer"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_discount"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
@@ -308,12 +297,24 @@ function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
-	if ( trim($f['pin']) == '' ){
-		$objResponse->addAlert($locate->Translate("pin field cant be null"));
+	if ( !is_numeric(trim($f['amount']))){
+		$objResponse->addAlert("amount must be numeric");
 		return $objResponse;
-	}	
+	}
 
-	$respOk = Customer::updateCustomer($f);
+	if ( !is_numeric(trim($f['discount'])) ){
+		$objResponse->addAlert("discount must be numeric");
+		return $objResponse;
+	}
+
+	$res = Customer::checkValues($f['amount']);
+
+	if ($res != $f['id']){
+		$objResponse->addAlert($locate->Translate("amount duplicate"));
+		return $objResponse->getXML();
+	}
+
+	$respOk = Customer::updateDiscount($f);
 
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -335,7 +336,7 @@ function update($f){
 
 function edit($id){
 	global $locate;
-	$html = Table::Top( $locate->Translate("edit_customer"),"formDiv"); 
+	$html = Table::Top( $locate->Translate("edit_discount"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
@@ -367,7 +368,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($type == "delete"){
-		$res = Customer::deleteCustomer($id);
+		$res = Customer::deleteDiscount($id);
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted"));

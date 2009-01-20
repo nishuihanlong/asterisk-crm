@@ -258,7 +258,7 @@ CREATE TABLE `discount` (
   `discount` double(8,4) NOT NULL default '0.0000',  
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
-  UNIQUE `discount` (`discount`,`amount`)
+  UNIQUE `amount` (`amount`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
