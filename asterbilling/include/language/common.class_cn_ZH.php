@@ -16,5 +16,5 @@ $credit_history = "充值记录";
 $logout = "退出";
 $are_u_sure_to_exit = "确定要退出么";
 $customers = "客户";
-
+$discount = "折扣";
 ?>

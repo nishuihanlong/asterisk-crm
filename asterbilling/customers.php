@@ -92,16 +92,6 @@ require_once('customers.common.php');
 				</td>
 			</tr>
 		</table>
-	<?if ($_SESSION['curuser']['usertype'] == 'reseller'){?>
-		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
-			<tr>
-				<td style="padding: 0px;" align="center">
-					<INPUT TYPE="button" VALUE="generate sip peers" ONCLICK="xajax_generateSipFile();return false;">
-					<INPUT TYPE="button" VALUE="reload sip peers" ONCLICK="xajax_reloadSip();return false;">
-				</td>
-			</tr>
-		</table>
-	<?}?>
 		<form name="exportForm" id="exportForm" action="dataexport.php" >
 			<input type="hidden" value="" id="hidSql" name="hidSql" />
 		</form>

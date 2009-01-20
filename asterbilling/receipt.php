@@ -62,7 +62,7 @@
 	   &nbsp;<? echo $locate->Translate("Callshop");?>:&nbsp;<?echo $callshop;?>
 	   <br>
 	   &nbsp;<? echo $locate->Translate("Operator");?>:&nbsp;<?echo $_SESSION['curuser']['username'];?>
-	   <? if($_REQUEST['customername'] != '') echo "<br>&nbsp;".$locate->Translate("Member");?>:&nbsp;<?echo $_REQUEST['customername'];?>
+	   <? if($_REQUEST['customername'] != '') echo "<br>&nbsp;".$locate->Translate("Member")."&nbsp;:";?><?echo $_REQUEST['customername'];?>
 	</div>
 	</div>
 	<div style="position:relative;">

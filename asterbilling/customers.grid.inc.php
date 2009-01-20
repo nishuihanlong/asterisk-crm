@@ -107,9 +107,9 @@ class Customer extends astercrm
 		}
 
 		$sql = "SELECT * FROM ".$config['customers']['customertable']." WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
+		//if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
-		}
+		//}
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
@@ -134,9 +134,9 @@ class Customer extends astercrm
 	function &getNumRows($filter = null, $content = null){
 		global $customers_db,$config;
 		
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
+		//if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql = " SELECT COUNT(*) FROM ".$config['customers']['customertable']." ";
-		}//elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
+		//}//elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 		//	$sql = " SELECT COUNT(*) FROM clid LEFT JOIN accountgroup ON accountgroup.id = clid.groupid LEFT JOIN resellergroup ON resellergroup.id = clid.resellerid WHERE clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
 		//}else{
 		//	$sql = " SELECT COUNT(*) FROM clid LEFT JOIN accountgroup ON accountgroup.id = clid.groupid LEFT JOIN resellergroup ON resellergroup.id = clid.resellerid WHERE clid.groupid = ".$_SESSION['curuser']['groupid']." ";
@@ -161,9 +161,9 @@ class Customer extends astercrm
 		}
 
 		$sql = "SELECT COUNT(*) FROM ".$config['customers']['customertable']." WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
+		//if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
-		}
+		//}
 
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
@@ -179,9 +179,9 @@ class Customer extends astercrm
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
 		$sql = "SELECT * FROM ".$config['customers']['customertable']." WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
+		//if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
-		}
+		//}
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
@@ -202,9 +202,9 @@ class Customer extends astercrm
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
 		$sql = "SELECT COUNT(*) FROM ".$config['customers']['customertable']." WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
+		//if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
-		}
+		//}
 
 			if ($joinstr!=''){
 				$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND

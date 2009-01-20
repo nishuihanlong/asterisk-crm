@@ -206,14 +206,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	$table->setAttribsCols($attribsCols);	
 
-	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+	if ($_SESSION['curuser']['usertype'] == 'admin' ){
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 		//$table->deleteFlag = '1';//对删除标记进行赋值
 		//$table->exportFlag = '1';//对导出标记进行赋值
 		$table->addRowSearchMore($config['customers']['customertable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}else{
-		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,0,0);
-		if($_SESSION['curuser']['usertype'] == 'groupadmin') $table->exportFlag = '1';//对导出标记进行赋值
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+		//if($_SESSION['curuser']['usertype'] == 'groupadmin') $table->exportFlag = '1';//对导出标记进行赋值
 		$table->addRowSearchMore($config['customers']['customertable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}
 
@@ -227,10 +227,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['amount'];
 		$rowc[] = $row['cretime'];
 		
-	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+	if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$table->addRow($config['customers']['customertable'],$rowc,1,1,0,$divName,$fields);
 		}else{
-			$table->addRow($config['customers']['customertable'],$rowc,1,0,0,$divName,$fields);
+			$table->addRow($config['customers']['customertable'],$rowc,0,0,0,$divName,$fields);
 		}
  	}
  	

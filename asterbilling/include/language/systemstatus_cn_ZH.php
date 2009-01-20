@@ -50,4 +50,8 @@ $callshop = "话吧";
 $operator = "操作员";
 $receipt = "收据";
 $print = "打&nbsp;印";
+$member = "会员";
+$discount = "折扣";
+$update = "确认";
+$reset = "重置";
 ?>

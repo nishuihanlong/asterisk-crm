@@ -370,6 +370,8 @@ CREATE TABLE `mycdr` (
   `userid` int(11) NOT NULL default '0',
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
+  `customerid` int(11) NOT NULL default 0,
+  `discount` double(8,4) NOT NULL default '0.0000',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

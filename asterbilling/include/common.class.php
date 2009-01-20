@@ -104,16 +104,16 @@ class Common{
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$html .= common::generateNavMenu($aryMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
-			$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory');
+			$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
-			$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory');
+			$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$aryCurMenu = array('cdr','credithistory');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}else{ // operator
-			$aryCurMenu = array('report','customerrate');
+			$aryCurMenu = array('report','customerrate','customers','discount');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}
 
