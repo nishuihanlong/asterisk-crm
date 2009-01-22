@@ -131,6 +131,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'disposition';
 	$fields[] = 'credit';
 	$fileds[] = 'destination';
+	$fileds[] = 'customer';
 	$fileds[] = 'memo';
 
 	// HTML table: Headers showed
@@ -141,9 +142,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Duration");
 	$headers[] = $locate->Translate("Billsec");
 	$headers[] = $locate->Translate("Disposition");
-	$headers[] = $locate->Translate("credit");
-	$headers[] = $locate->Translate("destination");
-	$headers[] = $locate->Translate("memo");
+	$headers[] = $locate->Translate("Credit");
+	$headers[] = $locate->Translate("Destination");
+	$headers[] = $locate->Translate("Customer");
+	$headers[] = $locate->Translate("Memo");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -155,10 +157,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="12%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="12%"';
+	$attribsHeader[] = 'width="12%"';
 	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -179,6 +183,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customerid","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	
 	// Select Box: type table.

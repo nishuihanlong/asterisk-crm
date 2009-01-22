@@ -493,7 +493,7 @@ function checkOut($aFormValues,$divId){
 	//print_r($aFormValues);exit;
 	$iptCustomerId = $divId."-CustomerId";
 	$iptDiscount = $divId."-CustomerDiscount";
-	if($aFormValues[$iptCustomerId] != ''){
+	if($aFormValues[$iptCustomerId] != '' && $aFormValues[$iptDiscount] != 0){
 		$customerid = $aFormValues[$iptCustomerId];
 		$discount = $aFormValues[$iptDiscount];
 	}else{
@@ -559,7 +559,7 @@ function checkCustomer($pin,$divId){
 	$objResponse->addAssign($divId."-CustomerId",'value',$row['id']);
 	$objResponse->addAssign($divId."-btnCustomer",'value',$locate->Translate("Reset"));
 
-	$query = "SELECT discount FROM ".$config['customers']['discounttable']." WHERE amount < '".$row['amount']."' ORDER BY amount DESC";
+	$query = "SELECT discount FROM ".$config['customers']['discounttable']." WHERE amount <= '".$row['amount']."' ORDER BY amount DESC";
 	$discount = & $customers_db->getOne($query);
 	if( $discount == '' ) $discount = 0;
 	$objResponse->addAssign($divId."-CustomerDiscount",'value',$discount);
