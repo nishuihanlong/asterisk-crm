@@ -493,7 +493,7 @@ function checkOut($aFormValues,$divId){
 	//print_r($aFormValues);exit;
 	$iptCustomerId = $divId."-CustomerId";
 	$iptDiscount = $divId."-CustomerDiscount";
-	if($aFormValues[$iptCustomerId] != '' && $aFormValues[$iptDiscount] != 0){
+	if($aFormValues[$iptCustomerId] != ''){
 		$customerid = $aFormValues[$iptCustomerId];
 		$discount = $aFormValues[$iptDiscount];
 	}else{
