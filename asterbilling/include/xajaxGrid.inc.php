@@ -197,12 +197,19 @@ class ScrollTable{
 					'.$local_grid->Translate("delete").'
 				</th>';
 
-		if($detail)
-			$this->header .= '
+		if($detail){
+			if($detail=='customer'){
+				$this->header .= '
+				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
+					'.$local_grid->Translate("CDR").'
+				</th>';
+			}else{
+				$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
 					'.$local_grid->Translate("detail").'
 				</th>';
-
+			}
+		}
 		$this->header .= '
 			</tr>';
 	}
@@ -283,12 +290,19 @@ class ScrollTable{
 					<td align="center" width="5%" nowrap>
 						<a href="?" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\'))  searchFormSubmit(0,5,\''.$arr[0].'\',\'delete\');return false;"><img src="skin/default/images/trash.png" border="0"></a>
 					</td>';
-		if($detail)
-			$row .= '
+		if($detail){
+			if($detail == 'customer'){
+				$row .= '
+					<td align="center" width="5%" nowrap>
+						<a href="?" onClick="window.open(\'cdr.php?customerid='.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
+					</td>';
+			}else{
+				$row .= '
 					<td align="center" width="5%" nowrap>
 						<a href="?" onClick="xajax_showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
 					</td>';
-
+			}
+		}
 		$row .= "</tr>\n";
 		$this->rows .= $row;
 

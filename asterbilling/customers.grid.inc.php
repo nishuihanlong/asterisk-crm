@@ -244,7 +244,11 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Last name").'</td>
 					<td align="left"><input type="text" id="last_name" name="last_name" size="25" maxlength="50"></td>
-				</tr>			
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Discount").'</td>
+					<td align="left"><input type="radio" id="discount_type" name="discount_type" value="0" onclick="selectDiscountType(this.value);" checked>'.$locate->Translate("Dynamic").'<input type="radio" id="discount_type" name="discount_type" value="1" onclick="selectDiscountType(this.value);">'.$locate->Translate("Static").'&nbsp;<input type="text" id="discount" name="discount" size="15" maxlength="10" disabled></td>
+				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
@@ -275,6 +279,17 @@ class Customer extends astercrm
 		//echo $sql;exit;
 		
 		$customer = $customers_db->getRow($sql);
+		if($customer['discount'] == -1){
+			$dynamic = 'checked';
+			$static = '';
+			$discount_abled = 'disabled';
+			$discount_value = '';
+		}else{
+			$dynamic = '';
+			$static = 'checked';
+			$discount_abled = '';
+			$discount_value = $customer['discount'];
+		}
 //print_r($customer);exit;
 		$html = '
 			<!-- No edit the next line -->
@@ -292,6 +307,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Last name").'</td>
 					<td align="left"><input type="text" id="last_name" name="last_name" size="25" maxlength="50" value="'.$customer['last_name'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Discount").'</td>
+					<td align="left"><input type="radio" id="discount_type" name="discount_type" value="0" onclick="selectDiscountType(this.value);" '.$dynamic.'>'.$locate->Translate("Dynamic").'<input type="radio" id="discount_type" name="discount_type" value="1" onclick="selectDiscountType(this.value);" '.$static.'>'.$locate->Translate("Static").'&nbsp;<input type="text" id="discount" name="discount" size="15" maxlength="10" value="'.$discount_value.'" '.$discount_abled.'></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
@@ -324,6 +343,7 @@ class Customer extends astercrm
 				."pin='".$f['pin']."', "
 				."first_name='".$f['first_name']."', "
 				."last_name = '".$f['last_name']."', "
+				."discount = '".$f['discount']."', "
 				."cretime = now() ";
 				//echo $sql;exit;
 		astercrm::events($sql);
@@ -338,7 +358,8 @@ class Customer extends astercrm
 		
 		$sql= "UPDATE ".$config['customers']['customertable']." SET "
 				."first_name='".$f['first_name']."', "
-				."last_name = '".$f['last_name']."' WHERE pin = '".$f['pin']."'";
+				."last_name = '".$f['last_name']."', "
+				."discount = '".$f['discount']." 'WHERE pin = '".$f['pin']."'";
 	
 		astercrm::events($sql);
 		$res =& $customers_db->query($sql);

@@ -150,6 +150,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'first_name';
 	$fields[] = 'last_name';
 	$fields[] = 'amount';
+	$fields[] = 'discount';
 	$fields[] = 'cretime';
 	
 	// HTML table: Headers showed
@@ -158,6 +159,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("First name");
 	$headers[] = $locate->Translate("Last name");
 	$headers[] = $locate->Translate("Amount");
+	$headers[] = $locate->Translate("Discount");
 	$headers[] = $locate->Translate("Create time");
 
 	// HTML table: hearders attributes
@@ -167,10 +169,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
-	
+	$attribsHeader[] = 'width=""';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -183,6 +186,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","first_name","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","last_name","'.$divName.'","ORDERING");return false;\'';	
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","amount","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","discount","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 	
 	// Select Box: fields table.
@@ -191,6 +195,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'first_name';
 	$fieldsFromSearch[] = 'last_name';
 	$fieldsFromSearch[] = 'amount';
+	$fieldsFromSearch[] = 'discount';
 	$fieldsFromSearch[] = 'cretime';
 
 	// Selecct Box: Labels showed on search select box.
@@ -199,6 +204,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("First name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Last name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Amount");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Discount");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create time");
 	
 	// Create object whit 5 cols and all data arrays set before.
@@ -207,12 +213,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);	
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' ){
-		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,'customer');
 		//$table->deleteFlag = '1';//对删除标记进行赋值
 		//$table->exportFlag = '1';//对导出标记进行赋值
 		$table->addRowSearchMore($config['customers']['customertable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}else{
-		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,'customer');
 		//if($_SESSION['curuser']['usertype'] == 'groupadmin') $table->exportFlag = '1';//对导出标记进行赋值
 		$table->addRowSearchMore($config['customers']['customertable'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	}
@@ -225,12 +231,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['first_name'];
 		$rowc[] = $row['last_name'];
 		$rowc[] = $row['amount'];
+		if($row['discount'] == -1 )
+			$rowc[] = $locate->Translate("dynamic");
+		else
+			$rowc[] = $row['discount'];
 		$rowc[] = $row['cretime'];
 		
 	if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$table->addRow($config['customers']['customertable'],$rowc,1,1,0,$divName,$fields);
+			$table->addRow($config['customers']['customertable'],$rowc,1,1,'customer',$divName,$fields);
 		}else{
-			$table->addRow($config['customers']['customertable'],$rowc,0,0,0,$divName,$fields);
+			$table->addRow($config['customers']['customertable'],$rowc,0,0,'customer',$divName,$fields);
 		}
  	}
  	
@@ -271,10 +281,16 @@ function save($f){
 	$objResponse = new xajaxResponse();
 	
 	if ( trim($f['pin']) == '' ){
-		$objResponse->addAlert("pin field cant be null");
+		$objResponse->addAlert($locate->Translate("pin field cant be null"));
 		return $objResponse;
 	}
-
+	
+	if($f['discount_type'] == 0){
+		$f['discount'] = -1;
+	}elseif ( !is_numeric(trim($f['discount'])) || $f['discount'] <0 || $f['discount'] >1 ){
+		$objResponse->addAlert($locate->Translate("discount must be GE 0 and LE 1"));
+		return $objResponse;
+	}
 	// check if pin duplicate
 	$res = Customer::checkValues($f['pin']);
 
@@ -282,7 +298,7 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("pin duplicate"));
 		return $objResponse->getXML();
 	}
-
+	
 
 	$respOk = Customer::insertNewCustomer($f); // add a new account
 	if ($respOk){
@@ -311,7 +327,14 @@ function update($f){
 	if ( trim($f['pin']) == '' ){
 		$objResponse->addAlert($locate->Translate("pin field cant be null"));
 		return $objResponse;
-	}	
+	}
+
+	if($f['discount_type'] == 0){
+		$f['discount'] = -1;
+	}elseif ( !is_numeric(trim($f['discount'])) || $f['discount'] <0 || $f['discount'] >1 ){
+		$objResponse->addAlert($locate->Translate("discount must be GE 0 and LE 1"));
+		return $objResponse;
+	}
 
 	$respOk = Customer::updateCustomer($f);
 

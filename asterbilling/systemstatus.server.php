@@ -558,9 +558,13 @@ function checkCustomer($pin,$divId){
 	$objResponse->addAssign($divId."-CustomerName",'value',$row['first_name']." ".$row['last_name']);
 	$objResponse->addAssign($divId."-CustomerId",'value',$row['id']);
 	$objResponse->addAssign($divId."-btnCustomer",'value',$locate->Translate("Reset"));
-
-	$query = "SELECT discount FROM ".$config['customers']['discounttable']." WHERE amount <= '".$row['amount']."' ORDER BY amount DESC";
-	$discount = & $customers_db->getOne($query);
+	if( $row['discount'] == -1 ){
+		$query = "SELECT discount FROM ".$config['customers']['discounttable']." WHERE amount <= '".$row['amount']."' ORDER BY amount DESC";
+		$discount = & $customers_db->getOne($query);
+	}else{
+		$discount = $row['discount'];
+	}
+	
 	if( $discount == '' ) $discount = 0;
 	$objResponse->addAssign($divId."-CustomerDiscount",'value',$discount);
 	$objResponse->addScript("calculateBalance('".$divId."');");

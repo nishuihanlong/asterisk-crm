@@ -261,8 +261,8 @@ function save($f){
 		return $objResponse;
 	}
 
-	if ( !is_numeric(trim($f['discount'])) ){
-		$objResponse->addAlert("discount must be numeric");
+	if ( !is_numeric(trim($f['discount'])) || $f['discount'] <0 || $f['discount'] >1 ){
+		$objResponse->addAlert("discount must be GE 0 and LE 1 ");
 		return $objResponse;
 	}
 
@@ -302,14 +302,14 @@ function update($f){
 		return $objResponse;
 	}
 
-	if ( !is_numeric(trim($f['discount'])) ){
-		$objResponse->addAlert("discount must be numeric");
+	if ( !is_numeric(trim($f['discount'])) || $f['discount'] <0 || $f['discount'] >1 ){
+		$objResponse->addAlert($locate->Translate("discount must be GE 0 and LE 1"));
 		return $objResponse;
 	}
 
 	$res = Customer::checkValues($f['amount']);
 
-	if ($res != $f['id']){
+	if ($res != '' && $res != $f['id']){
 		$objResponse->addAlert($locate->Translate("amount duplicate"));
 		return $objResponse->getXML();
 	}

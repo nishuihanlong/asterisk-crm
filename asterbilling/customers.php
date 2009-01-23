@@ -69,6 +69,16 @@ require_once('customers.common.php');
 				xajax_setGroup(resellerid);
 		}
 
+		function selectDiscountType(type){
+			if(type == 0){
+				xajax.$('discount').disabled = true;
+				xajax.$('discount').value = '';
+			}else{
+				xajax.$('discount').disabled = false;
+				xajax.$('discount').value = 0;
+			}
+		}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>

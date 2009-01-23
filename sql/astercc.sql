@@ -238,7 +238,8 @@ CREATE TABLE `callshop_customers` (
   `pin` varchar(30) NOT NULL default '',
   `first_name` varchar(50) NOT NULL default '',
   `last_name` varchar(50) NOT NULL default '',
-  `amount` double(24,4) NOT NULL default '0.0000',  
+  `amount` double(24,4) NOT NULL default '0.0000',
+  `discount` double(8,4) NOT NULL default -1,
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   UNIQUE `pin` (`pin`)
@@ -373,6 +374,7 @@ CREATE TABLE `mycdr` (
   `customerid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
   UNIQUE KEY `id` (`id`),
+  INDEX `customerid` (`customerid`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -415,6 +417,7 @@ CREATE TABLE `historycdr` (
   INDEX `dst` (`dst`),
   INDEX `destination` (`destination`),
   INDEX `calldate` (`calldate`),
+  INDEX `customerid` (`customerid`),
   INDEX `resellerid` (`resellerid`),
   INDEX `groupid` (`groupid`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

@@ -23,6 +23,7 @@
 ********************************************************************************/
 
 require_once('cdr.common.php');
+$customerid = $_REQUEST['customerid'];
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -33,7 +34,8 @@ require_once('cdr.common.php');
 		<!--
 
 			function init(){
-				xajax_init();
+				customerid = "<? echo $customerid ?>";
+				xajax_init(customerid);
 				dragresize.apply(document);
 			}
 

@@ -28,14 +28,12 @@ require_once ("cdr.common.php");
 *
 */
 
-function init(){
+function init($customerid=''){
 	global $locate;
-
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
-
+	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','','grid','','','".$customerid."')");
 	return $objResponse;
 }
 
@@ -51,8 +49,9 @@ function init(){
 *  @return	objResponse	object		xajax response object
 */
 
-function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype = null){
-	$html .= createGrid($start, $limit,$filter, $content, $stype, $order, $divName, $ordering);
+function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype = null,$customerid=''){
+
+	$html .= createGrid($start, $limit,$filter, $content, $order, $divName, $ordering,$stype,$customerid);
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
@@ -73,13 +72,20 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array(),$customerid=''){
 	global $locate,$config;
+	//print_R($filter);
+	//print_r($content);exit;
 	if($config['system']['useHistoryCdr'] == 1) $table='historycdr';
 	else $table='mycdr';
 //	echo $config['system']['useHistoryCdr'];
 //	echo $table;exit;
 	$_SESSION['ordering'] = $ordering;
+	if(is_numeric($customerid) && $customerid != 0 && $_SESSION['curuser']['usertype'] != 'clid'){
+		$filter['0'] = 'customerid';
+		$content['0'] = $customerid;
+	}
+
 	if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
 		$content = null;
 		$filter = null;
@@ -131,7 +137,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'disposition';
 	$fields[] = 'credit';
 	$fileds[] = 'destination';
-	$fileds[] = 'customer';
 	$fileds[] = 'memo';
 
 	// HTML table: Headers showed
@@ -142,10 +147,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Duration");
 	$headers[] = $locate->Translate("Billsec");
 	$headers[] = $locate->Translate("Disposition");
-	$headers[] = $locate->Translate("Credit");
-	$headers[] = $locate->Translate("Destination");
-	$headers[] = $locate->Translate("Customer");
-	$headers[] = $locate->Translate("Memo");
+	$headers[] = $locate->Translate("credit");
+	$headers[] = $locate->Translate("destination");
+	$headers[] = $locate->Translate("memo");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -157,12 +161,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="12%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="12%"';
-	$attribsHeader[] = 'width="12%"';
 	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
-	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -183,7 +185,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customerid","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	
 	// Select Box: type table.
@@ -209,6 +210,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'disposition';
 	$fieldsFromSearch[] = 'credit';
 	$fieldsFromSearch[] = 'destination';
+	$fieldsFromSearch[] = 'customerid';
 	$fieldsFromSearch[] = 'memo';
 
 	// Selecct Box: Labels showed on search select box.
@@ -220,6 +222,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
 	$fieldsFromSearchShowAs[] = $locate->Translate("credit");
 	$fieldsFromSearchShowAs[] = $locate->Translate("destination");
+	$fieldsFromSearchShowAs[] = $locate->Translate("customer id");
 	$fieldsFromSearchShowAs[] = $locate->Translate("memo");
 
 	// Create object whit 5 cols and all data arrays set before.

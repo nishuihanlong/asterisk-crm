@@ -219,5 +219,31 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getAllRecordsByCustomerid($start, $limit, $order = null, $creby = null, $table='mycdr',$customerid){
+		global $db;
+		$sql = "SELECT * FROM ".$table." WHERE customerid = $customerid AND (groupid > 0 OR resellerid > '0')";
+		
+		if($order == null || is_array($order)){
+			$sql .= "ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+		}else{
+			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+		}
+
+		Customer::events($sql);
+		$res =& $db->query($sql);
+
+		return $res;
+	}
+
+	function &getNumRowsByCustomerid($table='mycdr',$customerid){
+		global $db;
+		
+		$sql .= " SELECT COUNT(*) FROM ".$table." WHERE customerid = $customerid AND (groupid > 0 OR resellerid > '0')";
+//echo $sql;exit;
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;		
+	}
 }
 ?>
