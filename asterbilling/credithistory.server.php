@@ -154,11 +154,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
-		$attribsHeader[] = 'width="20%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="15%"';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+
 
 
 
@@ -246,14 +247,14 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
-		$attribsHeader[] = 'width="20%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="10%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="15%"';
-		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
 
 
 		// HTML Table: columns attributes
