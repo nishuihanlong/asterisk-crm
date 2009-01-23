@@ -12,6 +12,23 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 #############################################################
 
+
+## 
+## table `servers`
+## 
+
+DROP TABLE IF EXISTS `servers`;
+CREATE TABLE `servers` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(50) NOT NULL default '',
+  `ip` varchar(80) NOT NULL default '',
+  `port` varchar(6) NOT NULL default '',
+  `username` varchar(30) NOT NULL default '',
+  `secret` varchar(30) NOT NULL default '',
+  `note` varchar(250) NOT NULL default '',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
 ## 
 ## table `account`
 ## 
@@ -535,6 +552,7 @@ DROP TABLE IF EXISTS `campaign`;
 CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `id` int(11) NOT NULL auto_increment,
  `groupid` int(11) NOT NULL default '0',
+ `serverid` int(11) NOT NULL default '0',
  `campaignname` varchar(30) NOT NULL default '',
  `campaignnote` varchar(255) NOT NULL default '',
  `enable` int(1) NOT NULL default '0',
