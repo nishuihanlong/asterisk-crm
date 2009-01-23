@@ -128,13 +128,13 @@ class Customer extends astercrm
 		$assign = $row["assign"];
 		$campaignid = $row["campaignid"];
 		$trytime = $row["trytime"];
-		//if($row['maxtrytime'] > $row["trytime"]){
-			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
-			$db->query($query);
-			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
-			$db->query($query);	
-			$i++;
-		//}
+		if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
+		$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+		$db->query($query);
+		$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
+		$db->query($query);	
+		$i++;
+
 		return $i;
 	}
 
@@ -158,12 +158,12 @@ class Customer extends astercrm
 			$assign = $row["assign"];
 			$campaignid = $row["campaignid"];
 			$trytime = $row["trytime"];
-			//if($row['maxtrytime'] > $row["trytime"]){
-				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
-				$db->query($query);
-				$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
-				$db->query($query);	
-				$i++;
+			if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
+			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+			$db->query($query);
+			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
+			$db->query($query);	
+			$i++;
 			//}					
 		}
 		return $i;

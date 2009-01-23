@@ -7,8 +7,8 @@ dbtype = mysql
 
 dbhost = 127.0.0.1
 dbname = astercc
-username = root
-password = 
+username = astercc
+password = asterccsecret
 
 [asterisk]
 ;
