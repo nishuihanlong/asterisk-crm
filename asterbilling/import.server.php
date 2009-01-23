@@ -423,17 +423,25 @@ function csv_string_to_array($str){
 *	@param		$filePath			filepath, could be a csv file or a xsl file
 *	@return		$arrData			data in the file
 **/
-function getSourceData($filePath){  
+function getSourceData($filePath,$line = -1){  
 	$type = substr($filePath,-3);
+	$i = 0;
 	if($type == 'csv'){  //csv 格式文件
 		$handle = fopen($filePath,"r");  //打开csv文件,得到句柄
-		while (($data = fgets($handle)) !== FALSE) { 
+		while (($data = fgets($handle)) !== FALSE) {
+			if ($line > 0)
+				if ($i>$line) 
+					break;
+			$i++;
 			$arrData[] = csv_string_to_array($data);
 		}
 
 	}elseif($type == 'xls'){  //xls格式文件
 		Read_Excel_File($filePath,$return);
 		for ($i=0;$i<count($return[Sheet1]);$i++){
+			if ($line > 0)
+				if ($i>$line) 
+					break;
 			$arrData[] = $return[Sheet1][$i];
 		}
 	}
@@ -450,7 +458,7 @@ function getSourceData($filePath){
 **/
 
 function getGridHTML($filePath){
-	$data_array = getSourceData($filePath);
+	$data_array = getSourceData($filePath,8);
 	$row = 0;
 	$HTML .= "<table cellspacing='1' cellpadding='0' border='0' width='100%'		style='text-align:left'>";
 	foreach($data_array as $data_arr){
