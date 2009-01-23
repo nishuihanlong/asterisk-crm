@@ -9,5 +9,6 @@ $credit = "费用";
 $destination = "目标";
 $memo = "备注";
 $like = "包含";
-
+$customer_id = "客户ID";
+$discount = "折扣";
 ?>

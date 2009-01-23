@@ -84,6 +84,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	if(is_numeric($customerid) && $customerid != 0 && $_SESSION['curuser']['usertype'] != 'clid'){
 		$filter['0'] = 'customerid';
 		$content['0'] = $customerid;
+		$stype['0'] = 'equal';
 	}
 
 	if($filter == null || $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -138,6 +139,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'credit';
 	$fileds[] = 'destination';
 	$fileds[] = 'memo';
+	$fileds[] = 'discount';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -150,6 +152,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("credit");
 	$headers[] = $locate->Translate("destination");
 	$headers[] = $locate->Translate("memo");
+	$headers[] = $locate->Translate("discount");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -162,9 +165,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="12%"';
 	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -186,7 +191,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-	
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","discount","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+
 	// Select Box: type table.
 	$typeFromSearch = array();
 	$typeFromSearch[] = 'like';
@@ -212,6 +218,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'destination';
 	$fieldsFromSearch[] = 'customerid';
 	$fieldsFromSearch[] = 'memo';
+	$fieldsFromSearch[] = 'discount';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -224,6 +231,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("destination");
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer id");
 	$fieldsFromSearchShowAs[] = $locate->Translate("memo");
+	$fieldsFromSearchShowAs[] = $locate->Translate("discount");
 
 	// Create object whit 5 cols and all data arrays set before.
 	$tableGrid = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
@@ -246,6 +254,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['credit'];
 		$rowc[] = $row['destination'];
 		$rowc[] = $row['memo'];
+		$rowc[] = $row['discount'];
 		$tableGrid->addRow($table,$rowc,false,false,false,$divName,$fields);
  	}
  	
