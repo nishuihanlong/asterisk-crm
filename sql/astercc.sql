@@ -339,6 +339,22 @@ CREATE TABLE `curcdr` (
   KEY `srcid` (`src`,`dst`,`didnumber`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `parkedcalls`;
+
+ CREATE TABLE `parkedcalls` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`Num` VARCHAR( 10 ) NOT NULL ,
+`Channel` VARCHAR( 50 ) NOT NULL ,
+`Context` VARCHAR( 50 ) NOT NULL ,
+`Extension` VARCHAR( 50 ) NOT NULL ,
+`Pri` VARCHAR( 50 ) NOT NULL ,
+`Timeout` VARCHAR( 10 ) NOT NULL ,
+PRIMARY KEY ( `id` ) ,
+UNIQUE (
+`id`
+)
+) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci; 
+
 ## ########################################################
 
 ## 
