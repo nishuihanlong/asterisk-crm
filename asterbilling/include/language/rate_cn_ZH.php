@@ -32,4 +32,8 @@ $plus = "加上";
 $minus = "减去";
 $multiply = "乘以";
 $multi_edit = "批量操作";
+$buy_rate = "成本费率";
+$for_first = "前";
+$seconds = "秒";
+$per = "每";
 ?>
