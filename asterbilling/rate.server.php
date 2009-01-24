@@ -19,6 +19,7 @@ require_once ("db_connect.php");
 require_once ('rate.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
+require_once ('include/asterevent.class.php');
 require_once ("rate.common.php");
 
 /**
@@ -722,5 +723,21 @@ function setMultieditType($fields){
 	return $objResponse;
 }
 
+function showBuyRate($prefix){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	//echo $prefix;exit;
+
+	if($_SESSION['curuser']['usertype'] == 'groupadmin' ) {
+		$buyrate = astercc::searchRate($prefix,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'], 'callshoprate',"prefix");
+		if($buyrate['id'] != ''){
+			$buyrateDesc = astercc::readRateDesc($buyrate);
+			$objResponse->assign("spanShowBuyRate","innerHTML",$locate->Translate("Buy Rate").":".$buyrate['destination']."(".$buyrateDesc.")");
+		}else{
+			$objResponse->assign("spanShowBuyRate","innerHTML","");
+		}
+	}
+	return $objResponse;
+}
 $xajax->processRequests();
 ?>

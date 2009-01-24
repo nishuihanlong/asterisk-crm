@@ -321,7 +321,7 @@ class Customer extends astercrm
 			<table border="1" width="100%" class="adminlist">
 				<tr>
 					<td nowrap align="left">'.$locate->Translate('Prefix').'</td>
-					<td align="left"><input type="text" id="dialprefix" name="dialprefix" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="dialprefix" name="dialprefix" size="15" maxlength="30" onKeyUp="xajax_showBuyRate(this.value);" onclick="xajax_showBuyRate(this.value);">&nbsp;<span id="spanShowBuyRate" name="spanShowBuyRate"></span></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate('Length').'</td>
@@ -437,7 +437,7 @@ class Customer extends astercrm
 			<table border="1" width="100%" class="adminlist">
 				<tr>
 					<td nowrap align="left">'.$locate->Translate('Prefix').'</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $rate['id'].'"><input type="text" id="dialprefix" name="dialprefix" size="25" maxlength="30" value="'.$rate['dialprefix'].'"></td>
+					<td align="left"><input type="hidden" id="id" name="id" value="'. $rate['id'].'"><input type="text" id="dialprefix" name="dialprefix" size="15" maxlength="30" value="'.$rate['dialprefix'].'" onKeyUp="xajax_showBuyRate(this.value);" onclick="xajax_showBuyRate(this.value);">&nbsp;<span id="spanShowBuyRate" name="spanShowBuyRate"></span></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate('Length').'</td>

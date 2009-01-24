@@ -19,6 +19,7 @@ require_once ("db_connect.php");
 require_once ('callshoprate.grid.inc.php');
 require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
+require_once ('include/asterevent.class.php');
 require_once ("callshoprate.common.php");
 
 /**
@@ -661,6 +662,24 @@ function setMultieditType($fields){
 		$objResponse->addScript("addOption('multieditType','to','".$locate->Translate("to")."');");
 	}
 
+	return $objResponse;
+}
+
+function showBuyRate($prefix){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	//echo $prefix;exit;
+
+	if($_SESSION['curuser']['usertype'] == 'reseller' ) {
+		$buyrate = astercc::searchRate($prefix,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'], 'resellerrate',"prefix");
+		
+		if($buyrate['id'] != ''){
+			$buyrateDesc = astercc::readRateDesc($buyrate);
+			$objResponse->assign("spanShowBuyRate","innerHTML",$locate->Translate("Buy Rate").":".$buyrate['destination']."(".$buyrateDesc.")");
+		}else{
+			$objResponse->assign("spanShowBuyRate","innerHTML","");
+		}
+	}
 	return $objResponse;
 }
 

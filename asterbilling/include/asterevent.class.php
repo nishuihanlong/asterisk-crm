@@ -174,8 +174,11 @@ class astercc extends PEAR
 		}
 		
 		if($type == "prefix"){
-			$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid";
-			
+			if($tbl == "resellerrate")
+				$sql = "SELECT * FROM $tbl WHERE resellerid = $resellerid";
+			else
+				$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid";
+			//echo $sql;exit;
 			astercc::events($sql);
 			$rates = & $db->query($sql);
 
