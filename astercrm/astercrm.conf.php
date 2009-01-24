@@ -154,5 +154,5 @@ detail_level = all
 astercc_conf_path = 
 [google-map]
 
-key = 
+key = ABQIAAAAn6bTNTcfGY0MrLFxKClbghQ3xZ8itk8Qm3mo0bDOTeoyembSNRQ2_fnRcBnqvKqfHozTAXUUr2yOjw
 ;?>

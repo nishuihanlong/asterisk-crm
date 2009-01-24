@@ -119,6 +119,7 @@ class ScrollTable{
 	var $deleteFlag;
 
 	var $multiEditFlag;
+
 	/**
 	 * Constructor.
 	 *
@@ -130,7 +131,7 @@ class ScrollTable{
 	 * @param string  $content: content to search
 	 * @param string  $order: field to organize the data of the table
 	 */
-	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null){
+	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null,$specfooter=null){
 		$this->n_cols = $cols;
 		$this->limit = $limit;
 		$this->numRows = $numRows;
@@ -143,7 +144,7 @@ class ScrollTable{
 		$this->order = $order;
 
 
-		$this->setFooter();
+		$this->setFooter($specfooter);
 	}
 
 
@@ -516,7 +517,7 @@ class ScrollTable{
 	*
 	*/
 
-	function setFooter(){
+	function setFooter($specfooter){
 		global $local_grid;
 		//print_r($_SESSION['curuser']['content']);
 		$next_rows = $this->start + $this->limit;
@@ -582,16 +583,48 @@ class ScrollTable{
 				</th>
 			</tr>
 		</table>';
-		$this->footer .= $this->search = '
+
+		if($specfooter) {
+			$this->footer .= $this->search = '
 			<table width="99%" border="0">
-			<tr>
-				<td width="25%" align="left">&nbsp;</td>
-				<td width="50%" align="center"><div id="msgZone">&nbsp;</div></td>
-				<td width="25%" align="right">
-					<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$local_grid->Translate("show_all").'</button>
-				</td>
-			</tr>
-		</table>';
+				<tr>
+					<td width="20%" align="left">&nbsp;</td>
+					<td width="30%" align="center"><div id="msgZone">&nbsp;</div></td>
+					<td width="50%" align="right">
+						<input type="button" value="'.$local_grid->Translate("Archive").'" id="btnArchive" name=="btnArchive" onclick="archiveCDR()">&nbsp;
+						'.$local_grid->Translate("early than").'&nbsp;
+						<select id="archiveDate" name="archiveDate">
+							<option value="12">12</option>
+							<option value="11">11</option>
+							<option value="10">10</option>
+							<option value="9">9</option>
+							<option value="8">8</option>
+							<option value="7">7</option>
+							<option value="6">6</option>
+							<option value="5">5</option>
+							<option value="4">4</option>
+							<option value="3">3</option>
+							<option value="2">2</option>
+							<option value="1">1</option>
+						</select>&nbsp;'.$local_grid->Translate("months").'&nbsp;'.$local_grid->Translate("data").'
+						&nbsp;'.$local_grid->Translate("as").'&nbsp;CSV
+						&nbsp;'.$local_grid->Translate("file").'&nbsp;&nbsp;
+						<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$local_grid->Translate("show_all").'</button>
+					</td>
+				</tr>
+			</table>';
+		}else{
+			$this->footer .= $this->search = '
+				<table width="99%" border="0">
+				<tr>
+					<td width="25%" align="left">&nbsp;</td>
+					<td width="50%" align="center"><div id="msgZone">&nbsp;</div></td>
+					<td width="25%" align="right">
+						<button id="submitButton" onClick="xajax_showGrid(0,'.MAXROWSXPAGE.');return false;">'.$local_grid->Translate("show_all").'</button>
+					</td>
+				</tr>
+			</table>';
+		}
 
 	}
 

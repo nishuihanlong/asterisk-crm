@@ -111,19 +111,23 @@ if (!isset($_SESSION['callbacks']))
 	return $objResponse;
 }
 
-function searchRate($dialprefix){
+function searchRate($content,$type){
 	$objResponse = new xajaxResponse();
-	if ($dialprefix == ''){
+//	echo $type;exit;
+	if ($content == ''){
 		return $objResponse;
 	}
 	
-	$rate = astercc::searchRate($dialprefix,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'],"myrate");
+	$rate = astercc::searchRate($content,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'],"myrate",$type);
 
 	$rateDesc = astercc::readRateDesc($rate);
 	// remove the connect charge part
 	// $rateDesc = split("seconds",$rateDesc);
 	// $rateDesc = $rateDesc[1]." seconds";
-	$objResponse->addAssign("divRate","innerHTML",$rate['destination']."(".$rateDesc.")");
+	if($type == "prefix")
+		$objResponse->addAssign("divRate","innerHTML",$rate['destination']."(".$rateDesc.")");
+	else
+		$objResponse->addAssign("divRate","innerHTML",$rate['dialprefix']."(".$rateDesc.")");
 	return $objResponse;
 }
 
@@ -488,9 +492,10 @@ function addUnbilled($peer,$leg = null){
 	return $objResponse;
 }
 
-function checkOut($aFormValues,$divId){
+function checkOut($aFormValues,$divId,$payment){
 	global $locate,$customers_db,$db,$config;
-	//print_r($aFormValues);exit;
+	//print_r($aFormValues);
+	//echo $payment;exit;
 	$iptCustomerId = $divId."-CustomerId";
 	$iptDiscount = $divId."-CustomerDiscount";
 	if($aFormValues[$iptCustomerId] != '' && $aFormValues[$iptDiscount] != 0){
@@ -503,7 +508,7 @@ function checkOut($aFormValues,$divId){
 	$objResponse = new xajaxResponse();
 	if (isset($aFormValues['cdrid'])){
 		foreach ($aFormValues['cdrid'] as $id){
-			$res =  astercc::setBilled($id,$customerid,$discount);
+			$res =  astercc::setBilled($id,$payment,$customerid,$discount);
 			$credit += $res;
 		}
 		$objResponse->addAlert($locate->Translate("booth_cleared"));

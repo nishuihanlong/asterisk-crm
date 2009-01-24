@@ -40,9 +40,20 @@ $customerid = $_REQUEST['customerid'];
 			}
 
 		function searchFormSubmit(numRows,limit,id,type){
-			//alert(xajax.getFormValues("searchForm"));
+			//alert(xajax.getFormValues("searchForm"));			
 			xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
 			return false;
+		}
+
+		function archiveCDR(){			
+			archiveDate=document.getElementById('archiveDate').value;
+			if( confirm("<? echo $locate->Translate('are you sure to archive CDR early than');?> "+archiveDate+" <? echo $locate->Translate('months'); ?> ?") ){
+				document.getElementById("msgZone").innerHTML = "<b> Processing, please wait ...</b>";
+				document.getElementById("divMsg").style.visibility="visible";
+				xajax_archiveCDR(archiveDate);
+			}else{
+				return false;
+			}
 		}
 
 		//-->
@@ -67,7 +78,10 @@ $customerid = $_REQUEST['customerid'];
 				</fieldset>
 			</td>
 		</tr>
-	</table>
+	</table>	
+	<div id="divMsg" >
+		Processing, please wait ...
+	</div>	
 		<form name="exportForm" id="exportForm" action="dataexport.php" >
 			<input type="hidden" value="" id="hidSql" name="hidSql" />
 		</form>

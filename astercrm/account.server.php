@@ -278,11 +278,16 @@ function add(){
 
 function save($f){
 	global $locate,$db;
-	
+
 	$objResponse = new xajaxResponse();
 	
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
+	if(trim($f['usertype']) != 'admin' && trim($f['groupid']) == ''){
+		$objResponse->addAlert($locate->Translate("please add group first"));
 		return $objResponse->getXML();
 	}
 
@@ -363,6 +368,11 @@ function update($f){
 
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
+	if(trim($f['usertype']) != 'admin' && trim($f['groupid']) == ''){
+		$objResponse->addAlert($locate->Translate("please add group first"));
 		return $objResponse->getXML();
 	}
 	

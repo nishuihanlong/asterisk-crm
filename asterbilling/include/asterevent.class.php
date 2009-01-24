@@ -165,74 +165,88 @@ class astercc extends PEAR
 		}
 	}
 
-	function searchRate($dst,$groupid, $resellerid, $tbl = 'myrate'){
+	function searchRate($dst,$groupid, $resellerid, $tbl = 'myrate',$type="prefix"){
 		global $db;
 		$dst = trim($dst);
 		if ($groupid == '' || $groupid == '-1') {
 			#print "invalid identity";
 			return;
 		}
-
-
-		$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid";
 		
-		astercc::events($sql);
-		$rates = & $db->query($sql);
+		if($type == "prefix"){
+			$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid";
+			
+			astercc::events($sql);
+			$rates = & $db->query($sql);
 
-		$maxprefix = '';
-		$myrate = array();
-		$default = '';
+			$maxprefix = '';
+			$myrate = array();
+			$default = '';
 
-		while ($rates->fetchInto($list)) {
-			#print "start\n";
-			if ($list['dialprefix'] == 'default'){
-				$default = $list;
-				continue;
-			}
+			while ($rates->fetchInto($list)) {
+				#print "start\n";
+				if ($list['dialprefix'] == 'default'){
+					$default = $list;
+					continue;
+				}
 
-			$prefixlength = strlen($list['dialprefix']);
-			if (substr($dst,0,$prefixlength) == $list['dialprefix']){
-				if ($prefixlength > strlen($maxprefix)){
-					$myrate = $list;
-					$maxprefix = $list['dialprefix'];
+				$prefixlength = strlen($list['dialprefix']);
+				if (substr($dst,0,$prefixlength) == $list['dialprefix']){
+					if ($prefixlength > strlen($maxprefix)){
+						$myrate = $list;
+						$maxprefix = $list['dialprefix'];
+					}
 				}
 			}
-		}
 
 
-		if ($maxprefix == '' && $default == ''){ // did get rate from group
+			if ($maxprefix == '' && $default == ''){ // did get rate from group
 
-			if ($groupid == "0" && $resellerid == "0") {
-				//print "done\n";
-				//exit;
+				if ($groupid == "0" && $resellerid == "0") {
+					//print "done\n";
+					//exit;
+					return;
+				}
+				
+				if ($groupid != "0" && $resellerid != "0") {
+					//print "here\n";
+					return astercc::searchRate($dst,"0",$resellerid,$tbl);		
+				}
+
+				if ($groupid == 0 && $resellerid != 0) {
+					//print "ok";
+					//exit;
+					return astercc::searchRate($dst,"0","0",$tbl,'prefix');		
+				}
+
+				//return astercc::readRate($dst,$groupid, $tbl);
+			}
+		
+			if ($maxprefix == ''){
+				return $default;
+			}else{
+				return $myrate;
+			}
+		}else{
+
+			$sql = "SELECT * FROM $tbl WHERE groupid = $groupid AND resellerid = $resellerid AND destination = '".$dst."'";
+			//echo $sql;exit;
+			astercc::events($sql);
+			$rates = & $db->getRow($sql);
+
+			if($rates['id'] != ''){
+				return $rates;
+			}elseif($groupid != 0 && $resellerid != 0){
+				return astercc::searchRate($dst,"0","0",$tbl,'dest');
+			}else{
 				return;
 			}
-			
-			if ($groupid != "0" && $resellerid != "0") {
-				//print "here\n";
-				return astercc::searchRate($dst,"0",$resellerid,$tbl);		
-			}
-
-			if ($groupid == 0 && $resellerid != 0) {
-				//print "ok";
-				//exit;
-				return astercc::searchRate($dst,"0","0",$tbl);		
-			}
-
-			//return astercc::readRate($dst,$groupid, $tbl);
-		}
-	
-		if ($maxprefix == ''){
-			return $default;
-		}else{
-			return $myrate;
 		}
 	}
 
-	function setBilled($id,$costomerid,$discount){
+	function setBilled($id,$payment,$costomerid,$discount){
 		global $db,$config;
 		// move the record from mycdr to historycdr
-
 		// get the record from mycdr
 		$sql = "SELECT * FROM mycdr WHERE id = $id ";
 		astercc::events($sql);
@@ -242,9 +256,9 @@ class astercc extends PEAR
 
 		// insert the record to historycdr
 		if($config['system']['useHistoryCdr'] == 1){
-			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',customerid = $costomerid, discount = $discount ";
+			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',customerid = $costomerid, discount = $discount ,payment='".$payment."'";
 		}else {
-			$sql = "UPDATE mycdr SET userfield = 'BILLED' ,customerid = $costomerid, discount = $discount WHERE id = $id ";
+			$sql = "UPDATE mycdr SET userfield = 'BILLED' ,customerid = $costomerid, discount = $discount , payment='".$payment."' WHERE id = $id ";
 		}
 		//echo $sql;exit;
 		astercc::events($sql);

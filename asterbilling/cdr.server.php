@@ -234,11 +234,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("discount");
 
 	// Create object whit 5 cols and all data arrays set before.
-	$tableGrid = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
+	$specArchive = false;
+	if ($_SESSION['curuser']['usertype'] == 'admin') $specArchive = 1;
+	$tableGrid = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$specArchive);
 	$tableGrid->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 	$tableGrid->setAttribsCols($attribsCols);
 	$tableGrid->exportFlag = '1';//对导出标记进行赋值
-	if ($_SESSION['curuser']['usertype'] == 'admin') $tableGrid->deleteFlag = '1';//对导出标记进行赋值
+	if ($_SESSION['curuser']['usertype'] == 'admin'){
+		$tableGrid->deleteFlag = '1';//对导出标记进行赋值	
+	}
 	$tableGrid->addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -310,6 +314,86 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
 	return $objResponse->getXML();
+}
+
+function archiveCDR($archiveDate){
+	global $db,$locate,$config;
+	$objResponse = new xajaxResponse();
+	$date = date("Y-m-d");
+	$end_date = date("Y-m-d",strtotime("$date - $archiveDate month"));
+	
+	if($config['system']['useHistoryCdr'] == 1) 
+		$table='historycdr';
+	else 
+		$table='mycdr';
+		
+	$sql = "SELECT calldate FROM $table WHERE calldate < '".$end_date."' ORDER BY calldate ASC LIMIT 1";
+	$start_date = $db->getOne($sql);
+	if($start_date == '') {
+		$objResponse->addAlert($locate->Translate('no cdr data early than')." ".$archiveDate." ".$locate->Translate('months'));
+		$objResponse->addAssign("divMsg","style.visibility","hidden");
+		$objResponse->addClear("msgZone", "innerHTML");
+		return $objResponse->getXML();
+	}
+
+	$file_dir=$config['system']['upload_file_path']."cdr_archive";
+
+	if(!is_dir($file_dir)){
+		if(!mkdir($file_dir)){
+			$objResponse->addAlert($locate->Translate('cant create archive directory'));
+			$objResponse->addAssign("divMsg","style.visibility","hidden");
+			$objResponse->addClear("msgZone", "innerHTML");
+			return $objResponse->getXML();
+		}
+	}
+
+	$start_date = split('\ ',$start_date);
+	$start_date = $start_date['0'];
+	$file_name = $start_date."_to_".$end_date;
+
+	if (!$handle = fopen($file_dir."/".$file_name.".csv", 'x')) {
+		$objResponse->addAlert($locate->Translate('cant create archive file'));
+		$objResponse->addAssign("divMsg","style.visibility","hidden");
+		$objResponse->addClear("msgZone", "innerHTML");
+		return $objResponse->getXML();
+	}
+
+	$sql = "SELECT * FROM $table WHERE calldate < '".$end_date."' ORDER BY calldate ASC";
+
+	$archiveData = astercrm::exportDataToCSV($sql);	
+
+	if (!fwrite($handle, $archiveData)) {
+		$objResponse->addAlert($locate->Translate('cant create archive file'));
+		$objResponse->addAssign("divMsg","style.visibility","hidden");
+		$objResponse->addClear("msgZone", "innerHTML");
+		return $objResponse->getXML();
+	}
+	fclose($handle);
+
+	system("tar zcf ".$file_dir."/".$file_name.".tar.gz ".$file_dir."/".$file_name.".csv",$r);
+
+	if($r === false ){
+		$final_file = $file_dir."/".$file_name.".csv";
+	}else{		
+		$final_file = $file_dir."/".$file_name.".tar.gz";
+		unlink($file_dir."/".$file_name.".csv");
+	}
+
+	$objResponse->addAlert($locate->Translate('archive success').", ".$locate->Translate('file save in').": ".$final_file);
+		
+	$sql = "DELETE FROM $table WHERE calldate < '".$end_date."'";
+	$res = $db->query($sql);
+	if($res == 1){
+		$objResponse->addAlert($locate->Translate('clear cdr date success'));
+	}else{ 
+		$objResponse->addAlert($locate->Translate('clear cdr date failed'));
+	}
+	$html = createGrid(0,ROWSXPAGE);
+	$objResponse->addAssign("divMsg","style.visibility","hidden");
+	$objResponse->addClear("msgZone", "innerHTML");
+	$objResponse->addAssign("grid", "innerHTML", $html);
+	return $objResponse->getXML();
+    //echo $file_name;exit;
 }
 
 $xajax->processRequests();

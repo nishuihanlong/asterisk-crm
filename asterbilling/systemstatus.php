@@ -153,7 +153,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-legb-billsec" name="' + divId + '-billsec" value="0">';
 	div.innerHTML += '<input type="hidden" size="4" id="' + divId + '-limitstatus" name="' + divId + '-limitstatus" value="">';
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"hangupOnClick('" + divId + "');return false;\"><?echo $locate->Translate("Hangup");?></a>";
-	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "');return false;\"><?echo $locate->Translate("Clear");?></a>";
+	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnClearOnClick('" + divId + "','');return false;\"><?echo $locate->Translate("Clear");?></a>";
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnCDROnClick('" + divId + "');return false;\"><?echo $locate->Translate("Cdr");?></a>";
 	div.innerHTML += "&nbsp;&nbsp;<a href=\"?\" onclick=\"btnReceiptOnClick('"+divId+"');return false;\"><?echo $locate->Translate("Receipt");?></a>";
 
@@ -333,13 +333,14 @@ function appendTr(tbodyId,aryValues){
 }
 
 
-function btnClearOnClick(divId){
+function btnClearOnClick(divId,payment){
+
 	if (!confirm("<?echo $locate->Translate("Are you sure to clear this booth");?>"+"?'"))
 	{
 		return false;
 	}
 	form = document.getElementById(divId + "-form");
-	xajax_checkOut(xajax.getFormValues(divId + "-form"),divId);
+	xajax_checkOut(xajax.getFormValues(divId + "-form"),divId,payment);
 }
 
 function setStatus(trId,status){
@@ -397,9 +398,10 @@ function removeLocalDiv(divId){
 
 
 function searchRate(){
-	var objDialprefix = document.getElementById("iptDialprefix");
-	if (objDialprefix.value != '')
-		xajax_searchRate(objDialprefix.value);
+	var objSearchRate = document.getElementById("iptSearchRate");
+	var searchRateType = document.getElementById("searchRateType").value;
+	if (objSearchRate.value != '')
+		xajax_searchRate(objSearchRate.value,searchRateType);
 	else
 		document.getElementById("divRate").innerHTML = '';
 }
@@ -435,7 +437,12 @@ function searchRate(){
 		&nbsp;<?echo $locate->Translate("Amount");?>:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Cost");?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit");?>:&nbsp;<span id="spanLimit" name="spanLimit"> </span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Current Credit");?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>
 		</div>
 		<div>
-				<input type="text" size="10" name="iptDialprefix" id="iptDialprefix"><input type="button" value="<?echo $locate->Translate("Search Rate");?>" onclick="searchRate();">
+				<input type="text" size="10" name="iptSearchRate" id="iptSearchRate">
+				<select id="searchRateType" name="searchRateType">
+					<option value="prefix"><?echo $locate->Translate("Prefix");?></option>
+					<option value="dest"><?echo $locate->Translate("Destination");?></option>
+				</select>
+				<input type="button" value="<?echo $locate->Translate("Search Rate");?>" onclick="searchRate();">
 				<div id="divRate" name="divRate"></div>	
 		</div>
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>

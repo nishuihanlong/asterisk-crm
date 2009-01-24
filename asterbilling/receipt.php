@@ -24,6 +24,18 @@
 		$titleHtml .= '<h2 style="padding: 0 0 0 0;position: relative;font-size: 11pt;color: #FJDSKB;">'.$group_row['grouptagline'].'</h2>';
 	}
 
+	if (strstr($_REQUEST['peer'],'Local/')) { //for callback
+		$peer = ltrim($peer,'Local/');
+		foreach ($_SESSION['callbacks'] as $key => $callback) {
+			if( $key == $peer.$callback['legA'] && $callback['legB'] == $peer ){
+				$leg = $callback['legA'];
+			}
+		}
+	}else{
+		$peer = trim($_REQUEST['peer']);
+		$leg = trim($_REQUEST['leg']);
+	}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -31,7 +43,7 @@
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<LINK href="skin/default/css/layout.css" type=text/css rel=stylesheet>
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
-		<TITLE> <? echo $locate->Translate("Receipt").'-'; echo $_REQUEST['peer'];?></TITLE>
+		<TITLE> <? echo $locate->Translate("Receipt").'-'; echo $peer;?></TITLE>
 	</head>
  <SCRIPT LANGUAGE="JavaScript">
 		<!--
@@ -54,7 +66,18 @@
 		echo '<div id="divReceiptTitle" name="divReceiptTitle" style="position:relative;top:2px;height:80px;">'.$titleHtml.'</div><div style="position:relative;left:0px;display:block;"><hr color="#F1F1F1"></div>';
 	}
 ?> 
-	<div id="divPrint" align="right"><input type="button" onclick="document.getElementById('divPrint').style.display='none';window.print();window.close();" value="<? echo $locate->Translate("Print");?>">&nbsp;&nbsp;</div>
+	<div id="divPrint" align="right">
+		<input type="button" onclick="opener.btnClearOnClick('<? echo $peer; ?>',document.getElementById('payType').value);" value="<? echo $locate->Translate("Pay");?>">&nbsp;
+		<? echo $locate->Translate("by");?>&nbsp;
+		<select id="payType" name="payType">
+			<option value="cash"><? echo $locate->Translate("Cash");?></option>
+			<option value="credit card"><? echo $locate->Translate("Credit card");?></option>
+			<option value="debit card"><? echo $locate->Translate("Debit card");?></option>
+			<option value="promotion"><? echo $locate->Translate("Promotion");?></option>
+			<option value="other"><? echo $locate->Translate("Other");?></option>
+		</select>&nbsp;
+		<input type="button" onclick="document.getElementById('divPrint').style.display='none';window.print();window.close();" value="<? echo $locate->Translate("Print");?>">&nbsp;&nbsp;
+	</div>
 
 	<div id="divMain" style="position:relative;">
 	<div>&nbsp;<? echo $locate->Translate("Reseller");?>:&nbsp;<?echo $reseller;?>
@@ -78,17 +101,7 @@
 		<th width="10%" align="center"><? echo $locate->Translate("Discount");?></th>
 	</tr>
 	<?
-	if (strstr($_REQUEST['peer'],'Local/')) { //for callback
-		$peer = ltrim($peer,'Local/');
-		foreach ($_SESSION['callbacks'] as $key => $callback) {
-			if( $key == $peer.$callback['legA'] && $callback['legB'] == $peer ){
-				$leg = $callback['legA'];
-			}
-		}
-	}else{
-		$peer = trim($_REQUEST['peer']);
-		$leg = trim($_REQUEST['leg']);
-	}
+	
 	  $total_price = 0;
 	  $records = astercc::readUnbilled($peer,$leg,$_SESSION['curuser']['groupid']);
 	  while	($records->fetchInto($myreceipt)) {

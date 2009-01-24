@@ -189,7 +189,8 @@ CREATE TABLE `myrate` (
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
   UNIQUE rate (dialprefix,numlen,resellerid,groupid),
-  KEY `dialprefix` (`dialprefix`)
+  KEY `dialprefix` (`dialprefix`),
+  INDEX `destination` (`destination`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ## ########################################################
@@ -406,6 +407,7 @@ CREATE TABLE `mycdr` (
   `memo` varchar(100) NOT NULL default '',
   `customerid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
+  `payment`  varchar(15) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   INDEX `customerid` (`customerid`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
@@ -445,6 +447,7 @@ CREATE TABLE `historycdr` (
   `memo` varchar(100) NOT NULL default '',
   `customerid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
+  `payment`  varchar(15) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`),
   INDEX `dst` (`dst`),

@@ -54,4 +54,12 @@ $member = "会员";
 $discount = "折扣";
 $update = "确认";
 $reset = "重置";
+$prefix = "前缀";
+$pay = "付款";
+$by = "使用";
+$cash = "现金";
+$credit_card = "信用卡";
+$debit_card = "借记卡";
+$promotion = "代金券";
+$other = "其它";
 ?>
