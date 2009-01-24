@@ -145,6 +145,7 @@ function setGroupBalance(){
 	$creditlimit = $group['creditlimit']; //  limit
 	$callshopcredit = $group['credit_group']; // cost
 	$curcredit = $group['curcredit']; // current cost
+	$balance = $callshopcredit - $curcredit; //available balance
 
 	if ($amount == '') $amount = 0;
 	if ($cost == '') $cost = 0;
@@ -169,6 +170,7 @@ function setGroupBalance(){
 		$objResponse->addAssign("spanLimit","innerHTML",$creditlimit);
 		$objResponse->addAssign("spanCost","innerHTML",$callshopcredit);
 		$objResponse->addAssign("spancurcredit","innerHTML",$curcredit);
+		$objResponse->addAssign("spanbalance","innerHTML",$balance);
 	}
 
 	if (is_numeric($config['system']['refreshBalance']) && $config['system']['refreshBalance'] != 0){

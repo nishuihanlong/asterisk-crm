@@ -115,9 +115,13 @@ function parseReport($myreport){
 	$ary['credit'] = $myreport['credit'];
 	$ary['callshopcredit'] = $myreport['callshopcredit'];
 	$ary['resellercredit'] = $myreport['resellercredit'];
+	$hour = intval($myreport['seconds'] / 3600);
+	$minute = intval($myreport['seconds'] % 3600 / 60);
+	$sec = intval($myreport['seconds'] % 60);
+
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
 		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 		$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
@@ -126,14 +130,14 @@ function parseReport($myreport){
 
 	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
 		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 		$html .= $locate->Translate("Markup").": ". ($myreport['credit'] - $myreport['callshopcredit']) ."<br>";
 		$ary['markup'] = $myreport['credit'] - $myreport['callshopcredit'];
 	}else if ($_SESSION['curuser']['usertype'] == 'operator'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
 	}
 

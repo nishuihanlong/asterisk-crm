@@ -12,7 +12,7 @@ $total = "合计";
 $amount = "总计";
 $cost = "成本";
 $limit = "限制";
-$current_credit = "当前销售金额";
+$current_credit = "当前消费金额";
 $search_rate = "查询费率";
 $lock = "锁定";
 $hangup = "挂断";
@@ -62,4 +62,5 @@ $credit_card = "信用卡";
 $debit_card = "借记卡";
 $promotion = "代金券";
 $other = "其它";
+$available_balance = "可用余额";
 ?>

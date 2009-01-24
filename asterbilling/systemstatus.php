@@ -434,7 +434,7 @@ function searchRate(){
 		<input type="button" value="<?echo $locate->Translate("Callshop Status");?>" onclick="showCallshopStatus();">
 
 		<div id="divAmount" style="display:none;">
-		&nbsp;<?echo $locate->Translate("Amount");?>:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Cost");?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit");?>:&nbsp;<span id="spanLimit" name="spanLimit"> </span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Current Credit");?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span><br>
+		&nbsp;<?echo $locate->Translate("Amount");?>:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Cost");?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit");?>:&nbsp;<span id="spanLimit" name="spanLimit"> </span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Current Credit");?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Available Balance");?>:&nbsp;<span id="spanbalance" name="spanbalance"></span><br>
 		</div>
 		<div>
 				<input type="text" size="10" name="iptSearchRate" id="iptSearchRate">
