@@ -5,10 +5,10 @@ $db_dbname		= 'database name';
 $db_username	= 'database username';
 $db_password	= 'database password';
 
-$as_server		= 'Asterisk server address';
-$as_port		= 'Asterisk AMI port, it\'s 5038 by default';
-$as_username	= 'AMI username';
-$as_secret		= 'AMI password';
+$as_server		= 'Default Asterisk server address';
+$as_port		= 'Default Asterisk AMI port, it\'s 5038 by default';
+$as_username	= 'Default Asterisk AMI username';
+$as_secret		= 'Default Asterisk AMI password';
 $as_monitorpath		= 'the path recording file will store, the fils will store on Asterisk server not asterCRM server';
 $as_monitorformat	= 'format of the record file';
 

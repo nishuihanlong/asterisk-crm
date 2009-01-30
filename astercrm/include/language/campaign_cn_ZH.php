@@ -22,4 +22,6 @@ $enable = '可用';
 $send_calls_to_this_queue_directly = "直接将呼叫转入此队列";
 $please_enter_the_queue_number = "请输入队列号码";
 $like = "包含";
+$asterisk_server = "Asterisk 服务器";
+$default_server = "默认服务器";
 ?>

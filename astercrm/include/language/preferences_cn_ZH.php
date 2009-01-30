@@ -6,10 +6,10 @@ $db_dbname		= '数据库名称';
 $db_username	= '数据库用户名';
 $db_password	= '数据库密码';
 
-$as_server		= 'Asterisk服务器地址';
-$as_port		= 'Asterisk服务器AMI端口号, 默认情况下是5038';
-$as_username	= 'AMI用户名';
-$as_secret		= 'AMI密码';
+$as_server		= '默认Asterisk服务器地址';
+$as_port		= '默认Asterisk服务器AMI端口号, 默认情况下是5038';
+$as_username	= '默认AMI用户名';
+$as_secret		= '默认AMI密码';
 $as_monitorpath		= '录音文件保存的路径, 录音文件将会保存在Asterisk服务器上而不是asterCRM服务器';
 $as_monitorformat	= '录音文件的文件格式';
 
@@ -60,4 +60,6 @@ $save = "保存";
 $read_group_database_or_system_database = "读取本组信息或是所有信息";
 $status_check_interval	= '页面更新事件的间隔时间(秒)';
 $smart_match_remove	= '来电号码智能匹配时,去除号码未尾数字的位数';
+$check = "测试";
+$set_multi_servers = "设置多服务器";
 ?>

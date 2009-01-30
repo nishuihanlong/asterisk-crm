@@ -141,6 +141,7 @@ class Customer extends astercrm
 				."campaignname='".$f['campaignname']."', "
 				."campaignnote='".$f['campaignnote']."', "
 				."enable='".$f['enable']."', "
+				."serverid='".$f['serverid']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
@@ -168,7 +169,8 @@ class Customer extends astercrm
 		$query= "UPDATE campaign SET "
 				."campaignname='".$f['campaignname']."', "
 				."campaignnote='".$f['campaignnote']."', "
-				."enable='".$f['enable']."', "				
+				."enable='".$f['enable']."', "	
+				."serverid='".$f['serverid']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
@@ -294,7 +296,7 @@ class Customer extends astercrm
 	*/
 	
 	function formAdd(){
-			global $locate,$config;
+			global $locate,$config,$db;
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$res = Customer::getGroups();
@@ -307,6 +309,16 @@ class Customer extends astercrm
 		}else{
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
+		
+		$query = "SELECT id,name From servers";
+		$server_res = $db->query($query);
+		$serverhtml .= '<select name="serverid" id="serverid">
+						<option value="0">'.$locate->Translate("Default Server").'</option>';
+		while ($server_row = $server_res->fetchRow()) {
+			$serverhtml .= '<option value="'.$server_row['id'].'"';
+			$serverhtml .='>'.$server_row['name'].'</option>';
+		}
+		$serverhtml .= '</select>';
 
 	$html = '
 			<!-- No edit the next line -->
@@ -323,6 +335,10 @@ class Customer extends astercrm
 				</tr>
 				<tr>					
 					<td align="left" colspan="2">'.$locate->Translate("Enable").'&nbsp;<input type="radio" id="enable" name="enable" value="1" checked>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" ></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Asterisk Server").'*</td>
+					<td align="left">'.$serverhtml.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
@@ -381,7 +397,7 @@ class Customer extends astercrm
 	*/
 	
 	function formEdit($id){
-		global $locate;
+		global $locate,$db;
 		$campaign =& Customer::getRecordByID($id,'campaign');
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){ 
@@ -405,6 +421,19 @@ class Customer extends astercrm
 			$bindqueue = "checked";
 		}
 
+		$query = "SELECT id,name From servers";
+		$server_res = $db->query($query);
+		$serverhtml .= '<select name="serverid" id="serverid">
+						<option value="0">'.$locate->Translate("Default Server").'</option>';
+		while ($server_row = $server_res->fetchRow()) {
+			$serverhtml .= '<option value="'.$server_row['id'].'"';
+				if($server_row['id'] == $campaign['serverid']){
+					$serverhtml .= ' selected ';
+				}
+				$serverhtml .= '>'.$server_row['name'].'</option>';
+		}
+		$serverhtml .= '</select>';
+
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -426,6 +455,10 @@ class Customer extends astercrm
 				$html .= '>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" checked></td>';
 			$html .= 
 				'</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Asterisk Server").'*</td>
+					<td align="left">'.$serverhtml.'</td>
+				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$campaign['outcontext'].'"></td>

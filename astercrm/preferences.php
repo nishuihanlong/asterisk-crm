@@ -147,8 +147,9 @@ require_once('preferences.common.php');
     <td height="39" class="td font" id="Asterisk" name="Asterisk"  align="left">
 		&nbsp;&nbsp;&nbsp;Asterisk 
 		<input type="button" onclick="display('menu1')"  value="+"/>
-		<input type="button" onclick="checkAMI();return false;"  value="check"/>
-		<div name="divAsMsg" id="divAsMsg"></div>
+		<input type="button" onclick="checkAMI();return false;"  value="<?echo $locate->Translate('check');?>"/>
+		<input type="button" value="<?echo $locate->Translate('Set multi servers');?>" onclick="window.location='servers.php'">
+		<div name="divAsMsg" id="divAsMsg"></div>		
     </td>
   </tr>
   <tr>
@@ -157,13 +158,14 @@ require_once('preferences.common.php');
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu1" width="780">
   <tr>
-    <td width="230" align="left" valign="top" id="AsServer" name="AsServer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server</td>
+    <td width="230" align="left" valign="top" id="AsServer" name="AsServer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server
+	</td>
     <td width="200" align="left" valign="top" >
-      <input type="text" size="30" id="iptAsServer" name="iptAsServer" />
+      <input type="text" size="30" id="iptAsServer" name="iptAsServer" />	  
 	</td>
     <td align="left" valign="top" >
 		<div id="divAsServer" name="divAsServer">
-		</div>
+		</div>		
 	</td>
   </tr>
   <tr>
@@ -221,7 +223,7 @@ require_once('preferences.common.php');
     <td height="39" class="td font" id="System" name="System"  align="left">
 		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('System');?> 
       <input type="button" onclick="display('menu2')"  value="+"/>
-		<input type="button" onclick="checkSys();return false;"  value="check"/>
+		<input type="button" onclick="checkSys();return false;"  value="<?echo $locate->Translate('check');?>"/>
 		<div name="divSysMsg" id="divSysMsg"></div>
 
 	</td>
