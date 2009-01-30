@@ -152,7 +152,8 @@ external_crm_url = http://astercc.org/index.php?callerid=%callerid&calleeid=%cal
 detail_level = all
 
 astercc_conf_path = 
+
 [google-map]
 
-key = ABQIAAAAn6bTNTcfGY0MrLFxKClbghRyu6AlATKu8zuWTFXu39PY94FMPxQQMpvhh42fxr2ReykBmK9OOCH1cA_fnRcBnqvKqfHozTAXUUr2yOjw
+key =
 ;?>
