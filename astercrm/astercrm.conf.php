@@ -129,12 +129,12 @@ upload_file_path = ./upload/
 ;
 ; astercrm will use external crm software if this parameter is true
 ;
-enable_external_crm = 1
+enable_external_crm = 0
 
 ;
 ; asterCRM will open a new browser window when need popup
 ;
-open_new_window = 1
+open_new_window = 0
 
 ;
 ; when using external crm, put default page here

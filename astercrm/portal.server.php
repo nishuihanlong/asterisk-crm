@@ -1138,8 +1138,8 @@ function displayMap($address){
 	$map = new PhoogleMap();
 	$map->setAPIKey($config['google-map']['key']);
 	$map->addAddress($address);
-	$map->showMap();
-	//$js = $map->generateJs();
+	//$map->showMap();
+	$js = $map->generateJs();
 
 	$objResponse->addAssign("divMap","style.visibility","visible");
 	//$objResponse->addScript("alert('".$js."')");
