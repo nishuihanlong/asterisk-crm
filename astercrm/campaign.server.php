@@ -157,6 +157,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'campaignname';
 	$fields[] = 'campaignnote';
 	$fields[] = 'groupname';
+	$fields[] = 'servername';
 	$fields[] = 'creby';
 	$fields[] = 'cretime';
 
@@ -165,21 +166,24 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Campaign Name");
 	$headers[] = $locate->Translate("Campaign Note");
 	$headers[] = $locate->Translate("Group Name");
+	$headers[] = $locate->Translate("Server Name");
 	$headers[] = $locate->Translate("Records");
 	$headers[] = $locate->Translate("Creby");
 	$headers[] = $locate->Translate("Cretime");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -192,6 +196,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignnote","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","servers.name","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
@@ -201,6 +206,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'campaignname';
 	$fieldsFromSearch[] = 'campaignnote';
 	$fieldsFromSearch[] = 'groupname';
+	$fieldsFromSearch[] = 'servers.name';
 	$fieldsFromSearch[] = 'campaign.creby';
 	$fieldsFromSearch[] = 'campaign.cretime';
 	
@@ -209,6 +215,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Server Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Creby");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Cretime");
 
@@ -227,6 +234,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['campaignnote'];
 		$rowc[] = $row['groupname'];
+		if ($row['serverid'] != 0) 
+			$rowc[] = $row['servername'];
+		else 
+			$rowc[] = $locate->Translate("Default server");
 		$records = astercrm::getCountByField('campaignid',$row['id'],'diallist');
 		$rowc[] = $records;
 		$rowc[] = $row['creby'];

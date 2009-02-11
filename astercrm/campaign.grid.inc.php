@@ -45,7 +45,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT campaign.*, groupname  FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaign.groupid";
+		$sql = "SELECT campaign.*, groupname, servers.name as servername FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -110,7 +110,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT campaign.*, groupname FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
+		$sql = "SELECT campaign.*, groupname, servers.name as servername FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid  WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -222,7 +222,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -245,7 +245,7 @@ class Customer extends astercrm
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
 
-		$sql = "SELECT campaign.*, groupname FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
+		$sql = "SELECT campaign.*, groupname, servers.name as servername FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -259,6 +259,7 @@ class Customer extends astercrm
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -269,7 +270,7 @@ class Customer extends astercrm
 		
 			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
 
-			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

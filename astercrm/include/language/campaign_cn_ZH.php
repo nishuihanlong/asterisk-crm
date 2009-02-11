@@ -24,4 +24,5 @@ $please_enter_the_queue_number = "请输入队列号码";
 $like = "包含";
 $asterisk_server = "Asterisk 服务器";
 $default_server = "默认服务器";
+$server_name = "服务器名称";
 ?>

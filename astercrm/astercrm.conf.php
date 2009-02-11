@@ -8,7 +8,7 @@ dbtype = mysql
 dbhost = 127.0.0.1
 dbname = astercc
 username = astercc
-password = asterccsecret
+password = astercc
 
 [asterisk]
 ;
@@ -155,5 +155,5 @@ astercc_conf_path =
 
 [google-map]
 
-key =
+key = ABQIAAAAn6bTNTcfGY0MrLFxKClbghR-UxJJ2gicUKVqr6XNwxkifgGNhBQKvStoMVeMuNfR2yOxLtHJ6emyiw
 ;?>

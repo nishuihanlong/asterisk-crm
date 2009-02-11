@@ -409,6 +409,47 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		return $res;
 	}
 
+	function readAnsweredNum($resellerid, $groupid, $booth, $sdate, $edate){
+		global $db,$config;
+		$table = 'mycdr';
+		if($config['system']['useHistoryCdr'] == 1){
+			$table = 'historycdr';
+		}
+
+		$query = "SELECT count(*) as answeredNum FROM $table WHERE disposition = 'ANSWERED' AND calldate >= '$sdate' AND  calldate <= '$edate' ";
+				
+		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
+			$groupid = $_SESSION['curuser']['groupid'];
+		}
+
+		if ( ($resellerid == '' || $resellerid == 0) && $_SESSION['curuser']['usertype'] == 'reseller' ){
+			$resellerid = $_SESSION['curuser']['resellerid'];
+		}
+
+		if ($resellerid != 0 && $resellerid != '')
+			$query .= " AND resellerid = $resellerid ";
+		else
+			$query .= " AND resellerid != -1 ";
+
+		if ($groupid != 0 && $groupid != '')
+			$query .= " AND groupid = $groupid ";
+		else
+			$query .= " AND groupid != -1 ";
+
+		if ($booth != 0 && $booth != ''){
+			if ($booth == '-1'){
+				$query .= " AND LEFT(channel,6) = 'Local/' ";
+			}else{
+				$query .= " AND src = '$booth' OR dst = '$booth'";
+			}
+		}		
+		#exit;
+		//print $query;exit;
+		astercc::events($query);
+		$res = $db->getOne($query);
+		return $res;
+	}
+
 	function readAmount($id,$peer = null, $sdate = null, $edate = null, $field = 'credit'){
 		global $db;
 		$curYear = Date("Y");

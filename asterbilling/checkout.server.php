@@ -108,7 +108,7 @@ function setGroup($resellerid){
 	return $objResponse;
 }
 
-function parseReport($myreport){
+function parseReport($myreport,$answeredNum){
 	global $locate;
 	$ary['recordNum'] = $myreport['recordNum'];
 	$ary['seconds'] = $myreport['seconds'];
@@ -118,11 +118,15 @@ function parseReport($myreport){
 	$hour = intval($myreport['seconds'] / 3600);
 	$minute = intval($myreport['seconds'] % 3600 / 60);
 	$sec = intval($myreport['seconds'] % 60);
+	$asr = round($answeredNum/$myreport['recordNum'] * 100,2);
+	$acd = round($myreport['seconds']/$answeredNum/60,1);
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
-		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
+		$html .= $locate->Translate("ASR").": ".$asr."%<br>";
+		$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";		
 		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 		$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
 		$html .= $locate->Translate("Markup").": ". ($myreport['callshopcredit'] - $myreport['resellercredit']) ."<br>";
@@ -200,8 +204,10 @@ function listCDR($aFormValues){
 	if ($aFormValues['listType'] == "none"){
 		$res = astercc::readReport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 
+		$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
+
 		if ($res->fetchInto($myreport)){
-			$result = parseReport($myreport); 
+			$result = parseReport($myreport,$answeredNum); 
 			$html .= $result['html'];
 		}
 		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
