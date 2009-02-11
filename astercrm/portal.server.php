@@ -466,6 +466,26 @@ function waitingCalls($myValue){
 						$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
 						$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
 
+						if($config['system']['external_url_parm'] != ''){
+							if ($config['system']['detail_level'] == 'all')
+								$customerid = astercrm::getCustomerByCallerid($call['callerid']);
+							else
+								$customerid =	astercrm::getCustomerByCallerid($call['callerid'],$_SESSION['curuser']['groupid']);
+							
+							if($customerid != ''){
+								$customer = astercrm::getCustomerByID($customerid,"customer");
+								$url_parm = split(',',$config['system']['external_url_parm']);
+
+								foreach($url_parm as $parm){
+									if($parm != '' ){
+										$more_parm .= '&'.$parm.'='.urlencode($customer[$parm]);
+									}
+								}
+								$myurl .= $more_parm;
+							}
+
+						}
+
 						if ($config['system']['open_new_window'] == false){
 								$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 								$objResponse->addAssign("divCrm","innerHTML", $mycrm );

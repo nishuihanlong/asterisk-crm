@@ -129,12 +129,12 @@ upload_file_path = ./upload/
 ;
 ; astercrm will use external crm software if this parameter is true
 ;
-enable_external_crm = 0
+enable_external_crm = 1
 
 ;
 ; asterCRM will open a new browser window when need popup
 ;
-open_new_window = 0
+open_new_window = 1
 
 ;
 ; when using external crm, put default page here
@@ -148,6 +148,10 @@ external_crm_default_url = http://astercc.org
 ; %method		dialout or dialin
 ;
 external_crm_url = http://astercc.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
+
+; any fields you need to post which in customer table, use comma between fields
+; note: the field must in customer table
+external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 
 detail_level = all
 
