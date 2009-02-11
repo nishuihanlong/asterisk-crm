@@ -1,4 +1,5 @@
 <?
+//DE for account manager
 $add_account = "Ein neues Benutzerkonto wurde hinzugefügt";
 $update_rec = "Eintrag wurde aktualisiert";
 $rec_cannot_update = "Der Eintrag konnte nicht aktualisiert werden";
@@ -19,5 +20,12 @@ $usertype_note = "Nutzung nur durch admin or callshop";
 $channel	= "Channel";	// added 2007/10/30 by solo
 $account_detail		= "Account Detail";	// added 2007/10/30 by solo
 $account_code		= "Account Code";	// added 2007/11/12 by solo
-$username_repeat = "user name repeat";
+$username_repeat = "Wiederholung des Usernamens";
+$like = "Wie ";
+$reseller = "Reseller";
+$group = "Callshop";
+$group_admin = "Callshop Admin";
+$admin = "Admin";
+$operator = "Benutzer";
+
 ?>

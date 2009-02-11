@@ -1,0 +1,34 @@
+<?
+$amount = "Gesamtumsatz";
+$callshop = "Kosten Callshop";
+$callshop_cost = "Kosten Callshop";
+$reseller_cost = "Kosten Reseller";
+$limit_type = "Limit Typ";
+$no_limit = "Kein Limit";
+$calldate = "Zeitpunkt";
+$clid = "Kabine";
+$dst = "Ziel";
+$duration = "Dauer";
+$disposition = "Status";
+$billsec = "Verrechnete Sekunden";
+$destination = "Land";
+$rate = "Tarif";
+$price = "Kosten";
+$status = "Verrechnungsstatus";
+$all = "Alle";
+$none = "Keine";
+$list_detail = "Detailliste";
+$list = "Berechne";
+$cal = "Kalender";
+$callback = "Callback";
+$from = "Von";
+$to = "Nach";
+$markup = "Profit";
+$calls = "Anrufe";
+$sum_by_year = "Summen pro Jahr";
+$sum_by_month = "Summen pro Monat";
+$sum_by_day = "Summen pro Tag";
+$sum_by_hour = "Summen pro Stunde";
+$sum_by_destination = "Summen pro Land";
+$year = "Jahr";
+?>
