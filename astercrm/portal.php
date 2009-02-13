@@ -405,8 +405,12 @@ $clientDst = $_REQUEST['clientdst'];
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
+	if($_SESSION['curuser']['country'] == 'cn') 
+		$map_locate = 'ditu';
+	else
+		$map_locate = 'maps';
 ?>
-	<script src="http://maps.google.com/maps?file=api&v=2&key=<?echo $config['google-map']['key'];?>" type="text/javascript"></script>
+	<script src="http://<?echo $map_locate;?>.google.com/maps?file=api&v=2&key=<?echo $config['google-map']['key'];?>" type="text/javascript"></script>
 <?
 }
 ?>
@@ -536,7 +540,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<tr>
 				<td>
 					<fieldset><legend><?echo $locate->Translate("Google Map")?></legend>
-					<div id="map" style="width: 300px;"></div>
+					<div id="map" style="width: 300px; height: 300px"></div>
 					</fieldset>
 				</td>
 			</tr>
