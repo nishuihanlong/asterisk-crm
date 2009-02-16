@@ -11,7 +11,7 @@
 	showDivMainRight() 显示csv，xsl格式文件数据
 	getGridData() 得到显示csv，xsl格式文件数据的HTML语法
 	getDiallistBar() 得到显示diallist导入框的HTML语法
-	getImportResource() 得到要插入表的sql语句，存入数组
+	importResource() 得到要插入表的sql语句，存入数组
 	parseRowToSql() 得到sql语句和分区，存入数组
 	getSourceData()得到excel文件的所有行数据，返回数组
 
@@ -298,22 +298,13 @@ function submitForm($aFormValues){
 	//print $groupid;
 
 	$x = 0;
-	$arrData = getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid);
-	foreach($arrData as $data){
-		$strSql = $data['strSql'];					//得到插入选择表的sql语句
-		//print $strSql;
-		//exit;
-
-		if($tableName != '' && $strSql != '' ){
-			$res = $db->query($strSql);  
-			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
-		}
-	}
-	if($tableAffectRows< 0){
-		$tableAffectRows= 0;
+	$affectRows = importResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid);
+	
+	if($affectRows< 0){
+		$affectRows= 0;
 	}
 
-	$resultMsg = $tableName.' : '.$tableAffectRows.' '.$locate->Translate('records_inserted')."<br>";
+	$resultMsg = $tableName.' : '.$affectRows.' '.$locate->Translate('records_inserted')."<br>";
 
 	//delete upload file
 	//@ unlink($filePath);
@@ -354,13 +345,22 @@ function getDiallistBar($columnNum){
 }
 
 
-function getImportResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid){
+function importResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid){
+	global $db;
 	$arrData = getSourceData($filePath);
+	$tableAffectRows = 0;
 	foreach($arrData as $arrRow){
-		$arrAll[] = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid,$resellerid);
+		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid,$resellerid);
+
+		$strSql = $arrRes['strSql'];					//得到插入选择表的sql语句
+
+		if($tableName != '' && $strSql != '' ){
+			$res = $db->query($strSql);  
+			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
+		}
 	}
 	
-	return $arrAll;
+	return $tableAffectRows;
 }
 
 //循环列数据，得到sql
