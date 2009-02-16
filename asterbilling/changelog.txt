@@ -88,6 +88,25 @@ add new field amount and total in table accountgroup to store all selling and al
 2008-12-29  added flash chart for report
 2009-1-5    added remember me in login page
 ----------------------------------------------------------------------------------
+0.097
+2009-1-8    improve flash chart for report
+2009-1-12   shortcut for choose date
+2009-1-12   add archive function in CDR page
+2009-1-14   display more infomation in callshop page(Amount,Cost,Limit,Current Credit,Available Balance)
+2009-1-14   add payment type(Cash,Credit card,Debit card,Promotion,Other)
+2009-1-14   could checkout in Receipt page
+2009-1-15   add search rate by destination in callshop page
+2009-1-15   add customers module
+2009-1-22   CDR for customers
+2009-1-22   dynamic/static discount rate for customers
+2009-1-22   support licence with time limit
+2009-1-22   support German
+2009-1-24   add ASR/ACD in Report page 
+2009-1-24   display the buy rates when adding/editing the sell rates
+2009-2-11   improve import module
+2009-2-12   improve asterrc (support hungup call if no rate or not in group)
+2009-2-12   add billing by source channel
+
 
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能

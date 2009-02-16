@@ -329,6 +329,11 @@ however, multiple servers enhance performance.
 	advance survey
 	callerid smart mathcing
 	predictive dialer direct to queue
+	dialer support dialout mutil-servers
+	support chinese address of google map 
+	support post more customer infomation to external CRM by URL
+	support count how long dynamic agent loged in the queue
+	support licence with time limit
 
 *Manager Interface 
 
@@ -442,4 +447,20 @@ asterBilling features:
   24. inbound billing 
   25. advance report(flash chart)
   26. multiple updating rate
-  27. multi language support[Simplified Chinese/English]
+  27. multi language support[Simplified Chinese/English/German]  
+  28. shortcut for choose date
+  29. add archive function in CDR page
+  30. display more infomation in callshop page(Amount,Cost,Limit,Current Credit,Available Balance)
+  31. add payment type(Cash,Credit card,Debit card,Promotion,Other)
+  32. could checkout in Receipt page
+  33. add search rate by destination in callshop page
+  34. add customers module
+  35. CDR for customers
+  36. dynamic/static discount rate for customers
+  37. support licence with time limit
+  38. support German
+  39. add ASR/ACD in Report page 
+  40. display the buy rates when adding/editing the sell rates
+  41. improve import module
+  42. improve asterrc (support hungup call if no rate or not in group)
+  43. add billing by source channel
