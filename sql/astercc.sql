@@ -572,7 +572,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `end_fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008#5#4
- `maxtrytime` int(11) NOT NULL default '0',
+ `maxtrytime` int(11) NOT NULL default '1',
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)
