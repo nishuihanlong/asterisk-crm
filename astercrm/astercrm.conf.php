@@ -97,7 +97,7 @@ allow_same_data = 0
 
 ; define what information would be displayed in portal page
 ; customer | note
-portal_display_type = customer
+portal_display_type = note
 
 ;
 ; astercrm wouldnot pop-up when dial out unless this parameter is true
