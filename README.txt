@@ -333,6 +333,7 @@ however, multiple servers enhance performance.
 	support chinese address of google map 
 	support post more customer infomation to external CRM by URL
 	support count how long dynamic agent loged in the queue
+	private note
 	support licence with time limit
 
 *Manager Interface 

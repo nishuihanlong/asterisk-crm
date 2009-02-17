@@ -3,12 +3,15 @@ new features in 0.057
 	support chinese address of google map 
 	support post more customer infomation to external CRM by URL
 	support count how long dynamic agent loged in the queue
+	private note
 	support licence with time limit
+
 0.057新功能
 	预拨号器支持多服务器拨号
 	支持中文地址的google map 
 	可自定义向外部CRM传递更多客户信息参数
 	对动态座席登入queue时间的统计
+	备注隐私功能
 	增加按时间限制的授权方式
 
 astercrm features(0.055)
@@ -79,4 +82,5 @@ astercrm features(0.055)
 	support chinese address of google map 
 	support post more customer infomation to external CRM by URL
 	support count how long dynamic agent loged in the queue
+	private note
 	support licence with time limit
