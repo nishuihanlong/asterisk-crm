@@ -139,7 +139,7 @@
   <div id="copyright" style="background-repeat:repeat-x;height:64px;margin-top:10px;text-align:center;">
 				<ul>
 				<li>2007-2009 asterBilling - asterBilling home</li>
-				<li>version: 0.096 </li>
+				<li>version: 0.097 </li>
 				</ul>
   </div>
   </div>
