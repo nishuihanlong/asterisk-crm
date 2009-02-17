@@ -57,6 +57,7 @@ CREATE TABLE `agentlogin_history` (
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 alter table `campaign` add `serverid` int(11) NOT NULL default '0';
+alter table note add private int(1) default '1';
 
 alter table historycdr add `customerid` int(11) NOT NULL default 0;
 alter table historycdr add  `discount` double(8,4) NOT NULL default '0.0000';alter table mycdr add `customerid` int(11) NOT NULL default 0;

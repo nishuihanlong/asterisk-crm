@@ -153,7 +153,7 @@ external_crm_url = http://astercc.org/index.php?callerid=%callerid&calleeid=%cal
 ; note: the field must in customer table
 external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 
-detail_level = all
+detail_level = group
 
 astercc_conf_path = 
 

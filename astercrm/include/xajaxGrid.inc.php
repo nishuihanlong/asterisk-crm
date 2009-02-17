@@ -532,6 +532,7 @@ class ScrollTable{
 				</td>';
 		
 		if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->multiEditFlag != 1){
+			$this->search .= '<input type="hidden" name="optionFlag" id="optionFlag" value="">';
 		}else{
 			$option = '<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>';
 			

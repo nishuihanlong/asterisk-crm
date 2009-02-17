@@ -378,11 +378,13 @@ Class astercrm extends PEAR{
 	
 	function insertNewNote($f,$customerid,$contactid){
 		global $db;
+
 		$f = astercrm::variableFiler($f);
 		$query= "INSERT INTO note SET "
 				."note='".$f['note']."', "
 				."attitude='".$f['attitude']."', "
 				."priority=".$f['priority'].", "
+				."private='".$f['private']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."groupid = ".$_SESSION['curuser']['groupid'].", "
@@ -557,24 +559,27 @@ Class astercrm extends PEAR{
 	function updateNoteRecord($f,$type="update"){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		
+
 		if ($type == 'update')
 
 			$query= "UPDATE note SET "
 					."note='".$f['note']."', "
 					."priority=".$f['priority']." ,"
-					."attitude='".$f['attitude']."' "
+					."private='".$f['private']."', "
+					."attitude='".$f['attitude']."' "					
 					."WHERE id='".$f['noteid']."'";
 		else
 			if (empty($f['note']))
 				$query= "UPDATE note SET "
 						."attitude='".$f['attitude']."', "
+						."private='".$f['private']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
 			else
 				$query= "UPDATE note SET "
 						."note=CONCAT(note,'<br>',now(),' ".$f['note']." by " .$_SESSION['curuser']['username']. "'), "
 						."attitude='".$f['attitude']."', "
+						."private='".$f['private']."', "
 						."priority=".$f['priority']." "
 						."WHERE id='".$f['noteid']."'";
 		astercrm::events($query);
@@ -1212,7 +1217,7 @@ Class astercrm extends PEAR{
 	//add note html
 	$html .='
 			<tr>
-				<td nowrap align="left">'.$locate->Translate("note").'</td>
+				<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}">'.$locate->Translate("share").')<input type="hidden" value="1" name="private" id="private"></td>
 				<td align="left">
 					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;"></textarea>
 				</td>
@@ -1413,7 +1418,9 @@ Class astercrm extends PEAR{
 					<input type="hidden" id="noteid"  name="noteid" value="'.$note['id'].'">
 					<table border="0" width="100%">
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("note").'</td>
+						<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}" ';
+						if($note['private'] == 0) $html .= 'checked';
+					$html .= '>'.$locate->Translate("share").')<input type="hidden"  name="private" id="private" value="'.$note['private'].'"></td>
 						<td align="left">'.nl2br($note['note']). '</td>
 					</tr>
 					<tr>

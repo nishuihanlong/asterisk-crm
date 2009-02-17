@@ -627,6 +627,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 	$fields[] = 'priority';
+	$fields[] = 'private';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -638,6 +639,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("create_time")."<BR>";//"Create Time";
 //	$headers[] = $locate->Translate("create_by")."<BR>";//"Create By";
 	$headers[] = "P<BR>";
+	if ($config['system']['portal_display_type'] == "note")
+		$headers[] = $locate->Translate("private")."<BR>";
 //	$headers[] = "D";
 
 	// HTML table: hearders attributes
@@ -651,6 +654,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //	$attribsHeader[] = 'width="10%"';
 //	$attribsHeader[] = 'width="7%"';
 	$attribsHeader[] = 'width="8%" nowrap';
+	if ($config['system']['portal_display_type'] == "note")
+		$attribsHeader[] = 'width="8%" nowrap';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -661,6 +666,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'nowrap style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left;"';
+	if ($config['system']['portal_display_type'] == "note")
+		$attribsCols[] = 'style="text-align: left;"';
 
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
@@ -673,6 +680,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
+	if ($config['system']['portal_display_type'] == "note")
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","private","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -739,8 +748,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 
 		//$rowc[] = '<textarea readonly="true" style="overflow:auto;width: 240px;height:50px;" wrap="soft">'.str_replace('<br>',chr(13),$row['note']).'</textarea>';
-
-		$rowc[] = ''.$row['note'].'';
+		if($row['private'] == 0 || $row['notecreby'] == $_SESSION['curuser']['username'])
+			$rowc[] = ''.$row['note'].'';
+		else
+			$rowc[] = '';
 
 		if ($row['attitude'] != '')
 			$rowc[] = '<img src="skin/default/images/'.$row['attitude'].'.gif" width="25px" height="25px" border="0" />';
@@ -752,6 +763,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['priority'];
 //		$rowc[] = 'Detail';
 		if ($config['system']['portal_display_type'] == "note"){
+			if($row['private'] == 1) 
+				$rowc[] = '<img src="images/groups_icon01.gif"  border="0"';
+			else $rowc[] = '';
 			$table->addRow("note",$rowc,1,1,1,$divName,$fields);
 		}else{
 			$table->addRow("customer",$rowc,1,0,1,$divName,$fields);

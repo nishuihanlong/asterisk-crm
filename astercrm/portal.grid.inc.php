@@ -54,6 +54,7 @@ class Customer extends astercrm
 									note.attitude AS attitude, 
 									note, 
 									priority,
+									private,
 									customer.customer AS customer,
 									contact.contact AS contact,
 									customer.category AS category,
@@ -69,11 +70,14 @@ class Customer extends astercrm
 									note.note AS note,
 									note.priority AS priority,
 									note.attitude AS attitude,
+									note.private AS private,
+									note.creby AS notecreby,
 									customer.category AS category,
 									customer.contact AS contact,
 									customer.cretime as cretime
-									FROM customer LEFT JOIN note ON customer.id = note.customerid
-									WHERE customer.creby = '".$_SESSION['curuser']['username']."' ";
+									FROM customer LEFT JOIN note ON customer.id = note.customerid ";
+			if($config['system']['detail_level'] != 'all')						
+				$sql .= " WHERE customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
 		}
 
 		if($order == null){
@@ -107,6 +111,7 @@ class Customer extends astercrm
 											note.id AS id, 
 											note, 
 											priority,
+											private,
 											customer.customer AS customer,
 											contact.contact AS contact,
 											customer.category AS category,
@@ -127,6 +132,7 @@ class Customer extends astercrm
 											note.id AS id, 
 											note, 
 											priority,
+											private,
 											customer.customer AS customer,
 											contact.contact AS contact,
 											customer.category AS category,
@@ -203,8 +209,10 @@ class Customer extends astercrm
 				$sql = "SELECT 
 										COUNT(*) AS numRows 
 										FROM customer 
-										LEFT JOIN note ON customer.id = note.customerid  
-										WHERE customer.creby = '".$_SESSION['curuser']['username']."'";
+										LEFT JOIN note ON customer.id = note.customerid";
+
+				if($config['system']['detail_level'] != 'all')						
+					$sql .= " WHERE customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
 			}
 		}else{
 			$i=0;
@@ -243,14 +251,18 @@ class Customer extends astercrm
 												COUNT(*) AS numRows
 												FROM customer 
 												LEFT JOIN note ON customer.id = note.customerid  
-												WHERE ".$joinstr
-											 ." AND  customer.creby = '".$_SESSION['curuser']['username']."' ";
+												WHERE ".$joinstr;
+
+					if($config['system']['detail_level'] != 'all')						
+						$sql .= " AND customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
 				}else {
 					$sql = "SELECT 
 											COUNT(*) AS numRows 
 											FROM customer 
-											LEFT JOIN note ON customer.id = note.customerid  
-											WHERE customer.creby = '".$_SESSION['curuser']['username']."'";
+											LEFT JOIN note ON customer.id = note.customerid ";
+
+					if($config['system']['detail_level'] != 'all')						
+						$sql .= " WHERE customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
 				}
 			}
 		}
@@ -290,14 +302,16 @@ class Customer extends astercrm
 												COUNT(*) AS numRows
 												FROM customer 
 												LEFT JOIN note ON customer.id = note.customerid  
-												WHERE ".$joinstr
-											 ." AND  customer.creby = '".$_SESSION['curuser']['username']."' ";
+												WHERE ".$joinstr;
+					if($config['system']['detail_level'] != 'all')						
+						$sql .= " AND customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
 				}else {
 					$sql = "SELECT 
 											COUNT(*) AS numRows 
 											FROM customer 
-											LEFT JOIN note ON customer.id = note.customerid  
-											WHERE customer.creby = '".$_SESSION['curuser']['username']."'";
+											LEFT JOIN note ON customer.id = note.customerid ";
+					if($config['system']['detail_level'] != 'all')						
+						$sql .= " WHERE customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
 				}
 			}
 		astercrm::events($sql);
@@ -317,6 +331,7 @@ class Customer extends astercrm
 											note.id AS id, 
 											note, 
 											priority,
+											private,
 											customer.customer AS customer,
 											contact.contact AS contact,
 											customer.category AS category,
@@ -337,6 +352,7 @@ class Customer extends astercrm
 											note.id AS id, 
 											note, 
 											priority,
+											private,
 											customer.customer AS customer,
 											contact.contact AS contact,
 											customer.category AS category,
@@ -361,13 +377,17 @@ class Customer extends astercrm
 											customer.cretime as cretime,
 											note.note AS note,
 											note.priority AS priority,
-											note.attitude AS attitude
+											note.attitude AS attitude,
+											note.private AS private,
+											note.creby AS notecreby
 											FROM customer
 											LEFT JOIN note ON customer.id = note.customerid"
-											." WHERE ".$joinstr." "
-											." AND  customer.creby = '".$_SESSION['curuser']['username']."' "
-											." ORDER BY $order ".$_SESSION['ordering']
-											." LIMIT $start, $limit ";
+											." WHERE ".$joinstr;
+
+					if($config['system']['detail_level'] != 'all')						
+						$sql .= " AND customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
+					
+					$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit ";
 				}else {
 					$sql = "SELECT customer.id AS id,
 											customer.customer AS customer,
@@ -376,12 +396,16 @@ class Customer extends astercrm
 											customer.cretime as cretime,
 											note.note AS note,
 											note.priority AS priority,
-											note.attitude AS attitude
+											note.attitude AS attitude,
+											note.private AS private,
+											note.creby AS notecreby
 											FROM customer
-											LEFT JOIN note ON customer.id = note.customerid"
-											." AND  customer.creby = '".$_SESSION['curuser']['username']."' "
-											." ORDER BY $order ".$_SESSION['ordering']
-											." LIMIT $start, $limit ";
+											LEFT JOIN note ON customer.id = note.customerid ";
+					
+					if($config['system']['detail_level'] != 'all')						
+						$sql .= " WHERE customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
+
+					$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit ";
 				}
 			}
 

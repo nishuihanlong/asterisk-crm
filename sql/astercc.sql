@@ -810,6 +810,7 @@ CREATE TABLE `note` (
   `customerid` int(11) NOT NULL default '0',
   `contactid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
+  `private` int(1) default '1',
   UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -826,7 +827,7 @@ CREATE TABLE `remind` (
  `title` varchar(100) NOT NULL default '',	
  `content` text NOT NULL default '',		
  `remindtime`  datetime NOT NULL default '0000-00-00 00:00:00',
- `remindtype` int(10) not null default 0 ,	
+ `remindtype` int(10) not null default 0 ,
  `priority` int(10) NOT NULL default 0,		
  `username` varchar(30) not  null default '' ,	
  `remindabout` varchar(255) not  null default '',      
