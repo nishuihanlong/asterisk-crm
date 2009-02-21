@@ -748,7 +748,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 
 		//$rowc[] = '<textarea readonly="true" style="overflow:auto;width: 240px;height:50px;" wrap="soft">'.str_replace('<br>',chr(13),$row['note']).'</textarea>';
-		if($row['private'] == 0 || $row['notecreby'] == $_SESSION['curuser']['username'])
+		if($row['private'] == 0 || $row['creby'] == $_SESSION['curuser']['username'])
 			$rowc[] = ''.$row['note'].'';
 		else
 			$rowc[] = '';

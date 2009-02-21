@@ -71,7 +71,7 @@ class Customer extends astercrm
 									note.priority AS priority,
 									note.attitude AS attitude,
 									note.private AS private,
-									note.creby AS notecreby,
+									note.creby AS creby,
 									customer.category AS category,
 									customer.contact AS contact,
 									customer.cretime as cretime
@@ -85,6 +85,7 @@ class Customer extends astercrm
 		}else{
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
+		//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -266,6 +267,7 @@ class Customer extends astercrm
 				}
 			}
 		}
+
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;
@@ -379,7 +381,7 @@ class Customer extends astercrm
 											note.priority AS priority,
 											note.attitude AS attitude,
 											note.private AS private,
-											note.creby AS notecreby
+											note.creby AS creby
 											FROM customer
 											LEFT JOIN note ON customer.id = note.customerid"
 											." WHERE ".$joinstr;
@@ -398,7 +400,7 @@ class Customer extends astercrm
 											note.priority AS priority,
 											note.attitude AS attitude,
 											note.private AS private,
-											note.creby AS notecreby
+											note.creby AS creby
 											FROM customer
 											LEFT JOIN note ON customer.id = note.customerid ";
 					

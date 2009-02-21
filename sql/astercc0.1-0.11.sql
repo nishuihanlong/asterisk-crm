@@ -36,8 +36,6 @@ CREATE TABLE `callshop_customers` (
 ## table `discount`
 ## 
 
-DROP TABLE IF EXISTS `discount`;
-
 CREATE TABLE `discount` (
   `id` int(11) NOT NULL auto_increment,
   `amount` double(24,4) NOT NULL default '0.0000',  
