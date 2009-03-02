@@ -3620,7 +3620,7 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != ''  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+			$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != ''  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			$group_str = '';
 			foreach($_SESSION['curuser']['memberExtens'] as $value){
@@ -3630,133 +3630,26 @@ Class astercrm extends PEAR{
 				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
 			}
 			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+				$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
 			}else {
 				return '0';
 			}
 		}else{
 			if($sql != '' ) {
 				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
 				}else{
-					$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
 				}
 			}else {
 				return '0';
 			}
 		}
+		$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
-	}
-
-	function &getRecRecordsFilteredMore($customerid='',$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
-		global $db;
-		
-		$i=0;
-		$joinstr='';
-		foreach ($content as $value){
-			$value = preg_replace("/'/","\\'",$value);
-			$value=trim($value);
-			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
-				$joinstr.="AND $filter[$i] like '%".$value."%' ";
-			}
-			$i++;
-		}
-		if($customerid != ''){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
-		}
-		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != ''  GROUP BY mycdr.id ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-			}else {
-				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
-			}
-		}else{
-			if($sql != '' ) {
-				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid  WHERE monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-				}else{
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid  WHERE monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-				}
-			}else {
-				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
-			}
-		}
-
-		if ($joinstr!=''){
-			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql .= " AND ".$joinstr."  ";
-		}
-
-		$sql .= " ORDER BY ".$order
-					." DESC LIMIT $start, $limit $ordering";
-
-		astercrm::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-
-	function &getRecNumRowsMore($customerid='',$filter = null, $content = null,$table = ''){
-		global $db;
-
-		$i=0;
-		$joinstr='';
-		foreach ($content as $value){
-			$value = preg_replace("/'/","\\'",$value);
-			$value=trim($value);
-			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
-				$joinstr.="AND $filter[$i] like '%".$value."%' ";
-			}
-			$i++;
-		}
-		if($customerid != ''){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
-		}
-
-		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON (mycdr.srcuid = monitorrecord.uniqueid OR mycdr.dstuid = monitorrecord.uniqueid) WHERE  monitorrecord.uniqueid != '' AND mycdr.dstchannel != ''  GROUP BY mycdr.id ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").") AND mycdr.dstchannel != ''  GROUP BY mycdr.id ";
-			}else {
-				return '0';
-			}
-		}else{
-			if($sql != '' ) {
-				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-				}else{
-					$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-				}
-			}else {
-				return '0';
-			}
-		}
-		if ($joinstr!=''){
-			$sql .= " ".$joinstr;
-		}
-
-		astercrm::events($sql);
-		$res =& $db->getOne($sql);		
-		return $res;
-	}
+	}	
 
 	function &getRecNumRowsMorewithstype($customerid,$filter, $content,$stype){
 		global $db;
@@ -3768,7 +3661,7 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+			$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != ''  ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			$group_str = '';
 			foreach($_SESSION['curuser']['memberExtens'] as $value){
@@ -3778,16 +3671,16 @@ Class astercrm extends PEAR{
 				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
 			}
 			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+				$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' ";
 			}else {
 				return '0';
 			}
 		}else{
 			if($sql != '' ) {
 				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' ";
 				}else{
-					$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' ";
 				}
 			}else {
 				return '0';
@@ -3796,7 +3689,8 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$sql .= " ".$joinstr;
 		}
-
+		$sql .= " GROUP BY mycdr.id ";
+		$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
@@ -3811,7 +3705,7 @@ Class astercrm extends PEAR{
 			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != ''  GROUP BY mycdr.id";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != '' ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			$group_str = '';
 			foreach($_SESSION['curuser']['memberExtens'] as $value){
@@ -3821,16 +3715,16 @@ Class astercrm extends PEAR{
 				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
 			}
 			if($group_str != ''){
-				$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+				$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != ''  ";
 			}else {
 				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
 			}
 		}else{
 			if($sql != '' ) {
 				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' ";
 				}else{
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".$sql.")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".$sql.")  AND mycdr.dstchannel != ''  ";
 				}
 			}else {
 				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
@@ -3842,7 +3736,7 @@ Class astercrm extends PEAR{
 			$sql .= " AND ".$joinstr."  ";
 		}
 
-		$sql .= " ORDER BY ".$order
+		$sql .= " GROUP BY mycdr.id ORDER BY ".$order
 					." DESC LIMIT $start, $limit $ordering";
 
 		astercrm::events($sql);
