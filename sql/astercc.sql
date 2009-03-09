@@ -572,6 +572,8 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `end_fileid` int(11) NOT NULL default '0',		#added by solo 2008#5#4
  `phonenumber` varchar(255) NOT NULL default '',	#added by solo 2008#5#4
+ `waittime`  varchar(3) NOT NULL default '45',
+ `worktime_package_id` int(11) NOT NULL default '0',
  `maxtrytime` int(11) NOT NULL default '1',
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -580,6 +582,61 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
 
 ##########################################################
 
+## 
+## table `worktimes`
+## 
+
+DROP TABLE IF EXISTS `worktimes`;
+
+CREATE TABLE `worktimes` (
+`id` int(11) NOT NULL auto_increment,
+`starttime` time default null,
+`endtime` time default null,
+`startweek` int(1)  NOT NULL default '0',
+`endweek` int(1)  NOT NULL default '0',
+`groupid` INT NOT NULL DEFAULT '0',
+`cretime` datetime default NULL ,
+`creby` varchar(30) NOT NULL default '',
+UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+##########################################################
+
+## 
+## table `worktimepackages`
+## 
+
+DROP TABLE IF EXISTS `worktimepackages`;
+
+CREATE TABLE `worktimepackages` (
+`id` int(11) NOT NULL auto_increment,
+`worktimepackage_name` varchar(30) NOT NULL,
+`worktimepackage_note` varchar(255) NOT NULL,
+`worktimepackage_status` enum('enable','disabled') DEFAULT 'enable',
+`groupid` INT NOT NULL DEFAULT '0',
+`cretime` datetime default NULL ,
+`creby` varchar(30) NOT NULL default '',
+UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+##########################################################
+
+## 
+## table `worktimepackage_worktimes`
+## 
+
+DROP TABLE IF EXISTS `worktimepackage_worktimes`;
+
+CREATE TABLE `worktimepackage_worktimes` (
+`id` int(11) NOT NULL auto_increment,
+`worktimepackageid` int(11) NOT NULL,
+`worktimeid` int(11) NOT NULL,
+`cretime` datetime default NULL ,
+`creby` varchar(30) NOT NULL default '',
+UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+##########################################################
 ## 
 ## table `contact`
 ## 
@@ -641,7 +698,8 @@ CREATE TABLE `customer` (
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
  `groupid` INT NOT NULL ,
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`),
+  INDEX `groupid` (`groupid`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ##########################################################
@@ -811,7 +869,8 @@ CREATE TABLE `note` (
   `contactid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
   `private` int(1) default '1',
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`),
+  INDEX `customerid` (`customerid`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ##########################################################

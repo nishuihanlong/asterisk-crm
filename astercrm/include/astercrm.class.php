@@ -2219,7 +2219,7 @@ Class astercrm extends PEAR{
 			$group_str = ltrim($group_str,'OR');
 			$joinstr.= "AND (".$group_str.")";
 		}	
-		//echo $joinstr;exit;
+		echo $joinstr;exit;
 		return $joinstr;
 	}
 

@@ -142,6 +142,7 @@ class Customer extends astercrm
 				."campaignnote='".$f['campaignnote']."', "
 				."enable='".$f['enable']."', "
 				."serverid='".$f['serverid']."', "
+				."waittime='".$f['waittime']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
@@ -171,6 +172,7 @@ class Customer extends astercrm
 				."campaignnote='".$f['campaignnote']."', "
 				."enable='".$f['enable']."', "	
 				."serverid='".$f['serverid']."', "
+				."waittime='".$f['waittime']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
@@ -342,6 +344,10 @@ class Customer extends astercrm
 					<td align="left">'.$serverhtml.'</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Waitting time").'</td>
+					<td align="left"><input type="text" id="waittime" name="waittime" size="30" maxlength="3" value="45"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$config['system']['outcontext'].'"></td>
 				</tr>
@@ -459,6 +465,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Asterisk Server").'*</td>
 					<td align="left">'.$serverhtml.'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Waitting time").'</td>
+					<td align="left"><input type="text" id="waittime" name="waittime" size="30" maxlength="3" value="'.$campaign['waittime'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>

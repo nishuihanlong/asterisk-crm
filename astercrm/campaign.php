@@ -65,6 +65,7 @@ require_once('campaign.common.php');
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnDial" name="btnDial" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
+		<input type="button" value="<?echo $locate->Translate("Work time")?>" id="btnWorktime" name="btnWorktime" onClick="window.location='worktime.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
