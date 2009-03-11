@@ -1,9 +1,9 @@
 <?php
 /*******************************************************************************
-* campaign.php
+* worktime.php
 
 * 账户组管理界面文件
-* account management interface
+* worktime management interface
 
 * Function Desc
 	provide an account management interface
@@ -30,7 +30,7 @@
 
 ********************************************************************************/
 
-require_once('campaign.common.php');
+require_once('worktime.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -56,6 +56,7 @@ require_once('campaign.common.php');
 		<script type="text/javascript" src="js/dragresize.js"></script>
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
 		<script type="text/javascript" src="js/astercrm.js"></script>
+		<script type="text/javascript" src="js/setTime.js"></script>
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
@@ -65,6 +66,7 @@ require_once('campaign.common.php');
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnDial" name="btnDial" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
+		<input type="button" value="<?echo $locate->Translate("Campaign")?>" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
 		<input type="button" value="<?echo $locate->Translate("Worktime packages")?>" id="btnWorktime" name="btnWorktime" onClick="window.location='worktimepackages.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
