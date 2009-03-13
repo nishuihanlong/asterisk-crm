@@ -84,14 +84,13 @@ class Customer extends astercrm
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
-		$sltedWorktimes = 
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
 	}
 
 
-	function updateCampaignRecord($f){
+	function updateWorktimepackage($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
 		$bindqueue = 0;
@@ -100,20 +99,23 @@ class Customer extends astercrm
 		}
 
 		$query= "UPDATE campaign SET "
-				."campaignname='".$f['campaignname']."', "
-				."campaignnote='".$f['campaignnote']."', "
-				."enable='".$f['enable']."', "	
-				."serverid='".$f['serverid']."', "
-				."waittime='".$f['waittime']."', "
-				."outcontext='".$f['outcontext']."', "
-				."incontext='".$f['incontext']."', "
-				."inexten='".$f['inexten']."', "
-				."queuename='".$f['queuename']."', "
-				."bindqueue='".$bindqueue."', "
-				."maxtrytime='".$f['maxtrytime']."', "
-				."callerid='".$f['callerid']."', "
+				."worktimepackage_name='".$f['worktimepackage_name']."', "
+				."worktimepackage_note='".$f['worktimepackage_note']."', "
+				."worktimepackage_status='".$f['worktimepackage_status']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
+
+		$wp_res = Customer::deleteRecords("worktimepackage_id",$f['id'],'worktimepackage_worktimes');
+
+		$sltedWorktimes=split(',',rtrim($f['sltedWorktimes'],','));
+		foreach($sltedWorktimes as $worktimeid){
+			$sql = "INSERT INTO worktimepackage_worktimes SET "
+					."worktimepackage_id='".$f['id']."', "
+					."worktime_id='".$worktimeid."', "
+					."creby = '".$_SESSION['curuser']['username']."',"
+					."cretime = now()";
+			$wp_res = & $db->query($sql);
+		}
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -214,21 +216,21 @@ class Customer extends astercrm
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
 		
-		$query = "SELECT * FROM worktimes";
-		if($_SESSION['curuser']['usertype'] != 'admin') $query .= " WHERE groupid = ".$_SESSION['curuser']['groupid'];
-		$worktimes_res = $db->query($query);
-		$worktimeshtml .= '';
-		$i=0;
-		while ($worktimes_row = $worktimes_res->fetchRow()) {
-			$i++;
-			$cur_content = $worktimes_row['id'].'-'.$locate->Translate("from").':'.$worktimes_row['starttime'].'&nbsp;'.$locate->Translate("to").':'.$worktimes_row['endtime'];
-			$worktimeshtml .= '<a href="javascript:void(0);" id="op_'.$i.'" onclick="mf_click('.$i.', \''.$cur_content.'\');">'.$cur_content.'</a><input type="hidden" id="worktimeVal_'.$i.'" name="worktimeVal_'.$i.'" value="'.$worktimes_row['id'].'">';			
-		}
-		$worktimeshtml = '
-			<table width="300" border="0" cellpadding="0" cellspacing="0" id="formTable">
-				<tr><td width="180"><div id="worktimeAllDiv">'.$worktimeshtml.'</div></td></tr>
-				<tr><td><div id="worktimeSltdDiv"></div><input type="hidden" id="sltedWorktimes" name="sltedWorktimes" value=""></td></tr>
-			</table>';
+//		$query = "SELECT * FROM worktimes";
+//		if($_SESSION['curuser']['usertype'] != 'admin') $query .= " WHERE groupid = ".$_SESSION['curuser']['groupid'];
+//		$worktimes_res = $db->query($query);
+//		$worktimeshtml .= '';
+//		$i=0;
+//		while ($worktimes_row = $worktimes_res->fetchRow()) {
+//			$i++;
+//			$cur_content = $worktimes_row['id'].'-'.$locate->Translate("from").':'.$worktimes_row['starttime'].'&nbsp;'.$locate->Translate("to").':'.$worktimes_row['endtime'];
+//			$worktimeshtml .= '<a href="javascript:void(0);" id="op_'.$i.'" onclick="mf_click('.$i.', \''.$cur_content.'\');">'.$cur_content.'</a><input type="hidden" id="worktimeVal_'.$i.'" name="worktimeVal_'.$i.'" value="'.$worktimes_row['id'].'">';			
+//		}
+//		$worktimeshtml = '
+//			<table width="300" border="0" cellpadding="0" cellspacing="0" id="formTable">
+//				<tr><td width="180"><div id="worktimeAllDiv">'.$worktimeshtml.'</div></td></tr>
+//				<tr><td><div id="worktimeSltdDiv"></div><input type="hidden" id="sltedWorktimes" name="sltedWorktimes" value=""></td></tr>
+//			</table>';
 		
 //echo $worktimeshtml;exit;
 	$html = '
@@ -247,10 +249,6 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Package Note").'</td>
 					<td align="left"><input type="text" id="worktimepackage_note" name="worktimepackage_note" size="30" maxlength="255"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Select Worktime").'*</td>
-					<td align="left"><div class="worktimeSltDiv">'.$worktimeshtml.'</div></td>
 				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'*</td>
@@ -281,15 +279,15 @@ class Customer extends astercrm
 	
 	function formEdit($id){
 		global $locate,$db;
-		$campaign =& Customer::getRecordByID($id,'campaign');
+		$worktimepackages =& Customer::getRecordByID($id,'worktimepackages');
 
-		if ($_SESSION['curuser']['usertype'] == 'admin'){ 
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$grouphtml .=	'<select name="groupid" id="groupid" >
 																<option value=""></option>';
 				$res = Customer::getGroups();
 				while ($row = $res->fetchRow()) {
 					$grouphtml .= '<option value="'.$row['groupid'].'"';
-					if($row['groupid'] == $campaign['groupid']){
+					if($row['groupid'] == $worktimepackages['groupid']){
 						$grouphtml .= ' selected ';
 					}
 					$grouphtml .= '>'.$row['groupname'].'</option>';
@@ -299,23 +297,33 @@ class Customer extends astercrm
 				
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input type="hidden" name="groupid" id="groupid" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
-		$bindqueue = "";
-		if ($campaign['bindqueue'] == 1){
-			$bindqueue = "checked";
+		
+		//print_r($wp);exit;
+		$query = "SELECT * FROM worktimes";
+		if($_SESSION['curuser']['usertype'] != 'admin') $query .= " WHERE groupid = ".$_SESSION['curuser']['groupid'];
+		$worktimes_res = $db->query($query);
+		$worktimeshtml .= '';
+		$i=0;
+		$weekShow=array('','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+
+		while ($worktimes_row = $worktimes_res->fetchRow()) {			
+			$i++;
+			$cur_content = $worktimes_row['id'].'-'.$locate->Translate("from").':'.$worktimes_row['starttime'].'&nbsp;'.$locate->Translate("to").':'.$worktimes_row['endtime'].'&nbsp;('.$weekShow[$worktimes_row['startweek']].'->'.$weekShow[$worktimes_row['endweek']].')';
+
+			$worktimeshtml .= '<a href="javascript:void(0);" id="op_'.$i.'" onclick="mf_click('.$i.', \''.$cur_content.'\');">'.$cur_content.'</a><input type="hidden" id="worktimeVal_'.$i.'" name="worktimeVal_'.$i.'" value="'.$worktimes_row['id'].'">';			
 		}
 
-		$query = "SELECT id,name From servers";
-		$server_res = $db->query($query);
-		$serverhtml .= '<select name="serverid" id="serverid">
-						<option value="0">'.$locate->Translate("Default Server").'</option>';
-		while ($server_row = $server_res->fetchRow()) {
-			$serverhtml .= '<option value="'.$server_row['id'].'"';
-				if($server_row['id'] == $campaign['serverid']){
-					$serverhtml .= ' selected ';
-				}
-				$serverhtml .= '>'.$server_row['name'].'</option>';
+		$worktimeshtml = '
+			<table width="300" border="0" cellpadding="0" cellspacing="0" id="formTable">
+				<tr><td width="180"><div id="worktimeAllDiv">'.$worktimeshtml.'</div></td></tr>
+				<tr><td><div id="worktimeSltdDiv"></div><input type="hidden" id="sltedWorktimes" name="sltedWorktimes" value=""></td></tr>
+			</table>';
+
+		if($worktimepackages['worktimepackage_status'] == 'enable'){
+			$enable = 'checked';
+		}else{
+			$disabled = 'checked';
 		}
-		$serverhtml .= '</select>';
 
 		$html = '
 			<!-- No edit the next line -->
@@ -323,71 +331,31 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Campaign Name").'*</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $campaign['id'].'"><input type="text" id="campaignname" name="campaignname" size="30" maxlength="60" value="'.$campaign['campaignname'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("Package Name").'*</td>
+					<td align="left"><input type="hidden" id="id" name="id" value="'. $worktimepackages['id'].'"><input type="text" id="worktimepackage_name" name="worktimepackage_name" size="30" maxlength="60" value="'.$worktimepackages['worktimepackage_name'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Campaign Note").'</td>
-					<td align="left"><input type="text" id="campaignnote" name="campaignnote" size="30" maxlength="255" value="'.$campaign['campaignnote'].'"></td>
-				</tr>
-				<tr>					
-					<td align="left" colspan="2">'.$locate->Translate("Enable").'&nbsp;<input type="radio" id="enable" name="enable" value="1"';
-			if($campaign['enable']) 
-				$html .= 'checked>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" ></td>';
-			else
-				$html .= '>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" checked></td>';
-			$html .= 
-				'</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Asterisk Server").'*</td>
-					<td align="left">'.$serverhtml.'</td>
+					<td nowrap align="left">'.$locate->Translate("Package Note").'</td>
+					<td align="left"><input type="text" id="worktimepackage_note" name="worktimepackage_note" size="30" maxlength="255" value="'.$worktimepackages['worktimepackage_note'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Waitting time").'</td>
-					<td align="left"><input type="text" id="waittime" name="waittime" size="30" maxlength="3" value="'.$campaign['waittime'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("Status").'*</td>
+					<td align="left" colspan="2">'.$locate->Translate("Enable").'&nbsp;<input type="radio" id="worktimepackage_status" name="worktimepackage_status" value="enable" '.$enable.'>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="worktimepackage_status" name="worktimepackage_status" value="disabled"  '.$disabled.'></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
-					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$campaign['outcontext'].'"></td>
+					<td nowrap align="left">'.$locate->Translate("Select Worktime").'*</td>
+					<td align="left"><div class="worktimeSltDiv">'.$worktimeshtml.'</div></td>
 				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Incontext").'*</td>
-					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$campaign['incontext'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
-					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30" value="'.$campaign['inexten'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Queue number").'</td>
-					<td align="left">
-						<input type="text" id="queuename" name="queuename" size="30" maxlength="30" value="'.$campaign['queuename'].'">
-						<input type="checkbox" name="bindqueue" id="bindqueue" '.$bindqueue.'>'.$locate->Translate("send calls to this queue directly").'						
-						</td>
-				</tr>
-
-				<!--
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
-					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>
-				</tr>
-				-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Max trytime").'</td>
-					<td align="left"><input type="text" id="maxtrytime" name="maxtrytime" size="30" maxlength="30" value="'.$campaign['maxtrytime'].'"></td>
-				</tr>
+				</tr>				
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
 			 </table>
-			';
-
-			
+			';			
 
 		$html .= '
 				</form>

@@ -229,63 +229,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("worktimes",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
-
+	
+	$weekShow=array('','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];		
 		$rowc[] = $row['starttime'];
 		$rowc[] = $row['endtime'];
-		switch($row['startweek']){
-			case 1:
-				$rowc[] = 'Monday';
-				break;
-			case 2:
-				$rowc[] = 'Tuesday';
-				break;
-			case 3:
-				$rowc[] = 'Wednesday';
-				break;
-			case 4:
-				$rowc[] = 'Thursday';
-				break;
-			case 5:
-				$rowc[] = 'Friday';
-				break;
-			case 6:
-				$rowc[] = 'Saturday';
-				break;
-			case 7:
-				$rowc[] = 'Sunday';
-				break;
-			default:
-				$rowc[] = '';
-		}
-		switch($row['endweek']){
-			case 1:
-				$rowc[] = 'Monday';
-				break;
-			case 2:
-				$rowc[] = 'Tuesday';
-				break;
-			case 3:
-				$rowc[] = 'Wednesday';
-				break;
-			case 4:
-				$rowc[] = 'Thursday';
-				break;
-			case 5:
-				$rowc[] = 'Friday';
-				break;
-			case 6:
-				$rowc[] = 'Saturday';
-				break;
-			case 7:
-				$rowc[] = 'Sunday';
-				break;
-			default:
-				$rowc[] = '';
-		}
+		$rowc[] = $weekShow[$row['startweek']];
+		$rowc[] = $weekShow[$row['endweek']];		
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
@@ -416,7 +370,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
-		$row = Customer::getRecordByField('worktimeid',$id,'worktimepackage_worktimes');
+		$row = Customer::getRecordByField('worktime_id',$id,'worktimepackage_worktimes');
 		if($row['id'] != '') {
 			$objResponse->addAlert($locate->Translate("this worktime in one or more package, can not delete"));
 			return $objResponse->getXML();

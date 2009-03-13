@@ -70,8 +70,8 @@ require_once('worktimepackages.common.php');
 			#worktimeAllDiv a:hover{ background-color:#003399; color:#FFFFFF; cursor:pointer;}
 			#worktimeAllDiv a.selected{background-color:#003399; color:#FFFFFF;}
 			#worktimeSltdDiv{width:300px; height:80px; border:#333333 1px solid; background-color:#FFFFFF; overflow-y:scroll;}
-			#worktimeSltdDiv span{overflow:hidden; display:block; float:left; margin:2px 6px;}
-			#worktimeSltdDiv span a{ color:#FF0000; cursor:pointer; margin-left:8px; float:right;text-decoration:none;}
+			#worktimeSltdDiv span{overflow:hidden; display:block; float:left; margin:2px 0px;}
+			#worktimeSltdDiv span a{ color:#FF0000; cursor:pointer; margin-left:0px; float:right;text-decoration:none;}
 			#worktimeSltdDiv span a:hover{ background-color:#0066FF;}
 		</style>
 		<script type="text/javascript">

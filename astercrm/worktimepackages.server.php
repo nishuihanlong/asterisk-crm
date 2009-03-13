@@ -218,9 +218,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->exportFlag = '1';//对导出标记进行赋值
+	//$table->exportFlag = '0';//对导出标记进行赋值
 	$table->addRowSearchMore("worktimepackages",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -233,7 +233,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
-		$table->addRow("worktimepackages",$rowc,0,0,0,$divName,$fields);
+		$table->addRow("worktimepackages",$rowc,1,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -252,7 +252,7 @@ function add(){
    // Edit zone
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$objResponse->addScript("resetC();");
+	//$objResponse->addScript("resetC();");
 	$html = Table::Top($locate->Translate("Add Worktimepackage"),"formDiv");  // <-- Set the title for your form.
 	$html .= Customer::formAdd();  // <-- Change by your method
 	// End edit zone
@@ -273,7 +273,7 @@ function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
-	if(trim($f['worktimepackage_name']) == '' || trim($f['sltedWorktimes']) == ''){
+	if(trim($f['worktimepackage_name']) == '' ){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
@@ -299,18 +299,15 @@ function save($f){
 */
 
 function update($f){
+	//print_r($f);exit;
 	global $locate;
 	$objResponse = new xajaxResponse();
-	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){
+	if(trim($f['worktimepackage_name']) == '' ){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
-	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
-		$objResponse->addAlert($locate->Translate("Please enter the queue number"));
-		return $objResponse->getXML();
-	}
 
-	$respOk = Customer::updateCampaignRecord($f);
+	$respOk = Customer::updateWorktimepackage($f);
 
 	if($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -331,15 +328,35 @@ function update($f){
 */
 
 function edit($id){
-	global $locate;
-	$html = Table::Top( $locate->Translate("Edit Campaign"),"formDiv"); 
+	global $locate,$db;
+	$html = Table::Top( $locate->Translate("Edit Worktimepackage"),"formDiv"); 
 	$html .= Customer::formEdit($id);
 	$html .= Table::Footer();
 	// End edit zone
-
+	
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
+	$objResponse->addScript("resetC();");
+
+	$res = astercrm::getRecordsByField('worktimepackage_id',$id,'worktimepackage_worktimes');
+	while($res->fetchInto($row)){
+		$wp[]=$row['worktime_id'];
+	}
+
+	$query = "SELECT * FROM worktimes";
+	if($_SESSION['curuser']['usertype'] != 'admin') $query .= " WHERE groupid = ".$_SESSION['curuser']['groupid'];
+	$worktimes_res = $db->query($query);
+
+	$i=0;
+	$weekShow=array('','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+	while ( $worktimes_res->fetchInto($worktimes_row)) {
+		$i++;
+		if(in_array($worktimes_row['id'],$wp)){
+			$cur_content = $worktimes_row['id'].'-'.$locate->Translate("from").':'.$worktimes_row['starttime'].'&nbsp;'.$locate->Translate("to").':'.$worktimes_row['endtime'].'&nbsp;('.$weekShow[$worktimes_row['startweek']].'->'.$weekShow[$worktimes_row['endweek']].')';
+			$objResponse->addScript("mf_click(".$i.",'".$cur_content."');");
+		}
+	}
 	return $objResponse->getXML();
 }
 
@@ -372,13 +389,13 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
 	if($optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'campaign'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'worktimepackages'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecord($id,'campaign');
-		$res = Customer::deleteRecords("campaignid",$id,'diallist');
+		$res = Customer::deleteRecord($id,'worktimepackages');
+		$res1 = Customer::deleteRecords("worktimepackage_id",$id,'worktimepackage_worktimes');
 		
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
