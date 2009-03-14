@@ -93,6 +93,8 @@ require_once('login.common.php');
 						    <OPTION value="en_US">English</OPTION>
 						    <OPTION value="cn_ZH">简体中文</OPTION>
 						    <OPTION value="ch_FR">Français</OPTION>
+						    <OPTION value="es_MX">Spanish</OPTION>
+						    <OPTION value="de_GER">Deutsch</OPTION>
 				      </SELECT>
 				      <input id="loginButton" name="loginButton" type="submit" value=""/>
 				  <input id="onclickMsg" name="onclickMsg" type="hidden" value=""/>
