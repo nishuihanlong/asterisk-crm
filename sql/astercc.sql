@@ -629,8 +629,8 @@ DROP TABLE IF EXISTS `worktimepackage_worktimes`;
 
 CREATE TABLE `worktimepackage_worktimes` (
 `id` int(11) NOT NULL auto_increment,
-`worktimepackageid` int(11) NOT NULL,
-`worktimeid` int(11) NOT NULL,
+`worktimepackage_id` int(11) NOT NULL,
+`worktime_id` int(11) NOT NULL,
 `cretime` datetime default NULL ,
 `creby` varchar(30) NOT NULL default '',
 UNIQUE KEY `id` (`id`)
