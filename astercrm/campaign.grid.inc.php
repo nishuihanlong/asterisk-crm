@@ -143,6 +143,7 @@ class Customer extends astercrm
 				."enable='".$f['enable']."', "
 				."serverid='".$f['serverid']."', "
 				."waittime='".$f['waittime']."', "
+				."worktime_package_id='".$f['worktime_package_id']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
 				."inexten='".$f['inexten']."', "
@@ -312,6 +313,16 @@ class Customer extends astercrm
 		}else{
 				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 		}
+
+		$query = "SELECT id,worktimepackage_name From worktimepackages";
+		$worktimepackage_res = $db->query($query);
+		$worktimepackagehtml .= '<select name="worktime_package_id" id="worktime_package_id">
+						<option value="0">'.$locate->Translate("Any time").'</option>';
+		while ($worktimepackage_row = $worktimepackage_res->fetchRow()) {
+			$worktimepackagehtml .= '<option value="'.$worktimepackage_row['id'].'"';
+			$worktimepackagehtml .='>'.$worktimepackage_row['worktimepackage_name'].'</option>';
+		}
+		$worktimepackagehtml .= '</select>';
 		
 		$query = "SELECT id,name From servers";
 		$server_res = $db->query($query);
@@ -325,8 +336,7 @@ class Customer extends astercrm
 
 	$html = '
 			<!-- No edit the next line -->
-			<form method="post" name="f" id="f">
-			
+			<form method="post" name="f" id="f">			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Campaign Name").'*</td>
@@ -344,9 +354,13 @@ class Customer extends astercrm
 					<td align="left">'.$serverhtml.'</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Worktime package").'</td>
+					<td align="left">'.$worktimepackagehtml.'</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Waitting time").'</td>
 					<td align="left"><input type="text" id="waittime" name="waittime" size="30" maxlength="3" value="45"></td>
-				</tr>
+				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$config['system']['outcontext'].'"></td>
