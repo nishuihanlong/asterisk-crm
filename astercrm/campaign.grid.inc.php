@@ -173,6 +173,7 @@ class Customer extends astercrm
 				."campaignnote='".$f['campaignnote']."', "
 				."enable='".$f['enable']."', "	
 				."serverid='".$f['serverid']."', "
+				."worktime_package_id='".$f['worktime_package_id']."', "
 				."waittime='".$f['waittime']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
@@ -315,6 +316,9 @@ class Customer extends astercrm
 		}
 
 		$query = "SELECT id,worktimepackage_name From worktimepackages";
+		if($_SESSION['curuser']['usertype'] != 'admin'){
+			$query .= " AND groupid =".$_SESSION['curuser']['groupid'];
+		}
 		$worktimepackage_res = $db->query($query);
 		$worktimepackagehtml .= '<select name="worktime_package_id" id="worktime_package_id">
 						<option value="0">'.$locate->Translate("Any time").'</option>';
@@ -455,6 +459,22 @@ class Customer extends astercrm
 		}
 		$serverhtml .= '</select>';
 
+		$query = "SELECT id,worktimepackage_name From worktimepackages";
+		if($_SESSION['curuser']['usertype'] != 'admin'){
+			$query .= " AND groupid =".$_SESSION['curuser']['groupid'];
+		}
+		$worktimepackage_res = $db->query($query);
+		$worktimepackagehtml .= '<select name="worktime_package_id" id="worktime_package_id">
+						<option value="0">'.$locate->Translate("Any time").'</option>';
+		while ($worktimepackage_row = $worktimepackage_res->fetchRow()) {
+			$worktimepackagehtml .= '<option value="'.$worktimepackage_row['id'].'"';
+			if($worktimepackage_row['id'] == $campaign['worktime_package_id']){
+				$worktimepackagehtml .= ' selected ';
+			}
+			$worktimepackagehtml .='>'.$worktimepackage_row['worktimepackage_name'].'</option>';
+		}
+		$worktimepackagehtml .= '</select>';
+
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -479,6 +499,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Asterisk Server").'*</td>
 					<td align="left">'.$serverhtml.'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Worktime package").'</td>
+					<td align="left">'.$worktimepackagehtml.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Waitting time").'</td>
