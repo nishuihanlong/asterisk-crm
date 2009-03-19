@@ -1032,11 +1032,7 @@ Class astercrm extends PEAR{
 						&nbsp; [<a href=? onclick="addSchedulerDial(); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
 					</td>
 				</tr>
-				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:">
-					<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
-					<td align="left"><select id="curCampaign" name=="curCampaign" ></select>
-						<input type="text" id="sDialNum" name="sDialNum" size="20" maxlength="35">
-					</td>
+				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none">		
 				</tr>	
 				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
@@ -1507,9 +1503,9 @@ Class astercrm extends PEAR{
 								hideObj(\'trEditBankDetails\');
 								xajax.$(\'hidEditBankDetails\').value = \'OFF\';
 							}
-							return false;">'.$locate->Translate("bank").'</a>]
+							return false;">'.$locate->Translate("bank").'</a>]					
 						</td>
-					</tr>
+					</tr>					
 					<tr id="trEditCustomerDetails" name="trEditCustomerDetails">
 						<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 						<td align="left"><input type="text" id="customerContact" name="customerContact" size="35" maxlength="35" value="' . $customer['contact'] . '"><BR />
@@ -1778,8 +1774,11 @@ Class astercrm extends PEAR{
 								hideObj(\'trCustomerBankDetails\');
 								xajax.$(\'hidCustomerBankDetails\').value = \'OFF\';
 							}
-							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'out\');return false;">'.$locate->Translate("outbound").'</a>]&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'in\');return false;">'.$locate->Translate("inbound").'</a>]&nbsp;[<a href=? onclick="xajax_showDiallist(\''.$_SESSION['curuser']['extension'].'\',\''.$customer['id'].'\');return false;">'.$locate->Translate("diallist").'</a>]&nbsp;[<a href=? onclick="xajax_showRecords(\''.$customer['id'].'\');return false;">'.$locate->Translate("monitors").'</a>]</td>
-				</tr>
+							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'out\');return false;">'.$locate->Translate("outbound").'</a>]&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'in\');return false;">'.$locate->Translate("inbound").'</a>]&nbsp;[<a href=? onclick="xajax_showDiallist(\''.$_SESSION['curuser']['extension'].'\',\''.$customer['id'].'\');return false;">'.$locate->Translate("diallist").'</a>]&nbsp;[<a href=? onclick="xajax_showRecords(\''.$customer['id'].'\');return false;">'.$locate->Translate("monitors").'</a>]
+							&nbsp; [<a href=? onclick="addSchedulerDial(); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
+						</td>
+					</tr>
+					<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none"></tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("city").'/'.$locate->Translate("state").'/'.$locate->Translate("country").'['.$locate->Translate("zipcode").']'.'</td>
 					<td align="left">'.$customer['city'].'/'.$customer['state'].'/'.$customer['country'].'['.$customer['zipcode'].']'.'</td>

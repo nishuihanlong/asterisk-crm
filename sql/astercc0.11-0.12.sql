@@ -11,6 +11,7 @@ CREATE TABLE `worktimes` (
 `endtime` time default null,
 `startweek` int(1)  NOT NULL default '0',
 `endweek` int(1)  NOT NULL default '0',
+`groupid` INT NOT NULL DEFAULT '0',
 `cretime` datetime default NULL ,
 `creby` varchar(30) NOT NULL default '',
 UNIQUE KEY `id` (`id`)

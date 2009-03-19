@@ -87,6 +87,14 @@ require_once('customer.common.php');
 			
 			xajax_dial(dialnum,firststr,myFormValue,dtmfstr);
 		}
+
+		function addSchedulerDial(){
+			xajax_addSchedulerDial(xajax.$("trAddSchedulerDial").style.display,'');
+		}
+
+		function saveSchedulerDial(){
+			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value);
+		}
 		//-->
 		</SCRIPT>
 
@@ -96,7 +104,8 @@ require_once('customer.common.php');
 
 		<script type="text/javascript" src="js/ajax.js"></script>
 		<script type="text/javascript" src="js/ajax-dynamic-list.js"></script>
-
+		<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
+	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 
@@ -117,7 +126,7 @@ require_once('customer.common.php');
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width:500px;"></div>
 		<div id="formCustomerInfo" class="formDiv drsElement"
-			style="left: 20px; top: 50px; width: 550px"></div>
+			style="left: 20px; top: 50px; width: 650px"></div>
 		<div id="formContactInfo" class="formDiv drsElement"
 			style="left: 20px; top: 330px;width: 600px"></div>
 		<div id="formCdr" class="formDiv drsElement"

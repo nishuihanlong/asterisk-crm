@@ -1233,14 +1233,73 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	return $objResponse->getXML();
 }
 
-function addSchedulerDial(){
-	global $locate,$db,$config;
+function addSchedulerDial($display='',$number){
+	global $locate,$db;
+
 	$objResponse = new xajaxResponse();
-	$html = '<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
-					<td align="left"><select id="curCampaign" name=="curCampaign" ></select>
-						<input type="text" id="sDialNum" name="sDialNum" size="20" maxlength="35">
-					</td>';
-	$objResponse->addAssign("trAddSchedulerDial", "innerHTML", $html);
+	if($display == "none"){
+		$campaignflag = false;
+		$html = '<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
+					<td align="left">'.$locate->Translate("Number").' : <input type="text" id="sDialNum" name="sDialNum" size="15" maxlength="35" value="'.$number.'">';
+		if($number != ''){
+			$curtime = date("Y-m-d H:i:s");
+			$curtime = date("Y-m-d H:i:s",strtotime("$curtime -30 seconds"));
+			$sql = "SELECT campaignid FROM dialedlist WHERE dialednumber = '".$number."' AND dialedtime > '".$curtime."' ";
+			$curcampaignid = $db->getOne($sql);
+			if($curcampaignid != ''){
+				$campaignflag = true;
+				$curcampaign = astercrm::getRecordByID($curcampaignid,'campaign');
+				$curcampaign_name = $curcampaign['campaignname'];
+				$html .= '&nbsp;'.$locate->Translate("campaign").' : <input type="text" value="'.$curcampaign_name.'" id="campaignname" name="campaignname" size="15" readonly><input type="hidden" value="'.$curcampaignid.'" id="curCampaignid" name="curCampaignid" size="15" readonly>';
+			}
+		}
+		if(!$campaignflag){
+			$campaign_res = astercrm::getRecordsByField("groupid",$_SESSION['curuser']['groupid'],"campaign");
+			while ($campaign_res->fetchInto($campaign)) {
+				$campaignoption .= '<option value="'.$campaign['id'].'">'.$campaign['campaignname'].'</option>'; 
+			}
+			$html .= '&nbsp;'.$locate->Translate("campaign").' : <select id="curCampaignid" name="curCampaignid" >'.$campaignoption.'</select>';
+		}
+		//
+		$html .= '<br>'.$locate->Translate("Dialtime").' : <input type="text" name="sDialtime" id="sDialtime" size="15" value="" onfocus="displayCalendar(this,\'yyyy-mm-dd hh:ii\',this,true)">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Add").'" onclick="saveSchedulerDial();">
+					</td>';		
+		$objResponse->addAssign("trAddSchedulerDial", "innerHTML", $html);
+		$objResponse->addAssign("trAddSchedulerDial", "style.display", "");
+	}else{
+		$objResponse->addAssign("trAddSchedulerDial", "style.display", "none");
+	}
+	return $objResponse->getXML();
+}
+
+function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime=''){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	if($dialnumber == ''){
+		$objResponse->addAlert($locate->Translate("Number can not be blank"));
+		return $objResponse->getXML();
+	}
+	if($campaignid == ''){
+		$objResponse->addAlert($locate->Translate("Campaign can not be blank"));
+		return $objResponse->getXML();
+	}
+	if($dialtime == ''){
+		$objResponse->addAlert($locate->Translate("Dial time can not be blank"));
+		return $objResponse->getXML();
+	}	
+	$sql = "INSERT INTO diallist SET "
+			."dialnumber='".astercrm::getDigitsInStr($dialnumber)."', "
+			."groupid='".$_SESSION['curuser']['groupid']."', "
+			."dialtime='".$dialtime."', "
+			."creby='".$_SESSION['curuser']['username']."', "
+			."cretime= now(), "
+			."campaignid= ".$campaignid." ";
+	$res =& $db->query($sql);
+	if($res){
+		$objResponse->addAlert($locate->Translate("Add scheduler dial success"));
+		$objResponse->addAssign("trAddSchedulerDial", "style.display", "none");
+	}else{
+		$objResponse->addAlert($locate->Translate("Add scheduler dial failed"));
+	}
 	return $objResponse->getXML();
 }
 
