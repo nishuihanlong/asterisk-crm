@@ -1233,6 +1233,17 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	return $objResponse->getXML();
 }
 
+function addSchedulerDial(){
+	global $locate,$db,$config;
+	$objResponse = new xajaxResponse();
+	$html = '<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
+					<td align="left"><select id="curCampaign" name=="curCampaign" ></select>
+						<input type="text" id="sDialNum" name="sDialNum" size="20" maxlength="35">
+					</td>';
+	$objResponse->addAssign("trAddSchedulerDial", "innerHTML", $html);
+	return $objResponse->getXML();
+}
+
 $xajax->processRequests();
 
 ?>

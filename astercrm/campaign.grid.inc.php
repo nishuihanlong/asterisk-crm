@@ -317,8 +317,9 @@ class Customer extends astercrm
 
 		$query = "SELECT id,worktimepackage_name From worktimepackages";
 		if($_SESSION['curuser']['usertype'] != 'admin'){
-			$query .= " AND groupid =".$_SESSION['curuser']['groupid'];
+			$query .= " Where groupid =".$_SESSION['curuser']['groupid'];
 		}
+
 		$worktimepackage_res = $db->query($query);
 		$worktimepackagehtml .= '<select name="worktime_package_id" id="worktime_package_id">
 						<option value="0">'.$locate->Translate("Any time").'</option>';
@@ -461,7 +462,7 @@ class Customer extends astercrm
 
 		$query = "SELECT id,worktimepackage_name From worktimepackages";
 		if($_SESSION['curuser']['usertype'] != 'admin'){
-			$query .= " AND groupid =".$_SESSION['curuser']['groupid'];
+			$query .= " Where groupid =".$_SESSION['curuser']['groupid'];
 		}
 		$worktimepackage_res = $db->query($query);
 		$worktimepackagehtml .= '<select name="worktime_package_id" id="worktime_package_id">

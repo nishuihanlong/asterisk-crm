@@ -319,6 +319,10 @@ $clientDst = $_REQUEST['clientdst'];
 			setTimeout("xajax_bargeInvite(srcchan,dstchan,inviteExten)",1000);
 		}
 
+		function addSchedulerDial(){
+			alert('right');
+		}
+
 		function menuFix() { 
 			var sfEls = document.getElementById("divExtension").getElementsByTagName("li"); 
 			for (var i=0; i<sfEls.length; i++) { 

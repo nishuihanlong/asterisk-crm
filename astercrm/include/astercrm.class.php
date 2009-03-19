@@ -1029,8 +1029,15 @@ Class astercrm extends PEAR{
 								xajax.$(\'hidAddBankDetails\').value = \'OFF\';
 							}
 							return false;">'.$locate->Translate("bank").'</a>]
+						&nbsp; [<a href=? onclick="addSchedulerDial(); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
 					</td>
 				</tr>
+				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:">
+					<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
+					<td align="left"><select id="curCampaign" name=="curCampaign" ></select>
+						<input type="text" id="sDialNum" name="sDialNum" size="20" maxlength="35">
+					</td>
+				</tr>	
 				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 					<td align="left">
