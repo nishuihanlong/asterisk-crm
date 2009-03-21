@@ -1,9 +1,12 @@
 
+
 alter table customer add index `groupid` (`groupid`);
 alter table note add index `customerid` (`customerid`);
 
+alter table `astercrm_account` change `agent` `agent` varchar(50) NOT NULL default '',;
 alter table campaign add `waittime`  varchar(3) NOT NULL default '45';
 alter table campaign add  `worktime_package_id` int(11) NOT NULL default '0';
+alter table credithistory add `comment` varchar(20) NOT NULL default ''; 
 
 CREATE TABLE `worktimes` (
 `id` int(11) NOT NULL auto_increment,

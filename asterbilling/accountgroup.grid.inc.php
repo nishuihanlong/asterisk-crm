@@ -115,6 +115,7 @@ class Customer extends astercrm
 							."srccredit='".$f['curcredit']."', "
 							."modifystatus= 'add', "
 							."modifyamount='".$f['creditmod']."', "
+							."comment='".$f['comment']."', "
 							."operator='".$_SESSION['curuser']['userid']."'";
 			$historyres =& $db->query($historysql);
 		}elseif ( $f['creditmodtype'] == 'reduce' ){
@@ -126,6 +127,7 @@ class Customer extends astercrm
 							."srccredit='".$f['curcredit']."', "
 							."modifystatus= 'reduce', "
 							."modifyamount='".$f['creditmod']."', "
+							."comment='".$f['comment']."', "
 							."operator='".$_SESSION['curuser']['userid']."'";
 			$historyres =& $db->query($historysql);
 		}
@@ -523,13 +525,14 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Operate").'</td>
-					<td align="left">
-						<select id="creditmodtype" name="creditmodtype">
+					<td align="left" id="tdOperate">
+						<select id="creditmodtype" name="creditmodtype" onchange="showComment(this)">
 							<option value="">'.$locate->Translate("No change").'</option>
 							<option value="add">'.$locate->Translate("Refund").'</option>
 							<option value="reduce">'.$locate->Translate("Charge").'</option>
 						</select>
-						<input type="text" id="creditmod" name="creditmod" size="15" maxlength="100" value="" >
+						<input type="text" id="creditmod" name="creditmod" size="15" maxlength="100" value="" disabled><p>
+						'.$locate->Translate("Comment").' :&nbsp;<input type="text" id="comment" name="comment" size="18" maxlength="20" value="" disabled></p>
 					</td>
 				</tr>
 

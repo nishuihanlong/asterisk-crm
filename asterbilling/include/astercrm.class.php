@@ -290,6 +290,7 @@ Class astercrm extends PEAR{
 							."srccredit='".$f['curcredit']."', "
 							."modifystatus= 'add', "
 							."modifyamount='".$f['creditmod']."', "
+							."comment='".$f['comment']."', "
 							."operator='".$_SESSION['curuser']['userid']."'";
 			$historyres =& $db->query($historysql);
 		}elseif ( $f['creditmodtype'] == 'reduce' ){
@@ -302,6 +303,7 @@ Class astercrm extends PEAR{
 							."srccredit='".$f['curcredit']."', "
 							."modifystatus= 'reduce', "
 							."modifyamount='".$f['creditmod']."', "
+							."comment='".$f['comment']."', "
 							."operator='".$_SESSION['curuser']['userid']."'";
 			$historyres =& $db->query($historysql);
 		}

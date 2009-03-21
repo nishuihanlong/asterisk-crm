@@ -298,6 +298,7 @@ CREATE TABLE `credithistory` (
   `srccredit` double(24,4) NOT NULL default '0.0000',
   `modifystatus` varchar(20) NOT NULL default '',
   `modifyamount` double(24,4) NOT NULL default '0.0000',
+  `comment` varchar(20) NOT NULL default '',
   `operator` varchar(20) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   key `resellerid` (`resellerid`,`groupid`,`clidid`,`modifytime`,`modifystatus`,`modifyamount`,`operator`)
@@ -476,7 +477,7 @@ CREATE TABLE `astercrm_account` (
  `password` varchar(30) NOT NULL default '',
  `firstname` varchar(15) NOT NULL default '',		
  `lastname` varchar(15) NOT NULL default '',		
- `agent` varchar(15) NOT NULL default '',		
+ `agent` varchar(50) NOT NULL default '',		
  `extension` varchar(15) NOT NULL default '',
  `extensions` varchar(200) NOT NULL default '',
  `channel` varchar(30) NOT NULL default '',

@@ -69,6 +69,17 @@ require_once('clid.common.php');
 				xajax_setGroup(resellerid);
 		}
 
+		function showComment(obj){
+			var tval = obj.value;
+			if(tval == "add" || tval== "reduce"){
+				xajax.$("creditmod").disabled = false;
+				xajax.$("comment").disabled = false;
+			}else{
+				xajax.$("creditmod").disabled = true;
+				xajax.$("comment").disabled = true;
+			}
+		}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
