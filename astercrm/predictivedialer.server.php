@@ -78,7 +78,7 @@ function init(){
 				$queue_checked = "";
 
 				if ($campaign['status'] == "busy"){
-					$status = "checked'";
+					$status = "checked";
 				}
 
 				if ($campaign['limit_type'] == "channel"){
