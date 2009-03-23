@@ -64,16 +64,34 @@ class astercc extends PEAR
 		fwrite($fp,$content);
 	}
 
-	function checkPeerStatus($groupid){
+	function checkPeerStatus($groupid,$peers){
 		$curChans =& astercc::getCurChan($groupid);
 		$status =  array();
 		while ($curChans->fetchInto($list)) {
-			$status[$list['src']] = $list;
-			$status[$list['src']]['direction'] = 'outbound';
+			// 检查src或者dst是否在peers里
+			if (astercc::array_exist($list['src'], $peers) || astercc::array_exist($list['dst'], $peers)){
+				$status[$list['src']] = $list;
+				$status[$list['src']]['direction'] = 'outbound';
+			}else{
+				// 使用srcchan作为src
+				if (ereg("\/(.*)-", $list['srcchan'], $myAry) ){
+					$status[$myAry[1]] = $list;
+					$status[$myAry[1]]['direction'] = 'outbound';
+				}
+			}
 			$status[$list['dst']] = $list;
 			$status[$list['dst']]['direction'] = 'inbound';
 		}
 		return $status;
+	}
+
+	function array_exist($value,$ary){
+		foreach ($ary as $val){
+			if ($val == $value){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	function creditDigits($credit){

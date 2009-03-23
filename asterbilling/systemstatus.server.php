@@ -56,12 +56,12 @@ function init(){
 	}
 
 	$_SESSION['status'] = array();
+	$peers = $_SESSION['curuser']['extensions'];
 
 	# 获得当前的channel
 	$curchannels = array();
-	$curchannels = astercc::checkPeerStatus($_SESSION['curuser']['groupid']);
+	$curchannels = astercc::checkPeerStatus($_SESSION['curuser']['groupid'],$peers);
 
-	$peers = $_SESSION['curuser']['extensions'];
 
 	foreach ($peers as $peer){
 		$i++;
@@ -229,7 +229,7 @@ function showStatus(){
 
 	$peers = $_SESSION['curuser']['extensions'];
 	
-	$peerstatus = astercc::checkPeerStatus($_SESSION['curuser']['groupid']);
+	$peerstatus = astercc::checkPeerStatus($_SESSION['curuser']['groupid'],$peers);
 	//print_r($peerstatus);exit;
 
 	$event = array('ring' => 1, 'dial' => 2, 'ringing' => 3, 'link' => 4);
