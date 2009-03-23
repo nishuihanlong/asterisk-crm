@@ -30,12 +30,12 @@ class astercc extends PEAR
 		fwrite($fp,$content);
 	}
 
-	function generatePeersFile(){
+	function generatePeersFile($resellerid){
 		global $db,$config;
 
 		if ($config['system']['sipfile'] == '')	return;
 
-		$query = "SELECT id FROM accountgroup WHERE resellerid = ".$_SESSION['curuser']['resellerid'];
+		$query = "SELECT id FROM accountgroup WHERE resellerid = $resellerid";
 		$group_list = $db->query($query);
 		$content = '';
 		while	($group_list->fetchInto($group)){
@@ -54,7 +54,7 @@ class astercc extends PEAR
 			}
 		}
 
-		$filename = $config['system']['sipfile']."_".$_SESSION['curuser']['resellerid'].".conf";
+		$filename = $config['system']['sipfile']."_$resellerid.conf";
 
 		$fp=fopen($filename,"w");
 		if (!$fp){

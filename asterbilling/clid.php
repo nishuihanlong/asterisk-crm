@@ -103,7 +103,7 @@ require_once('clid.common.php');
 				</td>
 			</tr>
 		</table>
-	<?if ($_SESSION['curuser']['usertype'] == 'reseller'){?>
+	<?if ($_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'admin'){?>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 			<tr>
 				<td style="padding: 0px;" align="center">

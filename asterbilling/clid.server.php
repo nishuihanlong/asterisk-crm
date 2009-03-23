@@ -61,19 +61,29 @@ function init(){
 }
 
 function generateSipFile(){
-	global $locate;
+	global $locate,$db;
 	$objResponse = new xajaxResponse();
-	astercc::generatePeersFile();
-	$objResponse->addAlert($locate->Translate("sip conf file generated"));
+	if ($_SESSION['curuser']['usertype'] == 'reseller'){
+		astercc::generatePeersFile($_SESSION['curuser']['resellerid']);
+		$objResponse->addAlert($locate->Translate("sip conf file generated"));
+	}elseif ($_SESSION['curuser']['usertype'] == 'admin'){
+		$res = astercrm::getAll("resellergroup");
+		while ($res->fetchInto($row)) {
+			astercc::generatePeersFile($row['id']);
+		}
+		$objResponse->addAlert($locate->Translate("all reseller sip conf files generated"));
+	}
 	return $objResponse;
 }
 
 function reloadSip(){
 	global $locate;
 	$objResponse = new xajaxResponse();
-	$myAsterisk = new Asterisk();
-	$myAsterisk->execute("sip reload");
-	$objResponse->addAlert($locate->Translate("sip conf reloaded"));
+	if ($_SESSION['curuser']['usertype'] == 'reseller' || $_SESSION['curuser']['usertype'] == 'admin'){
+		$myAsterisk = new Asterisk();
+		$myAsterisk->execute("sip reload");
+		$objResponse->addAlert($locate->Translate("sip conf reloaded"));
+	}
 	return $objResponse;
 }
 
