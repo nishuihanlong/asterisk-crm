@@ -220,6 +220,7 @@ function setCreditLimit($peer,$channel,$creditlimit){
 */
 
 function showStatus(){
+	global $db;
 	// get old status
 	$cstatus = $_SESSION['status'];
 	$objResponse = new xajaxResponse();
@@ -235,6 +236,20 @@ function showStatus(){
 	$event = array('ring' => 1, 'dial' => 2, 'ringing' => 3, 'link' => 4);
 
 	foreach ($peers as $peer){
+		// update peer status
+		$query = "SELECT status FROM sip_show_peers WHERE username = '$peer' OR username LIKE '$peer/%' ";
+		$peer_status = $db->getOne($query);
+		if ($peer_status){
+			if (ereg("\((.*)ms\)", $peer_status, $myAry) ){
+				if ($myAry[1] > 300){
+					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>$peer_status</font>");
+				}else{
+					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>$peer_status</font>");
+				}
+			}else{
+				$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>$peer_status</font>");
+			}
+		}
 
 		if ($cstatus[$peer]['disposition'] != $peerstatus[$peer]['disposition']){	// status changed
 			if ($peerstatus[$peer]['disposition'] == ''){

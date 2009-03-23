@@ -57,7 +57,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	if (num != '')
 	{
-		div.innerHTML += "<div id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</div>";
+		div.innerHTML += "<span id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</span>&nbsp;<span id=\"" + divId + "-peer-status\"></span>";
 	}else{
 		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
 	}
@@ -185,7 +185,7 @@ function addSimpleDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	if (num != '')
 	{
-		div.innerHTML += "<div id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</div>";
+		div.innerHTML += "<span id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</span>&nbsp;&nbsp;<span id=\"" + divId + "-peer-status\"></span>";
 	}else{
 		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
 	}
