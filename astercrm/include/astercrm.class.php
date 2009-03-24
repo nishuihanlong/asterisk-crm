@@ -2392,7 +2392,8 @@ Class astercrm extends PEAR{
 	}
 
 	function db2html($string){
-		return str_replace(chr(13),'<br>',$string);
+		$string = str_replace("\n",'<br>',$string);
+		return $string;
 	}
 
 	function createCdrGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter = null, $content = null, $stype = null, $order = null, $divName = "formCdr", $ordering = ""){
