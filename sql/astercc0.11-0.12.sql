@@ -3,7 +3,7 @@
 alter table customer add index `groupid` (`groupid`);
 alter table note add index `customerid` (`customerid`);
 
-alter table `astercrm_account` change `agent` `agent` varchar(50) NOT NULL default '',;
+alter table `astercrm_account` change `agent` `agent` varchar(50) NOT NULL default '';
 alter table campaign add `waittime`  varchar(3) NOT NULL default '45';
 alter table campaign add  `worktime_package_id` int(11) NOT NULL default '0';
 alter table credithistory add `comment` varchar(20) NOT NULL default ''; 
@@ -39,3 +39,12 @@ CREATE TABLE `worktimepackage_worktimes` (
 `creby` varchar(30) NOT NULL default '',
 UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+#for paypal Echeck
+alter table resellergroup add echeck_account varchar(255) NOT NULL default '';
+alter table resellergroup add echeck_status enum('enable','disable') NOT NULL default 'disable',;
+alter table resellergroup add echeck_item_name varchar(30) NOT NULL default '';amount
+alter table resellergroup add echeck_currency_code varchar(15) NOT NULL default 'USD';
+alter table resellergroup add echeck_identity_token varchar(255) NOT NULL default '';
+alter table resellergroup add echeck_amount_package varchar(15) NOT NULL default '';
