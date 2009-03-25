@@ -103,6 +103,7 @@ class Common{
 		$aryMenu['profile'] = array("link"=>"profile.php","title"=> $locate_common->Translate("profile"));
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$aryMenu['profile'] = '';
 			$html .= common::generateNavMenu($aryMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
 			$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','profile');

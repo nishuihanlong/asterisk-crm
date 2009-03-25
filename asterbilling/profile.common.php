@@ -46,10 +46,7 @@ $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['c
 $xajax = new xajax("profile.server.php");
 
 $xajax->registerFunction("init");
-$xajax->registerFunction("savePreferences");
-$xajax->registerFunction("checkDb");
-$xajax->registerFunction("checkAMI");
-$xajax->registerFunction("checkSys");
-$xajax->registerFunction("saveLicence");
+$xajax->registerFunction("rechargeByPaypal");
+$xajax->registerFunction("refreshRechargeInfo");
 
 ?>

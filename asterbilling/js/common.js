@@ -1,5 +1,5 @@
 function  addOption(objId,optionVal,optionText)  {
-	alert(objId);
+	//alert(objId);
 	objSelect = document.getElementById(objId);
 	var _o = document.createElement("OPTION");
 	_o.text = optionText;
