@@ -421,7 +421,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		if ($limit == "limit"){
 			$query .= " limit 0,10 ";
 		}
-		print $query;exit;
+
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;
