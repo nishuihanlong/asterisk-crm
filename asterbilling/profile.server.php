@@ -36,11 +36,14 @@ require_once ("include/astercrm.class.php");
 */
 
 function init(){
+	global $config,$locate;
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 	if($_SESSION['curuser']['usertype'] == 'reseller'){
 		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+		$objResponse->addAssign("nameTitle","innerHTML",$locate->Translate('Reseller name'));
+		$objResponse->addAssign("nameValue","innerHTML",$reseller_row['resellername']);
 		//print_r($reseller_row);exit;
 	}
 	return $objResponse;

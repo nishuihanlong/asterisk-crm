@@ -52,9 +52,8 @@ require_once('profile.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div><br>
-<form name="formPreferences" id="formPreferences" method="post">
 <center>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="600">
   <tr>
     <td height="39" class="td font" id="Database" name="Database" align="left">
 		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Infomation')?>
@@ -64,51 +63,23 @@ require_once('profile.common.php');
     <tr><td height="10" class="td"></td>
   </tr>
 </table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="780">
+<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600"> 
   <tr>
-    <td width="230" align="left" valign="top"  id="DbDbtype" name="DbDbtype">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbtype</td>
-    <td width="200" align="left" valign="top" >
-		<select id="iptDbDbtype" name="iptDbDbtype">
-			<option value="mysql">mysql</option>
-		</select>
-    </td>
-    <td align="left" valign="top" >
-		<div id="divDbDbtype" name="divDbDbtype">
-		</div>
-	</td>
+    <td width="40%" align="left" valign="top" bgcolor="#F7F7F7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="nameTitle" name="nameTitle"></div></td>
+    <td width="60%" align="left" valign="top" bgcolor="#F7F7F7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="nameValue" name="nameValue"></div></td>
   </tr>
-  <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="DbDbhost" name="DbDbhost">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbhost</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
-		<input type="text" size="30" size="30" id="iptDbDbhost" name="iptDbDbhost" />
-	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
-		<div id="divDbDbhost" name="divDbDbhost"></div>
-	</td>
+   <tr>
+    <td width="40%" align="left" valign="top" bgcolor="#F7F7F7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="nameTitle" name="nameTitle"></div></td>
+    <td width="60%" align="left" valign="top" bgcolor="#F7F7F7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="nameValue" name="nameValue"></div></td>
   </tr>
-  <tr>
-    <td width="230" align="left" valign="top"  id="DbDbname" name="DbDbname">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbname</td>
-    <td width="200" align="left" valign="top" >
-		<input type="text" size="30" size="30" id="iptDbDbname" name="iptDbDbname" />
-	</td>
-    <td align="left" valign="top" >
-		<div id="divDbDbname" name="divDbDbname"></div>
-	</td>
-  </tr>
-  <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="DbUsername" name="DbUsername">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7"><input type="text" size="30" id="iptDbUsername" name="iptDbUsername" /></td>
-    <td align="left" valign="top" bgcolor="#F7F7F7"><div id="divDbUsername" name="divDbUsername"></div></td>
-  </tr>
-  <tr>
-    <td width="230" align="left" valign="top"  id="DBPassWord" name="DbPassword">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password</td>
-    <td width="200" align="left" valign="top" ><input type="text" size="30" id="iptDbPassword" name="iptDbPassword" /></td>
-    <td align="left" valign="top" ><div id="divDbPassword" name="divDbPassword"></div></td>
+   <tr>
+    <td width="40%" align="left" valign="top" bgcolor="#F7F7F7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="nameTitle" name="nameTitle"></div></td>
+    <td width="60%" align="left" valign="top" bgcolor="#F7F7F7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="nameValue" name="nameValue"></div></td>
   </tr>
 </table>
 
 
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="600">
   <tr>
     <td height="39" class="td font" id="Asterisk" name="Asterisk"  align="left">
 		&nbsp;&nbsp;&nbsp;Asterisk 
@@ -122,7 +93,7 @@ require_once('profile.common.php');
     <td height="10" class="td"></td>
   </tr>
 </table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu1" width="780">
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu1" width="600">
   <tr>
     <td width="230" align="left" valign="top" id="AsServer" name="AsServer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server
 	</td>
@@ -184,7 +155,7 @@ require_once('profile.common.php');
 	</td>
   </tr>
 </table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="600">
   <tr>
     <td height="39" class="td font" id="System" name="System"  align="left">
 		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('System');?> 
@@ -198,7 +169,7 @@ require_once('profile.common.php');
     <td height="10" class="td"></td>
   </tr>
 </table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu2" width="780">
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu2" width="600">
   <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysEventtype" name="SysEventtype">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eventtype
@@ -453,145 +424,6 @@ require_once('profile.common.php');
 	</td>
   </tr>
 </table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
-  <tr>
-    <td height="39" class="td font" id="ExternalCRM" name="ExternalCRM"  align="left">
-		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('External CRM');?>
-      <input type="button" onclick="display('menu3')"  value="+"/>
-    </td>
-  </tr>
-  <tr>
-    <td height="10" class="td"></td>
-  </tr>
-</table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu3" width="780">
-  <tr>
-    <td width="230" align="left" valign="top" id="SysEnableExternalCrm" name="SysEnableExternalCrm">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_external_crm</td>
-    <td width="200" align="left" valign="top" >
-		<select name="iptSysEnableExternalCrm" id="iptSysEnableExternalCrm">
-		  <option value="0">0</option>
-		  <option value="1">1</option>
-		</select></td>
-    <td align="left" valign="top" >
-		<div id="divSysEnableExternalCrm" name="divSysEnableExternalCrm"></div>
-	</td>
-  </tr>
-  <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysOpenNewWindow" name="SysOpenNewWindow">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open_new_window</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
-		<select name="iptSysOpenNewWindow" id="iptSysOpenNewWindow">
-		  <option value="0">0</option>
-		  <option value="1">1</option>
-		</select>
-	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
-		<div id="divSysOpenNewWindow" name="divSysOpenNewWindow"></div>
-	</td>
-  </tr>
-  <tr>
-    <td width="230" align="left" valign="top"  id="SysExternalCrmDefaultUrl" name="SysExternalCrmDefaultUrl">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;external_crm_default_url</td>
-    <td width="200" align="left" valign="top" >
-		<input type="text" size="30" id="iptSysExternalCrmDefaultUrl" name="iptSysExternalCrmDefaultUrl" />
-	</td>
-    <td align="left" valign="top" >
-		<div id="divSysExternalCrmDefaultUrl" name="divSysExternalCrmDefaultUrl"></div>
-	</td>
-  </tr>
-  <tr>
-    <td width="230" align="left" valign="top" bgcolor="#F7F7F7" id="SysExternalCrmUrl" name="SysExternalCrmUrl">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;external_crm_url</td>
-    <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
-		<input type="text" size="30" id="iptSysExternalCrmUrl" name="iptSysExternalCrmUrl" />
-	</td>
-    <td align="left" valign="top" bgcolor="#F7F7F7">
-		<div id="divSysExternalCrmUrl" name="divSysExternalCrmUrl"></div>
-	</td>
-  </tr>
-</table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
-  <tr>
-    <td height="39" class="td font" id="others" name="others"  align="left">
-		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Others');?>
-      <input type="button" onclick="display('menu4')"  value="+"/>
-    </td>
-  </tr>
-  <tr>
-    <td height="10" class="td"></td>
-  </tr>
-</table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu4" width="780">
-  <tr>
-    <td width="230" align="left" valign="top" id="googlemapkey" name="googlemapkey">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;google map key</td>
-    <td width="200" align="left" valign="top" >
-			<input type="text" size="30" id="iptGooglemapkey" name="iptGooglemapkey" />
-		</td>
-    <td align="left" valign="top" >
-		<div id="divGooglemapkey" name="divGooglemapkey">&nbsp;</div>
-	</td>
-  </tr>
-</table>
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
-  <tr>
-    <td height="39" class="td font" align="left">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSave" id="btnSave"   value="<?echo $locate->Translate("Save")?>" onclick="savePreferences();return false;"/>
-    </td>
-  </tr>
-  <tr>
-    <td height="10" class="td">&nbsp;</td>
-  </tr>
-</table>
-</form>
-<form name="formLicence" id="formLicence" method="post">
-<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
-  <tr>
-    <td height="39" class="td font" align="left" colspan="3">
-      &nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Licence")?>
-    </td>
-  </tr>
-  <tr>
-    <td height="10" class="td" colspan="3"></td>
-  </tr>  
-  <tr>
-    <td width="230" align="left" valign="top" id="licenceto" name="licenceto">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Licence to</td>
-    <td width="200" align="left" valign="top" >
-			<input type="text" size="30" id="asterccLicenceto" name="asterccLicenceto" />
-	</td>
-    <td align="left" valign="top" >
-		<div id="divLicenceto" name="divLicenceto">&nbsp;</div>
-	</td>
-  </tr>
-  <tr bgcolor="#F7F7F7">
-    <td width="230" align="left" valign="top" id="channels" name="channels">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Channels</td>
-    <td width="200" align="left" valign="top" >
-			<input type="text" size="30" id="asterccChannels" name="asterccChannels" />
-	</td>
-    <td align="left" valign="top" >
-		<div id="divChannels" name="divChannels">&nbsp;</div>
-	</td>
-  </tr>
-  <tr>
-    <td width="230" align="left" valign="top" id="key" name="key">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key</td>
-    <td width="200" align="left" valign="top" >
-			<input type="text" size="50" id="asterccKey" name="asterccKey" />
-	</td>
-    <td align="left" valign="top" >
-		<div id="divKey" name="divKey">&nbsp;</div>
-	</td>
-  </tr>
-  <tr>
-    <td height="39" class="td font" align="left" colspan="3">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnSaveLicence" id="btnSaveLicence"  value="<?echo $locate->Translate("Update Licence")?>" onclick="saveLicence();return false;"/>
-    </td>
-  </tr>
-</table>
-</form>
 </center>
 		<div id="divCopyright"></div>
 </body>
