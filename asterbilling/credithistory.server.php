@@ -143,6 +143,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$fields[] = 'srccredit';
 		$fields[] = 'modifystatus';
 		$fields[] = 'modifyamount';
+		$fields[] = 'comment';
 
 		// HTML table: Headers showed
 		$headers = array();
@@ -151,9 +152,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$headers[] = $locate->Translate("Srccredit");
 		$headers[] = $locate->Translate("Modifystatus");
 		$headers[] = $locate->Translate("Modifyamount");
+		$headers[] = $locate->Translate("Comment");
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
+		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
@@ -170,6 +173,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
 
 		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 		$eventHeader = array();
@@ -178,6 +182,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","srccredit","'.$divName.'","ORDERING");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","modifystatus","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","modifyamount","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","comment","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			
 		
 		// Select Box: fields table.
@@ -187,6 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$fieldsFromSearch[] = 'srccredit';
 		$fieldsFromSearch[] = 'modifystatus';
 		$fieldsFromSearch[] = 'modifyamount';
+		$fieldsFromSearch[] = 'comment';
 
 
 		// Selecct Box: Labels showed on search select box.
@@ -196,9 +202,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$fieldsFromSearchShowAs[] = $locate->Translate("srccredit");
 		$fieldsFromSearchShowAs[] = $locate->Translate("modifystatus");
 		$fieldsFromSearchShowAs[] = $locate->Translate("modifyamount");
+		$fieldsFromSearchShowAs[] = $locate->Translate("comment");
 
 		// Create object whit 5 cols and all data arrays set before.
-		$table = new ScrollTable(5,$start,$limit,$filter,$numRows,$content,$order);
+		$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 
 		$table->setAttribsCols($attribsCols);
@@ -220,6 +227,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 				$rowc['modifystatus'] = 'charge';
 			}
 			$rowc['modifyamount'] = $row['modifyamount'];
+			$rowc['comment'] = $row['comment'];
 			$table->addRow("credithistory",$rowc,false,false,false,$divName,$fields);
 		}
 	}else{
@@ -232,6 +240,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$fields[] = 'srccredit';
 		$fields[] = 'modifystatus';
 		$fields[] = 'modifyamount';
+		$fields[] = 'comment';
 		$fields[] = 'operator';
 
 		// HTML table: Headers showed
@@ -243,10 +252,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$headers[] = $locate->Translate("Srccredit");
 		$headers[] = $locate->Translate("Modifystatus");
 		$headers[] = $locate->Translate("Modifyamount");
+		$headers[] = $locate->Translate("Comment");
 		$headers[] = $locate->Translate("Modifyby");
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
+		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
@@ -267,6 +278,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
 
 		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 		$eventHeader = array();
@@ -277,6 +289,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","srccredit","'.$divName.'","ORDERING");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","modifystatus","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","modifyamount","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","comment","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","operator","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			
 		
@@ -289,6 +302,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$fieldsFromSearch[] = 'srccredit';
 		$fieldsFromSearch[] = 'modifystatus';
 		$fieldsFromSearch[] = 'modifyamount';
+		$fieldsFromSearch[] = 'comment';
+		$fieldsFromSearch[] = 'epayment_txn_id';
 		$fieldsFromSearch[] = 'operator';
 
 		// Selecct Box: Labels showed on search select box.
@@ -300,10 +315,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 		$fieldsFromSearchShowAs[] = $locate->Translate("srccredit");
 		$fieldsFromSearchShowAs[] = $locate->Translate("modifystatus");
 		$fieldsFromSearchShowAs[] = $locate->Translate("modifyamount");
+		$fieldsFromSearchShowAs[] = $locate->Translate("comment");
+		$fieldsFromSearchShowAs[] = $locate->Translate("txn id");
 		$fieldsFromSearchShowAs[] = $locate->Translate("operator");
 
 		// Create object whit 5 cols and all data arrays set before.
-		$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order);
+		$table = new ScrollTable(10,$start,$limit,$filter,$numRows,$content,$order);
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 
 		if ($_SESSION['curuser']['usertype'] == 'admin') $table->deleteFlag = '1';//对删除标记进行赋值
@@ -331,6 +348,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $st
 				$rowc['modifystatus'] = 'charge';
 			}
 			$rowc['modifyamount'] = $row['modifyamount'];
+			if($row['epayment_txn_id'] != ''){
+				$rowc['comment'] = $row['comment'].'('.$row['epayment_txn_id'].')';
+			}else{
+				$rowc['comment'] = $row['comment'];
+			}
 			$rowc[] = $name['username'];
 			$table->addRow("credithistory",$rowc,false,false,false,$divName,$fields);
 		}

@@ -6,19 +6,8 @@ require_once ('include/paypal.class.php');  // include the class file
 
 	$p = new paypal_class;             // initiate an instance of the class
 
-	$payer = explode(':',$_POST['custom']);
-	$userid = $payer['0'];
-	$uesrtype = $payer['1'];
-	$resellerid = $payer['2'];
-	$groupid = $payer['3'];
-
-	if($uesrtype == 'reseller'){
-		$p->paypal_url = $config['epayment']['paypal_payment_url'];
-	}else{
-		$reseller_row = astercrm::getRecordByID($resellerid,'resellergroup');
-		$p->paypal_url = $reseller_row['epayment_paypal_url'];
-	}
-
+	$p->paypal_url = $config['epayment']['paypal_payment_url'];
+	
 	if ($p->validate_ipn()) {
           
          // Payment has been recieved and IPN is verified.  This is where you
@@ -56,7 +45,7 @@ require_once ('include/paypal.class.php');  // include the class file
 				$updateCurCredit = $srcCredit - $p->ipn_data['mc_gross'];
 				$sql = "UPDATE accountgroup SET curcredit = $updateCurCredit WHERE id = '".$account['groupid']."'";
 				$mailto = $reseller_row['epayment_notify_mail'];
-				$mailTitle = $locate->Translate('Callshop').': '.$account['username'].' '.$locate->Translate('Paymented').' '.$reseller_row['epayment_currency_code'].' '.$p->ipn_data['mc_gross'].' '.$locate->Translate('for').' '.$reseller_row['epayment_item_name'].','.$locate->Translate('Please check it').' - ipn';
+				$mailTitle = $locate->Translate('Callshop').': '.$account['username'].' '.$locate->Translate('Paymented').' '.$config['epayment']['currency_code'].' '.$p->ipn_data['mc_gross'].' '.$locate->Translate('for').' '.$reseller_row['epayment_item_name'].','.$locate->Translate('Please check it').' - ipn';
 			}
 
 			$txn_res = astercrm::getRecordByField('epayment_txn_id',$p->ipn_data['txn_id'],'credithistory');

@@ -85,18 +85,21 @@ class paypal_class {
    
    var $fields = array();           // array holds the fields to submit to paypal
 
+   var $verify_url;
+
    function paypal_class() {
        
       // initialization constructor.  Called when class is created.
       
       $this->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
+	  $this->verify_url = 'ssl://www.paypal.com';
       
       $this->last_error = '';
       
       $this->ipn_log_file = 'ipn_log.txt';
       $this->ipn_log = false;
       $this->ipn_response = '';
-      
+	        
       // populate $fields array with a few default values.  See the paypal
       // documentation for a list of fields and their data types. These defaul
       // values can be overwritten by the calling script.
@@ -145,6 +148,14 @@ class paypal_class {
 
    function paypal_pdt_return($tx_token,$auth_token){
 
+	   $url_parsed=parse_url($this->verify_url);
+
+	   if($url_parsed['scheme'] == "ssl"){
+		  $port = '443';
+	   }else{
+		  $port = '80';
+	   }
+
 		$req = 'cmd=_notify-synch';
 		$req .= "&tx=$tx_token&at=$auth_token";
 
@@ -152,10 +163,10 @@ class paypal_class {
 		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
-		$fp = fsockopen ('www.sandbox.paypal.com', 80, $errno, $errstr, 30);
+		//$fp = fsockopen ('www.sandbox.paypal.com', 80, $errno, $errstr, 30);
 		// If possible, securely post back to paypal using HTTPS
 		// Your PHP server will need to be SSL enabled
-		// $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30);
+		$fp = fsockopen ($this->verify_url, $port, $errno, $errstr, 30);
 
 		if (!$fp) {
 		// HTTP ERROR
@@ -216,7 +227,7 @@ class paypal_class {
       $post_string.="cmd=_notify-validate"; // append ipn command
 
       // open the connection to paypal
-      $fp = fsockopen($url_parsed['host'],"80",$err_num,$err_str,30); 
+      $fp = fsockopen($url_parsed['host'],80,$err_num,$err_str,30); 
       if(!$fp) {
           
          // could not open the connection.  If loggin is on, the error message

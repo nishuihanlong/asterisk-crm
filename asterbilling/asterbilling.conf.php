@@ -83,16 +83,38 @@ sipfile = /etc/asterisk/sip_astercc
 validcode = no
 
 [epayment]
+;if enable online payment by paypaly (enable,disable)
 epayment_status = disable
-paypal_payment_url = 
-paypal_account = 
-item_name = Credit Purchase
-currency_code = USD
+
+;Define here the URL of paypal payment (to test with sandbox)
+paypal_payment_url = "https://secure.paypal.com/cgi-bin/webscr"
+;paypal_payment_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+
+;paypal PDT verification url (to test with sandbox)
+paypal_verify_url = "ssl://www.paypal.com"
+;paypal_verify_url = www.sandbox.paypal.com
+
+;paypal PDT identity token
 pdt_identity_token = 
+
+;email address for your paypal account
+paypal_account = 
+
+;name of payment item
+item_name = Credit Purchase
+
+;PayPal-Supported Currencies and Currency Codes, default USD(U.S. Dollar)
+;('AUD'=>'Australian Dollar','CAD'=>'Canadian Dollar','CZK'=>'Czech Koruna','DKK'=>'Danish Krone','EUR'=>'Euro','HKD'=>'Hong Kong Dollar','HUF'=>'Hungarian Forint','ILS'=>'Israeli New Sheqel','JPY'=>'Japanese Yen','MXN'=>'Mexican Peso','NOK'=>'Norwegian Krone','NZD'=>'New Zealand Dollar','PLN'=>'Polish Zloty','GBP'=>'Pound Sterling','SGD'=>'Singapore Dollar','SEK'=>'Swedish Krona','CHF'=>'Swiss Franc','USD'=>'U.S. Dollar')
+currency_code = USD
+
+;Available amount for payer
 amount = 10,20,50,100
-notify_mail = 
+
 ;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
 asterbilling_url = 
+
+;your email address for receice a notice when someone payment
+notify_mail = 
 
 [customers]
 dbtype = mysql

@@ -1,33 +1,27 @@
 <?php
 /*******************************************************************************
-* preferences.server.php
+* profile.server.php
 
 * 配置管理系统后台文件
-* preferences background management script
+* profile background management script
 
 * Function Desc
-	provide preferences management script
+	provide profile management script
 
 * 功能描述
 	提供配置管理脚本
 
 * Function Desc
 		init				初始化页面元素
-		initIni				从配置文件中读取信息填充页面上的input对象
-		initLocate			初始化页面上的说明信息
-		savePreferences		保存配置文件
-		checkDb				检查数据库是否能正确连接
-		checkAMI			检查AMI是否能正确连接
-		checkSys			检查系统参数是否正确
-							目前仅检查了上传目录是否可写
 
-* Revision 0.0456  2007/11/12 15:47:00  last modified by solo
+* Revision 0.0057  2009/03/28 15:47:00  last modified by donnie
 * Desc: page created
 ********************************************************************************/
 require_once ("db_connect.php");
 require_once ("profile.common.php");
 require_once ("include/astercrm.class.php");
 require_once ("include/paypal.class.php");
+require_once ('include/xajaxGrid.inc.php');
 
 /**
 *  initialize page elements
@@ -48,22 +42,27 @@ function init($get=''){
 	}
 
 	$rechargeEable = true;
-	if($_SESSION['curuser']['usertype'] == 'reseller'){
-		$identity_token = $config['epayment']['pdt_identity_token'];
-		$receiver_email = $config['epayment']['paypal_account'];
-		$currency_code = $config['epayment']['currency_code'];
-		$epayment_status = $config['epayment']['epayment_status'];
-		
+	if($_SESSION['curuser']['usertype'] == 'reseller'){		
+	
 		$paymentinfoHtml = paymentInfoHtml();
 		$objResponse->addAssign("paymentInfo","innerHTML",$paymentinfoHtml);
 
-		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == '' || $config['epayment']['amount'] == ''){
+		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == '' || $config['epayment']['amount'] == '' || $config['epayment']['currency_code'] == ''){
 			$rechargeEable = false;
+		}else{
+			$identity_token = $config['epayment']['pdt_identity_token'];
+			$receiver_email = $config['epayment']['paypal_account'];
+			$currency_code = $config['epayment']['currency_code'];
 		}
 	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+		
 		if($reseller_row['epayment_status'] != 'enable'){
 			$rechargeEable = false;
+		}else{			
+			$identity_token = $reseller_row['epayment_identity_token'];
+			$receiver_email = $reseller_row['epayment_account'];
+			$currency_code = $config['epayment']['currency_code'];
 		}
 	}	
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
@@ -90,51 +89,57 @@ function init($get=''){
 					<td align="center" valign="top"><b>';
 
 		if($get_item["action"] == 'success'){
+			if($get_item['tx'] != ''){
+				$txn_res = astercrm::getRecordByField('epayment_txn_id',$get_item['tx'],'credithistory');
 				
-			$txn_res = astercrm::getRecordByField('epayment_txn_id',$get_item['tx'],'credithistory');
-				
-				// check that txn_id has not been previously processed
-			if($txn_res['id'] > 0){
-				$rechargeInfoHtml .= $locate->Translate('payment_successed');
-			}else{			
+			// check that txn_id has not been previously processed
+				if($txn_res['id'] > 0){
+					$rechargeInfoHtml .= $locate->Translate('payment_already_compelted');
+				}else{			
 
-				if( $identity_token != ''){
-					$p = new paypal_class;
-					$return = $p->paypal_pdt_return($get_item['tx'],$identity_token);
+					if( $identity_token != ''){
+						$p = new paypal_class;
+						$p->verify_url = $config['epayment']['paypal_verify_url'];
+						$return = $p->paypal_pdt_return($get_item['tx'],$identity_token);
 
-					if($return['flag'] == 'SUCCESS'){
-						$errorFlag = 0;
-						// check that receiver_email is your Primary PayPal email
-						if($return['pdt']['receiver_email'] != $receiver_email){
-							$rechargeInfoHtml .= $locate->Translate('payment_receiver_error').'</br>';
-							$errorFlag += 1;
-						}
-
-						// check that payment_amount/payment_currency are correct
-						if($return['pdt']['mc_currency'] != $currency_code){
-							$rechargeInfoHtml .= $locate->Translate('payment_currency_error').'</br>';
-							$errorFlag += 1;
-						}
-
-						if($return['pdt']['payment_status'] == "Completed"){
-							
-							if($errorFlag > 0){
-								$rechargeInfoHtml .= $locate->Translate('payment_order_error')."</br>".$locate->Translate('payment_may_completed');
-							}else{
-								// process Order
-								$process_res = processOrder($return['pdt']);
-								$infoHtml = InfomationHtml();
-								$objResponse->addAssign("info","innerHTML",$infoHtml);
-								$rechargeInfoHtml .= $locate->Translate('payment_success');		
+						if($return['flag'] == 'SUCCESS'){
+							$errorFlag = 0;
+							// check that receiver_email is your Primary PayPal email
+							if($return['pdt']['receiver_email'] != $receiver_email){
+								$rechargeInfoHtml .= $locate->Translate('payment_receiver_error').'</br>';
+								$errorFlag += 1;
 							}
-						}else{
-							$rechargeInfoHtml .= $locate->Translate('payment_failed');
+
+							// check that payment_amount/payment_currency are correct
+							if($return['pdt']['mc_currency'] != $currency_code){
+								$rechargeInfoHtml .= $locate->Translate('payment_currency_error').'</br>';
+								$errorFlag += 1;
+							}
+
+							if($return['pdt']['payment_status'] == "Completed"){
+								
+								if($errorFlag > 0){
+									$rechargeInfoHtml .= $locate->Translate('payment_order_error')."</br>".$locate->Translate('payment_may_completed');
+								}else{
+									// process Order
+									$process_res = processOrder($return['pdt']);
+									$infoHtml = InfomationHtml();
+									$objResponse->addAssign("info","innerHTML",$infoHtml);
+									$rechargeInfoHtml .= $locate->Translate('payment_success');		
+								}
+							}else{
+								$rechargeInfoHtml .= $locate->Translate('payment_failed');
+							}
+							
+						}else{ //PDT return failed
+							$rechargeInfoHtml .= $locate->Translate('payment_return_failed');
 						}
-						
-					}else{ //PDT return failed
-						$rechargeInfoHtml .= $locate->Translate('payment_return_failed');
-					}
-				}			
+					}			
+				}
+			}else{
+				$rechargeInfoHtml = rechargeHtml();
+				$objResponse->addAssign("rechargeInfo","innerHTML",$rechargeInfoHtml);
+				return $objResponse;
 			}
 		}elseif($get_item["action"] == 'cancel'){
 			$rechargeInfoHtml .= $locate->Translate('payment_canceled');
@@ -242,7 +247,9 @@ function InfomationHtml(){
 				  </tr>
 				  <tr bgcolor="#F7F7F7">					
 					<td width="20%" align="right" valign="top" >'.$locate->Translate('Balance').':&nbsp;&nbsp;</td>
-					<td width="30%" align="center" valign="top" ><b>'.$balance.'</b></td>    	
+					<td width="30%" align="center" valign="top" ><b>'.$balance.'</b></td>
+					<td></td>
+					<td></td>
 				  </tr>
 			</table>';
 	}
@@ -250,7 +257,7 @@ function InfomationHtml(){
 }
 
 function paymentInfoHtml(){
-	global $locate;
+	global $locate,$config;
 	$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
 	$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 			  <tr>
@@ -274,26 +281,34 @@ function paymentInfoHtml(){
 			  </tr>
 			  <tr bgcolor="#F7F7F7">
 				<td width="25%" align="right" valign="top" >'.$locate->Translate('Paypal payment url').':&nbsp;&nbsp;</td>
-				<td width="75%" align="center" valign="top" ><b>'.$reseller_row['epayment_paypal_url'].'</b></td>
-			  </tr>
-			  <tr>
-				<td  align="right" valign="top" >'.$locate->Translate('Item name').':&nbsp;&nbsp;</td>
-				<td  align="center" valign="top" ><b>'.$reseller_row['epayment_item_name'].'</b></td>
+				<td width="75%" align="center" valign="top" ><b>'.$config['epayment']['paypal_payment_url'].'</b></td>
 			  </tr>
 			  <tr bgcolor="#F7F7F7">
+				<td width="25%" align="right" valign="top" >'.$locate->Translate('Paypal verify url').':&nbsp;&nbsp;</td>
+				<td width="75%" align="center" valign="top" ><b>'.$config['epayment']['paypal_verify_url'].'</b></td>
+			  </tr>
+			  <tr>
 				<td  align="right" valign="top" >'.$locate->Translate('Paypal identity token').':&nbsp;&nbsp;</td>
 				<td  align="center" valign="top" ><b>'.$reseller_row['epayment_identity_token'].'</b></td>
 			  </tr>
+			  <tr bgcolor="#F7F7F7">
+				<td  align="right" valign="top" >'.$locate->Translate('Item name').':&nbsp;&nbsp;</td>
+				<td  align="center" valign="top" ><b>'.$reseller_row['epayment_item_name'].'</b></td>
+			  </tr>			  
 			  <tr>
 				<td align="right" valign="top" >'.$locate->Translate('Available amount').':&nbsp;&nbsp;</td>
 				<td align="center" valign="top" ><b>'.$reseller_row['epayment_amount_package'].'</b></td>	
 			  </tr>
 			  <tr bgcolor="#F7F7F7">
 				<td align="right" valign="top" >'.$locate->Translate('Currency code').':&nbsp;&nbsp;</td>
-				<td align="center" valign="top" ><b>'.$reseller_row['epayment_currency_code'].'</b></td>
+				<td align="center" valign="top" ><b>'.$config['epayment']['currency_code'].'</b></td>
+			  </tr>
+			  <tr bgcolor="#F7F7F7">
+				<td align="right" valign="top" >'.$locate->Translate('Notify email').':&nbsp;&nbsp;</td>
+				<td align="center" valign="top" ><b>'.$reseller_row['epayment_notify_mail'].'</b></td>
 			  </tr>
 			  <tr>
-				<td align="right" valign="top" colspan="2"><input type="button" id="epayment_edit" name="epayment_edit" value="'.$locate->Translate('Edit').'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td align="right" valign="top" colspan="2"><input type="button" id="epayment_edit" name="epayment_edit" value="'.$locate->Translate('Edit').'" onclick="xajax_resellerPaymentInfoEdit();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			  </tr>
 			</table>';
 	return $html;
@@ -326,7 +341,7 @@ function rechargeHtml(){
 
 		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
 		$html .='<tr bgcolor="#F7F7F7">
-				<td align="center" valign="top" ><span id="recharge_item_name" name="recharge_item_name">'.$reseller_row['epayment_item_name'].'</span>:&nbsp;&nbsp;<span id="recharge_currency_code" id="recharge_currency_code">'.$reseller_row['epayment_currency_code'].'</span>&nbsp;&nbsp;<select id="amount" name="amount">';
+				<td align="center" valign="top" ><span id="recharge_item_name" name="recharge_item_name">'.$reseller_row['epayment_item_name'].'</span>:&nbsp;&nbsp;<span id="recharge_currency_code" id="recharge_currency_code">'.$config['epayment']['currency_code'].'</span>&nbsp;&nbsp;<select id="amount" name="amount">';
 
 		$amountP = split(',',$reseller_row['epayment_amount_package']);		
 	}
@@ -354,7 +369,7 @@ function rechargeByPaypal($amount){
 
 	$paypal_charge = array();
 	if($_SESSION['curuser']['usertype'] == 'reseller'){
-		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == ''){
+		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == '' || $config['epayment']['paypal_verify_url'] == '' || $config['epayment']['currency_code'] == ''){
 			$objResponse->addAlert($locate->Translate('The seller does not support online payment'));
 			return $objResponse;
 		}else{
@@ -384,18 +399,18 @@ function rechargeByPaypal($amount){
 			return $objResponse;
 		}else{
 			$p = new paypal_class;
-			$p->paypal_url = $reseller_row['epayment_paypal_url'];
-			$p->add_field('business',$reseller_row['epayment']['paypal_account']);
+			$p->paypal_url = $config['epayment']['paypal_payment_url'];;
+			$p->add_field('business',$reseller_row['epayment_account']);
 			$this_url = $_SERVER['HTTP_REFERER'];
 			$this_url = split('\?',$this_url);
 			$this_url = $this_url['0'];
 			$p->add_field('return',$this_url.'?action=success');
 			$p->add_field('cancel_return',$this_url.'?action=cancel');
-			$p->add_field('notify_url',$reseller_row['epayment']['asterbilling_url']."/epaymentreturn.php");
+			$p->add_field('notify_url',$config['epayment']['asterbilling_url']."/epaymentreturn.php");
 			$p->add_field('item_name',$reseller_row['epayment_item_name']);
 			$p->add_field('item_number',$_SESSION['curuser']['groupid']);
 			$p->add_field('amount',$amount);
-			$p->add_field('mc_currency',$reseller_row['epayment_currency_code']);
+			$p->add_field('mc_currency',$config['epayment']['currency_code']);
 			//custum field userid:usertype:resellerid:gruopid
 			$p->add_field('custom',$_SESSION['curuser']['userid'].':groupadmin:'.$_SESSION['curuser']['resellerid'].':'.$_SESSION['curuser']['groupid']);
 		}
@@ -441,7 +456,7 @@ function processOrder($pdt){
 		$updateCurCredit = $srcCredit - $pdt['mc_gross'];
 		$sql = "UPDATE accountgroup SET curcredit = $updateCurCredit WHERE id='".$_SESSION['curuser']['groupid']."'";
 		$mailto = $reseller_row['epayment_notify_mail'];
-		$mailTitle = $locate->Translate('Callshop').': '.$_SESSION['curuser']['username'].' '.$locate->Translate('Paymented').' '.$reseller_row['epayment_currency_code'].$pdt['mc_gross'].' '.$locate->Translate('for').' '.$reseller_row['epayment_item_name'].','.$locate->Translate('Please check it').' -pdt';
+		$mailTitle = $locate->Translate('Callshop').': '.$_SESSION['curuser']['username'].' '.$locate->Translate('Paymented').' '.$config['epayment']['currency_code'].$pdt['mc_gross'].' '.$locate->Translate('for').' '.$reseller_row['epayment_item_name'].','.$locate->Translate('Please check it').' -pdt';
 	}
 
 	$res = $db->query($sql);
@@ -464,6 +479,113 @@ function processOrder($pdt){
 	mail($to, $subject, $body);
 
 	return $res;
+}
+
+function resellerPaymentInfoEdit(){
+	global $db,$config,$locate;
+
+	$objResponse = new xajaxResponse();
+
+	if($_SESSION['curuser']['usertype'] == 'reseller'){
+		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+		$html = Table::Top( $locate->Translate("Edit Payment Receiving Infomation"),"formDiv"); 
+		if($reseller_row['epayment_status'] == 'enable'){
+			$enable = 'checked';
+		}else{
+			$diable = 'checked';
+		}
+		
+		$html .= '
+				<!-- No edit the next line -->
+				<form method="post" name="f" id="f">
+				
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Paypal payment url").'</td>
+						<td align="left">'.$config['epayment']['paypal_payment_url'].'</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Paypal verify url").'</td>
+						<td align="left">'.$config['epayment']['paypal_verify_url'].'</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Online payment").'</td>
+						<td align="left"><input type="radio" id="epayment_status" name="epayment_status" value="enable" '.$enable.'>'.$locate->Translate("Enable").'<input type="radio" id="epayment_status" name="epayment_status"  value="disable" '.$diable.'>'.$locate->Translate("Disable").'</td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Paypal account").'</td>
+						<td align="left"><input type="text" id="epayment_account" name="epayment_account" size="35"  value="'.$reseller_row['epayment_account'].'"></td>
+					</tr>					
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Paypal identity token").'</td>
+						<td align="left"><input type="text" id="epayment_identity_token" name="epayment_identity_token" size="35" value="'.$reseller_row['epayment_identity_token'].'"></td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Item name").'</td>
+						<td align="left"><input type="text" id="epayment_item_name" name="epayment_item_name" size="35" value="'.$reseller_row['epayment_item_name'].'"></td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Available amount").'</td>
+						<td align="left"><input type="text" id="epayment_amount_package" name="epayment_amount_package" size="35"  maxlength="30" value="'.$reseller_row['epayment_amount_package'].'"></td>
+					</tr>
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Notify email").'</td>
+						<td align="left"><input type="text" id="epayment_notify_mail" name="epayment_notify_mail" size="35" value="'.$reseller_row['epayment_notify_mail'].'"></td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_resellerPaymentInfoUpdate(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
+					</tr>
+				 </table></form>';
+		$html .= Table::Footer();
+		$objResponse->addAssign("formDiv", "style.visibility", "visible");
+		$objResponse->addAssign("formDiv", "innerHTML", $html);
+	}
+
+	return $objResponse->getXML();
+}
+
+function resellerPaymentInfoUpdate($f){
+	global $db,$config,$locate;
+	
+	$objResponse = new xajaxResponse();
+
+	if($_SESSION['curuser']['usertype'] == 'reseller'){
+		if($f['epayment_status'] == 'enable'){
+			
+			if($config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_verify_url'] == '' || $config['epayment']['currency_code'] == '' || $config['epayment']['asterbilling_url'] == ''){
+				$objResponse->addAlert($locate->Translate('The system does not support online payment'));
+				return $objResponse;
+			}
+
+			if($f['epayment_account'] == '' || $f['epayment_identity_token'] == '' || $f['epayment_item_name'] == '' || $f['epayment_amount_package'] == '' || $f['epayment_notify_mail'] == ''){
+				$objResponse->addAlert($locate->Translate('All item can not be blank if enabaled online payment'));
+				return $objResponse;
+			}
+		}
+
+		$amounts = explode(',',$f['epayment_amount_package']);
+		foreach($amounts as $value){
+			if(is_numeric($value)){
+				$amount .= round($value,2).',';
+			}
+		}
+		$amount = rtrim($amount,',');
+
+		$sql = "UPDATE resellergroup SET epayment_status='".$f['epayment_status']."',epayment_account='".$f['epayment_account']."',epayment_item_name='".$f['epayment_item_name']."',epayment_identity_token='".$f['epayment_identity_token']."',epayment_amount_package='".$amount."',epayment_notify_mail='".$f['epayment_notify_mail']."'";
+		$res = $db->query($sql);
+
+		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
+		$objResponse->addAssign("formDiv", "innerHTML", '');
+		if($res == 1){					
+			$objResponse->addAlert($locate->Translate('Payment Receiving Infomation has been updated'));
+			$paymentinfoHtml = paymentInfoHtml();
+			$objResponse->addAssign("paymentInfo","innerHTML",$paymentinfoHtml);
+		}else{
+			$objResponse->addAlert($locate->Translate('Payment Receiving Infomation update failed'));
+		}
+
+	}
+	return $objResponse->getXML();
 }
 
 $xajax->processRequests();

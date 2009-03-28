@@ -1,6 +1,6 @@
 <?
 /*******************************************************************************
-* preferences.php
+* profile.php
 
 * 配置文件管理文件
 * config management interface
@@ -20,8 +20,7 @@
 * javascript function:		
 				init				page onload function			 
 
-
-* Revision 0.0456  2007/11/12 15:44:00  last modified by solo
+* Revision 0.0057  2009/03/28 15:47:00  last modified by donnie
 * Desc: page created
 
 ********************************************************************************/
@@ -90,6 +89,8 @@ require_once('profile.common.php');
 	<div id="info"></div>
 
 	<div id="paymentInfo"></div>
+	<div id="formDiv"  class="formDiv drsElement" 
+	style="left: 450px; top: 50px;width:500px;"></div>
 
 	<div id="rechargeInfo"></div>
 	<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">

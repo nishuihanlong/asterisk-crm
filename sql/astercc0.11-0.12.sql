@@ -42,13 +42,11 @@ UNIQUE KEY `id` (`id`)
 
 
 #for paypal epayment
-alter table resellergroup add epayment_paypal_url varchar(255) NOT NULL default 'https://secure.paypal.com/cgi-bin/webscr' ;
 alter table resellergroup add epayment_account varchar(255) NOT NULL default '';
 alter table resellergroup add epayment_status enum('enable','disable') NOT NULL default 'disable';
 alter table resellergroup add epayment_item_name varchar(30) NOT NULL default '';
-alter table resellergroup add epayment_currency_code varchar(15) NOT NULL default 'USD';
 alter table resellergroup add epayment_identity_token varchar(255) NOT NULL default '';
-alter table resellergroup add epayment_amount_package varchar(15) NOT NULL default '';
+alter table resellergroup add epayment_amount_package varchar(30) NOT NULL default '';
 alter table resellergroup add epayment_notify_mail varchar(60) NOT NULL default '';
 
 alter table credithistory add epayment_txn_id varchar(60) NOT NULL default '';

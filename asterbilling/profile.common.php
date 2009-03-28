@@ -1,9 +1,9 @@
 <?php
 /*******************************************************************************
-* preferences.common.php
-* preferences参数信息文件
+* profile.common.php
+* profile参数信息文件
 
-* preferences parameter file
+* profile parameter file
 
 * 功能描述
 	检查用户权限
@@ -17,7 +17,7 @@
 	initialize xajax class
 	define xajaxGrid parameters
 
-* Revision 0.0456  2007/11/13 9:25:00  modified by solo
+* Revision 0.0057  2009/03/28 15:47:00  last modified by donnie
 * Desc: page created
 
 ********************************************************************************/
@@ -47,5 +47,7 @@ $xajax = new xajax("profile.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("rechargeByPaypal");
+$xajax->registerFunction("resellerPaymentInfoEdit");
+$xajax->registerFunction("resellerPaymentInfoUpdate");
 
 ?>
