@@ -84,7 +84,7 @@ require_once('profile.common.php');
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
 	</head>
-	<body onload="init();">
+	<body onload="init();" id="profile">
 		<div id="divNav"></div><br>
 <center>
 	<div id="info"></div>

@@ -26,7 +26,6 @@
 ********************************************************************************/
 require_once ("db_connect.php");
 require_once ("profile.common.php");
-require_once ("include/asterisk.class.php");
 require_once ("include/astercrm.class.php");
 require_once ("include/paypal.class.php");
 
@@ -47,21 +46,38 @@ function init($get=''){
 			$get_item[$item[0]] = $item[1];
 		}
 	}
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
-	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-	$infoHtml = InfomationHtml();
-	$objResponse->addAssign("info","innerHTML",$infoHtml);
+
+	$rechargeEable = true;
 	if($_SESSION['curuser']['usertype'] == 'reseller'){
+		$identity_token = $config['epayment']['pdt_identity_token'];
+		$receiver_email = $config['epayment']['paypal_account'];
+		$currency_code = $config['epayment']['currency_code'];
+		$epayment_status = $config['epayment']['epayment_status'];
+		
 		$paymentinfoHtml = paymentInfoHtml();
 		$objResponse->addAssign("paymentInfo","innerHTML",$paymentinfoHtml);
-		if($get_item["action"] == 'success'){
-			$p = new paypal_class;
-			$p->add_field('auth_token',$config['epayment']['pdt_identity_token']);
-		}elseif($get_item["action"] == 'cancel'){
-			$rechargeInfoHtml = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
+
+		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == '' || $config['epayment']['amount'] == ''){
+			$rechargeEable = false;
+		}
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+		if($reseller_row['epayment_status'] != 'enable'){
+			$rechargeEable = false;
+		}
+	}	
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
+
+	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
+
+	$infoHtml = InfomationHtml();
+	$objResponse->addAssign("info","innerHTML",$infoHtml);
+
+	if($rechargeEable){
+		$rechargeInfoHtml = 
+				'<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 				  <tr>
-					<td width="26%" height="39" class="td font" align="center">
-						'.$locate->Translate('Recharge By Paypal').'
+					<td width="26%" height="39" class="td font" align="center">'.$locate->Translate('Recharge By Paypal').'
 					</td>
 					<td width="74%" class="td font" align="center">&nbsp;</td>
 				  </tr>
@@ -70,15 +86,69 @@ function init($get=''){
 				  </tr>
 				</table>
 				<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600">
-				<tr bgcolor="#F7F7F7">
-				<td align="center" valign="top"><b>Your credit order was canceled</b>&nbsp;&nbsp;&nbsp;<a href="javascript:void(null);" onclick="refreshRechargeInfo();">'.$locate->Translate('Return').'</a></td></tr></table> ';
-		}else{
-			if($config['epayment']['epayment_status'] == 'enable'){
-				$rechargeInfoHtml = rechargeHtml();				
+					<tr bgcolor="#F7F7F7">
+					<td align="center" valign="top"><b>';
+
+		if($get_item["action"] == 'success'){
+				
+			$txn_res = astercrm::getRecordByField('epayment_txn_id',$get_item['tx'],'credithistory');
+				
+				// check that txn_id has not been previously processed
+			if($txn_res['id'] > 0){
+				$rechargeInfoHtml .= $locate->Translate('payment_successed');
+			}else{			
+
+				if( $identity_token != ''){
+					$p = new paypal_class;
+					$return = $p->paypal_pdt_return($get_item['tx'],$identity_token);
+
+					if($return['flag'] == 'SUCCESS'){
+						$errorFlag = 0;
+						// check that receiver_email is your Primary PayPal email
+						if($return['pdt']['receiver_email'] != $receiver_email){
+							$rechargeInfoHtml .= $locate->Translate('payment_receiver_error').'</br>';
+							$errorFlag += 1;
+						}
+
+						// check that payment_amount/payment_currency are correct
+						if($return['pdt']['mc_currency'] != $currency_code){
+							$rechargeInfoHtml .= $locate->Translate('payment_currency_error').'</br>';
+							$errorFlag += 1;
+						}
+
+						if($return['pdt']['payment_status'] == "Completed"){
+							
+							if($errorFlag > 0){
+								$rechargeInfoHtml .= $locate->Translate('payment_order_error')."</br>".$locate->Translate('payment_may_completed');
+							}else{
+								// process Order
+								$process_res = processOrder($return['pdt']);
+								$infoHtml = InfomationHtml();
+								$objResponse->addAssign("info","innerHTML",$infoHtml);
+								$rechargeInfoHtml .= $locate->Translate('payment_success');		
+							}
+						}else{
+							$rechargeInfoHtml .= $locate->Translate('payment_failed');
+						}
+						
+					}else{ //PDT return failed
+						$rechargeInfoHtml .= $locate->Translate('payment_return_failed');
+					}
+				}			
 			}
+		}elseif($get_item["action"] == 'cancel'){
+			$rechargeInfoHtml .= $locate->Translate('payment_canceled');
+		}else{		
+			$rechargeInfoHtml = rechargeHtml();
+			$objResponse->addAssign("rechargeInfo","innerHTML",$rechargeInfoHtml);
+			return $objResponse;
 		}
+
+		$rechargeInfoHtml.=	'</b>&nbsp;&nbsp;&nbsp;<a href="profile.php" >'.$locate->Translate('Return').'</a></td></tr></table>';
+		
 		$objResponse->addAssign("rechargeInfo","innerHTML",$rechargeInfoHtml);
 	}
+
 	return $objResponse;
 }
 
@@ -102,7 +172,7 @@ function InfomationHtml(){
 				  <tr bgcolor="#F7F7F7">
 					<td width="20%" align="right" valign="top" >'.$locate->Translate('Reseller name').':&nbsp;&nbsp;</td>
 					<td width="30%" align="center" valign="top" ><b>'.$reseller_row['resellername'].'</b></div></td>
-					<td width="20%" align="right" valign="top" ><b>'.$locate->Translate('Accountcode').':&nbsp;&nbsp;</b></div></td>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Accountcode').':&nbsp;&nbsp;</div></td>
 					<td width="30%" align="center" valign="top" >'.$reseller_row['accountcode'].'</td>
 				  </tr>
 				  <tr>
@@ -130,8 +200,53 @@ function InfomationHtml(){
 					<td width="30%" align="center" valign="top" ><b>'.$balance.'</b></td>    	
 				  </tr>
 			</table>';
-		return $html;
+		
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$group_row = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'accountgroup');
+		$balance = $group_row['creditlimit'] - $group_row['curcredit'];
+		$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
+				  <tr>
+					<td width="25%" height="39" class="td font" align="center">
+						'.$locate->Translate('Group Infomation').'
+					</td>
+					<td width="75%" class="td font" align="center">&nbsp;</td>
+				  </tr>
+					<tr><td height="10" class="td"></td>
+					<td class="td font" align="center">&nbsp;</td>
+				  </tr>
+				</table>
+				<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600"> 
+				  <tr bgcolor="#F7F7F7">
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Group name').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['groupname'].'</b></div></td>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Accountcode').':&nbsp;&nbsp;</div></td>
+					<td width="30%" align="center" valign="top" >'.$group_row['accountcode'].'</td>
+				  </tr>
+				  <tr>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Limittype').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['limittype'].'</b></td>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Allowcallback').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['allowcallback'].'</b></td>	
+				  </tr>
+				  <tr bgcolor="#F7F7F7">
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Credit limit ').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['creditlimit'].'</b></td>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Clid cost').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['credit_clid'].'</b></td>	
+				  </tr>
+				  <tr>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Total cost').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['credit_group'].'</b></td>	
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Current cost').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$group_row['curcredit'].'</b></td>	
+				  </tr>
+				  <tr bgcolor="#F7F7F7">					
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Balance').':&nbsp;&nbsp;</td>
+					<td width="30%" align="center" valign="top" ><b>'.$balance.'</b></td>    	
+				  </tr>
+			</table>';
 	}
+	return $html;
 }
 
 function paymentInfoHtml(){
@@ -186,9 +301,8 @@ function paymentInfoHtml(){
 
 function rechargeHtml(){
 	global $config,$locate;
-	$html = '';
-	if($_SESSION['curuser']['usertype'] == 'reseller'){
-		$html .= '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
+
+	$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 			  <tr>
 				<td width="26%" height="39" class="td font" align="center">
 					'.$locate->Translate('Recharge By Paypal').'
@@ -199,30 +313,34 @@ function rechargeHtml(){
 				<td class="td font" align="center">&nbsp;</td>
 			  </tr>
 			</table>
-			<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600">
-			  <tr bgcolor="#F7F7F7">
+			<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600">';
+
+	if($_SESSION['curuser']['usertype'] == 'reseller'){
+
+		$html .='<tr bgcolor="#F7F7F7">
 				<td align="center" valign="top" ><span id="recharge_item_name" name="recharge_item_name">'.$config['epayment']['item_name'].'</span>:&nbsp;&nbsp;<span id="recharge_currency_code" id="recharge_currency_code">'.$config['epayment']['currency_code'].'</span>&nbsp;&nbsp;<select id="amount" name="amount">';
 
 		$amountP = split(',',$config['epayment']['amount']);
 
-		foreach ($amountP as $amount ){
-			if(is_numeric($amount)) {
-				$option .= '<option value="'.$amount.'">'.$amount.'</option>';
-			}
-		}
-		$html .= $option.'</select>&nbsp;&nbsp;<input type="button" value="'.$locate->Translate('Recharge By Paypal').'" onclick="rechargeByPaypal();"></td>
-			  </tr>
-			</table>';
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+
+		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+		$html .='<tr bgcolor="#F7F7F7">
+				<td align="center" valign="top" ><span id="recharge_item_name" name="recharge_item_name">'.$reseller_row['epayment_item_name'].'</span>:&nbsp;&nbsp;<span id="recharge_currency_code" id="recharge_currency_code">'.$reseller_row['epayment_currency_code'].'</span>&nbsp;&nbsp;<select id="amount" name="amount">';
+
+		$amountP = split(',',$reseller_row['epayment_amount_package']);		
 	}
 
+	foreach ($amountP as $amount ){
+		if(is_numeric($amount)) {
+			$amount = round($amount,2);
+			$option .= '<option value="'.$amount.'">'.$amount.'</option>';
+		}
+	}
+	$html .= $option.'</select>&nbsp;&nbsp;<input type="button"	value="'.$locate->Translate('Recharge By Paypal').'" onclick="rechargeByPaypal();"></td>
+			  </tr>
+			</table>';
 	return $html;
-}
-
-function refreshRechargeInfo(){
-	$objResponse = new xajaxResponse();
-	$rechargeInfoHtml = rechargeHtml();	
-	$objResponse->addAssign("rechargeInfo","innerHTML",$rechargeInfoHtml);
-	return $objResponse;
 }
 
 function rechargeByPaypal($amount){
@@ -236,8 +354,9 @@ function rechargeByPaypal($amount){
 
 	$paypal_charge = array();
 	if($_SESSION['curuser']['usertype'] == 'reseller'){
-		if( $config['epayment']['epayment_status'] != 'enable' ){
+		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == ''){
 			$objResponse->addAlert($locate->Translate('The seller does not support online payment'));
+			return $objResponse;
 		}else{
 			$p = new paypal_class;
 			$p->paypal_url = $config['epayment']['paypal_payment_url'];
@@ -247,36 +366,105 @@ function rechargeByPaypal($amount){
 			$this_url = $this_url['0'];
 			$p->add_field('return',$this_url.'?action=success');
 			$p->add_field('cancel_return',$this_url.'?action=cancel');
-			$p->add_field('notify_url',$config['epayment']['paypal_account']);
+			$p->add_field('notify_url',$config['epayment']['asterbilling_url']."/epaymentreturn.php");
 			$p->add_field('item_name',$config['epayment']['item_name']);
 			$p->add_field('item_number',$_SESSION['curuser']['resellerid']);
 			$p->add_field('amount',$amount);
-
-			$paymentHtml .= '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
-				  <tr>
-					<td width="26%" height="39" class="td font" align="center">
-						'.$locate->Translate('Recharge By Paypal').'
-					</td>
-					<td width="74%" class="td font" align="center">&nbsp;</td>
-				  </tr>
-					<tr><td height="10" class="td"></td>
-					<td class="td font" align="center">&nbsp;</td>
-				  </tr>
-				</table>
-				<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600">
-				<tr bgcolor="#F7F7F7">
-				<td align="center" valign="top"><b>Please wait, your credit order is being processed...</b>'; 
-
-			$paymentHtml .= $p->submit_paypal_post();
-			$paymentHtml .= '</td></tr></table>';
-
-			$objResponse->addAssign("rechargeInfo","innerHTML",$paymentHtml);
-			$objResponse->addScript("document.getElementById('paymentForm').submit()");
+			$p->add_field('mc_currency',$config['epayment']['currency_code']);
+			//custum field userid:usertype:resellerid:gruopid
+			$p->add_field('custom',$_SESSION['curuser']['userid'].':reseller:'.$_SESSION['curuser']['resellerid'].':'.$_SESSION['curuser']['groupid']);
+			
 		}
-	}
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+
+		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+
+		if($reseller_row['epayment_status'] != 'enable'){
+			$objResponse->addAlert($locate->Translate('The seller does not support online payment'));
+			return $objResponse;
+		}else{
+			$p = new paypal_class;
+			$p->paypal_url = $reseller_row['epayment_paypal_url'];
+			$p->add_field('business',$reseller_row['epayment']['paypal_account']);
+			$this_url = $_SERVER['HTTP_REFERER'];
+			$this_url = split('\?',$this_url);
+			$this_url = $this_url['0'];
+			$p->add_field('return',$this_url.'?action=success');
+			$p->add_field('cancel_return',$this_url.'?action=cancel');
+			$p->add_field('notify_url',$reseller_row['epayment']['asterbilling_url']."/epaymentreturn.php");
+			$p->add_field('item_name',$reseller_row['epayment_item_name']);
+			$p->add_field('item_number',$_SESSION['curuser']['groupid']);
+			$p->add_field('amount',$amount);
+			$p->add_field('mc_currency',$reseller_row['epayment_currency_code']);
+			//custum field userid:usertype:resellerid:gruopid
+			$p->add_field('custom',$_SESSION['curuser']['userid'].':groupadmin:'.$_SESSION['curuser']['resellerid'].':'.$_SESSION['curuser']['groupid']);
+		}
+	}	
+
+	$paymentHtml .= '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
+		  <tr>
+			<td width="26%" height="39" class="td font" align="center">
+				'.$locate->Translate('Recharge By Paypal').'
+			</td>
+			<td width="74%" class="td font" align="center">&nbsp;</td>
+		  </tr>
+			<tr><td height="10" class="td"></td>
+			<td class="td font" align="center">&nbsp;</td>
+		  </tr>
+		</table>
+		<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600">
+		<tr bgcolor="#F7F7F7">
+		<td align="center" valign="top"><b>Please wait, your credit order is  processing...</b>'; 
+
+	$paymentHtml .= $p->submit_paypal_post();
+	$paymentHtml .= '</td></tr></table>';
+
+	$objResponse->addAssign("rechargeInfo","innerHTML",$paymentHtml);
+	$objResponse->addScript("document.getElementById('paymentForm').submit()");
 	return $objResponse;
 }
 
+function processOrder($pdt){
+	global $db,$config,$locate;
+	
+	$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
+
+	if($_SESSION['curuser']['usertype'] == 'reseller'){
+		$srcCredit = $reseller_row['curcredit'];
+		$updateCurCredit = $srcCredit - $pdt['mc_gross'];
+		$sql = "UPDATE resellergroup SET curcredit = $updateCurCredit WHERE id = '".$_SESSION['curuser']['resellerid']."'";
+		$mailto = $config['epayment']['notify_mail'];
+		$mailTitle = $locate->Translate('Reseller').': '.$_SESSION['curuser']['username'].' '.$locate->Translate('Paymented').' '.$config['epayment']['currency_code'].$pdt['mc_gross'].' '.$locate->Translate('for').' '.$config['epayment']['item_name'].','.$locate->Translate('Please check it').' -pdt';
+	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		$group_row = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'accountgroup');
+		$srcCredit = $group_row['curcredit'];
+		$updateCurCredit = $srcCredit - $pdt['mc_gross'];
+		$sql = "UPDATE accountgroup SET curcredit = $updateCurCredit WHERE id='".$_SESSION['curuser']['groupid']."'";
+		$mailto = $reseller_row['epayment_notify_mail'];
+		$mailTitle = $locate->Translate('Callshop').': '.$_SESSION['curuser']['username'].' '.$locate->Translate('Paymented').' '.$reseller_row['epayment_currency_code'].$pdt['mc_gross'].' '.$locate->Translate('for').' '.$reseller_row['epayment_item_name'].','.$locate->Translate('Please check it').' -pdt';
+	}
+
+	$res = $db->query($sql);
+
+	if($res){
+		$credithistory_sql = "INSERT INTO credithistory SET modifytime=now(), resellerid='".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."',srccredit='".$srcCredit."',modifystatus='reduce',modifyamount='".$pdt['mc_gross']."',comment='Recharge By Paypal',operator='".$_SESSION['curuser']['userid']."',epayment_txn_id='".$pdt['txn_id']."'";
+		$credithistory_res=$db->query($credithistory_sql);
+	}
+
+	$subject = 'Instant Payment Notification - Recieved Payment';
+	$to = $mailto;    //  your email
+	$body =  "An instant payment notification was successfully recieved\n";
+	$body .= "from ".$pdt['payer_email'].", send by asterbilling on ".date('m/d/Y');
+	$body .= " at ".date('g:i A')."\n\n";
+	$body .= $mailTitle."\n\nDetails:\n";
+
+	foreach ($pdt as $key => $value) {
+		if($key != '' && $key != 'custom')	$body .= "\n$key: $value"; 
+	}
+	mail($to, $subject, $body);
+
+	return $res;
+}
 
 $xajax->processRequests();
 ?>

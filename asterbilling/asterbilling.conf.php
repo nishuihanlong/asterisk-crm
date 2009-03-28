@@ -83,13 +83,16 @@ sipfile = /etc/asterisk/sip_astercc
 validcode = no
 
 [epayment]
-epayment_status = enable
-paypal_payment_url = https://www.sandbox.paypal.com/cgi-bin/webscr
-paypal_account = du.don_1237957108_biz@gmail.com 
+epayment_status = disable
+paypal_payment_url = 
+paypal_account = 
 item_name = Credit Purchase
 currency_code = USD
-pdt_identity_token = wWy5V4o15Cx1Y6lMlE-TKYrpUl1P9KxWVWMiHb5hpv8uTVEvxDdkSuQJf1K
-amount = 10,20,50.50,100.9999999999999
+pdt_identity_token = 
+amount = 10,20,50,100
+notify_mail = 
+;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
+asterbilling_url = 
 
 [customers]
 dbtype = mysql

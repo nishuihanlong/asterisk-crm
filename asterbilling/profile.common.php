@@ -34,8 +34,8 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-//if ($_SESSION['curuser']['extension'] == '' or  $_SESSION['curuser']['usertype'] != 'admin') 
-//	header("Location: portal.php");
+if ($_SESSION['curuser']['usertype'] != 'reseller' &&  $_SESSION['curuser']['usertype'] != 'groupadmin') 
+	header("Location: admin.php");
 
 
 require_once ("include/xajax.inc.php");
@@ -47,6 +47,5 @@ $xajax = new xajax("profile.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("rechargeByPaypal");
-$xajax->registerFunction("refreshRechargeInfo");
 
 ?>

@@ -85,8 +85,6 @@ class paypal_class {
    
    var $fields = array();           // array holds the fields to submit to paypal
 
-   var $auth_token;					//PDT auth_token
-   
    function paypal_class() {
        
       // initialization constructor.  Called when class is created.
@@ -96,15 +94,13 @@ class paypal_class {
       $this->last_error = '';
       
       $this->ipn_log_file = 'ipn_log.txt';
-      $this->ipn_log = true;
+      $this->ipn_log = false;
       $this->ipn_response = '';
-	  $this->auth_token = '';
       
       // populate $fields array with a few default values.  See the paypal
       // documentation for a list of fields and their data types. These defaul
       // values can be overwritten by the calling script.
 
-      $this->add_field('rm','2');           // Return method = POST
       $this->add_field('cmd','_xclick'); 
       
    }
@@ -146,11 +142,68 @@ class paypal_class {
 	  return $html;
     
    }
+
+   function paypal_pdt_return($tx_token,$auth_token){
+
+		$req = 'cmd=_notify-synch';
+		$req .= "&tx=$tx_token&at=$auth_token";
+
+		// post back to PayPal system to validate
+		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+		$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
+		$fp = fsockopen ('www.sandbox.paypal.com', 80, $errno, $errstr, 30);
+		// If possible, securely post back to paypal using HTTPS
+		// Your PHP server will need to be SSL enabled
+		// $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30);
+
+		if (!$fp) {
+		// HTTP ERROR
+		} else {
+			fputs ($fp, $header . $req);
+			// read the body data
+			$res = '';
+			$headerdone = false;
+			while (!feof($fp)) {
+			$line = fgets ($fp, 1024);
+				if (strcmp($line, "\r\n") == 0) {
+				// read the header
+					$headerdone = true;
+				}
+				else if ($headerdone)
+				{
+			// header has been read. now read the contents
+					$res .= $line;
+				}
+			}
+
+			// parse the data
+			$lines = explode("\n", $res);
+			$keyarray = array();
+			if (strcmp ($lines[0], "SUCCESS") == 0) {
+				for ($i=1; $i<count($lines);$i++){
+					list($key,$val) = explode("=", $lines[$i]);
+					$keyarray[urldecode($key)] = urldecode($val);
+				}		
+				
+				// check the payment_status is Completed
+				if($keyarray['payment_status'] == 'Completed'){				
+					return array('flag'=>'SUCCESS','pdt'=>$keyarray);
+				}else{
+					return array('flag'=>'PAYMENT_FAIL',$data=>$keyarray);
+				}
+			}
+			else if (strcmp ($lines[0], "FAIL") == 0) {
+				// log for manual investigation
+				return array('flag'=>'RETURN_FAIL');
+			}
+		}
+   }
    
    function validate_ipn() {
 
       // parse the paypal URL
-      $url_parsed=parse_url($this->paypal_url);        
+      $url_parsed=parse_url($this->paypal_url);
 
       // generate the post string from the _POST vars aswell as load the
       // _POST vars into an arry so we can play with them from the calling
@@ -163,7 +216,7 @@ class paypal_class {
       $post_string.="cmd=_notify-validate"; // append ipn command
 
       // open the connection to paypal
-      $fp = fsockopen($url_parsed[host],"80",$err_num,$err_str,30); 
+      $fp = fsockopen($url_parsed['host'],"80",$err_num,$err_str,30); 
       if(!$fp) {
           
          // could not open the connection.  If loggin is on, the error message
