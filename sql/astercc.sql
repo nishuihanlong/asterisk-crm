@@ -215,6 +215,12 @@ CREATE TABLE `resellergroup` (
   `credit_reseller` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `epayment_account` varchar(255) NOT NULL default '',                 
+  `epayment_status` enum('enable','disable') NOT NULL default 'disable',
+  `epayment_item_name` varchar(30) NOT NULL default '',     
+  `epayment_identity_token` varchar(255) NOT NULL default '',           
+  `epayment_amount_package` varchar(30) NOT NULL default '',            
+  `epayment_notify_mail` varchar(60) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -299,6 +305,7 @@ CREATE TABLE `credithistory` (
   `modifystatus` varchar(20) NOT NULL default '',
   `modifyamount` double(24,4) NOT NULL default '0.0000',
   `comment` varchar(20) NOT NULL default '',
+  `epayment_txn_id` varchar(60) NOT NULL default '',
   `operator` varchar(20) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   key `resellerid` (`resellerid`,`groupid`,`clidid`,`modifytime`,`modifystatus`,`modifyamount`,`operator`)
