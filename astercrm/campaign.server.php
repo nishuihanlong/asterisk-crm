@@ -167,19 +167,19 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Campaign Note");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Server Name");
-	$headers[] = $locate->Translate("Records");
+	$headers[] = $locate->Translate("Total/Dialed/Answered");
 	$headers[] = $locate->Translate("Creby");
 	$headers[] = $locate->Translate("Cretime");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -238,8 +238,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$rowc[] = $row['servername'];
 		else 
 			$rowc[] = $locate->Translate("Default server");
-		$records = astercrm::getCountByField('campaignid',$row['id'],'diallist');
-		$rowc[] = $records;
+		$total = astercrm::getCountByField('campaignid',$row['id'],'diallist');
+		$dialed = astercrm::getCountByField('campaignid',$row['id'],'dialedlist');
+		$answered = customer::getCountAnswered($row['id']);
+		$rowc[] = $total.'/'.$dialed.'/'.$answered;
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];
 		$table->addRow("campaign",$rowc,1,1,0,$divName,$fields);
