@@ -188,6 +188,14 @@ $clientDst = $_REQUEST['clientdst'];
 			return false;
 		}
 
+		function queuePaused(){
+			if (xajax.$('breakStatus').value == 1)
+				xajax_queuePaused(0);
+			else
+				xajax_queuePaused(1);
+			return false;
+		}
+
 		function showSurvey(surveyid){
 			customer = document.getElementById("customerid");
 			contact = document.getElementById("customerid");
@@ -428,7 +436,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="divUserMsg" name="divUserMsg"></div><br>
 
 		<div id="divHangup" name="divHangup">
-			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">
+			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 			<div id="divDIDinfo" name="divDIDinfo"></div>
 		</div><br>
@@ -449,7 +457,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<input type='checkbox' name='chkMonitor' id="chkMonitor">
 			<?echo $locate->Translate("Always record when connected");?>
 		</div>
-
+		<input type="hidden" name="breakStatus" id="breakStatus" value=""/>
 		<input type="hidden" name="extensionStatus" id="extensionStatus" value=""/>
 		<input type="hidden" name="username" id="username" value=""/>
 		<input type="hidden" name="extension" id="extension" value=""/>

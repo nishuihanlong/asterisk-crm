@@ -431,5 +431,14 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function &getMyMemberStatus(){
+		global $db;
+		$sql = "SELECT * FROM queue_agent WHERE (agent='Agent/".$_SESSION['curuser']['agent']."' OR Agent LIKE '%".$_SESSION['curuser']['extension']."@%') ";
+		
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
 }
 ?>

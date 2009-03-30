@@ -150,6 +150,20 @@ function init(){
 //	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("extensionStatus","value", 'idle');
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
+	
+	$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
+	$objResponse->addAssign("breakStatus","value", 1);
+	$memberstatus = Customer::getMyMemberStatus();
+
+	while ($memberstatus->fetchInto($row)) {
+		if($row['status'] != 'paused'){
+			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
+			$objResponse->addAssign("breakStatus","value", 0);
+			break;
+		}
+	}
+
+
 	$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
 	$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
@@ -1301,6 +1315,37 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime=''){
 		$objResponse->addAlert($locate->Translate("Add scheduler dial failed"));
 	}
 	return $objResponse->getXML();
+}
+
+function queuePaused($paused){
+	global $locate,$config;
+
+	$myAsterisk = new Asterisk();	
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$objResponse = new xajaxResponse();
+	$memberstatus = Customer::getMyMemberStatus();
+	if($paused){
+		while ($memberstatus->fetchInto($row)) {
+			if($row['status'] != 'paused'){
+				sleep(1);
+				$myAsterisk->queuePause('',$row['agent'],$paused);				
+			}
+		}
+		$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
+		$objResponse->addAssign("breakStatus","value", $paused);
+	}else{
+		while ($memberstatus->fetchInto($row)) {
+			if($row['status'] == 'paused'){
+				sleep(1);
+				$myAsterisk->queuePause('',$row['agent'],$paused);				
+			}
+		}
+		$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
+		$objResponse->addAssign("breakStatus","value", $paused);
+	}
+
+	return $objResponse;
 }
 
 $xajax->processRequests();

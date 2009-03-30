@@ -159,5 +159,5 @@ astercc_conf_path =
 
 [google-map]
 
-key = 
+key = ABQIAAAAn6bTNTcfGY0MrLFxKClbghR-UxJJ2gicUKVqr6XNwxkifgGNhBQKvStoMVeMuNfR2yOxLtHJ6emyiw
 ;?>

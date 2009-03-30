@@ -115,6 +115,7 @@ $xajax->registerFunction("workstart");
 $xajax->registerFunction("showWorkoff");
 $xajax->registerFunction("workoffcheck");
 $xajax->registerFunction("checkworkexten");
+$xajax->registerFunction("queuePaused");
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

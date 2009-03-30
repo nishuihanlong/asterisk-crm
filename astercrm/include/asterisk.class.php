@@ -174,5 +174,15 @@ $channel,
 	function zapSpy(){
 	}
 
+	function queuePause($queue = '',$interface,$paused=0){
+		$req = "Action: QueuePause\r\n";
+		if($queue != '') $req .= "Queue: $queue\r\n";
+		$req .= "Interface: $interface\r\n";
+		$req .= "Paused: $paused\r\n";
+		$req .= "\r\n";
+		fwrite($this->socket, $req);
+		return ;
+	}
+
 }
 ?>
