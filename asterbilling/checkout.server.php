@@ -135,6 +135,8 @@ function parseReport($myreport,$answeredNum){
 	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		$html .= $locate->Translate("ASR").": ".$asr."%<br>";
+		$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
 		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
 		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 		$html .= $locate->Translate("Markup").": ". ($myreport['credit'] - $myreport['callshopcredit']) ."<br>";
@@ -143,6 +145,8 @@ function parseReport($myreport,$answeredNum){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
+		$html .= $locate->Translate("ASR").": ".$asr."%<br>";
+		$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
 	}
 
 	$result['html'] = $html;

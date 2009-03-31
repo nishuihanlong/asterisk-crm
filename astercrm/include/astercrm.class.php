@@ -831,9 +831,9 @@ Class astercrm extends PEAR{
 	function getGroupMemberListByID($groupid = null){
 		global $db;
 		if ($groupid == null)
-			$query = "SELECT id,username,extension,agent FROM astercrm_account";
+			$query = "SELECT id,username,extension,agent,channel FROM astercrm_account";
 		else
-			$query = "SELECT id,username,extension,agent FROM astercrm_account WHERE groupid =$groupid";
+			$query = "SELECT id,username,extension,agent,channel FROM astercrm_account WHERE groupid =$groupid";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -3756,7 +3756,6 @@ Class astercrm extends PEAR{
 
 		$sql = "SELECT number,description FROM speeddial ";
 
-
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
@@ -3765,6 +3764,43 @@ Class astercrm extends PEAR{
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
+	}
+
+	function &readReport($groupid,$accountid,$sdate,$edate,$type){
+		global $db;
+		$query = "SELECT COUNT(*) as recordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate'";
+		if(is_numeric($accountid) && $accountid > 0){
+			$account = astercrm::getRecordByID($accountid,"astercrm_account");
+			$account_str .= "OR src='".$account['extension']."' OR dst='".$account['extension']."' ";
+			if($account['channel'] != '') $account_str .= $channels .= "OR channel LIKE '".$account['channel']."-%' OR dstchannel LIKE '".$account['channel']."-%' ";
+
+			if($account['agent'] != '')  $account_str .= "OR dstchannel='AGENT/".$account['agent']."' ";
+			$account_str = '('.ltrim($account_str,'OR').')';
+			$query .= ' AND '.$account_str;
+		}else{
+			if(is_numeric($groupid)){
+				if($groupid > 0){
+					$member = astercrm::getGroupMemberListByID($groupid);
+					while($member->fetchinto($row)){
+						$extens .= "OR src='".$row['extension']."' OR dst='".$row['extension']."' ";
+
+						if($row['channel'] != '') $channels .= "OR channel LIKE '".$row['channel']."-%' OR dstchannel LIKE '".$row['channel']."-%' ";
+
+						if($row['agent'] != '') $agents .= "OR dstchannel='AGENT/".$row['agent']."' ";
+					}
+					$group_str = '('.ltrim($extens.$channels.$agents,'OR').')';
+					$query .= ' AND '.$group_str;
+				}
+			}
+		}
+		
+		astercrm::events($query);
+		$all_res =& $db->query($query);
+		if($type != 'both'){
+			return $all_res;
+		}
+		$answered = & $db->getone($query." AND disposition = 'ANSWERED'");
+		return array('all'=>$all_res,'answered'=>$answered);
 	}
 }
 ?>
