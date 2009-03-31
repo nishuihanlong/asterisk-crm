@@ -442,11 +442,11 @@ Class astercrm extends PEAR{
 				."outcontext='".$f['outcontext']."' ";		// added 2007/10/30 by solo
 		astercrm::events($query);
 		$res =& $db->query($query);
-		
+		$curid = mysql_insert_id() ;
 		$sql = "UPDATE astercrm_accountgroup SET groupid = id";
 		astercrm::events($sql);
 		$ures =& $db->query($sql);
-		return $res;
+		return $curid;
 	}
 
 	function insertNewDiallist($f){

@@ -357,7 +357,7 @@ function speedDate($date_type){
 	if(isset($start_date)) $objResponse->addAssign("sdate","value",$start_date);
 
 	if(isset($end_date)) $objResponse->addAssign("edate","value",$end_date);
-
+	$objResponse->addScript("listReport();");
 	return $objResponse;
 }
 

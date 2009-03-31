@@ -251,7 +251,8 @@ function add(){
 */
 
 function save($f){
-	global $locate;
+	global $locate,$config;
+
 	$objResponse = new xajaxResponse();
 	if(trim($f['groupname']) == '' ){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
@@ -263,10 +264,32 @@ function save($f){
 //		return $objResponse->getXML();
 //	}
 
+	$curid = Customer::insertNewAccountgroup($f); // add a new account
+	if ($curid > 0){
+		if($f['addToBilling']){
+			if($config['billing']['resellerid'] >0 ){
+				$checkreseller = astercrm::getRecordByID($config['billing']['resellerid'],'resellergroup');
+				if($checkreseller['id'] == $config['billing']['resellerid']){
+					$group = array();
+					$group['groupname'] = $f['groupname'];
+					$group['creditlimit'] = $config['billing']['groupcreditlimit'];
+					$group['limittype'] = $config['billing']['grouplimittype'];
+					$group['resellerid'] = $config['billing']['resellerid'];
+					$res = Customer::insertNewGroupForBilling($curid,$group);
 
-	$respOk = Customer::insertNewAccountgroup($f); // add a new account
-	if ($respOk->message == ''){
-		$html = createGrid(0,ROWSXPAGE);
+					if($res !== 1){
+						$objResponse->addAlert($locate->Translate("add this group to asterbilling failed"));
+					}else{
+						$objResponse->addAlert($locate->Translate("add this group to asterbilling success"));
+					}
+				}else{
+					$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this group to asterbilling"));
+				}
+			}else{
+				$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this group to asterbilling"));
+			}
+		}
+		$html = createGrid(0,ROWSXPAGE);		
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_group"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
@@ -274,6 +297,7 @@ function save($f){
 	}else{
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_insert").":".$respOk->message);
 	}
+	
 	return $objResponse->getXML();
 	
 }

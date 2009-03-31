@@ -155,7 +155,19 @@ external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 
 detail_level = group
 
-astercc_conf_path = 
+[billing]
+;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)
+workwithasterbilling = 1
+;the reseller id for new group, you need add a reseller in asterbilling first
+resellerid = 6
+;default limittype for new group(prepaid,postpaid), leave it blank be no limit
+grouplimittype = 
+;default creditlimit for new group
+groupcreditlimit = 0
+;default limittype for new clid(prepaid,postpaid), leave it blank be no limit
+clidlimittype = 
+;default creditlimit for new clid
+clidcreditlimit = 0
 
 [google-map]
 

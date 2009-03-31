@@ -196,6 +196,20 @@ class Customer extends astercrm
 		return $res;
 	}
 
+	function insertNewGroupForBilling($id,$group){
+		global $db;
+		$f = astercrm::variableFiler($group);
+		$sql= "INSERT INTO accountgroup SET "
+				."groupname='".$group['groupname']."', "				
+				."creditlimit= ".$group['creditlimit'].", "
+				."limittype= '".$group['limittype']."', "
+				."resellerid= ".$group['resellerid'].", "
+				."addtime = now() ";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
 	*
@@ -205,7 +219,7 @@ class Customer extends astercrm
 	*/
 	
 	function formAdd(){
-			global $locate;
+			global $locate,$config;
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -235,8 +249,13 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group Note").'</td>
 					<td align="left"><textarea rows="5" cols="50" id="groupnote" name="groupnote"></textarea></td>
-				</tr>
-				<tr>
+				</tr>';
+				if($config['billing']['workwithasterbilling'] == 1)
+				$html .= '<tr>
+					<td nowrap align="left">'.$locate->Translate("Billing").'</td>
+					<td align="left"><input type="checkbox" value="1" id="addToBilling" name="addToBilling" checked>'.$locate->Translate("Add this group to asterbilling").'</td>
+				</tr>';
+				$html .= '<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 

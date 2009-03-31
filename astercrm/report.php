@@ -138,33 +138,31 @@ require_once('report.common.php');
 		<br>
 		<form name="frmFilter" id="frmFilter" method="post">
 		<br>
-		<div style="left: 20px;" >&nbsp;
+		<div style="margin-left: 30px; margin-right: auto;">
 			<SELECT id="groupid" name="groupid" onchange="setAccount();listReport();">
 			</SELECT>
 
 			<SELECT id="accountid" name="accountid" onchange="listReport();">
-			</SELECT>
-
+			</SELECT>&nbsp;
 			<a href="javascript:void(null);" onclick="xajax_speedDate('td')"><?echo $locate->Translate("Today")?></a>&nbsp;|
 			<a href="javascript:void(null);" onclick="xajax_speedDate('tw')"><?echo $locate->Translate("This week")?></a>&nbsp;|
 			<a href="javascript:void(null);" onclick="xajax_speedDate('tm')"><?echo $locate->Translate("This month")?></a>&nbsp;|
 			<a href="javascript:void(null);" onclick="xajax_speedDate('l3m')"><?echo $locate->Translate("Last 3 months")?></a>&nbsp;|
 			<a href="javascript:void(null);" onclick="xajax_speedDate('ty')"><?echo $locate->Translate("This year")?></a>&nbsp;|
 			<a href="javascript:void(null);" onclick="xajax_speedDate('ly')"><?echo $locate->Translate("Last year")?></a>
-			<br />&nbsp;
+			<br />
 			<?echo $locate->Translate("From")?>: <input type="text" name="sdate" id="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>" readonly>
 			<INPUT onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
 			<?echo $locate->Translate("To")?>:<input type="text" name="edate" id="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>" readonly>
 			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
-			<SELECT id="listType" name="listType">
+			<SELECT id="listType" name="listType" onchange="listReport();">
 				<OPTION value="none"><?echo $locate->Translate("None")?></OPTION>
 				<!--<OPTION value="listdetail"><?echo $locate->Translate("List Detail")?></OPTION>-->
 				<OPTION value="sumyear"><?echo $locate->Translate("Sum By Year")?></OPTION>
 				<OPTION value="summonth"><?echo $locate->Translate("Sum By Month")?></OPTION>
 				<OPTION value="sumday"><?echo $locate->Translate("Sum By Day")?></OPTION>
 				<OPTION value="sumhour"><?echo $locate->Translate("Sum By Hour")?></OPTION>
-				<OPTION value="sumdest"><?echo $locate->Translate("Sum By Destination")?></OPTION>
-				<OPTION value="sumgroup"><?echo $locate->Translate("Sum By Group")?></OPTION>
+				<!--<OPTION value="sumgroup"><?echo $locate->Translate("Sum By Group")?></OPTION>-->
 			</SELECT>
 			
 			<input type="radio" value="text" name="reporttype" checked><?echo $locate->Translate("Text")?>&nbsp;
@@ -173,7 +171,8 @@ require_once('report.common.php');
 		</div>
 		</form>
 		<br>
-		<div id="divGeneralList" style="float:center;"> </div>
+		<div id="divMsg">Processing, please wait ...</div>
+		<div id="divGeneralList" style="margin-left: 30px; margin-right: auto;"></div>
 		<center>
 			<br>			
 			<div style="overflow:hidden; zoom:1; margin:auto; width:830px;">
@@ -196,9 +195,7 @@ require_once('report.common.php');
 		</div>
 		
 
-	<div id="divMsg">
-		Processing, please wait ...
-	</div>
+	
 	-->
 	</center>
 	<div id="divCopyright"></div>
