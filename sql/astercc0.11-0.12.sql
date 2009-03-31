@@ -6,7 +6,9 @@ alter table note add index `customerid` (`customerid`);
 alter table `astercrm_account` change `agent` `agent` varchar(50) NOT NULL default '';
 alter table campaign add `waittime`  varchar(3) NOT NULL default '45';
 alter table campaign add  `worktime_package_id` int(11) NOT NULL default '0';
-alter table credithistory add `comment` varchar(20) NOT NULL default ''; 
+
+
+alter table `astercrm_accountgroup` add `billingid` int(11) NOT NULL default 0;
 
 CREATE TABLE `worktimes` (
 `id` int(11) NOT NULL auto_increment,
@@ -49,4 +51,5 @@ alter table resellergroup add epayment_identity_token varchar(255) NOT NULL defa
 alter table resellergroup add epayment_amount_package varchar(30) NOT NULL default '';
 alter table resellergroup add epayment_notify_mail varchar(60) NOT NULL default '';
 
+alter table credithistory add `comment` varchar(20) NOT NULL default ''; 
 alter table credithistory add epayment_txn_id varchar(60) NOT NULL default '';

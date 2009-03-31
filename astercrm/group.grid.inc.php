@@ -196,7 +196,7 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function insertNewGroupForBilling($id,$group){
+	function insertNewGroupForBilling($group){
 		global $db;
 		$f = astercrm::variableFiler($group);
 		$sql= "INSERT INTO accountgroup SET "
@@ -207,7 +207,8 @@ class Customer extends astercrm
 				."addtime = now() ";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
-		return $res;
+		$curid = mysql_insert_id() ;
+		return $curid;
 	}
 
 	/**

@@ -263,33 +263,35 @@ function save($f){
 //		$objResponse->addAlert($locate->Translate("digit_only"));
 //		return $objResponse->getXML();
 //	}
+	$f['billingid'] = 0;
+	if($f['addToBilling']){
+		if($config['billing']['resellerid'] >0 ){
+			$checkreseller = astercrm::getRecordByID($config['billing']['resellerid'],'resellergroup');
+			if($checkreseller['id'] == $config['billing']['resellerid']){
+				$group = array();
+				$group['groupname'] = $f['groupname'];
+				$group['creditlimit'] = $config['billing']['groupcreditlimit'];
+				$group['limittype'] = $config['billing']['grouplimittype'];
+				$group['resellerid'] = $config['billing']['resellerid'];
+				$billingid = Customer::insertNewGroupForBilling($group);
 
-	$curid = Customer::insertNewAccountgroup($f); // add a new account
-	if ($curid > 0){
-		if($f['addToBilling']){
-			if($config['billing']['resellerid'] >0 ){
-				$checkreseller = astercrm::getRecordByID($config['billing']['resellerid'],'resellergroup');
-				if($checkreseller['id'] == $config['billing']['resellerid']){
-					$group = array();
-					$group['groupname'] = $f['groupname'];
-					$group['creditlimit'] = $config['billing']['groupcreditlimit'];
-					$group['limittype'] = $config['billing']['grouplimittype'];
-					$group['resellerid'] = $config['billing']['resellerid'];
-					$res = Customer::insertNewGroupForBilling($curid,$group);
-
-					if($res !== 1){
-						$objResponse->addAlert($locate->Translate("add this group to asterbilling failed"));
-					}else{
-						$objResponse->addAlert($locate->Translate("add this group to asterbilling success"));
-					}
+				if($billingid > 0){
+					$objResponse->addAlert($locate->Translate("add this group to asterbilling success"));
+					$f['billingid'] = $billingid;
 				}else{
-					$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this group to asterbilling"));
+					$objResponse->addAlert($locate->Translate("add this group to asterbilling failed"));					
 				}
 			}else{
 				$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this group to asterbilling"));
 			}
+		}else{
+			$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this group to asterbilling"));
 		}
-		$html = createGrid(0,ROWSXPAGE);		
+	}
+
+	$res = Customer::insertNewAccountgroup($f); // add a new account
+	if($res == 1){
+		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_group"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");

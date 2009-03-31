@@ -438,15 +438,15 @@ Class astercrm extends PEAR{
 				."monitorforce='".$f['monitorforce']."',"
 				."agentinterval='".$f['agentinterval']."',"
 				."groupnote='".$f['groupnote']."',"
+				."billingid='".$f['billingid']."',"
 				."incontext='".$f['incontext']."',"
 				."outcontext='".$f['outcontext']."' ";		// added 2007/10/30 by solo
 		astercrm::events($query);
-		$res =& $db->query($query);
-		$curid = mysql_insert_id() ;
+		$res =& $db->query($query);		
 		$sql = "UPDATE astercrm_accountgroup SET groupid = id";
 		astercrm::events($sql);
 		$ures =& $db->query($sql);
-		return $curid;
+		return $res;
 	}
 
 	function insertNewDiallist($f){

@@ -214,6 +214,25 @@ class Customer extends astercrm
 		return $res;
 	}
 
+	function insertNewAccountForBilling($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$sql= "INSERT INTO clid SET "
+				."clid='".$f['extension']."', "
+				."pin='".$f['password']."', "
+				."display='".$f['username']."', "
+				."groupid = ".$f['groupid'].", "
+				."resellerid = ".$f['resellerid'].", "
+				."creditlimit = '".$f['creditlimit']."',"
+				."limittype = '".$f['limittype']."',"
+				."addtime = now() ";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
 	*

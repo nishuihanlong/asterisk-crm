@@ -277,7 +277,7 @@ function add(){
 */
 
 function save($f){
-	global $locate,$db;
+	global $locate,$db,$config;
 
 	$objResponse = new xajaxResponse();
 	
@@ -343,7 +343,32 @@ function save($f){
 	if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
 
 	$respOk = Customer::insertNewAccount($f); // add a new account
-	if ($respOk){
+	if ($respOk == 1){
+		if ( $f['usertype'] != 'admin' ){
+			$group = astercrm::getRecordByID($f['groupid'],'astercrm_accountgroup');
+			//print_r($group);echo $config['billing']['resellerid'];exit;
+			if($group['billingid'] > 0){
+				if($config['billing']['resellerid'] >0 ){
+					$checkreseller = astercrm::getRecordByID($config['billing']['resellerid'],'resellergroup');
+					if($checkreseller['id'] == $config['billing']['resellerid']){
+						$f['groupid'] = $group['billingid'];
+						$f['resellerid'] = $config['billing']['resellerid'];
+						$f['creditlimit'] = $config['billing']['clidcreditlimit'];
+						$f['limittype'] = $config['billing']['clidlimittype'];
+						$res = Customer::insertNewAccountForBilling($f);
+						if($res == 1){
+							$objResponse->addAlert($locate->Translate("add as a billing clid success"));
+						}else{
+							$objResponse->addAlert($locate->Translate("add as a billing clid failed"));
+						}
+					}else{
+						$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this account as a billing clid"));
+					}
+				}else{
+					$objResponse->addAlert($locate->Translate("Reseller id is incorrect, can not add this account as a billing clid"));
+				}
+			}
+		}
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_account"));
