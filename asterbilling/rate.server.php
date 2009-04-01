@@ -331,6 +331,9 @@ function add(){
 function save($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+
+	if(!isset($f['groupid'])) $f['groupid'] = $_SESSION['curuser']['groupid'];
+	if(!isset($f['resellerid'])) $f['resellerid'] = $_SESSION['curuser']['resellerid'];
 	
 	// check if clid duplicate
 	$res = astercrm::checkRateDuplicate("myrate",$f,"insert");

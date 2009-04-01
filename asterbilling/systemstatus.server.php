@@ -502,6 +502,7 @@ function addUnbilled($peer,$leg = null){
 		$jsscript .= "cdr['rate'] = '".$ratedesc."';";
 		$jsscript .= "cdr['price'] = '".astercc::creditDigits($mycdr['credit'])."';";
 		$jsscript .= "appendTr('".$peer."-calllog-tbody',cdr);";
+		$objResponse->addAssign($peer."-displayname","style.backgroundColor","red");
 		$objResponse->addScript($jsscript);
 	}
 	$objResponse->addAssign($peer."-unbilled","innerHTML",$totalprice);

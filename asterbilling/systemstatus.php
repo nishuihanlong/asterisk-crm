@@ -59,7 +59,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	{
 		div.innerHTML += "<span id=\"" + divId + "-displayname\">" + "&nbsp;No." + num + ":" +  displayname + "</span>&nbsp;<span id=\"" + divId + "-peer-status\"></span>";
 	}else{
-		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">' + divId;
+		div.innerHTML += '<input type="button" value="D" onclick="removeLocalDiv(\'' + divId + '\');return false;">'+"<span id=\"" + divId + "-displayname\">" + divId + '</span>';
 	}
 	div.innerHTML += " <span id=\"" + divId + "-status\"></span>";
 	divContainer.appendChild(div);
@@ -106,7 +106,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 															"<form action=\"\" name=\"" + divId + "-form\" id=\"" + divId + "-form\">" +
 															"<table width=\"500\" class=\"calllog\">" +
 																"<tbody id=\"" + divId + "-calllog-tbody\">"+"<input id=\"" + divId + "-CustomerId\" name=\"" + divId + "-CustomerId\" type=\"hidden\" value=\"\">"+ "<input id=\"" + divId + "-CustomerDiscount\" name=\"" + divId + "-CustomerDiscount\" type=\"hidden\" value=\"0\">" +
-																"</tbody>"+"</table>" +"</form>";							
+																"</tbody>"+"</table>" +"</form>";					
 	divContainer.appendChild(div);
 
 	// add unbilled div
