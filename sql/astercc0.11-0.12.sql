@@ -53,3 +53,13 @@ alter table resellergroup add epayment_notify_mail varchar(60) NOT NULL default 
 
 alter table credithistory add `comment` varchar(20) NOT NULL default ''; 
 alter table credithistory add epayment_txn_id varchar(60) NOT NULL default '';
+
+CREATE TABLE `uploadfile` (
+`id` int(11) NOT NULL auto_increment,
+`filename` varchar(100) NOT NULL default '',
+`originalname` varchar(100) NOT NULL default '',
+`cretime` datetime default NULL ,
+`creby` varchar(30) NOT NULL default '',
+`groupid` int(11) NOT NULL default 0,
+UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

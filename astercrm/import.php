@@ -148,6 +148,20 @@
 				xajax.$('formUpload').submit();
 				return false;
 			}
+
+			function enableDelete(){
+				document.getElementById('spnDel').style.display = '';
+				document.getElementById('btnDelete').disabled = false;
+				return false;
+			}
+
+			function deleteFile(){
+				if(xajax.$('filelist').value == 0){
+					return false;
+				}
+				xajax_deleteFile(xajax.$('filelist').value);
+				return false;
+			}
 		
 			function  addOption(objId,optionVal,optionText)  {
 				objSelect = document.getElementById(objId);
@@ -209,9 +223,9 @@
 			<div id="mainform">
 				<form action="upload.php" method="post" enctype="multipart/form-data" id="formUpload" name="formUpload" target="iframeShowExcel" onsubmit="uploadFile();return false;">
 					<input type="hidden" name="CHECK" value="1" />
-					<?echo $locate->Translate("please_select_file");?>: <input type="file" name="excel" id="excel" onchange="if (this.value != 0){document.getElementById('filelist').value=0;}"/>&nbsp;<?echo $locate->Translate("or");?>&nbsp;<select name="filelist" id="filelist" onchange="if (this.value != 0){document.getElementById('excel').value='';}"></select>
+					<?echo $locate->Translate("please_select_file");?>: <input type="file" name="excel" id="excel" onchange="if (this.value != 0){document.getElementById('filelist').value=0;}"/>&nbsp;<?echo $locate->Translate("or");?>&nbsp;<select name="filelist" id="filelist" onchange="if (this.value != 0){document.getElementById('excel').value=''; enableDelete();}"></select>
 					<br/><br/>
-					<input type="submit" value="<?echo $locate->Translate("upload");?>" id="btnUpload" name="btnUpload" style="width:150px;"/>
+					<input type="submit" value="<?echo $locate->Translate("upload");?>" id="btnUpload" name="btnUpload" style="width:150px;"/><span id="spnDel" style="display:none"><input type="button" value="<?echo $locate->Translate("Delete File");?>" id="btnDelete" name="btnDelete" style="width:150px;" onclick="deleteFile();" disabled/></span>
 				</form>
 			</div>
 

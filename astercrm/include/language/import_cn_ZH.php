@@ -27,7 +27,9 @@
 	$uploading = "正在上传，请等待……";
 	$data_importing = "正在执行数据操作，请等待……";
 	$records_inserted = '条记录，录入成功';
-	$or = "或是";
+	$or = "或";
 	$select_a_existent_file = "选择已存在的文件";
 	$scheduler = "拨号时间";
+	$delete_file_success = "删除文件成功";
+	$delete_file = "删除文件";
 ?>

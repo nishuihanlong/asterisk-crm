@@ -42,6 +42,7 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("submitForm");
 $xajax->registerFunction("showDivMainRight");
 $xajax->registerFunction("setCampaign");
+$xajax->registerFunction("deleteFile");
 
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.
