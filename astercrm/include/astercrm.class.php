@@ -3768,6 +3768,7 @@ Class astercrm extends PEAR{
 
 	function &readReport($groupid,$accountid,$sdate,$edate,$type){
 		global $db;
+		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] == "groupadmin") $groupid = $_SESSION['curuser']['groupid'];
 		$query = "SELECT COUNT(*) as recordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate'";
 		if(is_numeric($accountid) && $accountid > 0){
 			$account = astercrm::getRecordByID($accountid,"astercrm_account");
@@ -3793,7 +3794,7 @@ Class astercrm extends PEAR{
 				}
 			}
 		}
-		
+
 		astercrm::events($query);
 		$all_res =& $db->query($query);
 		if($type != 'both'){
