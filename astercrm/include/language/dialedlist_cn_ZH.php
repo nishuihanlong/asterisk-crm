@@ -15,4 +15,5 @@ $all = "全部";
 $like = "包含";
 $number_have_been_recycled = "个号码被成功回收";
 $recycle = "号码回收";
+$worktime_packages = "工作时间范围";
 ?>

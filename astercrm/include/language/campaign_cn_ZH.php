@@ -25,4 +25,7 @@ $like = "包含";
 $asterisk_server = "Asterisk 服务器";
 $default_server = "默认服务器";
 $server_name = "服务器名称";
+$worktime_packages = "工作时间范围";
+$worktime_package = "工作时间范围";
+$waitting_time = "拨号等待时间";
 ?>

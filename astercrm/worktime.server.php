@@ -230,7 +230,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("worktimes",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	
-	$weekShow=array('','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+	$weekShow=array('',$locate->Translate("Monday"),$locate->Translate('Tuesday'),$locate->Translate('Wednesday'),$locate->Translate('Thursday'),$locate->Translate('Friday'),$locate->Translate('Saturday'),$locate->Translate('Sunday'));
 	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table

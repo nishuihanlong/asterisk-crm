@@ -304,7 +304,7 @@ class Customer extends astercrm
 		$worktimes_res = $db->query($query);
 		$worktimeshtml .= '';
 		$i=0;
-		$weekShow=array('','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+		$weekShow=array('',$locate->Translate("Monday"),$locate->Translate('Tuesday'),$locate->Translate('Wednesday'),$locate->Translate('Thursday'),$locate->Translate('Friday'),$locate->Translate('Saturday'),$locate->Translate('Sunday'));
 
 		while ($worktimes_row = $worktimes_res->fetchRow()) {			
 			$i++;

@@ -211,24 +211,24 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Week").'*</td>
-					<td align="left">'.$locate->Translate("Form").':&nbsp;
+					<td align="left">'.$locate->Translate("From").':&nbsp;
 							<SELECT id="startweek" name="startweek">
-									<OPTION value="1">Monday</OPTION>
-									<OPTION value="2">Tuesday</OPTION>
-									<OPTION value="3">Wednesday</OPTION>
-									<OPTION value="4">Thursday</OPTION>
-									<OPTION value="5">Friday</OPTION>
-									<OPTION value="6">Saturday</OPTION>
-									<OPTION value="7">Sunday</OPTION>							
+									<OPTION value="1">'.$locate->Translate("Monday").'</OPTION>
+									<OPTION value="2">'.$locate->Translate("Tuesday").'</OPTION>
+									<OPTION value="3">'.$locate->Translate("Wednesday").'</OPTION>
+									<OPTION value="4">'.$locate->Translate("Thursday").'</OPTION>
+									<OPTION value="5">'.$locate->Translate("Friday").'</OPTION>
+									<OPTION value="6">'.$locate->Translate("Saturday").'</OPTION>
+									<OPTION value="7">'.$locate->Translate("Sunday").'</OPTION>							
 							</SELECT>&nbsp;'.$locate->Translate("To").':&nbsp;
 							<SELECT id="endweek" name="endweek">
-									<OPTION value="1">Monday</OPTION>
-									<OPTION value="2">Tuesday</OPTION>
-									<OPTION value="3">Wednesday</OPTION>
-									<OPTION value="4">Thursday</OPTION>
-									<OPTION value="5">Friday</OPTION>
-									<OPTION value="6">Saturday</OPTION>
-									<OPTION value="7">Sunday</OPTION>							
+									<OPTION value="1">'.$locate->Translate("Monday").'</OPTION>
+									<OPTION value="2">'.$locate->Translate("Tuesday").'</OPTION>
+									<OPTION value="3">'.$locate->Translate("Wednesday").'</OPTION>
+									<OPTION value="4">'.$locate->Translate("Thursday").'</OPTION>
+									<OPTION value="5">'.$locate->Translate("Friday").'</OPTION>
+									<OPTION value="6">'.$locate->Translate("Saturday").'</OPTION>
+									<OPTION value="7">'.$locate->Translate("Sunday").'</OPTION>							
 							</SELECT>
 					</td>
 				</tr>				
@@ -291,52 +291,52 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Week").'*</td>
-					<td align="left">'.$locate->Translate("Form").':&nbsp;
+					<td align="left">'.$locate->Translate("From").':&nbsp;
 							<SELECT id="startweek" name="startweek">
 									<OPTION value="1"';
 									if($worktimes['startweek']==1) $html .= 'selected';
-									$html .= '>Monday</OPTION>
+									$html .= '>'.$locate->Translate("Monday").'</OPTION>
 									<OPTION value="2"';
 									if($worktimes['startweek']==2) $html .= 'selected';
-									$html .= '>Tuesday</OPTION>
+									$html .= '>'.$locate->Translate("Tuesday").'</OPTION>
 									<OPTION value="3"';
 									if($worktimes['startweek']==3) $html .= 'selected';
-									$html .= '>Wednesday</OPTION>
+									$html .= '>'.$locate->Translate("Wednesday").'</OPTION>
 									<OPTION value="4"';
 									if($worktimes['startweek']==4) $html .= 'selected';
-									$html .= '>Thursday</OPTION>
+									$html .= '>'.$locate->Translate("Thursday").'</OPTION>
 									<OPTION value="5"';
 									if($worktimes['startweek']==5) $html .= 'selected';
-									$html .= '>Friday</OPTION>
+									$html .= '>'.$locate->Translate("Friday").'</OPTION>
 									<OPTION value="6"';
 									if($worktimes['startweek']==6) $html .= 'selected';
-									$html .= '>Saturday</OPTION>
+									$html .= '>'.$locate->Translate("Saturday").'</OPTION>
 									<OPTION value="7"';
 									if($worktimes['startweek']==7) $html .= 'selected';
-									$html .= '>Sunday</OPTION>							
+									$html .= '>'.$locate->Translate("Sunday").'</OPTION>							
 							</SELECT>&nbsp;'.$locate->Translate("To").':&nbsp;
 							<SELECT id="endweek" name="endweek">
 									<OPTION value="1"';
 									if($worktimes['endweek']==1) $html .= 'selected';
-									$html .= '>Monday</OPTION>
+									$html .= '>'.$locate->Translate("Monday").'</OPTION>
 									<OPTION value="2"';
 									if($worktimes['endweek']==2) $html .= 'selected';
-									$html .= '>Tuesday</OPTION>
+									$html .= '>'.$locate->Translate("Tuesday").'</OPTION>
 									<OPTION value="3"';
 									if($worktimes['endweek']==3) $html .= 'selected';
-									$html .= '>Wednesday</OPTION>
+									$html .= '>'.$locate->Translate("Wednesday").'</OPTION>
 									<OPTION value="4"';
 									if($worktimes['endweek']==4) $html .= 'selected';
-									$html .= '>Thursday</OPTION>
+									$html .= '>'.$locate->Translate("Thursday").'</OPTION>
 									<OPTION value="5"';
 									if($worktimes['endweek']==5) $html .= 'selected';
-									$html .= '>Friday</OPTION>
+									$html .= '>'.$locate->Translate("Friday").'</OPTION>
 									<OPTION value="6"';
 									if($worktimes['endweek']==6) $html .= 'selected';
-									$html .= '>Saturday</OPTION>
+									$html .= '>'.$locate->Translate("Saturday").'</OPTION>
 									<OPTION value="7"';
 									if($worktimes['endweek']==7) $html .= 'selected';
-									$html .= '>Sunday</OPTION>							
+									$html .= '>'.$locate->Translate("Sunday").'</OPTION>							
 							</SELECT>
 					</td>
 				</tr>			

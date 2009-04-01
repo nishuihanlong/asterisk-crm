@@ -54,7 +54,7 @@ if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertyp
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'campaign');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'worktime');
 
 $xajax = new xajax("worktime.server.php");
 

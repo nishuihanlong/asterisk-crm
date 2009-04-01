@@ -1254,7 +1254,7 @@ function addSchedulerDial($display='',$number){
 	if($display == "none"){
 		$campaignflag = false;
 		$html = '<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
-					<td align="left">'.$locate->Translate("Number").' : <input type="text" id="sDialNum" name="sDialNum" size="15" maxlength="35" value="'.$number.'">';
+					<td align="left">'.$locate->Translate("DialNumber").' : <input type="text" id="sDialNum" name="sDialNum" size="15" maxlength="35" value="'.$number.'">';
 		if($number != ''){
 			$curtime = date("Y-m-d H:i:s");
 			$curtime = date("Y-m-d H:i:s",strtotime("$curtime -30 seconds"));

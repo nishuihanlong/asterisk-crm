@@ -229,7 +229,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['worktimepackage_name'];
 		$rowc[] = $row['worktimepackage_note'];
-		$rowc[] = $row['worktimepackage_status'];		
+		if($row['worktimepackage_status'] == 'enable')
+			$rowc[] = $locate->Translate("enable");	
+		else
+			$rowc[] = $locate->Translate("disable");	
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
@@ -349,7 +352,7 @@ function edit($id){
 	$worktimes_res = $db->query($query);
 
 	$i=0;
-	$weekShow=array('','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+	$weekShow=array('',$locate->Translate("Monday"),$locate->Translate('Tuesday'),$locate->Translate('Wednesday'),$locate->Translate('Thursday'),$locate->Translate('Friday'),$locate->Translate('Saturday'),$locate->Translate('Sunday'));
 	while ( $worktimes_res->fetchInto($worktimes_row)) {
 		$i++;
 		if(in_array($worktimes_row['id'],$wp)){

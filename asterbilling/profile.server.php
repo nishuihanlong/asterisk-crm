@@ -164,7 +164,7 @@ function InfomationHtml(){
 		$balance = $reseller_row['creditlimit'] - $reseller_row['curcredit'];
 		$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 				  <tr>
-					<td width="25%" height="39" class="td font" align="center">
+					<td width="25%" height="39" class="td font" align="left">
 						'.$locate->Translate('Reseller Infomation').'
 					</td>
 					<td width="75%" class="td font" align="center">&nbsp;</td>
@@ -199,7 +199,7 @@ function InfomationHtml(){
 					<td width="30%" align="center" valign="top" ><b>'.$reseller_row['curcredit'].'</b></td>	
 				  </tr>
 				  <tr bgcolor="#F7F7F7">
-					<td width="20%" align="right" valign="top" >'.$locate->Translate('Credit limit ').':&nbsp;&nbsp;</td>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Credit limit').':&nbsp;&nbsp;</td>
 					<td width="30%" align="center" valign="top" ><b>'.$reseller_row['creditlimit'].'</b></td>
 					<td width="20%" align="right" valign="top" >'.$locate->Translate('Balance').':&nbsp;&nbsp;</td>
 					<td width="30%" align="center" valign="top" ><b>'.$balance.'</b></td>    	
@@ -211,7 +211,7 @@ function InfomationHtml(){
 		$balance = $group_row['creditlimit'] - $group_row['curcredit'];
 		$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 				  <tr>
-					<td width="25%" height="39" class="td font" align="center">
+					<td width="25%" height="39" class="td font" align="left">
 						'.$locate->Translate('Group Infomation').'
 					</td>
 					<td width="75%" class="td font" align="center">&nbsp;</td>
@@ -234,7 +234,7 @@ function InfomationHtml(){
 					<td width="30%" align="center" valign="top" ><b>'.$group_row['allowcallback'].'</b></td>	
 				  </tr>
 				  <tr bgcolor="#F7F7F7">
-					<td width="20%" align="right" valign="top" >'.$locate->Translate('Credit limit ').':&nbsp;&nbsp;</td>
+					<td width="20%" align="right" valign="top" >'.$locate->Translate('Credit limit').':&nbsp;&nbsp;</td>
 					<td width="30%" align="center" valign="top" ><b>'.$group_row['creditlimit'].'</b></td>
 					<td width="20%" align="right" valign="top" >'.$locate->Translate('Clid cost').':&nbsp;&nbsp;</td>
 					<td width="30%" align="center" valign="top" ><b>'.$group_row['credit_clid'].'</b></td>	
@@ -261,7 +261,7 @@ function paymentInfoHtml(){
 	$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
 	$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 			  <tr>
-				<td width="46%" height="39" class="td font" align="center">'.
+				<td width="46%" height="39" class="td font" align="left">'.
 					$locate->Translate('Online Payment Receiving Infomation').'
 				</td>
 				<td width="54%" class="td font" align="center">&nbsp;</td>
@@ -319,7 +319,7 @@ function rechargeHtml(){
 
 	$html = '<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="600">
 			  <tr>
-				<td width="26%" height="39" class="td font" align="center">
+				<td width="26%" height="39" class="td font" align="left">
 					'.$locate->Translate('Recharge By Paypal').'
 				</td>
 				<td width="74%" class="td font" align="center">&nbsp;</td>
@@ -370,7 +370,7 @@ function rechargeByPaypal($amount){
 	$paypal_charge = array();
 	if($_SESSION['curuser']['usertype'] == 'reseller'){
 		if( $config['epayment']['epayment_status'] != 'enable' || $config['epayment']['paypal_payment_url'] == '' || $config['epayment']['paypal_account'] == '' || $config['epayment']['pdt_identity_token'] == '' || $config['epayment']['asterbilling_url'] == '' || $config['epayment']['paypal_verify_url'] == '' || $config['epayment']['currency_code'] == ''){
-			$objResponse->addAlert($locate->Translate('The seller does not support online payment'));
+			$objResponse->addAlert($locate->Translate('The system does not support online payment'));
 			return $objResponse;
 		}else{
 			$p = new paypal_class;
@@ -395,7 +395,7 @@ function rechargeByPaypal($amount){
 		$reseller_row = astercrm::getRecordByID($_SESSION['curuser']['resellerid'],'resellergroup');
 
 		if($reseller_row['epayment_status'] != 'enable'){
-			$objResponse->addAlert($locate->Translate('The seller does not support online payment'));
+			$objResponse->addAlert($locate->Translate('The reseller does not support online payment'));
 			return $objResponse;
 		}else{
 			$p = new paypal_class;
@@ -429,7 +429,7 @@ function rechargeByPaypal($amount){
 		</table>
 		<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="600">
 		<tr bgcolor="#F7F7F7">
-		<td align="center" valign="top"><b>Please wait, your credit order is  processing...</b>'; 
+		<td align="center" valign="top"><b>'.$locate->Translate('Please wait your credit order is processing').'...</b>'; 
 
 	$paymentHtml .= $p->submit_paypal_post();
 	$paymentHtml .= '</td></tr></table>';

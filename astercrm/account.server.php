@@ -346,7 +346,6 @@ function save($f){
 	if ($respOk == 1){
 		if ( $f['usertype'] != 'admin' ){
 			$group = astercrm::getRecordByID($f['groupid'],'astercrm_accountgroup');
-			//print_r($group);echo $config['billing']['resellerid'];exit;
 			if($group['billingid'] > 0){
 				if($config['billing']['resellerid'] >0 ){
 					$checkreseller = astercrm::getRecordByID($config['billing']['resellerid'],'resellergroup');

@@ -22,6 +22,9 @@ $account_detail		= "Account Detail";	// added 2007/10/30 by solo
 $account_code		= "Account Code";	// added 2007/11/12 by solo
 $username_repeat = "user name repeat";
 $payment_canceled = "Your credit order was canceled";
-$payment_success = "Your transaction has been completed, and a receipt for your purchase has been emailed to you.<br>You may log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.<br>";
 $payment_failed = "Your transaction could not be completed.<br>You may log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.<br>";
+$payment_success = "Recharge success<br>please check your blance later<br>";
+$payment_return_failed = "Payment messege return failed,please check your blance later<br>";
+$payment_order_error = "Recharge failed beacause above reason";
+$payment_may_completed = "Note: Your payment may be completed<br>Please log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.";
 ?>

@@ -98,4 +98,8 @@ $extension_unavailable = "您的分机可能不在线,是否继续?";
 $hang_up_call_from = "已挂机";
 $no_information_get_for_trunk = "没有线路信息";
 $portal = "工作台";
+$break = "暂停";
+$share = "共享";
+$campaign = "拨号计划";
+$scheduler_dial = "定时拨号";
 ?>

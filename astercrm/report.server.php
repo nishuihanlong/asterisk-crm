@@ -52,7 +52,7 @@ function init(){
 		}		
 	}
 
-	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
+	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	return $objResponse;
@@ -156,7 +156,7 @@ function listReport($aFormValues){
 				}
 			}
 			$html .= "<div class='box'>";
-			$html .= "total :<br/>";
+			$html .= $locate->Translate("total")." :<br/>";
 			$html .= "<div>";
 			$result = parseReport($ary); 
 			$html .= $result['html'];
@@ -191,7 +191,7 @@ function listReport($aFormValues){
 				}
 			//}
 			$html .= "<div class='box'>";
-			$html .= "total :<br/>";
+			$html .= $locate->Translate("total")." :<br/>";
 			$html .= "<div>";
 			$result = parseReport($ary); 
 			$html .= $result['html'];
@@ -222,7 +222,7 @@ function listReport($aFormValues){
 				}
 			}
 			$html .= "<div class='box'>";
-			$html .= "total :<br/>";
+			$html .= $locate->Translate("total")." :<br/>";
 			$html .= "<div>";
 			$result = parseReport($ary); 
 			$html .= $result['html'];
@@ -253,7 +253,7 @@ function listReport($aFormValues){
 				}
 			}
 			$html .= "<div class='box'>";
-			$html .= "total :<br/>";
+			$html .= $locate->Translate("total")." :<br/>";
 			$html .= "<div>";
 			$result = parseReport($ary); 
 			$html .= $result['html'];
@@ -294,7 +294,7 @@ function listReport($aFormValues){
 			
 			}
 			$html .= "<div class='box'>";
-			$html .= "total :<br/>";
+			$html .= $locate->Translate("total")." :<br/>";
 			$html .= "<div>";
 			$result = parseReport($ary); 
 			$html .= $result['html'];
