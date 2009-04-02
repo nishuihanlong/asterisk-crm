@@ -71,7 +71,8 @@ require_once('rate.common.php');
 			<div class="centermain">
 				<?echo $locate->Translate("Customer Billsec Multiple");?>
 				<input type="text" id="customer_multiple" name="customer_multiple" value="" size="6" maxlength="6" >
-				<input type="button" value="Update" onclick="updateCustomerMultiple();">
+				<input type="button" value="Update" onclick="updateCustomerMultiple();">&nbsp;&nbsp;&nbsp;&nbsp;
+				<span id="spnShortcutUpdate"></span>
 			</div>
 		<?
 			}		

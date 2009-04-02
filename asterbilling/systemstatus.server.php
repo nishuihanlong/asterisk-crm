@@ -265,11 +265,13 @@ function showStatus(){
 			}else{ 
 				// set display name
 				$objResponse->addAssign("$peer-displayname","style.backgroundColor","green");
+				$destination = '';
+				if($peerstatus[$peer]['destination'] != '') $destination = '<br>&nbsp;'.$peerstatus[$peer]['destination'];
 
 				if( $peerstatus[$peer]['direction'] == 'outbound'){
-					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/outbound.gif'>".$peerstatus[$peer]['dst']);
+					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/outbound.gif'>".$peerstatus[$peer]['dst'].$destination);//here
 				}else{
-					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/inbound.gif'>".$peerstatus[$peer]['src']);
+					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/inbound.gif'>".$peerstatus[$peer]['src'].$destination);
 					$objResponse->addAssign($peer.'-phone','style.color','green');
 				}
 				$objResponse->addAssign($peer.'-startat','innerHTML',$peerstatus[$peer]['starttime']);
@@ -321,7 +323,10 @@ function showStatus(){
 			}else if ($res->numRows() == 1){	 //calling legA
 				$_SESSION['callbacks'][$key]['start'] = 1;
 				$res->fetchInto($legA);
-					$objResponse->addAssign($localChan.'-phone','innerHTML',$legA['dst']);
+					$destination = '';
+					if($legA['destination'] != '') $destination = '<br>&nbsp;'.$legA['destination'];
+
+					$objResponse->addAssign($localChan.'-phone','innerHTML',$legA['dst'].$destination);
 					$objResponse->addAssign($localChan.'-startat','innerHTML',$legA['starttime']);
 					$objResponse->addAssign($localChan.'-channel','value',$legA['srcchan']);
 	//				$objResponse->addAlert($legA['answertime']);
@@ -344,8 +349,9 @@ function showStatus(){
 			}else if ($res->numRows() == 2){	 //calling legB
 				$_SESSION['callbacks'][$key]['start'] = 2;
 				$res->fetchInto($legA);
-				//**
-					$objResponse->addAssign($localChan.'-phone','innerHTML',$legA['dst']);
+				//**$destination = '';
+					if($legA['destination'] != '') $destination = '<br>&nbsp;'.$legA['destination'];
+					$objResponse->addAssign($localChan.'-phone','innerHTML',$legA['dst'].$destination);
 					$objResponse->addAssign($localChan.'-startat','innerHTML',$legA['starttime']);
 					$objResponse->addAssign($localChan.'-channel','value',$legA['srcchan']);
 					if ($legA['answertime'] != '0000-00-00 00:00:00'){
@@ -367,7 +373,9 @@ function showStatus(){
 
 			//**
 				$res->fetchInto($legB);
-					$objResponse->addAssign($localChan.'-legb-phone','innerHTML',$legB['dst']);
+					$destination = '';
+					if($legB['destination'] != '') $destination = '<br>&nbsp;'.$legB['destination'];
+					$objResponse->addAssign($localChan.'-legb-phone','innerHTML',$legB['dst'].$destination);
 					$objResponse->addAssign($localChan.'-legb-startat','innerHTML',$legB['starttime']);
 					$objResponse->addAssign($localChan.'-legb-channel','value',$legB['srcchan']);
 					if ($legB['answertime'] != '0000-00-00 00:00:00'){
@@ -531,6 +539,7 @@ function checkOut($aFormValues,$divId,$payment){
 		}
 		$objResponse->addAlert($locate->Translate("booth_cleared"));
 		$objResponse->addAssign($divId."-unbilled","innerHTML",0);
+		$objResponse->addAssign($divId."-displayname","style.backgroundColor","");
 	}
 
 	if( $customerid != 0 ){

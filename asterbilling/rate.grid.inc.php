@@ -516,5 +516,36 @@ class Customer extends astercrm
 
 		return $html;
 	}
+
+	function shortUpdateGrid($groupid,$resellerid){
+		global $locate;
+		$html = '<table border="0" width="99%" style="line-height: 30px;" class="adminlist"><tbody><tr><th class="title" ><b>'.$locate->Translate("Shortcut update rate").'</b></th></tr><tbody></table>
+				<table border="0" width="99%" style="line-height: 30px;" class="adminlist"><tbody>';
+		$ratelist = astercc::searchRateForShortUpdate($groupid,$resellerid);
+		$flag = 0;
+		$class="row0";
+		foreach($ratelist as $rate_row){
+			$flag++;
+			if($flag%2 == 0) $tr .= '<td style="cursor: pointer;" width="10%">&nbsp;&nbsp;</td>';
+			
+			$tr .= '<td style="cursor: pointer;" width="10%">'.$rate_row['mdialprefix'].'</td><td style="cursor: pointer;" width="10%">'.$rate_row['mdestination'].'</td><td style="cursor: pointer;" width="10%">'.$rate_row['crateinitial'].'</td><td style="cursor: pointer;" width="10%"><input type="text" value="'.$rate_row['mrateinitial'].'" size="10"></td><td style="cursor: pointer;" width="10%"><input type="button" value="'.$locate->Translate("Update").'"></td>';
+			
+			if($flag%2 != 0){
+				$tr = '<tr class="'.$class.'">'.$tr;
+				if($class == 'row1') 
+					$class = 'row0';
+				else
+					$class = 'row1';
+			}else{
+				$tr = $tr.'</tr>';
+				$html .= $tr;
+				$tr = '';				
+			}
+		}
+		
+		if($flag%2 != 0) $html .= $tr.'<td></td><td colspan="5"></td></tr>';
+		$html .= '</tbody></table>';
+		return $html;
+	}
 }
 ?>

@@ -282,14 +282,14 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
-	$exportFlag = $searchFormValue['exportFlag'];
+	$optionFlag = $searchFormValue['optionFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];
 //	print_r($searchFormValue);exit;
 	$divName = "grid";
-	if($exportFlag == "1"){
-		$sql = astercrm::getSql($searchContent,$searchField,'customer'); //得到要导出的sql语句
+	if($optionFlag == "export"){
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'customer'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");

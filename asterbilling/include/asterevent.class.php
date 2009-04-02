@@ -668,5 +668,44 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		$res = $db->query($query);
 		return $res;
 	}
+
+	function searchRateForShortUpdate($groupid, $resellerid){
+		global $db;
+
+		$sql = "SELECT myrate.id as mid,myrate.dialprefix as mdialprefix,myrate.destination as mdestination,myrate.connectcharge as mconnectcharge,myrate.initblock as minitblock,myrate.rateinitial as mrateinitial,myrate.rateinitial as mrateinitial,myrate.billingblock as mbillingblock,myrate.groupid as mgroupid,myrate.resellerid as mresellerid,callshoprate.id as cid,callshoprate.dialprefix as cdialprefix,callshoprate.connectcharge as cconnectcharge,callshoprate.initblock as cinitblock,callshoprate.rateinitial as crateinitial,callshoprate.rateinitial as crateinitial,callshoprate.billingblock as cbillingblock,callshoprate.groupid as cgroupid,callshoprate.resellerid as cresellerid FROM myrate LEFT JOIN callshoprate ON myrate.dialprefix = callshoprate.dialprefix WHERE callshoprate.dialprefix != '' AND myrate.dialprefix != 'default' ";
+		
+		astercc::events($sql);
+		$rates = & $db->query($sql);
+		
+		$allprefix = array();
+		$ratelist = array();
+		while ($rates->fetchInto($list)) {
+			
+			if(in_array($list['mdialprefix'],$allprefix)){
+
+				if($list['cgroupid'] != $gruopid && $list['cresellerid'] != $resellerid){
+					echo $list['cresellerid'].$groupid;
+					continue;
+				}else{
+					foreach($allprefix as $key => $value){
+						if($list['mdialprefix'] == $value){
+							$curkey = $key;
+							break;
+						}
+					}
+					if($ratelist[$curkey]['cresellerid'] == $resellerid){
+						if($ratelist[$curkey]['cgroupid'] == $gruopid){
+							continue;
+						}
+					}
+					$ratelist[$curkey] = $list;
+					continue;	
+				}
+			}
+			$ratelist[] = $list;
+			$allprefix[] = $list['mdialprefix'];
+		}
+		return $ratelist;
+	}
 }
 ?>
