@@ -111,7 +111,7 @@ currency_code = USD
 amount = 10,20,50,100
 
 ;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
-asterbilling_url = 
+asterbilling_url =
 
 ;your email address for receice a notice when someone payment
 notify_mail = 
