@@ -52,7 +52,7 @@ class Common{
 				<div class="end">
 				<ul>
 				<li>2007-2009 asterCRM - asterCRM home</li>
-				<li>version: 0.057</li>
+				<li>version: 0.058</li>
 				</ul>
 				</div>
 				';
