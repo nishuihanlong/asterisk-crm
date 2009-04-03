@@ -471,7 +471,7 @@ class Customer extends astercrm
 			<input type="hidden" id="groupid" name="groupid" value='.$group['id'].'>
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Reseller").'</td>
+					<td nowrap align="left">'.$locate->Translate("Reseller").'*</td>
 					<td align="left">'
 						.$reselleroptions.
 					'</td>

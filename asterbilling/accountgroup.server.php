@@ -171,20 +171,20 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("ID").'<br/>';
-	$headers[] = $locate->Translate("Name");
-	$headers[] = $locate->Translate("Reseller");
-	$headers[] = $locate->Translate("Callback");
-	$headers[] = $locate->Translate("Credit Limit");
-	$headers[] = $locate->Translate("Limit Type");
-	$headers[] = $locate->Translate("Cur Credit");
-	$headers[] = $locate->Translate("Clid Credit");
-	$headers[] = $locate->Translate("Group Credit");
-	$headers[] = $locate->Translate("Reseller Credit");
-	$headers[] = $locate->Translate("Group Billsec Multiple");
+	$headers[] = $locate->Translate("Name").'<br/>';
+	$headers[] = $locate->Translate("Reseller").'<br/>';
+	$headers[] = $locate->Translate("Callback").'<br/>';
+	$headers[] = $locate->Translate("Credit Limit").'<br/>';
+	$headers[] = $locate->Translate("Limit Type").'<br/>';
+	$headers[] = $locate->Translate("Cur Credit").'<br/>';
+	$headers[] = $locate->Translate("Clid Credit").'<br/>';
+	$headers[] = $locate->Translate("Group Credit").'<br/>';
+	$headers[] = $locate->Translate("Reseller Credit").'<br/>';
+	$headers[] = $locate->Translate("Group Billsec Multiple").'<br/>';
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="5%"';
+	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -318,8 +318,8 @@ function save($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	
-	if (trim($f['groupname']) == ''){
-		$objResponse->addAlert($locate->Translate("please enter the groupname"));
+	if (trim($f['groupname']) == '' || trim($f['resellerid']) == 0){
+		$objResponse->addAlert('*'.$locate->Translate("obligatory fields"));
 		return $objResponse;
 	}
 
@@ -358,6 +358,11 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+
+	if (trim($f['groupname']) == '' || trim($f['resellerid']) == 0){
+		$objResponse->addAlert('*'.$locate->Translate("obligatory fields"));
+		return $objResponse;
+	}
 
 	$respOk = Customer::updateAccountgroupRecord($f);
 
