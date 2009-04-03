@@ -520,7 +520,7 @@ class Customer extends astercrm
 	function shortUpdateGrid($groupid,$resellerid){
 		global $locate;
 		$html = '<table border="0" width="99%" style="line-height: 30px;" class="adminlist"><tbody><tr><th class="title" ><b>'.$locate->Translate("Shortcut update rate").'</b></th></tr><tbody></table>
-				<table border="0" width="99%" style="line-height: 30px;" class="adminlist"><tbody>';
+				<table border="0" width="99%" style="line-height: 25px; padding: 0px;" class="adminlist" ><tbody>';
 		$ratelist = astercc::searchRateForShortUpdate($groupid,$resellerid);
 		$flag = 0;
 		$class="row0";
@@ -528,7 +528,7 @@ class Customer extends astercrm
 			$flag++;
 			if($flag%2 == 0) $tr .= '<td style="cursor: pointer;" width="10%">&nbsp;&nbsp;</td>';
 			
-			$tr .= '<td style="cursor: pointer;" width="10%">'.$rate_row['mdialprefix'].'</td><td style="cursor: pointer;" width="10%">'.$rate_row['mdestination'].'</td><td style="cursor: pointer;" width="10%">'.$rate_row['crateinitial'].'</td><td style="cursor: pointer;" width="10%"><input type="text" value="'.$rate_row['mrateinitial'].'" size="10"></td><td style="cursor: pointer;" width="10%"><input type="button" value="'.$locate->Translate("Update").'"></td>';
+			$tr .= '<td style="cursor: pointer;" width="10%">'.$rate_row['mdialprefix'].'</td><td style="cursor: pointer;" width="10%">'.$rate_row['mdestination'].'</td><td style="cursor: pointer;" width="10%">'.$rate_row['crateinitial'].'</td><td style="cursor: pointer;" width="10%"><input type="text" value="'.$rate_row['mrateinitial'].'" size="10" id="'.$rate_row['mid'].'-mrateinitial" onKeyUp="filedFilter(this,\'numeric\');"></td><td style="cursor: pointer;" width="10%"><input type="button" value="'.$locate->Translate("Update").'" onclick="shortcutUpdateSave(\''.$rate_row['mid'].'\');"></td>';
 			
 			if($flag%2 != 0){
 				$tr = '<tr class="'.$class.'">'.$tr;

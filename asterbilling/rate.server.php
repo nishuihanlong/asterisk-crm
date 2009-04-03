@@ -38,6 +38,7 @@ function init(){
 		$row = astercrm::getRecordById($_SESSION['curuser']['groupid'],"accountgroup");
 		$objResponse->addAssign("customer_multiple","value", $row['customer_multiple']);
 		$objResponse->addAssign("spnShortcutUpdate","innerHTML", '<input type="button" value="'.$locate->Translate("Shortcut update rate").'" onclick="xajax_shortcutUpdate();">');
+		$objResponse->addAssign("spnShortcutMsg","innerHTML", '');
 
 	}
 
@@ -754,8 +755,26 @@ function shortcutUpdate(){
 	if($_SESSION['curuser']['usertype'] = 'groupadmin'){
 		$html = Customer::shortUpdateGrid($_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid']);
 		$objResponse->addAssign('grid', "innerHTML", $html);
+		$objResponse->addAssign("spnShortcutUpdate","innerHTML", '<input type="button" value="'.$locate->Translate("Return").'" onclick="init();">');
 	}
 	return $objResponse;
 }
+
+function shortcutUpdateSave($id,$newRate){
+	global $locate,$db;
+
+	$objResponse = new xajaxResponse();
+	if(!is_numeric($newRate)) return $objResponse;
+
+	$sql = "UPDATE myrate SET rateinitial = $newRate WHERE id = $id";
+	$res = $db->query($sql);
+	if($res == 1 ) 
+		$objResponse->addAssign("spnShortcutMsg","innerHTML", $locate->Translate("update success"));
+	else
+		$objResponse->addAssign("spnShortcutMsg","innerHTML", $locate->Translate("update failed"));
+	$objResponse->addScript("settimeout('document.getElementById(\'spnShortcutMsg\').innerHTML = \'\'','5');");
+	return $objResponse;
+}
+
 $xajax->processRequests();
 ?>

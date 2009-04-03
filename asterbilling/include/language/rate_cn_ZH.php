@@ -36,4 +36,7 @@ $buy_rate = "成本费率";
 $for_first = "前";
 $seconds = "秒";
 $per = "每";
+$update = "更新";
+$shortcut_update_rate = "快速更新费率";
+$return = "返回";
 ?>

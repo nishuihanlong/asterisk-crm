@@ -49,11 +49,18 @@ require_once('rate.common.php');
 			}
 		}
 
+		function shortcutUpdateSave(mid){
+			newRate = xajax.$(mid+'-mrateinitial').value;
+			if(mid > 0) xajax_shortcutUpdateSave(mid,newRate);
+			return false;
+		}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
 		<script type="text/javascript" src="js/astercrm.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
@@ -72,7 +79,8 @@ require_once('rate.common.php');
 				<?echo $locate->Translate("Customer Billsec Multiple");?>
 				<input type="text" id="customer_multiple" name="customer_multiple" value="" size="6" maxlength="6" >
 				<input type="button" value="Update" onclick="updateCustomerMultiple();">&nbsp;&nbsp;&nbsp;&nbsp;
-				<span id="spnShortcutUpdate"></span>
+				<span id="spnShortcutUpdate"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span id="spnShortcutMsg"></span>
 			</div>
 		<?
 			}		
