@@ -51,5 +51,6 @@ $xajax->registerFunction("checkDb");
 $xajax->registerFunction("checkAMI");
 $xajax->registerFunction("checkSys");
 $xajax->registerFunction("saveLicence");
+$xajax->registerFunction("systemAction");
 
 ?>

@@ -62,4 +62,13 @@ $status_check_interval	= '页面更新事件的间隔时间(秒)';
 $smart_match_remove	= '来电号码智能匹配时,去除号码未尾数字的位数';
 $check = "测试";
 $set_multi_servers = "设置多服务器";
+$are_you_sure_to = "您确定要";
+$reload = "重载asterisk";
+$restart = "重启asterisk";
+$reboot = "重启astercc box";
+$shutdown = "关闭astercc box";
+$asterisk_have_been_reloaded = "重载asterisk完毕";
+$asterisk_have_been_restart = "重启asterisk完毕";
+$server_is_rebooting = "服务器正在重启";
+$server_is_shuting_down = "服务器正在关机";
 ?>

@@ -380,5 +380,27 @@ function saveLicence($aFormValues){
 	return $objResponse;
 }
 
+function systemAction($type){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($_SESSION['curuser']['usertype'] != 'admin') return $objResponse;
+
+	$myAsterisk = new Asterisk();
+	if($type == 'reload'){
+		$r = $myAsterisk->reloadAsterisk();
+		$objResponse->addAssign("divAsMsg","innerHTML","<span class='passed'>".$locate->Translate('asterisk have been reloaded')."</span");
+	}elseif($type == "restart"){
+		$myAsterisk->restartAsterisk();
+		$objResponse->addAssign("divAsMsg","innerHTML","<span class='passed'>".$locate->Translate('asterisk have been restart')."</span");
+	}elseif($type == "reboot"){
+		exec ('sudo /sbin/shutdown -r now');
+		$objResponse->addAssign("divSysMsg","innerHTML","<span class='passed'>".$locate->Translate('Server is rebooting')."...</span");
+	}elseif($type == "shutdown"){
+		exec ('sudo /sbin/shutdown -h now');
+		$objResponse->addAssign("divSysMsg","innerHTML","<span class='passed'>".$locate->Translate('Server is shuting down')."...</span");
+	}
+	return $objResponse;
+}
+
 $xajax->processRequests();
 ?>
