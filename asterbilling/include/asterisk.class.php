@@ -152,6 +152,27 @@ class Asterisk extends AGI_AsteriskManager{
 		return $peer[37];
 	}
 
+	
+	function reloadAsterisk(){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$r = $myAsterisk->Command(" reload ");	
+		$myAsterisk->disconnect();
+		return $r;
+	}
+
+	function restartAsterisk(){
+		global $config;
+		$myAsterisk = new Asterisk();
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		$myAsterisk->Command(" restart now ");	
+		//$myAsterisk->disconnect();
+		return;
+	}
+
 	/*
 	*	$spy:		监听方
 	*	$exten:		被监听方

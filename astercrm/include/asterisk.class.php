@@ -151,7 +151,7 @@ class Asterisk extends AGI_AsteriskManager{
 		$myAsterisk = new Asterisk();
 		$myAsterisk->config['asmanager'] = $config['asterisk'];
 		$res = $myAsterisk->connect();
-		$r = $myAsterisk->Command(" reloads ");	
+		$r = $myAsterisk->Command(" reload ");	
 		$myAsterisk->disconnect();
 		return $r;
 	}
@@ -161,9 +161,9 @@ class Asterisk extends AGI_AsteriskManager{
 		$myAsterisk = new Asterisk();
 		$myAsterisk->config['asmanager'] = $config['asterisk'];
 		$res = $myAsterisk->connect();
-		$r = $myAsterisk->Command(" restart now ");	
+		$myAsterisk->Command(" restart now ");
 		$myAsterisk->disconnect();
-		return $r;
+		return;
 	}
 
 	/*

@@ -8,7 +8,7 @@ dbtype = mysql
 dbhost = 127.0.0.1
 dbname = astercc
 username = astercc
-password = asterccsecret
+password = astercc
 
 [asterisk]
 ;
@@ -157,9 +157,9 @@ detail_level = group
 
 [billing]
 ;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)
-workwithasterbilling = 0
+workwithasterbilling = 1
 ;the reseller id for new group, you need add a reseller in asterbilling first
-resellerid = 0
+resellerid = 6
 ;default limittype for new group(prepaid,postpaid), leave it blank be no limit
 grouplimittype = 
 ;default creditlimit for new group
@@ -171,5 +171,5 @@ clidcreditlimit = 0
 
 [google-map]
 
-key = 
+key = ABQIAAAAn6bTNTcfGY0MrLFxKClbghR-UxJJ2gicUKVqr6XNwxkifgGNhBQKvStoMVeMuNfR2yOxLtHJ6emyiw
 ;?>

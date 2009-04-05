@@ -76,13 +76,13 @@ require_once('preferences.common.php');
 
 			function systemAction(type){
 				if(type == 'reload'){
-					var msg = "<?echo $locate->Translate('Are you sure to')?><? echo $locate->Translate('reload')?>?";
+					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('reload')?>?";
 				}else if(type == 'restart'){
-					var msg = "<?echo $locate->Translate('Are you sure to')?><? echo $locate->Translate('restart')?>?";
+					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('restart')?>?";
 				}else if(type == 'reboot'){
-					var msg = "<?echo $locate->Translate('Are you sure to')?><? echo $locate->Translate('reboot')?>?";
+					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('reboot')?>?";
 				}else if(type == 'shutdown'){
-					var msg = "<?echo $locate->Translate('Are you sure to')?><? echo $locate->Translate('shutdown')?>?";
+					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('shutdown')?>?";
 				}
 				if(confirm(msg)){
 					xajax_systemAction(type);
@@ -243,8 +243,8 @@ require_once('preferences.common.php');
 		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('System');?> 
       <input type="button" onclick="display('menu2')"  value="+"/>
 		<input type="button" onclick="checkSys();return false;"  value="<?echo $locate->Translate('check');?>"/>		
-		<!--<input type="button" onclick="systemAction('reboot');return false;"  value="<?echo $locate->Translate('reboot');?>"/>
-		<input type="button" onclick="systemAction('shutdown');return false;"  value="<?echo $locate->Translate('shutdown');?>"/>-->
+		<input type="button" onclick="systemAction('reboot');return false;"  value="<?echo $locate->Translate('reboot');?>"/>
+		<input type="button" onclick="systemAction('shutdown');return false;"  value="<?echo $locate->Translate('shutdown');?>"/>
 		<div name="divSysMsg" id="divSysMsg"></div>
 
 	</td>
