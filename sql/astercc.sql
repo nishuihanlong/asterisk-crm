@@ -349,8 +349,8 @@ CREATE TABLE `curcdr` (
   `didnumber` varchar(30) NOT NULL default '',
   `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `srcuid` varchar(20) NOT NULL default '',
-  `dstuid` varchar(20) NOT NULL default '',
+  `srcuid` varchar(40) NOT NULL default '',
+  `dstuid` varchar(40) NOT NULL default '',
   `disposition` varchar(10) NOT NULL default '',
   `userid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
@@ -402,8 +402,8 @@ CREATE TABLE `mycdr` (
   `disposition` varchar(45) NOT NULL default '',
   `accountcode` varchar(20) NOT NULL default '',
   `userfield` varchar(255) NOT NULL default '',
-  `srcuid` varchar(20) NOT NULL default '',
-  `dstuid` varchar(20) NOT NULL default '',
+  `srcuid` varchar(40) NOT NULL default '',
+  `dstuid` varchar(40) NOT NULL default '',
   `calltype` varchar(255) NOT NULL default '',
   `credit` double(24,4) NOT NULL default '0.0000',
   `callshopcredit` double(24,4) NOT NULL default '0.0000',
@@ -547,6 +547,7 @@ CREATE TABLE `astercrm_accountgroup` (
  `outcontext` VARCHAR( 50 ) NOT NULL  ,
  `monitorforce` INT(1) NOT NULL default 0,
  `agentinterval` int(5) NULL,
+ `billingid` int(11) NOT NULL default 0,
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  `creby` varchar(30) NOT NULL default '',
  UNIQUE (`groupid`)
@@ -1194,6 +1195,38 @@ CREATE TABLE `agentlogin_history` (
  `uniqueid` varchar(15) NOT NULL,
  `online` int(11) NOT NULL default '0'
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## 
+## table `mailboxes`
+## 
+
+DROP TABLE IF EXISTS `mailboxes`;
+
+CREATE TABLE `mailboxes` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(30) NOT NULL default '',
+  `mailbox` varchar(50) NOT NULL default '',
+  `newmessages` int(11) NOT NULL default '0',
+  `oldmessages` int(11) NOT NULL default '0',
+UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+## 
+## table `uploadfile`
+## 
+
+DROP TABLE IF EXISTS `uploadfile`;
+
+CREATE TABLE `uploadfile` (
+`id` int(11) NOT NULL auto_increment,
+`filename` varchar(100) NOT NULL default '',
+`originalname` varchar(100) NOT NULL default '',
+`cretime` datetime default NULL ,
+`creby` varchar(30) NOT NULL default '',
+`groupid` int(11) NOT NULL default 0,
+UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ##########################################################
 

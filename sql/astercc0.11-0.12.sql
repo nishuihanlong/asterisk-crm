@@ -54,6 +54,11 @@ alter table resellergroup add epayment_notify_mail varchar(60) NOT NULL default 
 alter table credithistory add `comment` varchar(20) NOT NULL default ''; 
 alter table credithistory add epayment_txn_id varchar(60) NOT NULL default '';
 
+alter table `curcdr` change `srcuid` `srcuid` varchar(40) NOT NULL default '';
+alter table `curcdr` change `dstuid` `dstuid` varchar(40) NOT NULL default '';
+alter table `mycdr` change `srcuid` `srcuid` varchar(40) NOT NULL default '';
+alter table `mycdr` change `dstuid` `dstuid` varchar(40) NOT NULL default '';
+
 CREATE TABLE `uploadfile` (
 `id` int(11) NOT NULL auto_increment,
 `filename` varchar(100) NOT NULL default '',
@@ -63,3 +68,12 @@ CREATE TABLE `uploadfile` (
 `groupid` int(11) NOT NULL default 0,
 UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+CREATE TABLE `mailboxes` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(30) NOT NULL default '',
+  `mailbox` varchar(50) NOT NULL default '',
+  `newmessages` int(11) NOT NULL default '0',
+  `oldmessages` int(11) NOT NULL default '0',
+UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

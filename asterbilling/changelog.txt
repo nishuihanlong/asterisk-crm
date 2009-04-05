@@ -106,7 +106,17 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-2-11   improve import module
 2009-2-12   improve asterrc (support hungup call if no rate or not in group)
 2009-2-12   add billing by source channel
-
+----------------------------------------------------------------------------------
+0.097
+2009-3-13   add generate sip extension and sip reload for admin user
+2009-3-15   add display connect speed of clid
+2009-3-15   add comment in credithistory
+2009-3-28    add reloadrate, useSrcchanWhenNoClid in astercc.conf
+2009-3-23   improve asterrc that replace src to srcchan when src not match
+2009-3-28   add a shortcut update customer rate for groupadmin
+2009-3-28   improve callshop interface 
+2009-3-31   support payment by paypal
+2009-4-2    add reload and restart asterisk in web(systme page)
 
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能

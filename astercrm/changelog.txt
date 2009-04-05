@@ -300,6 +300,25 @@ v0.057
 2009-1-31	campaign页面增加servername
 2009-2-11	改进导入模块
 2009-2-16	增加对动态座席登入queue时间的统计
+---------------------------------------------------------------------------------------------------------
+v0.058
+2009-2-16	增强astercrm的统计报表(1. campaign的拨号结果 (合计/已拨/已接) 2. 增加对座席的统计报表 
+2009-2-18	解决了拨号计划的checkbox状态不准确的bug
+2009-2-19	解决了录音管理页只显示一页的bug
+2009-2-19	解决了agent页面中，note方式显示时，sql语句中未定义notecreby及customer方式时，客户数据大时会造成cpu超负的问题
+2009-2-27	增加了拨号计划的开始/结束时间设置
+2009-3-2	解决了astercctools录音的路径不正确bug
+2009-3-5	增大astercrm_account表中agent的字段长度 从varchar(30)增大到varchar(50)
+2009-3-8	在astercc的script目录中提供了可通过crontab执行的备份文件和数据库的脚本backup.sh
+2009-3-18	customer表单增加scheduler diallist功能
+2009-3-18	增加调整WaitTime的参数
+2009-3-19	解决了trunkinfo在agent页面上显示的bug
+2009-3-20	允许用户在note部分添加<a href=? onclick="transfer(xxxxxx);return false;">xxxxxx</transferto>标签, 点击时执行transfer动作
+2009-3-21	增加了astercrm与asterbilling 结合使用，在astercrm中增加一个组或用户时，可同时在asterbillingk增加相应计费组和用户
+2009-3-26	增加了已导入文件的删除功能
+2009-3-26	增大了curcdr和mycdr中srcuid和dstuid的长度到40
+2009-3-28	增加了座席暂停/恢复的功能
+2009-4-2	增加了asterisk的reload和restart功能
 
 
 TO-DO:
