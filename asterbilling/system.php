@@ -88,14 +88,14 @@ require_once('system.common.php');
 					<td  align="center" valign="center" height="30"><input type="button" onclick="systemAction('restart');return false;"  value="<?echo $locate->Translate('Restart asterisk');?>" style="width:110px;"/></td>
 					<td align="left" valign="center" height="30" >&nbsp;&nbsp;<?echo $locate->Translate('restart info');?></td>					
 				  </tr>
-				  <tr bgcolor="#F7F7F7">
+				  <!--<tr bgcolor="#F7F7F7">
 					<td  align="center" valign="center" height="30"><input type="button" onclick="systemAction('reboot');return false;"  value=" <?echo $locate->Translate('Reboot asterccBox');?>" style="width:130px;"/></td>
 					<td  align="left" valign="center" height="30">&nbsp;&nbsp;<?echo $locate->Translate('reboot info');?></td>					
 				  </tr>
 				  <tr bgcolor="#F7F7F7">
 					<td  align="center" valign="center" height="30"><input type="button" onclick="systemAction('shutdown');return false;"  value="<?echo $locate->Translate('Shutdown asterccBox');?>" style="width:130px;"/></td>
 					<td  align="left" valign="center" height="30" >&nbsp;&nbsp;<?echo $locate->Translate('shutdown info');?></td>					
-				  </tr>
+				  </tr>-->
 	</table>
 	<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="650">
 	  <tr>

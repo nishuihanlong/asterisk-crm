@@ -243,8 +243,8 @@ require_once('preferences.common.php');
 		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('System');?> 
       <input type="button" onclick="display('menu2')"  value="+"/>
 		<input type="button" onclick="checkSys();return false;"  value="<?echo $locate->Translate('check');?>"/>		
-		<input type="button" onclick="systemAction('reboot');return false;"  value="<?echo $locate->Translate('reboot');?>"/>
-		<input type="button" onclick="systemAction('shutdown');return false;"  value="<?echo $locate->Translate('shutdown');?>"/>
+		<!--<input type="button" onclick="systemAction('reboot');return false;"  value="<?echo $locate->Translate('reboot');?>"/>
+		<input type="button" onclick="systemAction('shutdown');return false;"  value="<?echo $locate->Translate('shutdown');?>"/>-->
 		<div name="divSysMsg" id="divSysMsg"></div>
 
 	</td>
