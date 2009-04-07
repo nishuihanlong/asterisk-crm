@@ -247,10 +247,25 @@ $clientDst = $_REQUEST['clientdst'];
 			setTimeout("xajax_invite(src,dest)",1000);
 		}
 		
-		function transfer(){
+		function transfer(target){
+			if (target == ''){
+				if (xajax.$("iptTtansfer").value != ''){
+					target = xajax.$("iptTtansfer").value;
+				}else{
+					target = xajax.$("sltExten").value;
+				}
+			}else{
+				xajax.$("iptTtansfer").value = target;
+			}
+
+			if (target == ''){
+				return false;
+			}
+
 			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + xajax.$("sltExten").value;
-			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",1000);
+			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + target;
+			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",500);
+			return false;
 		}
 
 		function trim(stringToTrim) {
@@ -445,7 +460,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<SELECT id="sltExten" name="sltExten">
 			</SELECT>
 			<INPUT TYPE="text" name="iptTtansfer" id="iptTtansfer" size="15">
-			<INPUT type="button" value="<?echo $locate->Translate("Transfer");?>" id="btnTransfer" onclick="transfer();">
+			<INPUT type="button" value="<?echo $locate->Translate("Transfer");?>" id="btnTransfer" onclick="transfer('');">
 		</span>
 		<div id="myevents"></div>
 		<br>

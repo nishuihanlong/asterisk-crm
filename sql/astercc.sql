@@ -61,6 +61,7 @@ VALUES (
 NULL , 'admin', 'admin', 'admin' , now()
 );
 
+
 ##########################################################
 
 ## 
@@ -473,6 +474,21 @@ CREATE TABLE `historycdr` (
 ##########################################################
 
 ## 
+## table `agentlogin_history`
+## 
+
+DROP TABLE IF EXISTS `agentlogin_history`;
+
+CREATE TABLE `agentlogin_history` (
+ `agent` varchar(30) NOT NULL default '',
+ `channel` varchar(30) NOT NULL default '',
+ `agentlogin` datetime NOT NULL default '0000-00-00 00:00:00',
+ `agentlogout` datetime NOT NULL default '0000-00-00 00:00:00',
+ `uniqueid` varchar(15) NOT NULL,
+ `online` int(11) NOT NULL default '0'
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## 
 ## table `astercrm_account`
 ## 
 
@@ -509,6 +525,22 @@ INSERT INTO `astercrm_account` (
 VALUES (
  NULL , 'admin', 'admin', '0000', '', 'admin'
 );
+
+##########################################################
+
+## 
+## table `mailboxes`
+## 
+DROP TABLE IF EXISTS `mailboxes`;
+
+CREATE TABLE `mailboxes` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(30) NOT NULL default '',
+  `mailbox` varchar(50) NOT NULL default '',
+  `newmessages` int(11) NOT NULL default '0',
+  `oldmessages` int(11) NOT NULL default '0',
+UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ###########################################################
 
@@ -1195,21 +1227,6 @@ CREATE TABLE `agentlogin_history` (
  `uniqueid` varchar(15) NOT NULL,
  `online` int(11) NOT NULL default '0'
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
-
-## 
-## table `mailboxes`
-## 
-
-DROP TABLE IF EXISTS `mailboxes`;
-
-CREATE TABLE `mailboxes` (
-  `id` int(11) NOT NULL auto_increment,
-  `username` varchar(30) NOT NULL default '',
-  `mailbox` varchar(50) NOT NULL default '',
-  `newmessages` int(11) NOT NULL default '0',
-  `oldmessages` int(11) NOT NULL default '0',
-UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
 ## 
