@@ -191,20 +191,34 @@ function listCDR($aFormValues){
 		$aFormValues['sltBooth'] = $aFormValues['hidCurpeer'];
 	}
 
-	list ($syear,$smonth,$sday) = split("[ -]",$aFormValues['sdate']);
+	list ($syear,$smonth,$sday,$stime) = split("[ -]",$aFormValues['sdate']);
 	$syear = (int)$syear;
 	$smonth = (int)$smonth;
 	$sday = (int)$sday;
+	list($shours,$smins) = split("[ :]",$stime);
+	$shours = (int)$shours;
+	if($shours == 0) $shours = '00';
+	$smins = (int)$smins;
+	if($smins == 0) $smins = '00';
 
-	list ($eyear,$emonth,$eday) = split("[ -]",$aFormValues['edate']);
+	list ($eyear,$emonth,$eday,$etime) = split("[ -]",$aFormValues['edate']);
 	$eyear = (int)$eyear;
 	$emonth = (int)$emonth;
 	$eday = (int)$eday;
+	list($ehours,$emins) = split("[ :]",$etime);
+	$ehours = (int)$ehours;
+	if($ehours == 0) $ehours = '00';
+	$emins = (int)$emins;
+	if($emins == 0) $emins = '00';
 
 	$ary = array();
-    $aFormValues['sdate']=$syear."-".$smonth."-".$sday;
-    $aFormValues['edate']=$eyear."-".$emonth."-".$eday;
-
+	if ($aFormValues['reporttype'] == "text"){
+		$aFormValues['sdate']=$syear."-".$smonth."-".$sday.' '.$shours.':'.$smins;
+		$aFormValues['edate']=$eyear."-".$emonth."-".$eday.' '.$ehours.':'.$emins;
+	}else{
+		$aFormValues['sdate']=$syear."-".$smonth."-".$sday;
+		$aFormValues['edate']=$eyear."-".$emonth."-".$eday;
+	}
 	if ($aFormValues['listType'] == "none"){
 		$res = astercc::readReport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 

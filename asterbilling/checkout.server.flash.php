@@ -169,7 +169,7 @@
 			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
 			if ($res->fetchInto($myreport)){
 				$result = parseReport($myreport);
-				$ary['recordNum'] += $result['data']['recordNum'];
+				$ary['recordNum'] = $result['data']['recordNum'];
 				$ary['seconds'] = $result['data']['seconds'];
 				$ary['credit'] = $result['data']['credit'];
 				$ary['callshopcredit'] = $result['data']['callshopcredit'];
@@ -212,7 +212,7 @@
 			$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
 			if ($res->fetchInto($myreport)){
 				$result = parseReport($myreport);
-				$ary['recordNum'] += $result['data']['recordNum'];
+				$ary['recordNum'] = $result['data']['recordNum'];
 				$ary['seconds'] = $result['data']['seconds'];
 				$ary['credit'] = $result['data']['credit'];
 				$ary['callshopcredit'] = $result['data']['callshopcredit'];
