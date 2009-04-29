@@ -585,6 +585,26 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function getFieldsByField($fields,$field,$content,$table,$stype=''){
+		global $db;
+		if ($stype != '' ){
+			if($stype == "equal"){
+				$query = "SELECT $fields FROM $table WHERE $field = '".$content."'";
+			}elseif($stype == "more"){
+				$query = "SELECT $fields FROM $table WHERE $field > '".$content."'";
+			}elseif($stype == "less"){
+				$query = "SELECT $fields FROM $table WHERE $field < '".$content."'";
+			}else{
+				$query = "SELECT $fields FROM $table WHERE $field LIKE '%".$content."%'";
+			}
+		}else{
+			$query = "SELECT groupid FROM $table WHERE $field = $content";
+		}
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
 	/**
 	*  Muestra todos los datos de un registro sobre el DIV identificado por "formDiv".
 	*
@@ -797,25 +817,52 @@ Class astercrm extends PEAR{
 	*	@param $content		(array)		content in sql
 	*	@return $joinstr	(string)	sql where string
 	*/
-	function createSqlWithStype($filter,$content,$stype){
+	function createSqlWithStype($filter,$content,$stype,$table){
 
 		$i=0;
 		$joinstr='';
 		foreach($stype as $type){
+			//echo $filter[$i];exit;
 			$content[$i] = preg_replace("/'/","\\'",$content[$i]);
 			if($filter[$i] != '' && trim($content[$i]) != ''){
-				if($type == "equal"){
-					$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
-				}elseif($type == "more"){
-					$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
-				}elseif($type == "less"){
-					$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
+
+				if($filter[$i] == 'groupname' and $table != "accountgroup" and $table != ""){
+					$group_res = astercrm::getFieldsByField('id','groupname',$content[$i],'accountgroup',$type);
+					
+					while ($group_res->fetchInto($group_row)){
+						$group_str.="OR $table.groupid = '".$group_row['id']."' ";					
+					}				
+				}elseif($filter[$i] == 'resellername' and $table != "resellergroup" and $table != ""){
+					$reseller_res = astercrm::getFieldsByField('id','resellername',$content[$i],'resellergroup',$type);
+					
+					while ($reseller_res->fetchInto($reseller_row)){
+						$reseller_str.="OR $table.resellerid = '".$reseller_row['id']."' ";
+					}
 				}else{
-					$joinstr.="AND $filter[$i] like '%".trim($content[$i])."%' ";
+				
+					if($type == "equal"){
+						$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
+					}elseif($type == "more"){
+						$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
+					}elseif($type == "less"){
+						$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
+					}else{
+						$joinstr.="AND $filter[$i] like '%".trim($content[$i])."%' ";
+					}
 				}
 			}
 			$i++;
 		}
+		if($group_str != '' ){
+			$group_str = ltrim($group_str,'OR');
+			$joinstr.= "AND (".$group_str.")";
+		}
+
+		if($reseller_str != '' ){
+			$reseller_str = ltrim($reseller_str,'OR');
+			$joinstr.= "AND (".$reseller_str.")";
+		}
+		//echo $joinstr;exit;
 		return $joinstr;
 	}
 
@@ -911,7 +958,7 @@ Class astercrm extends PEAR{
 
 	function deletefromsearch($searchContent,$searchField,$searchType="",$table){
 		global $db;
-		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType);
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
