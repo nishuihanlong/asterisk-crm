@@ -268,6 +268,7 @@ class Customer extends astercrm
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -278,7 +279,7 @@ class Customer extends astercrm
 		
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'dialedlist');
 
-			$sql = "SELECT COUNT(*) FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = dialedlist.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -291,6 +292,7 @@ class Customer extends astercrm
 			}else {
 				$sql .= " 1";
 			}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;

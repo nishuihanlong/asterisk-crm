@@ -3,7 +3,7 @@ header("content-type:text/html;charset=utf-8");
 require_once('db_connect.php');
 require_once ('include/asterevent.class.php');
 
-$username = trim($_REQUEST['username']);
+$username = trim($_GET['username']);
 if ( $username == "" ){
 	echo 0;
 	exit;

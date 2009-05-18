@@ -24,7 +24,6 @@ require_once ("db_connect.php");
 require_once ("astercrmclient.common.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
-//require_once ('astercrm.server.common.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/localization.class.php');
 
@@ -35,11 +34,11 @@ require_once ('include/localization.class.php');
 
 function init($username="",$passwd="",$lang='en_US'){
 	global $config,$db;
-
+//echo $username.$passwd.$lang;exit;
 	//if($_SESSION['curuser']['username'] != $username){
 		$row = astercrm::getRecordByField("username",$username,"astercrm_account");
 			if ($row['id'] != '' ){
-				if ($row['password'] == $passwd)
+				if (md5($row['password']) == $passwd)
 				{
 					$_SESSION = array();
 					$_SESSION['curuser']['username'] = trim($username);
@@ -58,11 +57,11 @@ function init($username="",$passwd="",$lang='en_US'){
 				}
 			}
 	//}	
-
+//echo $lang;exit;
 	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $lang);
-
+//echo $_SESSION['curuser']['language'];exit;
 	$locate = new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
-
+//echo $locate->Translate("Search");exit;
 	$objResponse = new xajaxResponse();
 
 	$objResponse->addAssign("username","value", $_SESSION['curuser']['username'] );
@@ -190,7 +189,7 @@ function transfer($aFormValues){
 //check if call (uniqueid) hangup
 function incomingCalls($myValue){
 	global $db,$config;
-
+echo $_SESSION['curuser']['country'];exit;
 	$locate = new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'portal');
 
 	$objResponse = new xajaxResponse();

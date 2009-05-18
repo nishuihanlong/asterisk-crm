@@ -2206,6 +2206,12 @@ Class astercrm extends PEAR{
 					while ($group_res->fetchInto($group_row)){
 						$group_str.="OR $table.groupid = '".$group_row['id']."' ";					
 					}					
+				}elseif($filter[$i] == 'campaignname' and $table != "campaign" and $table != ""){
+					$campaign_res = astercrm::getFieldsByField('id','campaignname',$content[$i],'campaign',$type);
+					
+					while ($campaign_res->fetchInto($campaign_row)){
+						$campaign_str.="OR $table.groupid = '".$campaign_row['id']."' ";					
+					}					
 				}else{
 				
 					if($type == "equal"){
@@ -2224,7 +2230,11 @@ Class astercrm extends PEAR{
 		if($group_str != '' ){
 			$group_str = ltrim($group_str,'OR');
 			$joinstr.= "AND (".$group_str.")";
-		}	
+		}
+		if($campaign_str != '' ){
+			$campaign_str = ltrim($campaign_str,'OR');
+			$joinstr.= "AND (".$campaign_str.")";
+		}
 		//echo $joinstr;exit;
 		return $joinstr;
 	}

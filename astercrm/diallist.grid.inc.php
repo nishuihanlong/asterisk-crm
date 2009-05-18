@@ -191,7 +191,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-
+echo $sql;exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
