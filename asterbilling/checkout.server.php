@@ -212,6 +212,7 @@ function listCDR($aFormValues){
 	if($emins == 0) $emins = '00';
 
 	$ary = array();
+
 	if ($aFormValues['reporttype'] == "text"){
 		$aFormValues['sdate']=$syear."-".$smonth."-".$sday.' '.$shours.':'.$smins;
 		$aFormValues['edate']=$eyear."-".$emonth."-".$eday.' '.$ehours.':'.$emins;
@@ -219,6 +220,7 @@ function listCDR($aFormValues){
 		$aFormValues['sdate']=$syear."-".$smonth."-".$sday;
 		$aFormValues['edate']=$eyear."-".$emonth."-".$eday;
 	}
+
 	if ($aFormValues['listType'] == "none"){
 		$res = astercc::readReport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 
