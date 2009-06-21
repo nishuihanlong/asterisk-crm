@@ -534,9 +534,9 @@ function getGridHTML($filePath){
 function getExistfilelist(){
 	global $db,$locate,$config;
 	
-	$sql = "SELECT * FROM uploadfile ";
+	$sql = "SELECT * FROM uploadfile WHERE type='astercrm'";
 	if($_SESSION['curuser']['usertype'] != 'admin'){
-		$sql .= " WHERE groupid = '".$_SESSION['curuser']['groupid']."' ";
+		$sql .= " AND groupid = '".$_SESSION['curuser']['groupid']."' ";
 	}
 	$res = $db->query($sql);
 

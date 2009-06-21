@@ -128,7 +128,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.className = "lable";
 	if (creditLimit == ""){
 		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId + "-ckbCredit\" name=\"" + divId + "-ckbCredit\" value=\"" + divId + "\" onclick=\"ckbCreditOnClick(this);\">";
-		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Translate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"\" size=\"9\" maxlength=\"7\" onKeyUp=\"filedFilter(document.getElementById('" + divId + "-iptCredit'),'numeric');calculateBalance('" + divId + "');\" >";
+		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Translate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"\" size=\"9\" maxlength=\"7\" onKeyUp=\"filedFilter(document.getElementById('" + divId + "-iptCredit'),'numeric');\" >";
 	}else{
 		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId + "-ckbCredit\" name=\"" + divId + "-ckbCredit\" value=\"" + divId + "\" checked onclick=\"ckbCreditOnClick(this);\">";
 		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Translate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"" + creditLimit + "\" size=\"9\" maxlength=\"7\" readonly>";
@@ -266,6 +266,8 @@ function ckbCreditOnClick(objCkb){
 				xajax_setCreditLimit(objCkb.value,channel,0);
 			}
 			document.getElementById(objCkb.value + '-balance').style.backgroundColor="";
+			document.getElementById(objCkb.value + '-iptCredit').value = "";
+			calculateBalance(objCkb.value)
 		}else{
 			objCkb.checked = true;
 		}

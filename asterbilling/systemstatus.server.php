@@ -204,7 +204,9 @@ function setCreditLimit($peer,$channel,$creditlimit){
 		$creditlimit = -10;
 	}
 	$affectrows = astercc::setCreditLimit($channel,$creditlimit);
+	
 	$objResponse = new xajaxResponse();
+//	$objResponse->addAlert($affectrows);
 	if ($affectrows == 0){
 		// cant find this channel
 //
@@ -399,7 +401,7 @@ function showStatus(){
 	}
 
 	$_SESSION['status'] = $peerstatus;
-	$objResponse->addScript('setTimeout("showStatus()", 2000);');
+	//$objResponse->addScript('setTimeout("showStatus()", 2000);');
 	$objResponse->addAssign("spanLastRefresh",'innerHTML',date ("Y-m-d H:i:s",time()));
 	return $objResponse;
 }

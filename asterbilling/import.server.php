@@ -47,8 +47,8 @@ function init($fileName){
 	
 	$file_list = getExistfilelist();
 	$objResponse->addScript("addOption('filelist','0','".$locate->Translate('select a existent file')."');");
-	foreach ( $file_list as $value ) {
-		$objResponse->addScript("addOption('filelist','".$value."','".$value."');");
+	foreach ( $file_list as $file ) {
+		$objResponse->addScript("addOption('filelist','".$file['fileid']."','".$file['originalname']."');");
 	}
 	$objResponse->addAssign("btnUpload","value",$locate->Translate("upload"));
 	$objResponse->addAssign("btnImportData","value",$locate->Translate("import"));
@@ -117,21 +117,6 @@ function init($fileName){
 	$objResponse->addScript("setCampaign();");
 
 	return $objResponse;
-}
-
-function getExistfilelist(){
-	global $locate,$config;
-	$uploaddir = opendir($config['system']['upload_file_path']);
-	$file_list = array();
-	while( false !== ($files = readdir($uploaddir)) ) {
-		$ext_tmp = split("\.",$files);
-		$n = count($ext_tmp) - 1;
-		$ext =  $ext_tmp[$n];
-		$ext = strtolower($ext);
-		if ( $ext == 'xls' ||  $ext == 'csv' )
-			$file_list[] = $files;
-	}
-	return $file_list;
 }
 
 function setGroup($resellerid){
@@ -497,6 +482,58 @@ function getGridHTML($filePath){
 
 	
 	return array('gridHTML'=>$HTML,'columnNumber'=>$num);
+}
+
+function getExistfilelist(){
+	global $db,$locate,$config;
+	
+	$sql = "SELECT * FROM uploadfile WHERE type='asterbilling' ";
+	if($_SESSION['curuser']['usertype'] != 'admin'){
+		$sql .= " AND resellerid = '".$_SESSION['curuser']['resellerid']."' AND groupid = '".$_SESSION['curuser']['groupid']."' ";
+	}
+	$res = $db->query($sql);
+
+	//$uploaddir = opendir($config['system']['upload_file_path']);
+	$file_list = array();
+	$i = 0;
+	while( $res->fetchinto($row) ) {	
+		$filePath = $config['system']['upload_file_path'].$row['filename'];
+		if ( is_file($filePath) ){
+			$file_list[$i]['fileid'] = $row['id'];
+			$file_list[$i]['filename'] = $row['filename'];
+			$file_list[$i]['originalname'] = $row['originalname'];
+			$i++;
+		}
+	}
+	return $file_list;
+}
+
+function deleteFile($fileid){
+	global $db,$locate,$config;
+	$objResponse = new xajaxResponse();
+	$sql = "SELECT * FROM uploadfile WHERE id = ".$fileid;
+	$row = $db->getRow($sql);
+	$sql = "DELETE FROM uploadfile WHERE id = ".$fileid;
+	$res = $db->query($sql);
+	//echo $config['system']['upload_file_path'].$row['filename'];exit;
+	unlink($config['system']['upload_file_path'].$row['filename']);
+
+	if($res == 1){
+		$objResponse->addAssign("divMessage","innerHTML",$locate->Translate('delete file success'));
+		$objResponse->addAssign("filelist","length",0);
+		$file_list = getExistfilelist();
+		$objResponse->addScript("addOption('filelist','0','".$locate->Translate('select a existent file')."');");
+		foreach ( $file_list as $file ) {
+			$objResponse->addScript("addOption('filelist','".$file['fileid']."','".$file['originalname']."');");
+		}
+	}else{
+		$objResponse->addAssign("divMessage","innerHTML",$locate->Translate('delete file failed'));
+	}
+
+	$objResponse->addAssign("spnDel","style.display",'none');
+	$objResponse->addAssign("btnDelete","disabled",true);
+	
+	return $objResponse;
 }
 
 $xajax->processRequests();

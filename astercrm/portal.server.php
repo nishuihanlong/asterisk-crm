@@ -139,6 +139,11 @@ function init(){
 	global $locate,$config,$db;
 
 	$objResponse = new xajaxResponse();
+
+	$check_interval = 2000;
+	if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
+
+	$objResponse->addAssign("checkInterval","value", $check_interval );
 	
 	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
 	$html .= $locate->Translate("extension").$_SESSION['curuser']['extension'];
@@ -263,10 +268,10 @@ function listenCalls($aFormValues){
 		$objResponse->loadXML(incomingCalls($aFormValues));
 	}
 	//set time intervals of update events
-	$check_interval = 2000;
-	if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
+	//$check_interval = 2000;
+	//if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
 
-	$objResponse->addScript('setTimeout("updateEvents()", '.$check_interval.');');
+	//$objResponse->addScript('setTimeout("updateEvents()", '.$check_interval.');');
 	return $objResponse;
 }
 

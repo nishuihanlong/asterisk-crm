@@ -1,6 +1,7 @@
 var timerShowStatus,timerShowChannelsInfo;
 function showStatus(){
 	xajax_showStatus(xajax.$('curid').value);
+	setTimeout("showStatus()", 2000);
 }
 
 function clearHistory(objId){
@@ -106,7 +107,6 @@ function calculateBalance(divId){
 			credit = credit*discount;
 		}
 	}
-
 	if (document.getElementById(divId+'-ckbCredit').checked && document.getElementById('creditlimittype').value == 'balance' && (unbilled - credit)  >= -0.001 )
 	{
 //		alert('warning: the credit should be greater than unbilled');
@@ -115,8 +115,6 @@ function calculateBalance(divId){
 	}else{
 		document.getElementById(divId + '-balance').style.backgroundColor="";
 	}
-
-
 	document.getElementById(divId + '-balance').innerHTML = setCurrency(credit - unbilled);
 }
 

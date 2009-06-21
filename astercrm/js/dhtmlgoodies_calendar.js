@@ -46,7 +46,7 @@ Version 2.1.2 8/30/2007 gfb  - Add switch to start week on Sunday
                                Fix bug when using on an HTTPS page
 
 */
-var turnOffYearSpan = false;     // true = Only show This Year and Next, false = show +/- 5 years
+var turnOffYearSpan = true;     // true = Only show This Year and Next, false = show +/- 5 years
 var weekStartsOnSunday = false;  // true = Start the week on Sunday, false = start the week on Monday
 var showWeekNumber = true;  // true = show week number,  false = do not show week number
 

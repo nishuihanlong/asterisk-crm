@@ -161,8 +161,11 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function updateEvents(){
-			myFormValue = xajax.getFormValues("myForm");
+			myFormValue = xajax.getFormValues("myForm");			
+			//alert(xajax.$('checkInterval').value);
+			
 			xajax_listenCalls(myFormValue);
+			//xajax_listenCalls(myFormValue);
 				// dont pop new window when there already a window exsits
 				if (xajax.$('formDiv') != null){
 					if (xajax.$('formDiv').style.visibility == 'visible')
@@ -172,6 +175,7 @@ $clientDst = $_REQUEST['clientdst'];
 				}else{
 					xajax.$('popup').value = 'yes';
 				}
+			setTimeout("updateEvents()", xajax.$('checkInterval').value);
 		}
 
 		function monitor(){
@@ -472,6 +476,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<input type='checkbox' name='chkMonitor' id="chkMonitor">
 			<?echo $locate->Translate("Always record when connected");?>
 		</div>
+		<input type="hidden" name="checkInterval" id="checkInterval" value="2000"/>
 		<input type="hidden" name="breakStatus" id="breakStatus" value=""/>
 		<input type="hidden" name="extensionStatus" id="extensionStatus" value=""/>
 		<input type="hidden" name="username" id="username" value=""/>

@@ -101,19 +101,27 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 
 	if($_FILES['excel']['name'] != ''){ //上传的文件
 		$upload_type = $_FILES['excel']['type'];
-		$file_name = $_FILES['excel']['name'];
-		$type = substr($file_name,-3);
+		$original_name = $_FILES['excel']['name'];
+		$type = substr($original_name,-3);
+		$file_name = $_SESSION['curuser']['resellerid'].'_'.$_SESSION['curuser']['groupid'].'_'.time().'.'.$type;
 		if ( "xls" == $type || "csv" == $type)
 		{
 			if (!move_uploaded_file($_FILES['excel']['tmp_name'], $config['system']['upload_file_path'] . $file_name)) 
 			{
 				$upload_msg = $locate->Translate('failed');  //失败提示
+			}else{
+				$sql = "INSERT INTO uploadfile SET filename = '$file_name',originalname='$original_name',cretime=now(),creby='".$_SESSION['curuser']['username']."',resellerid = '".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."', type='asterbilling'";
+
+				$res = $db->query($sql);
 			}
 		}else {
 			$upload_msg .= $locate->Translate('cantup');  //失败提示
 		}
 	}else{ //选择的已存在的文件
-		$file_name = $_POST['filelist'];
+		$sql = "SELECT * FROM uploadfile WHERE id = ".$_POST['filelist'];
+		$file = $db->getRow($sql);
+		$file_name = $file['filename'];
+		$original_name = $file['originalname'];
 		$type = substr($file_name,-3);
 	}
 		

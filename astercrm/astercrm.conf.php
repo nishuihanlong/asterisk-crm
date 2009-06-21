@@ -97,7 +97,7 @@ allow_same_data = 0
 
 ; define what information would be displayed in portal page
 ; customer | note
-portal_display_type = customer
+portal_display_type = note
 
 ;
 ; astercrm wouldnot pop-up when dial out unless this parameter is true
@@ -155,6 +155,7 @@ external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 
 detail_level = group
 
+astercc_conf_path = 
 [billing]
 ;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)
 workwithasterbilling = 0
