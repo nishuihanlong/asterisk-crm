@@ -108,7 +108,7 @@ function setGroup($resellerid){
 	return $objResponse;
 }
 
-function parseReport($myreport,$answeredNum){
+function parseReport($myreport,$answeredNum = ''){
 	global $locate;
 	$ary['recordNum'] = $myreport['recordNum'];
 	$ary['seconds'] = $myreport['seconds'];
@@ -124,8 +124,10 @@ function parseReport($myreport,$answeredNum){
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
-		$html .= $locate->Translate("ASR").": ".$asr."%<br>";
-		$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		if($answeredNum != ''){
+			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
+			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		}
 		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";		
 		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 		$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
@@ -135,8 +137,10 @@ function parseReport($myreport,$answeredNum){
 	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
-		$html .= $locate->Translate("ASR").": ".$asr."%<br>";
-		$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		if($answeredNum != ''){
+			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
+			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		}
 		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
 		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
 		$html .= $locate->Translate("Markup").": ". ($myreport['credit'] - $myreport['callshopcredit']) ."<br>";
@@ -145,8 +149,10 @@ function parseReport($myreport,$answeredNum){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
-		$html .= $locate->Translate("ASR").": ".$asr."%<br>";
-		$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		if($answeredNum != ''){
+			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
+			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
+		}
 	}
 
 	$result['html'] = $html;
@@ -240,11 +246,13 @@ function listCDR($aFormValues){
 			for ($year = $syear; $year<=$eyear;$year++){
 			
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
+				$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
+
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
 					$html .= "$year :<br/>";
 					$html .= "<div>";
-					$result = parseReport($myreport); 
+					$result = parseReport($myreport,$answeredNum); 
 					$html .= $result['html'];
 					$html .= "</div>";
 					$html .= "</div>";
@@ -253,12 +261,13 @@ function listCDR($aFormValues){
 					$ary['credit'] += $result['data']['credit'];
 					$ary['callshopcredit'] += $result['data']['callshopcredit'];
 					$ary['resellercredit'] += $result['data']['resellercredit'];
+					$answeredNumTotal += $answeredNum;
 				}
 			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary); 
+			$result = parseReport($ary,$answeredNumTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -275,11 +284,12 @@ function listCDR($aFormValues){
 				$year = $syear;
 				for ($month = 1;$month<=12;$month++){
 					$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
+					$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
 					if ($res->fetchInto($myreport)){
 						$html .= "<div class='box'>";
 						$html .= "$year-$month :<br/>";
 						$html .= "<div>";
-						$result = parseReport($myreport); 
+						$result = parseReport($myreport,$answeredNum); 
 						$html .= $result['html'];
 						$html .= "</div>";
 						$html .= "</div>";
@@ -288,13 +298,14 @@ function listCDR($aFormValues){
 						$ary['credit'] += $result['data']['credit'];
 						$ary['callshopcredit'] += $result['data']['callshopcredit'];
 						$ary['resellercredit'] += $result['data']['resellercredit'];
+						$answeredNumTotal += $answeredNum;
 					}
 				}
 			//}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary); 
+			$result = parseReport($ary,$answeredNumTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -309,11 +320,12 @@ function listCDR($aFormValues){
 		}else{
 			for ($day = $sday;$day<=31;$day++){
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
+				$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
 					$html .= "$syear-$smonth-$day :<br/>";
 					$html .= "<div>";
-					$result = parseReport($myreport); 
+					$result = parseReport($myreport,$answeredNum); 
 					$html .= $result['html'];
 					$html .= "</div>";
 					$html .= "</div>";
@@ -322,12 +334,13 @@ function listCDR($aFormValues){
 					$ary['credit'] += $result['data']['credit'];
 					$ary['callshopcredit'] += $result['data']['callshopcredit'];
 					$ary['resellercredit'] += $result['data']['resellercredit'];
+					$answeredNumTotal += $answeredNum;
 				}
 			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary); 
+			$result = parseReport($ary,$answeredNumTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -342,11 +355,13 @@ function listCDR($aFormValues){
 		}else{
 			for ($hour = 0;$hour<=23;$hour++){
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
+				$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
+
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
 					$html .= "$syear-$smonth-$sday $hour:<br/>";
 					$html .= "<div>";
-					$result = parseReport($myreport); 
+					$result = parseReport($myreport,$answeredNum); 
 					$html .= $result['html'];
 					$html .= "</div>";
 					$html .= "</div>";
@@ -355,12 +370,13 @@ function listCDR($aFormValues){
 					$ary['credit'] += $result['data']['credit'];
 					$ary['callshopcredit'] += $result['data']['callshopcredit'];
 					$ary['resellercredit'] += $result['data']['resellercredit'];
+					$answeredNumTotal += $answeredNum;
 				}
 			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary); 
+			$result = parseReport($ary,$answeredNumTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -475,6 +491,7 @@ function listCDR($aFormValues){
 			$objResponse->addScript("actionPieGroup('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
 		}else{
 			$res = astercc::readReportPie($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate'],'destination',$aFormValues['action'],'limit');
+
 			while($res->fetchInto($row)){
 				$iid=$row['gid'];
 					if ($aFormValues['resellerid'] == 0 || $aFormValues['resellerid'] == ''){
