@@ -118,12 +118,15 @@ function parseReport($myreport,$answeredNum = ''){
 	$hour = intval($myreport['seconds'] / 3600);
 	$minute = intval($myreport['seconds'] % 3600 / 60);
 	$sec = intval($myreport['seconds'] % 60);
+	$mins = intval($myreport['seconds'] / 60);
+	if($sec > 0) $mins+=1;
 	$asr = round($answeredNum/$myreport['recordNum'] * 100,2);
 	$acd = round($myreport['seconds']/$answeredNum/60,1);
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$mins."min)<br>";
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
 			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
@@ -136,7 +139,8 @@ function parseReport($myreport,$answeredNum = ''){
 
 	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$mins."min)<br>";
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
 			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
@@ -147,7 +151,8 @@ function parseReport($myreport,$answeredNum = ''){
 		$ary['markup'] = $myreport['credit'] - $myreport['callshopcredit'];
 	}else if ($_SESSION['curuser']['usertype'] == 'operator'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
+		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$mins."min)<br>";
 		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";

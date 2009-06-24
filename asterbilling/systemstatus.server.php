@@ -132,7 +132,7 @@ function searchRate($content,$type){
 }
 
 function setGroupBalance(){
-	global $config, $locate;
+	global $config, $locate,$db;
 	$objResponse = new xajaxResponse();
 	# 检查session是否存在
 	if ($_SESSION['curuser']['groupid'] == ""){
@@ -140,10 +140,21 @@ function setGroupBalance(){
 	}
 
 	$group = astercrm::getRecordByField("id",$_SESSION['curuser']['groupid'],'accountgroup');
+	$startdate = date("Y-m-d")." 00:00";
+	$enddate = date("Y-m-d")." 23:59";
+	if($config['system']['useHistoryCdr'] == 1){
+		$sql = "SELECT SUM(credit) AS todayAmount,SUM(callshopcredit) AS todayCost FROM historycdr WHERE calldate > '".$startdate."' AND calldate < '".$enddate."'";
+	}else{
+		$sql = "SELECT SUM(credit) AS todayAmount,SUM(callshopcredit) AS todayCost FROM mycdr WHERE calldate > '".$startdate."' AND calldate < '".$enddate."'";
+	}
 
-	$amount = $group['credit_clid'];	//  income
+	$row = $db->getRow($sql);
+
+	$amount = $row['todayAmount'];	//  income
+	if ($amount == '') $amount = 0;
 	$creditlimit = $group['creditlimit']; //  limit
-	$callshopcredit = $group['credit_group']; // cost
+	$callshopcredit = $row['todayCost']; // cost
+	if ($callshopcredit == '') $callshopcredit = 0;
 	$curcredit = $group['curcredit']; // current cost
 	$balance = $callshopcredit - $curcredit; //available balance
 
