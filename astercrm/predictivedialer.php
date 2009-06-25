@@ -58,11 +58,13 @@ require_once('predictivedialer.common.php');
 
 			function setStatus(obj){
 				campaignid = obj.id.split("-");
+				var status = '';
 				if (obj.checked){
 					status = 'busy';
 				}else{
 					status = 'idle';
 				}
+
 				xajax_setStatus(campaignid[0],"status",status);
 			}
 

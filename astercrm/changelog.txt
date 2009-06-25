@@ -319,6 +319,14 @@ v0.058
 2009-3-26	增大了curcdr和mycdr中srcuid和dstuid的长度到40
 2009-3-28	增加了座席暂停/恢复的功能
 2009-4-2	增加了asterisk的reload和restart功能
+---------------------------------------------------------------------------------------------------------
+v0.059
+将portal页的实时请求改为由javascript 发起，解决了网络不稳定时实时信息不刷新的问题
+解决了customer,diallist和dialedlist排序不正确的问题
+解决了note ,diallist, dialedlist, campaign和 contact 不能导出的问题
+解决了 astercc 只有在/opt/...下执行才能检测到许可文件的问题
+解决了预拨号开以复选框在IE7下无效的问题
+解决了在部分版本asterisk下，预拨号时无法录音的问题
 
 
 TO-DO:

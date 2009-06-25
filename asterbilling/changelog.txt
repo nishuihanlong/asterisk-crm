@@ -107,7 +107,7 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-2-12   improve asterrc (support hungup call if no rate or not in group)
 2009-2-12   add billing by source channel
 ----------------------------------------------------------------------------------
-0.097
+0.098
 2009-3-13   add generate sip extension and sip reload for admin user
 2009-3-15   add display connect speed of clid
 2009-3-15   add comment in credithistory
@@ -117,7 +117,17 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-3-28   improve callshop interface 
 2009-3-31   support payment by paypal
 2009-4-2    add reload and restart asterisk in web(systme page)
-
+----------------------------------------------------------------------------------
+0.099
+2009-4-20   fixed can't display report of today
+2009-5-3    fixed bug in flash report
+2009-5-18   add check credit reseller and callshop realtime when booth calling
+2009-5-30   impoved send request by javascript in callshop interface
+2009-6-4    fixed don't update blance when cannel limit in booth
+2009-6-9    add delete files what have uploaded
+2009-6-18   fixed can't find astercc license file when don't run in '/opt'
+2009-6-21   fixed ASR and ACD both are '0' in report grid
+----------------------------------------------------------------------------------
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能
 booth用户输入号码后会提示金额和分钟数
