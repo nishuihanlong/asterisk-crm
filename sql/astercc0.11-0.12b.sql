@@ -63,10 +63,8 @@ CREATE TABLE `uploadfile` (
 `id` int(11) NOT NULL auto_increment,
 `filename` varchar(100) NOT NULL default '',
 `originalname` varchar(100) NOT NULL default '',
-`type` enum('astercrm','asterbilling') NOT NULL default 'astercrm',
 `cretime` datetime default NULL ,
 `creby` varchar(30) NOT NULL default '',
-`resellerid` int(11) NOT NULL default 0,
 `groupid` int(11) NOT NULL default 0,
 UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
