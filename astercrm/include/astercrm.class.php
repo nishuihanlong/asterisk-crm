@@ -3813,5 +3813,14 @@ Class astercrm extends PEAR{
 		$answered = & $db->getone($query." AND disposition = 'ANSWERED'");
 		return array('all'=>$all_res,'answered'=>$answered);
 	}
+
+	function &checkDialedlistCall($dialnumber){
+		global $db;
+		$sql = "SELECT id FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialedtime DESC LIMIT 1";
+
+		astercrm::events($sql);
+		$res = & $db->getOne($sql);
+		return $res;
+	}
 }
 ?>

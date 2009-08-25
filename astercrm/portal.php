@@ -457,6 +457,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 
 		<div id="divHangup" name="divHangup">
 			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >
+			<div id="divCallresult" name="divCallresult" style="display:none"><input type='radio' value="normal" id="callresult" name="callresult" checked><?echo $locate->Translate("normal")?> <input type="radio" value="fax" id="callresult" name="callresult"><?echo $locate->Translate("fax")?> <input type="radio" value="voicemail" id="callresult" name="callresult"><?echo $locate->Translate("voicemail")?></div>
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 			<div id="divDIDinfo" name="divDIDinfo"></div>
 		</div><br>

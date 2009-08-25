@@ -313,6 +313,11 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
+			if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
+			//echo $dialedlistid;exit;
+//print_r($myValue['callerid']);exit; 
+				$objResponse->addAssign("divCallresult", "style.display", "");
+			}
 
 			if ($myValue['extensionStatus'] == 'link')	 //already get link event
 				return $objResponse;
@@ -335,6 +340,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("btnHangup","disabled", false );
 			$objResponse->addAssign("btnTransfer","disabled", false );
 		} elseif ($call['status'] =='hangup'){
+			$objResponse->addAssign("divCallresult", "style.display", "none");
 			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'recording') 
 				$objResponse->addScript("monitor();");
 			$status	= 'hang up';
@@ -519,7 +525,6 @@ function waitingCalls($myValue){
 			}
 		}
 	} elseif ($call['status'] == 'dialout'){	//dailing out here
-
 		$title	= $call['callerid'];
 		$status	= 'dialing';
 		$direction	= 'out';
