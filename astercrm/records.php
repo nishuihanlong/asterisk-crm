@@ -52,7 +52,7 @@ function read_file($file){
     header("Content-Type: $contentType");
 
     //Force the download
-    $header="Content-Disposition: attachment; fifile_lename=".$fifile_lename.";";
+    $header="Content-Disposition: attachment; filename=".$fifile_lename.";";
     header($header );
     header("Content-Transfer-Encoding: binary");
     header("Content-file_length: ".$file_len);

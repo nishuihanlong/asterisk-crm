@@ -255,7 +255,7 @@ function playmonitor($id){
 	$res = Customer::getRecordByID($id,'monitorrecord');
 	$path = $res['filename'].".".$res['fileformat'];
 	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
-	$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true">';
+	$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$path.'\'">'.$locate->Translate("download").'</a>';
 	$html .= Table::Footer();
 	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
 	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	
