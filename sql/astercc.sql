@@ -1185,8 +1185,8 @@ DROP TABLE IF EXISTS `queue_agent`;
 CREATE TABLE `queue_agent` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
-  `agent` varchar(32) NOT NULL default '',
-  `status` varchar(16) NOT NULL default '',
+  `agent` varchar(255) NOT NULL default '',
+  `agent_status` varchar(32) NOT NULL default '',
   `takencalls` int NOT NULL default 0,
   `lastcall` int NOT NULL default 0,
   `data` varchar(255) NOT NULL default '',
@@ -1247,6 +1247,54 @@ CREATE TABLE `uploadfile` (
 UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+## 
+## table `registry`
+## 
+
+DROP TABLE IF EXISTS `registry`;
+
+CREATE TABLE `registry` (
+`id` int(11) NOT NULL auto_increment,
+`host` varchar(100) NOT NULL default '',
+`username` varchar(30) NOT NULL default '',
+`refresh` varchar(10) NOT NULL default '',
+`state` varchar(50) NOT NULL default '',
+`reg_time` varchar(50) NOT NULL default '',
+`protocal` enum('SIP','IAX2','other') NOT NULL default 'sip',
+ UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
 ##########################################################
 
 ###################################################
+
+DROP TABLE IF EXISTS `meetmes`;
+
+CREATE TABLE `meetmes` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `confnum` varchar(10) NOT NULL DEFAULT '',
+  `parties` varchar(5) NOT NULL DEFAULT '',
+  `marked` varchar(30) NOT NULL DEFAULT '',
+  `activity` varchar(8) NOT NULL DEFAULT '',
+  `creation` varchar(20) NOT NULL DEFAULT '',
+  `data` varchar(255) NOT NULL DEFAULT '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `meetmelists`;
+
+CREATE TABLE `meetmelists` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `confnum` varchar(10) NOT NULL DEFAULT '',
+  `userid` varchar(2) NOT NULL DEFAULT '',
+  `callerid` varchar(30) NOT NULL DEFAULT '',
+  `callername` varchar(30) NOT NULL DEFAULT '',
+  `channel` varchar(100) NOT NULL DEFAULT '',
+  `monitorstatus` varchar(20) NOT NULL DEFAULT '',
+  `duration` varchar(20) NOT NULL DEFAULT '',
+  `durationsrc` int(11) NOT NULL DEFAULT '0',
+  `data` varchar(255) NOT NULL DEFAULT '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

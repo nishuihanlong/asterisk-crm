@@ -107,7 +107,7 @@ class asterEvent extends PEAR
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
 				//if dstchan does not include dst, then clear dst(for process transfer call )
-				if( !strstr($list['dstchan'],$list['dst']) ) {					
+				if( !strstr($list['dstchan'],'/'.$list['dst'].'-') ) {					
 					$dst_tmp = $list['dst'];
 					$list['dst'] = '';
 				}
@@ -119,7 +119,7 @@ class asterEvent extends PEAR
 					if($res_did = $db->getone($sql)) $didnumber = $res_did;
 				}
 
-				if (strstr($list['srcchan'],$channel) OR strstr($list['src'],$exten)) {// dial out
+			if (strstr($list['dstchan'],$channel) OR $list['dst'] == $exten OR $list['dst'] == $agent) OR $list['dstchan'] == "AGENT/".$agent ){		//dial in
 					$call['status'] = 'dialout';
 					if($list['dst'] == ''){
 						$call['callerid'] = $dst_tmp;
@@ -132,7 +132,7 @@ class asterEvent extends PEAR
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					return $call;
-				}elseif (strstr($list['dstchan'],$channel) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "AGENT/".$agent ){		//dial in
+				}elseif (strstr($list['srcchan'],$channel) OR strstr($list['src'],$exten)) {// dial out
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['didnumber'] = $didnumber;
@@ -282,12 +282,12 @@ class asterEvent extends PEAR
 					if ($status[$username] == 1) continue;
 
 					//for check click to transfer
-					if( !strstr($cdrrow['dstchan'],$cdrrow['dst']) ) {
+					if( !strstr($cdrrow['dstchan'],'/'.$cdrrow['dst'].'-') ) {
 						$dst_tmp = trim($cdrrow['dst']);
 						$cdrrow['dst'] = '';
 					}
 						if ($status[$list['peer']] == 1) continue;
-						if (strstr($cdrrow['src'],$phone['extension']) OR strstr($cdrrow['srcchan'],$phone['channel']) ) {	// dial out
+						if ( $cdrrow['src'] == $phone['extension'] OR $cdrrow['srcchan'] == $phone['channel'] ) {	// dial out
 							if ( $cdrrow['didnumber'] != '' ) {
 								$callerid[$username] = trim($cdrrow['didnumber']);
 							}else{
@@ -301,7 +301,7 @@ class asterEvent extends PEAR
 							$srcchan[$username] = trim($cdrrow['srcchan']);
 							$dstchan[$username] = trim($cdrrow['dstchan']);
 
-						}elseif (strstr($cdrrow['dst'],$phone['extension']) OR strstr($cdrrow['dstchan'],$phone['channel']) OR $cdrrow['dstchan'] == "AGENT/".$phone['agent']) {		//dial in
+						}elseif ($cdrrow['dst'] == $phone['extension'] OR $cdrrow['dstchan'] == $phone['channel'] OR $cdrrow['dstchan'] == "AGENT/".$phone['agent']) {		//dial in
 
 							$callerid[$username] = trim($cdrrow['src']);
 							$direction[$username] = "dialin";

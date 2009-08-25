@@ -143,9 +143,9 @@ function setGroupBalance(){
 	$startdate = date("Y-m-d")." 00:00";
 	$enddate = date("Y-m-d")." 23:59";
 	if($config['system']['useHistoryCdr'] == 1){
-		$sql = "SELECT SUM(credit) AS todayAmount,SUM(callshopcredit) AS todayCost FROM historycdr WHERE calldate > '".$startdate."' AND calldate < '".$enddate."'";
+		$sql = "SELECT SUM(credit) AS todayAmount,SUM(callshopcredit) AS todayCost FROM historycdr WHERE calldate > '".$startdate."' AND calldate < '".$enddate."' AND groupid = ".$_SESSION['curuser']['groupid'];
 	}else{
-		$sql = "SELECT SUM(credit) AS todayAmount,SUM(callshopcredit) AS todayCost FROM mycdr WHERE calldate > '".$startdate."' AND calldate < '".$enddate."'";
+		$sql = "SELECT SUM(credit) AS todayAmount,SUM(callshopcredit) AS todayCost FROM mycdr WHERE calldate > '".$startdate."' AND calldate < '".$enddate."' AND groupid = ".$_SESSION['curuser']['groupid'];
 	}
 
 	$row = $db->getRow($sql);

@@ -896,7 +896,7 @@ Class astercrm extends PEAR{
 			while($curpin){
 				$pin = rand(1000000000,9999999999);
 				$curpin = astercrm::getRecordByField('pin',$pin,'clid');
-			}			
+			}
 		}else{
 			$pin = $prefix.rand(1000000000,9999999999);
 			$curpin = astercrm::getRecordByField('pin',$pin,'clid');
