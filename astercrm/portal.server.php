@@ -313,6 +313,7 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
+			
 			if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
 				$objResponse->addAssign("divCallresult", "style.display", "");
 				$objResponse->addAssign("dialedlistid","value", $dialedlistid );
@@ -342,6 +343,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("btnTransfer","disabled", false );
 		} elseif ($call['status'] =='hangup'){
 			$objResponse->addAssign("divCallresult", "style.display", "none");
+			$objResponse->addAssign("divCallresult", "innerHTML", '<input type="radio" value="normal" id="callresult" name="callresult" onclick="updateCallresult(this.value);" checked>'.$locate->Translate("normal").' <input type="radio" value="fax" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("fax").' <input type="radio" value="voicemail" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("voicemail").'<input type="hidden" id="dialedlistid" name="dialedlistid" value="0">');
 			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'recording') 
 				$objResponse->addScript("monitor();");
 			$status	= 'hang up';
@@ -1359,9 +1361,12 @@ function queuePaused($paused){
 	return $objResponse;
 }
 
-function updateCallresult(){
-	global $db;
-	$sql = "";
+function updateCallresult($id,$result){
+	global $locate,$config,$db;
+	$objResponse = new xajaxResponse();
+	$sql = "UPDATE dialedlist SET callresult = '$result' WHERE id = $id";
+	$res =& $db->query($sql);
+	return $objResponse;
 }
 
 $xajax->processRequests();

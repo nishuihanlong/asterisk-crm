@@ -957,6 +957,20 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 
+	function countSurvey(){
+		global $db;
+		$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid'] ;
+		astercrm::events($query);
+		$resCount =& $db->getOne($query);
+
+		$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid'] ;
+		astercrm::events($query);
+		$resId =& $db->getOne($query);
+		$res['count'] = $resCount;
+		$res['id'] = $resId;
+		return $res;
+	}
+
 	function surveyList($customerid,$contactid){
 		global $locate,$config, $db;
 		$html .= '<form method="post" name="fSurveyList" id="fSurveyList">';
@@ -967,7 +981,6 @@ Class astercrm extends PEAR{
 		
 		$query = "SELECT * FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime";
 		$res = $db->query($query);
-
 
 		while ($res->fetchInto($row)) {
 			//get survey title and id
@@ -1365,8 +1378,20 @@ Class astercrm extends PEAR{
 		$query = "SELECT * FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime";
 		astercrm::events($query);
 		$res =& $db->query($query);
-		if (!$res)
+
+		if (!$res)//{
 			return '';
+//		}elseif($resCount == 1){
+//			
+//			$objResponse = new xajaxResponse();
+//			while ($res->fetchInto($row)) {
+//				$surveytitle = $row['surveyname'];
+//				$surveyid = $row['id'];
+//				$objResponse->addScript("showSurvey('$surveyid');return false;");
+//				break;
+//			}
+//			echo "haha";exit;
+//		}
 	
 		$html = "<table width='100%'>";
 		while ($res->fetchInto($row)) {
@@ -1854,9 +1879,16 @@ Class astercrm extends PEAR{
 							<td>
 							<a href="?" onclick="xajax_noteAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_note").'</a>
 							</td>
-							<td>
-							<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>
-							</td>					<input type="hidden" id="allContact" name="allContact" value="off">
+							<td>';
+							$survey = astercrm::countSurvey();
+
+							if($survey['count'] == 1){
+								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
+							}else{
+								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
+							}
+							
+							$html .= '</td>					<input type="hidden" id="allContact" name="allContact" value="off">
 							</tr>
 						</table>
 					</td>
@@ -2324,9 +2356,16 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
 			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			if($table == 'surveyresult'){
+				$query = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' WHERE '.$joinstr;
+			}
 		}else {
 			$query = 'SELECT * FROM '.$table.'';
+			if($table == 'surveyresult'){
+				$query = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ";
+			}
 		}
+
 		//if ($query != mb_convert_encoding($query,"UTF-8","UTF-8")){
 		//	$query='"'.mb_convert_encoding($query,"UTF-8","GB2312").'"';
 		//}
@@ -3817,7 +3856,7 @@ Class astercrm extends PEAR{
 	function &checkDialedlistCall($dialnumber){
 		global $db;
 		$sql = "SELECT id FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialedtime DESC LIMIT 1";
-
+//echo $sql;exit;
 		astercrm::events($sql);
 		$res = & $db->getOne($sql);
 		return $res;

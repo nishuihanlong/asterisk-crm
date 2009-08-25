@@ -1,6 +1,6 @@
 
 ###########   Table structure for asterCC database   ################
-###########   astercc current version: 0.11 beta     ################
+###########   astercc current version: 0.12          ################
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -763,6 +763,7 @@ CREATE TABLE `dialedlist` (
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008#2#3
   `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008#2#5
   `assign` varchar(20) NOT NULL default '',												#added by solo 2008#2#10
+
   `trytime` INT(11) NOT NULL DEFAULT '0',
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',

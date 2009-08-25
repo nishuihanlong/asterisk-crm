@@ -146,6 +146,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'answertime';
 	$fields[] = 'duration';
 	$fields[] = 'response';
+	$fields[] = 'callresult';
 	$fields[] = 'dialedby';
 	$fields[] = 'dialedtime';
 	$fields[] = 'groupname';
@@ -156,6 +157,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Dialed Number");
 	$headers[] = $locate->Translate("Answer Time");
 	$headers[] = $locate->Translate("Duration");
+		$headers[] = $locate->Translate("Call Result");
 	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Dial by");
 	$headers[] = $locate->Translate("Dial time");
@@ -164,6 +166,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -184,12 +187,15 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialednumber","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","answertime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callresult","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedtime","'.$divName.'","ORDERING");return false;\'';
@@ -201,6 +207,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'dialednumber';
 	$fieldsFromSearch[] = 'answertime';
 	$fieldsFromSearch[] = 'duration';
+	$fieldsFromSearch[] = 'callresult';
 	$fieldsFromSearch[] = 'response';
 	$fieldsFromSearch[] = 'dialedby';
 	$fieldsFromSearch[] = 'dialedtime';
@@ -212,6 +219,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed Number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Answer Time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Duration");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Call Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Response");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dial by");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dial time");
@@ -234,6 +242,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialednumber'];
 		$rowc[] = $row['answertime'];
 		$rowc[] = $row['duration'];
+		$rowc[] = $row['callresult'];
 		$rowc[] = $row['response'];
 		$rowc[] = $row['dialedby'];
 		$rowc[] = $row['dialedtime'];
