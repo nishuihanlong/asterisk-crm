@@ -314,9 +314,10 @@ function incomingCalls($myValue){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
 			if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
-			//echo $dialedlistid;exit;
-//print_r($myValue['callerid']);exit; 
 				$objResponse->addAssign("divCallresult", "style.display", "");
+				$objResponse->addAssign("dialedlistid","value", $dialedlistid );
+			}else{
+				$objResponse->addAssign("dialedlistid","value", 0 );
 			}
 
 			if ($myValue['extensionStatus'] == 'link')	 //already get link event
@@ -1356,6 +1357,11 @@ function queuePaused($paused){
 	}
 
 	return $objResponse;
+}
+
+function updateCallresult(){
+	global $db;
+	$sql = "";
 }
 
 $xajax->processRequests();
