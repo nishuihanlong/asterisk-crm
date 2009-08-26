@@ -66,7 +66,8 @@ function surveySave($f){
 
 		$note = "$surveyoptionid-note";
 		if (trim($f[$note]) != ""){
-			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', surveynote = ".$db->quote($f[$note]).", cretime = now(), creby = '".$_SESSION['curuser']['username']."' ";
+			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', surveynote = ".$db->quote($f[$note]).", cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
+
 			$res = $db->query($query);
 			$delFlag = 1;
 		}
@@ -76,6 +77,7 @@ function surveySave($f){
 		foreach ($f[$items] as $item){
 			list($itemid,$itemcontent) = split("-",$item,2);
 			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', itemid = '$itemid', itemcontent = '$itemcontent', cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
+
 			$res = $db->query($query);
 			$delFlag = 1;
 		}
