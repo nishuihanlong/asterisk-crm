@@ -1905,13 +1905,13 @@ Class astercrm extends PEAR{
 							<a href="?" onclick="xajax_noteAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_note").'</a>
 							</td>
 							<td>';
-							$survey = astercrm::countSurvey($callerid);
-
-							if($survey['count'] == 1){
-								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
-							}else{
-								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
-							}
+//							$survey = astercrm::countSurvey($callerid);
+//
+//							if($survey['count'] == 1){
+//								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
+//							}else{
+//								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
+//							}
 
 							$html .= '</td><input type="hidden" id="allContact" name="allContact" value="off">
 							</tr>
