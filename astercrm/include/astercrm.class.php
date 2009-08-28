@@ -957,17 +957,42 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 
-	function countSurvey(){
+	function countSurvey($callerid=''){
 		global $db;
-		$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid'] ;
-		astercrm::events($query);
-		$resCount =& $db->getOne($query);
+		$campaignid = 0;
+		if($callerid != ''){
+			$query = "SELECT * FROM dialedlist WHERE dialednumber = $callerid AND  dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialtime DESC LIMIT 1";
 
-		$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid'] ;
-		astercrm::events($query);
-		$resId =& $db->getOne($query);
+			astercrm::events($query);
+			$cres = $db->query($query);
+			if($cres->fetchInto($row)){
+				$campaignid= $row['campaignid'];
+			}
+		}
+
+		if($campaignid == 0){
+			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ";
+			astercrm::events($query);
+			$resCount =& $db->getOne($query);
+		}else{
+			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid)";
+			astercrm::events($query);
+			$resCount =& $db->getOne($query);
+		}
+
+		if($campaignid == 0){
+			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ";
+			astercrm::events($query);
+			$resId =& $db->getOne($query);
+		}else{
+			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid)";
+			astercrm::events($query);
+			$resId =& $db->getOne($query);
+		}
+
 		$res['count'] = $resCount;
 		$res['id'] = $resId;
+		$res['callerid'] = $callerid;
 		return $res;
 	}
 
@@ -1782,7 +1807,7 @@ Class astercrm extends PEAR{
 	*	@return $html	(string) Devuelve una cadena de caracteres que contiene una tabla con los datos 
 	*									a extraidos de la base de datos para ser mostrados 
 	*/
-	function showCustomerRecord($id,$type="customer"){
+	function showCustomerRecord($id,$type="customer",$callerid=''){
     	global $locate;
 		$customer =& astercrm::getCustomerByID($id,$type);
 		$contactList =& astercrm::getContactListByID($customer['id']);
@@ -1880,15 +1905,15 @@ Class astercrm extends PEAR{
 							<a href="?" onclick="xajax_noteAdd(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("add_note").'</a>
 							</td>
 							<td>';
-							$survey = astercrm::countSurvey();
+							$survey = astercrm::countSurvey($callerid);
 
 							if($survey['count'] == 1){
 								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
 							}else{
 								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
 							}
-							
-							$html .= '</td>					<input type="hidden" id="allContact" name="allContact" value="off">
+
+							$html .= '</td><input type="hidden" id="allContact" name="allContact" value="off">
 							</tr>
 						</table>
 					</td>
@@ -1897,7 +1922,7 @@ Class astercrm extends PEAR{
 				<table border="0" width="100%" id="contactList" name="contactList" style="display:none">
 					';
 
-				while	($contactList->fetchInto($row)){
+				while($contactList->fetchInto($row)){
 					$html .= '<tr>';
 					for ($i=1;$i<5;$i++){
 						$html .= '
@@ -1913,6 +1938,7 @@ Class astercrm extends PEAR{
 
 				$html .= '
 					</table>';
+
 		return $html;
 
 	}
@@ -2242,7 +2268,7 @@ Class astercrm extends PEAR{
 					$campaign_res = astercrm::getFieldsByField('id','campaignname',$content[$i],'campaign',$type);
 					
 					while ($campaign_res->fetchInto($campaign_row)){
-						$campaign_str.="OR $table.groupid = '".$campaign_row['id']."' ";					
+						$campaign_str.="OR $table.campaignid = '".$campaign_row['id']."' ";					
 					}					
 				}else{
 				

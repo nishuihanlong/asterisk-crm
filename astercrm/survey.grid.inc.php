@@ -43,7 +43,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 
-		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = survey.groupid ";
+		$sql = "SELECT survey.*, groupname,campaignname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = survey.groupid LEFT JOIN campaign ON campaign.id = survey.campaignid ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -87,7 +87,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE ";
+		$sql = "SELECT survey.*, groupname , campaign FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid LEFT JOIN campaign ON campaign.id = survey.campaignid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -120,7 +120,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid LEFT JOIN campaign ON campaign.id = survey.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -147,7 +147,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-		$sql = "SELECT survey.*, groupname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE ";
+		$sql = "SELECT survey.*, groupname, campaignname FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid LEFT JOIN campaign ON campaign.id = survey.campaignid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -161,6 +161,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -171,7 +172,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		
 			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid WHERE ";
+			$sql = "SELECT COUNT(*) FROM survey LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = survey.groupid LEFT JOIN campaign ON campaign.id = survey.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -357,23 +358,42 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 
 if ($_SESSION['curuser']['usertype'] == 'admin'){
 		$res = Customer::getGroups();
-		$groupoptions .= '<select name="groupid" id="groupid">';
+		
+		$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
 		while ($row = $res->fetchRow()) {
+
 				$groupoptions .= '<option value="'.$row['groupid'].'"';
 				if ($survey['groupid']  == $row['groupid'])
 					$groupoptions .= ' selected';
 				$groupoptions .='>'.$row['groupname'].'</option>';
 		}
 		$groupoptions .= '</select>';
+
 }else{
 		$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
 }
 
+	if($survey['campaignid'] == 0){
+		$campaignoptions = '<option value="0">'.$locate->Translate("All").'</option>';
+	}
+	$campaignres = Customer::getRecordsByGroupid($survey['groupid'],"campaign");
+
+	while ($row = $campaignres->fetchRow()) {
+
+		$campaignoptions .= '<option value="'.$row['id'].'"';
+		if ($survey['campaignid']  == $row['id'])
+			$campaignoptions .= ' selected';
+		$campaignoptions .='>'.$row['campaignname'].'</option>';
+	}
 
 		$html .= '
 					<tr>
 						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
 						<td>'.$groupoptions.'</td>
+					</tr>
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'*</td>
+						<td><SELECT id="campaignid" name="campaignid">'.$campaignoptions.'</SELECT></td>
 					</tr>';
 		$html .= '
 				</table>
@@ -392,6 +412,7 @@ if ($_SESSION['curuser']['usertype'] == 'admin'){
 				."enable='".$f['radEnable']."', "
 				."surveynote='".$f['surveynote']."', "
 				."groupid='".$f['groupid']."', "
+				."campaignid='".$f['campaignid']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($sql);

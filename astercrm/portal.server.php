@@ -1116,7 +1116,7 @@ function getContact($callerid){
 				$smartcount = 0;
 				while ($customer_res->fetchInto($row)) {
 					$smartcount++;
-					$smartmatch_html .= '<a href="###" onclick="xajax_showCustomer(\''.$row['id'].'\');showMsgBySmartMatch(\'customer\',\''.$row['customer'].'\');">'.$locate->Translate("customer").':&nbsp;'.$row['customer'].'<br>'.$locate->Translate("phone").':'.$row['phone'].'</a><hr>';
+					$smartmatch_html .= '<a href="###" onclick="xajax_showCustomer(\''.$row['id'].'\',\'\','.$callerid.');showMsgBySmartMatch(\'customer\',\''.$row['customer'].'\');">'.$locate->Translate("customer").':&nbsp;'.$row['customer'].'<br>'.$locate->Translate("phone").':'.$row['phone'].'</a><hr>';
 				}
 
 				while ($contact_res->fetchInto($row)) {
@@ -1144,7 +1144,7 @@ function getContact($callerid){
 			$html .= Table::Footer();
 			$objResponse->addAssign("formDiv", "style.visibility", "visible");
 			$objResponse->addAssign("formDiv", "innerHTML", $html);
-			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
+			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'\','.$callerid.');');
 		}
 	} else{ // one match
 
@@ -1159,7 +1159,7 @@ function getContact($callerid){
 
 		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
 		if ($customerid != 0)
-			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\');');
+			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'\','.$callerid.');');
 
 	}
 

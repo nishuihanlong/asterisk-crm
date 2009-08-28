@@ -4,6 +4,9 @@ alter table dialedlist add customerid int(11) default 0;
 alter table queue_agent add `agent_status` varchar(32) not null default '' after `agent`;
 alter table queue_agent change `agent` `agent` varchar(255) not null default '';
 
+alter table surveyresult add phonenumber varchar(30) not null default '' after contactid;
+alter table survey add campaignid int(11) not null default 0 ;
+alter table surveyresult add campaignid int(11) not null default '0' after phonenumber;
 
 DROP TABLE IF EXISTS `meetmes`;
 

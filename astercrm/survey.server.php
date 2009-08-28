@@ -101,7 +101,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
 		}
 	}
-	
+
 	// Select Box: type table.
 	$typeFromSearch = array();
 	$typeFromSearch[] = 'like';
@@ -122,6 +122,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'surveyname';
 	$fields[] = 'groupname';
+	$fields[] = 'campaignname';
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 
@@ -129,18 +130,21 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("survey_title");
 	$headers[] = $locate->Translate("Group Name");
+	$headers[] = $locate->Translate("Campaign Name");
 	$headers[] = $locate->Translate("create_time");
 	$headers[] = $locate->Translate("create_by");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="45%"';
+	$attribsHeader[] = 'width="35%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -150,6 +154,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveyname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","create_time","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","create_by","'.$divName.'","ORDERING");return false;\'';
 
@@ -157,6 +162,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'surveyname';
 	$fieldsFromSearch[] = 'groupname';
+	$fieldsFromSearch[] = 'campaignname';
 	$fieldsFromSearch[] = 'survey.cretime';
 	$fieldsFromSearch[] = 'survey.creby';
 
@@ -164,6 +170,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_title");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
@@ -176,6 +183,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->addRowSearchMore("survey",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
+
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
@@ -184,6 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		else
 			$rowc[] = "<font color=gray>".$row['surveyname']."</font>";
 		$rowc[] = $row['groupname'];
+		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
@@ -281,6 +290,7 @@ function setSurvey($survey){
 
 	Customer::setSurveyEnable($survey['surveyid'],$survey['radEnable']);
 	Customer::updateField('survey','groupid',$survey['groupid'],$survey['surveyid']);
+	Customer::updateField('survey','campaignid',$survey['campaignid'],$survey['surveyid']);
 
 //	print $surveyenable;
 
@@ -471,6 +481,19 @@ function delete($id = null, $table){
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 	}
 	return $objResponse->getXML();
+}
+
+function setCampaign($groupid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$res = Customer::getRecordsByGroupid($groupid,"campaign");
+	//添加option
+	$objResponse->addScript("addSltOption('campaignid','0','".$locate->Translate("All")."');");
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addSltOption('campaignid','".$row['id']."','".$row['campaignname']."');");
+	}
+
+	return $objResponse;
 }
 
 $xajax->processRequests();
