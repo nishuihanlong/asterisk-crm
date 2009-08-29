@@ -173,6 +173,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'surveynote';
 	$fields[] = 'customer';
 	$fields[] = 'contact';
+	$fields[] = 'phonenumber';
+	$fields[] = 'campaignname';
 	$fields[] = 'cretime';
 
 	// HTML table: Headers showed
@@ -183,20 +185,24 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Survey Note");
 	$headers[] = $locate->Translate("customer");
 	$headers[] = $locate->Translate("contact");
+	$headers[] = $locate->Translate("Phone Number");
+		$headers[] = $locate->Translate("Campaign Name");
 	$headers[] = $locate->Translate("create_time");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -213,6 +219,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveynote","'.$divName.'","ORDERING");return false;\'';
  	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","phonenumber","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
@@ -222,7 +230,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'itemcontent';
 	$fieldsFromSearch[] = 'surveyresult.surveynote';
 	$fieldsFromSearch[] = 'customer';
-	$fieldsFromSearch[] = 'contact.contact';
+	$fieldsFromSearch[] = 'contact.contact';	
+	$fieldsFromSearch[] = 'surveyresult.phonenumber';
+	$fieldsFromSearch[] = 'campaign.campaignname';
 	$fieldsFromSearch[] = 'surveyresult.cretime';
 	$fieldsFromSearch[] = 'surveyresult.creby';
 
@@ -233,7 +243,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_item");
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer");
-	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
+	$fieldsFromSearchShowAs[] = $locate->Translate("contact");	
+	$fieldsFromSearchShowAs[] = $locate->Translate("Phone Number");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
@@ -256,6 +268,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['surveynote'];
 		$rowc[] = "<a href=? onclick='xajax_showCustomer(".$row['customerid'].");return false;'>".$row['customer']."</a>";
 		$rowc[] = "<a href=? onclick='xajax_showContact(".$row['contactid'].");return false;'>".$row['contact']."</a>";
+		$rowc[] = $row['phonenumber'];
+		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['cretime'];
 
 		$table->addRow("surveyresult",$rowc,0,1,0,$divName,$fields);

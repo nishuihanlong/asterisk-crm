@@ -40,7 +40,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid";
+		$sql = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname ,campaignname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -82,7 +82,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT  surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid WHERE ";
+		$sql = "SELECT  surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname ,campaignname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid WHERE ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
@@ -116,7 +116,7 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql = " SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid";
 		}else{
-			$sql = " SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid WHERE surveyresult.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE surveyresult.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -137,7 +137,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  WHERE ";
+			$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -164,7 +164,7 @@ class Customer extends astercrm
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-		$sql = "SELECT  surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid WHERE ";
+		$sql = "SELECT  surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname ,campaignname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid WHERE ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
@@ -179,7 +179,7 @@ class Customer extends astercrm
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-	
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -190,7 +190,7 @@ class Customer extends astercrm
 		
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-			$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  WHERE ";
+			$sql = "SELECT COUNT(*) AS numRows FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

@@ -46,6 +46,7 @@
 
 function surveySave($f){
 	global $db,$locate;
+
 	$objResponse = new xajaxResponse();
 
 	$surveyid = $f["surveyid"];
@@ -56,6 +57,8 @@ function surveySave($f){
 
 	$customerid = $f['customerid'];
 	$contactid = $f['contactid'];
+	$callerid = $f['callerid'];
+	$campaignid = $f['campaignid'];
 
 	foreach ($surveyoptions as $surveyoptionid){
 
@@ -66,7 +69,7 @@ function surveySave($f){
 
 		$note = "$surveyoptionid-note";
 		if (trim($f[$note]) != ""){
-			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', surveynote = ".$db->quote($f[$note]).", cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
+			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname',phonenumber = '$callerid', campaignid = '$campaignid', surveynote = ".$db->quote($f[$note]).", cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
 
 			$res = $db->query($query);
 			$delFlag = 1;
@@ -76,7 +79,7 @@ function surveySave($f){
 
 		foreach ($f[$items] as $item){
 			list($itemid,$itemcontent) = split("-",$item,2);
-			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname', itemid = '$itemid', itemcontent = '$itemcontent', cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
+			$query = "INSERT INTO surveyresult SET customerid = '$customerid', contactid = '$contactid', surveyid ='$surveyid', surveytitle = '$surveytitle', surveyoptionid = '$surveyoptionid', surveyoption = '$surveyoptionname',phonenumber = '$callerid', campaignid = '$campaignid', itemid = '$itemid', itemcontent = '$itemcontent', cretime = now(), creby = '".$_SESSION['curuser']['username']."', groupid = '".$_SESSION['curuser']['groupid']."' ";
 
 			$res = $db->query($query);
 			$delFlag = 1;
@@ -93,11 +96,12 @@ function surveySave($f){
 }
 
 
-function showSurvey($sureyid,$customerid, $contactid){
+function showSurvey($sureyid,$customerid, $contactid, $callerid='', $campaignid=0){
 	global $locate;
+
 	$objResponse = new xajaxResponse();
 	$html = Table::Top($locate->Translate("Add Survey"),"surveyDiv");  // <-- Set the title for your form.
-	$html .= Customer::surveyAdd($sureyid,$customerid, $contactid);  // <-- Change by your method
+	$html .= Customer::surveyAdd($sureyid,$customerid, $contactid,$callerid,$campaignid);  // <-- Change by your method
 	$html .= Table::Footer();
 	$objResponse->addAssign("surveyDiv","innerHTML", $html );
 	$objResponse->addAssign("surveyDiv","style.visibility", "visible");
@@ -190,7 +194,6 @@ function showNote($id = '', $type="customer"){
 
 function showCustomer($id = 0, $type="customer",$callerid=''){
 	global $locate;
-
 	$objResponse = new xajaxResponse();
 	if($id != 0 && $id != null ){
 		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
@@ -257,6 +260,7 @@ function saveSurvey($f){
 }
 
 function save($f){
+
 	$objResponse = new xajaxResponse();
 	global $locate,$config;
 
@@ -289,7 +293,13 @@ function save($f){
 					$objResponse->addAlert($locate->Translate("customer_add_error"));
 					return $objResponse;
 				}
+				//$objResponse->addScript('xajax_showCustomer(\''.$customerID.'\',\'customer\','.$callerid.');');
+				$chtml = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
+				$chtml .= Customer::showCustomerRecord($respOk,'customer',$f['iptcallerid']); 		
+				$chtml .= Table::Footer();
+					
 				$objResponse->addAlert($locate->Translate("a_new_customer_added"));
+				
 			}
 		} else{
 			$respOk = $f['customerid'];
@@ -372,7 +382,8 @@ function save($f){
 	$objResponse->addClear("formCustomerInfo", "innerHTML");
 	$objResponse->addClear("formContactInfo", "innerHTML");
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
-
+	$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
+	$objResponse->addAssign("formCustomerInfo", "innerHTML", $chtml);
 	return $objResponse->getXML();
 }
 
