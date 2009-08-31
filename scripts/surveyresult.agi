@@ -1,0 +1,152 @@
+#!/usr/bin/perl
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+use Asterisk::AGI;
+use Config::IniFiles;
+use DBI;
+use Time::Local;
+use Data::Dumper; 
+use strict;
+
+
+#AGI Tx >> agi_request: fh_inbound.agi
+#AGI Tx >> agi_channel: DAHDI/1-1
+#AGI Tx >> agi_language: en
+#AGI Tx >> agi_type: DAHDI
+#AGI Tx >> agi_uniqueid: 1249077344.7
+#AGI Tx >> agi_callerid: 041139735852
+#AGI Tx >> agi_calleridname: unknown
+#AGI Tx >> agi_callingpres: 0
+#AGI Tx >> agi_callingani2: 0
+#AGI Tx >> agi_callington: 0
+#AGI Tx >> agi_callingtns: 0
+#AGI Tx >> agi_dnid: unknown
+#AGI Tx >> agi_rdnis: unknown
+#AGI Tx >> agi_context: from-pstn
+#AGI Tx >> agi_extension: s
+#AGI Tx >> agi_priority: 3
+#AGI Tx >> agi_enhanced: 0.0
+#AGI Tx >> agi_accountcode:
+
+my $AGI = new Asterisk::AGI;
+my %input = $AGI->ReadParse();
+$|=1; #auto flash
+
+my %dbInfo = (
+        dbtype => 'mysql',
+        dbhost => 'localhost',
+        dbname => 'astercc',
+		dbport  => '3306',
+ 		dbuser  => 'root',
+ 		dbpasswd  => 'astercc',
+		prefix => ''
+   );
+
+my $dbh = &connect_mysql(%dbInfo);
+my $db_prefix = $dbInfo{'prefix'};
+my $query;
+my $rows;
+my $did;
+my $campaign_id = 0;
+my $ref;
+my $target;
+my $extension;
+my $survey_id;
+my $group_id = 0;
+
+$AGI->verbose($input{'extension'});
+$AGI->verbose($input{'callerid'});
+$AGI->verbose($input{'channel'});
+$AGI->verbose($input{'type'});
+
+$extension = $input{'extension'};
+
+# 检查该号码属于哪个campaign
+
+$query = "SELECT * FROM ".$db_prefix."dialedlist WHERE dialednumber = '$input{'extension'}' AND  dialedtime > (now()-INTERVAL 60 SECOND) ";
+$rows = &executeQuery($query,'rows');
+
+$ref = $rows->fetchrow_hashref();
+#print Dumper($ref);
+#die;
+if (!$ref) {
+	# 没有此记录
+	&hangup();
+}
+$campaign_id = $ref->{'campaignid'};
+my $groupid = $ref->{'groupid'};
+
+# 查找该campaign包含哪些问卷
+#if (defined($argv[1])) {
+#	$survey_id  = $argv[1];
+#}else{
+	# 尝试获取最新的问卷id
+	$query = "SELECT * FROM ".$db_prefix."survey WHERE campaignid = $campaign_id and enable = 1 ORDER BY cretime LIMIT 0,1";
+	my $survey_rows = &executeQuery($query,'rows');
+	my $survey_ref = $survey_rows->fetchrow_hashref();
+
+	if ($survey_ref) {
+		my $surveyid = $survey_ref->{'id'};
+	}else{
+		# 没有定义问卷
+		$survey_id = 0;
+	}
+#}
+
+# 更新dialedlist
+$query = "UPDATE ".$db_prefix."dialedlist SET answertime = now(), uniqueid= '$input{'uniqueid'}',callresult='voicemail' WHERE id = $ref->{'id'} ";
+&executeQuery($query);
+
+if ($survey_id>0) {
+	# 更新 surveyresult, 增加 phonenum 字段
+	$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$extension', surveynote = 'voicemail', surveyid = '$survey_id', campaignid = '$campaign_id', groupid = '$groupid',creby = 'system', cretime = now()  ";
+	&executeQuery($query);
+}
+
+&hangup();
+die;
+
+sub hangup{
+	$AGI->hangup();
+	$AGI->verbose("hang up");
+	exit;
+}
+
+sub connect_mysql
+{
+	my	%info = @_;
+	my	$dbh = DBI->connect("DBI:mysql:database=$info{'dbname'};host=$info{'dbhost'};port=$info{'dbport'}",$info{'dbuser'},$info{'dbpasswd'});
+	return($dbh);
+}
+
+sub executeQuery
+{
+	my	$query = shift;
+	return if ($query eq '');
+
+	my	$queryType = shift;
+
+	if (!$dbh->ping) {
+		 $dbh = &connect_mysql(%dbInfo);
+	}
+	$AGI->verbose($query);
+	
+	if ($queryType eq '') {
+			my $affect = $dbh->do($query);
+			if ($affect eq '0E0'){
+				return 0;
+			}else{
+				return $affect;
+			}
+	}elsif ($queryType eq 'rows'){
+			my $rows = $dbh->prepare($query);
+			$rows->execute();
+			return $rows;
+	}elsif ($queryType eq 'insert'){
+		$dbh->do($query);
+		return $dbh->{q{mysql_insertid}};
+	}
+}
+
+
+
