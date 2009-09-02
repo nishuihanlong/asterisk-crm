@@ -21,26 +21,37 @@ $sql = $_REQUEST['hidSql'];
 $table = trim(strtolower($_REQUEST['maintable']));
 
 if ($sql == '') exit;
-	
+
+$filename = 'astercrm.csv';
+
 if ($_SESSION['curuser']['usertype'] != 'admin'){
-	if (strpos(strtolower($sql),'where'))
-		if($table != '') //判断是否传了主表名
+	if (strpos(strtolower($sql),'where')){
+		if($table != ''){ //判断是否传了主表名
 			$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
-		else
+			$filename = $table;
+		}else{
 			$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
-	else
-		if($table != '')//判断是否传了主表名
+		}
+	}else{
+		if($table != ''){//判断是否传了主表名
 			$sql .= " where $table.groupid = ".$_SESSION['curuser']['groupid'];
-		else
+			$filename = $table;
+		}else{
 			$sql .= " where groupid = ".$_SESSION['curuser']['groupid'];
+		}
+	}
+}
+
+if($table != ''){ //判断是否传了主表名
+	$filename = $table.'.csv';
 }
 //echo $sql;exit;
 ob_start();
 header("charset=uft-8");   
 header('Content-type:  application/force-download');
 header('Content-Transfer-Encoding:  Binary');
-header('Content-disposition:  attachment; filename=astercrm.csv');
-echo astercrm::exportDataToCSV($sql);
+header('Content-disposition:  attachment; filename='.$filename);
+echo astercrm::exportDataToCSV($sql,$table);
 ob_end_flush();
 unset($_SESSION['export_sql']);
 ?>

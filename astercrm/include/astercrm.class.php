@@ -2210,7 +2210,7 @@ Class astercrm extends PEAR{
 		return $txtstr;
 	}
 
-	function exportDataToCSV($query){
+	function exportDataToCSV($query,$table=''){
 		global $db;
 		astercrm::events($query);
 		$res =& $db->query($query);		
@@ -2219,6 +2219,9 @@ Class astercrm extends PEAR{
 			$first_line = '';
 			foreach ($row as $key => $val){
 				if($first == 'yes'){
+					if($table = 'surveyresult'){
+						//if()
+					}
 					$first_line .= '"'.$key.'"'.',';
 				}
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
@@ -2397,12 +2400,12 @@ Class astercrm extends PEAR{
 			$joinstr=ltrim($joinstr,'AND');
 			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
 			if($table == 'surveyresult'){
-				$query = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname,campaign.campaignname AS campaignname FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE '.$joinstr;
+				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarkds FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE '.$joinstr;
 			}
 		}else {
 			$query = 'SELECT * FROM '.$table.'';
 			if($table == 'surveyresult'){
-				$query = "SELECT surveyresult.*, customer.customer AS customer,contact.contact AS contact, survey.surveyname AS surveyname,campaign.campaignname AS campaignname  FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid ";
+				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarkds  FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid ";
 			}
 		}
 
