@@ -2400,12 +2400,12 @@ Class astercrm extends PEAR{
 			$joinstr=ltrim($joinstr,'AND');
 			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
 			if($table == 'surveyresult'){
-				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarkds FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE '.$joinstr;
+				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarks FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE '.$joinstr;
 			}
 		}else {
 			$query = 'SELECT * FROM '.$table.'';
 			if($table == 'surveyresult'){
-				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarkds  FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid ";
+				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarks  FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid ";
 			}
 		}
 
