@@ -1,12 +1,11 @@
 <?php
 /*******************************************************************************
-* campaign.php
+* campaignresult.php
 
-* 账户组管理界面文件
-* account management interface
+* campaignresult management interface
 
 * Function Desc
-	provide an account management interface
+	provide an campaignresult management interface
 
 * 功能描述
 	提供账户组管理界面
@@ -30,7 +29,7 @@
 
 ********************************************************************************/
 
-require_once('campaign.common.php');
+require_once('campaignresult.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -51,6 +50,36 @@ require_once('campaign.common.php');
 				return false;
 			}
 
+			function setCampaign(){
+				groupid = document.getElementById("groupid").value;
+				if (groupid == '')
+					return;
+				//清空campaignid
+				document.getElementById("campaignid").options.length=0
+				xajax_setCampaign(groupid);
+			}
+
+			function setParentResult(){
+				campaignid = document.getElementById("campaignid").value;
+
+				if (campaignid == ''){
+					document.getElementById("parentid").options.length=0
+					return;
+				}
+				//清空campaignid
+				document.getElementById("parentid").options.length=0
+				xajax_setParentResult(campaignid);
+			}
+
+			function  addOption(objId,optionVal,optionText)  {
+				objSelect = document.getElementById(objId);
+				var _o = document.createElement("OPTION");
+				_o.text = optionText;
+				_o.value = optionVal;
+			//	alert(objSelect.length);
+				objSelect.options.add(_o);
+			} 
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
@@ -65,7 +94,7 @@ require_once('campaign.common.php');
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnDial" name="btnDial" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
-		<input type="button" value="<?echo $locate->Translate("Campaign Result")?>" id="btnCampaignresult" name="btnCampaignresult" onClick="window.location='campaignresult.php';" />
+		<input type="button" value="<?echo $locate->Translate("Campaign")?>" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
 		<input type="button" value="<?echo $locate->Translate("Worktime packages")?>" id="btnWorktime" name="btnWorktime" onClick="window.location='worktimepackages.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">

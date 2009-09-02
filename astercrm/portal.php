@@ -439,10 +439,26 @@ $clientDst = $_REQUEST['clientdst'];
 			return false;			
 		}
 
-		function updateCallresult(result)
+		function updateCallresult()
 		{
+			result = xajax.$('callresultname').value;
 			xajax_updateCallresult(xajax.$('dialedlistid').value,result);
 			return false;
+		}
+
+		function setSecondCampaignResult(){
+			parentid = document.getElementById("fcallresult").value;
+			if (parentid == '')
+				return;
+			//清空campaignid
+			document.getElementById("scallresult").options.length=0
+			xajax_setSecondCampaignResult(parentid);
+		}
+
+		function setCallresult(obj){
+			id = obj.value;
+			alert(id);
+			xajax_setCallresult(id);
 		}
 		</script>
 <?
@@ -463,10 +479,12 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 
 		<div id="divHangup" name="divHangup">
 			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >
-			<div id="divCallresult" name="divCallresult" style="display:none"><input type='radio' value="normal" id="callresult" name="callresult" onclick="updateCallresult(this.value);" checked><?echo $locate->Translate("normal")?> <input type="radio" value="fax" id="callresult" name="callresult" onclick="updateCallresult(this.value);"><?echo $locate->Translate("fax")?> <input type="radio" value="voicemail" id="callresult" name="callresult" onclick="updateCallresult(this.value);"><?echo $locate->Translate("voicemail")?><input type="hidden" id="dialedlistid" name="dialedlistid" value="0"></div>
+			
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 			<div id="divDIDinfo" name="divDIDinfo"></div>
 		</div><br>
+
+		<div id="divCallresult" name="divCallresult" style="display:none"></div><br>
 
 		<span id="spanTransfer" name="spanTransfer">
 			<SELECT id="sltExten" name="sltExten">
@@ -499,6 +517,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="workingextenflag" id="workingextenflag" value=""/>
 		<input type="hidden" name="workingextenstatus" id="workingextenstatus" value=""/>
 		<input type='hidden' value="" name="btnWorkStatus" id="btnWorkStatus">
+		<input type='hidden' value="" name="callResultStatus" id="callResultStatus">
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>

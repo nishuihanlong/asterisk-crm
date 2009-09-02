@@ -267,6 +267,7 @@ function listenCalls($aFormValues){
 	} else{
 		$objResponse->loadXML(incomingCalls($aFormValues));
 	}
+
 	//set time intervals of update events
 	//$check_interval = 2000;
 	//if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
@@ -313,12 +314,17 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
-			
-			if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
-				$objResponse->addAssign("divCallresult", "style.display", "");
-				$objResponse->addAssign("dialedlistid","value", $dialedlistid );
-			}else{
-				$objResponse->addAssign("dialedlistid","value", 0 );
+			if($myValue['callResultStatus'] == ''){
+				if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
+					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'ANSWERED');
+					//echo $divCallresult;exit;
+					$objResponse->addAssign("divCallresult", "style.display", "");
+					$objResponse->addAssign("divCallresult", "innerHTML", $divCallresult);
+					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
+				}else{
+					$objResponse->addAssign("dialedlistid","value", 0 );
+				}
+				$objResponse->addAssign("callResultStatus","value", 'yes' );
 			}
 
 			if ($myValue['extensionStatus'] == 'link')	 //already get link event
@@ -1364,7 +1370,32 @@ function updateCallresult($id,$result){
 	global $locate,$config,$db;
 	$objResponse = new xajaxResponse();
 	$sql = "UPDATE dialedlist SET callresult = '$result' WHERE id = $id";
+
 	$res =& $db->query($sql);
+	return $objResponse;
+}
+
+function setSecondCampaignResult($parentid){
+	$objResponse = new xajaxResponse();
+	$res = Customer::getRecordsByField('parentid',$parentid,"campaignresult");
+	
+	//添加option
+	$n = 0;
+	while ($res->fetchInto($row)) {
+		$objResponse->addScript("addOption('scallresult','".$row['id']."','".$row['resultname']."');");
+		if($n == 0){
+			$objResponse->addAssign("callresultname","value", $row['resultname']);
+			$n++;
+		}
+	}
+
+	return $objResponse;
+}
+
+function setCallresult($id){
+	$objResponse = new xajaxResponse();
+	$row = astercrm::getRecordByID($id,'campaignresult');
+	$objResponse->addAssign("callresultname","value", $row['resultname']);
 	return $objResponse;
 }
 

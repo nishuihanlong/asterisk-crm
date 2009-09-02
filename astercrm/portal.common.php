@@ -116,7 +116,9 @@ $xajax->registerFunction("showWorkoff");
 $xajax->registerFunction("workoffcheck");
 $xajax->registerFunction("checkworkexten");
 $xajax->registerFunction("queuePaused");
-
+$xajax->registerFunction("updateCallresult");
+$xajax->registerFunction("setSecondCampaignResult");
+$xajax->registerFunction("setCallresult");
 if ($config['system']['enable_external_crm'] == false){
 	//crm function
 	$xajax->registerFunction("showGrid");
@@ -151,8 +153,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("showRecentCdr");	
 	$xajax->registerFunction("showSurvey");
 	$xajax->registerFunction("addSchedulerDial");
-	$xajax->registerFunction("saveSchedulerDial");
-	$xajax->registerFunction("updateCallresult");
+	$xajax->registerFunction("saveSchedulerDial");	
 }
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.

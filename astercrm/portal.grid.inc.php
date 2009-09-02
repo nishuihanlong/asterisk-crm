@@ -441,5 +441,53 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
+
+	function getCampaignResultHtml($dialedlistid,$status = 'NOANSWER'){
+		global $db,$locate;
+		$sql = "SELECT campaignid FROM dialedlist Where id = $dialedlistid ORDER BY dialtime DESC LIMIT 1";
+		astercrm::events($sql);
+		$res = & $db->getOne($sql);
+
+		$sql = "SELECT id,resultname FROM campaignresult WHERE campaignid = $res AND parentid = 0 AND status = '".$status."'";
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		$html = '';
+		$option = '';
+		$n = 0;
+		while ($res->fetchInto($row)) {
+			$option .='<option value="'.$row['id'].'">'.$row['resultname'].'</option>' ;
+			if($n == 0){
+				$n++;
+				$callresultname = $row['resultname'];
+				$curparentid = $row['id'];
+			}
+		}
+
+		$sql = "SELECT id,resultname FROM campaignresult WHERE parentid = $curparentid AND status = '".$status."'";
+		Customer::events($sql);
+		$res =& $db->query($sql);
+		$secondoption = '';
+		$n = 0;
+		while ($res->fetchInto($row)) {
+			$secondoption .='<option value="'.$row['id'].'">'.$row['resultname'].'</option>' ;
+			if($n == 0){
+				$n++;
+				$callresultname = $row['resultname'];
+				$callresultid = $row['id'];
+			}
+		}
+
+		if($option != ''){
+			$html = $locate->Translate("Call Result").':&nbsp;<select id="fcallresult" onchange="setSecondCampaignResult()">'.$option.'</select>&nbsp;';
+//
+			if($secondoption != ''){
+				$html .= '&nbsp;<select id="scallresult" onchange="setCallresult(this);">'.$secondoption.'</select>';
+			}
+
+			$html .= '<input type="hidden" id="dialedlistid" name="dialedlistid" value="'.$dialedlistid.'"><input type="hidden" id="callresultname" name="callresultname" value="'.$callresultname.'">&nbsp;<input type="button" value="'.$locate->Translate("Update").'" onclick="updateCallresult();">';
+			
+		}
+		return $html;
+	}
 }
 ?>
