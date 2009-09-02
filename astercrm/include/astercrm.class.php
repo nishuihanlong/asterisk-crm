@@ -963,16 +963,19 @@ Class astercrm extends PEAR{
 	function countSurvey($callerid=''){
 		global $db;
 		$campaignid = 0;
-		if($callerid != ''){
-			$query = "SELECT * FROM dialedlist WHERE dialednumber = $callerid AND  dialedtime > (now()-INTERVAL 6000 SECOND) ORDER BY dialtime DESC LIMIT 1";
+		$surveyNum = 0;
+		$surveyid = 0;
 
+		# 尝试获取campaignid
+		if($callerid != ''){
+			$query = "SELECT * FROM dialedlist WHERE dialednumber = '$callerid' AND  dialedtime > (now()-INTERVAL 600 SECOND) ORDER BY dialtime DESC LIMIT 1";
 			astercrm::events($query);
 			$cres = $db->query($query);
 			if($cres->fetchInto($row)){
 				$campaignid= $row['campaignid'];
 			}
 		}
-
+		# 计算该campaign下所拥有的survey的数量
 		if($campaignid == 0){
 			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ";
 			astercrm::events($query);
@@ -983,18 +986,26 @@ Class astercrm extends PEAR{
 			$resCount =& $db->getOne($query);
 		}
 
+		if ($resCount){
+			$surveyNum = $resCount;
+		}
+
+		# 获取该campaign下正在使用的survey的id
 		if($campaignid == 0){
-			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ";
+			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ORDER BY cretime DESC  LIMIT 0,1";
 			astercrm::events($query);
 			$resId =& $db->getOne($query);
 		}else{
-			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid)";
+			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid) ORDER BY cretime DESC LIMIT 0,1";
 			astercrm::events($query);
 			$resId =& $db->getOne($query);
 		}
+		if ($resId){
+			$surveyid = $resId;
+		}
 
-		$res['count'] = $resCount;
-		$res['id'] = $resId;
+		$res['count'] = $surveyNum;
+		$res['id'] = $surveyid;
 		$res['callerid'] = $callerid;
 		$res['campaignid'] = $campaignid;
 		return $res;
@@ -1819,7 +1830,7 @@ Class astercrm extends PEAR{
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="160">'.$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
+					<td nowrap align="left" width="160">callerid '.$callerid.'##'.$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
 					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]&nbsp; [<a href=? onclick="
 							if (xajax.$(\'hidCustomerBankDetails\').value == \'OFF\'){
 								showObj(\'trCustomerBankDetails\');
@@ -1910,9 +1921,8 @@ Class astercrm extends PEAR{
 							</td>
 							<td>';
 							$survey = astercrm::countSurvey($callerid);
-//print_r($survey);exit;
 							if($survey['count'] == 1){
-								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$customer['id'].'\',0,\''.$survey['callerid'].'\',\''.$survey['campaignid'].'\');return false;">'.$locate->Translate("Add Survey").'</a>';
+								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$id.'\',0,\''.$survey['callerid'].'\',\''.$survey['campaignid'].'\');return false;">'.$locate->Translate("Add Survey").'</a>';
 							}else{
 								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
 							}

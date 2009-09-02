@@ -401,7 +401,6 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 		$mix = true;
 		$res = $myAsterisk->Monitor($channel,$filename,$format,$mix);
 		if ($res['Response'] == 'Error'){
-			$objResponse->addAlert($res['Message']);
 			return $objResponse;
 		}
 		// 录音信息保存到数据库
