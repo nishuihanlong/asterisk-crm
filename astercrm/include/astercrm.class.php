@@ -869,7 +869,7 @@ Class astercrm extends PEAR{
 	*/
 
 	function surveyAdd($surveyid,$customerid = 0, $contactid = 0,$callerid='', $campaignid=0){
-		global $locate,$db,$config;
+		global $locate,$db;
 
 		$html = '<form method="post" name="formSurvey" id="formSurvey"><table border="1" width="100%" class="adminlist">';
 		$survey = astercrm::getRecordById($surveyid,"survey");
@@ -895,10 +895,7 @@ Class astercrm extends PEAR{
 					while ($items->fetchInto($item)) {
 						$html .= '<input type="'.$option['optiontype'].'" name="'.$option['id'].'-item[]"  value="'.$item['id'].'-'.$item['itemcontent'].'" '.$additional.'>'.$item['itemcontent'];
 					}
-					if ($config['sruvey']['enable_surveynote'] == 1){
-						$html .= " | ".$locate->Translate("Note")." <input type=\"text\" name=\"".$option['id']."-note\" size='20'>";
-					}
-					$html .= "</td></tr>";
+					$html .= " | ".$locate->Translate("Note")." <input type=\"text\" name=\"".$option['id']."-note\" size='20'></td></tr>";
 				}
 			}
 		}
@@ -979,13 +976,12 @@ Class astercrm extends PEAR{
 			}
 		}
 		# 计算该campaign下所拥有的survey的数量
-		# 计算该campaign下所拥有的survey的数量
 		if($campaignid == 0){
-			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ";
+			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ";
 			astercrm::events($query);
 			$resCount =& $db->getOne($query);
 		}else{
-			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid= $campaignid )";
+			$query = "SELECT COUNT(*) FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid)";
 			astercrm::events($query);
 			$resCount =& $db->getOne($query);
 		}
@@ -996,21 +992,16 @@ Class astercrm extends PEAR{
 
 		# 获取该campaign下正在使用的survey的id
 		if($campaignid == 0){
-			$query = "SELECT id,campaignid FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." ORDER BY cretime DESC  LIMIT 0,1";
+			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND campaignid = 0 ORDER BY cretime DESC  LIMIT 0,1";
 			astercrm::events($query);
-			$survey = $db->getRow($query);
+			$resId =& $db->getOne($query);
 		}else{
-			$query = "SELECT id,campaignid FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid) ORDER BY cretime DESC LIMIT 0,1";
+			$query = "SELECT id FROM survey WHERE enable=1 AND groupid = ".$_SESSION['curuser']['groupid']." AND (campaignid = 0 OR campaignid=$campaignid) ORDER BY cretime DESC LIMIT 0,1";
 			astercrm::events($query);
-			$survey =& $db->getRow($query);
+			$resId =& $db->getOne($query);
 		}
 		if ($resId){
 			$surveyid = $resId;
-		}
-
-		if ($survey){
-			$surveyid = $survey['id'];
-			$campaignid = $survey['campaignid'];
 		}
 
 		$res['count'] = $surveyNum;
@@ -2408,6 +2399,9 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
 			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			if($table == 'surveyresult'){
+				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarks FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE '.$joinstr;
+			}
 		}else {
 			$query = 'SELECT * FROM '.$table.'';
 			if($table == 'surveyresult'){

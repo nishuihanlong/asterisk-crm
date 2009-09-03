@@ -314,7 +314,7 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
-			if($myValue['callResultStatus'] == ''){
+			if($myValue['callResultStatus'] != '2'){
 				if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'ANSWERED');
 					//echo $divCallresult;exit;
@@ -324,7 +324,7 @@ function incomingCalls($myValue){
 				}else{
 					$objResponse->addAssign("dialedlistid","value", 0 );
 				}
-				$objResponse->addAssign("callResultStatus","value", 'yes' );
+				$objResponse->addAssign("callResultStatus","value", '2' );
 			}
 
 			if ($myValue['extensionStatus'] == 'link')	 //already get link event
@@ -449,6 +449,7 @@ function waitingCalls($myValue){
 	//else
 	//	$call = asterEvent::checkNewCall($curid,$_SESSION['curuser']['channel']);
 	//  end
+	//print_r($call['callerid']);exit;
 	if ($call['status'] == ''){
 		$title	= $locate->Translate("waiting");
 		$status	= 'idle';
@@ -460,7 +461,18 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
-
+		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
+				if($dialedlistid = asterCrm::checkDialedlistCall($call['callerid'])){
+					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
+					//echo $divCallresult;exit;
+					$objResponse->addAssign("divCallresult", "style.display", "");
+					$objResponse->addAssign("divCallresult", "innerHTML", $divCallresult);
+					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
+				}else{
+					$objResponse->addAssign("dialedlistid","value", 0 );
+				}
+				$objResponse->addAssign("callResultStatus","value", '1' );
+		}
 		if($call['didnumber'] != ''){
 			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
 			$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
@@ -537,7 +549,18 @@ function waitingCalls($myValue){
 		$status	= 'dialing';
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
-		
+		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
+				if($dialedlistid = asterCrm::checkDialedlistCall($call['callerid'])){
+					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
+					//echo $divCallresult;exit;
+					$objResponse->addAssign("divCallresult", "style.display", "");
+					$objResponse->addAssign("divCallresult", "innerHTML", $divCallresult);
+					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
+				}else{
+					$objResponse->addAssign("dialedlistid","value", 0 );
+				}
+				$objResponse->addAssign("callResultStatus","value", '1' );
+		}
 		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
 		$objResponse->addAssign("btnHangup","disabled", false );
 
