@@ -1326,7 +1326,7 @@ function addSchedulerDial($display='',$number){
 	return $objResponse->getXML();
 }
 
-function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime=''){
+function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime='',$customerid){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 	if($dialnumber == ''){
@@ -1345,6 +1345,7 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime=''){
 			."dialnumber='".astercrm::getDigitsInStr($dialnumber)."', "
 			."groupid='".$_SESSION['curuser']['groupid']."', "
 			."dialtime='".$dialtime."', "
+			."customerid='".$customerid."', "
 			."creby='".$_SESSION['curuser']['username']."', "
 			."cretime= now(), "
 			."campaignid= ".$campaignid." ";
@@ -1392,7 +1393,7 @@ function queuePaused($paused){
 function updateCallresult($id,$result){
 	global $locate,$config,$db;
 	$objResponse = new xajaxResponse();
-	$sql = "UPDATE dialedlist SET callresult = '$result' WHERE id = $id";
+	$sql = "UPDATE dialedlist SET campaignresult = '$result' WHERE id = $id";
 
 	$res =& $db->query($sql);
 	return $objResponse;

@@ -352,7 +352,7 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function saveSchedulerDial(){
-			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value);
+			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value,xajax.$("customerid").value);
 		}
 
 		function menuFix() { 

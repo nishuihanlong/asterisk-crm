@@ -1830,7 +1830,7 @@ Class astercrm extends PEAR{
 		$html = '
 				<table border="0" width="100%">
 				<tr>
-					<td nowrap align="left" width="160">callerid '.$callerid.'##'.$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
+					<td nowrap align="left" width="160">' .$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
 					<td align="left">'.$customer['customer'].'&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]&nbsp; [<a href=? onclick="
 							if (xajax.$(\'hidCustomerBankDetails\').value == \'OFF\'){
 								showObj(\'trCustomerBankDetails\');
