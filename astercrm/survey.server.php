@@ -120,6 +120,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
+	$fields[] = 'id';
 	$fields[] = 'surveyname';
 	$fields[] = 'groupname';
 	$fields[] = 'campaignname';
@@ -128,6 +129,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	$headers[] = $locate->Translate("ID");
 	$headers[] = $locate->Translate("survey_title");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Campaign Name");
@@ -136,7 +138,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="35%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="25%"';
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="15%"';
@@ -149,9 +152,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","surveyname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
@@ -160,6 +165,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
+	$fieldsFromSearch[] = 'id';
 	$fieldsFromSearch[] = 'surveyname';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'campaignname';
@@ -168,6 +174,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
+	$fieldsFromSearchShowAs[] = $locate->Translate("id");
 	$fieldsFromSearchShowAs[] = $locate->Translate("survey_title");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
@@ -186,6 +193,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Change here by the name of fields of its database table
 		$rowc = array();
+		$rowc[] = $row['id'];
 		$rowc[] = $row['id'];
 		if ($row['enable'] == 1)
 			$rowc[] = $row['surveyname'];

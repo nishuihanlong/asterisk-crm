@@ -358,15 +358,16 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 	$x = 0;
 	$diallistAffectRows = 0;
 	$tableAffectRows = 0;
+	$query = "";
 
 	foreach($arrData as $arrRow){
 		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid);
 		
 		$strSql = $arrRes['strSql'];					//得到插入选择表的sql语句
-		//print $strSql;
-		//exit;
+
 		$dialListNum = $arrRes['dialListNum'];	//以及要导入diallist的sql语句
 		$dialListTime = $arrRes['dialListTime'];
+
 		if($dialTimeInput != '' ){
 			$dialtime = $dialTimeInput;
 		}elseif($dialListTime != '' ){
@@ -374,30 +375,36 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 		}else{
 			$dialtime = '';
 		}
-		if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
-			while ($arryAssign[$x] == ''){
-				if($x >$assignNum){
-					$x = 0;
-				}else{
-					$x ++;
-				}
-			}
-			$query = "INSERT INTO diallist (dialnumber,dialtime,assign,groupid,campaignid, cretime,creby) VALUES ('".$dialListNum."','".$dialtime."','".$arryAssign[$x]."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
-			//echo $query;exit;
-			$x++;
-
-		}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
-			$query = "INSERT INTO diallist (dialnumber,dialtime,groupid,campaignid,cretime,creby) VALUES ('".$dialListNum."','".$dialtime."',".$groupid.",".$campaignid.", now(),'".$_SESSION['curuser']['username']."')";
-		}
-		
-		if($query != ''){
-			$tmpRs =@ $db->query($query);  // 插入diallist表
-			$diallistAffectRows += $db->affectedRows();
-		}
-
 		if($tableName != '' && $strSql != '' ){
 			$res = @ $db->query($strSql);  //插入customer或contact表
 			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
+		}
+
+		if (trim($dialListNum) != ""){
+			if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
+				while ($arryAssign[$x] == ''){
+					if($x >$assignNum){
+						$x = 0;
+					}else{
+						$x ++;
+					}
+				}
+				$query = "INSERT INTO diallist SET dialnumber = '$dialListNum', dialtime = '$dialtime', assign='".$arryAssign[$x]."',  groupid='$groupid',campaignid='$campaignid', cretime= now(), creby = '".$_SESSION['curuser']['username']."' ";
+				$x++;
+			}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
+				$query = "INSERT INTO diallist SET dialnumber = '$dialListNum', dialtime = '$dialtime', groupid='$groupid',campaignid='$campaignid', cretime= now(), creby = '".$_SESSION['curuser']['username']."' ";
+			}
+			
+			if($query != ''){
+				// 查询该号码是否属于某customer
+				$myquery = "SELECT id FROM customers WHERE phone = '$dialListNum' OR fax = '$dialListNum' OR mobile ='$dialListNum' LIMIT 0,1";
+				$customerid = $db->getOne($myquery);
+				if ($customerid>0){
+					$query = "$query, customerid = '$customerid' ";
+				}
+				$tmpRs = $db->query($query);  // 插入diallist表
+				$diallistAffectRows += $db->affectedRows();
+			}
 		}
 	}
 	$affectRows['diallist'] = $diallistAffectRows;
