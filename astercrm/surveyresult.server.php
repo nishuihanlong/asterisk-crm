@@ -233,6 +233,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'contact.contact';	
 	$fieldsFromSearch[] = 'surveyresult.phonenumber';
 	$fieldsFromSearch[] = 'campaign.campaignname';
+	$fieldsFromSearch[] = 'survey.id';
 	$fieldsFromSearch[] = 'surveyresult.cretime';
 	$fieldsFromSearch[] = 'surveyresult.creby';
 
@@ -246,6 +247,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");	
 	$fieldsFromSearchShowAs[] = $locate->Translate("Phone Number");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Survey ID");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
