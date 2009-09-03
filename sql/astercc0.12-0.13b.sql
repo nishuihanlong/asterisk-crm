@@ -1,6 +1,6 @@
 alter table dialedlist add callresult enum('normal','fax','voicemail') default 'normal';
 alter table dialedlist add campaignresult varchar(60) default '' after `callresult`;
-alter table dialedlist add customerid int(11) default 0;
+alter table dialedlist add customerid int(11) default '0';
 
 alter table queue_agent add `agent_status` varchar(32) not null default '' after `agent`;
 alter table queue_agent change `agent` `agent` varchar(255) not null default '';
@@ -8,6 +8,8 @@ alter table queue_agent change `agent` `agent` varchar(255) not null default '';
 alter table surveyresult add phonenumber varchar(30) not null default '' after contactid;
 alter table survey add campaignid int(11) not null default 0 ;
 alter table surveyresult add campaignid int(11) not null default '0' after phonenumber;
+
+alter table diallist add customerid int(11) not null default '0' after `status`;
 
 DROP TABLE IF EXISTS `meetmes`;
 
@@ -52,3 +54,15 @@ CREATE TABLE `campaignresult` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+CREATE TABLE `registry` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `host` varchar(100) NOT NULL DEFAULT '',
+  `username` varchar(30) NOT NULL DEFAULT '',
+  `refresh` varchar(10) NOT NULL DEFAULT '',
+  `state` varchar(50) NOT NULL DEFAULT '',
+  `reg_time` varchar(50) NOT NULL DEFAULT '',
+  `protocal` enum('SIP','IAX2','other') NOT NULL DEFAULT 'SIP',
+  PRIMARY KEY (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+

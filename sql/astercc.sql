@@ -788,6 +788,7 @@ CREATE TABLE `diallist` (
   `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008/05/04
   `assign` varchar(20) NOT NULL default '',
   `status` varchar(50) NOT NULL default '',				#added by solo 2008/05/04
+  `customerid` INT(11) NOT NULL DEFAULT '0',				#added by solo 2009#09#03
   `groupid` INT(11) NOT NULL DEFAULT '0',				#added by solo 2007#12#17
   `trytime` INT(11) NOT NULL DEFAULT '0',				#added by solo 2008/05/04
   `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008#2#5
