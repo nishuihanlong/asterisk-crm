@@ -3898,7 +3898,7 @@ Class astercrm extends PEAR{
 
 	function &checkDialedlistCall($dialnumber){
 		global $db;
-		$sql = "SELECT id FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialedtime DESC LIMIT 1";
+		$sql = "SELECT id FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 600 SECOND) ORDER BY dialedtime DESC LIMIT 1";
 //echo $sql;exit;
 		astercrm::events($sql);
 		$res = & $db->getOne($sql);
