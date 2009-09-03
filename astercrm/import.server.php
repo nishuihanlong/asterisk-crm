@@ -394,10 +394,9 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 			}else if (isset($dialListField) && trim($dialListField) != ''  && $assignNum == 0){
 				$query = "INSERT INTO diallist SET dialnumber = '$dialListNum', dialtime = '$dialtime', groupid='$groupid',campaignid='$campaignid', cretime= now(), creby = '".$_SESSION['curuser']['username']."' ";
 			}
-			
 			if($query != ''){
 				// 查询该号码是否属于某customer
-				$myquery = "SELECT id FROM customers WHERE phone = '$dialListNum' OR fax = '$dialListNum' OR mobile ='$dialListNum' LIMIT 0,1";
+				$myquery = "SELECT id FROM customer WHERE phone = '$dialListNum' OR fax = '$dialListNum' OR mobile ='$dialListNum' LIMIT 0,1";
 				$customerid = $db->getOne($myquery);
 				if ($customerid>0){
 					$query = "$query, customerid = '$customerid' ";
