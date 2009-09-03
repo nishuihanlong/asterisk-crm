@@ -462,18 +462,19 @@ class Customer extends astercrm
 				$curparentid = $row['id'];
 			}
 		}
-
-		$sql = "SELECT id,resultname FROM campaignresult WHERE parentid = $curparentid AND status = '".$status."'";
-		Customer::events($sql);
-		$res =& $db->query($sql);
-		$secondoption = '';
-		$n = 0;
-		while ($res->fetchInto($row)) {
-			$secondoption .='<option value="'.$row['id'].'">'.$row['resultname'].'</option>' ;
-			if($n == 0){
-				$n++;
-				$callresultname = $row['resultname'];
-				$callresultid = $row['id'];
+		if($curparentid != '' && $curparentid != 0){
+			$sql = "SELECT id,resultname FROM campaignresult WHERE parentid = $curparentid AND status = '".$status."'";
+			Customer::events($sql);
+			$res =& $db->query($sql);
+			$secondoption = '';
+			$n = 0;
+			while ($res->fetchInto($row)) {
+				$secondoption .='<option value="'.$row['id'].'">'.$row['resultname'].'</option>' ;
+				if($n == 0){
+					$n++;
+					$callresultname = $row['resultname'];
+					$callresultid = $row['id'];
+				}
 			}
 		}
 
