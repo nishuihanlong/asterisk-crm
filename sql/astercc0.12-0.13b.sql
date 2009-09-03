@@ -1,4 +1,5 @@
 alter table dialedlist add callresult enum('normal','fax','voicemail') default 'normal';
+alter table dialedlist add campaignresult varchar(60) default '' after `callresult`;
 alter table dialedlist add customerid int(11) default 0;
 
 alter table queue_agent add `agent_status` varchar(32) not null default '' after `agent`;

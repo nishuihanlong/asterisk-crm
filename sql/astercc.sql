@@ -759,6 +759,9 @@ CREATE TABLE `dialedlist` (
   `duration` int(11) NOT NULL default '0',												#added by solo 2008#2#1
   `transfertime` int(11) NOT NULL default '0',				#added by solo 2008#5#4										#added by solo 2008#2#1
   `response` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
+  `customerid` int(11) NOT NULL default 0,
+  `callresult` enum('normal','fax','voicemail') default 'normal',
+  `campaignresult` varchar(60) default '',
   `uniqueid` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008#2#3
   `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008#2#5
@@ -823,6 +826,7 @@ CREATE TABLE `survey` (
   `surveyname` varchar(30) NOT NULL default '',
   `surveynote` varchar(255) NOT NULL default '',							#add 2008#1#11 by solo
   `enable` smallint(6) NOT NULL default '0',									#add 2007#10#15 by solo
+  `campaignid` int(11) not null default 0,
   `groupid` int(11) NOT NULL default '0',											#added by solo 2008#1#15
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   `creby` varchar(30) NOT NULL default '',
@@ -860,6 +864,8 @@ CREATE TABLE `surveyresult` (
   `id` int(11) NOT NULL auto_increment,
   `customerid` int(11) NOT NULL default '0',
   `contactid` int(11) NOT NULL default '0',
+  `phonenumber` varchar(30) not null default '',
+  `campaignid` int(11) not null default '0',
   `surveyid` int(11) NOT NULL default '0',
   `surveytitle` VARCHAR( 30 ) NOT NULL,
   `surveyoptionid` int(11) NOT NULL,
@@ -1296,6 +1302,19 @@ CREATE TABLE `meetmelists` (
   `duration` varchar(20) NOT NULL DEFAULT '',
   `durationsrc` int(11) NOT NULL DEFAULT '0',
   `data` varchar(255) NOT NULL DEFAULT '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+CREATE TABLE `campaignresult` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `resultname` varchar(30) NOT NULL DEFAULT '',
+  `resultnote` varchar(255) NOT NULL DEFAULT '',
+  `status` enum('ANSWERED','NOANSWER'),
+  `parentid` int(11) NOT NULL DEFAULT '0',
+  `campaignid` int(11) NOT NULL DEFAULT '0',
+  `groupid` int(11) NOT NULL DEFAULT '0',
+  `creby` varchar(30) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
