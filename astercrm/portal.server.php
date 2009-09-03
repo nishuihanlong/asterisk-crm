@@ -1369,7 +1369,7 @@ function queuePaused($paused){
 	$memberstatus = Customer::getMyMemberStatus();
 	if($paused){
 		while ($memberstatus->fetchInto($row)) {
-			if($row['status'] != 'paused'){
+			if($row['agent_status'] != 'paused'){
 				sleep(1);
 				$myAsterisk->queuePause('',$row['agent'],$paused);				
 			}
@@ -1378,7 +1378,7 @@ function queuePaused($paused){
 		$objResponse->addAssign("breakStatus","value", $paused);
 	}else{
 		while ($memberstatus->fetchInto($row)) {
-			if($row['status'] == 'paused'){
+			if($row['agent_status'] == 'paused'){
 				sleep(1);
 				$myAsterisk->queuePause('',$row['agent'],$paused);				
 			}
