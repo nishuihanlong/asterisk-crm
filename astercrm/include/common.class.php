@@ -90,7 +90,7 @@ class Common{
 		<li><a href="portal.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'back\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/back.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/back_sml.gif" alt="back" name="back" width="71" height="126" border="0" id="back" /></a></li>
 		<li><a href="login.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage(\'logout\',\'\',\'skin/default/images_'.$_SESSION['curuser']['country'].'/logout.gif\',1)"><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logout_sml.gif" alt="logout" name="logout" width="71" height="126" border="0" id="logout" /></a></li>
 		<li><img src="skin/default/images_'.$_SESSION['curuser']['country'].'/logo_bn.gif"/></li>
-		<a href="trunkinfo.php">'.$locate_common->Translate("Trunkinfo").'</a>&nbsp;&nbsp;&nbsp;<a href="cdr.php">'.$locate_common->Translate("CDR").'</a>&nbsp;&nbsp;&nbsp;<a href="monitorrecords.php">'.$locate_common->Translate("MonitorRecords").'</a>&nbsp;&nbsp;&nbsp;<a href="speeddial.php">'.$locate_common->Translate("SpeedDial").'</a>&nbsp;&nbsp;&nbsp;<a href="report.php">'.$locate_common->Translate("Report").'</a>
+		<a href="trunkinfo.php">'.$locate_common->Translate("Trunkinfo").'</a>&nbsp;&nbsp;&nbsp;<a href="cdr.php">'.$locate_common->Translate("CDR").'</a>&nbsp;&nbsp;&nbsp;<a href="monitorrecords.php">'.$locate_common->Translate("MonitorRecords").'</a>&nbsp;&nbsp;&nbsp;<a href="speeddial.php">'.$locate_common->Translate("SpeedDial").'</a>&nbsp;&nbsp;&nbsp;<a href="report.php">'.$locate_common->Translate("Report").'</a>&nbsp;&nbsp;&nbsp;<a href="campaignresult.php">'.$locate_common->Translate("Campaing Result").'</a>
 	</ul>
 </div>
 				';

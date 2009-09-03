@@ -1,32 +1,26 @@
 <?php
 /*******************************************************************************
 * campaignresult.php
-
-* campaignresult management interface
+* 调查信息管理界面
+* note information management interface
+* 功能描述
+	 提供对调查信息进行管理的功能
 
 * Function Desc
-	provide an campaignresult management interface
-
-* 功能描述
-	提供账户组管理界面
+	campaignresult management
 
 * Page elements
-
 * div:							
-				divNav				show management function list
-				formDiv				show add/edit account form
-				grid				show accout grid
-				msgZone				show action result
-				divCopyright		show copyright
-
+									formDiv			-> add/edit form div in xgrid
+									grid				-> main div
+									msgZone		-> message from xgrid class
 * javascript function:		
+									init	
 
-				init				page onload function			 
 
-
-* Revision 0.045  2007/10/18 11:44:00  last modified by solo
-* Desc: page created
-
+* Revision 0.045  2007/10/1 12:55:00  modified by solo
+* Desc: create page
+* 描述: 建立
 ********************************************************************************/
 
 require_once('campaignresult.common.php');
@@ -38,73 +32,83 @@ require_once('campaignresult.common.php');
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
-
-			function init(){
-				xajax_init();
-				dragresize.apply(document);
+		function init(){
+			xajax_init();
+			//make div draggable
+			dragresize.apply(document);
+		}
+		
+		function addOption(formName,optionid){
+			if (optionid == 0){
+				xajax_save(xajax.getFormValues(formName));
+			}else{
+				xajax_updateOption(xajax.getFormValues(formName),optionid);
 			}
+		}
 
-			function searchFormSubmit(numRows,limit,id,type){
-				//alert(xajax.getFormValues("searchForm"));
-				xajax_searchFormSubmit(xajax.getFormValues("searchForm"),numRows,limit,id,type);
-				return false;
+		function  addSltOption(objId,optionVal,optionText)  {
+			objSelect = document.getElementById(objId);
+			var _o = document.createElement("OPTION");
+			_o.text = optionText;
+			_o.value = optionVal;
+		//	alert(objSelect.length);
+			objSelect.options.add(_o);
+		} 
+
+		function showItem(optionid){
+			xajax_showItem(optionid);
+		}
+
+		function setCampaign(){
+			groupid = document.getElementById("groupid").value;
+			if (groupid == '')
+				return;
+			//清空campaignid
+			document.getElementById("campaignid").options.length=0
+			xajax_setCampaign(groupid);
+		}
+
+		function addItem(optionid){
+			xajax_addItem(xajax.getFormValues('fItem'));
+		}
+
+		function deleteOption(optionid,nameRow){
+			if (confirm("<?echo $locate->Translate("are you sure to delete this option");?>"+"?")){
+				xajax_delete(optionid,'campaignresultoptions');
+				var myRowIndex = document.getElementById(nameRow).rowIndex;
+				document.getElementById('tblcampaignresult').deleteRow(myRowIndex+1);
+				document.getElementById('tblcampaignresult').deleteRow(myRowIndex);
 			}
+		}
 
-			function setCampaign(){
-				groupid = document.getElementById("groupid").value;
-				if (groupid == '')
-					return;
-				//清空campaignid
-				document.getElementById("campaignid").options.length=0
-				xajax_setCampaign(groupid);
-			}
-
-			function setParentResult(){
-				campaignid = document.getElementById("campaignid").value;
-
-				if (campaignid == ''){
-					document.getElementById("parentid").options.length=0
-					return;
-				}
-				//清空campaignid
-				document.getElementById("parentid").options.length=0
-				xajax_setParentResult(campaignid);
-			}
-
-			function  addOption(objId,optionVal,optionText)  {
-				objSelect = document.getElementById(objId);
-				var _o = document.createElement("OPTION");
-				_o.text = optionText;
-				_o.value = optionVal;
-			//	alert(objSelect.length);
-				objSelect.options.add(_o);
-			} 
-
+		function deleteItem(itemid,optionid){
+				xajax_delete(itemid,'campaignresultoptionitems');
+				showItem(optionid);
+		}
 		//-->
 		</SCRIPT>
+		<script language="JavaScript" src="js/astercrm.js"></script>
 		<script type="text/javascript" src="js/dragresize.js"></script>
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
-		<script type="text/javascript" src="js/astercrm.js"></script>
-		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
-		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+
+	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div><br><br>
-	<div id="divActive" name="divActive">
-		<input type="button" value="" id="btnDial" name="btnDial" onClick="window.location='diallist.php';" />
-		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
-		<input type="button" value="<?echo $locate->Translate("Campaign")?>" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
-		<input type="button" value="<?echo $locate->Translate("Worktime packages")?>" id="btnWorktime" name="btnWorktime" onClick="window.location='worktimepackages.php';" />
-	</div>
+	<div id="divNav"></div>
+	<br>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width:500px;"></div>
-		<div id="grid" name="grid" align="center"> </div>
-		<div id="msgZone" name="msgZone" align="left"> </div>
+			style="left: 450px; top: 50px;width: 500px"></div>
+		<div id="itemDiv"  class="formDiv drsElement" 
+			style="left: 350px; top: 80px;width: 500px"></div>
+					<div id="grid" align="center"> </div>
+					<div id="msgZone" name="msgZone" align="left"> </div>
+					<div id="divcampaignresultStatistc" align="divcampaignresultStatistc"> </div>
 				</fieldset>
 			</td>
 		</tr>
@@ -112,7 +116,6 @@ require_once('campaignresult.common.php');
 	<form name="exportForm" id="exportForm" action="dataexport.php" >
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
 	</form>
-
-		<div id="divCopyright"></div>
+	<div id="divCopyright"></div>
 	</body>
 </html>

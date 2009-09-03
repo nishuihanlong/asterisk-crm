@@ -156,6 +156,15 @@ external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 detail_level = group
 
 astercc_conf_path = 
+
+[survey]
+; if need a note after survey option
+enable_surveynote = 0
+
+; if need close all popups after survey saved
+close_popup_after_survey = 1
+
+
 [billing]
 ;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)
 workwithasterbilling = 0

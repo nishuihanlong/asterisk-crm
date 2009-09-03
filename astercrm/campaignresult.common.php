@@ -1,8 +1,7 @@
 <?php
 /*******************************************************************************
 * campaignresult.common.php
-* campaignresult参数信息文件
-
+* campaignresult
 * campaignresult parameter file
 
 * 功能描述
@@ -21,17 +20,24 @@ registed function:
 *	call these function by xajax_ + funcionname
 *	such as xajax_init()
 
-	showGrid
-	add					show account add form
-	save				save account information
-	edit				show account edit form
-	update				update account information
-	showDetail			show detail information about an account
-						return null for now
-	init				init html page
 
-* Revision 0.045  2007/10/17 15:25:00  modified by solo
-* Desc: page created
+* Revision 0.045  2007/10/18 15:14:00  modified by solo
+* Desc: comment added
+
+	init
+	showGrid
+	add
+	save
+	delete
+	edit
+	editField
+	updateField
+	showDetail
+	setcampaignresult
+
+* Revision 0.045  2007/10/11 15:25:00  modified by solo
+* Desc: page create
+* 描述: 页面建立
 
 ********************************************************************************/
 
@@ -50,26 +56,30 @@ setcookie('PHPSESSID', session_id());
 if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') 
 	header("Location: portal.php");
 
-
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'campaign');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'campaignresult');
 
 $xajax = new xajax("campaignresult.server.php");
 
+$xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("add");
+$xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("save");
 $xajax->registerFunction("edit");
-$xajax->registerFunction("update");
-$xajax->registerFunction("init");
+$xajax->registerFunction("delete");
+$xajax->registerFunction("editField");
+$xajax->registerFunction("updateField");
 $xajax->registerFunction("showDetail");
-$xajax->registerFunction("searchFormSubmit");
+$xajax->registerFunction("setcampaignresult");
+$xajax->registerFunction("updateOption");
+$xajax->registerFunction("showItem");
+$xajax->registerFunction("addItem");
 $xajax->registerFunction("setCampaign");
-$xajax->registerFunction("setParentResult");
 
-define("ROWSXPAGE", 10); // Number of rows show it per page.
-define("MAXROWSXPAGE", 25);  // Total number of rows show it when click on "Show All" button.
-
+define("ROWSXPAGE", 25); // Number of rows show it per page.
+// Total number of rows show it when click on "Show All" button.
+define("MAXROWSXPAGE", 50);
 ?>

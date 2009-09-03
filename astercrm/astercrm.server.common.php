@@ -45,7 +45,7 @@
 
 
 function surveySave($f){
-	global $db,$locate;
+	global $db,$locate,$config;
 
 	$objResponse = new xajaxResponse();
 
@@ -91,8 +91,89 @@ function surveySave($f){
 		}
 	}
 	$objResponse->addAlert($locate->Translate("Survey saved"));
-	
+/*
+		<div id="formDiv"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;width: 450px"></div>
+		<div id="surveyDiv"  class="formDiv drsElement" 
+			style="left: 20px; top: 20px;width: 500px; z-index: 999;"></div>			
+		<div id="formCustomerInfo" class="formDiv drsElement"
+			style="left: 20px; top: 50px;width: 650px"></div>
+		<div id="formContactInfo" class="formDiv drsElement"
+			style="left: 20px; top: 330px;width: 600px"></div>
+		<div id="formCdr" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 900px"></div>
+		<div id="formRecentCdr" class="formDiv drsElement"
+			style="left: 20px; top: 30px; width:750px"></div>		
+		<div id="formRecords" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 900px"></div>
+		<div id="formDiallist" class="formDiv drsElement"
+			style="left: 20px; top: 330px; width: 850px"></div>
+		<div id="formaddDiallistInfo"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
+		<div id="formeditDiallistInfo"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;"></div>
+		<div id="formNoteInfo" class="formDiv  drsElement"
+			style="left: 450px; top: 330px;width: 500px"></div>
+		<div id="formWorkoff" class="formDiv  drsElement"
+			style="left: 300px; top: 0px; z-index: 999; "></div>
+		<div id="formEditInfo" class="formDiv drsElement"
+			style="left: 450px; top: 50px;width: 500px"></div>
+		<div id="formplaymonitor"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;width: 350px; z-index:200"></div>
+*/
+	if ($config['survey']['close_popup_after_survey'] == 1){
+		$objResponse->loadXML(clearScreen());
+	}
+
 	return $objResponse;
+}
+
+function clearScreen(){
+	$objResponse = new xajaxResponse();
+
+	$objResponse->addAssign("formDiv","style.visibility", "hidden");
+	$objResponse->addAssign("formDiv","innerHTML", "");
+
+	$objResponse->addAssign("surveyDiv","style.visibility", "hidden");
+	$objResponse->addAssign("surveyDiv","innerHTML", "");
+
+	$objResponse->addAssign("formCustomerInfo","style.visibility", "hidden");
+	$objResponse->addAssign("formCustomerInfo","innerHTML", "");
+
+	$objResponse->addAssign("formContactInfo","style.visibility", "hidden");
+	$objResponse->addAssign("formContactInfo","innerHTML", "");
+
+	$objResponse->addAssign("formCdr","style.visibility", "hidden");
+	$objResponse->addAssign("formCdr","innerHTML", "");
+
+	$objResponse->addAssign("formRecentCdr","style.visibility", "hidden");
+	$objResponse->addAssign("formRecentCdr","innerHTML", "");
+
+	$objResponse->addAssign("formRecords","style.visibility", "hidden");
+	$objResponse->addAssign("formRecords","innerHTML", "");
+
+	$objResponse->addAssign("formDiallist","style.visibility", "hidden");
+	$objResponse->addAssign("formDiallist","innerHTML", "");
+
+	$objResponse->addAssign("formaddDiallistInfo","style.visibility", "hidden");
+	$objResponse->addAssign("formaddDiallistInfo","innerHTML", "");
+
+	$objResponse->addAssign("formeditDiallistInfo","style.visibility", "hidden");
+	$objResponse->addAssign("formeditDiallistInfo","innerHTML", "");
+
+	$objResponse->addAssign("formNoteInfo","style.visibility", "hidden");
+	$objResponse->addAssign("formNoteInfo","innerHTML", "");
+
+	$objResponse->addAssign("formWorkoff","style.visibility", "hidden");
+	$objResponse->addAssign("formWorkoff","innerHTML", "");
+
+	$objResponse->addAssign("formEditInfo","style.visibility", "hidden");
+	$objResponse->addAssign("formEditInfo","innerHTML", "");
+
+	$objResponse->addAssign("formNoteInfo","innerHTML", "");
+	$objResponse->addAssign("formNoteInfo","style.visibility", "hidden");
+
+	return $objResponse->getXML();
 }
 
 

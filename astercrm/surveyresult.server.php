@@ -329,11 +329,14 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$divName = "grid";
 	$searchType =  $searchFormValue['searchType'];
 	if($exportFlag == "1" || $optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'surveyresult'); //得到要导出的sql语句
-		$_SESSION['export_sql'] = $sql;
-		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
-		$objResponse->addAssign("maintable", "value", 'surveyresult');
+		// 需要特殊处理
+
+//		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'surveyresult'); //得到要导出的sql语句
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'surveyresult');
+
+		$objResponse->addAssign("hidSql", "value", $joinstr); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
+
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'surveyresult');
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,'');

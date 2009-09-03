@@ -39,3 +39,15 @@ CREATE TABLE `meetmelists` (
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+CREATE TABLE `campaignresult` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `resultname` varchar(30) NOT NULL DEFAULT '',
+  `resultnote` varchar(255) NOT NULL DEFAULT '',
+  `status` enum('ANSWERED','NOANSWER'),
+  `parentid` int(11) NOT NULL DEFAULT '0',
+  `campaignid` int(11) NOT NULL DEFAULT '0',
+  `groupid` int(11) NOT NULL DEFAULT '0',
+  `creby` varchar(30) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

@@ -13,23 +13,21 @@
 	getAllRecords				获取所有记录
 	getRecordsFiltered			获取记录集
 	getNumRows					获取记录集条数
-	formAdd						生成添加campaign表单的HTML
-	formEdit					生成编辑campaign表单的HTML
-	新增getRecordsFilteredMore  用于获得多条件搜索记录集
-	新增getNumRowsMore          用于获得多条件搜索记录条数
+	formAdd						生成添加campaignresult的HTML语句
+	insertNewcampaignresult				保存campaignresult
+	insertNewOption				保存option
+	setcampaignresultEnable				设定campaignresult的可用情况
 
-* Revision 0.0456  2007/10/30 13:15:00  last modified by solo
-* Desc: add channel field 
+* Revision 0.0456  2007/11/6 20:30:00  last modified by solo
+* Desc: remove function deletecampaignresult
 
-* Revision 0.045  2007/10/18 13:15:00  last modified by solo
+* Revision 0.045  2007/10/18 13:30:00  last modified by solo
 * Desc: page created
 
 ********************************************************************************/
-
 require_once 'db_connect.php';
 require_once 'campaignresult.common.php';
 require_once 'include/astercrm.class.php';
-
 
 class Customer extends astercrm
 {
@@ -44,8 +42,8 @@ class Customer extends astercrm
 	*/
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
-		
-		$sql = "SELECT campaignresult.*, groupname, campaign.campaignname AS campaignname, presult.resultname AS parentresult FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid ";
+
+		$sql = "SELECT campaignresult.*, groupname,campaignname FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.campaignid ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -53,22 +51,17 @@ class Customer extends astercrm
 			$sql .= " WHERE campaignresult.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
-//		if ($creby != null)
-//			$sql .= " WHERE note.creby = '".$_SESSION['curuser']['username']."' ";
-			
-
 		if($order == null){
-			$sql .= " LIMIT $start, $limit";//.$_SESSION['ordering'];
+			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
 
-		//echo $sql;exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
 	}
-	
+
 	/**
 	*  Obtiene todos registros de la tabla paginados y aplicando un filtro
 	*
@@ -79,23 +72,6 @@ class Customer extends astercrm
 	*	@param $order		(string) 	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
-
-	function &getRecordsFiltered($start, $limit, $filter = null, $content = null, $order = null, $ordering = ""){
-		global $db;
-		
-		if(($filter != null) and ($content != null)){
-			$sql = "SELECT * FROM campaign"
-					." WHERE ".$filter." like '%".$content."%' "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
-		}
-		
-		Customer::events($sql);
-		$res =& $db->query($sql);
-		return $res;
-	}
-	
 
 	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
 		global $db;
@@ -111,7 +87,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT campaign.*, groupname, servers.name as servername, FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid  WHERE ";
+		$sql = "SELECT campaignresult.*, groupname , campaign FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -128,74 +104,6 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
-	}
-
-	function insertNewCampaignResult($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		$bindqueue = 0;
-		if ($f['bindqueue'] =="on"){
-			$bindqueue = 1;
-		}
-
-		$query= "INSERT INTO campaignresult SET "
-				."resultname='".$f['resultname']."', "
-				."resultnote='".$f['resultnote']."', "
-				."status='".$f['status']."', "
-				."campaignid='".$f['campaignid']."', "				
-				."parentid='".$f['parentid']."', "
-				."groupid='".$f['groupid']."', "
-				."creby = '".$_SESSION['curuser']['username']."',"
-				."cretime = now()";
-		astercrm::events($query);
-		$res =& $db->query($query);
-		return $res;
-	}
-
-
-	function updateCampaignResultRecord($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		$bindqueue = 0;
-		if ($f['bindqueue'] =="on"){
-			$bindqueue = 1;
-		}
-
-		$query= "UPDATE campaignresult SET "
-				."resultname='".$f['resultname']."', "
-				."resultnote='".$f['resultnote']."', "
-				."status='".$f['status']."', "	
-				."campaignid='".$f['campaignid']."', "
-				."parentid='".$f['parentid']."', "				
-				."groupid='".$f['groupid']."' "
-				."WHERE id=".$f['id'];
-		astercrm::events($query);
-//		echo $query;exit;
-		$res =& $db->query($query);
-		return $res;
-	}
-
-
-	/**
-	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
-	*
-	*	@param $filter	(string)	Nombre del campo para aplicar el filtro en la consulta SQL
-	*	@param $order	(string)	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
-	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
-	*/
-	
-	function &getNumRows($filter = null, $content = null){
-		global $db;
-		
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaignresult.groupid  LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid";
-		}else{
-			$sql = " SELECT COUNT(*) FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaignresult.groupid  LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid WHERE campaignresult.groupid = ".$_SESSION['curuser']['groupid']." ";
-		}
-
-		Customer::events($sql);
-		$res =& $db->getOne($sql);
-		return $res;		
 	}
 
 	function &getNumRowsMore($filter = null, $content = null,$table){
@@ -212,7 +120,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM campaign LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = campaign.groupid LEFT JOIN servers ON servers.id = campaign.serverid WHERE ";
+			$sql = "SELECT COUNT(*) FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -227,15 +135,19 @@ class Customer extends astercrm
 			}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
+//		print $sql;
+//		print "\n";
+//		print $res;
+//		exit;
 		return $res;
 	}
 
-	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
+function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
 		global $db;
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-		$sql = "SELECT campaignresult.*, groupname, campaign.campaignname AS campaignname,presult.resultname AS parentresult FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid  LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid WHERE ";
+		$sql = "SELECT campaignresult.*, groupname, campaignname FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -249,7 +161,7 @@ class Customer extends astercrm
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
 		}
-//echo $sql;exit;
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -258,9 +170,9 @@ class Customer extends astercrm
 	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
 		global $db;
 		
-			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-			$sql = "SELECT COUNT(*) FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid WHERE ";
+			$sql = "SELECT COUNT(*) FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -278,180 +190,277 @@ class Customer extends astercrm
 		return $res;
 	}
 
-		
 	/**
-	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
+	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
 	*
-	*	@param ninguno
-	*	@return $html	(string) Devuelve una cadena de caracteres que contiene la forma para insertar 
-	*							un nuevo registro.
+	*	@param $filter	(string)	Nombre del campo para aplicar el filtro en la consulta SQL
+	*	@param $order	(string)	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
+	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
 	*/
 	
-	function formAdd(){
-			global $locate,$config,$db;
-
+	function &getNumRows($filter = null, $content = null){
+		global $db;
+		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$res = Customer::getGroups();
-				$grouphtml .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
-				while ($row = $res->fetchRow()) {
-						$grouphtml .= '<option value="'.$row['groupid'].'"';
-						$grouphtml .='>'.$row['groupname'].'</option>';
-				}
-				$grouphtml .= '</select>';
+			$sql = " SELECT COUNT(*) FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.groupid";
 		}else{
-				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+			$sql = " SELECT COUNT(*) FROM campaignresult LEFT JOIN campaign ON campaign.id = campaignresult.groupid WHERE campaignresult.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
-	$html = '
-			<!-- No edit the next line -->
-			<form method="post" name="f" id="f">			
-			<table border="1" width="100%" class="adminlist">
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Result Name").'*</td>
-					<td align="left"><input type="text" id="resultname" name="resultname" size="30" maxlength="60"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Result Note").'</td>
-					<td align="left"><input type="text" id="resultnote" name="resultnote" size="30" maxlength="255"></td>
-				</tr>
-				<tr>					
-					<td align="left" colspan="2">'.$locate->Translate("ANSWERED").'&nbsp;<input type="radio" id="status" name="status" value="ANSWERED" checked>&nbsp;'.$locate->Translate("NOANSWER").'&nbsp;<input type="radio" id="status" name="status" value="NOANSWER" ></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Group").'</td>
-					<td align="left">'.$grouphtml.'</td>
-				</tr>
-				<tr>
-					<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
-					<td><SELECT id="campaignid" name="campaignid" onchange="setParentResult();"></SELECT></td>
-				</tr>
-				<tr>
-					<td align="left" width="25%">'.$locate->Translate("Parent Result Name").'</td>
-					<td><SELECT id="parentid" name="parentid" ></SELECT></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
-				</tr>
-
-			 </table>
-			';
-
-		$html .='
-			</form>
-			'.$locate->Translate("obligatory_fields").'
-			';
-		
-		return $html;
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;		
 	}
 
-	/**
-	*  Imprime la forma para editar un nuevo registro sobre el DIV identificado por "formDiv".
-	*
-	*	@param $id		(int)		Identificador del registro a ser editado.
-	*	@return $html	(string) Devuelve una cadena de caracteres que contiene la forma con los datos 
-	*									a extraidos de la base de datos para ser editados 
-	*/
-	
-	function formEdit($id){
-		global $locate,$db;
-		$campaignresult =& Customer::getRecordByID($id,'campaignresult');
-
-		if ($_SESSION['curuser']['usertype'] == 'admin'){ 
-				$grouphtml .=	'<select name="groupid" id="groupid" onchange="setCampaign();">
-																<option value=""></option>';
-				$res = Customer::getGroups();
-				while ($row = $res->fetchRow()) {
-					$grouphtml .= '<option value="'.$row['groupid'].'"';
-					if($row['groupid'] == $campaignresult['groupid']){
-						$grouphtml .= ' selected ';
-					}
-					$grouphtml .= '>'.$row['groupname'].'</option>';
-				}
-				$grouphtml .= '</select>';
-		}else{
-				
-				$grouphtml .= $_SESSION['curuser']['group']['groupname'].'<input type="hidden" name="groupid" id="groupid" value="'.$_SESSION['curuser']['groupid'].'">';
-		}
-		$statusAnswered = "";
-		$statusNoanswer = "";
-		if ($campaignresult['status'] == 'ANSWERED'){
-			$statusAnswered = "checked";
-		}else{
-			$statusNoanswer = "checked";
-		}
-
-			
-		$campaign_res = Customer::getRecordsByGroupid($campaignresult['groupid'],"campaign");
-		while ($campaign_row = $campaign_res->fetchRow()) {
-			$campaignoption .= '<option value="'.$campaign_row['id'].'"';
-			if($campaign_row['id'] == $campaignresult['campaignid']){
-				$campaignoption .= ' selected ';
-			}
-			$campaignoption .= '>'.$campaign_row['campaignname'].'</option>';
-		}
-
-		$parentoption .= '<option value="0"';
-		if($campaignresult['parentid'] == 0){
-			$parentoption .= ' selected ';
-		}
-		$parentoption .= '>'.$locate->Translate("None").'</option>';
-
-		$parent_res = Customer::getRecordsByField('campaignid', $campaignresult['campaignid'],'campaignresult');		
-		while ($parent_row = $parent_res->fetchRow()) {
-			if($parent_row['parentid'] == 0){
-				$parentoption .= '<option value="'.$parent_row['id'].'"';
-				if($parent_row['id'] == $campaignresult['parentid']){
-					$parentoption .= ' selected ';
-				}
-				$parentoption .= '>'.$parent_row['resultname'].'</option>';
-			}
-		}
-
+	function showItem($optionid){
+		global $locate, $db;
 		$html = '
-			<!-- No edit the next line -->
-			<form method="post" name="f" id="f">
-			
-			<table border="1" width="100%" class="adminlist">
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Result Name").'*</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $campaignresult['id'].'"><input type="text" id="resultname" name="resultname" size="30" maxlength="60" value="'.$campaignresult['resultname'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Result Note").'</td>				<td align="left"><input type="text" id="resultnote" name="resultnote" size="30" maxlength="255" value="'.$campaignresult['resultnote'].'"></td>
-				</tr>
-				<tr>					
-					<td align="left" colspan="2">'.$locate->Translate("Answered").'&nbsp;
-					<input type="radio" id="status" name="status" value="Answered" '.$statusAnswered.'>&nbsp;'.$locate->Translate("Noanswer").'&nbsp;
-					<input type="radio" id="status" name="status" value="Noanswer" '.$statusNoanswer.'>
-					</td>
-				</tr>				
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Group").'</td>
-					<td align="left">'.$grouphtml.'</td>
-				</tr>
-				<tr>
-					<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
-					<td><SELECT id="campaignid" name="campaignid" onchange="setParentResult();">'.$campaignoption.'</SELECT></td>
-				</tr>
-				<tr>
-					<td align="left" width="25%">'.$locate->Translate("Parent Result Name").'</td>
-					<td><SELECT id="parentid" name="parentid" >'.$parentoption.'</SELECT></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
-				</tr>
+				<!-- No edit the next line -->
+				<form method="post" name="fItem" id="fItem" method="post">
+				
+				<table border="1" width="100%" class="adminlist" id="tblItem">
+				';
+		$campaignresultoption = astercrm::getRecordById($optionid,"campaignresultoptions");
 
-			 </table>
-			';
+		$html .= "<tr><td>".$locate->translate("Option")."</td><td>".$campaignresultoption['campaignresultoption']."(".$locate->Translate($campaignresultoption['optiontype']).")"."</td></tr>";
+		$items  = astercrm::getAll("campaignresultoptionitems","optionid",$optionid);
+		$i = 0;
+		while ($row = $items->fetchRow()) {
+			//65
+			$html .= "<tr><td>".chr(65+$i).'(<a href="?" onclick="deleteItem(\''.$row['id'].'\',\''.$optionid.'\');return false;"><img src="skin/default/images/trash.png"></a>)</td><td>'.$row['itemcontent']."</td></tr>";
+			$i++;
+		}
 
-			
+		$html .= "<tr><td>".chr(65+$i)."</td><td>
+										<input type=hidden id=optionid name=optionid value=\"$optionid\"/>
+										<input type=hidden id=optiontype name=optiontype value=\"".$campaignresultoption['optiontype']."\"/>
+										<input type=text id=itemcontent name=itemcontent size=40 maxlength=254/>
+										<input type=\"button\" value=\"".$locate->Translate("Add Item")."\" onclick=\"addItem();\">
+									</td></tr>";
+		$html .= "</table></form>";
+		return $html;
+	}
+	
+	function formAdd($campaignresultid = 0, $optionid = 0){
+		global $locate;
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="f" id="f">
+				
+				<table border="1" width="100%" class="adminlist" id="tblcampaignresult">
+				';
+
+		$html .= '<tr><td colspan=2>
+					'. $locate->Translate("campaignresult_title") .'*
+				</td></tr>';
+
+		if ($campaignresultid == 0){
+			$html .= '<tr><td colspan=2>
+						<input type="text" size="50" maxlangth="100" id="campaignresultname" name="campaignresultname"/>
+					 </td></tr>';
+			$html .= '<tr><td colspan=2>
+						'. $locate->Translate("campaignresult Note") .'
+					</td></tr>';
+			$html .= '<tr><td colspan=2>
+						<input type="text" size="50" maxlangth="254" id="campaignresultnote" name="campaignresultnote"/>
+					 </td></tr>';
+			$enable_html = '<tr>
+								<td colspan=2>
+								<input type="radio" value="1" id="radEnable" name="radEnable" checked>'.$locate->Translate("enable").'
+								<input type="radio" value="0" id="radEnable" name="radEnable">'.$locate->Translate("disable").'
+								</td>
+							 </tr>';
+		}else{
+			$campaignresult = Customer::getRecord($campaignresultid,'campaignresult');
+	   	$nameCell = "TitleCol";
+
+			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'campaignresult\',\'campaignresultname\',\''.$nameCell.'\',\''.$campaignresult['campaignresultname'].'\',\''.$campaignresult['id'].'\');return false">'.$campaignresult['campaignresultname'].'<input type="hidden" id="campaignresultid" name="campaignresultid" value="'.$campaignresultid.'"/></td></tr>';
+
+	   	$nameCell = "NoteCol";
+			$html .= '<tr><td colspan=2>
+						'. $locate->Translate("campaignresult Note") .'
+					</td></tr>';
+			$html .= '<tr><td colspan="2" id="'.$nameCell.'" style="cursor: pointer;"  onDblClick="xajax_editField(\'campaignresult\',\'campaignresultnote\',\''.$nameCell.'\',\''.$campaignresult['campaignresultnote'].'\',\''.$campaignresult['id'].'\');return false">'.$campaignresult['campaignresultnote'].'&nbsp;</td></tr>';
+			if ($campaignresult['enable'] == 1)
+				$enable_html = '<tr>
+								<td colspan=2>
+								<input type="radio" value="1" id="radEnable" name="radEnable" checked>'.$locate->Translate("enable").'
+								<input type="radio" value="0" id="radEnable" name="radEnable">'.$locate->Translate("disable");
+			else
+				$enable_html = '<tr>
+								<td colspan=2>
+								<input type="radio" value="1" id="radEnable" name="radEnable" >'.$locate->Translate("enable").'
+								<input type="radio" value="0" id="radEnable" name="radEnable" checked>'.$locate->Translate("disable");
+			$enable_html .= '<input type="button" onclick="xajax_setcampaignresult(xajax.getFormValues(\'f\'));return false;" value="'.$locate->Translate("update").'">
+								</td>
+							 </tr>';
+
+		}
+
+		$options = Customer::getOptions($campaignresultid);
+
+		if ($options){
+			$ind = 0;
+			while	($options->fetchInto($row)){
+				$nameRow = "formDivRow".$row['id'];
+		   	$nameCell = $nameRow."Col".$ind;
+				
+				$html .= '<tr id="'.$nameRow.'" >'."\n";
+				$item_html = "";			
+				if ($row['optiontype'] == "text"){
+				}else{
+					$item_html = '(<a href=? onclick="showItem(\''.$row['id'].'\');return false;">'.$locate->Translate("Item").'</a>)';
+				}
+	
+				
+				$option_item_number = astercrm::getCountByField("optionid",$row['id'],"campaignresultoptionitems");
+				$html .= '
+					<td align="left" width="25%">'. $locate->Translate("option") .'(<a href="?" onclick="xajax_edit(\''.$campaignresultid.'\',\''.$row['id'].'\');return false;"><img src="skin/default/images/edit.png"></a><a href="?" onclick="deleteOption(\''.$row['id'].'\',\''.$nameRow.'\');return false;"><img src="skin/default/images/trash.png"></a>)'.$item_html.'
+					</td><td id="'.$nameCell.'" >'.$row['campaignresultoption']."(".$locate->Translate($row['optiontype']).", $option_item_number ".$locate->Translate('items').")".'</td></tr>
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Option Note").'</td>
+						<td id="'.$nameCell.'_note">'.$row['optionnote'].'</td>
+					</tr>
+					<tr><td colspan="2" height="1" bgcolor="#ccc"></td></tr>
+					';
+				$ind++;
+
+			}
+		}
+
+		$html .= '<tr><td colspan=2>
+					'.$locate->Translate("option").'
+				 </td></tr>';
+		if ($optionid == 0 ){
+			$button_value = $locate->Translate("Add Option");
+			$optionid = 0;
+		}else{
+			$button_value = $locate->Translate("Update Option");
+			$option = astercrm::getRecordById($optionid,"campaignresultoptions");
+			$optiontype[$option['optiontype']] = "selected";
+		}
+		
+		$html .= '<tr><td colspan=2>'.$locate->Translate("Title").': 
+					<input type="text" size="50" maxlength="50" id="campaignresultoption" name="campaignresultoption" value="'.$option['campaignresultoption'].'"/>
+					<SELECT id="optiontype" name="optiontype">
+						<option value="radio" '.$optiontype['radio'].'>'.$locate->Translate("Radio").'</option>
+						<option value="checkbox" '.$optiontype['checkbox'].'>'.$locate->Translate("Checkbox").'</option>
+						<option value="text" '.$optiontype['text'].'>'.$locate->Translate("Text").'</option>
+					</SELECT>
+					</td></tr>';
+
+		$html .= '<tr><td colspan=2>'.$locate->Translate("Note").': 
+					<input type="text" size="50" maxlength="254" id="optionnote" name="optionnote" value="'.$option['optionnote'].'"/>
+					<input type="button" value="'.$button_value.'" onclick="addOption(\'f\',\''.$optionid.'\');return false;">
+				 </td></tr>';
+
+		$html .= $enable_html;
+
+if ($_SESSION['curuser']['usertype'] == 'admin'){
+		$res = Customer::getGroups();
+		
+		$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
+		while ($row = $res->fetchRow()) {
+
+				$groupoptions .= '<option value="'.$row['groupid'].'"';
+				if ($campaignresult['groupid']  == $row['groupid'])
+					$groupoptions .= ' selected';
+				$groupoptions .='>'.$row['groupname'].'</option>';
+		}
+		$groupoptions .= '</select>';
+
+}else{
+		$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';
+}
+
+	if($campaignresult['campaignid'] == 0){
+		$campaignoptions = '<option value="0">'.$locate->Translate("All").'</option>';
+	}
+	$campaignres = Customer::getRecordsByGroupid($campaignresult['groupid'],"campaign");
+
+	while ($row = $campaignres->fetchRow()) {
+
+		$campaignoptions .= '<option value="'.$row['id'].'"';
+		if ($campaignresult['campaignid']  == $row['id'])
+			$campaignoptions .= ' selected';
+		$campaignoptions .='>'.$row['campaignname'].'</option>';
+	}
 
 		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Group Name").'</td>
+						<td>'.$groupoptions.'</td>
+					</tr>
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'*</td>
+						<td><SELECT id="campaignid" name="campaignid">'.$campaignoptions.'</SELECT></td>
+					</tr>';
+		$html .= '
+				</table>
 				</form>
 				'.$locate->Translate("obligatory_fields").'
 				';
-
 		return $html;
 	}
+
+	function insertNewcampaignresult($f){
+		global $db;
+		if ($f['radEnable'] == 1)
+			Customer::setcampaignresultEnable(0,1,$f['groupid']);
+		$sql= "INSERT INTO campaignresult SET "
+				."campaignresultname='".$f['campaignresultname']."', "
+				."enable='".$f['radEnable']."', "
+				."campaignresultnote='".$f['campaignresultnote']."', "
+				."groupid='".$f['groupid']."', "
+				."campaignid='".$f['campaignid']."', "
+				."cretime=now(), "
+				."creby='".$_SESSION['curuser']['username']."'";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		$campaignresultid = mysql_insert_id();
+		return $campaignresultid;
+	}
+
+	function setcampaignresultEnable($campaignresultid,$campaignresultenable = 1,$groupid = 0){
+		//$table,$field,$value,$id
+		if ($campaignresultid == 0){
+			global $db;
+			$sql = "UPDATE campaignresult SET enable = 0 WHERE groupid = $groupid";
+			$res = $db->query($sql);
+		}else{
+			$res = astercrm::updateField('campaignresult','enable',$campaignresultenable,$campaignresultid);
+		}
+		return;
+	}
+	
+	function insertNewOption($f,$campaignresultid){
+		global $db;
+		
+		$sql= "INSERT INTO campaignresultoptions SET "
+				."campaignresultoption= ".$db->quote($f['campaignresultoption']).", "
+				."optionnote= ".$db->quote($f['optionnote']).", "
+				."optiontype= ".$db->quote($f['optiontype']).", "
+				."campaignresultid='".$campaignresultid."', "
+				."cretime=now(), "
+				."creby='".$_SESSION['curuser']['username']."'";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		$optionid = mysql_insert_id();
+		return $optionid;
+	}
+
+	function updateOptionRecord($f,$optionid){
+		global $db;
+		
+		$sql= "UPDATE campaignresultoptions SET "
+				."campaignresultoption= ".$db->quote($f['campaignresultoption']).", "
+				."optionnote= ".$db->quote($f['optionnote']).", "
+				."optiontype= ".$db->quote($f['optiontype'])." "
+				."WHERE id = $optionid";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 }
 ?>
