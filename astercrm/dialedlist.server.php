@@ -66,9 +66,11 @@ function init(){
 function recycle($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	$num = 0;
 	if(is_array($f['ckb'])){
 		foreach($f['ckb'] as $value){
-			$num = Customer::recycleDialedlistById($value);
+			Customer::recycleDialedlistById($value);
+			$num ++;
 		}
 	}else{
 		$num = Customer::recycleDialedlist();

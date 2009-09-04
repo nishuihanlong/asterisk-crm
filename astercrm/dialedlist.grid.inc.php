@@ -84,7 +84,7 @@ class Customer extends astercrm
 		$i = 0;
 		//get phone numbers
 
-		$sql = "SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id WHERE answertime ='0000-00-00 00:00:00' ";
+		$sql = "SELECT dialedlist.*,campaign.maxtrytime ,customer.customer FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = dialedlist.customerid WHERE answertime ='0000-00-00 00:00:00' ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -101,8 +101,9 @@ class Customer extends astercrm
 			$assign = $row["assign"];
 			$campaignid = $row["campaignid"];
 			$trytime = $row["trytime"];
+			$customerid = $row['customerid'];
 			if($row['maxtrytime'] > $row["trytime"]){
-				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ";
 				$db->query($query);
 				$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 				$db->query($query);	
@@ -117,7 +118,7 @@ class Customer extends astercrm
 		$i = 0;
 		//get phone numbers
 
-		$sql = "SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id WHERE dialedlist.id=$id";
+		$sql = "SELECT dialedlist.*,campaign.maxtrytime  ,customer.customer FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = dialedlist.customerid WHERE dialedlist.id=$id";
 
 		Customer::events($sql);
 		$row =& $db->getRow($sql);
@@ -128,8 +129,9 @@ class Customer extends astercrm
 		$assign = $row["assign"];
 		$campaignid = $row["campaignid"];
 		$trytime = $row["trytime"];
+		$customerid = $row['customerid'];
 		if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
-		$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+		$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ,customerid = $customerid";
 		$db->query($query);
 		$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 		$db->query($query);	
@@ -144,9 +146,9 @@ class Customer extends astercrm
 		$i = 0;
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
-			$sql = 'SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id WHERE '.$joinstr;
+			$sql = 'SELECT dialedlist.*,campaign.maxtrytime  ,customer.customer FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = dialedlist.customerid WHERE '.$joinstr;
 		}else{
-			$sql = 'SELECT dialedlist.*,campaign.maxtrytime FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id';
+			$sql = 'SELECT dialedlist.*,campaign.maxtrytime  ,customer.customer FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = dialedlist.customerid ';
 		}
 
 		Customer::events($sql);
@@ -158,8 +160,9 @@ class Customer extends astercrm
 			$assign = $row["assign"];
 			$campaignid = $row["campaignid"];
 			$trytime = $row["trytime"];
+			$customerid = $row['customerid'];
 			if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
-			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ";
+			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ";
 			$db->query($query);
 			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 			$db->query($query);	

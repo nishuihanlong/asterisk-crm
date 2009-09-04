@@ -123,6 +123,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Databse Table: fields
 	$fields = array();
 	$fields[] = 'dialnumber';
+	$fields[] = 'customer';
 	$fields[] = 'assign';
 	$fields[] = 'dialtime';
 	$fields[] = 'groupname';
@@ -134,6 +135,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";
 	$headers[] = $locate->Translate("Number");
+	$headers[] = $locate->Translate("Customer");
 	$headers[] = $locate->Translate("Assign to");
 	$headers[] = $locate->Translate("Dialtime");
 	$headers[] = $locate->Translate("Group Name");
@@ -150,9 +152,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -164,6 +168,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","assign","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
@@ -175,6 +180,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'diallist.dialnumber';
+	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'diallist.assign';
 	$fieldsFromSearch[] = 'diallist.dialtime';
 	$fieldsFromSearch[] = 'groupname';
@@ -186,6 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("number");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
 	$fieldsFromSearchShowAs[] = $locate->Translate("assign_to");
 	$fieldsFromSearchShowAs[] = $locate->Translate("dialtime");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
@@ -210,6 +217,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['dialnumber'];
+		$rowc[] = $row['customer'];
 		$rowc[] = $row['assign'];
 		$rowc[] = $row['dialtime'];
 		$rowc[] = $row['groupname'];

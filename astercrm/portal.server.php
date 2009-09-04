@@ -349,6 +349,8 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("btnTransfer","disabled", false );
 		} elseif ($call['status'] =='hangup'){
 			$objResponse->addAssign("divCallresult", "style.display", "none");
+			$objResponse->addAssign("callResultStatus", "value", "");
+			
 			//$objResponse->addAssign("divCallresult", "innerHTML", '<input type="radio" value="normal" id="callresult" name="callresult" onclick="updateCallresult(this.value);" checked>'.$locate->Translate("normal").' <input type="radio" value="fax" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("fax").' <input type="radio" value="voicemail" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("voicemail").'<input type="hidden" id="dialedlistid" name="dialedlistid" value="0">');
 			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'recording') 
 				$objResponse->addScript("monitor();");
