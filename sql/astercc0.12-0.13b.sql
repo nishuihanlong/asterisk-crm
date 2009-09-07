@@ -11,6 +11,9 @@ alter table surveyresult add campaignid int(11) not null default '0' after phone
 
 alter table diallist add customerid int(11) not null default '0' after `status`;
 
+alter table campaign add recyletime  int(11) not null default '3600' after `maxtrytime`;
+alter table campaign add minduration  int(11) not null default '0' after `recyletime`;
+
 DROP TABLE IF EXISTS `meetmes`;
 
 CREATE TABLE `meetmes` (
