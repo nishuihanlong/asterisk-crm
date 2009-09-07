@@ -1290,7 +1290,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	return $objResponse->getXML();
 }
 
-function addSchedulerDial($display='',$number){
+function addSchedulerDial($display='',$number,$customerid = ''){
 	global $locate,$db;
 
 	$objResponse = new xajaxResponse();
@@ -1300,7 +1300,7 @@ function addSchedulerDial($display='',$number){
 					<td align="left">'.$locate->Translate("DialNumber").' : <input type="text" id="sDialNum" name="sDialNum" size="15" maxlength="35" value="'.$number.'">';
 		if($number != ''){
 			$curtime = date("Y-m-d H:i:s");
-			$curtime = date("Y-m-d H:i:s",strtotime("$curtime -30 seconds"));
+			$curtime = date("Y-m-d H:i:s",strtotime("$curtime - 30 seconds"));
 			$sql = "SELECT campaignid FROM dialedlist WHERE dialednumber = '".$number."' AND dialedtime > '".$curtime."' ";
 			$curcampaignid = $db->getOne($sql);
 			if($curcampaignid != ''){
@@ -1318,8 +1318,11 @@ function addSchedulerDial($display='',$number){
 			$html .= '&nbsp;'.$locate->Translate("campaign").' : <select id="curCampaignid" name="curCampaignid" >'.$campaignoption.'</select>';
 		}
 		//
-		$html .= '<br>'.$locate->Translate("Dialtime").' : <input type="text" name="sDialtime" id="sDialtime" size="15" value="" onfocus="displayCalendar(this,\'yyyy-mm-dd hh:ii\',this,true)">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Add").'" onclick="saveSchedulerDial();">
-					</td>';		
+		$html .= '<br>'.$locate->Translate("Dialtime").' : <input type="text" name="sDialtime" id="sDialtime" size="15" value="" onfocus="displayCalendar(this,\'yyyy-mm-dd hh:ii\',this,true)">&nbsp;&nbsp;';
+		if ($customerid >0 ){
+			$html .= '<input type="button" value="'.$locate->Translate("Add").'" onclick="saveSchedulerDial(\''.$customerid.'\');">';
+		}
+		$html .= '</td>';
 		$objResponse->addAssign("trAddSchedulerDial", "innerHTML", $html);
 		$objResponse->addAssign("trAddSchedulerDial", "style.display", "");
 	}else{
@@ -1339,19 +1342,18 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime='',$customeri
 		$objResponse->addAlert($locate->Translate("Campaign can not be blank"));
 		return $objResponse->getXML();
 	}
+	/*
 	if($dialtime == ''){
 		$objResponse->addAlert($locate->Translate("Dial time can not be blank"));
 		return $objResponse->getXML();
 	}	
-	$sql = "INSERT INTO diallist SET "
-			."dialnumber='".astercrm::getDigitsInStr($dialnumber)."', "
-			."groupid='".$_SESSION['curuser']['groupid']."', "
-			."dialtime='".$dialtime."', "
-			."customerid='".$customerid."', "
-			."creby='".$_SESSION['curuser']['username']."', "
-			."cretime= now(), "
-			."campaignid= ".$campaignid." ";
-	$res =& $db->query($sql);
+	*/
+	$f['customerid'] = $customerid;
+	$f['curCampaignid'] = $campaignid;
+	$f['sDialNum'] = $dialnumber;
+	$f['sDialtime'] = $dialtime;
+
+	$res = astercrm::insertNewSchedulerDial($f);
 	if($res){
 		$objResponse->addAlert($locate->Translate("Add scheduler dial success"));
 		$objResponse->addAssign("trAddSchedulerDial", "style.display", "none");

@@ -273,8 +273,6 @@ function save($f){
 	if(empty($f['customer'])) {
 		$customerID = 0;
 	} else{
-	
-
 		if ($f['customerid'] == '' || $f['customerid'] == 0){
 			if ($config['system']['allow_same_data'] == false){
 				//检查是否有完全匹配的customer记录
@@ -369,6 +367,17 @@ function save($f){
 		}else{
 			$objResponse->addAlert($locate->Translate("note_add_error"));
 			return $objResponse;
+		}
+	}
+
+	// 查看是否有scheduler call
+	if(empty($f['sDialNum'])) {
+
+	} else{
+		$f['customerid'] = $customerID;
+		$res = astercrm::insertNewSchedulerDial($f);
+		if ($res){
+			$objResponse->addAlert($locate->Translate("Scheduler Call added"));
 		}
 	}
 

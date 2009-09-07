@@ -347,12 +347,12 @@ $clientDst = $_REQUEST['clientdst'];
 			setTimeout("xajax_bargeInvite(srcchan,dstchan,inviteExten)",1000);
 		}
 
-		function addSchedulerDial(){
-			xajax_addSchedulerDial(xajax.$("trAddSchedulerDial").style.display,xajax.$("callerid").value);
+		function addSchedulerDial(customerid){
+			xajax_addSchedulerDial(xajax.$("trAddSchedulerDial").style.display,xajax.$("callerid").value,customerid);
 		}
 
-		function saveSchedulerDial(){
-			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value,xajax.$("customerid").value);
+		function saveSchedulerDial(customerid){
+			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value,customerid);
 		}
 
 		function menuFix() { 

@@ -94,7 +94,7 @@ function init(){
 				<div class="group01r">
 				<input type="checkbox" onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
 				<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="channel" '.$channel_checked.'> '.$locate->Translate("Limited by max channel").' 
-				<input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit" onblur="setMaxChannel(this);">
+				<input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="3" class="inputlimit" onblur="setMaxChannel(this);">
 				<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="queue" '.$queue_checked.'> '.$locate->Translate("Limited by agents and multipled by").' 
 				<input type="text" value="'.$campaign['queue_increasement'].'" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="4" maxlength="4" class="inputlimit" onblur="setQueueRate(this);">
 				</div>';

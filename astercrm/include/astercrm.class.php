@@ -148,6 +148,23 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function insertNewSchedulerDial($f){
+		global $db;
+	$sql = "INSERT INTO diallist SET "
+			."dialnumber='".astercrm::getDigitsInStr($f['sDialNum'])."', "
+			."groupid='".$_SESSION['curuser']['groupid']."', "
+			."dialtime='".$f['sDialtime']."', "
+			."assign='".$_SESSION['curuser']['extension']."', "
+			."customerid='".$f['customerid']."', "
+			."creby='".$_SESSION['curuser']['username']."', "
+			."cretime= now(), "
+			."campaignid= ".$f['curCampaignid']." ";
+		$res =$db->query($sql);
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
 	function insertNewMonitor($callerid,$filename,$uniqueid,$format){
 		global $db;
 		$query= "INSERT INTO monitorrecord SET "
@@ -1035,6 +1052,7 @@ Class astercrm extends PEAR{
 	}
 
 
+
 	/**
 	*  Imprime la forma para agregar un nuevo registro sobre el DIV identificado por "formDiv".
 	*
@@ -1082,7 +1100,7 @@ Class astercrm extends PEAR{
 								xajax.$(\'hidAddBankDetails\').value = \'OFF\';
 							}
 							return false;">'.$locate->Translate("bank").'</a>]
-						&nbsp; [<a href=? onclick="addSchedulerDial(); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
+						&nbsp; [<a href=? onclick="addSchedulerDial(\'0\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
 					</td>
 				</tr>
 				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none">		
@@ -1840,7 +1858,7 @@ Class astercrm extends PEAR{
 								xajax.$(\'hidCustomerBankDetails\').value = \'OFF\';
 							}
 							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'out\');return false;">'.$locate->Translate("outbound").'</a>]&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'in\');return false;">'.$locate->Translate("inbound").'</a>]&nbsp;[<a href=? onclick="xajax_showDiallist(\''.$_SESSION['curuser']['extension'].'\',\''.$customer['id'].'\');return false;">'.$locate->Translate("diallist").'</a>]&nbsp;[<a href=? onclick="xajax_showRecords(\''.$customer['id'].'\');return false;">'.$locate->Translate("monitors").'</a>]
-							&nbsp; [<a href=? onclick="addSchedulerDial(); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
+							&nbsp; [<a href=? onclick="addSchedulerDial(\''.$customer['id'].'\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
 						</td>
 					</tr>
 					<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none"></tr>

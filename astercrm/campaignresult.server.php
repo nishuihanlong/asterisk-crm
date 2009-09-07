@@ -125,8 +125,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1){
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"campaign");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"campaign");
+			$numRows =& Customer::getNumRowsMore($filter, $content,"campaignresult");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"campaignresult");
 		}else{
 			$order = "id";
 			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
@@ -251,7 +251,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];
-		$table->addRow("campaign",$rowc,1,1,0,$divName,$fields);
+		$table->addRow("campaignresult",$rowc,1,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -304,7 +304,7 @@ function save($f){
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
-		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Add Campaign"));
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Add Campaign Result"));
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 		$objResponse->addClear("formDiv", "innerHTML");
 	}else{
@@ -395,8 +395,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecord($id,'campaign');
-		$res = Customer::deleteRecords("campaignid",$id,'diallist');
+		$res = Customer::deleteRecord($id,'campaignresult');
 		
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);

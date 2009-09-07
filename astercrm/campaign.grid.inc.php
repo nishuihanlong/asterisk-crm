@@ -150,6 +150,8 @@ class Customer extends astercrm
 				."queuename='".$f['queuename']."', "
 				."bindqueue='".$bindqueue."', "
 				."maxtrytime='".$f['maxtrytime']."', "
+				."recyletime='".$f['recyletime']."', "
+				."minduration='".$f['minduration']."', "
 				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
@@ -181,6 +183,8 @@ class Customer extends astercrm
 				."queuename='".$f['queuename']."', "
 				."bindqueue='".$bindqueue."', "
 				."maxtrytime='".$f['maxtrytime']."', "
+				."recyletime='".$f['recyletime']."', "
+				."minduration='".$f['minduration']."', "
 				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
@@ -408,6 +412,14 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="maxtrytime" value="1" name="maxtrytime" size="10" maxlength="10"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Recyle time").'</td>
+					<td align="left"><input type="text" id="recyletime" value="3600" name="recyletime" size="10" maxlength="10"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Min Duration").'</td>
+					<td align="left"><input type="text" id="minduration" value="0" name="minduration" size="10" maxlength="10"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -550,6 +562,14 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Max trytime").'</td>
 					<td align="left"><input type="text" id="maxtrytime" name="maxtrytime" size="30" maxlength="30" value="'.$campaign['maxtrytime'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Recyle time").'</td>
+					<td align="left"><input type="text" id="recyletime" name="recyletime" size="10" maxlength="10" value="'.$campaign['recyletime'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Min Duration").'</td>
+					<td align="left"><input type="text" id="minduration" name="minduration" size="10" maxlength="10" value="'.$campaign['minduration'].'"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>

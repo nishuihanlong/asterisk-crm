@@ -77,12 +77,10 @@ overflow:hidden;
 }
 .group01content .group01l,.group01content .group01r{
 float:left;
-width:49%;
-height:30px;
-line-height:30px;
+width:44%;
 }
 .group01content .group01r{
-width:49%;
+width:55%;
 }
 .group01content .input{
 	font-size: 11px;
