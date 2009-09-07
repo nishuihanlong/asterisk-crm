@@ -109,6 +109,7 @@ require_once('diallist.common.php');
 	<div id="divCopyright"></div>
 	<form name="exportForm" id="exportForm" action="dataexport.php" >
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
+		<input type="hidden" value="diallist" id="maintable" name="maintable" />
 	</form>
 	</body>
 </html>

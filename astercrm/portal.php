@@ -457,7 +457,7 @@ $clientDst = $_REQUEST['clientdst'];
 
 		function setCallresult(obj){
 			id = obj.value;
-			alert(id);
+			//alert(id);
 			xajax_setCallresult(id);
 		}
 		</script>

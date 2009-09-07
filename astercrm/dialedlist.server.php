@@ -288,7 +288,10 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchType =  $searchFormValue['searchType'];
 	$divName = "grid";
 	if($optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'dialedlist'); //得到要导出的sql语句
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'dialedlist');
+		$joinstr=ltrim($joinstr,'AND');
+		$sql = "SELECT dialedlist.dialednumber,customer.customer,dialedlist.dialtime,dialedlist.answertime,dialedlist.duration,dialedlist.response,dialedlist.campaignresult,dialedlist.dialedby, groupname, campaignname,dialedlist.dialedtime FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid LEFT JOIN customer ON customer.id = dialedlist.customerid ";
+		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");

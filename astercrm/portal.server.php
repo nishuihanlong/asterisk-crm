@@ -348,7 +348,7 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("btnHangup","disabled", false );
 			$objResponse->addAssign("btnTransfer","disabled", false );
 		} elseif ($call['status'] =='hangup'){
-			$objResponse->addAssign("divCallresult", "style.display", "none");
+			//$objResponse->addAssign("divCallresult", "style.display", "none");
 			$objResponse->addAssign("callResultStatus", "value", "");
 			
 			//$objResponse->addAssign("divCallresult", "innerHTML", '<input type="radio" value="normal" id="callresult" name="callresult" onclick="updateCallresult(this.value);" checked>'.$locate->Translate("normal").' <input type="radio" value="fax" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("fax").' <input type="radio" value="voicemail" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("voicemail").'<input type="hidden" id="dialedlistid" name="dialedlistid" value="0">');
@@ -472,6 +472,7 @@ function waitingCalls($myValue){
 					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
 				}else{
 					$objResponse->addAssign("dialedlistid","value", 0 );
+					$objResponse->addAssign("divCallresult", "style.display", "none");
 				}
 				$objResponse->addAssign("callResultStatus","value", '1' );
 		}
@@ -560,6 +561,7 @@ function waitingCalls($myValue){
 					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
 				}else{
 					$objResponse->addAssign("dialedlistid","value", 0 );
+					$objResponse->addAssign("divCallresult", "style.display", "none");
 				}
 				$objResponse->addAssign("callResultStatus","value", '1' );
 		}

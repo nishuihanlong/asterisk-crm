@@ -19,21 +19,14 @@ require_once ('include/astercrm.class.php');
 $sql = trim(strtolower($_REQUEST['hidSql']));
 $table = trim(strtolower($_REQUEST['maintable']));
 
-
+//echo $sql.$table;exit;
 $sql = " 1 $sql ";
 	
-if ($_SESSION['curuser']['usertype'] != 'admin'){
-	if (strpos(strtolower($sql),'where'))
-		if($table != '') //判断是否传了主表名
-			$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
-		else
-			$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
-	else
-		if($table != '')//判断是否传了主表名
-			$sql .= " where $table.groupid = ".$_SESSION['curuser']['groupid'];
-		else
-			$sql .= " where groupid = ".$_SESSION['curuser']['groupid'];
-}
+if($table != '')//判断是否传了主表名
+	$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
+else
+	$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
+
 
 #error_reporting(E_ALL);
 error_reporting(0);
@@ -53,6 +46,7 @@ header('Content-disposition:  attachment; filename=astercrm.csv');
 // 首先查看该条件下包含几个survey
 $query = "$commonQuery WHERE $sql GROUP BY surveyid ORDER BY surveyid ASC, id ASC";
 $res = $db->query($query);
+
 while($res->fetchinto($row)){
 	$surveyid = $row['surveyid'];
 	//echo "surveyid = $surveyid <BR>";
