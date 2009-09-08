@@ -156,17 +156,17 @@ function init(){
 	$objResponse->addAssign("extensionStatus","value", 'idle');
 	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
 	
-	$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
-	$objResponse->addAssign("breakStatus","value", 1);
-	$memberstatus = Customer::getMyMemberStatus();
-
-	while ($memberstatus->fetchInto($row)) {
-		if($row['status'] != 'paused'){
-			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
-			$objResponse->addAssign("breakStatus","value", 0);
-			break;
-		}
-	}
+//	$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
+//	$objResponse->addAssign("breakStatus","value", 1);
+//	$memberstatus = Customer::getMyMemberStatus();
+//
+//	while ($memberstatus->fetchInto($row)) {
+//		if($row['status'] != 'paused'){
+//			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
+//			$objResponse->addAssign("breakStatus","value", 0);
+//			break;
+//		}
+//	}
 
 
 	$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
@@ -259,11 +259,15 @@ function init(){
 *
 */
 function listenCalls($aFormValues){
-	global $config;
+	global $config,$locate;
 	$objResponse = new xajaxResponse();
 	if($_SESSION['curuser']['agent'] != ''){
 		$agentData = Customer::getAgentData();
-		$objResponse->addAssign("agentData","innerHTML", $agentData );
+		$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
+		if($agentData['status'] != 'paused'){
+			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
+			$objResponse->addAssign("breakStatus","value", 0);
+		}
 	}
 	if ($aFormValues['uniqueid'] == ''){
 		$objResponse->loadXML(waitingCalls($aFormValues));
