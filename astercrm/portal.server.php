@@ -267,6 +267,9 @@ function listenCalls($aFormValues){
 		if($agentData['agent_status'] != 'paused'){
 			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
 			$objResponse->addAssign("breakStatus","value", 0);
+		}else{
+			$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
+			$objResponse->addAssign("breakStatus","value", 1);
 		}
 	}
 	if ($aFormValues['uniqueid'] == ''){
