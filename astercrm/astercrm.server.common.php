@@ -88,46 +88,46 @@
 function clearPopup(){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formDiv","innerHTML", "" );
-	$objResponse->addAssign("formDiv","style.visibility", "visible");
+	$objResponse->addAssign("formDiv","style.visibility", "hidden");
 
 	$objResponse->addAssign("surveyDiv","innerHTML", "" );
-	$objResponse->addAssign("surveyDiv","style.visibility", "visible");
+	$objResponse->addAssign("surveyDiv","style.visibility", "hidden");
 
 	$objResponse->addAssign("formCustomerInfo","innerHTML", "" );
-	$objResponse->addAssign("formCustomerInfo","style.visibility", "visible");
+	$objResponse->addAssign("formCustomerInfo","style.visibility", "hidden");
 
 	$objResponse->addAssign("formContactInfo","innerHTML", "" );
-	$objResponse->addAssign("formContactInfo","style.visibility", "visible");
+	$objResponse->addAssign("formContactInfo","style.visibility", "hidden");
 
 	$objResponse->addAssign("formCdr","innerHTML", "" );
-	$objResponse->addAssign("formCdr","style.visibility", "visible");
+	$objResponse->addAssign("formCdr","style.visibility", "hidden");
 
 	$objResponse->addAssign("formRecentCdr","innerHTML", "" );
-	$objResponse->addAssign("formRecentCdr","style.visibility", "visible");
+	$objResponse->addAssign("formRecentCdr","style.visibility", "hidden");
 
 	$objResponse->addAssign("formRecords","innerHTML", "" );
-	$objResponse->addAssign("formRecords","style.visibility", "visible");
+	$objResponse->addAssign("formRecords","style.visibility", "hidden");
 
 	$objResponse->addAssign("formDiallist","innerHTML", "" );
-	$objResponse->addAssign("formDiallist","style.visibility", "visible");
+	$objResponse->addAssign("formDiallist","style.visibility", "hidden");
 
 	$objResponse->addAssign("formaddDiallistInfo","innerHTML", "" );
-	$objResponse->addAssign("formaddDiallistInfo","style.visibility", "visible");
+	$objResponse->addAssign("formaddDiallistInfo","style.visibility", "hidden");
 
 	$objResponse->addAssign("formeditDiallistInfo","innerHTML", "" );
-	$objResponse->addAssign("formeditDiallistInfo","style.visibility", "visible");
+	$objResponse->addAssign("formeditDiallistInfo","style.visibility", "hidden");
 
 	$objResponse->addAssign("formNoteInfo","innerHTML", "" );
-	$objResponse->addAssign("formNoteInfo","style.visibility", "visible");
+	$objResponse->addAssign("formNoteInfo","style.visibility", "hidden");
 
 	$objResponse->addAssign("formWorkoff","innerHTML", "" );
-	$objResponse->addAssign("formWorkoff","style.visibility", "visible");
+	$objResponse->addAssign("formWorkoff","style.visibility", "hidden");
 
 	$objResponse->addAssign("formEditInfo","innerHTML", "" );
-	$objResponse->addAssign("formEditInfo","style.visibility", "visible");
+	$objResponse->addAssign("formEditInfo","style.visibility", "hidden");
 	
 	$objResponse->addAssign("formplaymonitor","innerHTML", "" );
-	$objResponse->addAssign("formplaymonitor","style.visibility", "visible");
+	$objResponse->addAssign("formplaymonitor","style.visibility", "hidden");
 	
 	return $objResponse->getXML();
 }
