@@ -462,8 +462,10 @@ class Customer extends astercrm
 				$curparentid = $row['id'];
 			}
 		}
+
 		if($curparentid != '' && $curparentid != 0){
 			$sql = "SELECT id,resultname FROM campaignresult WHERE parentid = $curparentid AND status = '".$status."'";
+
 			Customer::events($sql);
 			$res =& $db->query($sql);
 			$secondoption = '';
@@ -482,7 +484,9 @@ class Customer extends astercrm
 			$html = $locate->Translate("Call Result").':&nbsp;<select id="fcallresult" onchange="setSecondCampaignResult()">'.$option.'</select>&nbsp;';
 //
 			if($secondoption != ''){
-				$html .= '&nbsp;<select id="scallresult" onchange="setCallresult(this);">'.$secondoption.'</select>';
+				$html .= '&nbsp;<span id="spnScallresult"><select id="scallresult" onchange="setCallresult(this);">'.$secondoption.'</select></span>';
+			}else{
+				$html .= '&nbsp;<span id="spnScallresult" style="display:none"><select id="scallresult" onchange="setCallresult(this);">'.$secondoption.'</select></span>';
 			}
 
 			$html .= '<input type="hidden" id="dialedlistid" name="dialedlistid" value="'.$dialedlistid.'"><input type="hidden" id="callresultname" name="callresultname" value="'.$callresultname.'">&nbsp;<input type="button" value="'.$locate->Translate("Update").'" onclick="updateCallresult();">';

@@ -1415,8 +1415,12 @@ function setSecondCampaignResult($parentid){
 		$objResponse->addScript("addOption('scallresult','".$row['id']."','".$row['resultname']."');");
 		if($n == 0){
 			$objResponse->addAssign("callresultname","value", $row['resultname']);
+			$objResponse->addAssign("spnScallresult","style.display", "");
 			$n++;
 		}
+	}
+	if($n == 0) {
+		$objResponse->addAssign("spnScallresult","style.display", "none");
 	}
 
 	return $objResponse;
