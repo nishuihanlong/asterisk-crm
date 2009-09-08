@@ -68,7 +68,7 @@ require_once('surveyresult.common.php');
 			</td>
 		</tr>
 	</table>
-	<form name="exportForm" id="exportForm" action="surveyresultexport.php" >
+	<form name="exportForm" id="exportForm" action="surveyresultexport.php" method="post" target="_blank">
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
 		<input type="hidden" value="surveyresult" id="maintable" name="maintable" />
 	</form>

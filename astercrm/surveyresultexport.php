@@ -21,27 +21,29 @@ $table = trim(strtolower($_REQUEST['maintable']));
 
 //echo $sql.$table;exit;
 $sql = " 1 $sql ";
-	
-if($table != '')//判断是否传了主表名
-	$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
-else
-	$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
 
+if ($_SESSION['curuser']['usertype']  == "groupadmin" ){
+	if($table != '')//判断是否传了主表名
+		$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
+	else
+		$sql .= " and groupid = ".$_SESSION['curuser']['groupid'];
+}
 
 #error_reporting(E_ALL);
 error_reporting(0);
 global $db;
+ob_start();
+header("charset=uft-8");   
+header('Content-type:  application/force-download');
+header('Content-Transfer-Encoding:  Binary');
+header('Content-disposition:  attachment; filename=astercrm.csv');
+
 
 $commonHeader = '"CustomerName","Address","Zipcode","City","State","Country","Phone"';
 
 $commonQuery = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone , surveyresult.* FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid LEFT JOIN campaign ON campaign.id = surveyresult.campaignid";
 
 
-ob_start();
-header("charset=uft-8");   
-header('Content-type:  application/force-download');
-header('Content-Transfer-Encoding:  Binary');
-header('Content-disposition:  attachment; filename=astercrm.csv');
 
 // 首先查看该条件下包含几个survey
 $query = "$commonQuery WHERE $sql GROUP BY surveyid ORDER BY surveyid ASC, id ASC";
@@ -61,7 +63,6 @@ while($res->fetchinto($row)){
 		$i++;
 		$aryHeader[$i] = $row['surveyoption'];
 	}
-#	print_r($aryHeader);
 #	echo "<br>";
 	echo "$header\n";
 #	echo "<br>";
@@ -104,6 +105,7 @@ while($res->fetchinto($row)){
 #		echo "<br>";
 	}
 }
+//die;
 
 //echo astercrm::exportDataToCSV($sql);
 ob_end_flush();

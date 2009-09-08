@@ -886,7 +886,7 @@ Class astercrm extends PEAR{
 	*/
 
 	function surveyAdd($surveyid,$customerid = 0, $contactid = 0,$callerid='', $campaignid=0){
-		global $locate,$db;
+		global $locate,$db,$config;
 
 		$html = '<form method="post" name="formSurvey" id="formSurvey"><table border="1" width="100%" class="adminlist">';
 		$survey = astercrm::getRecordById($surveyid,"survey");
@@ -912,7 +912,9 @@ Class astercrm extends PEAR{
 					while ($items->fetchInto($item)) {
 						$html .= '<input type="'.$option['optiontype'].'" name="'.$option['id'].'-item[]"  value="'.$item['id'].'-'.$item['itemcontent'].'" '.$additional.'>'.$item['itemcontent'];
 					}
-					$html .= " | ".$locate->Translate("Note")." <input type=\"text\" name=\"".$option['id']."-note\" size='20'></td></tr>";
+					if ($config['survey']['enable_surveynote'] == true){
+						$html .= " | ".$locate->Translate("Note")." <input type=\"text\" name=\"".$option['id']."-note\" size='20'></td></tr>";
+					}
 				}
 			}
 		}

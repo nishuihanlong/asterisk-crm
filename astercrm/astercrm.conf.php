@@ -96,7 +96,7 @@ allow_dropcall = 0
 allow_same_data = 0
 
 ; if need display the recend cdr link
-display_recend_cdr = 1
+display_recent_cdr = 1
 
 ; define what information would be displayed in portal page
 ; customer | note
@@ -166,7 +166,6 @@ enable_surveynote = 0
 
 ; if need close all popups after survey saved
 close_popup_after_survey = 1
-
 
 [billing]
 ;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)

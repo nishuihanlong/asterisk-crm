@@ -212,7 +212,9 @@ function init(){
 		$objResponse->addScript("addOption('iptDestNumber','".$speednumber[$i]['number']."','".$speednumber[$i]['description']."-".$speednumber[$i]['number']."');");
 	}
 
-	if ($config['system']['display_recend_cdr'] == true){	
+	if ($config['system']['display_recent_cdr'] == true && $_SESSION['curuser']['usertype'] == "agent"){	
+
+	}else{
 		$panelHTML = '<a href=? onclick="xajax_showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a>&nbsp;&nbsp;';
 	}
 

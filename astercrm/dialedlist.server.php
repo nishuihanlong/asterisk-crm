@@ -148,8 +148,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'answertime';
 	$fields[] = 'duration';
 	$fields[] = 'callresult';
-	$fields[] = 'response';		
+//	$fields[] = 'response';		
 	$fields[] = 'customer';
+	$fields[] = 'uniqueid';
 	$fields[] = 'campaignresult';
 	$fields[] = 'dialedby';
 	$fields[] = 'dialedtime';
@@ -162,8 +163,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Answer Time");
 	$headers[] = $locate->Translate("Duration");
 	$headers[] = $locate->Translate("Call Result");
-	$headers[] = $locate->Translate("Response");
+//	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Customer");
+	$headers[] = $locate->Translate("Uniqueid");
 	$headers[] = $locate->Translate("Campaign Result");
 	$headers[] = $locate->Translate("Dial by");
 	$headers[] = $locate->Translate("Dial time");
@@ -184,6 +186,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
+//	$attribsHeader[] = 'width=""';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -198,6 +201,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+//	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -206,8 +210,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","answertime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callresult","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","uniqueid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignresult","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedtime","'.$divName.'","ORDERING");return false;\'';
@@ -222,6 +227,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'callresult';
 	$fieldsFromSearch[] = 'response';
 	$fieldsFromSearch[] = 'customer';
+	$fieldsFromSearch[] = 'uniqueid';
 	$fieldsFromSearch[] = 'campaignresult';
 	$fieldsFromSearch[] = 'dialedby';
 	$fieldsFromSearch[] = 'dialedtime';
@@ -236,6 +242,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Call Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Response");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Uniqueid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dial by");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dial time");
@@ -259,8 +266,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['answertime'];
 		$rowc[] = $row['duration'];
 		$rowc[] = $row['callresult'];
-		$rowc[] = $row['response'];
+//		$rowc[] = $row['response'];
 		$rowc[] = $row['customer'];
+		$rowc[] = $row['uniqueid'];
 		$rowc[] = $row['campaignresult'];
 		$rowc[] = $row['dialedby'];
 		$rowc[] = $row['dialedtime'];

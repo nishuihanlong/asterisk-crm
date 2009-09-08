@@ -9,10 +9,12 @@ alter table surveyresult add phonenumber varchar(30) not null default '' after c
 alter table survey add campaignid int(11) not null default 0 ;
 alter table surveyresult add campaignid int(11) not null default '0' after phonenumber;
 
-alter table diallist add customerid int(11) not null default '0' after `status`;
+alter table `diallist` add `customerid` int(11) not null default '0' after `status`;
+alter table `diallist` add `customername` varchar(100) not null default '' after `status`;
 
 alter table campaign add recyletime  int(11) not null default '3600' after `maxtrytime`;
 alter table campaign add minduration  int(11) not null default '0' after `recyletime`;
+
 
 DROP TABLE IF EXISTS `meetmes`;
 
