@@ -494,5 +494,13 @@ class Customer extends astercrm
 		}
 		return $html;
 	}
+
+	function getAgentData(){
+		global $db;
+		$sql = "SELECT data From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."'";
+		Customer::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
+	}
 }
 ?>

@@ -261,7 +261,10 @@ function init(){
 function listenCalls($aFormValues){
 	global $config;
 	$objResponse = new xajaxResponse();
-
+	if($_SESSION['curuser']['agent'] != ''){
+		$agentData = Customer::getAgentData();
+		$objResponse->addAssign("agentData","innerHTML", $agentData );
+	}
 	if ($aFormValues['uniqueid'] == ''){
 		$objResponse->loadXML(waitingCalls($aFormValues));
 	} else{
