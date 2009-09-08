@@ -264,7 +264,7 @@ function listenCalls($aFormValues){
 	if($_SESSION['curuser']['agent'] != ''){
 		$agentData = Customer::getAgentData();
 		$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
-		if($agentData['status'] != 'paused'){
+		if($agentData['agent_status'] != 'paused'){
 			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
 			$objResponse->addAssign("breakStatus","value", 0);
 		}
