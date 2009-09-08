@@ -95,6 +95,9 @@ allow_dropcall = 0
 
 allow_same_data = 0
 
+; if need display the recend cdr link
+display_recend_cdr = 1
+
 ; define what information would be displayed in portal page
 ; customer | note
 portal_display_type = customer

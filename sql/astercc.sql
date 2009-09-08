@@ -617,6 +617,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `worktime_package_id` int(11) NOT NULL default '0',
  `maxtrytime` int(11) NOT NULL default '1',
  `recyletime` int(11) NOT NULL default '3600',
+ `minduration` int(11) NOT NULL default '0',
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)

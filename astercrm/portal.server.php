@@ -211,7 +211,12 @@ function init(){
 	for ($i=0;$i<$n;++$i){
 		$objResponse->addScript("addOption('iptDestNumber','".$speednumber[$i]['number']."','".$speednumber[$i]['description']."-".$speednumber[$i]['number']."');");
 	}
-	$panelHTML = '<a href=? onclick="xajax_showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a>&nbsp;&nbsp;';
+
+	if ($config['system']['display_recend_cdr'] == true){	
+		$panelHTML = '<a href=? onclick="xajax_showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a>&nbsp;&nbsp;';
+	}
+
+
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
 		$panelHTML .= '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;&nbsp;';
 	}
