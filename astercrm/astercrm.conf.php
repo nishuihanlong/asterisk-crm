@@ -167,6 +167,9 @@ enable_surveynote = 0
 ; if need close all popups after survey saved
 close_popup_after_survey = 1
 
+[diallist]
+popup_diallist = 1
+
 [billing]
 ;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)
 workwithasterbilling = 0

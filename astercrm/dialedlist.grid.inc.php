@@ -94,7 +94,7 @@ class Customer extends astercrm
 
 		Customer::events($sql);
 		$res =& $db->query($sql);
-		$creby = $_SESSION['curuser']['username'];
+		
 		while ($res->fetchInto($row)) {
 			$number = $row["dialednumber"];
 			$groupid = $row["groupid"];
@@ -102,8 +102,10 @@ class Customer extends astercrm
 			$campaignid = $row["campaignid"];
 			$trytime = $row["trytime"];
 			$customerid = $row['customerid'];
+			$creby = $row['creby'];
+			$customername = $row['customername'];
 			if($row['maxtrytime'] > $row["trytime"]){
-				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ";
+				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ,customername = '$customername' ";
 				$db->query($query);
 				$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 				$db->query($query);	
@@ -122,7 +124,7 @@ class Customer extends astercrm
 
 		Customer::events($sql);
 		$row =& $db->getRow($sql);
-		$creby = $_SESSION['curuser']['username'];
+		$creby = $row["creby"];
 		
 		$number = $row["dialednumber"];
 		$groupid = $row["groupid"];
@@ -130,8 +132,9 @@ class Customer extends astercrm
 		$campaignid = $row["campaignid"];
 		$trytime = $row["trytime"];
 		$customerid = $row['customerid'];
+		$customername = $row['customername'];
 		if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
-		$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ,customerid = $customerid";
+		$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ,customerid = $customerid ,customername = '$customername' ";
 		$db->query($query);
 		$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 		$db->query($query);	
@@ -153,7 +156,7 @@ class Customer extends astercrm
 
 		Customer::events($sql);
 		$res =& $db->query($sql);
-		$creby = $_SESSION['curuser']['username'];
+		
 		while ($res->fetchInto($row)) {
 			$number = $row["dialednumber"];
 			$groupid = $row["groupid"];
@@ -161,8 +164,10 @@ class Customer extends astercrm
 			$campaignid = $row["campaignid"];
 			$trytime = $row["trytime"];
 			$customerid = $row['customerid'];
+			$creby = $row["creby"];
+			$customername = $row['customername'];
 			if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
-			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ";
+			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ,customername = '$customername' ";
 			$db->query($query);
 			$query = "DELETE FROM dialedlist WHERE id = ".$row['id'];
 			$db->query($query);	

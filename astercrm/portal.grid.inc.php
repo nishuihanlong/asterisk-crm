@@ -502,5 +502,22 @@ class Customer extends astercrm
 		$res =& $db->getRow($sql);
 		return $res;
 	}
+
+	function formDiallist($dialedlistid){
+		global $locate, $db;
+		$sql = "SELECT dialednumber, customername FROM dialedlist WHERE id = $dialedlistid";
+		Customer::events($sql);
+		$row =& $db->getRow($sql);
+		$html = '';
+		if($row){
+			$html = Table::Top($locate->Translate("Customer from Diallist"),"formdiallist");  // <-- Set the title for your form.	
+			$html .= '<table border="1" width="100%" class="adminlist">
+						<tr><td>&nbsp;'.$locate->Translate("Customer Name").':&nbsp;</td><td>'.$row['customername'].'</td></tr>
+						<tr><td>&nbsp;'.$locate->Translate("Pone Number").':&nbsp;</td><td>'.$row['dialednumber'].'</td></tr>
+					</table>'; // <-- Change by your method
+			$html .= Table::Footer();
+		}
+		return $html;
+	}
 }
 ?>

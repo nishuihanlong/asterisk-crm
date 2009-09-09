@@ -470,7 +470,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].')';
+		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid,customername,creby) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].','.$f['customername'].','.$f['creby'].')';
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;

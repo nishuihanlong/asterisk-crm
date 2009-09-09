@@ -536,7 +536,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>" onclick="xajax_getContact(xajax.$('iptCallerid').value);">
+			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="xajax_getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;<input type="button" value="<?echo $locate->Translate("Add Diailist");?>">
 		</div>
 		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
@@ -571,6 +571,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			style="left: 450px; top: 50px;width: 500px"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width: 350px; z-index:200"></div>
+		<div id="formdiallist"  class="formDiv drsElement" 
+			style="left: 450px; top: 50px;width: 350px; z-index:201"></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 					</fieldset>

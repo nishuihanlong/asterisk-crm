@@ -480,8 +480,9 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
+		$dialedlistid = asterCrm::checkDialedlistCall($call['callerid']);
 		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
-				if($dialedlistid = asterCrm::checkDialedlistCall($call['callerid'])){
+				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
 					//echo $divCallresult;exit;
 					$objResponse->addAssign("divCallresult", "style.display", "");
@@ -492,6 +493,13 @@ function waitingCalls($myValue){
 					$objResponse->addAssign("divCallresult", "style.display", "none");
 				}
 				$objResponse->addAssign("callResultStatus","value", '1' );
+		}
+		if($dialedlistid){
+			if($config['diallist']['popup_diallist'] == 1){
+				$dialistHtml = Customer::formDiallist($dialedlistid);
+				$objResponse->addAssign('formdiallist','innerHTML',$dialistHtml);
+				$objResponse->addAssign('formdiallist',"style.visibility", "visible");
+			}
 		}
 		if($call['didnumber'] != ''){
 			$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
@@ -1416,7 +1424,7 @@ function queuePaused($paused){
 function updateCallresult($id,$result){
 	global $locate,$config,$db;
 	$objResponse = new xajaxResponse();
-	$sql = "UPDATE dialedlist SET campaignresult = '$result' WHERE id = $id";
+	$sql = "UPDATE dialedlist SET campaignresult = '$result' , agent = '".$_SESSION['curuser']['agent']."', resultby = '".$_SESSION['curuser']['username']."' WHERE id = $id";
 
 	$res =& $db->query($sql);
 	return $objResponse;
@@ -1448,6 +1456,9 @@ function setCallresult($id){
 	$row = astercrm::getRecordByID($id,'campaignresult');
 	$objResponse->addAssign("callresultname","value", $row['resultname']);
 	return $objResponse;
+}
+
+function popupDiallist(){
 }
 
 $xajax->processRequests();
