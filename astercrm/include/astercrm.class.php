@@ -11,7 +11,6 @@
 			insertNewNote			向note表插入数据
 			insertNewSurveyResult	向surveyresult表插入数据
 			insertNewAccount
-			insertNewDiallist
 			insertNewDialedlist
 			insertNewAccountgroup    向accountgroup表插入数据
 			insertNewCampaign
@@ -466,22 +465,6 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function insertNewDiallist($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		
-		$query= "INSERT INTO diallist SET "
-				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
-				."groupid='".$f['groupid']."', "
-				."dialtime='".$f['dialtime']."', "
-				."creby='".$_SESSION['curuser']['username']."', "
-				."cretime= now(), "
-				."campaignid= ".$f['campaignid'].", "
-				."assign='".$f['assign']."'";
-		astercrm::events($query);
-		$res =& $db->query($query);
-		return $res;
-	}
 
 	function insertNewDialedlist($f){
 		global $db;
@@ -653,22 +636,6 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function updateDiallistRecord($f){
-		global $db;
-		$f = astercrm::variableFiler($f);
-		
-		$query= "UPDATE diallist SET "
-				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
-				."groupid='".$f['groupid']."', "
-				."dialtime='".$f['dialtime']."', "
-				."campaignid= ".$f['campaignid'].", "
-				."assign='".$f['assign']."'"
-				."WHERE id='".$f['id']."'";
-
-		astercrm::events($query);
-		$res =& $db->query($query);
-		return $res;
-	}
 
 	/**
 	*  select a record form a table

@@ -54,6 +54,7 @@ function init($fileName){
 											<option value=''>".$locate->Translate("selecttable")."</option>
 											<option value='customer'>customer</option>
 											<option value='contact'>contact</option>
+											<option value='diallist'>diallist</option>
 										</select>";
 
 	$objResponse->addAssign("divTables","innerHTML",$tableList);
@@ -145,8 +146,7 @@ function selectTable($tableName){
 		$type_arr = explode(' ',$row['flags']);
 		if(!in_array('auto_increment',$type_arr))
 		{
-			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
-
+			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" || $row['name'] == "campaignid" || $row['name'] == "trytime"){
 			}else{
 				$HTML .= "<li height='20px'>";
 				$HTML .= $i.":&nbsp;&nbsp;".$row['name'];
@@ -160,6 +160,7 @@ function selectTable($tableName){
 	$objResponse->addAssign("divTableFields", "innerHTML", $HTML);
 	$objResponse->addAssign("hidTableName","value",$tableName);
 	$objResponse->addAssign("hidMaxTableColumnNum","value",$i-1);
+//	$objResponse->addAssign("divDiallistImport", "innerHTML", "");
 	return $objResponse;
 }
 

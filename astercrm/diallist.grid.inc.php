@@ -246,6 +246,12 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						</td>
 					</tr>
 					<tr>
+						<td nowrap align="left">'.$locate->Translate("Name").'</td>
+						<td align="left">
+							<input type="text" id="customername" name="customername" size="35">
+						</td>
+					</tr>
+					<tr>
 						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35"">
@@ -321,6 +327,12 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						</td>
 					</tr>
 					<tr>
+						<td nowrap align="left">'.$locate->Translate("Name").'</td>
+						<td align="left">
+							<input type="text" id="customername" name="customername" value="'.$diallist['customername'].'" size="35">
+						</td>
+					</tr>
+					<tr>
 						<td nowrap align="left">'.$locate->Translate("Assign To").'</td>
 						<td align="left">
 							<input type="text" id="assign" name="assign" size="35" value="'.$diallist['assign'].'">
@@ -353,5 +365,40 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		return $html;
 	}
 
+	function insertNewDiallist($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query= "INSERT INTO diallist SET "
+				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
+				."customername='".$f['customername']."', "
+				."groupid='".$f['groupid']."', "
+				."dialtime='".$f['dialtime']."', "
+				."creby='".$_SESSION['curuser']['username']."', "
+				."cretime= now(), "
+				."campaignid= ".$f['campaignid'].", "
+				."assign='".$f['assign']."'";
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
+	function updateDiallistRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query= "UPDATE diallist SET "
+				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
+				."customername='".$f['customername']."', "
+				."groupid='".$f['groupid']."', "
+				."dialtime='".$f['dialtime']."', "
+				."campaignid= ".$f['campaignid'].", "
+				."assign='".$f['assign']."'"
+				."WHERE id='".$f['id']."'";
+
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
 }
 ?>

@@ -128,7 +128,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'dialtime';
 	$fields[] = 'groupname';
 	$fields[] = 'campaignname';
-	$fields[] = 'cretime';
+	$fields[] = 'customername';
 	$fields[] = 'creby';
 	
 	// HTML table: Headers showed
@@ -140,7 +140,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Dialtime");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Campaign Name");
-	$headers[] = $locate->Translate("Create time");
+	$headers[] = $locate->Translate("Name");
 	$headers[] = $locate->Translate("Create by");
 	
 	// HTML table: hearders attributes
@@ -173,7 +173,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	
 
@@ -185,6 +185,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'diallist.dialtime';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'campaignname';
+	$fieldsFromSearch[] = 'customername';
 	$fieldsFromSearch[] = 'diallist.cretime';
 	$fieldsFromSearch[] = 'diallist.creby';
 
@@ -197,7 +198,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("dialtime");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Name");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Create Time");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Create By");
 
 
@@ -222,7 +223,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialtime'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
-		$rowc[] = $row['cretime'];
+		$rowc[] = $row['customername'];
 		$rowc[] = $row['creby'];
 
 		$table->addRow("diallist",$rowc,1,1,0,$divName,$fields);
@@ -277,6 +278,21 @@ function update($f){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
+	// check if the assign number belong to this group
+	if ($_SESSION['curuser']['usertype'] != 'admin' && $f['assign'] != ""){
+		$flag = false;
+		foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+			if ($extension == $f['assign']){
+				$flag = true; 
+				break;
+			}
+		}
+
+		if (!$flag){
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("Cant insert, please confirm the assign number is in your group"));
+			return $objResponse;
+		}
+	}
 
 	$respOk = Customer::updateDiallistRecord($f);
 
@@ -322,7 +338,7 @@ function save($f){
 	}
 
 	// check if the assign number belong to this group
-	if ($_SESSION['curuser']['usertype'] != 'admin'){
+	if ($_SESSION['curuser']['usertype'] != 'admin' && $f['assign'] != ""){
 		$flag = false;
 		foreach ($_SESSION['curuser']['memberExtens'] as $extension){
 			if ($extension == $f['assign']){

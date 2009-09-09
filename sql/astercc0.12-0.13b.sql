@@ -11,6 +11,7 @@ alter table surveyresult add campaignid int(11) not null default '0' after phone
 
 alter table `diallist` add `customerid` int(11) not null default '0' after `status`;
 alter table `diallist` add `customername` varchar(100) not null default '' after `status`;
+alter table `dialedlist` add `customername` varchar(100) not null default '' after `campaignid`;
 
 alter table campaign add recyletime  int(11) not null default '3600' after `maxtrytime`;
 alter table campaign add minduration  int(11) not null default '0' after `recyletime`;
