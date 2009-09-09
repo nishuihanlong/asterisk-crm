@@ -2441,13 +2441,21 @@ Class astercrm extends PEAR{
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
 
 		if ($joinstr!=''){
-			$joinstr=ltrim($joinstr,'AND');
-			$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr;
+			$joinstr=ltrim($joinstr,'AND');			
+			if($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr;
+			}else{
+				$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr." AND ".$table.".groupid = '".$_SESSION['curuser']['groupid']."'";
+			}
 		}else{
-			$sql = 'TRUNCATE '.$table;
+			if($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql = 'TRUNCATE table '.$table;
+			}else{
+				$sql = "DELETE FROM ".$table." WHERE ".$table.".groupid = '".$_SESSION['curuser']['groupid']."'";
+			}
 		}
 
-		Customer::events($sql);
+ 		Customer::events($sql);
 		$res =& $db->query($sql);
 
 		return $res;
