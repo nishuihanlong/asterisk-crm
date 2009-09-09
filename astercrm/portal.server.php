@@ -497,8 +497,8 @@ function waitingCalls($myValue){
 		if($dialedlistid){
 			if($config['diallist']['popup_diallist'] == 1){
 				$dialistHtml = Customer::formDiallist($dialedlistid);
-				$objResponse->addAssign('formdiallist','innerHTML',$dialistHtml);
-				$objResponse->addAssign('formdiallist',"style.visibility", "visible");
+				$objResponse->addAssign('formDiallistPopup','innerHTML',$dialistHtml);
+				$objResponse->addAssign('formDiallistPopup',"style.visibility", "visible");
 			}
 		}
 		if($call['didnumber'] != ''){

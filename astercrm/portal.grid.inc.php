@@ -510,7 +510,7 @@ class Customer extends astercrm
 		$row =& $db->getRow($sql);
 		$html = '';
 		if($row){
-			$html = Table::Top($locate->Translate("Customer from Diallist"),"formdiallist");  // <-- Set the title for your form.	
+			$html = Table::Top($locate->Translate("Customer from Diallist"),"formDiallistPopup");  // <-- Set the title for your form.	
 			$html .= '<table border="1" width="100%" class="adminlist">
 						<tr><td>&nbsp;'.$locate->Translate("Customer Name").':&nbsp;</td><td>'.$row['customername'].'</td></tr>
 						<tr><td>&nbsp;'.$locate->Translate("Pone Number").':&nbsp;</td><td>'.$row['dialednumber'].'</td></tr>

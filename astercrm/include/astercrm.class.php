@@ -482,6 +482,24 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+	function insertNewDiallist($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query= "INSERT INTO diallist SET "
+				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
+				."customername='".$f['customername']."', "
+				."groupid='".$f['groupid']."', "
+				."dialtime='".$f['dialtime']."', "
+				."creby='".$_SESSION['curuser']['username']."', "
+				."cretime= now(), "
+				."campaignid= ".$f['campaignid'].", "
+				."assign='".$f['assign']."'";
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
+
 
 	/**
 	*  update customer table
@@ -3428,10 +3446,11 @@ Class astercrm extends PEAR{
 				}				
 				$groupoptions .= '</select>';	
 				$assignoptions = '<input type="text" id="assign" name="assign" size="35"">';
-		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){				
 				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';	
 				$res = Customer::getRecordsByField('groupid',$_SESSION['curuser']['groupid'],'astercrm_account');
 				$assignoptions .= '<select name="assign" id="assign">';
+				$assignoptions .= '<option value="">'.$locate->Translate("none").'</option>';
 				while ($row = $res->fetchRow()) {
 						$assignoptions .= '<option value="'.$row['extension'].'"';
 						$assignoptions .='>'.$row['extension'].'</option>';
@@ -3442,24 +3461,47 @@ Class astercrm extends PEAR{
 				$assignoptions = '<input type="text" id="assign" name="assign" size="35" value="'.$_SESSION['curuser']['extension'].'" disabled><input type="hidden" id="assign" name="assign" value="'.$_SESSION['curuser']['extension'].'">';
 		}
 
-		$res_customer =astercrm::getRecordById($customerid,'customer');
-		$res_contact =astercrm::getContactListByID($customerid);
-		$numberblank = '<select name="dialnumber" id="dialnumber">';
-		if ($res_customer['phone'] != '') $numberblank .= '<option value="'.$res_customer['phone'].'">'.$res_customer['phone'].'</option>';
-		if ($res_customer['mobile'] != '') $numberblank .= '<option value="'.$res_customer['mobile'].'">'.$res_customer['mobile'].'</option>';
-		while ($res_contact->fetchInto($row)) {
-			if ($row['phone'] != '') $numberblank .= '<option value="'.$row['phone'].'">'.$row['phone'].'</option>';
-			if ($row['phone1'] != '') $numberblank .= '<option value="'.$row['phone1'].'">'.$row['phone1'].'</option>';
-			if ($row['phone2'] != '') $numberblank .= '<option value="'.$row['phone2'].'">'.$row['phone2'].'</option>';
-			if ($row['mobile'] != '') $numberblank .= '<option value="'.$row['mobile'].'">'.$row['mobile'].'</option>';
+		$customernamehtml = '';
+		if($userexten != '' && $customerid != ''){
+			$res_customer =astercrm::getRecordById($customerid,'customer');
+			$res_contact =astercrm::getContactListByID($customerid);
+			$numberblank = '<select name="dialnumber" id="dialnumber">';
+			if ($res_customer['phone'] != '') $numberblank .= '<option value="'.$res_customer['phone'].'">'.$res_customer['phone'].'</option>';
+			if ($res_customer['mobile'] != '') $numberblank .= '<option value="'.$res_customer['mobile'].'">'.$res_customer['mobile'].'</option>';
+			while ($res_contact->fetchInto($row)) {
+				if ($row['phone'] != '') $numberblank .= '<option value="'.$row['phone'].'">'.$row['phone'].'</option>';
+				if ($row['phone1'] != '') $numberblank .= '<option value="'.$row['phone1'].'">'.$row['phone1'].'</option>';
+				if ($row['phone2'] != '') $numberblank .= '<option value="'.$row['phone2'].'">'.$row['phone2'].'</option>';
+				if ($row['mobile'] != '') $numberblank .= '<option value="'.$row['mobile'].'">'.$row['mobile'].'</option>';
+			}
+			$numberblank .= '</select>';
+			$saveHtml = '
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_saveDiallist(xajax.getFormValues(\'formaddDiallist\'),\''.$userexten.'\',\''.$customerid.'\');return false;"></td>
+					</tr>
+				<table>
+				</form>
+				';
+		}else{
+			$numberblank = '<input  name="dialnumber" id="dialnumber">';
+			$customernamehtml = '<tr>
+									<td nowrap align="left">'.$locate->Translate("Customer Name").'</td>
+									<td align="left"><input  name="customername" id="customername"></td>
+								</tr>';
+			$saveHtml = '
+					<tr>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_saveDiallistMain(xajax.getFormValues(\'formaddDiallist\'));return false;"></td>
+					</tr>
+				<table>
+				</form>
+				';
 		}
-		$numberblank .= '</select>';
 
 		$html = '
 				<!-- No edit the next line -->
 				<form method="post" name="formaddDiallist" id="formaddDiallist">
 				
-				<table border="1" width="100%" class="adminlist">
+				<table border="1" width="100%" class="adminlist">'.$customernamehtml.'
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("number").'</td>
 						<td align="left">'.$numberblank.'</td>
@@ -3487,13 +3529,7 @@ Class astercrm extends PEAR{
 						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
 						<td><SELECT id="campaignid" name="campaignid"></SELECT></td>
 					</tr>';
-		$html .= '
-					<tr>
-						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_saveDiallist(xajax.getFormValues(\'formaddDiallist\'),\''.$userexten.'\',\''.$customerid.'\');return false;"></td>
-					</tr>
-				<table>
-				</form>
-				';
+		$html .= $saveHtml;
 		return $html;
 	}
 

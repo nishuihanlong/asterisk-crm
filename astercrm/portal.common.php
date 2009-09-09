@@ -145,6 +145,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("addDiallist");
 	$xajax->registerFunction("setCampaign");
 	$xajax->registerFunction("saveDiallist");
+	$xajax->registerFunction("saveDiallistMain");
 	$xajax->registerFunction("searchCdrFormSubmit");
 	$xajax->registerFunction("searchDiallistFormSubmit");
 	$xajax->registerFunction("showRecords");

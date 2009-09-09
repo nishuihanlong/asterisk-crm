@@ -571,7 +571,7 @@ function add($callerid = null,$customerid = null,$contactid = null){
 	return $objResponse->getXML();
 }
 
-function addDiallist($userexten,$customerid){
+function addDiallist($userexten = '' ,$customerid = ''){
 	global $locate;
 	$objResponse = new xajaxResponse();
 
@@ -767,10 +767,14 @@ function saveDiallist($f,$userexten = '',$customerid = ''){
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		$flag = false;
 		if($_SESSION['curuser']['usertype'] == 'groupadmin'){
-			foreach ($_SESSION['curuser']['memberExtens'] as $extension){
-				if ($extension == $f['assign']){
-					$flag = true; 
-					break;
+			if($f['assign'] == '') {
+				$flag = true; 
+			}else{
+				foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+					if ($extension == $f['assign'] ){
+						$flag = true; 
+						break;
+					}
 				}
 			}
 		}else{
@@ -798,6 +802,52 @@ function saveDiallist($f,$userexten = '',$customerid = ''){
 		$objResponse->addAssign("formeditDiallistInfo", "style.visibility", "hidden");
 		$objResponse->addClear("formeditDiallistInfo", "innerHTML");
 	}
+	return $objResponse->getXML();
+}
+
+function saveDiallistMain($f){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($f['campaignid'] == ''){
+		$objResponse->addAlert($locate->Translate("Must select a campaign"));
+		return $objResponse->getXML();
+	}
+
+	// check if the assign number belong to this group
+	if ($_SESSION['curuser']['usertype'] != 'admin'){
+		$flag = false;
+		if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			if($f['assign'] == '') {
+				$flag = true; 
+			}else{
+				foreach ($_SESSION['curuser']['memberExtens'] as $extension){
+					if ($extension == $f['assign'] ){
+						$flag = true; 
+						break;
+					}
+				}
+			}
+		}else{
+			if($_SESSION['curuser']['extension'] == $f['assign']){
+				$flag = true;
+			}
+		}
+
+		if (!$flag){
+			$objResponse->addAlert('"'.$locate->Translate("Cant insert, please confirm the assign number is in your group").'"');
+			return $objResponse->getXML();
+		}
+	}
+
+	$id = Customer::insertNewDiallist($f);
+	if($id){
+		$objResponse->addAlert($locate->Translate("Add diallist succeed"));
+		$objResponse->addAssign("formaddDiallistInfo", "style.visibility", "hidden");
+		$objResponse->addClear("formaddDiallistInfo", "innerHTML");
+	}else{
+		$objResponse->addAlert($locate->Translate("Add diallist failed"));
+	}
+	
 	return $objResponse->getXML();
 }
 
