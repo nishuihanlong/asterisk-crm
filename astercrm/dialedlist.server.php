@@ -152,24 +152,25 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'customer';
 	$fields[] = 'uniqueid';
 	$fields[] = 'campaignresult';
+	$fields[] = 'resultby';
 	$fields[] = 'dialedby';
-	$fields[] = 'dialedtime';
-	$fields[] = 'groupname';
+//	$fields[] = 'groupname';
 
 	// HTML table: Headers showed
 	$headers = array();
 	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";
 	$headers[] = $locate->Translate("Dialed Number");
-	$headers[] = $locate->Translate("Answer Time");
+//	$headers[] = $locate->Translate("Answer Time");
 	$headers[] = $locate->Translate("Duration");
 	$headers[] = $locate->Translate("Call Result");
 //	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Customer");
 	$headers[] = $locate->Translate("Uniqueid");
 	$headers[] = $locate->Translate("Campaign Result");
-	$headers[] = $locate->Translate("Dial by");
-	$headers[] = $locate->Translate("Dial time");
-	$headers[] = $locate->Translate("Group");
+	$headers[] = $locate->Translate("Result By");
+	$headers[] = $locate->Translate("Tried");
+	$headers[] = $locate->Translate("Dialed Time");
+//	$headers[] = $locate->Translate("Group");
 	$headers[] = $locate->Translate("Campaign");
 
 	// HTML table: hearders attributes
@@ -200,23 +201,24 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
+//	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
 	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialednumber","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","answertime","'.$divName.'","ORDERING");return false;\'';
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","answertime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callresult","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","uniqueid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignresult","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedby","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resultby","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","trytime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedtime","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
@@ -229,7 +231,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'uniqueid';
 	$fieldsFromSearch[] = 'campaignresult';
+	$fieldsFromSearch[] = 'resultby';
 	$fieldsFromSearch[] = 'dialedby';
+	$fieldsFromSearch[] = 'trytime';
 	$fieldsFromSearch[] = 'dialedtime';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'campaignname';
@@ -244,8 +248,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Uniqueid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Result");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dial by");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dial time");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Resultby");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed By");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Tried");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign");
 
@@ -263,16 +269,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['dialednumber'];
-		$rowc[] = $row['answertime'];
+//		$rowc[] = $row['answertime'];
 		$rowc[] = $row['duration'];
 		$rowc[] = $row['callresult'];
 //		$rowc[] = $row['response'];
 		$rowc[] = $row['customer'];
 		$rowc[] = $row['uniqueid'];
 		$rowc[] = $row['campaignresult'];
-		$rowc[] = $row['dialedby'];
+		$rowc[] = $row['resultby'];
+		$rowc[] = $row['trytime'];
 		$rowc[] = $row['dialedtime'];
-		$rowc[] = $row['groupname'];
+//		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
 		$table->addRow("dialedlist",$rowc,0,1,0,$divName,$fields);
  	}

@@ -231,7 +231,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['campaignname'];
+		$rowc[] = "<a href=? onclick=\"xajax_showDetail('".$row['id']."');return false;\">".$row['campaignname']."</a>";
 		$rowc[] = $row['campaignnote'];
 		$rowc[] = $row['groupname'];
 		if ($row['serverid'] != 0) 
@@ -369,11 +369,11 @@ function edit($id){
 *  @return	objResponse	object		xajax response object
 */
 
-function showDetail($groupid){
+function showDetail($campaignid){
 	$objResponse = new xajaxResponse();
 	global $locate;
-	$html = Table::Top( $locate->Translate("group_detail"),"formDiv"); 
-	$html .= Customer::showCampaignDetail($groupid);
+	$html = Table::Top( $locate->Translate("Campaign Report"),"formDiv"); 
+	$html .= Customer::showCampaignReport($campaignid);
 	$html .= Table::Footer();
 
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");

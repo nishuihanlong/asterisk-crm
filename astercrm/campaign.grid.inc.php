@@ -587,5 +587,25 @@ class Customer extends astercrm
 
 		return $html;
 	}
+
+	function showCampaignReport($campaignid){
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="f" id="f">			
+				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td><a href="campaignreport.php?category=call_result_analysis&campaignid='.$campaignid.'" target="_blank">Call Result Analysis</a></td>
+					</tr>
+					<tr>
+						<td><a href="campaignreport.php?category=hit_rate_analysis&campaignid='.$campaignid.'" target="_blank">Hit Rate Analysis</a></td>
+					</tr>
+					<tr>
+						<td><a href="campaignreport.php?category=referals_vs_contacts&campaignid='.$campaignid.'" target="_blank"> referals vs contacts</a></td>
+					</tr>
+
+				</table>
+				</form>';
+		return $html;
+	}
 }
 ?>
