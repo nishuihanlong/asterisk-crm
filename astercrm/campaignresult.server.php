@@ -159,8 +159,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'parentresult';
 	$fields[] = 'groupname';
 	$fields[] = 'campaignname';
-	$fields[] = 'creby';
-	$fields[] = 'cretime';
+	$fields[] = 'result';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -170,12 +169,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Parent Result");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Campaign Name");
-	$headers[] = $locate->Translate("Creby");
-	$headers[] = $locate->Translate("Cretime");
+	$headers[] = $locate->Translate("Result");
+
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -193,7 +191,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -203,8 +200,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","parentresult","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaign.campaignname","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= '';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -240,7 +236,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['resultname'];
+		$rowc[] = "<a href=? onclick=\"showReport('".$row['id']."');return false;\">".$row['resultname']."</a>";
+//		$rowc[] = $row['resultname'];
 		$rowc[] = $row['resultnote'];
 		$rowc[] = $row['status'];
 		if ($row['parentid'] != 0) 
@@ -249,8 +246,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$rowc[] = $locate->Translate("First Level");
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
-		$rowc[] = $row['creby'];
-		$rowc[] = $row['cretime'];
+		$rowc[] = astercrm::countDailedlist($row['resultname'],$row['campaignid'],$row['groupid']);
+//		$rowc[] = $row['creby'];
+//		$rowc[] = $row['cretime'];
 		$table->addRow("campaignresult",$rowc,1,1,0,$divName,$fields);
  	}
  	

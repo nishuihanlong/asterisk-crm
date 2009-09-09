@@ -103,6 +103,8 @@ require_once('campaignresult.common.php');
 				<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width:500px;"></div>
+		<div id="formReport"  class="formDiv drsElement" 
+			style="left: 500px; top: 50px;width:600px;"></div>
 		<div id="grid" name="grid" align="center"> </div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 				</fieldset>

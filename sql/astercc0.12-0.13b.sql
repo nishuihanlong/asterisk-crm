@@ -6,12 +6,15 @@ alter table queue_agent add `agent_status` varchar(32) not null default '' after
 alter table queue_agent change `agent` `agent` varchar(255) not null default '';
 
 alter table surveyresult add phonenumber varchar(30) not null default '' after contactid;
-alter table survey add campaignid int(11) not null default 0 ;
 alter table surveyresult add campaignid int(11) not null default '0' after phonenumber;
+
+alter table survey add campaignid int(11) not null default 0 ;
 
 alter table `diallist` add `customerid` int(11) not null default '0' after `status`;
 alter table `diallist` add `customername` varchar(100) not null default '' after `status`;
 alter table `dialedlist` add `customername` varchar(100) not null default '' after `campaignid`;
+alter table `dialedlist` add `resultby` varchar(30) not null default '' after `campaignresult`;
+alter table `dialedlist` add `creby` varchar(30) not null default '';
 
 alter table campaign add recyletime  int(11) not null default '3600' after `maxtrytime`;
 alter table campaign add minduration  int(11) not null default '0' after `recyletime`;
