@@ -448,7 +448,7 @@ $clientDst = $_REQUEST['clientdst'];
 
 		function setSecondCampaignResult(){
 			xajax.$('callresultname').value = xajax.$('fcallresult').options[xajax.$('fcallresult').selectedIndex].text;
-			alert(xajax.$('callresultname').value);
+			//alert(xajax.$('callresultname').value);
 			parentid = document.getElementById("fcallresult").value;
 			if (parentid == '')
 				return;
