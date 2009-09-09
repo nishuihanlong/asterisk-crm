@@ -1424,9 +1424,14 @@ function queuePaused($paused){
 function updateCallresult($id,$result){
 	global $locate,$config,$db;
 	$objResponse = new xajaxResponse();
-	$sql = "UPDATE dialedlist SET campaignresult = '$result' , agent = '".$_SESSION['curuser']['agent']."', resultby = '".$_SESSION['curuser']['username']."' WHERE id = $id";
+	$sql = "UPDATE dialedlist SET campaignresult = '$result' , resultby = '".$_SESSION['curuser']['username']."' WHERE id = $id";
 
 	$res =& $db->query($sql);
+	if ($res){
+//		$objResponse->addAlert("campaign result updated");
+	}else{
+		$objResponse->addAlert("fail to update campaign result");
+	}
 	return $objResponse;
 }
 

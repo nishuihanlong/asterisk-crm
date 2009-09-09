@@ -600,9 +600,11 @@ class Customer extends astercrm
 						<td><a href="campaignreport.php?category=hit_rate_analysis&campaignid='.$campaignid.'" target="_blank">Hit Rate Analysis</a></td>
 					</tr>
 					<tr>
-						<td><a href="campaignreport.php?category=referals_vs_contacts&campaignid='.$campaignid.'" target="_blank"> referals vs contacts</a></td>
+						<td><a href="campaignreport.php?category=referals_vs_contacts&campaignid='.$campaignid.'" target="_blank">referals vs contacts</a></td>
 					</tr>
-
+					<tr>
+						<td><a href="campaignreport.php?category=agents&campaignid='.$campaignid.'" target="_blank">Agents</a></td>
+					</tr>
 				</table>
 				</form>';
 		return $html;

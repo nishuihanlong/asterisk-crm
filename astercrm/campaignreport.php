@@ -42,13 +42,13 @@ if (!$campaign_row){
 $total = 0;
 echo '<table border="1" width="100%" class="adminlist" align="center">';
 if ($category == "call_result_analysis"){
-	echo '<tr><th colspan=2>Call Result Analysis</tr>';
-	echo '<tr><th>Result</th><th>Count</th></tr>';
+	echo '<tr><th colspan=3>Call Result Analysis</tr>';
+	echo '<tr><th>Result</th><th>Count</th><th>Detail</th></tr>';
 	# get all call result from campaign but skip top level
 	$query = "SELECT campaignresult, count(*) as campaigncount FROM dialedlist WHERE campaignid = '$campaignid' GROUP BY campaignresult ORDER BY campaigncount DESC";
 	$res = $db->query($query);
 	while ($res->fetchInto($row)) {
-		echo '<tr><td>'.$row['campaignresult'].'</td><td>'.$row['campaigncount'].'</td></tr>';
+		echo '<tr><td>'.$row['campaignresult'].'</td><td>'.$row['campaigncount'].'</td><td><a href="campaignreport.php?category=campaignresult&campaignid='.$campaignid.'&campaignresult='.$row['campaignresult'].'"  target="_blank">Detail</a></td></tr>';
 		$total += $row['campaigncount'];
 	}
 	echo '<tr><td>Total:</td><td>'.$total.'</td></tr>';
@@ -72,6 +72,29 @@ if ($category == "call_result_analysis"){
 	while ($res->fetchInto($row)) {
 		echo '<tr><td>'.$row['creby'].'</td><td>'.$row['crebycount'].'</td></tr>';
 		$total += $row['crebycount'];
+	}
+	echo '<tr><td>Total:</td><td>'.$total.'</td></tr>';
+}else if ($category == "campaignresult"){
+	$campaignresult = $_REQUEST['campaignresult'];
+	echo '<tr><th colspan=2>Campaignresult Detail</tr>';
+	echo '<tr><th>Creby</th><th>Count</th></tr>';
+
+	$query = "SELECT resultby, COUNT(*) as resultbycount FROM dialedlist WHERE campaignresult = '$campaignresult' GROUP BY resultby";
+	$res = $db->query($query);
+	while ($res->fetchInto($row)) {
+		echo '<tr><td>'.$row['resultby'].'</td><td>'.$row['resultbycount'].'</td></tr>';
+		$total += $row['resultbycount'];
+	}
+	echo '<tr><td>Total:</td><td>'.$total.'</td></tr>';
+}else if($category == "agents"){
+	echo '<tr><th colspan=2>Agents</tr>';
+	echo '<tr><th>Resultby</th><th>Duration</th></tr>';
+
+	$query = "SELECT SUM(duration) as duration, resultby FROM dialedlist WHERE campaignresult = '$campaignresult' GROUP BY resultby";
+	$res = $db->query($query);
+	while ($res->fetchInto($row)) {
+		echo '<tr><td>'.$row['resultby'].'</td><td>'.$row['duration'].'</td></tr>';
+		$total += $row['duration'];
 	}
 	echo '<tr><td>Total:</td><td>'.$total.'</td></tr>';
 }

@@ -362,7 +362,7 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 	$query = "";
 
 	foreach($arrData as $arrRow){
-		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid);
+		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$campaignid);
 		
 		$strSql = $arrRes['strSql'];					//得到插入选择表的sql语句
 
@@ -413,7 +413,7 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 }
 
 //循环列数据，得到sql
-function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid){
+function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$campaignid){
 	$fieldName = '';
 	$strData = '';
 
@@ -447,7 +447,11 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
 	$strData = substr($strData,0,strlen($strData)-1);
 	if ($fieldName != ""){
-		$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$groupid.")";
+		if ($tableName == "diallist"){
+			$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid,campaignid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', '".$groupid."','".$campaignid."')";
+		}else{
+			$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$groupid.")";
+		}
 	}
 	//print $strSql;
 	//exit;
