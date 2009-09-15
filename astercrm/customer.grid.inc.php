@@ -165,7 +165,7 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
+	function getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,$type = ''){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
@@ -179,11 +179,14 @@ class Customer extends astercrm
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql .= " AND ".$joinstr."  "
-					." ORDER BY ".$order
-					." ".$_SESSION['ordering']
-					." LIMIT $start, $limit $ordering";
+			$sql .= " AND ".$joinstr."  ";
+			if($type == ''){
+				$sql .= " ORDER BY ".$order
+				." ".$_SESSION['ordering']
+				." LIMIT $start, $limit $ordering";
+			}
 		}
+		//echo $sql;exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;

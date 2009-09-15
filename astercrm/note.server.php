@@ -192,6 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->deleteFlag = '1';
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 	$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	while ($arreglo->fetchInto($row)) {
@@ -221,17 +222,23 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
+	$optionFlag = $searchFormValue['optionFlag'];
 	$exportFlag = $searchFormValue['exportFlag'];
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	$searchType =  $searchFormValue['searchType'];
-	if($exportFlag == "1"){
+	if($optionFlag == "export"){
 		$sql =& Customer::getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
 		//$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addAssign("maintable", "value", "note");//传递主表名，防止groupid等字段在各表中重复
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
+	}elseif($optionFlag == "delete"){
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'note');
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",'');
+		$objResponse->addClear("msgZone", "innerHTML");
+		$objResponse->addAssign($divName, "innerHTML", $html);
 	}else{
 		if($type == "delete"){
 		$res = Customer::deleteRecord($id,'note');
