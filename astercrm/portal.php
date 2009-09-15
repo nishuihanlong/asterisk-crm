@@ -179,6 +179,7 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function monitor(){
+			//alert(xajax.$('chkMonitor').value);
 			callerChannel = xajax.$('callerChannel').value.toUpperCase();
 			if (callerChannel.indexOf("Local") < 0 && callerChannel.indexOf("LOCAL") < 0)
 				channel = xajax.$('callerChannel').value;
@@ -219,7 +220,6 @@ $clientDst = $_REQUEST['clientdst'];
 			xajax_init();
 			updateEvents();
 			xajax_checkworkexten();
-
 			//make div draggable
 			dragresize.apply(document);
 //			xajax.loadingFunction = showProcessingMessage;

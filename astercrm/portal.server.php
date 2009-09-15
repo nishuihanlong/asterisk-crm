@@ -248,13 +248,13 @@ function init(){
 		$objResponse->addAssign("chkMonitor","checked", 'true');
 		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
 		$objResponse->addAssign("btnMonitor","disabled", 'true');
-		
 	}
 	//if enabled monitor by astercctools
 	Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
 
 	if ($asterccConfig['system']['force_record'] == 1 ) {
-		$objResponse->addAssign("chkMonitor","checked", 'false');
+//		echo $asterccConfig['system']['force_record'];exit;
+		$objResponse->addAssign("chkMonitor","checked", false);
 		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
 		$objResponse->addAssign("btnMonitor","disabled", 'true');
 	}
@@ -360,6 +360,7 @@ function incomingCalls($myValue){
 			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 			astercrm::events($myValue['chkMonitor'].'-chkMonitor');
 			astercrm::events($myValue['btnMonitorStatus'].'-btnMonitorStatus');
+			//echo $myValue['chkMonitor'];exit;
 			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'idle') 
 				$objResponse->addScript("monitor();");			
 			$objResponse->addAssign("btnHangup","disabled", false );
