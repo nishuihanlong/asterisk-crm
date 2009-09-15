@@ -50,7 +50,22 @@ require_once('queuestatus.common.php');
 			}
 		//-->
 		</SCRIPT>
-
+<style>
+.groups_queue table{
+padding:3px;
+margin:0 auto;
+}
+.groups_queue table th{
+	background-color:#F6F2ED;
+	border-top: 1px solid #EDE0CE;
+	border-bottom: 1px solid #EDE0CE;
+	color:#A88E68;
+	text-align:right;
+	height:26px;
+	line-height:26px;
+	
+}
+</style>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
@@ -64,7 +79,7 @@ require_once('queuestatus.common.php');
 		<br>
 		<br>
 		<div id="divStatus" align="center"></div>
-		<br>
+		<div id="channels" align="left" class="groupsystem_channel"></div>
 		<div id="divCopyright"></div>
 		<input type="hidden" id="check_interval" name="check_interval" value="2000">
 	</body>

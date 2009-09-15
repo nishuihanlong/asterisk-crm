@@ -70,30 +70,37 @@ function showStatus(){
 		$query = "SELECT * FROM queue_name";
 	}else{
 		// display queue in campaign for group
-		$query = "SELECT campaign.groupid, queue_name.* FROM campaign LEFT JOIN queue_name ON queue_name.queuename = campaign.queuename WHERE campaign.groupid = ".$_SESSION['curuser']['groupid'];
+		$query = "SELECT campaign.groupid, queue_name.* FROM queue_name LEFT JOIN campaign ON queue_name.queuename = campaign.queuename WHERE campaign.groupid = ".$_SESSION['curuser']['groupid'];
 	}
 	$res = $db->query($query);
-	$html = "";
+	$html = '<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="95%"><tbody>';
 	while ($res->fetchInto($row)) {
 		//"<li></li>"
-		$html .= "<div>".$row['data']."</div>";
+		$html .= '<tr><th colspan="2">'.$row['data'].'</th></tr>';
+		$html .= '<tr><td width="65%"><b>'.'Members'.'</b></td><td><b>Waiting customer</b></td></tr>';
 		$query = "SELECT * FROM queue_agent WHERE queuename = '".$row['queuename']."' ";
 		$res_agent = $db->query($query);
-		$html .="<div>";
+		$html .='<tr><td align="left">';
+		$html .='<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="90%"><tbody>';
 		while ($res_agent->fetchInto($row_agent)) {
-			$html .= "<li>".$row_agent['data']."<button>Spy</button><button>Whisper</button><button>Logoff</button></li>";
-		}
-		$html .="</div>";
+			$html .='<tr><td>'.$row_agent['data'].'&nbsp;&nbsp;';
+			//if(strstr($row_agent['agent'],'Agent')){
+			//	$html .= '<input type="button" value="Logoff" onclick="agentLogoff()">';
+			//}
+			$html .= '</td></tr>';
+		}//<button>Spy</button><button>Whisper</button>
+		$html .='</tbody></table></td><td>';
 		$query = "SELECT * FROM queue_caller WHERE queuename = '".$row['queuename']."' ";
 		$res_caller = $db->query($query);
-		$html .="<div>";
+		$html .='<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="90%"><tbody>';
 		while ($res_caller->fetchInto($row_caller)) {
-			$html .= "<li>".$row_caller['data']."</li>";
+			$html .= "<tr><td>".$row_caller['data']."</td></tr>";
 		}
-		$html .="</div>";
+		$html .="</tbody></table></td></tr>";
 		
 	}
-	$objResponse->addAssign("divStatus","innerHTML",$html);
+	$html .= '</tbody></table>';//echo $html;exit;
+	$objResponse->addAssign("channels","innerHTML",$html);
 	return $objResponse;
 }
 
