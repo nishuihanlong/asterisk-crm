@@ -362,6 +362,7 @@ CREATE TABLE `curcdr` (
   `creditlimit` double(24,4) NOT NULL default '0.0000',
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
+  `monitored` enum('yes','no') NOT NULL default 'no',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`didnumber`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

@@ -19,6 +19,7 @@ alter table `dialedlist` add `creby` varchar(30) not null default '';
 alter table campaign add recyletime  int(11) not null default '3600' after `maxtrytime`;
 alter table campaign add minduration  int(11) not null default '0' after `recyletime`;
 
+alter table curcdr add monitored enum('yes','no') not null default 'no' ;
 
 DROP TABLE IF EXISTS `meetmes`;
 
