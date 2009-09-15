@@ -6,6 +6,8 @@ new features in 0.06
 	added survye <-> campaign connection
 	popup survey directly when only one survey enabled
 	added surveyresult.agi, can be used to update survey when use AMD
+	added new parameters which is used to control cdr data (in table mycdr)
+	allow add customer name or add customer connection when import diallist, also added diallist popup
 
 0.06 新功能
 	增强了问卷报表导出功能
@@ -16,7 +18,8 @@ new features in 0.06
 	增加了问卷和拨号计划的对应关系
 	当只存在一个可用的问卷时 自动跳出问卷内容
 	增加了surveyresult.agi, 用于当使用AMD时 自动更新问卷结果
-
+	增加了两个参数 用于控制通话记录表(mycdr)数据
+	允许在拨号列表中对应客户或者增加客户姓名 同时增加了拨号列表弹屏
 
 astercrm features(0.06)
 

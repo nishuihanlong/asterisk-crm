@@ -29,7 +29,7 @@ $category = trim(strtolower($_REQUEST['category']));
 <table border="0" width="600">
 <tr><td>
 <?
-error_reporting(E_ALL);
+#error_reporting(E_ALL);
 #error_reporting(0);
 global $db;
 
