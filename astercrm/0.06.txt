@@ -8,6 +8,8 @@ new features in 0.06
 	added surveyresult.agi, can be used to update survey when use AMD
 	added new parameters which is used to control cdr data (in table mycdr)
 	allow add customer name or add customer connection when import diallist, also added diallist popup
+	monitor features was moved to daemon astercc
+	add queuestatus page, to display realtime queue status
 
 0.06 新功能
 	增强了问卷报表导出功能
@@ -20,6 +22,8 @@ new features in 0.06
 	增加了surveyresult.agi, 用于当使用AMD时 自动更新问卷结果
 	增加了两个参数 用于控制通话记录表(mycdr)数据
 	允许在拨号列表中对应客户或者增加客户姓名 同时增加了拨号列表弹屏
+	将进程录音功能放到astercc中
+	增加了queuestatus页面 显示系统队列信息
 
 astercrm features(0.06)
 
