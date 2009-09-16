@@ -125,6 +125,11 @@ function initIni(){
 	$objResponse->addAssign("iptSysExternalCrmUrl","value",$config["system"]["external_crm_url"]);
 
 	$objResponse->addAssign("iptSysUploadFilePath","value",$config["system"]["upload_file_path"]);
+	
+	$objResponse->addAssign("iptEnable_surveynote","value",$config["survey"]["enable_surveynote"]);
+	$objResponse->addAssign("iptClose_popup_after_survey","value",$config["survey"]["close_popup_after_survey"]);
+
+	$objResponse->addAssign("iptPopup_diallist","value",$config["diallist"]["popup_diallist"]);
 
 	$objResponse->addAssign("iptGooglemapkey","value",$config["google-map"]["key"]);
 
@@ -226,6 +231,10 @@ function initLocate(){
 
 	$objResponse->addAssign("divSysUploadFilePath","innerHTML",$locate->Translate('sys_upload_file_path'));
 	
+	$objResponse->addAssign("divEnable_surveynote","innerHTML",$locate->Translate('enable_surveynote'));
+	$objResponse->addAssign("divClose_popup_after_survey","innerHTML",$locate->Translate('close_popup_after_survey'));
+	$objResponse->addAssign("divPopup_diallist","innerHTML",$locate->Translate('popup_diallist'));
+	
 	return $objResponse;
 }
 
@@ -280,6 +289,9 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
+	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
+	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];
+	$myPreferences['diallist']['popup_diallist'] = $aFormValues['iptPopup_diallist'];
 	$myPreferences['google-map']['key'] = $aFormValues['iptGooglemapkey'];
 	if (Common::write_ini_file("astercrm.conf.php",$myPreferences) >0)
 		$objResponse->addAlert($locate->Translate('save_success'));

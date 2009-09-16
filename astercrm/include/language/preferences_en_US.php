@@ -48,4 +48,7 @@ $astercc_conf_non		= 'astercc.conf is not exists in specified directory:';
 $astercc_non		= 'astercc daemon is not exists in specified directory:';
 $status_check_interval	= 'time intervals of update event in pages';
 $smart_match_remove	= 'how many digits end of callerid remove when incoming call smart matching, disabled if set it to 0';
+$enable_surveynote = "if need a note after survey option";
+$close_popup_after_survey = "if need close all popups after survey saved";
+$popup_diallist = "if popup customer infomation in diallist";
 ?>

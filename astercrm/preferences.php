@@ -568,6 +568,72 @@ require_once('preferences.common.php');
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>
+    <td height="39" class="td font" id="survey" name="survey"  align="left">
+		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Survey');?>
+      <input type="button" onclick="display('menu5')"  value="+"/>
+    </td>
+  </tr>
+  <tr>
+    <td height="10" class="td"></td>
+  </tr>
+</table>
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu5" width="780">
+  <tr >
+    <td width="230" align="left" valign="top" id="enable_surveynote" name="enable_surveynote">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_surveynote</td>
+    <td width="200" align="left" valign="top" >
+		
+		<select name="iptEnable_surveynote" id="iptEnable_surveynote">
+          <option value="0">0</option>
+          <option value="1">1</option>
+        </select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divEnable_surveynote" name="divEnable_surveynote">&nbsp;</div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top" id="close_popup_after_survey" name="close_popup_after_survey">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close_popup_after_survey</td>
+    <td width="200" align="left" valign="top" >
+		<select name="iptClose_popup_after_survey" id="iptClose_popup_after_survey">
+          <option value="0">0</option>
+          <option value="1">1</option>
+        </select>
+		</td>
+    <td align="left" valign="top" >
+		<div id="divClose_popup_after_survey" name="divClose_popup_after_survey">&nbsp;</div>
+	</td>
+  </tr>
+</table>
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+  <tr>
+    <td height="39" class="td font" id="diallist" name="diallist"  align="left">
+		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Diallist');?>
+      <input type="button" onclick="display('menu6')"  value="+"/>
+    </td>
+  </tr>
+  <tr>
+    <td height="10" class="td"></td>
+  </tr>
+</table>
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" id="menu6" width="780">
+  <tr>
+    <td width="230" align="left" valign="top" id="popup_diallist" name="popup_diallist">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;popup_diallist</td>
+    <td width="200" align="left" valign="top" >
+		<select name="iptPopup_diallist" id="iptPopup_diallist">
+          <option value="0">0</option>
+          <option value="1">1</option>
+        </select>
+		</td>
+    <td align="left" valign="top" >
+		<div id="divPopup_diallist" name="divPopup_diallist">&nbsp;</div>
+	</td>
+  </tr>
+</table>
+<table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
+  <tr>
     <td height="39" class="td font" id="others" name="others"  align="left">
 		&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('Others');?>
       <input type="button" onclick="display('menu4')"  value="+"/>
