@@ -77,19 +77,55 @@ function showStatus(){
 	while ($res->fetchInto($row)) {
 		//"<li></li>"
 		$html .= '<tr><th colspan="2">'.$row['data'].'</th></tr>';
-		$html .= '<tr><td width="65%"><b>'.'Members'.'</b></td><td><b>Waiting customer</b></td></tr>';
-		$query = "SELECT * FROM queue_agent WHERE queuename = '".$row['queuename']."' ";
+		$html .= '<tr><td width="70%"><b>'.'Members'.'</b></td><td><b>Waiting callers</b></td></tr>';
+		$query = "SELECT * FROM queue_agent WHERE queuename = '".$row['queuename']."' ORDER BY agent ASC";
 		$res_agent = $db->query($query);
-		$html .='<tr><td align="left">';
-		$html .='<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="90%"><tbody>';
+		$html .='<tr><td valign="top">';
+		$html .='<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="95%"><tbody>';
 		while ($res_agent->fetchInto($row_agent)) {
-			$html .='<tr><td>'.$row_agent['data'].'&nbsp;&nbsp;';
-			//if(strstr($row_agent['agent'],'Agent')){
-			//	$html .= '<input type="button" value="Logoff" onclick="agentLogoff()">';
-			//}
+			$logoffBtn = '';
+			$able = 'disabled';	
+			$html .='<tr><td>';
+			if(strstr(strtoupper($row_agent['agent']),'AGENT')){
+				$agent = substr($row_agent['agent'],6);
+				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="Logoff" onclick="xajax_agentLogoff('.$agent.')"';
+				if($row_agent['status'] == 'Unavailable' || $row_agent['status'] == 'Invalid'){
+					$logoffBtn .= 'disabled';
+				}
+				$logoffBtn .= '>';
+				if($row_agent['status'] == 'Busy'){
+					$query = "SELECT * FROM curcdr WHERE dstchan = '".strtoupper($row_agent['agent'])."'";
+					if($agent_cdr = $db->getRow($query)){
+						$srcchan = $agent_cdr['srcchan'];
+					}
+					$able = '';
+					$query = "SELECT * FROM astercrm_account WHERE agent = '$agent'";
+					if($agent_exten = $db->getRow($query)){
+						$exten = $agent_exten['extension'];
+					}
+				}
+			}else{
+				if($row_agent['status'] == 'In use'){
+					$dstchan = explode('@',$row_agent['agent']);
+					$dstchan = $dstchan['0'];
+					$exten = explode('/',$dstchan);
+					$exten = $exten['1'];
+					$query = "SELECT * FROM curcdr WHERE dstchan LIKE  '".$dstchan."@%'";
+					if($agent_cdr = $db->getRow($query)){
+						$srcchan = $agent_cdr['srcchan'];
+					}
+					$able = '';
+				}
+			}
+			
+			$html .= '<input type="button" value="Spy" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\')" '.$able.'>';
+			$html .= '&nbsp;&nbsp;<input type="button" value="Whisper" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\',\'w\')" '.$able.'>';
+			$html .= '&nbsp;&nbsp;<input type="button" value="Hangup" onclick="xajax_hangup(\''.$srcchan.'\')" '.$able.'>';
+			$html .= $logoffBtn;
+			$html .= '&nbsp;&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';			
 			$html .= '</td></tr>';
 		}//<button>Spy</button><button>Whisper</button>
-		$html .='</tbody></table></td><td>';
+		$html .='</tbody></table></td><td valign="top">';
 		$query = "SELECT * FROM queue_caller WHERE queuename = '".$row['queuename']."' ";
 		$res_caller = $db->query($query);
 		$html .='<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="90%"><tbody>';
@@ -106,8 +142,6 @@ function showStatus(){
 
 
 function chanspy($exten,$spyexten,$pam = ''){
-	//print $spyexten;
-	//exit;
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
@@ -118,7 +152,6 @@ function chanspy($exten,$spyexten,$pam = ''){
 		return;
 	}
 	$myAsterisk->chanSpy($exten,"SIP/".$spyexten,$pam);
-	//$objResponse->addAlert($spyexten);
 	return $objResponse;
 
 }
@@ -138,6 +171,22 @@ function hangup($channel){
 	$myAsterisk->Hangup($channel);
 	return $objResponse;
 }
+
+
+function agentLogoff($agent){
+	global $locate,$config;
+
+	$myAsterisk = new Asterisk();	
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+	$res = $myAsterisk->agentLogoff($agent);
+	$objResponse = new xajaxResponse();
+	return $objResponse;
+}
+
 
 $xajax->processRequests();
 ?>

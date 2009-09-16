@@ -204,5 +204,14 @@ $channel,
 		return ;
 	}
 
+	function agentLogoff($agent = ''){
+		if($agent == '') return;
+		$req = "Action: AgentLogoff\r\n";
+		$req .= "Agent: $agent\r\n";
+		$req .= "\r\n";
+		fwrite($this->socket, $req);
+		return ;
+	}
+
 }
 ?>

@@ -57,7 +57,7 @@ $xajax->waitCursorOff();
 $xajax->registerFunction("init");
 $xajax->registerFunction("showStatus");
 $xajax->registerFunction("chanspy");
-$xajax->registerFunction("agentlogoff");
+$xajax->registerFunction("agentLogoff");
 $xajax->registerFunction("hangup");
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.
