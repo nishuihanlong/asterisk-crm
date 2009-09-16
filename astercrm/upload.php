@@ -45,8 +45,8 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 			{
 				$upload_msg = $locate->Translate('failed');  //失败提示
 			}else{
-				$sql = "INSERT INTO uploadfile SET filename = '$file_name',originalname='$original_name',cretime=now(),creby='".$_SESSION['curuser']['username']."',groupid='".$_SESSION['curuser']['groupid']."' type='astercrm'";
-				
+				$sql = "INSERT INTO uploadfile SET filename = '$file_name',originalname='$original_name',cretime=now(),creby='".$_SESSION['curuser']['username']."',groupid='".$_SESSION['curuser']['groupid']."', type='astercrm'";
+
 				$res = $db->query($sql);
 			}
 		}else {
