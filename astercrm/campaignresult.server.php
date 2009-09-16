@@ -120,7 +120,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			}
 		}
 		if($flag != "1" || $flag2 != "1"){  //无值
-			$order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1){
@@ -153,7 +152,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Databse Table: fields
 	$fields = array();
 	$fields[] = 'id';
-	$fields[] = 'resultnname';
+	$fields[] = 'resultname';
 	$fields[] = 'resultnote';
 	$fields[] = 'status';
 	$fields[] = 'parentresult';
@@ -204,8 +203,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
-	$fieldsFromSearch[] = 'resultnname';
-	$fieldsFromSearch[] = 'resultnote';
+	$fieldsFromSearch[] = 'campaignresult.resultname';
+	$fieldsFromSearch[] = 'campaignresult.resultnote';
 	$fieldsFromSearch[] = 'campaignresult.status';
 	$fieldsFromSearch[] = 'presult.resultname';
 	$fieldsFromSearch[] = 'groupname';
@@ -230,6 +229,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->ordering = $ordering;
 	$table->addRowSearchMore("campaignresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -386,9 +386,21 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];
+	$ordering = $searchFormValue['ordering'];
+	$order = $searchFormValue['order'];
 	$divName = "grid";
 	if($optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'campaign'); //得到要导出的sql语句
+		$fields = array();
+		$fields[] = 'campaignresult.id';
+		$fields[] = 'campaignresult.resultname';
+		$fields[] = 'campaignresult.resultnote';
+		$fields[] = 'campaignresult.status';
+		$fields[] = 'presult.resultname AS parentresult';
+		$fields[] = 'groupname';
+		$fields[] = 'campaignname';
+
+		$sql = & Customer::getRecordsFilteredMorewithstype('','', $searchField, $searchContent, $searchType,$order,$table,$fields,'export'); //得到要导出的sql语句
+
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
@@ -396,7 +408,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$res = Customer::deleteRecord($id,'campaignresult');
 		
 		if ($res){
-			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName,$ordering,$searchType);
 			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 			$objResponse->addAssign($divName, "innerHTML", $html);
@@ -404,7 +416,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$searchType);
+		$html = createGrid($numRows, $limit,$searchField, $searchContent,$order, $divName, $ordering,$searchType);
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}

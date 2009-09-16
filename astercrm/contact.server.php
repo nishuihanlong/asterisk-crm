@@ -101,7 +101,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			}
 		}
 		if($flag != "1" || $flag2 != "1"){  //无值
-			$order = null;
+			if(is_array($order) || $order == '') $order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1){
@@ -175,6 +175,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","gender","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","position","'.$divName.'","ORDERING");return false;\'';
@@ -212,6 +213,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->deleteFlag = '1';
+	$table->ordering = $ordering;
 	$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -270,6 +272,8 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];
+	$ordering = $searchFormValue['ordering'];
+	$order = $searchFormValue['order'];
 	$divName = "grid";
 	if($optionFlag == "export"){
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'contact'); //得到要导出的sql语句
@@ -286,14 +290,14 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'contact');
 			if ($res){
-				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
+				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,$searchType);
 				$objResponse = new xajaxResponse();
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 			}else{
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 			}
 		}else{
-			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",$searchType);
+			$html = createGrid($numRows, $limit,$searchField, $searchContent, $order, $divName, $ordering,$searchType);
 		}
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);

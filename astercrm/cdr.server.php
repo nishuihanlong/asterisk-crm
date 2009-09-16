@@ -87,7 +87,6 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 				}
 			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
-				$order = null;
 				$numRows =& Customer::getCdrNumRows($customerid,$cdrtype);
 				$arreglo =& Customer::getAllCdrRecords($customerid,$cdrtype,$start,$limit,$order);
 			}elseif($flag3 != 1 ){  //未选择搜索方式
@@ -159,6 +158,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 
 		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 		$eventHeader = array();
+//		$eventHeader[]= '';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -214,6 +214,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$table = new ScrollTable(9,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
+		$table->ordering = $ordering;
 		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
@@ -255,20 +256,22 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 		$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 		$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+		$ordering = $searchFormValue['ordering'];
+		$order = $searchFormValue['order'];
 		$divName = "grid";
 
 		//print_r($searchFormValue);exit;
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'account');
 			if ($res){
-				$html = createGrid('','',$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
+				$html = createGrid('','',$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,$searchType);
 				$objResponse = new xajaxResponse();
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 			}else{
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 			}
 		}else{
-			$html .= createGrid('','',$numRows, $limit,$searchField, $searchContent,  $order, $divName, "",$searchType);
+			$html .= createGrid('','',$numRows, $limit,$searchField, $searchContent,  $order, $divName,$ordering,$searchType);
 		}
 
 		$objResponse->addClear("msgZone", "innerHTML");

@@ -134,7 +134,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		}
 
 		if($flag != "1" || $flag2 != "1"){  //无值
-			$order = null;
+			if(is_array($order) || $order == '') $order = null;
 			$numRows =& Customer::getNumRows();
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1){
@@ -258,6 +258,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
+	$table->ordering = $ordering;
 	$table->addRowSearchMore("surveyresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -330,6 +331,8 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$divName = "grid";
 	$searchType =  $searchFormValue['searchType'];
+	$ordering = $searchFormValue['ordering'];
+	$order = $searchFormValue['order'];
 	if($exportFlag == "1" || $optionFlag == "export"){
 		// 需要特殊处理
 
@@ -341,21 +344,21 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'surveyresult');
-		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,'');
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','',$order,$divName,$ordering,1,1,'');
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'surveyresult');
 			if ($res){
-				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "","",$searchType);
+				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,"",$searchType);
 				$objResponse = new xajaxResponse();
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 			}else{
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 			}
 		}else{
-			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "","",$searchType);
+			$html = createGrid($numRows, $limit,$searchField, $searchContent, $order, $divName, $ordering,"",$searchType);
 		}
 		$objResponse = new xajaxResponse();
 		$objResponse->addClear("msgZone", "innerHTML");

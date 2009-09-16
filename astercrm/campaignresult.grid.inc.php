@@ -230,12 +230,22 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
+	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,$fields='',$option=''){
 		global $db;
+		$fieldstr = '';
+		if(is_array($fields)){
+			foreach($fields as $field){
+				$fieldstr .= ' '.$field.',';
+			}
+		}
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaign");
-
-		$sql = "SELECT campaignresult.*, groupname, campaign.campaignname AS campaignname,presult.resultname AS parentresult FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid  LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid WHERE ";
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"campaignresult");
+		if($fieldstr != ''){
+			$fieldstr = rtrim($fieldstr,',');
+			$sql = "SELECT $fieldstr FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid  LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid WHERE ";
+		}else{
+			$sql = "SELECT campaignresult.*, groupname, campaign.campaignname AS campaignname,presult.resultname AS parentresult FROM campaignresult LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaignresult.groupid LEFT JOIN campaign ON campaign.id = campaignresult.campaignid  LEFT JOIN campaignresult AS presult ON presult.id = campaignresult.parentid WHERE ";
+		}
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -244,12 +254,16 @@ class Customer extends astercrm
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
-			$sql .= " AND ".$joinstr."  "
-					." ORDER BY ".$order
+			$sql .= " AND ".$joinstr."  ";					
+		}
+		if($option == ''){
+			$sql .= " ORDER BY ".$order
 					." ".$_SESSION['ordering']
 					." LIMIT $start, $limit $ordering";
+		}elseif($option == 'export'){
+			return $sql;
 		}
-//echo $sql;exit;
+
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		return $res;

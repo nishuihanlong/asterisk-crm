@@ -76,7 +76,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 				}
 			}
 			if($flag != "1" || $flag2 != "1" ){  //无值	
-				$order = null;
+				if(is_array($order) || $order == '') $order = null;
 				$numRows =& astercrm::getRecNumRows($customerid);
 				$arreglo =& astercrm::getAllRecRecords($customerid,$start,$limit,$order);
 			}elseif($flag3 != 1 ){  //未选择搜索方式
@@ -189,6 +189,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,'','','monitorrecord');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
+		$table->ordering = $ordering;
 		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
@@ -229,6 +230,8 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+	$ordering = $searchFormValue['ordering'];
+	$order = $searchFormValue['order'];
 	$divName = "grid";
 
 	if($type == "delete"){
@@ -241,7 +244,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html .= createGrid($customerid,$numRows, $limit,$searchField, $searchContent, $searchField[count($searchField)-1], $divName, "",$searchType);
+		$html .= createGrid($customerid,$numRows, $limit,$searchField, $searchContent, $order, $divName, $ordering,$searchType);
 	}
 	$html .= Table::Footer();
 	$objResponse->addClear("msgZone", "innerHTML");

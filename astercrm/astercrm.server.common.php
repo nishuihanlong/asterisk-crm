@@ -587,7 +587,6 @@ function addDiallist($userexten = '' ,$customerid = ''){
 }
 
 function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-	
 	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");

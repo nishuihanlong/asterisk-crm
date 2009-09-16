@@ -122,7 +122,11 @@ function showStatus(){
 			$html .= '&nbsp;&nbsp;<input type="button" value="Whisper" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\',\'w\')" '.$able.'>';
 			$html .= '&nbsp;&nbsp;<input type="button" value="Hangup" onclick="xajax_hangup(\''.$srcchan.'\')" '.$able.'>';
 			$html .= $logoffBtn;
-			$html .= '&nbsp;&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';			
+			if($row_agent['status'] == 'In use' || $row_agent['status'] == 'Not in use' || $row_agent['status'] == 'Busy'){
+				$html .= '&nbsp;&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';
+			}else{
+				$html .= '&nbsp;&nbsp;<span style="color:#999999;">'.$row_agent['data'].'</span>&nbsp;&nbsp;';
+			}
 			$html .= '</td></tr>';
 		}//<button>Spy</button><button>Whisper</button>
 		$html .='</tbody></table></td><td valign="top">';

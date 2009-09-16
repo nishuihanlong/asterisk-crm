@@ -114,6 +114,8 @@ class ScrollTable{
 	 */
 	var $order;
 
+	var $ordering;
+
 	var $exportFlag;
 
 
@@ -401,6 +403,7 @@ class ScrollTable{
 		$ind_type = 0;
 		$ind_typeselected = 0;
 		$ind_selected = 0;
+
 		if ($table == 'mycdr' && $this->customerid !=''){
 			$this->search = '
 		    <form action="javascript:void(null);" name="searchCdrForm" id="searchCdrForm" onSubmit="xajax_searchCdrFormSubmit(xajax.getFormValues(\'searchCdrForm\'),0,5);">
@@ -408,6 +411,8 @@ class ScrollTable{
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
 			<input type="hidden" name="cdrtype" id="cdrtype" value="'.$this->cdrtype.'"/>
+			<input type="hidden" name="ordering" id="ordering" value="'.$this->ordering.'"/>
+			<input type="hidden" name="order" id="order" value="'.$this->order.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
 			
 			<tr>
@@ -419,6 +424,8 @@ class ScrollTable{
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<input type="hidden" name="userexten" id="userexten" value="'.$this->userexten.'"/>
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
+			<input type="hidden" name="ordering" id="ordering" value="'.$this->ordering.'"/>
+			<input type="hidden" name="order" id="order" value="'.$this->order.'"/>
 			<table width="99%" border="0" style="line-height:30px;">			
 			<tr>
 				<td align="left" width="10%">';
@@ -431,6 +438,8 @@ class ScrollTable{
 			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
 			<input type="hidden" name="customerid" id="customerid" value="'.$this->customerid.'"/>
+			<input type="hidden" name="ordering" id="ordering" value="'.$this->ordering.'"/>
+			<input type="hidden" name="order" id="order" value="'.$this->order.'"/>
 			<table width="99%" border="0" style="line-height:30px;">
 			<tr>
 				<td align="left">';
@@ -439,6 +448,8 @@ class ScrollTable{
 				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,'.$this->numRowsToShow.');">
 				<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
 				<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
+				<input type="hidden" name="ordering" id="ordering" value="'.$this->ordering.'"/>
+				<input type="hidden" name="order" id="order" value="'.$this->order.'"/>
 				<table width="99%" border="0" style="line-height:30px;">
 
 				<tr>
@@ -450,7 +461,7 @@ class ScrollTable{
 				$this->search .= '&nbsp;&nbsp;<input type="button" id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'delGrid\'),xajax.getFormValues(\'searchForm\'));}return false;" value="'.$local_grid->Translate("delete").'">';
 			}			
 		}
-		
+
 		$this->search .= '
 				</td>
 				<td> '.$local_grid->Translate("table").': ';
