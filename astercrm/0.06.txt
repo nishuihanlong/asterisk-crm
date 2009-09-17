@@ -10,6 +10,7 @@ new features in 0.06
 	allow add customer name or add customer connection when import diallist, also added diallist popup
 	monitor features was moved to daemon astercc
 	add queuestatus page, to display realtime queue status
+	fixed the bug that sort only work in the first page
 
 0.06 新功能
 	增强了问卷报表导出功能
@@ -24,6 +25,7 @@ new features in 0.06
 	允许在拨号列表中对应客户或者增加客户姓名 同时增加了拨号列表弹屏
 	将进程录音功能放到astercc中
 	增加了queuestatus页面 显示系统队列信息
+	修正了翻页后排序失效的bug
 
 astercrm features(0.06)
 
@@ -105,4 +107,5 @@ astercrm features(0.06)
 	astercrm workwith asterbilling simplely
 	supoort delete a uploaded file
 	agent break function
+	realtime queue status 
 	reload or restart asterisk in web
