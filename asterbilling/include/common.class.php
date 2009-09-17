@@ -54,7 +54,7 @@ class Common{
 					<tr>
 						<td>
 							©2009 astercc - <a href="http://www.astercc.org" target="_blank">asterbilling home</a><br>
-							version: 0.099 in asterCC 0.12
+							version: 0.1 in asterCC 0.13b
 						</td>
 					</tr>
 					</table>
