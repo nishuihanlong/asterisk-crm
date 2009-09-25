@@ -18,4 +18,7 @@ $cdr = "通话记录";
 $monitorrecords = "录音记录";
 $speeddial = "速拨号码";
 $report = "报告";
+$queue_status "队列状态";
+$campaign_result "拨号结果";
 ?>
+

@@ -28,4 +28,13 @@ $server_name = "服务器名称";
 $worktime_packages = "工作时间范围";
 $worktime_package = "工作时间范围";
 $waitting_time = "拨号等待时间";
+$recyle_time = "自动回收时间";
+$min_duration = "回收最短通话时间";
+$add_campaign_result = "添加拨号结果";
+$result_name = "结果名称";
+$result_note = "结果说明";
+$answered = "应答";
+$noanswer = "未应答";
+$parent_result_name = "上级结果";
+$none = "无";
 ?>

@@ -169,6 +169,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fieldsFromSearch = array();
 		$fieldsFromSearch[] = 'src';
 		$fieldsFromSearch[] = 'calldate';
+		$fieldsFromSearch[] = 'extension';
 		$fieldsFromSearch[] = 'dst';
 		$fieldsFromSearch[] = 'didnumber';
 		$fieldsFromSearch[] = 'billsec';
@@ -179,6 +180,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fieldsFromSearchShowAs = array();
 		$fieldsFromSearchShowAs[] = $locate->Translate("src");
 		$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
+		$fieldsFromSearchShowAs[] = $locate->Translate("exten");
 		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
 		$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
 		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
