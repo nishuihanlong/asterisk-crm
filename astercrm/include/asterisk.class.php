@@ -212,6 +212,5 @@ $channel,
 		fwrite($this->socket, $req);
 		return ;
 	}
-
 }
 ?>

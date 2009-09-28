@@ -2402,24 +2402,36 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function getSql($searchContent,$searchField,$searchType=array(),$table){
+	function getSql($searchContent,$searchField,$searchType=array(),$table,$fields = ''){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
-
-		if ($joinstr!=''){
-			$joinstr=ltrim($joinstr,'AND');
-			$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
-			if($table == 'surveyresult'){
-				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarks FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid ".' LEFT JOIN campaign ON campaign.id = surveyresult.campaignid  WHERE '.$joinstr;
-			}
-		}else {
-			$query = 'SELECT * FROM '.$table.'';
-			if($table == 'surveyresult'){
-				$query = "SELECT customer.customer AS CustomerName,customer.Address ,customer.Zipcode ,customer.City ,customer.State ,customer.Country ,customer.Phone ,surveyresult.surveynote AS Remarks  FROM surveyresult LEFT JOIN customer ON customer.id = surveyresult.customerid LEFT JOIN contact ON contact.id = surveyresult.contactid LEFT JOIN survey ON survey.id = surveyresult.surveyid  LEFT JOIN campaign ON campaign.id = surveyresult.campaignid ";
+		$fieldstr = '';
+		if(is_array($fields)){
+			foreach($fields as $field){
+				$fieldstr .= " ".$field.",";
 			}
 		}
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND');
 
+			if($fieldstr != ''){
+				$fieldstr=rtrim($fieldstr,',');
+				$query = 'SELECT '.$fieldstr.' FROM '.$table.' WHERE '.$joinstr;
+			}else{
+				$query = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			}
+			
+		}else {
+
+			if($fieldstr != ''){
+				$fieldstr=rtrim($fieldstr,',');
+				$query = 'SELECT '.$fieldstr.' FROM '.$table.'';
+			}else{
+				$query = 'SELECT * FROM '.$table.'';
+			}			
+		}
+//echo $query;exit;
 		//if ($query != mb_convert_encoding($query,"UTF-8","UTF-8")){
 		//	$query='"'.mb_convert_encoding($query,"UTF-8","GB2312").'"';
 		//}

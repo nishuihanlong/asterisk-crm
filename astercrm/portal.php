@@ -480,7 +480,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="divUserMsg" name="divUserMsg"></div><br>
 
 		<div id="divHangup" name="divHangup">
-			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >
+			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" ><input id="clkPauseTime" name="clkPauseTime" type="hidden">
 			<span id="agentData"></span>
 			
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>

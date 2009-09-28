@@ -267,16 +267,19 @@ function init(){
 */
 function listenCalls($aFormValues){
 	global $config,$locate;
+	//print_r($aFormValues);exit;
 	$objResponse = new xajaxResponse();
 	if($_SESSION['curuser']['agent'] != ''){
 		$agentData = Customer::getAgentData();
-		$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
-		if($agentData['agent_status'] != 'paused'){
-			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
-			$objResponse->addAssign("breakStatus","value", 0);
-		}else{
-			$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
-			$objResponse->addAssign("breakStatus","value", 1);
+		if($agentData['cretime'] > $aFormValues['clkPauseTime']){
+			$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
+			if($agentData['agent_status'] != 'paused'){
+				$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
+				$objResponse->addAssign("breakStatus","value", 0);
+			}else{
+				$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
+				$objResponse->addAssign("breakStatus","value", 1);
+			}
 		}
 	}
 	if ($aFormValues['uniqueid'] == ''){
@@ -1418,7 +1421,7 @@ function queuePaused($paused){
 		$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
 		$objResponse->addAssign("breakStatus","value", $paused);
 	}
-
+	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
 	return $objResponse;
 }
 
