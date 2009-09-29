@@ -31,7 +31,7 @@ require_once ('include/xajaxGrid.inc.php');
 function init($get=''){
 	global $config,$locate;
 	$objResponse = new xajaxResponse();
-	
+
 	if($get != ''){
 		$get = rtrim($get,',');
 		$get = split(',',$get);

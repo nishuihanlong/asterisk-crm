@@ -419,7 +419,7 @@ function searchRate(){
 
 	</head>
 	<body onload="init();">
-		<div id="divTitle" name="divTitle" style="position:absolute;top:2px;height:80px;width:800px;"></div>
+		<div id="divTitle" name="divTitle" style="width: 800px; padding:5px 0;vertical-align:bottom;"></div>
 		<div id="divPanel" name="divPanel" class="divPanel" style="z-index:999;">
 			<ul id="nav">
 				<li><a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a></li>
@@ -428,7 +428,7 @@ function searchRate(){
 				<li><a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a></li>
 			</ul>
 		</div>
-		<div id="divMain" style="position:absolute;top:100px;">
+		<div id="divMain" style="clear:both; width:100%; border-top:#f1f1f1 solid 1px;">
 		<div id="divNav"></div>
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
 		

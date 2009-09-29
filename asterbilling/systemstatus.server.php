@@ -38,7 +38,7 @@ function init(){
 	if ( $group_row['grouplogo'] != '' && $group_row['grouplogostatus'] ){
 		$logoPath = $config['system']['upload_file_path'].'/callshoplogo/'.$group_row['grouplogo'];
 		if (is_file($logoPath)){
-			$titleHtml = '<img src="'.$logoPath.'" style="float:left;" width="80" height="80">';
+			$titleHtml = '<img src="'.$logoPath.'" style="float:left;" >';
 		}
 	}
 	if ( $group_row['grouptitle'] != ''){
@@ -48,7 +48,7 @@ function init(){
 		$titleHtml .= '<h2 style="padding: 0 0 0 0;position: relative;font-size: 11pt;color: #FJDSKB;">'.$group_row['grouptagline'].'</h2>';
 	}
 	if (isset($titleHtml)){
-		$titleHtml .= '<div style="position:absolute;top:85px;left:0px;width:800px"><hr color="#F1F1F1"></div>';
+		//$titleHtml .= '<div style="position:absolute;top:85px;left:0px;width:800px"><hr color="#F1F1F1"></div>';
 		$objResponse->addAssign("divTitle", "innerHTML", $titleHtml);
 	}else{
 		$objResponse->addAssign("divTitle", "style.height", '0px');
