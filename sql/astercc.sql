@@ -1201,6 +1201,7 @@ CREATE TABLE `queue_agent` (
   `queuename` varchar(32) NOT NULL default '',
   `agent` varchar(255) NOT NULL default '',
   `agent_status` varchar(32) NOT NULL default '',
+  `status` varchar(32) NOT NULL default '',
   `takencalls` int NOT NULL default 0,
   `lastcall` int NOT NULL default 0,
   `data` varchar(255) NOT NULL default '',

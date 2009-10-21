@@ -34,6 +34,7 @@ disallow = all
 allow = ulaw,alaw,g729,g723.1
 context = yourcontext
 dtmfmode=rfc2833
+qualify = yes
 
 [system]
 
