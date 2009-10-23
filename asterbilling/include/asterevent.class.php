@@ -684,7 +684,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			if(in_array($list['mdialprefix'],$allprefix)){
 
 				if($list['cgroupid'] != $gruopid && $list['cresellerid'] != $resellerid){
-					echo $list['cresellerid'].$groupid;
+					//echo $list['cresellerid'].$groupid;
 					continue;
 				}else{
 					foreach($allprefix as $key => $value){

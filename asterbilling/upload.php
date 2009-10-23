@@ -67,7 +67,7 @@ if ( isset($_POST['LogoUploadFlag']) && trim($_POST['LogoUploadFlag']) == '1' ){
 
 			if(!is_dir($filepath)){
 				
-				if(mkdir($filepath)){
+				if(!mkdir($filepath)){
 					echo "<script>alert('".$locate->Translate("Logo upload faild please check your upload directory")."');</script>";
 					exit;
 				}

@@ -269,8 +269,7 @@ function listenCalls($aFormValues){
 	global $config,$locate;
 	//print_r($aFormValues);exit;
 	$objResponse = new xajaxResponse();
-	if($_SESSION['curuser']['agent'] != ''){
-		$agentData = Customer::getAgentData();
+	if($agentData = Customer::getAgentData()){
 		if($agentData['cretime'] > $aFormValues['clkPauseTime']){
 			$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
 			if($agentData['agent_status'] != 'paused'){
@@ -281,6 +280,8 @@ function listenCalls($aFormValues){
 				$objResponse->addAssign("breakStatus","value", 1);
 			}
 		}
+	}else{
+		$objResponse->addAssign("spnPause","innerHTML", '' );
 	}
 	if ($aFormValues['uniqueid'] == ''){
 		$objResponse->loadXML(waitingCalls($aFormValues));

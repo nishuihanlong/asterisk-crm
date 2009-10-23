@@ -497,7 +497,7 @@ class Customer extends astercrm
 
 	function getAgentData(){
 		global $db;
-		$sql = "SELECT * From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."'";
+		$sql = "SELECT * From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."' OR agent LIKE 'Local/".$_SESSION['curuser']['extension']."@%'";
 		Customer::events($sql);
 		$res =& $db->getRow($sql);
 		return $res;

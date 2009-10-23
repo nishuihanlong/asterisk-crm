@@ -2034,7 +2034,11 @@ Class astercrm extends PEAR{
 		}
 		$memberextens = rtrim($memberextena.$memberextenb.$memberextenc.$memberextend,',');
 		$memberagents = rtrim($memberagents,',');
-		$query = "SELECT * FROM curcdr WHERE src in ($memberextens) OR dst in ($memberextens) OR dstchan in ($memberagents)";
+
+		$query = "SELECT * FROM curcdr WHERE src in ($memberextens) OR dst in ($memberextens)";
+		if($memberagents != ''){
+			$query .= " OR dstchan in ($memberagents)";
+		}
 		astercrm::events($query);
 		$row =& $db->query($query);
 		return $row;		
