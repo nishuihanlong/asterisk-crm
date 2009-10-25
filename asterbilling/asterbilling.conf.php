@@ -118,7 +118,7 @@ asterbilling_url =
 notify_mail = 
 
 [customers]
-enable = 1
+enable = 0
 dbtype = mysql
 dbhost = localhost
 dbname = astercc
