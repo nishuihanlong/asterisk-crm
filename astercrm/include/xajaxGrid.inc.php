@@ -152,6 +152,8 @@ class ScrollTable{
 			$this->setSpecFooter('diallist');//用于agent页面中customer信息页中的diallist页脚
 		}elseif ($table == 'monitorrecord' && $customerid!='') {
 			$this->setSpecFooter('monitorrecord');//用于agent页面中customer信息页中的monitorrecord页脚
+		}elseif($table == 'agents'){
+			//$this->setSpecFooter('agents');
 		}else{
 			$this->setFooter();
 		}
@@ -461,114 +463,115 @@ class ScrollTable{
 				$this->search .= '&nbsp;&nbsp;<input type="button" id="submitButton" onClick="if (confirm(\''.$local_grid->Translate("delete_confirm").'\')){xajax_deleteByButton(xajax.getFormValues(\'delGrid\'),xajax.getFormValues(\'searchForm\'));}return false;" value="'.$local_grid->Translate("delete").'">';
 			}			
 		}
-
-		$this->search .= '
-				</td>
-				<td> '.$local_grid->Translate("table").': ';
-		$this->search .= $table ;
-		$this->search .= '</td>
-				<td align="right" >
-					<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
-		if($filter != null){
-			for($j=0;$j<count($filter);$j++){
-				if(trim($content[$j]) != '' && trim($filter[$j]) != ''){
-					$this->search .= ''.$local_grid->Translate(search).'&nbsp;'.$local_grid->Translate("by").' : &nbsp;
-					<select name="searchField[]" id="searchField[]">
-									<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
-								foreach ($fieldsFromSearchShowAs as $value_arr) {
-									if($ind_selected > count($fieldsFromSearch)-1)
-									{
-										$ind_selected = 0;
+		if($stype != 'none'){
+			$this->search .= '
+					</td>
+					<td> '.$local_grid->Translate("table").': ';
+			$this->search .= $table ;
+			$this->search .= '</td>
+					<td align="right" >
+						<div style="width:100%;height:auto;line-height:25px;" name="addSearth" id="addSearth">';
+			if($filter != null){
+				for($j=0;$j<count($filter);$j++){
+					if(trim($content[$j]) != '' && trim($filter[$j]) != ''){
+						$this->search .= ''.$local_grid->Translate(search).'&nbsp;'.$local_grid->Translate("by").' : &nbsp;
+						<select name="searchField[]" id="searchField[]">
+										<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
+									foreach ($fieldsFromSearchShowAs as $value_arr) {
+										if($ind_selected > count($fieldsFromSearch)-1)
+										{
+											$ind_selected = 0;
+										}
+										$this->search .= '<option value="'.$fieldsFromSearch[$ind_selected].'" ';
+										if($fieldsFromSearch[$ind_selected] == $filter[$j]){
+											$this->search .= ' selected ';
+										}
+										$this->search .=  '>'.$value_arr.'</option>';
+										$ind_selected++;
 									}
-									$this->search .= '<option value="'.$fieldsFromSearch[$ind_selected].'" ';
-									if($fieldsFromSearch[$ind_selected] == $filter[$j]){
-										$this->search .= ' selected ';
-									}
-									$this->search .=  '>'.$value_arr.'</option>';
-									$ind_selected++;
-								}
-					$this->search .= '</select>&nbsp;&nbsp;';
-					
-					if(is_array($typeFromSearchShowAs) ){
-						$this->search .='<select name="searchType[]" id="searchType[]">';
-							//<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
-							foreach ($typeFromSearchShowAs as $value_arr) {
-									if($ind_typeselected > count($typeFromSearch)-1)
-									{
-										$ind_typeselected = 0;
-									}
-									$this->search .= '<option value="'.$typeFromSearch[$ind_typeselected].'" ';
-									if($typeFromSearch[$ind_typeselected] == $stype[$j]){
-										$this->search .= ' selected ';
-									}
-									$this->search .=  '>'.$value_arr.'</option>';
-									$ind_typeselected++;
-							}
 						$this->search .= '</select>&nbsp;&nbsp;';
+						
+						if(is_array($typeFromSearchShowAs) ){
+							$this->search .='<select name="searchType[]" id="searchType[]">';
+								//<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
+								foreach ($typeFromSearchShowAs as $value_arr) {
+										if($ind_typeselected > count($typeFromSearch)-1)
+										{
+											$ind_typeselected = 0;
+										}
+										$this->search .= '<option value="'.$typeFromSearch[$ind_typeselected].'" ';
+										if($typeFromSearch[$ind_typeselected] == $stype[$j]){
+											$this->search .= ' selected ';
+										}
+										$this->search .=  '>'.$value_arr.'</option>';
+										$ind_typeselected++;
+								}
+							$this->search .= '</select>&nbsp;&nbsp;';
+						}
+						$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'" />
+								<br>';
+									
 					}
-					$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" value="'.$content[$j].'" />
-							<br>';
-								
 				}
 			}
-		}
-		$this->search .= ''.$local_grid->Translate('search').'&nbsp;'.$local_grid->Translate("by").' : &nbsp;<select name="searchField[]" id="searchField[]">
-						<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
-					foreach ($fieldsFromSearchShowAs as $value) {
-						$this->search .= '<option value="'.$fieldsFromSearch[$ind].'" ';
-						$this->search .=  '>'.$value.'</option>';
-						$ind++;
-					}
-		$this->search .= '</select>&nbsp;&nbsp;';
-		if(is_array($typeFromSearchShowAs)){
-			$this->search .='<select name="searchType[]" id="searchType[]">';
-					//<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
-			foreach ($typeFromSearchShowAs as $value) {
-				$this->search .= '<option value="'.$typeFromSearch[$ind_type].'" ';
-				$this->search .=  '>'.$value.'</option>';
-				$ind_type++;
-			}
+			$this->search .= ''.$local_grid->Translate('search').'&nbsp;'.$local_grid->Translate("by").' : &nbsp;<select name="searchField[]" id="searchField[]">
+							<option value="'.null.'">'.$local_grid->Translate("select_field").'</option>';
+						foreach ($fieldsFromSearchShowAs as $value) {
+							$this->search .= '<option value="'.$fieldsFromSearch[$ind].'" ';
+							$this->search .=  '>'.$value.'</option>';
+							$ind++;
+						}
 			$this->search .= '</select>&nbsp;&nbsp;';
-		}
-		$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" /><br>';
-					
-		$this->search .= '</div>
-					</td>
-					<td>
-				&nbsp;&nbsp;
-				<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
-				<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
-				&nbsp;&nbsp;
-				<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/>
-				</td>';
-		
-		if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->multiEditFlag != 1){
-			$this->search .= '<input type="hidden" name="optionFlag" id="optionFlag" value="">';
-		}else{
-			$option = '<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>';
+			if(is_array($typeFromSearchShowAs)){
+				$this->search .='<select name="searchType[]" id="searchType[]">';
+						//<option value = "'.null.'">'.$local_grid->Translate("select_type").'</option>';
+				foreach ($typeFromSearchShowAs as $value) {
+					$this->search .= '<option value="'.$typeFromSearch[$ind_type].'" ';
+					$this->search .=  '>'.$value.'</option>';
+					$ind_type++;
+				}
+				$this->search .= '</select>&nbsp;&nbsp;';
+			}
+			$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" /><br>';
+						
+			$this->search .= '</div>
+						</td>
+						<td>
+					&nbsp;&nbsp;
+					<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
+					<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
+					&nbsp;&nbsp;
+					<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/>
+					</td>';
 			
-			if($this->exportFlag == 1){
-				$option .= '<option value="export">'.$local_grid->Translate("Export").'</option>';
-				$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Export").'\';}';
+			if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->multiEditFlag != 1){
+				$this->search .= '<input type="hidden" name="optionFlag" id="optionFlag" value="">';
+			}else{
+				$option = '<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>';
+				
+				if($this->exportFlag == 1){
+					$option .= '<option value="export">'.$local_grid->Translate("Export").'</option>';
+					$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Export").'\';}';
+				}
+				if($this->multiEditFlag == 1){
+					$option .= '<option value="multiEdit">'.$local_grid->Translate("Multi Edit").'</option>';
+					$optionOnchange .= 'if(this.value==\'multiEdit\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Multi Edit").'\';}';
+				}
+				if($this->deleteFlag == 1){
+					$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
+					$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("delete").'\';}';				
+				}
+				if($table == "dialedlist"){
+					$option .= '<option value="recycle">'.$local_grid->Translate("recycle").'</option>';
+					$optionOnchange .= 'if(this.value==\'recycle\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("recycle").'\';}';
+				}
+				$optionOnchange .= 'if(this.value==\'\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("continue").'\';}';
+				$this->search .='<td>
+									<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';
+									//echo $option;exit;
 			}
-			if($this->multiEditFlag == 1){
-				$option .= '<option value="multiEdit">'.$local_grid->Translate("Multi Edit").'</option>';
-				$optionOnchange .= 'if(this.value==\'multiEdit\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Multi Edit").'\';}';
-			}
-			if($this->deleteFlag == 1){
-				$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
-				$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("delete").'\';}';				
-			}
-			if($table == "dialedlist"){
-				$option .= '<option value="recycle">'.$local_grid->Translate("recycle").'</option>';
-				$optionOnchange .= 'if(this.value==\'recycle\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("recycle").'\';}';
-			}
-			$optionOnchange .= 'if(this.value==\'\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("continue").'\';}';
-			$this->search .='<td>
-								<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';
-								//echo $option;exit;
 		}
-		$this->search .='</tr>
+			$this->search .='</tr>
 
 		</table></form>';
 	}
@@ -678,16 +681,11 @@ class ScrollTable{
 			$arg = 'non';
 			$form = 'searchRecordsForm';
 			$submit = 'searchRecordsFormSubmit';
+		}elseif($type == 'agents'){
 		}
 		$this->footer = '</table>';
 		$this->footer .= '<table class="adminlist">';
-//		if($type == 'monitorrecord'){
-//			//$this->footer .='<tr>
-//			//	<th width="15" >
-//			//		<embed src="" width=0 height=0 autostart=false loop=false>
-//			//	</th>
-//			//</tr>';
-//		}
+
 		$this->footer .= '<tr>
 				<th colspan="'.$this->n_cols.'">
 					<span class="pagenav">';
