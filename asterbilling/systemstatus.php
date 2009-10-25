@@ -34,7 +34,7 @@ require_once('systemstatus.common.php');
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
-function addDiv(containerId,divId,creditLimit,num,status,displayname){
+function addDiv(containerId,divId,creditLimit,num,status,displayname,customereable){
 	var container = document.getElementById(containerId);
 
 	if (displayname == '')
@@ -49,7 +49,11 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 
 
 	var divContainer = document.createElement("div");
-	divContainer.className="float";
+	if(customereable != 0){
+		divContainer.className="float";
+	}else{
+		divContainer.className="floatnomember";
+	}
 	divContainer.id = divId + '-divContainer';
 
 	// add title div
@@ -116,12 +120,14 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname){
 	div.innerHTML += "&nbsp;&nbsp;B:&nbsp;<span name=\"" + divId + "-balance\" id = \"" + divId + "-balance\" style=\"CURSOR: pointer;\" onclick=\"calculateBalance('" + divId + "')\"></span>";
 	divContainer.appendChild(div);
 
-	// add customer div
-	var div = document.createElement("div");
-	div.className = "lable";	
-	div.innerHTML += "&nbsp;<span id=\"" + divId + "-spanCustomers\"><?echo $locate->Translate("Member");?></span>: <input id=\"" + divId + "-CustomerName\" name=\"" + divId + "-CustomerName\" type=\"text\" value=\"\" size=\"15\" maxlength=\"20\">";	
-	div.innerHTML += " <input type=\"button\" value=\"<?echo $locate->Translate("Update");?>\" id=\"" + divId + "-btnCustomer\" name=\"" + divId + "-btnCustomer\" onclick=\"xajax_checkCustomer(document.getElementById('" + divId + "-CustomerName').value,'" + divId + "')\">";
-	divContainer.appendChild(div);
+	if(customereable != 0){
+		// add customer div
+		var div = document.createElement("div");
+		div.className = "lable";	
+		div.innerHTML += "&nbsp;<span id=\"" + divId + "-spanCustomers\"><?echo $locate->Translate("Member");?></span>: <input id=\"" + divId + "-CustomerName\" name=\"" + divId + "-CustomerName\" type=\"text\" value=\"\" size=\"15\" maxlength=\"20\">";	
+		div.innerHTML += " <input type=\"button\" value=\"<?echo $locate->Translate("Update");?>\" id=\"" + divId + "-btnCustomer\" name=\"" + divId + "-btnCustomer\" onclick=\"xajax_checkCustomer(document.getElementById('" + divId + "-CustomerName').value,'" + divId + "')\">";
+		divContainer.appendChild(div);
+	}
 
 	// add creditlimit div
 	var div = document.createElement("div");

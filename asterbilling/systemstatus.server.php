@@ -9,13 +9,15 @@ require_once ('include/asterisk.class.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/common.class.php');
 
-// define database connection string
-define('SQLC', $config['customers']['dbtype']."://".$config['customers']['username'].":".$config['customers']['password']."@".$config['customers']['dbhost']."/".$config['customers']['dbname']."");
+if($config['customers']['enable']){
+	// define database connection string
+	define('SQLC', $config['customers']['dbtype']."://".$config['customers']['username'].":".$config['customers']['password']."@".$config['customers']['dbhost']."/".$config['customers']['dbname']."");
 
-// set a global variable to save customers database connection
-$GLOBALS['customers_db'] = DB::connect(SQLC);
+	// set a global variable to save customers database connection
+	$GLOBALS['customers_db'] = DB::connect(SQLC);
 
-$GLOBALS['customers_db']->setFetchMode(DB_FETCHMODE_ASSOC);
+	$GLOBALS['customers_db']->setFetchMode(DB_FETCHMODE_ASSOC);
+}
 
 /**
 *  initialize page elements
@@ -72,9 +74,9 @@ function init(){
 		$status = $clid['status'];
 		$display = $clid['display'];
 		if ($curchannels[$peer] && $curchannels[$peer]['creditlimit'] > 0){
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'","'.$display.'")');
+			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'","'.$display.'","'.$config['customers']['enable'].'")');
 		}else{
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'","'.$display.'")');
+			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'","'.$display.'","'.$config['customers']['enable'].'")');
 		}
 		$objResponse->addScript('xajax_addUnbilled("'.$peer.'");');
 	}
@@ -94,9 +96,9 @@ if (!isset($_SESSION['callbacks']))
 	// get callback from session
 	foreach ($_SESSION['callbacks'] as $callback){
 		if ($callback['creditlimit'] > 0)
-			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","","")');
+			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","","","'.$config['customers']['enable'].'")');
 		else
-			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","","","")');
+			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","","","","'.$config['customers']['enable'].'")');
 
 		$objResponse->addScript('xajax_addUnbilled("'.$callback['legB'].'","'.$callback['legA'].'");');
 	}

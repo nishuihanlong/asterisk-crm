@@ -27,6 +27,21 @@ div.float {
 	margin-right: 5px;
 }
 
+div.floatnomember {
+	float: left;
+	overflow: auto;
+	width: 290px;
+	height: 236px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	border: 1px solid #777;
+	background-color: #efefef;
+	margin-left: 5px;
+	margin-top:  10px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+}
+
 div.calllog{
 	width:290px;
 	height:148px;
