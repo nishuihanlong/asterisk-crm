@@ -124,7 +124,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname,customereab
 		// add customer div
 		var div = document.createElement("div");
 		div.className = "lable";	
-		div.innerHTML += "&nbsp;<span id=\"" + divId + "-spanCustomers\"><?echo $locate->Translate("Member");?></span>: <input id=\"" + divId + "-CustomerName\" name=\"" + divId + "-CustomerName\" type=\"text\" value=\"\" size=\"15\" maxlength=\"20\">";	
+		div.innerHTML += "&nbsp;<span id=\"" + divId + "-spanCustomers\"><?echo $locate->Translate("Member");?></span>: <input id=\"" + divId + "-CustomerName\" name=\"" + divId + "-CustomerName\" type=\"text\" value=\"\" size=\"9\" maxlength=\"20\">";	
 		div.innerHTML += " <input type=\"button\" value=\"<?echo $locate->Translate("Update");?>\" id=\"" + divId + "-btnCustomer\" name=\"" + divId + "-btnCustomer\" onclick=\"xajax_checkCustomer(document.getElementById('" + divId + "-CustomerName').value,'" + divId + "')\">";
 		divContainer.appendChild(div);
 	}
@@ -139,17 +139,22 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname,customereab
 		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId + "-ckbCredit\" name=\"" + divId + "-ckbCredit\" value=\"" + divId + "\" checked onclick=\"ckbCreditOnClick(this);\">";
 		div.innerHTML += "<span id=\"" + divId + "-spanLimit\"><?echo $locate->Translate("Limit");?></span>: <input id=\"" + divId + "-iptCredit\" name=\"" + divId + "-iptCredit\" type=\"text\" value=\"" + creditLimit + "\" size=\"9\" maxlength=\"7\" readonly>";
 	}
-	divContainer.appendChild(div);	
+	//divContainer.appendChild(div);	
 
 	//add lock div
-	var div = document.createElement("div");
-	div.className = "lable";
+	//var div = document.createElement("div");
+	//div.className = "lable";
 	div.innerHTML += "<input type=\"hidden\" id=\"divList[]\" name=\"divList[]\" value=\"" + divId + "\">";
 	if (status == -1){
 		div.innerHTML += "<input checked type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\"  onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\" style=\"background-color: red;\"><?echo $locate->Translate("Lock");?></span> ";
 	}else{
 		div.innerHTML += "<input type=\"checkbox\" id=\"" + divId+ "-ckbLock\" name=\"" + divId+ "-ckbLock\" value=\"" + divId + "\" onclick=\"setStatus('" + divId + "',this.checked);\"><span id=\"" + divId + "-lock\"><?echo $locate->Translate("Lock");?></span> ";
 	}
+
+	divContainer.appendChild(div);
+
+	var div = document.createElement("div");
+    div.className = "lable";
 
 	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-channel\" name=\"" + divId + "-channel\" value=''>";
 	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-legb-channel\" name=\"" + divId + "-legb-channel\" value=''>";
@@ -417,7 +422,7 @@ function searchRate(){
 		</SCRIPT>
 		<script language="JavaScript" src="js/common.js"></script>		
 		<script language="JavaScript" src="js/astercrm.js"></script>
-		<LINK href="skin/default/css/layout.css" type=text/css rel=stylesheet>
+		<LINK href="skin/default/css/layoutmin.css" type=text/css rel=stylesheet>
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
 		<script type="text/javascript" src="js/dragresize.js"></script>
@@ -425,36 +430,9 @@ function searchRate(){
 
 	</head>
 	<body onload="init();">
-		<div id="divTitle" name="divTitle" style="width: 800px; padding:5px 0;vertical-align:bottom;"></div>
-		<div id="divPanel" name="divPanel" class="divPanel" style="z-index:999;">
-			<ul id="nav">
-				<li><a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a></li>
-				<li><a href="checkout.php" target="_blank"><?echo $locate->Translate("Report");?></a></li>
-				<li><a href="spsystemstatus.php" target="_blank"><?echo $locate->Translate("Profi");?></a></li>
-				<li><a href="clid.php" target="_blank"><?echo $locate->Translate("Clid");?></a></li>
-				<li><a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a></li>
-			</ul>
-		</div>
-		<div id="divMain" style="clear:both; width:100%;">
-		<div style="height:1px; background:#f1f1f1; overflow:hidden; width:85%;"></div>
-		<div id="divNav"></div>
-		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
 		
-		&nbsp;<?echo $locate->Translate("Last Refresh Time");?>: <span id="spanLastRefresh" name="spanLastRefresh"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit Status");?>:&nbsp;<span id="spanLimitStatus" name="spanLimitStatus"></span><br>
-		<input type="button" value="<?echo $locate->Translate("Callshop Status");?>" onclick="showCallshopStatus();">
-
-		<div id="divAmount" style="display:none;">
-		&nbsp;<?echo $locate->Translate("Amount");?>:&nbsp;<span id="spanAmount" name="spanAmount"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Cost");?>:&nbsp;<span id="spanCost" name="spanCost"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Limit");?>:&nbsp;<span id="spanLimit" name="spanLimit"> </span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Current Credit");?>:&nbsp;<span id="spancurcredit" name="spancurcredit"></span>&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate("Available Balance");?>:&nbsp;<span id="spanbalance" name="spanbalance"></span><br>
-		</div>
-		<div>
-				<input type="text" size="10" name="iptSearchRate" id="iptSearchRate">
-				<select id="searchRateType" name="searchRateType">
-					<option value="prefix"><?echo $locate->Translate("Prefix");?></option>
-					<option value="dest"><?echo $locate->Translate("Destination");?></option>
-				</select>
-				<input type="button" value="<?echo $locate->Translate("Search Rate");?>" onclick="searchRate();">
-				<div id="divRate" name="divRate"></div>	
-		</div>
+		<div id="divMain" style="clear:both; width:100%;">
+		
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>
 		<div id="divCallback" name="divCallback" class="formDiv drsElement" style="left: 450px; top: 50px;visibility:visible;width:250px;">
 			<table width="100%" border="1" align="center" class="adminlist" >

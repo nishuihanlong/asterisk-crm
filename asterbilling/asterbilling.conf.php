@@ -88,18 +88,18 @@ validcode = no
 epayment_status = disable
 
 ;Define here the URL of paypal payment (to test with sandbox)
-paypal_payment_url = "https://secure.paypal.com/cgi-bin/webscr"
-;paypal_payment_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+;paypal_payment_url = "https://secure.paypal.com/cgi-bin/webscr"
+paypal_payment_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
 
 ;paypal PDT verification url (to test with sandbox)
-paypal_verify_url = "ssl://www.paypal.com"
-;paypal_verify_url = www.sandbox.paypal.com
+;paypal_verify_url = "ssl://www.paypal.com"
+paypal_verify_url = www.sandbox.paypal.com
 
 ;paypal PDT identity token
-pdt_identity_token = 
+pdt_identity_token = W4KjUmOsxgJ1fCnLPX_H8Co_mFXnAGmaGPI4OHGG42OWZRfCsoZZNYE2dw8
 
 ;email address for your paypal account
-paypal_account = 
+paypal_account = du.don_1237957108_biz@gmail.com
 
 ;name of payment item
 item_name = Credit Purchase
