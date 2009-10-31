@@ -774,6 +774,7 @@ CREATE TABLE `dialedlist` (
   `trytime` INT(11) NOT NULL DEFAULT '0',
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -797,6 +798,7 @@ CREATE TABLE `diallist` (
   `customername` varchar(100) default '',				#added by solo 2009#09#09
   `groupid` INT(11) NOT NULL DEFAULT '0',				#added by solo 2007#12#17
   `trytime` INT(11) NOT NULL DEFAULT '0',				#added by solo 2008/05/04
+  `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
   `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008#2#5
   `creby` varchar(30) NOT NULL default '',			#added by solo 2008#1#15
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008#1#15
