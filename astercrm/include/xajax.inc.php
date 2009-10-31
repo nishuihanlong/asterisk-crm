@@ -637,6 +637,7 @@ class xajax
 		$aArgs = array();
 		$sPreResponse = "";
 		$bEndRequest = false;
+		$sResponse = -1;
 		
 		$requestMode = $this->getRequestMode();
 		if ($requestMode == -1) return;
@@ -744,6 +745,7 @@ class xajax
 					}
 					$oResponse = $this->_callFunction($sFunctionName, $aArgs);
 				}
+				
 				if (is_string($sResponse)) {
 					$oResponse = new xajaxResponse();
 					$oResponse->addAlert("No XML Response Was Returned By Function $sFunctionName.\n\nOutput: ".$oResponse);

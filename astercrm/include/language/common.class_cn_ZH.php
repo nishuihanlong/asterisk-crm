@@ -9,16 +9,16 @@ $note_manager			= "备注信息管理";
 $diallist_manager		= "拨号列表管理";
 $survey_manager			= "问卷管理";
 $survey_reslut			= "问卷结果";
-$import					= "导入";
-$export					= "导出";
 $log_out				= "退出";
+$import					= "导入 ";
+$export					= "导出";
 $back					= "返回";
 $trunkinfo = "线路信息";
 $cdr = "通话记录";
 $monitorrecords = "录音记录";
 $speeddial = "速拨号码";
 $report = "报告";
-$queue_status "队列状态";
-$campaign_result "拨号结果";
+$queue_status = "队列状态";
+$campaign_result = "拨号结果";
+$agent_settings = "动态座席设置";
 ?>
-
