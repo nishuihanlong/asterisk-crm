@@ -33,7 +33,7 @@ require_once('profile.common.php');
 		<?php $xajax->printJavascript('include/');?>
 		<?php	
 				$get = '';
-				print_r($_GET);exit;
+				//print_r($_GET);exit;
 				if($_GET['action'] != '' ){
 					foreach($_GET as $key => $value){
 						$get .= $key.':'.$value.',';

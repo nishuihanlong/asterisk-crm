@@ -98,10 +98,10 @@ function init($aFormValue){
 
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("manager title"));
-	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username"));
-	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password"));
+	$objResponse->addAssign("usernameDiv","innerHTML",$locate->Translate("username")."&nbsp;&nbsp;&nbsp;");
+	$objResponse->addAssign("passwordDiv","innerHTML",$locate->Translate("password")."&nbsp;&nbsp;&nbsp;");
 	$objResponse->addAssign("remembermeDiv","innerHTML",$locate->Translate("Remember me"));
-	$objResponse->addAssign("validcodeDiv","innerHTML",$locate->Translate("Valid Code"));
+	$objResponse->addAssign("validcodeDiv","innerHTML",$locate->Translate("Valid Code")."&nbsp;&nbsp;&nbsp;");
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
