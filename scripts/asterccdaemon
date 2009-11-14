@@ -1,4 +1,4 @@
-#!/bin/sh   
+#!/bin/bash   
 #   singhead monitor for astercc daemons
 #   this script have 4 external parm to control if monitor which daemon:
 #   1st for astercc, set yes to monitor; set no to not monitor

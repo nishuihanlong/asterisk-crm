@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Auto install astercc package shell
 # By Donnie #### du.donnie@gmail.com last modify 2008-11-09
@@ -257,7 +257,7 @@ read startflag
 if [ "X${startflag}" == "Xy" -o "X${startflag}" == "XY" ]
 then
   echo "starting asterccd..."
-  /bin/sh ${daemonpath}/asterccd
+  /bin/bash ${daemonpath}/asterccd
 fi
 
 exit

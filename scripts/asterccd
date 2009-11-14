@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # chkconfig: 2345 99 10
 # description: Activates/Deactivates astercc and asterrc.
 #
@@ -230,7 +230,7 @@ do
 			if [ "x$monitorpid" != "x" ]; then
 				echo "$0 $ARG: asterccdaemon (pid $monitorpid) already running"
 			else
-				/bin/sh $asterccdaemonpath ${monitorparm} &
+				/bin/bash $asterccdaemonpath ${monitorparm} &
 				monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 				if [ "x$monitorpid" != "x" ]; then
 					echo "$0 $ARG: asterccdaemon started"
@@ -325,7 +325,7 @@ do
 		if [ "x$monitorpid" == "x" ]; then
 			echo "$0 $ARG: asterccdaemon not running, trying to start"
 			if test $asterccdaemonpath; then
-				/bin/sh $asterccdaemonpath ${monitorparm} &
+				/bin/bash $asterccdaemonpath ${monitorparm} &
 				monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 				if [ "x$monitorpid" == "x" ]; then
 					echo "$0 $ARG: asterccdaemon could not be started"
@@ -338,7 +338,7 @@ do
 		else
 			if kill -9 $monitorpid; then
 				if test $asterccdaemonpath; then
-					/bin/sh $asterccdaemonpath ${monitorparm} &
+					/bin/bash $asterccdaemonpath ${monitorparm} &
 					monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 					if [ "x$monitorpid" == "x" ]; then
 						echo "$0 $ARG: asterccdaemon could not be started"
