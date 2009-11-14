@@ -128,6 +128,12 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-6-18   fixed can't find astercc license file when don't run in '/opt'
 2009-6-21   fixed ASR and ACD both are '0' in report grid
 ----------------------------------------------------------------------------------
+0.011
+2009-11-14 fixed the prefix billing
+2009-11-14 added professional mode
+2009-11-14 added member mode switch
+2009-11-14 added Portuguese support
+
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能
 booth用户输入号码后会提示金额和分钟数
@@ -135,17 +141,6 @@ code有时候会出现问题, vista总是不识别
 需要增加statics功能
 需要解决表名冲突的问题
 验证图片对ff失效
-
-[fixed] 大量数据导入时报错
-[fixed] 删除记录之前需要检查权限
-[fixed] pin不得为空
-[fixed] import表init时应清空 字段列表
-[fixed] report里应该加上该用户的limit状态和limit信息
-[fixed] 点击CDR不自动选择booth
-[fixed] 增加creditlog功能, 改进为每次只能添加/减小credit
-[fixed] 需要改变prepaid的模式, 目前prepaid为每个月生效
-[fixed]更改了asterrc, 增加了curcredit字段,每次通话后会将结果写到curcredit里面
-
 
 astercc features:
 	

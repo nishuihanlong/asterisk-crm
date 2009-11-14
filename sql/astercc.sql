@@ -1,6 +1,6 @@
 
 ###########   Table structure for asterCC database   ################
-###########   astercc current version: 0.12          ################
+###########   astercc current version: 0.13          ################
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -485,7 +485,7 @@ CREATE TABLE `agentlogin_history` (
  `channel` varchar(30) NOT NULL default '',
  `agentlogin` datetime NOT NULL default '0000-00-00 00:00:00',
  `agentlogout` datetime NOT NULL default '0000-00-00 00:00:00',
- `uniqueid` varchar(15) NOT NULL,
+ `uniqueid` varchar(40) NOT NULL,
  `online` int(11) NOT NULL default '0'
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -767,7 +767,7 @@ CREATE TABLE `dialedlist` (
   `callresult` enum('normal','fax','voicemail') default 'normal',
   `campaignresult` varchar(60) default '',
   `resultby` varchar(30) NOT NULL default '',
-  `uniqueid` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
+  `uniqueid` varchar(40) NOT NULL default '',											#added by solo 2008#2#1
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008#2#3
   `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008#2#5
   `assign` varchar(20) NOT NULL default '',												#added by solo 2008#2#10
@@ -882,6 +882,7 @@ CREATE TABLE `surveyresult` (
   `itemcontent` VARCHAR( 50 ) NOT NULL,
   `surveyoption` varchar(50) NOT NULL default '',
   `surveynote` text NOT NULL,
+  `uniqueid` varchar(40) NOT NULL default '',
   `groupid` int(11) NOT NULL default '0',
   `creby` varchar(30) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -969,7 +970,7 @@ CREATE TABLE `monitorrecord` (
  `fileformat` VARCHAR( 8 ) NOT NULL DEFAULT '',
  `groupid` INT NOT NULL DEFAULT 0,
  `extension` VARCHAR( 15 ) NOT NULL DEFAULT '',
- `uniqueid` varchar(20) NOT NULL default '',
+ `uniqueid` varchar(40) NOT NULL default '',
  `creby` VARCHAR( 30 ) NOT NULL ,
  `cretime` DATETIME NOT NULL ,
  UNIQUE (`id`),
@@ -1241,7 +1242,7 @@ CREATE TABLE `agentlogin_history` (
  `channel` varchar(30) NOT NULL default '',
  `agentlogin` datetime NOT NULL default '0000-00-00 00:00:00',
  `agentlogout` datetime NOT NULL default '0000-00-00 00:00:00',
- `uniqueid` varchar(15) NOT NULL,
+ `uniqueid` varchar(40) NOT NULL,
  `online` int(11) NOT NULL default '0'
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 

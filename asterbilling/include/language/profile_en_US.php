@@ -1,30 +1,42 @@
 <?
-//En for mangaer
-$add_account = "New account record added";
-$update_rec = "A record has been updated";
-$rec_cannot_update = "The record could not be updated";
-$rec_cannot_insert = "The record could not be inserted";
-$delete_rec = "Record Deleted";
-$rec_cannot_delete = "The record could not be deleted";
-$username = "User Name ";
-$password = "Password ";
-$extension = "Extension ";
-$extensions = "Extensions";
-$extensions_note = "use comma between extensions ";
+//English for profile
+$reseller_infomation = "Reseller infomation";
+$reseller_name = "Reseller name";
+$accountcode = "Accountcode";
+$limittype = "Limittype";
+$allowcallback = "Allowcallback";
+$callshop_cost = "Callshop cost";
+$clid_cost = "Booth cost";
+$total_cost = "Reseller Cost";
+$current_cost = "Current cost";
+$credit_limit = "Credit Limit";
+$balance = "Balance";
+$online_payment_receiving_infomation = "online payment receiving infomation";
+$online_payment = "online payment";
+$paypal_account = "paypal account";
+$paypal_payment_url  = "paypal payment url";
+$paypal_verify_url = "paypal verify url";
+$paypal_identity_token = "paypal identity token";
+$item_name = "item name";
+$available_amount = "available amount";
+$currency_code = "currency code";
+$notify_email = "notify email";
+$edit = "Edit";
+$edit_payment_receiving_infomation = "edit payment receiving infomation";
 $continue = "Continue";
-$obligatory_fields = "* Obligatory fields";
-$adding_account = "Adding Account";
-$edit_account = "Edit Account";
-$usertype = "User Type";
-$usertype_note = "support admin,callshop";
-$channel	= "Channel";	// added 2007/10/30 by solo
-$account_detail		= "Account Detail";	// added 2007/10/30 by solo
-$account_code		= "Account Code";	// added 2007/11/12 by solo
-$username_repeat = "user name repeat";
-$payment_canceled = "Your credit order was canceled";
-$payment_failed = "Your transaction could not be completed.<br>You may log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.<br>";
+$recharge_by_paypal = "recharge by paypal";
+$group_infomation = "group infomation";
+$group_name = "group name";
 $payment_success = "Recharge success<br>please check your blance later<br>";
+$payment_failed = "Your transaction could not be completed.<br>You may log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.<br>";
 $payment_return_failed = "Payment messege return failed,please check your blance later<br>";
+$payment_canceled = "Your credit order was canceled";
+$return = "Return";
+$please_wait_your_credit_order_is_processing = "please wait when your credit order isprocessing";
+$the_reseller_does_not_support_online_payment = "the reseller does not support online payment";
+$the_system_does_not_support_online_payment = "the system does not support online payment";
+$payment_receiver_error = "payment receiver error";
+$payment_currency_error = "payment currency error";
 $payment_order_error = "Recharge failed beacause above reason";
 $payment_may_completed = "Note: Your payment may be completed<br>Please log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.";
 ?>

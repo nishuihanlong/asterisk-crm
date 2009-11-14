@@ -72,14 +72,10 @@ class Customer extends astercrm
 	function insertNewWorktimepackage($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$bindqueue = 0;
-		if ($f['bindqueue'] =="on"){
-			$bindqueue = 1;
-		}
 		
 		$query= "INSERT INTO worktimepackages SET "
-				."worktimepackage_name='".$f['worktimepackage_name']."', "
-				."worktimepackage_note='".$f['worktimepackage_note']."', "
+				."worktimepackage_name=".$db->quote($f['worktimepackage_name']).", "
+				."worktimepackage_note=".$db->quote($f['worktimepackage_note']).", "
 				."worktimepackage_status='".$f['worktimepackage_status']."', "				
 				."groupid='".$f['groupid']."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
@@ -93,14 +89,10 @@ class Customer extends astercrm
 	function updateWorktimepackage($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		$bindqueue = 0;
-		if ($f['bindqueue'] =="on"){
-			$bindqueue = 1;
-		}
 
-		$query= "UPDATE campaign SET "
-				."worktimepackage_name='".$f['worktimepackage_name']."', "
-				."worktimepackage_note='".$f['worktimepackage_note']."', "
+		$query= "UPDATE worktimepackages SET "
+				."worktimepackage_name=".$db->quote($f['worktimepackage_name']).", "
+				."worktimepackage_note=".$db->quote($f['worktimepackage_note']).", "
 				."worktimepackage_status='".$f['worktimepackage_status']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];

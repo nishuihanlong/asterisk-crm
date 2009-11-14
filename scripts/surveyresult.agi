@@ -86,7 +86,7 @@ my $groupid = $ref->{'groupid'};
 	my $survey_ref = $survey_rows->fetchrow_hashref();
 
 	if ($survey_ref) {
-		my $surveyid = $survey_ref->{'id'};
+		$survey_id = $survey_ref->{'id'};
 	}else{
 		# 没有定义问卷
 		$survey_id = 0;
@@ -94,12 +94,13 @@ my $groupid = $ref->{'groupid'};
 #}
 
 # 更新dialedlist
-$query = "UPDATE ".$db_prefix."dialedlist SET answertime = now(), uniqueid= '$input{'uniqueid'}',callresult='voicemail' WHERE id = $ref->{'id'} ";
+$query = "UPDATE ".$db_prefix."dialedlist SET answertime = now(), uniqueid= '$input{'uniqueid'}',callresult='Dialer Detect' WHERE id = $ref->{'id'} ";
 &executeQuery($query);
+#$AGI->verbose("survey_id = $survey_id");
 
 if ($survey_id>0) {
 	# 更新 surveyresult, 增加 phonenum 字段
-	$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$extension', surveynote = 'voicemail', surveyid = '$survey_id', campaignid = '$campaign_id', groupid = '$groupid',creby = 'system', cretime = now()  ";
+	$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$extension', surveynote = 'Dialer Detect', surveyid = '$survey_id', campaignid = '$campaign_id', uniqueid= '".$input{'uniqueid'}."', groupid = '$groupid',creby = 'system', cretime = now()  ";
 	&executeQuery($query);
 }
 
