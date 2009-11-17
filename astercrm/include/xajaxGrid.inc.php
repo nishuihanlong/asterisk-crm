@@ -130,7 +130,7 @@ class ScrollTable{
 	 * @param string  $content: content to search
 	 * @param string  $order: field to organize the data of the table
 	 */
-	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null,$customerid='',$cdrtype = '',$userexten = '',$table = ''){
+	function ScrollTable($cols, $start = 0, $limit, $filter = null, $numRows = 0, $content = null, $order = null,$customerid='',$cdrtype = '',$userexten = '',$table = '',$divName = ''){
 		$this->n_cols = $cols;
 		$this->limit = $limit;
 		$this->numRows = $numRows;
@@ -145,6 +145,7 @@ class ScrollTable{
 		$this->cdrtype = $cdrtype;
 		$this->userexten = $userexten;
 		$this->table = $table; 
+		$this->divName = $divName;
 
 		if ($cdrtype != '') {
 			$this->setSpecFooter('mycdr'); //用于agent页面中customer信息页中的mycdr页脚
@@ -189,7 +190,7 @@ class ScrollTable{
 // 					$this->header .= $value;
 // 				}
 			$this->header .= $value;
-			if(strstr($value,'checkbox')){
+			if(strstr($value,'checkbox') || $this->divName == "formDiallistPannel"){
 				$this->header .= '';
 			}else{
 				$this->header .= '
@@ -248,7 +249,7 @@ class ScrollTable{
 	*
 	*/
 
-	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$privilege=null){
+	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$privilege=null,$styleStr = ""){
 		global $local_grid;
 		if($_SESSION['curuser']['usertype'] == 'agent') $delete = false;
 		$nameRow = $divName."Row".$arr[0];
@@ -277,7 +278,7 @@ class ScrollTable{
 				}elseif($key == 'select_id'){
 					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'><input type="checkbox" id="ckb[]" name="ckb[]" value="'.$value.'" ></td>'."\n";
 				}else{
-					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
+					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;'.$styleStr.'" '.$this->colAttrib[$ind-1].'>'.$value.'</td>'."\n";
 				}
 			}
    			$ind++;
@@ -664,6 +665,7 @@ class ScrollTable{
 
 	function setSpecFooter($type){
 		global $local_grid;
+		$pageNav = true;
 		$next_rows = $this->start + $this->limit;
 		$previos_rows = $this->start - $this->limit;
 		if($next_rows>$this->numRows) $next_rows = $this->numRows;
@@ -686,93 +688,98 @@ class ScrollTable{
 		$this->footer = '</table>';
 		$this->footer .= '<table class="adminlist">';
 
-		$this->footer .= '<tr>
-				<th colspan="'.$this->n_cols.'">
-					<span class="pagenav">';
-					if($this->start>0){
+		if($this->divName == 'formDiallistPannel') $pageNav = false;
+		if($pageNav){
+			$this->footer .= '<tr>
+					<th colspan="'.$this->n_cols.'">
+						<span class="pagenav">';
+						if($this->start>0){
+							$this->footer .= '<a href="?" onClick="
+							document.getElementById(\'numRows\').value = 0;
+							document.getElementById(\'limit\').value='.$this->limit.';';
+							if ($this->$arg != 'recent')
+								$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
+							if($arg != 'non' && $this->$arg != 'recent') {
+								$this->footer .= 'document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+							}
+							if ($this->$arg == 'recent')
+								$this->footer .= 'xajax_'.$submit.'(\'recent\',0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+							else
+								$this->footer .= 'xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+						}else{
+							$this->footer .= $local_grid->Translate("first");
+						}
+						$this->footer .= '</span>
+						<span class="pagenav">';
+
+						if($this->start >0){
 						$this->footer .= '<a href="?" onClick="
-						document.getElementById(\'numRows\').value = 0;
-						document.getElementById(\'limit\').value='.$this->limit.';';
-						if ($this->$arg != 'recent')
+							document.getElementById(\'numRows\').value = '.$previos_rows.';
+							document.getElementById(\'limit\').value='.$this->limit.';';
+							if ($this->$arg != 'recent')
+								$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
+							if($arg != 'non' && $this->$arg != 'recent') {
+								$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+							}
+							if ($this->$arg == 'recent')
+								$this->footer .='xajax_'.$submit.'(\'recent\','.$previos_rows.','.$this->limit.');
+								return false;">'.$local_grid->Translate("previous").'</a>';
+							else
+								$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
+								return false;">'.$local_grid->Translate("previous").'</a>';
+						}else{
+							$this->footer .= $local_grid->Translate("previous");
+						}
+						$this->footer .= '
+						</span>
+						<span class="pagenav">';
+
+						$this->footer .= ' [ ' . ($this->start+1) . ' / ' . $next_rows .$local_grid->Translate("total"). $this->numRows .' ] ';
+
+						$this->footer .= '
+						</span>
+						<span class="pagenav">';
+
+						if($next_rows < $this->numRows){
+							$this->footer .= '<a href="?" onClick="
+							document.getElementById(\'numRows\').value = '.$next_rows.';
+							document.getElementById(\'limit\').value='.$this->limit.';';
+							if ($this->$arg != 'recent')
 							$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-						if($arg != 'non' && $this->$arg != 'recent') {
-							$this->footer .= 'document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+							if($arg != 'non' && $this->$arg != 'recent') {
+								$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+							}
+							if ($this->$arg == 'recent')	
+								$this->footer .='xajax_'.$submit.'(\'recent\','.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+							else
+								$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+						}else{
+							$this->footer .= $local_grid->Translate("next");
 						}
-						if ($this->$arg == 'recent')
-							$this->footer .= 'xajax_'.$submit.'(\'recent\',0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
-						else
-							$this->footer .= 'xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
-					}else{
-						$this->footer .= $local_grid->Translate("first");
-					}
-					$this->footer .= '</span>
-					<span class="pagenav">';
 
-					if($this->start >0){
-					$this->footer .= '<a href="?" onClick="
-						document.getElementById(\'numRows\').value = '.$previos_rows.';
-						document.getElementById(\'limit\').value='.$this->limit.';';
-						if ($this->$arg != 'recent')
+						$this->footer .= ' </span>
+						<span class="pagenav">';
+
+						if($next_rows < $this->numRows){
+							$this->footer .= '<a href="?" onClick="
+							document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
+							document.getElementById(\'limit\').value='.$this->limit.';';
+							if ($this->$arg != 'recent')
 							$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-						if($arg != 'non' && $this->$arg != 'recent') {
-							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+							if($arg != 'non' && $this->$arg != 'recent') {
+								$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
+							}
+							if ($this->$arg == 'recent')
+								$this->footer .='xajax_'.$submit.'(\'recent\','.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+							else
+								$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+						}else{
+
+							$this->footer .= $local_grid->Translate("last").'</span>';
 						}
-						if ($this->$arg == 'recent')
-							$this->footer .='xajax_'.$submit.'(\'recent\','.$previos_rows.','.$this->limit.');
-							return false;">'.$local_grid->Translate("previous").'</a>';
-						else
-							$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
-							return false;">'.$local_grid->Translate("previous").'</a>';
-					}else{
-						$this->footer .= $local_grid->Translate("previous");
-					}
-					$this->footer .= '
-					</span>
-					<span class="pagenav">';
-
-					$this->footer .= ' [ ' . ($this->start+1) . ' / ' . $next_rows .$local_grid->Translate("total"). $this->numRows .' ] ';
-
-					$this->footer .= '
-					</span>
-					<span class="pagenav">';
-
-					if($next_rows < $this->numRows){
-						$this->footer .= '<a href="?" onClick="
-						document.getElementById(\'numRows\').value = '.$next_rows.';
-						document.getElementById(\'limit\').value='.$this->limit.';';
-						if ($this->$arg != 'recent')
-						$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-						if($arg != 'non' && $this->$arg != 'recent') {
-							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
-						}
-						if ($this->$arg == 'recent')	
-							$this->footer .='xajax_'.$submit.'(\'recent\','.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
-						else
-							$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
-					}else{
-						$this->footer .= $local_grid->Translate("next");
-					}
-
-					$this->footer .= ' </span>
-					<span class="pagenav">';
-
-					if($next_rows < $this->numRows){
-						$this->footer .= '<a href="?" onClick="
-						document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
-						document.getElementById(\'limit\').value='.$this->limit.';';
-						if ($this->$arg != 'recent')
-						$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-						if($arg != 'non' && $this->$arg != 'recent') {
-							$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$this->$arg.'\';';
-						}
-						if ($this->$arg == 'recent')
-							$this->footer .='xajax_'.$submit.'(\'recent\','.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
-						else
-							$this->footer .='xajax_'.$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
-					}else{
-
-						$this->footer .= $local_grid->Translate("last").'</span>';
-					}
+		}else{
+			$this->footer .='<th>&nbsp;';
+		}
 				$this->footer .= '
 				</th>
 			</tr>
@@ -814,7 +821,18 @@ class Table {
 	* @return string
 	*/
 	function Top($tableTitle = "tableTitle", $formId = "formDiv"){
-		$table = '
+		
+		if($formId == "formDiallistPannel" ){
+			$table = '
+			<table width="100%" border="1" align="center" class="adminlist" >
+			<tr class="drsMoveHandle">
+				<th align="right" valign="center" >
+					<img src="skin/default/images/close.png" onClick=\'javascript: document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";document.getElementById("dpnShow").value = 0;return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
+				</th>
+			</tr>
+			<tr ><td><fieldset><legend>'.$tableTitle.'</legend>';
+		}else{
+			$table = '
 			<table width="100%" border="1" align="center" class="adminlist" >
 			<tr class="drsMoveHandle">
 				<th align="right" valign="center" >
@@ -822,6 +840,7 @@ class Table {
 				</th>
 			</tr>
 			<tr ><td><fieldset><legend>'.$tableTitle.'</legend>';
+		}
 
 		return $table;
 	}

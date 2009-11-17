@@ -175,6 +175,11 @@ $clientDst = $_REQUEST['clientdst'];
 				}else{
 					xajax.$('popup').value = 'yes';
 				}
+
+				//if(xajax.$('formDiallistPannel').innerHTML == '' )
+				//	xajax.$('dpnShow').value = 0;
+				//else
+				//	xajax.$('dpnShow').value = 1;
 			setTimeout("updateEvents()", xajax.$('checkInterval').value);
 		}
 
@@ -477,17 +482,17 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
-		<div id="divUserMsg" name="divUserMsg"></div><br>
-
+		<div><span id="divUserMsg" name="divUserMsg"></span>&nbsp;&nbsp;&nbsp;<span id="myevents"></span></div><br>
+		
 		<div id="divHangup" name="divHangup">
 			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<span id="spnPause"><input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" ><input id="clkPauseTime" name="clkPauseTime" type="hidden"></span>
 			<span id="agentData"></span>
 			
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 			<div id="divDIDinfo" name="divDIDinfo"></div>
-		</div><br>
-
-		<div id="divCallresult" name="divCallresult" style="display:none"></div><br>
+		</div>
+		
+		<div id="divCallresult" name="divCallresult" style="display:none"></div>
 
 		<span id="spanTransfer" name="spanTransfer">
 			<SELECT id="sltExten" name="sltExten">
@@ -495,9 +500,9 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<INPUT TYPE="text" name="iptTtansfer" id="iptTtansfer" size="15">
 			<INPUT type="button" value="<?echo $locate->Translate("Transfer");?>" id="btnTransfer" onclick="transfer('');">
 		</span>
-		<div id="myevents"></div>
-		<br>
-		<?echo $locate->Translate("monitor")?><br>
+		
+		
+		<span id="monitorTitle"><br><?echo $locate->Translate("monitor")?><br></span>
 		<div id="divMonitor">
 			<span id="spanMonitorStatus" name="spanMonitorStatus"></span><br>
 			<input type='button' value='' name="btnMonitor" id="btnMonitor" onclick="monitor();return false;">
@@ -521,6 +526,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="workingextenstatus" id="workingextenstatus" value=""/>
 		<input type='hidden' value="" name="btnWorkStatus" id="btnWorkStatus">
 		<input type='hidden' value="" name="callResultStatus" id="callResultStatus">
+		<input type="hidden" name="dpnShow" id="dpnShow" value="0"/>
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
@@ -536,7 +542,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="xajax_getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;<input type="button" value="<?echo $locate->Translate("Add Diailist");?>" onclick="xajax_addDiallist('','');return false;">
+			<span id="sptSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="xajax_getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;</span><span id="sptAddDiallist" style="display:none"><input type="button" value="<?echo $locate->Translate("My Diallist");?>" onclick="document.getElementById('dpnShow').value = 1;xajax_showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;"></span>
 		</div>
 		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
@@ -560,7 +566,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formDiallist" class="formDiv drsElement"
 			style="left: 20px; top: 330px; width: 850px"></div>
 		<div id="formaddDiallistInfo"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;"></div>
+			style="left: 450px; top: 50px;z-index:210"></div>
 		<div id="formeditDiallistInfo"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;"></div>
 		<div id="formNoteInfo" class="formDiv  drsElement"
@@ -570,9 +576,11 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div id="formEditInfo" class="formDiv drsElement"
 			style="left: 450px; top: 50px;width: 500px"></div>
 		<div id="formplaymonitor"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 350px; z-index:200"></div>
+			style="left: 450px; top: 50px;width: 350px; z-index:999"></div>
 		<div id="formDiallistPopup"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width: 350px; z-index:201"></div>
+		<div id="formDiallistPannel"  class="formDiv drsElement" 
+			style="left: 150px; top: 130px;width: 850px; z-index:201"></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 					</fieldset>

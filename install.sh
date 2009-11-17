@@ -18,7 +18,7 @@ fi
 
 curpath=`pwd`
 #echo "${curpath}/astercrm"
-if [ ! -d"${curpath}/astercrm" ]
+if [ ! -d "${curpath}/astercrm" ]
 then
   echo -n 'astercrm directory not in here, are you sure contiue?(y/n):'
   read ncrmflag
@@ -28,7 +28,7 @@ then
   fi
 fi
 
-if [ ! -d"${curpath}/asterbilling" ]
+if [ ! -d "${curpath}/asterbilling" ]
 then
   echo -n 'asterbilling directory not in here, are you sure contiue?(y/n):'
   read nbillingflag
@@ -38,9 +38,9 @@ then
   fi
 fi
 
-if [ ! -d"${curpath}/scripts" ]
+if [ ! -d "${curpath}/scripts" ]
 then
-  echo -n 'scripts directory not in here, are you sure contiue?(y/n):'
+  echo -n 'scripts directory is not found, are you sure contiue?(y/n):'
   read nscriptflag
   if [ "X${nscriptflag}" != "Xy" -a "X${nscriptflag}" != "XY" ]
   then
@@ -153,7 +153,6 @@ then
 fi
 
 
-
 while [ "X${amiuser}" == "X" ]
 do
   echo -n "AMI User name:"
@@ -190,7 +189,7 @@ sed -i '/\[asterisk\]/,/\[system]/s/port.*/port = '${amiport}'/1' ${curpath}/ast
 sed -i '/\[asterisk\]/,/\[system]/s/username.*/username = '${amiuser}'/1' ${curpath}/astercrm/astercrm.conf.php
 sed -i '/\[asterisk\]/,/\[system]/s/secret.*/secret = '${amisecret}'/1' ${curpath}/astercrm/astercrm.conf.php
 
-#for astercc.conf.php
+#for asterbilling.conf.php
 sed -i '/\[database\]/,/\[asterisk\]/s/dbhost.*/dbhost = '${dbhost}'/1' ${curpath}/asterbilling/asterbilling.conf.php
 sed -i '/\[database\]/,/\[asterisk\]/s/dbport.*/dbport = '${dbport}'/1' ${curpath}/asterbilling/asterbilling.conf.php
 sed -i '/\[database\]/,/\[asterisk\]/s/dbname.*/dbname = '${dbname}'/1' ${curpath}/asterbilling/asterbilling.conf.php
@@ -231,6 +230,50 @@ daemonpath=/opt/asterisk/scripts/astercc
 mkdir -p ${daemonpath}
 mv ${curpath}/scripts/* ${daemonpath}
 chmod +x ${daemonpath}/* 
+
+echo Please enter absolute path of asterisk etc 
+echo -n "asterisk etc (default /etc/asterisk):"
+read asterisketc
+
+
+if [ "X${asterisketc}" == "X" ];
+then
+  asterisketc="/etc/asterisk"
+fi
+
+while [ 1 ]
+do 
+  if [ ! -d "${asterisketc}/" ]
+  then
+	echo "error: Can not found ${asterisketc}"
+	echo -n "asterisk etc:"
+	read asterisketc
+  else
+    break
+  fi
+done
+
+touch ${asterisketc}/agents_astercc.conf
+chmod 777 ${asterisketc}/agents_astercc.conf
+
+if [ ! -f "${asterisketc}/agents.conf" ]
+then
+  mv ${curpath}/scripts/agents.conf ${asterisketc}
+else
+  echo "#include agents_astercc.conf" >> /etc/asterisk/agents.conf
+fi
+
+touch ${asterisketc}/sip_astercc.conf
+touch ${asterisketc}/extensions_astercc.conf
+
+echo "[astercc-barge]" >> /etc/asterisk/extensions_astercc.conf
+echo "exten => _X.,1,NoOP(\${EXTEN})" >> /etc/asterisk/extensions_astercc.conf
+echo "exten => _X.,n,meetme(\${EXTEN}|pqdx)" >> /etc/asterisk/extensions_astercc.conf
+echo "exten => _X.,n,hangup" >> /etc/asterisk/extensions_astercc.conf
+
+echo "#include sip_astercc.conf" >> ${asterisketc}/sip.conf
+
+echo "#include extensions_astercc.conf" >> ${asterisketc}/extensions.conf
 
 echo "*****************************************************************"
 echo "*******************astercc install finished**********************"

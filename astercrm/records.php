@@ -1,5 +1,17 @@
 <?
-$file = $_REQUEST['file'];
+require_once ("db_connect.php");
+global $db;
+if(is_numeric($_REQUEST['file'])){
+	$query = "SELECT * FROM monitorrecord WHERE id = ".$_REQUEST['file'];
+	if($row = $db->getRow($query)){
+		$file = $row['filename'].'.'.$row['fileformat'];
+	}else{
+		die("<b>404 File not found!</b>");
+	}	
+}else{
+	die("<b>404 File not found!</b>");
+}
+
 read_file($file);
 
 function read_file($file){
@@ -24,7 +36,7 @@ function read_file($file){
       case "png": $contentType="image/png"; break;
       case "jpeg":
       case "jpg": $contentType="image/jpg"; break;
-      case "mp3": $contentType="audio/mpeg"; break;
+      case "mp3": $contentType="application/force-download"; break;
       case "wav": $contentType="audio/x-wav"; break;
 	  case "gsm": $contentType="audio/x-gsm"; break;
       case "mpeg":

@@ -210,7 +210,11 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 			}
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
-			$rowc['filename'] = $row['filename'];
+			if($row['fileformat'] == 'error'){
+				$rowc['filename'] = '';
+			}else{
+				$rowc['filename'] = $row['filename'];
+			}
 			$rowc[] = $row['creby'];
 			$table->addRow("monitorrecord",$rowc,false,false,false,$divName,$fields);
 		}
@@ -260,7 +264,15 @@ function playmonitor($id){
 	$res = Customer::getRecordByID($id,'monitorrecord');
 	$path = $res['filename'].".".$res['fileformat'];
 	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
-	$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$path.'\'">'.$locate->Translate("download").'</a>';
+	if(is_file($path)){
+		if($res['fileformat'] == 'mp3'){
+			$html .='<object type="application/x-shockwave-flash" data="skin/default/player_mp3_maxi.swf" width="200" height="20"><param name="movie" value="skin/default/player_mp3_maxi.swf" /><param name="bgcolor" value="#ffffff" /><param name="FlashVars" value="mp3=records.php?file='.$id.'&amp;loop=0&amp;autoplay=1&amp;autoload=1&amp;volume=75&amp;showstop=1&amp;showinfo=1&amp;showvolume=1&amp;showloading=always" /></object><br><a href="###" onclick="window.location.href=\'records.php?file='.$id.'\'">'.$locate->Translate("download").'</a>';
+		}else{
+			$html .= '<embed src="records.php?file='.$id.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$id.'\'">'.$locate->Translate("download").'</a>';
+		}
+	}else{
+		$html .= '<b>404 File not found!</b>';
+	}
 	$html .= Table::Footer();
 	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
 	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	

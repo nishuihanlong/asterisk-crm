@@ -129,6 +129,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'groupname';
 	$fields[] = 'campaignname';
 	$fields[] = 'customername';
+	$fields[] = 'callOrder';
 	$fields[] = 'creby';
 	
 	// HTML table: Headers showed
@@ -141,6 +142,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Campaign Name");
 	$headers[] = $locate->Translate("Name");
+	$headers[] = $locate->Translate("Call Order");
 	$headers[] = $locate->Translate("Create by");
 	
 	// HTML table: hearders attributes
@@ -174,6 +176,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callOrder","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	
 
@@ -225,6 +228,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['customername'];
+		$rowc[] = $row['callOrder'];
 		$rowc[] = $row['creby'];
 
 		$table->addRow("diallist",$rowc,1,1,0,$divName,$fields);

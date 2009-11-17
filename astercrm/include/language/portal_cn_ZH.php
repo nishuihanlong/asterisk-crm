@@ -13,7 +13,7 @@ $talking_to	=	"正在通话";
 $manager	=	"管理";
 $dial			= "拨叫";
 $search			= "查找";
-$stand_by="请稍候";
+$stand_by="请等待";
 $incoming="你有新的来电";
 $dial_out="正在拨号";
 $idle	= "空闲";
@@ -102,4 +102,7 @@ $break = "暂停";
 $share = "共享";
 $campaign = "拨号计划";
 $scheduler_dial = "定时拨号";
+$my_diallist = "我的待拨列表";
+$customername = "客户名称";
+$call_order = "优先级";
 ?>

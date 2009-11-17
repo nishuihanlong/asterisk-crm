@@ -51,6 +51,17 @@ outcontext = from-internal
 ;context when dial in, in trixbox this could be from-trunk
 incontext = from-internal
 
+;control if display following pannels in agent interface (On/Off)
+extension_pannel = On
+diallist_pannel = On
+transfer_pannel = On
+dial_pannel = On
+monitor_pannel = On
+misson_pannel = On
+
+;chang color of records in diallist pannel  when dialitme is approaching
+diallist_pannel_tip = 30
+
 ;if need to enter accountcode/password of admin or groupadmin when agent stop work
 stop_work_verify = 0
 
@@ -60,7 +71,6 @@ stop_work_verify = 0
 
 ;predialer_context = from-siptrunk
 ;predialer_extension =
-
 
 ;
 ; astercrm wouldnot pop-up unless the length of callerid is greater than

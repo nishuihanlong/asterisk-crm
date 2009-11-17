@@ -648,13 +648,15 @@ function showRecentCdr($id='',$cdrtype,$start = 0, $limit = 5,$filter = null, $c
 
 function showDiallist($userexten,$customerid,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formDiallist", $ordering = "",$stype = null){
 	global $locate;
+	if($userexten == '' && $divName = "formDiallistPannel") $userexten = $_SESSION['curuser']['extension'];
 	if($userexten != ''){
-		$html = Table::Top($locate->Translate("diallist"),"formDiallist"); 			
+		$html = Table::Top($locate->Translate("diallist"),$divName); 			
 		$html .= Customer::createDiallistGrid($userexten,$customerid,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
-		$html .= Table::Footer();
+		//$html .= Table::Footer();
+		//echo $html;exit;
 		$objResponse = new xajaxResponse();
-		$objResponse->addAssign("formDiallist", "style.visibility", "visible");
-		$objResponse->addAssign("formDiallist", "innerHTML", $html);	
+		$objResponse->addAssign($divName, "style.visibility", "visible");
+		$objResponse->addAssign($divName, "innerHTML", $html);	
 		return $objResponse->getXML();
 	}
 }
@@ -843,6 +845,7 @@ function saveDiallistMain($f){
 		$objResponse->addAlert($locate->Translate("Add diallist succeed"));
 		$objResponse->addAssign("formaddDiallistInfo", "style.visibility", "hidden");
 		$objResponse->addClear("formaddDiallistInfo", "innerHTML");
+		$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
 	}else{
 		$objResponse->addAlert($locate->Translate("Add diallist failed"));
 	}
@@ -887,7 +890,15 @@ function playmonitor($id){
 	$res = Customer::getRecordByID($id,'monitorrecord');
 	$path = $res['filename'].".".$res['fileformat'];
 	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
-	$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true">';
+	if(is_file($path)){
+		if($res['fileformat'] == 'mp3'){
+			$html .='<object type="application/x-shockwave-flash" data="skin/default/player_mp3_maxi.swf" width="200" height="20"><param name="movie" value="skin/default/player_mp3_maxi.swf" /><param name="bgcolor" value="#ffffff" /><param name="FlashVars" value="mp3=records.php?file='.$id.'&amp;loop=0&amp;autoplay=1&amp;autoload=1&amp;volume=75&amp;showstop=1&amp;showinfo=1&amp;showvolume=1&amp;showloading=always" /></object><br><a href="###" onclick="window.location.href=\'records.php?file='.$id.'\'">'.$locate->Translate("download").'</a>';
+		}else{
+			$html .= '<embed src="records.php?file='.$id.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$id.'\'">'.$locate->Translate("download").'</a>';
+		}
+	}else{
+		$html .= '<b>404 File not found!</b>';
+	}
 	$html .= Table::Footer();
 	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
 	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	

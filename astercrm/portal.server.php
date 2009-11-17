@@ -189,8 +189,35 @@ function init(){
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 
 	//$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
+	if(strtoupper($config['system']['transfer_pannel']) == 'OFF'){		
+		$objResponse->addAssign("spanTransfer", "style.display", "none");		
+	}else{
+		$objResponse->addAssign("btnTransfer","disabled",true);
+	}
 
-	$objResponse->addAssign("btnTransfer","disabled",true);
+	if(strtoupper($config['system']['dial_pannel']) == 'OFF'){		
+		$objResponse->addAssign("divInvite", "style.display", "none");
+	}
+
+	if(strtoupper($config['system']['monitor_pannel']) == 'OFF'){		
+		$objResponse->addAssign("divMonitor", "style.display", "none");		
+		$objResponse->addAssign("monitorTitle", "style.display", "none");
+	}
+
+	if(strtoupper($config['system']['misson_pannel']) == 'OFF'){
+		$objResponse->addAssign("divDialList", "style.display", "none");
+		$objResponse->addAssign("misson", "style.display", "none");
+			
+	}
+
+	if(strtoupper($config['system']['diallist_pannel']) != 'OFF'){
+		$objResponse->addAssign("sptAddDiallist", "style.display", "");	
+		$objResponse->addAssign("dpnShow", "value", "1");
+		$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
+
+		//$objResponse->addAssign("formDiallistPannel", "style.visibility", "visible");
+	}
+
 
 	foreach ($_SESSION['curuser']['extensions'] as $extension){
 		$extension = trim($extension);
@@ -283,6 +310,15 @@ function listenCalls($aFormValues){
 	}else{
 		$objResponse->addAssign("spnPause","innerHTML", '' );
 	}
+
+	if($aFormValues['dpnShow'] > 0){ //for refresh diallist pannel
+		$lastDiallistId = Customer::getLastOwnDiallistId();
+		if( $aFormValues['dpnShow'] != $lastDiallistId ){
+			$objResponse->addAssign("dpnShow","value", $lastDiallistId );
+			$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
+		}
+	}
+
 	if ($aFormValues['uniqueid'] == ''){
 		$objResponse->loadXML(waitingCalls($aFormValues));
 	} else{
@@ -368,7 +404,9 @@ function incomingCalls($myValue){
 			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'idle') 
 				$objResponse->addScript("monitor();");			
 			$objResponse->addAssign("btnHangup","disabled", false );
-			$objResponse->addAssign("btnTransfer","disabled", false );
+			if(strtoupper($config['system']['transfer_pannel']) == 'ON'){
+				$objResponse->addAssign("btnTransfer","disabled", false );
+			}
 		} elseif ($call['status'] =='hangup'){
 			//$objResponse->addAssign("divCallresult", "style.display", "none");
 			$objResponse->addAssign("callResultStatus", "value", "");
@@ -383,7 +421,9 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerid","value", "" );
 			$objResponse->addAssign("callerChannel","value", '');
 			$objResponse->addAssign("calleeChannel","value", '');
-			$objResponse->addAssign("btnTransfer","disabled", true );
+			if(strtoupper($config['system']['transfer_pannel']) == 'ON'){
+				$objResponse->addAssign("btnTransfer","disabled", true );
+			}
 
 			//disable monitor
 			$objResponse->addAssign("btnMonitor","disabled", true );
@@ -461,9 +501,13 @@ function waitingCalls($myValue){
 // to improve system efficiency
 /**************************
 **************************/
-	$phone_html = asterEvent::checkExtensionStatus($curid);
-	$objResponse->addAssign("divExtension","innerHTML", $phone_html );
-	$objResponse->addScript("menuFix();");
+	if(strtoupper($config['system']['extension_pannel']) == 'ON'){
+		$phone_html = asterEvent::checkExtensionStatus($curid);
+		$objResponse->addAssign("divExtension","innerHTML", $phone_html );
+		$objResponse->addScript("menuFix();");
+	}else{
+		$objResponse->addAssign("divExtension","style.visibility", 'hidden');
+	}
 
 	//	modified 2007/10/30 by solo
 	//  start

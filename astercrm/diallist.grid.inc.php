@@ -258,6 +258,12 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						</td>
 					</tr>
 					<tr>
+						<td nowrap align="left">'.$locate->Translate("Call Order").'</td>
+						<td align="left">
+							<input type="text" id="callOrder" name="callOrder" size="35" value="1">
+						</td>
+					</tr>
+					<tr>
 						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
 						<td align="left">
 							<input type="text" name="dialtime" id="dialtime" size="20" value="">
@@ -339,6 +345,12 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						</td>
 					</tr>
 					<tr>
+						<td nowrap align="left">'.$locate->Translate("Call Order").'</td>
+						<td align="left">
+							<input type="text" id="callOrder" name="callOrder" size="35" value="'.$diallist['callOrder'].'">
+						</td>
+					</tr>
+					<tr>
 						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
 						<td align="left">
 							<input type="text" name="dialtime" id="dialtime" size="20" value="'.$diallist['dialtime'].'">
@@ -368,12 +380,13 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 	function insertNewDiallist($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		
+		if($f['callOrder'] == 0 || $f['callOrder'] == '' ) $f['callOrder'] = 1; 
 		$query= "INSERT INTO diallist SET "
 				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
 				."customername='".$f['customername']."', "
 				."groupid='".$f['groupid']."', "
 				."dialtime='".$f['dialtime']."', "
+				."callOrder='".$f['callOrder']."', "
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
 				."campaignid= ".$f['campaignid'].", "
@@ -386,12 +399,13 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 	function updateDiallistRecord($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
-		
+		if($f['callOrder'] == 0 || $f['callOrder'] == '' ) $f['callOrder'] = 1;
 		$query= "UPDATE diallist SET "
 				."dialnumber='".astercrm::getDigitsInStr($f['dialnumber'])."', "
 				."customername='".$f['customername']."', "
 				."groupid='".$f['groupid']."', "
 				."dialtime='".$f['dialtime']."', "
+				."callOrder='".$f['callOrder']."', "
 				."campaignid= ".$f['campaignid'].", "
 				."assign='".$f['assign']."'"
 				."WHERE id='".$f['id']."'";

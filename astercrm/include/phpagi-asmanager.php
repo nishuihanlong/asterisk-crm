@@ -454,7 +454,7 @@
       $parameters = array('Channel'=>$channel);
       if($file) $parameters['File'] = $file;
       if($format) $parameters['Format'] = $format;
-      if(!is_null($file)) $parameters['Mix'] = ($mix) ? 'true' : 'false';
+      if(!is_null($file)) $parameters['Mix'] = ($mix) ? 1 : 0;
       return $this->send_request('Monitor', $parameters);
     }
 
