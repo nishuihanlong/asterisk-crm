@@ -522,10 +522,12 @@ class Customer extends astercrm
 
 	function getLastOwnDiallistId(){
 		global $db;
-		$sql = $sql = "SELECT id FROM diallist WHERE diallist.assign ='".$_SESSION['curuser']['extension']."' AND callOrder > 0 ORDER BY dialtime ASC, callOrder DESC, id ASC LIMIT 1";
-		$res =& $db->getOne($sql);
-
-		return $res;
+		$sql = $sql = "SELECT id FROM diallist WHERE diallist.assign ='".$_SESSION['curuser']['extension']."' AND callOrder > 0 ORDER BY dialtime ASC, callOrder DESC, id ASC LIMIT 0,5";
+		$res =& $db->query($sql);
+		while($res->fetchInto($row)){
+			$idstr .= $row['id'];
+		}
+		return $idstr;
 	}
 }
 ?>

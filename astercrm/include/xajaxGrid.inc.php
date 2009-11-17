@@ -827,7 +827,7 @@ class Table {
 			<table width="100%" border="1" align="center" class="adminlist" >
 			<tr class="drsMoveHandle">
 				<th align="right" valign="center" >
-					<img src="skin/default/images/close.png" onClick=\'javascript: document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";document.getElementById("dpnShow").value = 0;return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
+					<img src="skin/default/images/close.png" onClick=\'javascript: document.getElementById("dpnShow").value = 0;document.getElementById("'.$formId.'").style.visibility="hidden";document.getElementById("'.$formId.'").innerHTML = "";return false;\' title="Close Window" style="cursor: pointer; height: 16px;">
 				</th>
 			</tr>
 			<tr ><td><fieldset><legend>'.$tableTitle.'</legend>';
