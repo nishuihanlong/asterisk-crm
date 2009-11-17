@@ -100,7 +100,24 @@ $query = "UPDATE ".$db_prefix."dialedlist SET answertime = now(), uniqueid= '$in
 
 if ($survey_id>0) {
 	# 更新 surveyresult, 增加 phonenum 字段
-	$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$extension', surveynote = 'Dialer Detect', surveyid = '$survey_id', campaignid = '$campaign_id', uniqueid= '".$input{'uniqueid'}."', groupid = '$groupid',creby = 'system', cretime = now()  ";
+	my $customerid = 0;
+	my $contactid = 0;
+
+	$query = "SELECT id FROM customer WHERE phone='$extension'";
+	my $rows_customer = &executeQuery($query,'rows');
+	my $ref_customer = $rows_customer->fetchrow_hashref();
+	if (!$ref_customer) {
+		$query = "SELECT id FROM contact WHERE phone='$extension'";
+		my $rows_contact = &executeQuery($query,'rows');
+		my $ref_contact = $rows_contact->fetchrow_hashref();
+		if ($ref_contact) {
+			$contactid = $ref_contact->{'id'};
+		}
+	}else{
+		$customerid = $ref_customer->{'id'};
+	}
+
+	$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$extension', surveynote = 'Dialer Detect', surveyid = '$survey_id', campaignid = '$campaign_id', uniqueid= '".$input{'uniqueid'}."', groupid = '$groupid',creby = 'system', cretime = now(), customerid='$customerid', contactid='$contactid'  ";
 	&executeQuery($query);
 }
 
