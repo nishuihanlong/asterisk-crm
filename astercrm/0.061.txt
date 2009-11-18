@@ -2,13 +2,20 @@ new features in 0.061
 	added agents manager in astercrm to manage agents.conf
 	fixed the bug that cant edit worktime_package
 	added callOrder field in diallist
+	added diallist panel in portal page
+	added the daemon to convert recording files to mp3 format
+	added mp3 online player
+	added agent portal panel switcher
 
 
 0.061 新功能
 	增加了管理agents的页面(用于管理agents.conf)
 	修正了无法编辑工作时间包的bug
 	diallist中增加了拨号顺序(callOrder)的属性
-	
+	坐席界面上增加了拨号列表面板
+	增加了自动将录音转换为mp3存储的功能
+	增加了mp3录音播放器
+	增加了坐席界面上的面板开关
 
 astercrm features(0.061)
 
