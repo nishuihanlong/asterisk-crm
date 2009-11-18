@@ -1,9 +1,9 @@
 #!/usr/bin/perl
-
+use FindBin qw($Bin);
+use lib "$Bin/lib";
 use strict;
 use DBI;
 use Config::IniFiles;
-use FindBin qw($Bin);
 use Data::Dumper;
 
 my $conf_file = "$Bin/astercc.conf" ;
