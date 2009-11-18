@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use FindBin qw($Bin);
 use lib "$Bin/lib";
+use POSIX 'setsid';
 use strict;
 use DBI;
 use Config::IniFiles;
