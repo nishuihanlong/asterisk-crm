@@ -105,7 +105,7 @@ function getPrivateDialListNumber($extension = null){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
 
-	$count = astercrm::getCountByField("assign",$extension,"diallist");
+	$count = astercrm::getDialNumCountByAgent($extension);
 	if ($count == 0){
 		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
 		$objResponse->addAssign("divWork", "innerHTML", '');
@@ -313,6 +313,7 @@ function listenCalls($aFormValues){
 
 	if($aFormValues['dpnShow'] > 0){ //for refresh diallist pannel
 		$lastDiallistId = Customer::getLastOwnDiallistId();
+		if($lastDiallistId == '') $lastDiallistId = 1;
 		if( $aFormValues['dpnShow'] != $lastDiallistId ){
 			$objResponse->addAssign("dpnShow","value", $lastDiallistId );
 			$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
@@ -916,7 +917,7 @@ function addWithPhoneNumber(){
 	$objResponse = new xajaxResponse();
 	global $db;
 	
-	$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
+	$row = astercrm::getDialNumByAgent($_SESSION['curuser']['extension']);
 
 	if ($row['id'] == ''){
 
@@ -956,7 +957,7 @@ function workstart() {
 	global $db,$locate,$config;
 	$objResponse = new xajaxResponse();
 
-	$row = astercrm::getRecordByField("assign",$_SESSION['curuser']['extension'],"diallist");
+	$row = astercrm::getDialNumByAgent($_SESSION['curuser']['extension']);
 	if ($row['id'] == ''){
 
 	} else {

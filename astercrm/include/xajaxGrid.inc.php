@@ -284,7 +284,7 @@ class ScrollTable{
    			$ind++;
 		}
 
-		if ($divName == 'formDiallist'){
+		if ($divName == 'formDiallist' || $divName == 'formDiallistPannel'){
 			if($privilege == $_SESSION['curuser']['username'] || $_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
 				if($edit){
 					$row .= '

@@ -1370,10 +1370,35 @@ Class astercrm extends PEAR{
 		}else{
 			$query = "SELECT * FROM $table WHERE $field = '$value' ";
 		}
-		if($table == 'diallist') $query .= " ORDER BY callOrder DESC ,id ASC ";
+		if($table == 'diallist'){
+			$query .= " ORDER BY callOrder DESC ,id ASC ";
+		}
 		$query .= " LIMIT 0,1 ";
 		astercrm::events($query);
 		$row =& $db->getRow($query);
+		return $row;
+	}
+
+	function getDialNumByAgent($userexten){
+		global $db;
+		
+		$query = "SELECT * FROM diallist WHERE assign = '".$userexten."' AND dialtime > '0000-00-00 00:00:00' AND dialtime < now() ORDER BY dialtime ASC ,callOrder DESC ,id ASC LIMIT 0,1";
+
+		astercrm::events($query);
+		if(!($row =& $db->getRow($query))){
+			$query = "SELECT * FROM diallist WHERE assign = '".$userexten."' AND dialtime = '0000-00-00 00:00:00' ORDER BY callOrder DESC ,id ASC LIMIT 0,1";
+			$row =& $db->getRow($query);
+		}
+		return $row;
+	}
+
+	function getDialNumCountByAgent($userexten){
+		global $db;
+		
+		$query = "SELECT count(*) FROM diallist WHERE assign = '".$userexten."' AND dialtime < now()";
+
+		astercrm::events($query);
+		$row =& $db->getOne($query);
 		return $row;
 	}
 
@@ -3231,7 +3256,7 @@ Class astercrm extends PEAR{
 		$fields[] = 'dialnumber';
 		$fields[] = 'customername';
 		$fields[] = 'dialtime';
-		$fields[] = 'status';
+		//$fields[] = 'status';
 		$fields[] = 'trytime';
 		$fields[] = 'creby';
 		//$fields[] = 'cretime';
@@ -3244,7 +3269,7 @@ Class astercrm extends PEAR{
 		$headers[] = $locate->Translate("Dialnumber");
 		$headers[] = $locate->Translate("Customername");
 		$headers[] = $locate->Translate("Dialtime");
-		$headers[] = $locate->Translate("Status");
+		//$headers[] = $locate->Translate("Status");
 		$headers[] = $locate->Translate("Trytime");
 		$headers[] = $locate->Translate("Creby");
 		//$headers[] = $locate->Translate("Cretime");
@@ -3285,7 +3310,7 @@ Class astercrm extends PEAR{
 			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			//$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","trytime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 			//$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -3328,43 +3353,60 @@ Class astercrm extends PEAR{
 
 		// Create object whit 5 cols and all data arrays set before.
 		$table = new ScrollTable(11,$start,$limit,$filter,$numRows,$content,$order,$customerid,'',$userexten,'diallist',$divName);
-		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=0,$delete=0,$detail=false);
+		//if($divName == "formDiallistPannel"){
+			//$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=0,$delete=1,$detail=false);
+		//}else{
+			$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=1,$delete=1,$detail=false);
+		//}
 		$table->setAttribsCols($attribsCols);
 		$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,"1",0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		
+		
+		if($divName == "formDiallistPannel"){
+			foreach($arreglo as $row){
+				$rowc = array();			
+				$rowc[] = $row['id'];
+				$rowc[] = $row['dialnumber'];
+				$rowc[] = $row['customername'];
+				$rowc[] = $row['dialtime'];
+				$rowc[] = $row['trytime'];
+				$rowc[] = $row['creby'];
+				$rowc[] = $row['campaignname'];
 
-		while ($arreglo->fetchInto($row)) {
-			//print_R($row);exit;
-		// Change here by the name of fields of its database table
-			$rowc = array();			
-			$rowc[] = $row['id'];
-			$rowc[] = $row['dialnumber'];
-			$rowc[] = $row['customername'];
-			$rowc[] = $row['dialtime'];
-			$rowc[] = $row['status'];
-			$rowc[] = $row['trytime'];
-			$rowc[] = $row['creby'];
-			//$rowc[] = $row['cretime'];
-			$rowc[] = $row['campaignname'];
-			//$rowc[] = $row['campaignnote'];
-			//$rowc[] = $row['inexten'];
+				$styleStr = '';
+				$tipmins = $config['system']['diallist_pannel_tip'];
+				if(!is_numeric($tipmins)) $tipmins = 30;
 
-			$styleStr = '';
-			$tipmins = $config['system']['diallist_pannel_tip'];
-			if(!is_numeric($tipmins)) $tipmins = 30;
-//echo $config['system']['diallist_pannel_tip'];exit;
-			if($row['dialtime'] > '0000-00-00 00:00:00'){
-				
-				$tip1time = date("Y-m-d H:i:s",strtotime($row['dialtime']." -$tipmins mins"));
-				//$tip2time = date("Y-m-d H:i:s",strtotime($row['dialtime']." -15 mins"));
-				if($tip1time <= date("Y-m-d H:i:s")){
-					$styleStr = "background:#78cdd1";
+				if($row['dialtime'] > '0000-00-00 00:00:00'){
+					
+					$tip1time = date("Y-m-d H:i:s",strtotime($row['dialtime']." -$tipmins mins"));
+
+					if($tip1time <= date("Y-m-d H:i:s")){
+						$styleStr = "background:#78cdd1";
+					}
 				}
-				//if(date("Y-m-d H:i:s") > $tip2time){
-				//	$styleStr = "background:#afb4db";
-				//}
+
+				$table->addRow("diallist",$rowc,1,1,false,$divName,$fields,$row['creby'],$styleStr);
+
 			}
-			
-			$table->addRow("diallist",$rowc,0,0,false,$divName,$fields,$row['creby'],$styleStr);
+		}else{
+			while ($arreglo->fetchInto($row)) {
+				//print_R($row);exit;
+			// Change here by the name of fields of its database table
+				$rowc = array();			
+				$rowc[] = $row['id'];
+				$rowc[] = $row['dialnumber'];
+				$rowc[] = $row['customername'];
+				$rowc[] = $row['dialtime'];
+				//$rowc[] = $row['status'];
+				$rowc[] = $row['trytime'];
+				$rowc[] = $row['creby'];
+				//$rowc[] = $row['cretime'];
+				$rowc[] = $row['campaignname'];
+				//$rowc[] = $row['campaignnote'];
+				//$rowc[] = $row['inexten'];				
+				$table->addRow("diallist",$rowc,1,1,false,$divName,$fields,$row['creby'],$styleStr);
+			}
 		}
 		
 		// End Editable Zone
@@ -3386,9 +3428,26 @@ Class astercrm extends PEAR{
 		}else{
 			
 			if($customerid > 0){
-			$sql = "SELECT * FROM diallist WHERE id = '0' ";
+				$sql = "SELECT * FROM diallist WHERE id = '0' ";
 			}else{ //diallistPannel	
-				$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND callOrder > 0 ORDER BY dialtime ASC, callOrder DESC, id ASC LIMIT 0,$limit";
+				$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND dialtime != '0000-00-00 00:00:00' AND callOrder > 0 ORDER BY dialtime ASC, callOrder DESC, id ASC LIMIT 0,$limit";
+				astercrm::events($sql);
+				$res =& $db->query($sql);
+				
+				while($res->fetchInto($row)){
+					$rows[] = $row;
+				}
+				if(count($rows) < 5){
+					$limit = 5 - count($rows);
+					$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND dialtime = '0000-00-00 00:00:00' AND callOrder > 0 ORDER BY callOrder DESC, id ASC LIMIT 0,$limit";
+					astercrm::events($sql);
+					$res =& $db->query($sql);
+					while($res->fetchInto($row)){
+						$rows[] = $row;
+					}
+				}
+				
+				return $rows;
 			}
 		}
 		if($customerid > 0){
@@ -3400,7 +3459,7 @@ Class astercrm extends PEAR{
 		}
 //echo $sql;exit;
 		astercrm::events($sql);
-		$res =& $db->query($sql);		
+		$res =& $db->query($sql);
 		return $res;
 	}
 
