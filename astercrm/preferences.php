@@ -431,6 +431,21 @@ require_once('preferences.common.php');
     <td align="left" valign="top" ><div id="divSysPortalDisplayType" name="divSysPortalDisplayType"></div></td>
   </tr>
   <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysPortalDisplayType" name="SysPortalDisplayType" >
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;agent_pannel_setting</td>
+    <td width="200" align="left" valign="top" >
+		<table>
+			<tr><td>extension_pannel:&nbsp;&nbsp;</td><td><select id="iptSysExtensionPannel" name="iptSysExtensionPannel"><option value="On">On</option><option value="Off">Off</option></select></td></tr>
+			<tr><td>transfer_pannel:&nbsp;&nbsp;</td><td><select id="iptSysTransferPannel" name="iptSysTransferPannel"><option value="On">On</option><option value="Off">Off</option></select></td></tr>
+			<tr><td>monitor_pannel:&nbsp;&nbsp;</td><td><select id="iptSysMonitorPannel" name="iptSysMonitorPannel"><option value="On">On</option><option value="Off">Off</option></select></td></tr>
+			<tr><td>dial_pannel:&nbsp;&nbsp;</td><td><select id="iptSysDialPannel" name="iptSysDialPannel"><option value="On">On</option><option value="Off">Off</option></select></td></tr>
+			<tr><td>mission_pannel:&nbsp;&nbsp;</td><td><select id="iptSysMissionPannel" name="iptSysMissionPannel"><option value="On">On</option><option value="Off">Off</option></select></td></tr>
+			<tr><td>diallist_pannel:&nbsp;&nbsp;</td><td><select id="iptSysDiallistPannel" name="iptSysDiallistPannel"><option value="On">On</option><option value="Off">Off</option></select></td></tr>
+		</table>
+	</td>
+    <td align="left" valign="top" ><div id="divSysAgentPannelSetting" name="divSysAgentPannelSetting"></div></td>
+  </tr>
+  <tr >
     <td width="230" align="left" valign="top"  id="SysEnableContact" name="SysEnableContact">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;detail_level
 	</td>
@@ -444,7 +459,7 @@ require_once('preferences.common.php');
 			<div id="divSysDetailLevel" name="divSysDetailLevel"></div>
 		</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysPopUpWhenDialIn" name="SysPopUpWhenDialIn">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop_up_when_dial_in
 	</td>
@@ -456,7 +471,7 @@ require_once('preferences.common.php');
 		<div id="divSysPopUpWhenDialIn" name="divSysPopUpWhenDialIn"></div>
 	</td>
   </tr>
-  <tr bgcolor="#F7F7F7">
+  <tr >
     <td width="230" align="left" valign="top" id="SysPopUpWhenDialOut" name="SysPopUpWhenDialOut">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop_up_when_dial_out</td>
     <td width="200" align="left" valign="top">
@@ -469,7 +484,7 @@ require_once('preferences.common.php');
 		<div id="divSysPopUpWhenDialOut" name="divSysPopUpWhenDialOut"></div>
 	</td>
   </tr>
-  <tr >
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysBrowserMaximizeWhenPopUp" name="SysBrowserMaximizeWhenPopUp">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;browser_maximize_when_pop_up
 	</td>
@@ -484,7 +499,7 @@ require_once('preferences.common.php');
 	</td>
   </tr>
 
-  <tr bgcolor="#F7F7F7">
+  <tr >
     <td width="230" align="left" valign="top"  id="SysFirstring" name="SysFirstring"  >
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;firstring
 	</td>
@@ -498,7 +513,7 @@ require_once('preferences.common.php');
 		<div id="divSysFirstring" name="divSysFirstring"></div>
 	</td>
   </tr>
-  <tr>
+  <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysUploadExcelPath" name="SysUploadExcelPath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upload_file_path</td>
     <td width="200" align="left" valign="top" >
 		<input type="text" size="30" id="iptSysUploadFilePath" name="iptSysUploadFilePath" />

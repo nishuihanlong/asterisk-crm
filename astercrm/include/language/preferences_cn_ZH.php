@@ -71,4 +71,5 @@ $asterisk_have_been_reloaded = "重载asterisk完毕";
 $asterisk_have_been_restart = "重启asterisk完毕";
 $server_is_rebooting = "服务器正在重启";
 $server_is_shuting_down = "服务器正在关机";
+$sys_agent_pannel_setting = "控制座席页各面板默认是否显示";
 ?>

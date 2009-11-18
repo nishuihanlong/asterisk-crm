@@ -51,13 +51,13 @@ outcontext = from-internal
 ;context when dial in, in trixbox this could be from-trunk
 incontext = from-internal
 
-;control if display following pannels in agent interface (On/Off)
+;agent_pannel_setting: if display following pannels in agent interface (On/Off)
 extension_pannel = On
 diallist_pannel = On
 transfer_pannel = On
 dial_pannel = On
 monitor_pannel = On
-misson_pannel = On
+mission_pannel = On
 
 ;chang color of records in diallist pannel  when dialitme is approaching
 diallist_pannel_tip = 30

@@ -204,7 +204,7 @@ function init(){
 		$objResponse->addAssign("monitorTitle", "style.display", "none");
 	}
 
-	if(strtoupper($config['system']['misson_pannel']) == 'OFF'){
+	if(strtoupper($config['system']['mission_pannel']) == 'OFF'){
 		$objResponse->addAssign("divDialList", "style.display", "none");
 		$objResponse->addAssign("misson", "style.display", "none");
 			

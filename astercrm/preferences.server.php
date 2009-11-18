@@ -106,6 +106,13 @@ function initIni(){
 
 	$objResponse->addAssign("iptSysPortalDisplayType","value",$config["system"]["portal_display_type"]);
 
+	$objResponse->addAssign("iptSysExtensionPannel","value",$config["system"]["extension_pannel"]);
+	$objResponse->addAssign("iptSysTransferPannel","value",$config["system"]["transfer_pannel"]);
+	$objResponse->addAssign("iptSysMonitorPannel","value",$config["system"]["monitor_pannel"]);
+	$objResponse->addAssign("iptSysDialPannel","value",$config["system"]["dial_pannel"]);
+	$objResponse->addAssign("iptSysMissionPannel","value",$config["system"]["mission_pannel"]);
+	$objResponse->addAssign("iptSysDiallistPannel","value",$config["system"]["diallist_pannel"]);
+
 	$objResponse->addAssign("iptSysPopUpWhenDialOut","value",$config["system"]["pop_up_when_dial_out"]);
 
 	$objResponse->addAssign("iptSysPopUpWhenDialIn","value",$config["system"]["pop_up_when_dial_in"]);
@@ -210,6 +217,8 @@ function initLocate(){
 
 	$objResponse->addAssign("divSysPortalDisplayType","innerHTML",$locate->Translate('sys_portal_display_type'));
 
+	$objResponse->addAssign("divSysAgentPannelSetting","innerHTML",$locate->Translate('sys_agent_pannel_setting'));
+
 	$objResponse->addAssign("divSysPopUpWhenDialOut","innerHTML",$locate->Translate('sys_pop_up_when_dial_out'));
 
 	$objResponse->addAssign("divSysPopUpWhenDialIn","innerHTML",$locate->Translate('sys_pop_up_when_dial_in'));
@@ -278,6 +287,14 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['allow_dropcall'] = $aFormValues['iptSysAllowDropcall'];
 	$myPreferences['system']['allow_same_data'] = $aFormValues['iptSysAllowSameData'];
 	$myPreferences['system']['portal_display_type'] = $aFormValues['iptSysPortalDisplayType'];
+
+	$myPreferences['system']['extension_pannel'] = $aFormValues['iptSysExtensionPannel'];
+	$myPreferences['system']['transfer_pannel'] = $aFormValues['iptSysTransferPannel'];
+	$myPreferences['system']['monitor_pannel'] = $aFormValues['iptSysMonitorPannel'];
+	$myPreferences['system']['dial_pannel'] = $aFormValues['iptSysDialPannel'];
+	$myPreferences['system']['mission_pannel'] = $aFormValues['iptSysMissionPannel'];
+	$myPreferences['system']['diallist_pannel'] = $aFormValues['iptSysDiallistPannel'];
+
 	$myPreferences['system']['pop_up_when_dial_out'] = $aFormValues['iptSysPopUpWhenDialOut'];
 	$myPreferences['system']['pop_up_when_dial_in'] = $aFormValues['iptSysPopUpWhenDialIn'];
 	$myPreferences['system']['browser_maximize_when_pop_up'] = $aFormValues['iptSysBrowserMaximizeWhenPopUp'];
@@ -292,6 +309,7 @@ function savePreferences($aFormValues){
 	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
 	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];
 	$myPreferences['diallist']['popup_diallist'] = $aFormValues['iptPopup_diallist'];
+
 	$myPreferences['google-map']['key'] = $aFormValues['iptGooglemapkey'];
 	if (Common::write_ini_file("astercrm.conf.php",$myPreferences) >0)
 		$objResponse->addAlert($locate->Translate('save_success'));
