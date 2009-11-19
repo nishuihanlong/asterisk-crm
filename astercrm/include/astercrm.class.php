@@ -1724,6 +1724,7 @@ Class astercrm extends PEAR{
 					$campaignoptions .='>'.$campaign['campaignname'].'</option>';
 				}				
 				$campaignoptions .= '</select>';
+				$assignoptions = '<input type="text" id="assign" name="assign" size="35" value="'.$diallist['assign'].'" >';
 			}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 				$groupoptions .= $_SESSION['curuser']['group']['groupname'].'<input id="groupid" name="groupid" type="hidden" value="'.$_SESSION['curuser']['groupid'].'">';			$res = Customer::getRecordsByField('groupid',$_SESSION['curuser']['groupid'],'astercrm_account');
 				$assignoptions .= '<select name="assign" id="assign">';
@@ -1765,6 +1766,12 @@ Class astercrm extends PEAR{
 				<form method="post" name="formeditDiallist" id="formeditDiallist">
 				
 				<table border="1" width="100%" class="adminlist">
+					<tr>
+						<td nowrap align="left">'.$locate->Translate("Customername").'</td>
+						<td align="left">
+							<input type="text" name="customername" id="customername" size="20" value="'.$diallist['customername'].'">
+						</td>
+					</tr>
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("number").'</td>
 						<td align="left">

@@ -128,6 +128,9 @@ function clearPopup(){
 	
 	$objResponse->addAssign("formplaymonitor","innerHTML", "" );
 	$objResponse->addAssign("formplaymonitor","style.visibility", "hidden");
+
+	$objResponse->addAssign("formDiallistPopup","innerHTML", "" );
+	$objResponse->addAssign("formDiallistPopup","style.visibility", "hidden");
 	
 	return $objResponse->getXML();
 }
@@ -618,6 +621,7 @@ function edit($id = null, $type = "note"){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign($formdiv, "style.visibility", "visible");
 	$objResponse->addAssign($formdiv, "innerHTML", $html);
+	
 	return $objResponse->getXML();
 }
 
@@ -716,6 +720,7 @@ function searchCdrFormSubmit($searchFormValue='',$numRows,$limit,$id='',$type=''
 }
 
 function searchDiallistFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
+
 		global $locate,$db;
 		$objResponse = new xajaxResponse();
 		$searchField = array();
@@ -726,7 +731,10 @@ function searchDiallistFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=
 		$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 		$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 		$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
-		$divName = "formDiallist";
+		if($customerid == 0 || $customerid == '')
+			$divName = "formDiallistPannel";
+		else
+			$divName = "formDiallist";
 		$html = Table::Top($locate->Translate("diallist"),"formDiallist");
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'diallist');
@@ -803,6 +811,8 @@ function saveDiallist($f,$userexten = '',$customerid = ''){
 		$objResponse->addAssign("formeditDiallistInfo", "style.visibility", "hidden");
 		$objResponse->addClear("formeditDiallistInfo", "innerHTML");
 	}
+	$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
+
 	return $objResponse->getXML();
 }
 
