@@ -154,7 +154,8 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("showRecentCdr");	
 	$xajax->registerFunction("showSurvey");
 	$xajax->registerFunction("addSchedulerDial");
-	$xajax->registerFunction("saveSchedulerDial");	
+	$xajax->registerFunction("saveSchedulerDial");
+	$xajax->registerFunction("clearPopup");
 }
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.

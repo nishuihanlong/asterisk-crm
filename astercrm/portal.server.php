@@ -969,16 +969,20 @@ function workstart() {
 		$objResponse->addAssign("btnWorkStatus","value", "working" );
 		$objResponse->addAssign("divWork","innerHTML", $locate->Translate("dialing to")." ".$row['dialnumber']);
 		$_SESSION['curuser']['WorkStatus'] = 'working';
-		$phoneNum = $row['dialnumber'];	
+		$phoneNum = $row['dialnumber'];			
 		astercrm::deleteRecord($row['id'],"diallist");
 
 		$row['trytime'] = $row['trytime'] + 1;
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		astercrm::insertNewDialedlist($row);
-
+		$objResponse->loadXML(getContact($phoneNum));
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
-		invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid']);
+		if($config['system']['firstring'] == 'callee'){
+			invite($phoneNum,$_SESSION['curuser']['extension'],$row['campaignid']);
+		}else{
+			invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid']);
+		}
 	}		
 	return $objResponse;
 }

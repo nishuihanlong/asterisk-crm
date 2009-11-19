@@ -6,6 +6,7 @@ new features in 0.061
 	added the daemon to convert recording files to mp3 format
 	added mp3 online player
 	added agent portal panel switcher
+	added clear screen button in agent portal 
 
 
 0.061 新功能
@@ -16,6 +17,7 @@ new features in 0.061
 	增加了自动将录音转换为mp3存储的功能
 	增加了mp3录音播放器
 	增加了坐席界面上的面板开关
+	增加了坐席界面上清屏功能(清除弹出窗口)
 
 astercrm features(0.061)
 

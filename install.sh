@@ -281,7 +281,14 @@ read monitorconvertflag
 
 if [ "X${monitorconvertflag}" == "Xy" -o "X${monitorconvertflag}" == "XY" ]
 then
-  echo "1 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/root
+  if [ -f "/etc/redhat-release" ]
+  then
+        echo "1 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/root
+  else
+        echo "1 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/crontabs/root
+        chown root:crontab /var/spool/cron/crontabs/root
+        chmod 600 /var/spool/cron/crontabs/root
+  fi
 fi
 
 echo "*****************************************************************"
@@ -297,8 +304,13 @@ read autostartflag
 
 if [ "X${autostartflag}" == "Xy" -o "X${autostartflag}" == "XY" ]
 then
-  cp -f ${daemonpath}/asterccd /etc/rc.d/init.d
-  chkconfig --add asterccd
+  if [ -f "/etc/redhat-release" ]
+  then
+        cp -f ${daemonpath}/asterccd /etc/rc.d/init.d
+	chkconfig --add asterccd
+  else
+        echo "${daemonpath}/asterccd start" >> /etc/rc.local
+  fi  
 fi
 
 

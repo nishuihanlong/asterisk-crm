@@ -105,4 +105,5 @@ $scheduler_dial = "定时拨号";
 $my_diallist = "我的待拨列表";
 $customername = "客户名称";
 $call_order = "优先级";
+$clear_screen = "清 屏";
 ?>
