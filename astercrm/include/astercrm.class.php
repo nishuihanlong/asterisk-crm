@@ -477,7 +477,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid,customername,creby) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].",'".$f['customername']."',"."'".$f['creby']."')";
+		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid,customername,callOrder,creby) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].",'".$f['customername']."','".$f['callOrder']."',"."'".$f['creby']."')";
 
 		astercrm::events($query);
 		$res =& $db->query($query);
@@ -2363,6 +2363,9 @@ Class astercrm extends PEAR{
 						$campaign_str.="OR $table.campaignid = '".$campaign_row['id']."' ";					
 					}					
 				}else{
+					if($table == 'monitorrecord' && $filter[$i] == 'dstchannel'){
+						$content[$i] = 'AGENT/'.$content[$i];
+					}
 				
 					if($type == "equal"){
 						$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
@@ -3967,7 +3970,7 @@ Class astercrm extends PEAR{
 	function &getRecNumRowsMorewithstype($customerid,$filter, $content,$stype){
 		global $db;
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'monitorrecord');
 
 		if($customerid != ''){
 			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
@@ -4012,7 +4015,7 @@ Class astercrm extends PEAR{
 	function &getRecRecordsFilteredMorewithstype($customerid,$start, $limit, $filter, $content, $stype,$order){
 		global $db;
 		
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'monitorrecord');
 
 		if($customerid != ''){
 			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');

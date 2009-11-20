@@ -172,6 +172,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fieldsFromSearch[] = 'extension';
 		$fieldsFromSearch[] = 'dst';
 		$fieldsFromSearch[] = 'didnumber';
+		$fieldsFromSearch[] = 'dstchannel';
 		$fieldsFromSearch[] = 'billsec';
 		$fieldsFromSearch[] = 'filename';
 		$fieldsFromSearch[] = 'creby';
@@ -183,6 +184,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 		$fieldsFromSearchShowAs[] = $locate->Translate("exten");
 		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
 		$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
+		$fieldsFromSearchShowAs[] = $locate->Translate("agent");
 		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 		$fieldsFromSearchShowAs[] = $locate->Translate("filename");
 		$fieldsFromSearchShowAs[] = $locate->Translate("creby");
