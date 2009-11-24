@@ -131,10 +131,17 @@ function btnCDROnClick(divId){
 	window.open("checkout.php?peer=" + divId ,"CheckOutPage");
 }
 
-function btnReceiptOnClick(divId){
-	customerid = document.getElementById(divId + '-CustomerId').value;
-	customername = document.getElementById(divId + '-CustomerName').value;
-	discount = document.getElementById(divId + '-CustomerDiscount').value;
+function btnReceiptOnClick(divId,customereable){
+	//alert(customereable);return;
+	if(customereable != 0 && customereable != 'undefined'){
+		customerid = document.getElementById(divId + '-CustomerId').value;
+		customername = document.getElementById(divId + '-CustomerName').value;
+		discount = document.getElementById(divId + '-CustomerDiscount').value;
+	}else{
+		customerid = 0;
+		customername = '';
+		discount = 0;
+	}
 	window.open ("receipt.php?peer="+divId+"&customername="+customername+"&discount="+discount+"", 'Receipt', 'height=300, width=600, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
 }
 
