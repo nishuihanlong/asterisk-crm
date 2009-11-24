@@ -140,6 +140,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fileds[] = 'destination';
 	$fileds[] = 'memo';
 	$fileds[] = 'discount';
+	$fileds[] = 'note';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -153,6 +154,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("destination");
 	$headers[] = $locate->Translate("memo");
 	$headers[] = $locate->Translate("discount");
+	$headers[] = $locate->Translate("note");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -192,6 +194,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","discount","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+	$eventHeader[]= '';
 
 	// Select Box: type table.
 	$typeFromSearch = array();
@@ -248,6 +251,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
+		$trstyle = '';
 		$rowc[] = $row['id'];
 		$rowc[] = $row['calldate'];
 		$rowc[] = $row['src'];
@@ -259,7 +263,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['destination'];
 		$rowc[] = $row['memo'];
 		$rowc[] = $row['discount'];
-		$tableGrid->addRow($table,$rowc,false,false,false,$divName,$fields);
+		$rowc[] = $row['note'];
+		if($row['setfreecall'] == 'yes') $trstyle = 'style="background:#d5c59f;"';
+		$tableGrid->addRow($table,$rowc,false,false,false,$divName,$fields,$trstyle);
  	}
  	
  	// End Editable Zone

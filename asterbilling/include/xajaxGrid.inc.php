@@ -240,10 +240,10 @@ class ScrollTable{
 	*
 	*/
 
-	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null){
+	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$trstyle){
 		global $local_grid;
 		$nameRow = $divName."Row".$arr[0];
-	    $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
+	    $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" '.$trstyle.'>'."\n";
 		$ind = 0;
 	   foreach ($arr as $key => $value) {
 	   	$nameCell = $nameRow."Col".$ind;

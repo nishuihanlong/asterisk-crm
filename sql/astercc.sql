@@ -418,6 +418,8 @@ CREATE TABLE `mycdr` (
   `customerid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
   `payment`  varchar(15) NOT NULL default '',
+  `note` text default '',
+  `setfreecall` enum('yes','no') default 'no',
   UNIQUE KEY `id` (`id`),
   INDEX `customerid` (`customerid`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
@@ -458,6 +460,8 @@ CREATE TABLE `historycdr` (
   `customerid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
   `payment`  varchar(15) NOT NULL default '',
+  `note` text default '',
+  `setfreecall` enum('yes','no') default 'no',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`),
   INDEX `dst` (`dst`),

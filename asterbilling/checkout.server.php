@@ -576,6 +576,7 @@ function listCDR($aFormValues){
 	while	($records->fetchInto($mycdr)){
 		$price = '';
 		$ratedesc = '';
+		$trstyle = '';
 		$ratedesc = astercc::readRateDesc($mycdr['memo']);
 
 		$callshop_cost = 0;
@@ -593,7 +594,8 @@ function listCDR($aFormValues){
 			$reseller_cost = $mycdr['resellercredit'];
 
 		}
-		$html .= '	<tr align="left" id="tr-'.$mycdr['id'].'">
+		if($mycdr['setfreecall'] == 'yes') $trstyle = 'style="background:#d5c59f;"';
+		$html .= '	<tr align="left" id="tr-'.$mycdr['id'].'" '.$trstyle.'>
 						<td align="right">
 							<input type="checkbox" id="ckb[]" name="ckb[]" value="'.$mycdr['id'].'" onclick="ckbOnClick(this);">
 							<input type="hidden" id="price-'.$mycdr['id'].'" name="price-'.$mycdr['id'].'" value="'.$mycdr['credit'].'">

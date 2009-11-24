@@ -617,5 +617,50 @@ function checkCustomer($pin,$divId){
 	$objResponse->addScript("calculateBalance('".$divId."');");
 	return $objResponse;
 }
+
+function removeReceipt($id){
+	$objResponse = new xajaxResponse();
+	$objResponse->addRemove('rcdr-'.$id);
+	return $objResponse;
+}
+
+function setFreeCallPage($id){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("Set Free Call"),"formDiv");  // <-- Set the title for your form.
+	$html .= '<table border="1" width="100%" class="adminlist">
+				<tr><td ><b>'.$locate->Translate("Are you sure to set this call free").'?</b></td><tr>
+				<tr><td >'.$locate->Translate("note").':&nbsp;&nbsp;<textarea id="note"></textarea></td><tr>
+				<tr><td >'.$locate->Translate("hidden record").':&nbsp;<input type="checkbox" id="hiddenrecord" value="1"></td><tr>
+				<tr><td align="center"><input type="button" value="'.$locate->Translate("confirm").'" onclick="xajax_setFreeCall(\''.$id.'\',document.getElementById(\'hiddenrecord\').checked,document.getElementById(\'note\').value);">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("cancel").'"  onclick="document.getElementById(\'formDiv\').display =\'none\';document.getElementById(\'formDiv\').innerHTML=\'\';return false;"></td><tr>
+			 </table>';
+	// End edit zone
+	$html .= Table::Footer();
+	$objResponse->addAssign("formDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formDiv", "innerHTML", $html);
+	
+	return $objResponse;
+}
+
+function setFreeCall($id,$hiddenrecord,$note){
+	global $db;
+	$objResponse = new xajaxResponse();
+	
+	$query = "UPDATE mycdr SET credit = 0, note = '".$note."', setfreecall = 'yes' WHERE id = $id";
+
+	if($db->query($query)){
+		if($hiddenrecord == 'true'){
+			$objResponse->addRemove('rcdr-'.$id);
+		}else{
+			$objResponse->addAssign("rprice-".$id, "innerHTML", '0.00');
+			$objResponse->addAssign("rcdr-".$id, "style.background", '#d5c59f');
+		}
+	}	
+	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
+	$objResponse->addAssign("formDiv", "innerHTML", '');
+
+	return $objResponse;
+}
+
 $xajax->processRequests();
 ?>

@@ -67,4 +67,7 @@ $xajax->registerFunction("setStatus");
 $xajax->registerFunction("setGroupBalance");
 $xajax->registerFunction("searchRate");
 $xajax->registerFunction("checkCustomer");
+$xajax->registerFunction("setFreeCall");
+$xajax->registerFunction("setFreeCallPage");
+$xajax->registerFunction("removeReceipt");
 ?>
