@@ -137,7 +137,7 @@ function clearPopup(){
 
 function surveySave($f){
 	global $db,$locate,$config;
-
+//print_r($f);exit;
 	$objResponse = new xajaxResponse();
 
 	$surveyid = $f["surveyid"];
@@ -261,11 +261,11 @@ function noteAdd($customerid,$contactid){
 	return $objResponse->getXML();
 }
 
-function surveyList($customerid,$contactid){
+function surveyList($customerid,$contactid,$callerid = ''){
 	global $locate;
 
 	$html = Table::Top($locate->Translate("Add Survey"),"formNoteInfo"); 			
-	$html .= Customer::surveyList($customerid,$contactid); 		
+	$html .= Customer::surveyList($customerid,$contactid,$callerid); 		
 	$html .= Table::Footer();
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
@@ -341,6 +341,7 @@ function saveNote($f){
 function saveSurvey($f){
 	$objResponse = new xajaxResponse();
 	global $locate;
+	
 	if ($f['surveyoption'] != '' || $f['surveynote'] != ''){
 		$respOk = Customer::insertNewSurveyResult($f['surveyid'],$f['surveyoption'],$f['surveynote'],$f['customerid'],$f['contactid']); 
 		if ($respOk){

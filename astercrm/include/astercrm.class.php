@@ -1043,7 +1043,7 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function surveyList($customerid,$contactid){
+	function surveyList($customerid,$contactid,$callerid = ''){
 		global $locate,$config, $db;
 		$html .= '<form method="post" name="fSurveyList" id="fSurveyList">';
 		$html .= '<input type="hidden" value="'.$customerid.'" name="customerid" id="customerid">';
@@ -1058,7 +1058,7 @@ Class astercrm extends PEAR{
 			//get survey title and id
 			$surveytitle = $row['surveyname'];
 			$surveyid = $row['id'];
-			$html .= "<tr><td>$surveytitle  [<a href=? onclick=\"xajax_showSurvey('$surveyid','$customerid','$contactid');return false;\">".$locate->Translate("Add")."</a>]</td></tr>";
+			$html .= "<tr><td>$surveytitle  [<a href=? onclick=\"xajax_showSurvey('$surveyid','$customerid','$contactid',$callerid,'".$row['campaignid']."');return false;\">".$locate->Translate("Add")."</a>]</td></tr>";
 		}
 
 		$html .= '	</table>';
@@ -1894,7 +1894,7 @@ Class astercrm extends PEAR{
 	*									a extraidos de la base de datos para ser mostrados 
 	*/
 	function showCustomerRecord($id,$type="customer",$callerid=''){
-    	global $locate;
+    	global $locate;//echo $callerid;exit;
 		$customer =& astercrm::getCustomerByID($id,$type);
 		$contactList =& astercrm::getContactListByID($customer['id']);
 
@@ -1995,7 +1995,7 @@ Class astercrm extends PEAR{
 							if($survey['count'] == 1){
 								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$id.'\',0,\''.$survey['callerid'].'\',\''.$survey['campaignid'].'\');return false;">'.$locate->Translate("Add Survey").'</a>';
 							}else{
-								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0);return false;">'.$locate->Translate("Add Survey").'</a>';
+								$html .= '<a href="?" onclick="xajax_surveyList(\''.$customer['id'].'\',0,\''.$survey['callerid'].'\');return false;">'.$locate->Translate("Add Survey").'</a>';
 							}
 
 							$html .= '</td><input type="hidden" id="allContact" name="allContact" value="off">
@@ -2342,8 +2342,8 @@ Class astercrm extends PEAR{
 	*	@param $content		(array)		content in sql
 	*	@return $joinstr	(string)	sql where string
 	*/
-	function createSqlWithStype($filter,$content,$stype=array(),$table=''){
-
+	function createSqlWithStype($filter,$content,$stype=array(),$table='',$option='search'){
+//print_r($filter);echo $table;exit;
 		$i=0;
 		$joinstr='';
 		foreach($stype as $type){
@@ -2356,7 +2356,8 @@ Class astercrm extends PEAR{
 					while ($group_res->fetchInto($group_row)){
 						$group_str.="OR $table.groupid = '".$group_row['id']."' ";					
 					}					
-				}elseif($filter[$i] == 'campaignname' and $table != "campaign" and $table != ""){
+				}elseif(($filter[$i] == 'campaignname' OR ($filter[$i] == 'campaign.campaignname' and $option = 'delete')) and $table != "campaign" and $table != ""){
+					
 					$campaign_res = astercrm::getFieldsByField('id','campaignname',$content[$i],'campaign',$type);
 					
 					while ($campaign_res->fetchInto($campaign_row)){
@@ -2508,7 +2509,7 @@ Class astercrm extends PEAR{
 
 	function deletefromsearch($searchContent,$searchField,$searchType="",$table){
 		global $db;
-		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table,'delete');
 
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');			
