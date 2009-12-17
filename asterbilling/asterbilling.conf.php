@@ -128,4 +128,7 @@ discounttable = discount
 username = astercc
 password = asterccsecret
 
+[resellertrunk]
+trunkname = reselleroutbound
+
 #?>
