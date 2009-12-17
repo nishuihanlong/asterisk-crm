@@ -202,6 +202,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'credit_clid';
 	$fields[] = 'groupname';
 	$fields[] = 'resellername';
+	$fields[] = 'isshow';
 	$fields[] = 'addtime';
 
 	// HTML table: Headers showed
@@ -216,6 +217,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Clid Credit")."<br>";
 	$headers[] = $locate->Translate("Group")."<br>";
 	$headers[] = $locate->Translate("Reseller")."<br>";
+	$headers[] = $locate->Translate("Is Show")."<br>";
 	$headers[] = $locate->Translate("Last Update")."<br>";
 
 	// HTML table: hearders attributes
@@ -231,9 +233,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
+
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -258,6 +263,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit_clid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resellername","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","isshow","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","addtime","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
@@ -327,6 +333,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['credit_clid'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['resellername'];
+		$rowc[] = $locate->Translate($row['isshow']);
 		$rowc[] = $row['addtime'];
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 			$table->addRow("clid",$rowc,1,1,0,$divName,$fields);

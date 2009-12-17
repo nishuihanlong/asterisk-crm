@@ -556,6 +556,7 @@ function listCDR($aFormValues){
 			<td width="360">'.$locate->Translate("Rate").'</td>
  			<td width="120">'.$locate->Translate("Price").'</td>
  			<td width="70">'.$locate->Translate("Status").'</td>
+			<td width="300">'.$locate->Translate("Note").'</td>
 			</tr>';
 	$html .= '<tr>
 			<td width="60">
@@ -571,6 +572,7 @@ function listCDR($aFormValues){
 			<td></td>
  			<td></td>
  			<td></td>
+			<td></td>
 			</tr>';
 	
 	while	($records->fetchInto($mycdr)){
@@ -601,6 +603,7 @@ function listCDR($aFormValues){
 							<input type="hidden" id="price-'.$mycdr['id'].'" name="price-'.$mycdr['id'].'" value="'.$mycdr['credit'].'">
 							<input type="hidden" id="callshop-'.$mycdr['id'].'" name="callshop-'.$mycdr['id'].'" value="'.$callshop_cost.'">
 							<input type="hidden" id="reseller-'.$mycdr['id'].'" name="reseller-'.$mycdr['id'].'" value="'.$reseller_cost.'">
+							<input type="hidden" id="free-'.$mycdr['id'].'" name="free-'.$mycdr['id'].'" value="'.$mycdr['setfreecall'].'">
 						</td>
 						<td>'.$mycdr['calldate'].'</td>
 						<td>'.$mycdr['src'].'</td>
@@ -633,9 +636,9 @@ function listCDR($aFormValues){
 		else
 			$html .='<td>'.$mycdr['userfield'].$addon.'</td>';
 
-		$html .= '</tr>
+		$html .= '<td>'.$mycdr['note'].'</td></tr>
 					<tr bgcolor="gray">
-						<td colspan="11" height="1"></td>
+						<td colspan="12" height="1"></td>
 					</tr>
 				';
 		$i++;
@@ -655,6 +658,7 @@ function listCDR($aFormValues){
  			<td></td>
  			<td></td>
  			<td></td>
+			<td></td>
 			</tr>';
 	$html .= '</table>';
 	$html .= '</form>';
@@ -667,12 +671,26 @@ function listCDR($aFormValues){
 }
 
 function checkOut($aFormValues){
+	global $locate;
 	$objResponse = new xajaxResponse();
+	$amounta = 0.00;
+	$amountb = 0.00;
+	$callshop = 0.00;
+	$reseller = 0.00;
 	if ($aFormValues['ckb']){
 		foreach ($aFormValues['ckb'] as $id){
-			$res =  astercc::setBilled($id);
+			//$res =  astercc::setBilled($id);
+			$amounta += $aFormValues['price-'.$id];
+			if($aFormValues['free-'.$id] == 'no'){
+               $amountb += $aFormValues['price-'.$id];
+			}
+			$callshop += $aFormValues['callshop-'.$id];
+			$reseller += $aFormValues['reseller-'.$id];
 		}
 		$objResponse->addScript("listCDR();");
+	    $objResponse->addAssign("spanCurrencyTotal","innerHTML",$locate->Translate("should").":".$amounta." ".$locate->Translate("real").":".$amountb);
+	    $objResponse->addAssign("spanCurrencyCallshopCost","innerHTML",$callshop);
+	    $objResponse->addAssign("spanCurrencyResellerCost","innerHTML",$reseller);
 	}
 	return $objResponse;
 }

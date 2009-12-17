@@ -332,6 +332,12 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Is Show").'</td>
+					<td align="left">
+						<select id="isshow" name="isshow"><option value="yes">'.$locate->Translate("yes").'</option><option value="no">'.$locate->Translate("no").'</option></select>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -358,7 +364,13 @@ class Customer extends astercrm
 		global $locate , $config;
 
 		$clid =& Customer::getRecordByID($id,'clid');
-
+		if($clid['isshow'] == 'yes'){
+           $selecty = "selected";
+		   $selectn = "";
+		}else if($clid['isshow'] == 'no'){
+           $selecty = "";
+		   $selectn = "selected";
+		}
 		$reselleroptions = '';
 		$reseller = astercrm::getAll('resellergroup');
 
@@ -502,10 +514,17 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Is Show").'</td>
+					<td align="left">
+						<select id="isshow" name="isshow"><option value="yes" '.$selecty.'>'.$locate->Translate("yes").'</option><option value="no" '.$selectn.'>'.$locate->Translate("no").'</option></select>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
 				</tr>
 			 </table>
 			';
+
 		$html .= '
 				</form>
 				*'.$locate->Translate("Obligatory Fields").'

@@ -183,8 +183,10 @@ class Customer extends astercrm
 		if($f['routetype'] == 'customize') {
 
 			if(empty($f['trunkid'])) {
+				$trunkidentity = Customer::generateUniquePin(10);
 				$trunk_sql= "INSERT INTO trunks SET "
 					."trunkname='".$f['trunkname']."', "
+					."trunkidentity='".$trunkidentity."', "
 					."trunkprotocol='".$f['protocoltype']."', "
 					."registrystring = '".$f['registrystring']."', "
 					."trunkdetail = '".$f['detail']."', "
@@ -224,7 +226,7 @@ class Customer extends astercrm
 		if($f['routetype'] == 'auto') {
 			$f['trunk_id'] = 0;
 		} else if($f['routetype'] == 'default') {
-			$f['trunk_id'] = $config['resellertrunk']['trunkname'];
+			$f['trunk_id'] = -1;
 		} else if($f['routetype'] == 'customize'){
 			$f['trunk_id'] = $f['trunkid'];
 		}
@@ -449,7 +451,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
-					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="254"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
@@ -465,7 +467,10 @@ class Customer extends astercrm
 				</tr>
 				<tr>					
 					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
-					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45"></textarea></td>
+					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45">host=***provider ip address***
+username=***userid***
+secret=***password***
+type=peer</textarea></td>
 				</tr>
 			</table>
 			<table width="100%" style="border:0;">
@@ -591,7 +596,7 @@ class Customer extends astercrm
 						$html .= '<option value="auto" selected>'.$locate->Translate("auto").'</option>
 								 <option value="default">'.$locate->Translate("default").'</option>
 								 <option value="customize">'.$locate->Translate("customize").'</option>';
-					} else if($resellergroup['trunk_id'] == $config['resellertrunk']['trunkname']) {
+					} else if($resellergroup['trunk_id'] == -1) {
 						$html .= '<option value="auto" >'.$locate->Translate("auto").'</option>
 								 <option value="default" selected>'.$locate->Translate("default").'</option>
 								 <option value="customize">'.$locate->Translate("customize").'</option>';
@@ -629,7 +634,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
-					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="30" value="'.$TrunkArray['registrystring'].'"></td>
+					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="254" value="'.$TrunkArray['registrystring'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
@@ -663,7 +668,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
-					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="254"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
@@ -679,7 +684,10 @@ class Customer extends astercrm
 				</tr>
 				<tr>					
 					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
-					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45"></textarea></td>
+					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45">host=***provider ip address***
+username=***userid***
+secret=***password***
+type=peer</textarea></td>
 				</tr>';
 			}
 			$html .='

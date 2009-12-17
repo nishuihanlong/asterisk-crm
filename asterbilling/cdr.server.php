@@ -264,6 +264,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['memo'];
 		$rowc[] = $row['discount'];
 		$rowc[] = $row['note'];
+		if($row['userfield'] == 'UNBILLED') $trstyle = 'style="background:#EED5D2;"';
 		if($row['setfreecall'] == 'yes') $trstyle = 'style="background:#d5c59f;"';
 		$tableGrid->addRow($table,$rowc,false,false,false,$divName,$fields,$trstyle);
  	}

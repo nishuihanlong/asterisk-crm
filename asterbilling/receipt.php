@@ -135,7 +135,10 @@
 	  $records = astercc::readUnbilled($peer,$leg,$_SESSION['curuser']['groupid']);
 	  while	($records->fetchInto($myreceipt)) {
 		  $bgcolor = '';
-		  if($myreceipt['setfreecall'] == 'yes') $bgcolor = 'bgcolor="#d5c59f"';
+		  if($myreceipt['setfreecall'] == 'yes') {
+			  $bgcolor = 'bgcolor="#d5c59f"';
+              $myreceipt['credit'] = '0.00';
+		  }
 		  $ratedesc = astercc::readRateDesc($myreceipt['memo']).'&nbsp;';
 		  $content = '<tr id="rcdr-'.$myreceipt['id'].'" '.$bgcolor.'>';
 		  if ($peer == $myreceipt['dst']){
@@ -158,7 +161,9 @@
 					<td align="right">'.astercc::creditDigits($_REQUEST['discount'],3).'</td>
 				</tr>';
 		  echo $content;
-			$total_price += $myreceipt['credit'];
+		    if($myreceipt['setfreecall'] == 'no'){
+			   $total_price += $myreceipt['credit'];
+			}
 	  }
       $total_price = $total_price * (1-$_REQUEST['discount']);
 	  $total_price = astercc::creditDigits($total_price,2);

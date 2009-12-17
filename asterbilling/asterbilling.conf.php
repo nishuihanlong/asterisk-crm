@@ -54,6 +54,11 @@ useindex = admin
 ;context when dial out, in trixbox this could be from-internal
 outcontext =  from-internal
 
+;default outbound trunk for reseller if you using reselleroutbound.agi
+resellertrunk = 
+;default outbound trunk type, SIP,IAX2 ...
+resellertrunktype = 
+
 ; individual: set the limit in credit limit field to the call
 ; balance: set limit in balance to the call
 creditlimittype = balance
@@ -65,7 +70,7 @@ upload_file_path = ./upload/
 refreshBalance = 0
 
 ; if we use history cdr(move the billed cdr to historycdr and read the cdr from historycdr)
-useHistoryCdr = 1
+useHistoryCdr = 0
 
 ; when we set useHistoryCDR = 1, then here set if we move the no answer cdr to historycdr
 keepNoAnswerCDR = 1
@@ -127,8 +132,5 @@ customertable = callshop_customers
 discounttable = discount
 username = astercc
 password = asterccsecret
-
-[resellertrunk]
-trunkname = reselleroutbound
 
 #?>

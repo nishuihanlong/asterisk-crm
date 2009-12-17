@@ -66,19 +66,21 @@ function init(){
 
 
 	foreach ($peers as $peer){
-		$i++;
 		// check if the booth is locked
 		$clid = astercc::readRecord('clid','clid',$peer);
-		// read booth display
-		//$display = astercc::readField('clid','display','clid',$peer);
-		$status = $clid['status'];
-		$display = $clid['display'];
-		if ($curchannels[$peer] && $curchannels[$peer]['creditlimit'] > 0){
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'","'.$display.'","'.$config['customers']['enable'].'")');
-		}else{
-			$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'","'.$display.'","'.$config['customers']['enable'].'")');
+		if($clid['isshow'] == 'yes'){
+			$i++;
+			// read booth display
+			//$display = astercc::readField('clid','display','clid',$peer);
+			$status = $clid['status'];
+			$display = $clid['display'];
+			if ($curchannels[$peer] && $curchannels[$peer]['creditlimit'] > 0){
+				$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","'.$curchannels[$peer]['creditlimit'].'","'.$i.'","'.$status.'","'.$display.'","'.$config['customers']['enable'].'")');
+			}else{
+				$objResponse->addScript('addDiv("divMainContainer","'.$peer.'","","'.$i.'","'.$status.'","'.$display.'","'.$config['customers']['enable'].'")');
+			}
+			$objResponse->addScript('xajax_addUnbilled("'.$peer.'");');
 		}
-		$objResponse->addScript('xajax_addUnbilled("'.$peer.'");');
 	}
 if (!isset($_SESSION['callbacks']))
 	$_SESSION['callbacks'] = array();
@@ -646,7 +648,7 @@ function setFreeCall($id,$hiddenrecord,$note){
 	global $db;
 	$objResponse = new xajaxResponse();
 	
-	$query = "UPDATE mycdr SET credit = 0, note = '".$note."', setfreecall = 'yes' WHERE id = $id";
+	$query = "UPDATE mycdr SET note = '".$note."', setfreecall = 'yes' WHERE id = $id";
 
 	if($db->query($query)){
 		if($hiddenrecord == 'true'){

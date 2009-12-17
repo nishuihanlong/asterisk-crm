@@ -273,8 +273,6 @@ class astercc extends PEAR
 		astercc::events($sql);
 		$cdr = &$db->getRow($sql);
 		$credit = $cdr['credit'];
-//		print_r($cdr);exit;
-
 		// insert the record to historycdr
 		if($config['system']['useHistoryCdr'] == 1){
 			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',customerid = $costomerid, discount = $discount ,payment='".$payment."',note='".$cdr['note']."',setfreecall='".$cdr['setfreecall']."'";
@@ -332,11 +330,11 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		else
 			$query = "SELECT * FROM mycdr WHERE src LIKE '$peer%' AND groupid = ".$_SESSION['curuser']['groupid']." ";
 	}
-	*/
+	*/ 
 	if($config['system']['useHistoryCdr'] == 1){
 		$query = "SELECT * FROM historycdr WHERE 1 ";
 	}else{
-		$query = "SELECT * FROM mycdr WHERE 1 ";
+		$query = "SELECT * FROM mycdr WHERE 1 AND setfreecall != 'yes'";
 	}
 
 		if ($resellerid != '' and $resellerid != '0'){
