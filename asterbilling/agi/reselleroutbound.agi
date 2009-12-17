@@ -12,7 +12,8 @@ my $AGI = new Asterisk::AGI;
 my %input = $AGI->ReadParse();
 $|=1; #auto flash
 
-my $conf_file = "/home/mwcoder/astercc01/asterbilling/asterbilling.conf.php" ;
+my $conf_file = "/var/www/html/asterCC/asterbilling/asterbilling.conf.php" ;
+
 # read parameter from conf file
 my $cfg = new Config::IniFiles -file => $conf_file;
 if (not defined $cfg) {
