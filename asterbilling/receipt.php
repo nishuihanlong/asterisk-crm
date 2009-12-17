@@ -88,7 +88,7 @@
 		-->
  </SCRIPT>
 
- <BODY>
+ <BODY onload="dragresize.apply(document);">
  <? if (isset($titleHtml)){
 		$titleHtml .= '';
 		echo '<div id="divReceiptTitle" name="divReceiptTitle" style="position:relative;top:2px;height:80px;">'.$titleHtml.'</div><div style="position:relative;left:0px;display:block;"><hr color="#F1F1F1"></div>';
@@ -169,7 +169,7 @@
   </table>
   </div>
   <div id="formDiv"  class="formDiv drsElement" 
-				style="left: 250px; top: 80px;width:300px;"></div>
+				style="left: 250px; top: 200px;width:300px;"></div>
   <div id="copyright" style="background-repeat:repeat-x;height:64px;margin-top:10px;text-align:center;">
 				<ul>
 				<li>2007-2009 asterBilling - asterBilling home</li>

@@ -215,6 +215,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
 		$table->ordering = $ordering;
+		$table->exportFlag = '1';//对导出标记进行赋值
 		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
@@ -253,6 +254,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$searchField = array();
 		$searchContent = array();
 		$searchType = array();
+		$optionFlag = $searchFormValue['optionFlag'];
 		$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
 		$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 		$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
@@ -261,21 +263,29 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$divName = "grid";
 
 		//print_r($searchFormValue);exit;
-		if($type == "delete"){
-			$res = Customer::deleteRecord($id,'account');
-			if ($res){
-				$html = createGrid('','',$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,$searchType);
-				$objResponse = new xajaxResponse();
-				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
-			}else{
-				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
-			}
+		if($optionFlag == "export"){
+			$sql = astercrm::getSql($searchContent,$searchField,$searchType,'mycdr'); //得到要导出的sql语句
+			$_SESSION['export_sql'] = $sql;
+			$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+			$objResponse->addScript("document.getElementById('exportForm').submit();");
 		}else{
-			$html .= createGrid('','',$numRows, $limit,$searchField, $searchContent,  $order, $divName,$ordering,$searchType);
+			if($type == "delete"){
+				$res = Customer::deleteRecord($id,'account');
+				if ($res){
+					$html = createGrid('','',$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,$searchType);
+					$objResponse = new xajaxResponse();
+					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+				}else{
+					$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+				}
+			}else{
+				$html .= createGrid('','',$numRows, $limit,$searchField, $searchContent,  $order, $divName,$ordering,$searchType);
+			}
+			$objResponse->addClear("msgZone", "innerHTML");
+			$objResponse->addAssign($divName, "innerHTML", $html);
 		}
 
-		$objResponse->addClear("msgZone", "innerHTML");
-		$objResponse->addAssign($divName, "innerHTML", $html);
+		
 		return $objResponse->getXML();
 }
 
