@@ -160,6 +160,7 @@ CREATE TABLE `clid` (
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
   `status` tinyint(4) NOT NULL default '1',
+  `isshow` enum('yes','no') NOT NULL default 'yes',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`),
@@ -212,6 +213,7 @@ CREATE TABLE `resellergroup` (
   `limittype` varchar(10) NOT NULL default '',
   `multiple` double(8,4) NOT NULL default '1.0000',
   `credit_clid` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
+  `trunk_id` VARCHAR(30) NOT NULL default '',
   `credit_group` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `credit_reseller` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -311,6 +313,32 @@ CREATE TABLE `credithistory` (
   UNIQUE KEY `id` (`id`),
   key `resellerid` (`resellerid`,`groupid`,`clidid`,`modifytime`,`modifystatus`,`modifyamount`,`operator`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## ########################################################
+
+## 
+## table `trunk`
+## 
+
+DROP TABLE IF EXISTS `trunk`;
+
+CREATE TABLE `trunks` (
+  `id` int(11) NOT NULL auto_increment,
+  `trunkname` varchar(30) NOT NULL default '',
+  `trunkidentity` varchar(50) NOT NULL default '',
+  `trunkprotocol` enum('sip','iax') NOT NULL default 'sip',
+  `registrystring` varchar(254) NOT NULL default '',
+  `trunkdetail` text NOT NULL,
+  `trunkusage` bigint(20) NOT NULL default '0',
+  `trunkprefix` varchar(20) NOT NULL default '',
+  `removeprefix` varchar(20) NOT NULL default '',
+  `property` enum('normal','new','edit','delete') NOT NULL default 'normal',
+  `creby` int(11) NOT NULL default '0',
+  `created` datetime  NULL,
+  `updated` datetime  NULL,
+  UNIQUE KEY `id` (`id`),
+  UNIQUE `trunkname` (`trunkname`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_general_ci;
 
 
 ###############################################################

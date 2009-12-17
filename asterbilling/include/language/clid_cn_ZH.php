@@ -37,4 +37,7 @@ $operate = "操作";
 $no_change = "不修改";
 $refund = "减少";
 $charge = "充值";
+$is_show = "显示";
+$yes = "是";
+$no = "否";
 ?>

@@ -33,4 +33,7 @@ $sum_by_destination = "按目标统计";
 $year = "年";
 $asr = "接通率";
 $acd = "平均通话时长";
+$note = "备注";
+$should = "应付";
+$real = "实际付";
 ?>

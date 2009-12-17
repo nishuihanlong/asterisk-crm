@@ -71,6 +71,8 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("updateBillingtime");
+$xajax->registerFunction("reload");
+$xajax->registerFunction("reloadSip");
 
 define("ROWSXPAGE", 25); // Number of rows show it per page.
 define("MAXROWSXPAGE", 50);  // Total number of rows show it when click on "Show All" button.

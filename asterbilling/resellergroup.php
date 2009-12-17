@@ -69,6 +69,32 @@ require_once('resellergroup.common.php');
 				xajax.$("comment").disabled = true;
 			}
 		}
+		function showTrunk(obj){
+			var Tvalue = document.getElementById(obj).value;
+			if(Tvalue == 'auto' || Tvalue == 'default'){
+				xajax.$("trunk").style.display = 'none';
+			} else if(Tvalue == 'customize'){
+				xajax.$("trunk").style.display = 'block';
+			}
+		}
+		function EditShowTrunk(obj){
+			var Tvalue = document.getElementById(obj).value;
+			if(Tvalue == 'auto' || Tvalue == 'default'){
+				xajax.$("trunk").style.display = 'none';
+
+			} else if(Tvalue == 'customize'){
+				xajax.$("trunk").style.display = 'block';
+			}
+		}
+		function CheckNumeric(obj)
+		{
+			var Timeval = document.getElementById(obj).value;
+			var rum = /^[0-9]*$/;
+			if(!rum.exec(Timeval)) {
+				alert("只能输入数字");
+			}
+		}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>

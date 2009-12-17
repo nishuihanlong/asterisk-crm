@@ -80,11 +80,69 @@ class Customer extends astercrm
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
 				."limittype= '".$f['limittype']."', "
+				."trunk_id= '".$f['trunk_id']."', "
 				."multiple= '".$f['multiple']."', "
 				."addtime = now() ";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
+	}
+	/**
+	*  insert a record to trunks table
+	*
+	*	@param $f			(array)		array contain customer fields.
+	*	@return $res	(object) 	
+	*/
+	function insertNewTrunk($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$sql= "INSERT INTO trunks SET "
+				."trunkname='".$f['trunkname']."', "
+				."trunkprotocol='".$f['trunkprotocol']."', "
+				."registrystring = '".$f['registrystring']."', "
+				."trunkdetail = '".$f['detail']."', "
+				."trunkusage = ".$f['timeout'].", "
+				."trunkprefix = '".$f['trunkprefix']."',"
+				."trunkidentity = ".$f['trunkidentity'].","
+				."property= 'new', "
+				."removeprefix = '".$f['removeprefix']."',"
+				."creby='".$_SESSION['curuser']['username']."', "
+				."created = now() ";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		$insertId =mysql_insert_id();
+		return $insertId;
+	}
+
+	function trunkAll()
+	{
+		global $db;
+		$sql = "SELECT * FROM trunks WHERE property='new'OR property='edit'";
+		astercrm::events($sql);
+		$result =& $db->query($sql);
+		return $result;
+	}
+
+	function Reloadfile() {
+		global $db;
+		$sql = "SELECT * FROM trunks";
+		astercrm::events($sql);
+		$result =& $db->query($sql);
+		return $result;
+	}
+	
+	function CreateFile($str,$content) {
+		global $config,$db;
+		$filepath = $config['system']['sipfile'];
+		$fp=fopen($filepath."_".$str.".conf","w");
+		$result = fwrite($fp,$content);
+		fclose($fp);
+		if(!empty($result)) {
+			$sql = "UPDATE trunks SET property='normal' WHERE property='new' OR property='edit'";
+			astercrm::events($sql);
+			$res =& $db->query($sql);
+		}
+		return $result;
 	}
 
 	/**
@@ -95,7 +153,7 @@ class Customer extends astercrm
 	*/
 
 	function updateResellergroupRecord($f){
-		global $db;
+		global $db,$config;
 		$f = astercrm::variableFiler($f);
 		if ( $f['creditmodtype'] == '' ){
 			$newcurcredit = $f['curcredit'];
@@ -122,7 +180,54 @@ class Customer extends astercrm
 							."operator='".$_SESSION['curuser']['userid']."'";
 							$historyres =& $db->query($historysql);
 		}
+		if($f['routetype'] == 'customize') {
 
+			if(empty($f['trunkid'])) {
+				$trunk_sql= "INSERT INTO trunks SET "
+					."trunkname='".$f['trunkname']."', "
+					."trunkprotocol='".$f['protocoltype']."', "
+					."registrystring = '".$f['registrystring']."', "
+					."trunkdetail = '".$f['detail']."', "
+					."trunkusage = ".$f['timeout'].", "
+					."property= 'new', "
+					."trunkprefix = '".$f['trunkprefix']."',"
+					."removeprefix = '".$f['removeprefix']."',"
+					."creby='".$_SESSION['curuser']['username']."', "
+					."created = now() ";
+				astercrm::events($trunk_sql);
+				$trunk_res =& $db->query($trunk_sql);
+				$f['trunkid'] = mysql_insert_id();
+			} else {
+				$trunk_sql= "UPDATE trunks SET "
+					."trunkname='".$f['trunkname']."', "
+					."trunkprotocol='".$f['protocoltype']."', "
+					."registrystring = '".$f['registrystring']."', "
+					."trunkdetail = '".$f['detail']."', "
+					."trunkusage = ".$f['timeout'].", "
+					."trunkprefix = '".$f['trunkprefix']."',"
+					."property= 'edit', "
+					."removeprefix = '".$f['removeprefix']."',"
+					."creby='".$_SESSION['curuser']['username']."', "
+					."updated = now() "
+					."WHERE id='".$f['trunkid']."'";
+				astercrm::events($trunk_sql);
+				$trunk_res =& $db->query($trunk_sql);
+			}
+			
+		} else {
+			if(!empty($f['trunkid'])) {
+				$query = "DELETE FROM trunks WHERE id=".$f['trunkid'];
+				astercrm::events($query);
+				$res =& $db->query($query);
+			}
+		}
+		if($f['routetype'] == 'auto') {
+			$f['trunk_id'] = 0;
+		} else if($f['routetype'] == 'default') {
+			$f['trunk_id'] = $config['resellertrunk']['trunkname'];
+		} else if($f['routetype'] == 'customize'){
+			$f['trunk_id'] = $f['trunkid'];
+		}
 		$sql= "UPDATE resellergroup SET "
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
@@ -130,6 +235,7 @@ class Customer extends astercrm
 				."creditlimit='".$f['creditlimit']."', "
 				."limittype='".$f['limittype']."', "
 				."multiple= '".$f['multiple']."', "
+				."trunk_id= '".$f['trunk_id']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."addtime= now() "
 				."WHERE id='".$f['resellerid']."'";
@@ -238,7 +344,16 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 		return $res;
 	}
-
+	
+	function deleteTrunk($id,$table)
+	{
+		global $db;//& $db->query("SELECT * FROM resellergroup WHERE id=".$id)
+		$result = mysql_fetch_array(mysql_query("SELECT * FROM resellergroup WHERE id=".$id));
+		$query = "DELETE FROM $table WHERE id=".$result['trunk_id'];
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
 	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
 		global $db;
 		
@@ -306,15 +421,63 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("trunk").'</td>
+					<td align="left">
+					<select id="routetype" name="routetype"  onchange="showTrunk(\'routetype\')">
+						<option value="auto" selected>'.$locate->Translate("auto").'</option>
+						<option value="default">'.$locate->Translate("default").'</option>
+						<option value="customize">'.$locate->Translate("customize").'</option>
+					</select>
+					</td>
+				</tr>
+				
+				
+			 </table>
+			 <table width="500px" class="adminlist" id="trunk" style="display:none;">
+				<tr>
+					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
+					<td align="left"  width="326px"><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
+					<td align="left">
+						<select id="protocoltype" name="protocoltype">
+							<option value="sip" selected>'.$locate->Translate("SIP").'</option>
+							<option value="iax">'.$locate->Translate("IAX2").'</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
+					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
+					<td align="left"><input type="text" id="trunkprefix" name="trunkprefix" size="25"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Remove Prefix").':</td>
+					<td align="left"><input type="text" id="removeprefix" name="removeprefix" size="25"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Timeout").':</td>
+					<td align="left"><input type="text" id="timeout" name="timeout" size="25" onblur="CheckNumeric(\'timeout\')"></td>
+				</tr>
+				<tr>					
+					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
+					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45"></textarea></td>
+				</tr>
+			</table>
+			<table width="100%" style="border:0;">
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
-
-			 </table>
+			</table>
 			';
 
 		$html .='
 			</form>
-			'.$locate->Translate("Obligatory Fields").'
+			*'.$locate->Translate("Obligatory Fields").'
 			';
 		
 		return $html;
@@ -329,7 +492,7 @@ class Customer extends astercrm
 	*/
 	
 	function formEdit($id){
-		global $locate;
+		global $locate,$config;
 		$resellergroup =& Customer::getRecordByID($id,'resellergroup');
 		$html = '
 			<!-- No edit the next line -->
@@ -420,6 +583,109 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="multiple" name="multiple" size="6" maxlength="6" value="'.$resellergroup['multiple'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("trunk").'</td>
+					<td align="left">
+					<select id="routetype" name="routetype"  onchange="EditShowTrunk(\'routetype\')">';
+					$TrunkArray = array();
+					if($resellergroup['trunk_id'] == 0) {
+						$html .= '<option value="auto" selected>'.$locate->Translate("auto").'</option>
+								 <option value="default">'.$locate->Translate("default").'</option>
+								 <option value="customize">'.$locate->Translate("customize").'</option>';
+					} else if($resellergroup['trunk_id'] == $config['resellertrunk']['trunkname']) {
+						$html .= '<option value="auto" >'.$locate->Translate("auto").'</option>
+								 <option value="default" selected>'.$locate->Translate("default").'</option>
+								 <option value="customize">'.$locate->Translate("customize").'</option>';
+					} else {
+						$TrunkArray =& Customer::getRecordByID($resellergroup['trunk_id'],'trunks');
+						
+						$html .= '<option value="auto" >'.$locate->Translate("auto").'</option>
+								 <option value="default">'.$locate->Translate("default").'</option>
+								 <option value="customize" selected>'.$locate->Translate("customize").'</option>';
+					}
+					$html .= '</select>
+					</td>
+				</tr>
+			</table>';
+			
+			if(!empty($TrunkArray)) {
+				$html .= '<table width="500px" class="adminlist" id="trunk"><tr>
+					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
+					<td align="left"  width="326px"><input type="hidden" id="trunkid" name="trunkid" value="'.$TrunkArray['id'].'"/><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30" value="'.$TrunkArray['trunkname'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
+					<td align="left">
+						<select id="protocoltype" name="protocoltype">';
+						if($TrunkArray['trunkprotocol'] == 'sip') {
+							$html .= '<option value="sip" selected>'.$locate->Translate("SIP").'</option>
+							<option value="iax">'.$locate->Translate("IAX2").'</option>';
+						} else {
+							$html .= '<option value="sip">'.$locate->Translate("SIP").'</option>
+							<option value="iax" selected>'.$locate->Translate("IAX2").'</option>';
+						} 
+						$html .='
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
+					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="30" value="'.$TrunkArray['registrystring'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
+					<td align="left"><input type="text" id="trunkprefix" name="trunkprefix" size="25" value="'.$TrunkArray['trunkprefix'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Remove Prefix").':</td>
+					<td align="left"><input type="text" id="removeprefix" name="removeprefix" size="25" value="'.$TrunkArray['removeprefix'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Timeout").':</td>
+					<td align="left"><input type="text" id="timeout" name="timeout" size="25" value="'.$TrunkArray['trunkusage'].'" onblur="CheckNumeric(\'timeout\')"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
+					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45" > '.$TrunkArray['trunkdetail'].'</textarea></td>
+				</tr>';
+			} else {
+				$html .='<table width="500px" class="adminlist" id="trunk" style="display:none;"><tr>
+					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
+					<td align="left"  width="326px"><input type="hidden" id="trunkid" name="trunkid" value=""/><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
+					<td align="left">
+						<select id="protocoltype" name="protocoltype">
+							<option value="sip" selected>'.$locate->Translate("SIP").'</option>
+							<option value="iax">'.$locate->Translate("IAX2").'</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
+					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
+					<td align="left"><input type="text" id="trunkprefix" name="trunkprefix" size="25"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Remove Prefix").':</td>
+					<td align="left"><input type="text" id="removeprefix" name="removeprefix" size="25"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Timeout").':</td>
+					<td align="left"><input type="text" id="timeout" name="timeout" size="25" onblur="CheckNumeric(\'timeout\')"></td>
+				</tr>
+				<tr>					
+					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
+					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45"></textarea></td>
+				</tr>';
+			}
+			$html .='
+			</table>
+			<table class="adminlist" width="100%">
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -430,7 +696,7 @@ class Customer extends astercrm
 
 		$html .= '
 				</form>
-				'.$locate->Translate("Obligatory Fields").'
+				*'.$locate->Translate("Obligatory Fields").'
 				';
 
 		return $html;
@@ -478,6 +744,29 @@ class Customer extends astercrm
 			';
 
 		return $html;
+	}
+
+	/**
+	* generate a unique pin number, can be assign length by $len 
+	*
+	*	@param $len		(int)		pin length
+	*	@return $pin	(string)	pin number
+	*/
+
+	function generateUniquePin($len=10) {
+		global $db;
+		srand((double)microtime()*1000003);
+		$prefix = rand(1000000000,9999999999);
+		$sqlStr = "SELECT * FROM trunks WHERE trunkidentity='";
+		if(is_numeric($len) && $len = 10){
+			$pin = $prefix;
+			$curpin =mysql_fetch_array(mysql_query($sqlStr.$pin."'"));
+			while(!empty($curpin)){
+				$pin = $prefix.rand($min,$max);
+				$curpin =mysql_fetch_array(mysql_query($sqlStr.$pin."'"));
+			}
+		}
+		return $pin;
 	}
 
 }

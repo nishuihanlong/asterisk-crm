@@ -169,6 +169,7 @@ Class astercrm extends PEAR{
 				."display='".$f['display']."', "
 				."groupid = ".$f['groupid'].", "
 				."resellerid = ".$f['resellerid'].", "
+				."isshow = '".$f['isshow']."', "
 				."status = ".$f['status'].", 
 				 creditlimit = '".$f['creditlimit']."',
 				 limittype = '".$f['limittype']."',"
@@ -317,6 +318,7 @@ Class astercrm extends PEAR{
 				."curcredit = '".$newcurcredit."',"
 				."limittype = '".$f['limittype']."',"
 				."status= ".$f['status'].", "
+				."isshow= '".$f['isshow']."', "
 				."addtime = now() "
 				."WHERE id='".$f['id']."'";
 		astercrm::events($sql);
