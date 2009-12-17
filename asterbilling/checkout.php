@@ -49,15 +49,17 @@ require_once('checkout.common.php');
 		var trId = "tr-" + objCkb.value;
 
 		var oTotal = document.getElementById('spanTotal');
+		var ofreeTotal = document.getElementById('spanrealTotal');
 		var oCallshopCost = document.getElementById('spanCallshopCost');
 		var oResellerCost = document.getElementById('spanResellerCost');
 
 		var oPrice = document.getElementById("price-" + objCkb.value) ;
 		var oCallshop = document.getElementById("callshop-" + objCkb.value) ;
 		var oReseller = document.getElementById("reseller-" + objCkb.value) ;
-
+		var ofree = document.getElementById("free-" + objCkb.value) ;
 
 		var total = Float02(oTotal.innerHTML);
+		var totalreal = Float02(ofreeTotal.innerHTML);
 		var callshopcost = Float02(oCallshopCost.innerHTML);
 		var resellercost = Float02(oResellerCost.innerHTML);
 
@@ -68,22 +70,36 @@ require_once('checkout.common.php');
 		if (objCkb.checked){
 			document.getElementById(trId).style.backgroundColor="#eeeeee";
 			total = total + price ;
+			if(ofree.value == 'yes'){
+               totalreal = totalreal + 0.00 ;
+			}else{
+               totalreal = totalreal + price ;
+			}
 			callshopcost = callshopcost + callshop;
 			resellercost = resellercost + reseller;
 		}else{
-			document.getElementById(trId).style.backgroundColor="#ffffff";
 			total = total - price ;
+			if(ofree.value == 'yes'){
+               totalreal = totalreal - 0.00 ;
+			   document.getElementById(trId).style.backgroundColor="#d5c59f";
+			}else{
+               totalreal = totalreal - price ;
+			   document.getElementById(trId).style.backgroundColor="#ffffff";
+			}
 			callshopcost = callshopcost - callshop;
 			resellercost = resellercost - reseller;
 		}
 		oTotal.innerHTML = Float02(total);
+		ofreeTotal.innerHTML = Float02(totalreal);
 		oCallshopCost.innerHTML = Float02(callshopcost);
 		oResellerCost.innerHTML = Float02(resellercost);
 
 		var currency;
+		var currencyreal;
 
 		currency = setCurrency(String(Float02(total)));
-		document.getElementById('spanCurrencyTotal').innerHTML = currency;
+		currencyreal = setCurrency(String(Float02(totalreal)));
+		document.getElementById('spanCurrencyTotal').innerHTML = '<?echo $locate->Translate("should")?>:'+currency+'  <?echo $locate->Translate("real")?>:'+currencyreal;
 
 		currency = setCurrency(String(Float02(callshopcost)));
 		document.getElementById('spanCurrencyCallshopCost').innerHTML = currency;
@@ -379,7 +395,7 @@ swfobject.embedSWF(
 				<div class="jin-fl"><div id='gain_chart'></div></div>
 			</div>
 			<div style="display:none;">
-				<?echo $locate->Translate("Amount")?>: <span id="spanTotal" name="spanTotal">0</span> 
+				<?echo $locate->Translate("Amount")?>: <span id="spanTotal" name="spanTotal">0</span> <span id="spanrealTotal" name="spanrealTotal">0</span>
 				<?echo $locate->Translate("Callshop Cost")?>: <span id="spanCallshopCost" name="spanCallshopCost">0</span>
 				<?echo $locate->Translate("Reseller Cost")?>: <span id="spanResellerCost" name="spanResellerCost">0</span>
 			</div>

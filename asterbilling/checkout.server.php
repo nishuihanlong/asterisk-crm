@@ -28,7 +28,7 @@ require_once ('include/common.class.php');
 
 
 function init($curpeer){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$peers = array();
 	if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -88,7 +88,11 @@ function init($curpeer){
 			$objResponse->addAssign("divLimitStatus","innerHTML",$html);
 		}
 	}
-
+    if($config['system']['useHistoryCdr'] == 1){
+       $objResponse->addScript("document.getElementById('btnCheckOut').style.display='none';");
+	}else if($config['system']['useHistoryCdr'] == 0){
+       $objResponse->addScript("document.getElementById('btnCheckOut').style.display='block';");
+	}
 
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
@@ -665,6 +669,7 @@ function listCDR($aFormValues){
 
 	$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 	$objResponse->addAssign("spanTotal","innerHTML",0);
+	$objResponse->addAssign("spanrealTotal","innerHTML",0);
 	$objResponse->addAssign("spanCallshopCost","innerHTML",0);
 	$objResponse->addAssign("spanResellerCost","innerHTML",0);
 	return $objResponse;
@@ -679,7 +684,7 @@ function checkOut($aFormValues){
 	$reseller = 0.00;
 	if ($aFormValues['ckb']){
 		foreach ($aFormValues['ckb'] as $id){
-			//$res =  astercc::setBilled($id);
+			$res =  astercc::setBilled($id);
 			$amounta += $aFormValues['price-'.$id];
 			if($aFormValues['free-'.$id] == 'no'){
                $amountb += $aFormValues['price-'.$id];

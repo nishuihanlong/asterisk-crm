@@ -2,7 +2,7 @@ alter table historycdr add note text default '';
 alter table mycdr add note text default '';
 alter table historycdr add setfreecall enum('yes','no') default 'no';
 alter table mycdr add setfreecall enum('yes','no') default 'no';
-alter table `resellergroup` add `trunk_id` VARCHAR(30) NOT NULL default '';
+alter table `resellergroup` add `trunk_id` int(11) NOT NULL default 0;
 
 CREATE TABLE `trunks` (
   `id` int(11) NOT NULL auto_increment,

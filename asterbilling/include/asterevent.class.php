@@ -265,7 +265,7 @@ class astercc extends PEAR
 		}
 	}
 
-	function setBilled($id,$payment,$costomerid,$discount){
+	function setBilled($id,$payment='',$costomerid=0,$discount=0.0000){
 		global $db,$config;
 		// move the record from mycdr to historycdr
 		// get the record from mycdr
@@ -279,7 +279,6 @@ class astercc extends PEAR
 		}else {
 			$sql = "UPDATE mycdr SET userfield = 'BILLED' ,customerid = $costomerid, discount = $discount , payment='".$payment."' WHERE id = $id ";
 		}
-		//echo $sql;exit;
 		astercc::events($sql);
 		$cdr = &$db->query($sql);
 
@@ -332,9 +331,9 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 	}
 	*/ 
 	if($config['system']['useHistoryCdr'] == 1){
-		$query = "SELECT * FROM historycdr WHERE 1 ";
+		$query = "SELECT * FROM mycdr WHERE 1 ";
 	}else{
-		$query = "SELECT * FROM mycdr WHERE 1 AND setfreecall != 'yes'";
+		$query = "SELECT * FROM mycdr WHERE 1 AND userfield = 'UNBILLED' ";
 	}
 
 		if ($resellerid != '' and $resellerid != '0'){
