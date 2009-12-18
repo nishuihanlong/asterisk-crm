@@ -3,6 +3,7 @@ alter table mycdr add note text default '';
 alter table historycdr add setfreecall enum('yes','no') default 'no';
 alter table mycdr add setfreecall enum('yes','no') default 'no';
 alter table `resellergroup` add `trunk_id` int(11) NOT NULL default 0;
+alter table clid add isshow enum('yes','no') default 'yes';
 
 CREATE TABLE `trunks` (
   `id` int(11) NOT NULL auto_increment,
