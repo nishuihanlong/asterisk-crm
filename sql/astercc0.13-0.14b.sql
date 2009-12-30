@@ -1,4 +1,8 @@
 alter table historycdr add note text default '';
+alter table mycdr change `src` `src` varchar(50) NOT NULL default '';
+alter table mycdr change `dst` `dst` varchar(50) NOT NULL default '';
+alter table curcdr change `src` `src` varchar(50) NOT NULL default '';
+alter table curcdr change `dst` `dst` varchar(50) NOT NULL default '';
 alter table mycdr add note text default '';
 alter table historycdr add setfreecall enum('yes','no') default 'no';
 alter table mycdr add setfreecall enum('yes','no') default 'no';

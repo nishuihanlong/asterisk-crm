@@ -371,8 +371,8 @@ DROP TABLE IF EXISTS `curcdr`;
 
 CREATE TABLE `curcdr` (
   `id` int(11) NOT NULL auto_increment,
-  `src` varchar(20) NOT NULL default '',
-  `dst` varchar(20) NOT NULL default '',  
+  `src` varchar(50) NOT NULL default '',
+  `dst` varchar(50) NOT NULL default '',  
   `srcchan` varchar(100) NOT NULL default '',
   `dstchan` varchar(100) NOT NULL default '',
   `didnumber` varchar(30) NOT NULL default '',
@@ -383,6 +383,7 @@ CREATE TABLE `curcdr` (
   `disposition` varchar(10) NOT NULL default '',
   `userid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
+  `accountid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
   `credit` double(24,4) NOT NULL default '0.0000',
   `callshopcredit` double(24,4) NOT NULL default '0.0000',
@@ -422,8 +423,8 @@ DROP TABLE IF EXISTS `mycdr`;
 CREATE TABLE `mycdr` (
   `id` int(11) NOT NULL auto_increment,
   `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
-  `src` varchar(30) NOT NULL default '',
-  `dst` varchar(30) NOT NULL default '',  
+  `src` varchar(50) NOT NULL default '',
+  `dst` varchar(50) NOT NULL default '',  
   `channel` varchar(50) NOT NULL default '',
   `dstchannel` varchar(50) NOT NULL default '',
   `didnumber` varchar(30) NOT NULL default '',
@@ -441,6 +442,7 @@ CREATE TABLE `mycdr` (
   `groupid` int(11) NOT NULL default '0',
   `resellerid` int(11) NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
+  `accountid` int(11) NOT NULL default '0',
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
   `customerid` int(11) NOT NULL default 0,
