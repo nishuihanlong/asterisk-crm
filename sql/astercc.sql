@@ -1364,3 +1364,14 @@ CREATE TABLE `campaignresult` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+CREATE TABLE `knowledge` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `knowledgetitle` varchar(200) NOT NULL DEFAULT '',
+  `content` text NOT NULL DEFAULT '',
+  `groupid` int(11) NOT NULL DEFAULT '0',
+  `creby` varchar(30) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
