@@ -13,4 +13,5 @@ $log_out				= "Logout";
 $import					= "Import";
 $export					= "Export";
 $back					= "Back";
+$knowledge              = "Knowledge";
 ?>

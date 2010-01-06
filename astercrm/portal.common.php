@@ -119,6 +119,9 @@ $xajax->registerFunction("queuePaused");
 $xajax->registerFunction("updateCallresult");
 $xajax->registerFunction("setSecondCampaignResult");
 $xajax->registerFunction("setCallresult");
+$xajax->registerFunction("setKnowledge");
+$xajax->registerFunction("getPreDiallist");
+$xajax->registerFunction("agentWorkstat");
 if ($config['system']['enable_external_crm'] == false){
 	//crm function
 	$xajax->registerFunction("showGrid");
@@ -156,6 +159,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("addSchedulerDial");
 	$xajax->registerFunction("saveSchedulerDial");
 	$xajax->registerFunction("clearPopup");
+	$xajax->registerFunction("knowledgechange");
 }
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.

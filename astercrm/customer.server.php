@@ -298,6 +298,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'customer'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", 'customer'); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}if($optionFlag == "delete"){
 		$customer_ref=& Customer::getRecordsFilteredMorewithstype('','', $searchField, $searchContent, $searchType,'','customer','delete');
@@ -342,7 +343,7 @@ function deleteByButton($f,$searchFormValue){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$numRows = $searchFormValue['numRows'];
 	$limit = $searchFormValue['limit'];     
-	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
+	$html = createGrid($numRows, $limit,$searchField, $searchContent,'','grid');
 	$objResponse->addAssign('grid', "innerHTML", $html);
 	return $objResponse->getXML();
 }

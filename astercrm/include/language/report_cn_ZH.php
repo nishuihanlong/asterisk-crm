@@ -44,4 +44,13 @@ $total_calls = "全部通话数量";
 $answered_calls = "已接通通话数量";
 $answered_sec = "已接通通话时间";
 $total = "总计";
+$hour = "小时";
+$minute = "分";
+$sec = "秒";
+$total_calls = "通话数量";
+$answered_duration = "接通时长";
+$groupname = "组名称";
+$username = "工号";
+$name = "姓名";
+$export = "导出";
 ?>

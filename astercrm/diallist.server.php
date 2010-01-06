@@ -388,6 +388,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", 'diallist'); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'diallist');

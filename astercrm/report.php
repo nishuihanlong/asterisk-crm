@@ -157,7 +157,7 @@ require_once('report.common.php');
 			<INPUT onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
 			<SELECT id="listType" name="listType" onchange="listReport();">
 				<OPTION value="none"><?echo $locate->Translate("None")?></OPTION>
-				<!--<OPTION value="listdetail"><?echo $locate->Translate("List Detail")?></OPTION>-->
+                <OPTION value="list"><?echo $locate->Translate("List")?></OPTION>
 				<OPTION value="sumyear"><?echo $locate->Translate("Sum By Year")?></OPTION>
 				<OPTION value="summonth"><?echo $locate->Translate("Sum By Month")?></OPTION>
 				<OPTION value="sumday"><?echo $locate->Translate("Sum By Day")?></OPTION>
@@ -167,7 +167,8 @@ require_once('report.common.php');
 			
 			<input type="radio" value="text" name="reporttype" checked><?echo $locate->Translate("Text")?>&nbsp;
 			<!--<input type="radio" value="flash" name="reporttype"><?echo $locate->Translate("Flash")?>-->
-			<input type="button" onclick="listReport();return false;" value="<?echo $locate->Translate("List")?>">			
+			<input type="button" onclick="listReport();return false;" value="<?echo $locate->Translate("List")?>">&nbsp;
+			<span id="exportlist"></span><input type="hidden" value="report" id="maintable" name="maintable" />			
 		</div>
 		</form>
 		<br>

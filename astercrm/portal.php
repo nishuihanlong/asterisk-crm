@@ -160,6 +160,12 @@ $clientDst = $_REQUEST['clientdst'];
 			xajax_addWithPhoneNumber();
 		}
 
+		function knowledgechange(knowledgeid){
+			if(knowledgeid != ''){
+			    xajax_knowledgechange(knowledgeid);
+			}
+		}
+
 		function updateEvents(){
 			myFormValue = xajax.getFormValues("myForm");			
 			//alert(xajax.$('checkInterval').value);
@@ -451,6 +457,10 @@ $clientDst = $_REQUEST['clientdst'];
 			return false;
 		}
 
+		function setKnowledge(){
+			xajax_setKnowledge();
+		}
+
 		function setSecondCampaignResult(){
 			xajax.$('callresultname').value = xajax.$('fcallresult').options[xajax.$('fcallresult').selectedIndex].text;
 			//alert(xajax.$('callresultname').value);
@@ -527,6 +537,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type='hidden' value="" name="btnWorkStatus" id="btnWorkStatus">
 		<input type='hidden' value="" name="callResultStatus" id="callResultStatus">
 		<input type="hidden" name="dpnShow" id="dpnShow" value="0"/>
+		<input type="hidden" name="awsShow" id="awsShow" value="0"/>
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
@@ -542,7 +553,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	
 		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<span id="sptSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="xajax_getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;</span><span id="sptAddDiallist" style="display:none"><input type="button" value="<?echo $locate->Translate("My Diallist");?>" onclick="document.getElementById('dpnShow').value = 1;xajax_showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;"></span>
+			<span id="sptSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="xajax_getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;</span><span id="sptAddDiallist" style="display:none"><input type="button" value="<?echo $locate->Translate("My Diallist");?>" onclick="document.getElementById('dpnShow').value = 1;xajax_showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;"></span><span><input type="button" id="agentWorkstat" name="agentWorkstat" value="<?echo $locate->Translate("work stat");?>"  onclick="document.getElementById('awsShow').value = 1;xajax_agentWorkstat();"></span><span><input type="button" id="knowledge" name="knowledge" value="<?echo $locate->Translate("viewknowledge");?>"  onclick="setKnowledge();"></span>
 		</div>
 		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
@@ -551,6 +562,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 					<fieldset>
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width: 450px"></div>
+		<div id="formAgentWordStatDiv"  class="formDiv drsElement" 
+			style="left: 110px; top: 32px;width: 240px;z-index: 999;" ></div>
 		<div id="surveyDiv"  class="formDiv drsElement" 
 			style="left: 20px; top: 20px;width: 500px; z-index: 999;"></div>			
 		<div id="formCustomerInfo" class="formDiv drsElement"
@@ -581,6 +594,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			style="left: 450px; top: 50px;width: 350px; z-index:201"></div>
 		<div id="formDiallistPannel"  class="formDiv drsElement" 
 			style="left: 150px; top: 130px;width: 850px; z-index:201"></div>
+		<div id="formKnowlagePannel"  class="formDiv drsElement" 
+			style="left: 380px; top: 30px;width: 600px; z-index:1"></div>
 		<div id="grid" align="center"></div>
 		<div id="msgZone" name="msgZone" align="left"> </div>
 					</fieldset>

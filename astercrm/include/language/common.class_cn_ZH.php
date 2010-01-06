@@ -21,4 +21,5 @@ $report = "报告";
 $queue_status = "队列状态";
 $campaign_result = "拨号结果";
 $agent_settings = "动态座席设置";
+$knowledge = "知识库";
 ?>

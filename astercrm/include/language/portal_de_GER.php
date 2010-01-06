@@ -51,4 +51,5 @@ $show_all_remind = "show remind";
 $no_read = "no remind";
 $readed = "reminded";
 $google_map = "Google Map";
+$viewknowledge = "Knowledge";
 ?>

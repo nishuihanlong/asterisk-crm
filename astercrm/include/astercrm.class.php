@@ -15,6 +15,7 @@
 			insertNewAccountgroup    向accountgroup表插入数据
 			insertNewCampaign
 			insertNewMonitor			向monitorrecord表插入数据
+			insertNewKnowledge      向knowledge表插入数据
 
 			updateCustomerRecord	更新customer表数据
 			updateContactRecord		更新contact表数据
@@ -23,6 +24,7 @@
 			updateAccountgroupRecord  更新accountgroup表数据
 			updateRecords		更新数据
 			updateCampaignRecord
+            updateKnowledgeRecord   更新knowledge表数据
 
 			deleteRecord			从表中删除数据(以id作为标识)
 			updateField				更新表中的数据(以id作为标识)
@@ -92,6 +94,7 @@
 			getRecNumRowsMorewithstype
 			getRecRecordsFilteredMorewithstype
 			createRecordsGrid
+			readReportAgent
 			--------------------------------------------------------------------------
 			
 * Private Functions List
@@ -184,6 +187,22 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
+		return $res;
+	}
+
+	function insertNewKnowledge($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$sql= "INSERT INTO knowledge SET "
+				."knowledgetitle='".$f['knowledgetitle']."', "
+				."content='".$f['content']."', "
+				."groupid = ".$f['groupid'].", "
+				."creby = '".$_SESSION['curuser']['username']."',"
+				."cretime = now() ";
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
 		return $res;
 	}
 
@@ -682,6 +701,21 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+
+	function updateKnowledgeRecord($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		
+		$query= "UPDATE knowledge SET "
+				."knowledgetitle='".$f['knowledgetitle']."', "
+				."content='".$f['content']."', "
+				."groupid='".$f['groupid']."' "
+				."WHERE id='".$f['id']."'";
+
+		astercrm::events($query);
+		$res =& $db->query($query);
+		return $res;
+	}
 
 	/**
 	*  select a record form a table
@@ -3378,7 +3412,7 @@ Class astercrm extends PEAR{
 			foreach($arreglo as $row){
 				$rowc = array();			
 				$rowc[] = $row['id'];
-				$rowc[] = $row['dialnumber'];
+				$rowc[] = "<a href=? onclick=\"xajax_getPreDiallist('".$row['id']."');return false;\">".$row['dialnumber']."</a>";
 				$rowc[] = $row['customername'];
 				$rowc[] = $row['dialtime'];
 				$rowc[] = $row['trytime'];
@@ -4112,6 +4146,109 @@ Class astercrm extends PEAR{
 		}
 		$answered = & $db->getone($query." AND disposition = 'ANSWERED'");
 		return array('all'=>$all_res,'answered'=>$answered);
+	}
+
+	function &readReportAgent($groupid,$accountid,$sdate,$edate){
+		global $db;
+		
+		$return_arr = array();
+
+		if ($_SESSION['curuser']['usertype'] == "admin"){
+			if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0)){
+				$query = "SELECT COUNT(*) as recordNum, mycdr.groupid,groupname FROM mycdr LEFT JOIN astercrm_accountgroup ON mycdr.groupid = astercrm_accountgroup.id WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 ";
+
+				$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds ,mycdr.groupid FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 AND billsec > 0";
+		
+				$query .= " GROUP BY mycdr.groupid ";
+				$query_a .= " GROUP BY mycdr.groupid ";
+				$all_res =& $db->query($query);
+				$return_arr['type'] = 'grouplist';
+
+				while($all_res->fetchinto($row)){
+					$return_arr[$row['groupid']]['recordNum'] = $row['recordNum'];
+					$return_arr[$row['groupid']]['groupname'] = $row['groupname'];
+					$return_arr[$row['groupid']]['arecordNum'] = 0;
+					$return_arr[$row['groupid']]['seconds'] = 0;
+					
+				}
+
+				$answer_res =& $db->query($query_a);
+
+				while($answer_res->fetchinto($arow)){
+
+					$return_arr[$arow['groupid']]['arecordNum'] = $arow['arecordNum'];
+					$return_arr[$arow['groupid']]['seconds'] = $arow['seconds'];
+				}
+				return $return_arr;
+			}
+		}	
+
+		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] == "groupadmin") $groupid = $_SESSION['curuser']['groupid'];
+
+		
+		
+		if(is_numeric($accountid) && $accountid > 0){
+			$query = "SELECT COUNT(*) as recordNum FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 ";
+
+			$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 AND billsec > 0";
+			$query .= " AND mycdr.groupid = ".$groupid." ";
+			$query_a .= " AND mycdr.groupid = ".$groupid." ";
+
+			$return_arr['type'] = 'agentlist';
+			$account = astercrm::getRecordByID($accountid,"astercrm_account");
+			$account_str .= "OR src='".$account['extension']."' OR dst='".$account['extension']."' ";
+			if($account['channel'] != '') $account_str .= $channels .= "OR channel LIKE '".$account['channel']."-%' OR dstchannel LIKE '".$account['channel']."-%' ";
+
+			if($account['agent'] != '')  $account_str .= "OR dstchannel='AGENT/".$account['agent']."' ";
+			$account_str = '('.ltrim($account_str,'OR').')';
+			$query .= ' AND '.$account_str;
+			$query_a .= ' AND '.$account_str;
+
+			$all_count = & $db->getone($query);
+			$answer_row = & $db->getRow($query_a);
+
+			$return_arr[$account['id']]['recordNum'] = $all_count;
+			$return_arr[$account['id']]['username'] = $account['extension'];
+			$return_arr[$account['id']]['name'] = $account['username'];
+			$return_arr[$account['id']]['arecordNum'] = $answer_row['arecordNum'];
+			$return_arr[$account['id']]['seconds'] = $answer_row['seconds'];
+		}else{
+			if(is_numeric($groupid)){
+				if($groupid > 0){
+					$return_arr['type'] = 'agentlist';
+					$member = astercrm::getGroupMemberListByID($groupid);
+					while($member->fetchinto($row)){
+						$extens = '';
+						$channels = '';
+						$agents = '';
+						$query = "SELECT COUNT(*) as recordNum FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 ";
+
+						$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 AND billsec > 0";
+
+						$query .= " AND mycdr.groupid = ".$groupid." ";
+						$query_a .= " AND mycdr.groupid = ".$groupid." ";
+						
+						$extens = "OR src='".$row['extension']."' OR dst='".$row['extension']."' ";
+
+						if($row['channel'] != '') $channels = "OR channel LIKE '".$row['channel']."-%' OR dstchannel LIKE '".$row['channel']."-%' ";
+
+						if($row['agent'] != '') $agents = "OR dstchannel='AGENT/".$row['agent']."' ";
+						$query .= ' AND ('.ltrim($extens.$channels.$agents,'OR').')'; 
+						$query_a .= ' AND ('.ltrim($extens.$channels.$agents,'OR').')'; 
+					
+						$all_count = & $db->getone($query);
+						$answer_row = & $db->getRow($query_a);
+						$return_arr[$row['id']]['recordNum'] = $all_count;
+						$return_arr[$row['id']]['username'] = $row['extension'];
+						$return_arr[$row['id']]['name'] = $row['username'];
+						$return_arr[$row['id']]['arecordNum'] = $answer_row['arecordNum'];
+						$return_arr[$row['id']]['seconds'] = $answer_row['seconds'];
+
+					}					
+				}
+			}
+		}
+		return $return_arr;
 	}
 
 	function &checkDialedlistCall($dialnumber){

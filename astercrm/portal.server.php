@@ -26,6 +26,10 @@
 	invite
 	chanspy
 	searchFormSubmit   多条件搜索，重构显示页面
+	knowledgechange
+	setKnowledge
+	getPreDiallist
+	agentWorkstat
 
 * Revision 0.047  2008/2/24 14:45:00  last modified by solo
 * Desc: add a new parameter callerid in function monitor
@@ -1516,6 +1520,80 @@ function setCallresult($id){
 	$objResponse->addAssign("callresultname","value", $row['resultname']);
 	return $objResponse;
 }
+
+function knowledgechange($knowledgeid){
+	$objResponse = new xajaxResponse();
+	$html = Customer::knowledge($knowledgeid);
+	//$row = astercrm::getRecordByID($knowledgeid,'knowledge');
+	$objResponse->addAssign("tdcontent","innerHTML",$html);
+	return $objResponse;
+}
+
+function setKnowledge(){
+	global $locate,$config,$db;
+
+	$objResponse = new xajaxResponse();
+	/*知识库*/
+    $knowledge = Customer::getKnowledge();
+	$knowledgehtml =Table::Top($locate->Translate("knowledge"),"formKnowlagePannel");
+	$knowledgehtml .= '<table><tr><td>'.$locate->Translate("knowledgetitle").':</td><td><select id="knowledgetitle" onchange="knowledgechange(this.value);"><option value="0">'.$locate->Translate("please_select").'</option>';
+	while ($knowledge->fetchInto($knowledgerow)) {
+           $knowledgehtml .= '<option value="'.$knowledgerow['id'].'">'.$knowledgerow['knowledgetitle'].'</option>';
+	}
+    $knowledgehtml .= '</select></td></tr><tr><td>'.$locate->Translate("content").':</td><td id="tdcontent"><textarea rows="20" cols="70" id="content" wrap="soft" style="overflow:auto;" readonly></textarea></td></tr></table>';
+	$objResponse->addAssign("formKnowlagePannel", "innerHTML", $knowledgehtml);
+	$objResponse->addAssign("formKnowlagePannel", "style.visibility", "visible");
+	return $objResponse;
+	/*知识库*/
+}
+
+function getPreDiallist($dialid){
+	$objResponse = new xajaxResponse();
+	global $db;
+	
+	$row = astercrm::getRecordByID($dialid,'diallist');
+
+	if ($row['id'] == ''){
+
+	} else {
+		$phoneNum = $row['dialnumber'];
+		$objResponse->loadXML(getContact($phoneNum));
+		astercrm::deleteRecord($row['id'],"diallist");
+		$row['dialednumber'] = $phoneNum;
+		$row['dialedby'] = $_SESSION['curuser']['extension'];
+		$row['trytime'] = $row['trytime'] + 1;
+		astercrm::insertNewDialedlist($row);
+	}
+
+	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+
+	return $objResponse;
+} 
+
+function agentWorkstat(){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$workstat = Customer::getAgentWorkStat();
+
+	if($workstat['billsec'] == ''){
+		$billsec = '00'.$locate->Translate("hour").'00'.$locate->Translate("min").'00'.$locate->Translate("sec");
+	}else{
+		$billsec = $workstat['billsec'];
+		$hour = intval($billsec/3600);
+		if($hour < 10 ) $hour = '0'.$hour;
+		$min = intval($billsec%3600/60);
+		if($min < 10) $min = '0'.$min;
+		$sec = $billsec%60;
+		if($sec < 10) $sec = '0'.$sec;
+		$billsec = $hour.$locate->Translate("hour").$min.$locate->Translate("min").$sec.$locate->Translate("sec");
+	}
+	$html =Table::Top($locate->Translate("work stat").'-'.date("Y-m-d"),"formAgentWordStatDiv");
+	$html .= '<table><tr><td>'.$locate->Translate("total calls").':</td><td>'.$workstat['count'].'</td><tr><tr><td>'.$locate->Translate("duration").':</td><td>'.$billsec.'</td><tr></table>';
+	$objResponse->addAssign("formAgentWordStatDiv", "innerHTML", $html);
+	$objResponse->addAssign("formAgentWordStatDiv", "style.visibility", "visible");
+	return $objResponse;
+}
+
 
 function popupDiallist(){
 }

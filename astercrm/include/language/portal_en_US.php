@@ -54,4 +54,9 @@ $readed = "reminded";
 $exten_in_use = "Your extension is in use, could not to dial";
 $google_map_no_key = "google map key is null, please apply it";
 $extension_unavailable = "your extension maybe unavailable, are you sure to continue?";
+$viewknowledge = "Knowledge";
+$please_select = "Please Select";
+$hour = ":";
+$min = ":";
+$sec = " ";
 ?>

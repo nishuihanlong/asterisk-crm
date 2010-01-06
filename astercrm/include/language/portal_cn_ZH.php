@@ -106,4 +106,14 @@ $my_diallist = "我的待拨列表";
 $customername = "客户名称";
 $call_order = "优先级";
 $clear_screen = "清 屏";
+$work_stat = "今日工作情况";
+$please_select = "请选择";
+$knowledge = "知识库";
+$knowledgetitle = "标题";
+$content = "内容";
+$viewknowledge = "知识库";
+$hour = "小时";
+$min = "分";
+$sec = "秒";
+$total_calls = "通话数量";
 ?>

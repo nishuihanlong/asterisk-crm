@@ -1,9 +1,9 @@
 <?
-header('Content-Type: text/html; charset=utf-8');
-header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
-header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-header('Cache-Control: post-check=0, pre-check=0',false);
-header('Pragma: no-cache');
+//header('Content-Type: text/html; charset=utf-8');
+//header('Expires: Sat, 01 Jan 2000 00:00:00 GMT');
+//header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+//header('Cache-Control: post-check=0, pre-check=0',false);
+//header('Pragma: no-cache');
 session_cache_limiter('public, no-store');
 
 session_set_cookie_params(0);
@@ -16,15 +16,19 @@ if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype
 
 require_once ("db_connect.php");
 require_once ('include/astercrm.class.php');
+require_once ('include/localization.class.php');
+require_once ('include/PHPExcel.php');
+require_once ('include/PHPExcel/IOFactory.php');
 $sql = $_REQUEST['hidSql'];
-//$sql = $_SESSION['export_sql'];
-$table = trim(strtolower($_REQUEST['maintable']));
+$table = $_REQUEST['maintable'];
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],$table);
 
-if ($sql == '') exit;
 
-$filename = 'astercrm.csv';
+if ($sql == '' && $table != 'report') exit;
 
-if ($_SESSION['curuser']['usertype'] != 'admin'){
+$filename = 'astercrm.xls';
+
+if ($_SESSION['curuser']['usertype'] != 'admin' && $table != 'report'){
 	if (strpos(strtolower($sql),'where')){
 		if($table != ''){ //判断是否传了主表名
 			$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
@@ -43,15 +47,140 @@ if ($_SESSION['curuser']['usertype'] != 'admin'){
 }
 
 if($table != ''){ //判断是否传了主表名
-	$filename = $table.'.csv';
+	$filename = $table.'.xls';
 }
-//echo $sql;exit;
-ob_start();
+if($table != 'report') $res = $db->query($sql);
+global $locate;
+if($table == 'report'){
+	$groupid = 0;
+	$accountid = 0;
+	if(!empty($_REQUEST['groupid'])) $groupid = $_REQUEST['groupid'];
+	if(!empty($_REQUEST['accountid'])) $accountid = $_REQUEST['accountid'];
+	$rows = astercrm::readReportAgent($groupid,$accountid,$_REQUEST['sdate'],$_REQUEST['edate']);
+	$data = array();
+	if($rows['type'] == 'grouplist'){
+		foreach($rows as $key => $row){
+			$data_tmp = array();
+			if($key != 'type'){
+				$hour = intval($row['seconds'] / 3600);
+				if($hour < 3) $data_tmp['color'] = 'FF0000';
+				$minute = intval($row['seconds'] % 3600 / 60);
+				$sec = intval($row['seconds'] % 60);
+				$asr = round($row['arecordNum']/$row['recordNum'] * 100,2);
+				$acd = round($row['seconds']/$row['arecordNum'],2);
+				$acdminute = intval($acd / 60);
+				$acdsec = intval($acd % 60);
+				$data_tmp[$locate->Translate("groupname")] = $row['groupname'];
+				$data_tmp[$locate->Translate("total calls")] = $row['recordNum'];
+				$data_tmp[$locate->Translate("answered calls")] = $row['arecordNum'];
+				$data_tmp[$locate->Translate("answered duration")] =$hour.$locate->Translate("hour").$minute.$locate->Translate("minute").$sec.$locate->Translate("sec");
+				$data_tmp[$locate->Translate("ASR")] = $asr.'%';
+				$data_tmp[$locate->Translate("ACD")] = $acdminute.$locate->Translate("minute").$acdsec.$locate->Translate("sec");
+				array_push($data,$data_tmp);
+			}
+		}
+	}else{
+				$group = astercrm::getRecordByID($groupid,"astercrm_accountgroup");
+				foreach($rows as $key => $row){
+					if($key != 'type'){
+						$hour = intval($row['seconds'] / 3600);
+						if($hour < 3 ) $data_tmp['color'] = 'FF0000';
+						$minute = intval($row['seconds'] % 3600 / 60);
+						$sec = intval($row['seconds'] % 60);
+						$asr = round($row['arecordNum']/$row['recordNum'] * 100,2);
+						$acd = round($row['seconds']/$row['arecordNum'],2);
+						$acdminute = intval($acd / 60);
+						$acdsec = intval($acd % 60);
+
+						$data_tmp[$locate->Translate("groupname")] = $group['groupname'];
+						$data_tmp[$locate->Translate("username")] = $row['username'];
+						$data_tmp[$locate->Translate("name")] = $row['name'];
+						$data_tmp[$locate->Translate("total calls")] = $row['recordNum'];
+						$data_tmp[$locate->Translate("answered calls")] = $row['arecordNum'];
+						$data_tmp[$locate->Translate("answered duration")] =$hour.$locate->Translate("hour").$minute.$locate->Translate("minute").$sec.$locate->Translate("sec");
+						$data_tmp[$locate->Translate("ASR")] = $asr.'%';
+						$data_tmp[$locate->Translate("ACD")] = $acdminute.$locate->Translate("minute").$acdsec.$locate->Translate("sec");
+						array_push($data,$data_tmp);
+					}
+				}
+				
+	}
+}else{
+	while( $res->fetchinto($row) ) {
+		$data[] = $row;
+	}
+}
+$objPHPExcel = new PHPExcel();
+
+		$objPHPExcel->setActiveSheetIndex(0);
+		$hfer = '&C&HExported from My DB Unclassified/FOUO';
+		$objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddHeader($hfer);
+		$objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddFooter($hfer);
+		$i = 1;
+		$colA = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+		$colorcell = '';
+		foreach($data as $row){
+			$m = 0;
+			$n = 0;
+			$s = 0; //是否处于单列号状态
+			foreach($row as $k => $v){
+				if($k == 'color') continue;
+				if($m < 26 && $s == 0){
+					$cols = $colA[$m];
+					$m++;
+				}else{
+					
+					$s = 1;
+					if($m%26 == 0 && $m != 0) $m = 0;					
+					
+					if($n%26 == 0 && $n!=0){
+						$n = 0;					
+					}
+					$cols = $colA[$m].$colA[$n];
+
+					if($n == 25) $m++;
+					$n++;
+				}
+
+				if($i == 1){
+					$objPHPExcel->getActiveSheet()->setCellValue($cols.$i,$k);
+					if(is_numeric($v)) $v .= "\t";
+					$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
+					if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
+						$colorcell = $cols.($i+1).":".$cols.($i+1);
+						$BackgroundColor = new PHPExcel_Style_Color();
+						$BackgroundColor->setRGB($row['color']);				
+								
+						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
+						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
+					}
+				}else{
+					//$objPHPExcel->getActiveSheet()->mergeCells(’A18:E22′);合并单元格方法
+					//给单元格赋背景色
+					if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
+						$colorcell = $cols.($i+1).":".$cols.($i+1);
+						$BackgroundColor = new PHPExcel_Style_Color();
+						$BackgroundColor->setRGB($row['color']);				
+								
+						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
+						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
+					}
+					if(is_numeric($v)) $v .= "\t";
+					$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
+					
+				}							
+			}
+			$i++;
+		}
+
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+
 header("charset=uft-8");   
 header('Content-type:  application/force-download');
 header('Content-Transfer-Encoding:  Binary');
 header('Content-disposition:  attachment; filename='.$filename);
-echo astercrm::exportDataToCSV($sql,$table);
-ob_end_flush();
-unset($_SESSION['export_sql']);
+//echo astercrm::exportDataToCSV($sql,$table);
+
+//unset($_SESSION['export_sql']);
+$objWriter->save('php://output');
 ?>

@@ -153,6 +153,7 @@ require_once('customer.common.php');
 	</table>
 	<form name="exportForm" id="exportForm" action="dataexport.php" >
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
+		<input type="hidden" value="" id="maintable" name="maintable" />
 	</form>
 	<div id="divCopyright"></div>
 	</body>

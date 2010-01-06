@@ -131,7 +131,90 @@ function listReport($aFormValues){
 			$html .= "<b>".$result['html']."</b>";
 		}
 		$objResponse->addAssign("divGeneralList","innerHTML",$html);
+		$objResponse->addScript("document.getElementById('exportlist').innerHTML = '';");
+		$objResponse->addScript("document.getElementById('frmFilter').action = '';");
 		return $objResponse;
+	}elseif ($aFormValues['listType'] == "list"){
+		if ($aFormValues['reporttype'] == "flash"){
+			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
+			$html = "";
+		}else{
+			$exportlist = '<input type="submit" value="'.$locate->Translate("export").'">';
+			$objResponse->addAssign("exportlist","innerHTML",$exportlist);
+			$objResponse->addScript("document.getElementById('frmFilter').action = 'dataexport.php';");
+			$rows = astercrm::readReportAgent($aFormValues['groupid'], $aFormValues['accountid'],  $sdate,$edate);
+			$html = '<table class="adminlist" border="1" style="width:800px;">';
+			$class = 'row1';
+			if($rows['type'] == 'grouplist'){
+				$html .= '<tr><th>'.$locate->Translate("groupname").'</th>
+								<th>'.$locate->Translate("total calls").'</th>
+								<th>'.$locate->Translate("answered calls").'</th>
+								<th>'.$locate->Translate("answered duration").'</th>
+								<th>'.$locate->Translate("ASR").'</th>
+								<th>'.$locate->Translate("ACD").'</th></tr>';
+				$class = 'row1';
+				foreach($rows as $key => $row){
+					if($key != 'type'){
+						$hour = intval($row['seconds'] / 3600);
+						if($hour < 3 ) $hour = '<font color="red">'.$hour;
+						$minute = intval($row['seconds'] % 3600 / 60);
+						$sec = intval($row['seconds'] % 60);
+						$asr = round($row['arecordNum']/$row['recordNum'] * 100,2);
+						$acd = round($row['seconds']/$row['arecordNum'],2);
+						$acdminute = intval($acd / 60);
+						$acdsec = intval($acd % 60);
+
+						$html .= '<tr class="'.$class.'"><td>'.$row['groupname'].'</td>
+								<td>'.$row['recordNum'].'</td>
+								<td>'.$row['arecordNum'].'</td>
+								<td>'.$hour.$locate->Translate("hour").$minute.$locate->Translate("minute").$sec.$locate->Translate("sec").'</td>
+								<td>'.$asr.'%</td>
+								<td>'.$acdminute.$locate->Translate("minute").$acdsec.$locate->Translate("sec").'</td></tr>';
+						if($class == 'row1') $class = 'row0'; else $class = 'row1';
+					}
+				}
+
+			}elseif($rows['type'] == 'agentlist'){//print_r($rows);exit;
+				$group = astercrm::getRecordByID($aFormValues['groupid'],"astercrm_accountgroup");
+				$html .= '<tr><th>'.$locate->Translate("groupname").'</th>
+								<th>'.$locate->Translate("username").'</th>
+								<th>'.$locate->Translate("name").'</th>
+								<th>'.$locate->Translate("total calls").'</th>
+								<th>'.$locate->Translate("answered calls").'</th>
+								<th>'.$locate->Translate("answered duration").'</th>
+								<th>'.$locate->Translate("ASR").'</th>
+								<th>'.$locate->Translate("ACD").'</th></tr>';
+				$class = 'row1';
+				foreach($rows as $key => $row){//print_r($rows);exit;
+					if($key != 'type'){
+						$hour = intval($row['seconds'] / 3600);
+						if($hour < 3 ) $hour = '<font color="red">'.$hour;
+						$minute = intval($row['seconds'] % 3600 / 60);
+						$sec = intval($row['seconds'] % 60);
+						$asr = round($row['arecordNum']/$row['recordNum'] * 100,2);
+						$acd = round($row['seconds']/$row['arecordNum'],2);
+						$acdminute = intval($acd / 60);
+						$acdsec = intval($acd % 60);
+
+						$html .= '<tr class="'.$class.'"><td>'.$group['groupname'].'</td>
+								<td>'.$row['username'].'</td>
+								<td>'.$row['name'].'</td>
+								<td>'.$row['recordNum'].'</td>
+								<td>'.$row['arecordNum'].'</td>
+								<td>'.$hour.$locate->Translate("hour").$minute.$locate->Translate("minute").$sec.$locate->Translate("sec").'</td>
+								<td>'.$asr.'%</td>
+								<td>'.$acdminute.$locate->Translate("minute").$acdsec.$locate->Translate("sec").'</td></tr>';
+						if($class == 'row1') $class = 'row0'; else $class = 'row1';
+					}
+				}
+				
+			}elseif($rows['type'] == 'agentsingle'){print_r($rows);exit;
+			}
+
+			$objResponse->addAssign("divGeneralList","innerHTML",$html);
+			return $objResponse;
+			
+		}
 	}elseif ($aFormValues['listType'] == "sumyear"){
 		if ($aFormValues['reporttype'] == "flash"){
 			$objResponse->addScript("actionFlash('".$aFormValues["resellerid"]."','".$aFormValues["groupid"]."','".$aFormValues["sltBooth"]."','".$aFormValues["sdate"]."','".$aFormValues["edate"]."','".$aFormValues["listType"]."','".$aFormValues["hidCurpeer"]."');");
@@ -163,6 +246,8 @@ function listReport($aFormValues){
 			$html .= "</div>";
 			$html .= "</div>";
 			$objResponse->addAssign("divGeneralList","innerHTML",$html);
+		    $objResponse->addScript("document.getElementById('exportlist').innerHTML = '';");
+		    $objResponse->addScript("document.getElementById('frmFilter').action = '';");
 		}
 
 	}elseif ($aFormValues['listType'] == "summonth"){
@@ -198,6 +283,8 @@ function listReport($aFormValues){
 			$html .= "</div>";
 			$html .= "</div>";
 			$objResponse->addAssign("divGeneralList","innerHTML",$html);
+		    $objResponse->addScript("document.getElementById('exportlist').innerHTML = '';");
+		    $objResponse->addScript("document.getElementById('frmFilter').action = '';");
 		}
       
 	}elseif ($aFormValues['listType'] == "sumday"){
@@ -229,6 +316,8 @@ function listReport($aFormValues){
 			$html .= "</div>";
 			$html .= "</div>";
 			$objResponse->addAssign("divGeneralList","innerHTML",$html);
+		    $objResponse->addScript("document.getElementById('exportlist').innerHTML = '';");
+		    $objResponse->addScript("document.getElementById('frmFilter').action = '';");
 		}
 
 	}elseif ($aFormValues['listType'] == "sumhour"){
@@ -260,6 +349,8 @@ function listReport($aFormValues){
 			$html .= "</div>";
 			$html .= "</div>";
 			$objResponse->addAssign("divGeneralList","innerHTML",$html);
+		    $objResponse->addScript("document.getElementById('exportlist').innerHTML = '';");
+		    $objResponse->addScript("document.getElementById('frmFilter').action = '';");
 		}
 
 	}elseif ($aFormValues['listType'] == "sumgroup"){
@@ -302,7 +393,9 @@ function listReport($aFormValues){
 			$html .= "</div>";
 
 			$html .= "<div style='clear:both;'></div>";
-			$objResponse->addAssign("divUnbilledList","innerHTML",$html);			
+			$objResponse->addAssign("divUnbilledList","innerHTML",$html);	
+		    $objResponse->addScript("document.getElementById('exportlist').innerHTML = '';");
+		    $objResponse->addScript("document.getElementById('frmFilter').action = '';");
 		}		
 	}
 	return $objResponse;

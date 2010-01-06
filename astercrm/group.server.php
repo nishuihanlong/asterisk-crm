@@ -391,6 +391,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'astercrm_accountgroup'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", 'astercrm_accountgroup'); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
 		$res = Customer::deleteRecord($id,'astercrm_accountgroup');

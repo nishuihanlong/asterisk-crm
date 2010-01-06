@@ -541,5 +541,32 @@ class Customer extends astercrm
 		}
 		return $idstr;
 	}
+
+	function getAgentWorkStat(){
+		global $db;
+		$sql = "SELECT COUNT(*) AS count, SUM(billsec) AS billsec FROM mycdr WHERE  (src = '".$_SESSION['curuser']['extension']."' OR dst = '".$_SESSION['curuser']['extension']."' OR dstchannel = 'AGENT/".$_SESSION['curuser']['agent']."' OR dstchannel LIKE '".$_SESSION['curuser']['channel']."-%') AND dstchannel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '".date("Y-m-d")." 00:00:00' AND  calldate <= '".date("Y-m-d")." 23:59:59' AND mycdr.groupid > 0 AND billsec > 0";
+		$res = $db->getRow($sql);
+		return $res;
+	}
+
+	function getKnowledge(){
+	    global $db;
+		$sql = "SELECT id,knowledgetitle FROM knowledge WHERE knowledgetitle!=''";
+		if($_SESSION['curuser']['usertype'] == 'admin'){
+            $sql .= "";
+		}else{
+            $sql .= " AND (groupid='".$_SESSION['curuser']['groupid']."' OR groupid='0')";
+		}
+		$res = $db->query($sql);
+		return $res;
+
+	}
+
+    function knowledge($knowledgeid){
+	    global $db;
+        $row = Customer::getRecordByID($knowledgeid,'knowledge');
+		$html = '<textarea rows="20" cols="70" id="content" wrap="soft" style="overflow:auto;" readonly>'.$row['content'].'</textarea>';
+        return $html;
+	}
 }
 ?>
