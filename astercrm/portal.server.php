@@ -301,6 +301,11 @@ function listenCalls($aFormValues){
 	//print_r($aFormValues);exit;
 	$objResponse = new xajaxResponse();
 	if($agentData = Customer::getAgentData()){
+		
+		if($aFormValues['breakStatus'] == -1){
+			$span = '<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >';
+			$objResponse->addAssign("spnPause","innerHTML", $span );
+		}
 		if($agentData['cretime'] > $aFormValues['clkPauseTime']){
 			$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
 			if($agentData['agent_status'] != 'paused'){
@@ -312,7 +317,9 @@ function listenCalls($aFormValues){
 			}
 		}
 	}else{
+		$objResponse->addAssign("agentData","innerHTML", '');
 		$objResponse->addAssign("spnPause","innerHTML", '' );
+		$objResponse->addAssign("breakStatus","value", -1);
 	}
 
 	if($aFormValues['dpnShow'] > 0){ //for refresh diallist pannel
@@ -1113,13 +1120,12 @@ function invite($src,$dest,$campaignid=''){
 	$dest = trim($dest);
 	$objResponse = new xajaxResponse();	
 	//$objResponse->addAssign("dialmsg", "innerHTML", "<b>".$locate->Translate("dailing")." ".$src."</b>");
-	if ($src == $_SESSION['curuser']['extension'])
+	if ($src == $_SESSION['curuser']['extension']){
 		$callerid = $dest;
-	else //if ($dest == $_SESSION['curuser']['extension'])
+	}else{
 		$callerid = $src;
-//	else
-//		return $objResponse;
-	
+	}
+	$variable = null;
 	$myAsterisk = new Asterisk();
 	
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
@@ -1128,10 +1134,17 @@ function invite($src,$dest,$campaignid=''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 	if($campaignid != ''){
 		$row_campaign = astercrm::getRecordByID($campaignid,"campaign");
+		//print_r($row_campaign);exit;
 		if(trim($row_campaign['incontext']) != '' ) $incontext = $row_campaign['incontext'];
 		else $incontext = $config['system']['incontext'];
 		if(trim($row_campaign['outcontext']) != '' ) $outcontext = $row_campaign['outcontext'];
 		else $outcontext = $config['system']['outcontext'];
+		if($row_campaign['callerid'] == ""){
+			$variable = '__CUSCID=NONE';
+		}else{
+			//$callerid = $row_campaign['callerid'];
+			$variable .= '__CUSCID='.$row_campaign['callerid'];
+		}
 		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
 	}else{
 		$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
@@ -1154,7 +1167,7 @@ function invite($src,$dest,$campaignid=''){
 							'MaxRetries'=>0,
 							'CallerID'=>$callerid));
 	}else{
-		$myAsterisk->sendCall($strChannel,$dest,$outcontext,1,NULL,NULL,30,$callerid,NULL,$_SESSION['curuser']['accountcode']);
+		$myAsterisk->sendCall($strChannel,$dest,$outcontext,1,NULL,NULL,30,$callerid,$variable,$_SESSION['curuser']['accountcode']);
 	}
 	
 	$objResponse->addAssign("divMsg", "style.visibility", "hidden");

@@ -495,7 +495,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<div><span id="divUserMsg" name="divUserMsg"></span>&nbsp;&nbsp;&nbsp;<span id="myevents"></span>&nbsp;&nbsp;&nbsp;<span><input type="button" value="<?echo $locate->Translate("Clear Screen")?>" onclick="javascript:xajax_clearPopup();"></span></div><br>
 		
 		<div id="divHangup" name="divHangup">
-			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<span id="spnPause"><input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" ><input id="clkPauseTime" name="clkPauseTime" type="hidden"></span>
+			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<span id="spnPause"><input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" ></span><input id="clkPauseTime" name="clkPauseTime" type="hidden">
 			<span id="agentData"></span>
 			
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>

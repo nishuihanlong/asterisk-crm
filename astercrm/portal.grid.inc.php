@@ -497,9 +497,18 @@ class Customer extends astercrm
 
 	function getAgentData(){
 		global $db;
-		$sql = "SELECT * From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."' OR agent LIKE 'Local/".$_SESSION['curuser']['extension']."@%'";
+		$sql = "SELECT * From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."'";
 		Customer::events($sql);
 		$res =& $db->getRow($sql);
+		if(!$res || $res['status'] == 'Unavailable' || $res['status'] == 'Invalid'){//如果无动态座席信息或动态座席未登录,就查静态座席
+			$sql = "SELECT * From queue_agent WHERE agent LIKE 'Local/".$_SESSION['curuser']['extension']."@%'";
+			Customer::events($sql);
+			$sres =& $db->getRow($sql);
+			if($sres){
+				$res = $sres;
+			}
+		}
+	//	print_r($res);exit;
 		return $res;
 	}
 
