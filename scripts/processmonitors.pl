@@ -119,8 +119,6 @@ my $dbh = &connect_mysql(%dbInfo);
 
 my $query = "SELECT * FROM monitorrecord WHERE processed = 'no'";
 my $rows = &executeQuery($query,'rows');
-#while (1) {
-#}
 
 while ( my $ref = $rows->fetchrow_hashref() ) {
 	my $orifile = "$ref->{'filename'}.$ref->{'fileformat'}";
