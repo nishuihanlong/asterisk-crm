@@ -356,7 +356,11 @@ DROP TABLE IF EXISTS `peerstatus`;
 CREATE TABLE `peerstatus` (
  `id` INT NOT NULL AUTO_INCREMENT ,
  `status` VARCHAR( 50 ) NOT NULL ,
+ `channeltype` varchar(30) not null default '',
+ `responsetime` int(11) not null default '0',
  `peer` VARCHAR( 100 ) NOT NULL ,
+ `address` VARCHAR( 100 ) NOT NULL ,
+ `port` VARCHAR(10) NOT NULL ,
  `lastupdate` DATETIME NOT NULL ,
 UNIQUE (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -373,6 +377,7 @@ CREATE TABLE `curcdr` (
   `id` int(11) NOT NULL auto_increment,
   `src` varchar(50) NOT NULL default '',
   `dst` varchar(50) NOT NULL default '',  
+  `srcname` varchar(100) NOT NULL default '',  
   `srcchan` varchar(100) NOT NULL default '',
   `dstchan` varchar(100) NOT NULL default '',
   `didnumber` varchar(30) NOT NULL default '',
@@ -390,11 +395,156 @@ CREATE TABLE `curcdr` (
   `resellercredit` double(24,4) NOT NULL default '0.0000',
   `creditlimit` double(24,4) NOT NULL default '0.0000',
   `destination` varchar(100) NOT NULL default '',
+  `dialstring` varchar(100) not null default '',
   `memo` varchar(100) NOT NULL default '',
+  `accountcode` varchar(100) NOT NULL default '',
   `monitored` enum('yes','no') NOT NULL default 'no',
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`didnumber`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `curchannels`;
+
+CREATE TABLE `curchannels` (
+  `id` int(11) NOT NULL auto_increment,
+  `created` datetime not null default '0000-00-00 00:00:00',
+  `updated` datetime not null default '0000-00-00 00:00:00',
+  `ended` datetime not null default '0000-00-00 00:00:00',
+  `timestamp` varchar(40) not null default '',
+  `channel` varchar(100) not null default '',
+  `uniqueid` varchar(40) not null default '',
+  `channelstate` int(4) not null default '0',
+  `channelstatedesc` varchar(20) not null default '',
+  `calleridnum` varchar(50) not null default '',
+  `calleridname` varchar(50) not null default '',
+  `accountcode` varchar(40) not null default '',
+  `exten` varchar(50) not null default '',
+  `context` varchar(50) not null default '',
+  `cid_callingpres` varchar(100) not null default '',
+  `hangupcause` varchar(10) not null default '',
+  `hangupcausetxt`  varchar(100) not null default '',
+  `moh`  datetime not null default '0000-00-00 00:00:00',
+  `agent`  varchar(30) not null default '',
+  `processed` enum('yes','no') NOT NULL DEFAULT 'no',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `mychannels`;
+
+CREATE TABLE `mychannels` (
+  `id` int(11) NOT NULL ,
+  `created` datetime not null default '0000-00-00 00:00:00',
+  `updated` datetime not null default '0000-00-00 00:00:00',
+  `ended` datetime not null default '0000-00-00 00:00:00',
+  `timestamp` varchar(40) not null default '',
+  `channel` varchar(100) not null default '',
+  `uniqueid` varchar(40) not null default '',
+  `channelstate` int(4) not null default '0',
+  `channelstatedesc` varchar(20) not null default '',
+  `calleridnum` varchar(50) not null default '',
+  `calleridname` varchar(50) not null default '',
+  `accountcode` varchar(40) not null default '',
+  `exten` varchar(50) not null default '',
+  `context` varchar(50) not null default '',
+  `cid_callingpres` varchar(100) not null default '',
+  `hangupcause` varchar(10) not null default '',
+  `hangupcausetxt`  varchar(100) not null default '',
+  `moh`  datetime not null default '0000-00-00 00:00:00',
+  `agent`  varchar(30) not null default '',
+  `processed` enum('yes','no') NOT NULL DEFAULT 'no'
+ ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `curlinks`;
+
+CREATE TABLE `curlinks` (
+  `id` int(11) NOT NULL auto_increment,
+  `created` datetime not null default '0000-00-00 00:00:00',
+  `ended` datetime not null default '0000-00-00 00:00:00',
+  `linked` datetime not null default '0000-00-00 00:00:00',
+  `unlinked` datetime not null default '0000-00-00 00:00:00',
+  `uniqueid` varchar(40) not null default '',
+  `orguniqueid` varchar(40) not null default '',
+  `destuniqueid` varchar(40) not null default '',
+  `dialstring` varchar(100) not null default '',
+  `dialstatus` varchar(30) not null default '',
+  `processed` enum('yes','no','error') NOT NULL DEFAULT 'no',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `mylinks`;
+
+CREATE TABLE `mylinks` (
+  `id` int(11) NOT NULL,
+  `created` datetime not null default '0000-00-00 00:00:00',
+  `ended` datetime not null default '0000-00-00 00:00:00',
+  `linked` datetime not null default '0000-00-00 00:00:00',
+  `unlinked` datetime not null default '0000-00-00 00:00:00',
+  `uniqueid` varchar(40) not null default '',
+  `orguniqueid` varchar(40) not null default '',
+  `destuniqueid` varchar(40) not null default '',
+  `dialstring` varchar(100) not null default '',
+  `dialstatus` varchar(30) not null default '',
+  `processed` enum('yes','no','error') NOT NULL DEFAULT 'no'
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## 
+## table `curmeetmes`
+## 
+
+DROP TABLE IF EXISTS `curmeetmes`;
+
+CREATE TABLE `curmeetmes` (
+  `id` int(11) NOT NULL auto_increment,
+  `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `channel` varchar(100) NOT NULL default '',
+  `uniqueid` varchar(40) NOT NULL default '',
+  `meetme` varchar(20) NOT NULL default '',
+  `usernum` int(4) NOT NULL default '0',
+  `calleridnum` varchar(50) NOT NULL default '',
+  `calleridname` varchar(50) NOT NULL default '',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `pbxlogs`;
+
+CREATE TABLE `pbxlogs` (
+  `id` int(11) NOT NULL auto_increment,
+  `event` varchar(100) NOT NULL default '',
+  `data` varchar(200) NOT NULL default '',
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `cdrs`;
+
+CREATE TABLE `cdrs` (
+  `id` int(11) NOT NULL auto_increment,
+  `srcnum` varchar(40) NOT NULL default '',
+  `srcname` varchar(40) NOT NULL default '',
+  `dstnum` varchar(40) NOT NULL default '',
+  `dstname` varchar(40) NOT NULL default '',
+  `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `endtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `duration` int(11) NOT NULL default 0,
+  `billsec` int(11) NOT NULL default 0,
+  `disposition` varchar(45) NOT NULL default '',
+  `target` enum('DialIn','DialOut','Consult','Conference','Local','Queue') NOT NULL default 'DialIn',
+  `uniqueid` varchar(40) not null default '',
+  `destuniqueid` varchar(40) not null default '',
+  `dialstring` varchar(100) not null default '',
+  `srcchannel` varchar(100) not null default '',
+  `dstchannel` varchar(100) not null default '',
+  `srcchannelstate` int(4) not null default '0',
+  `srcchannelstatedesc` varchar(20) not null default '',
+  `dstchannelstate` int(4) not null default '0',
+  `dstchannelstatedesc` varchar(20) not null default '',
+  `accountcode` varchar(40) not null default '',
+  `exten` varchar(50) not null default '',
+  `monitorid` varchar(30) NOT NULL default '',
+  `localcall` enum('yes','no') not null default 'no',
+  PRIMARY KEY (`id`)
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS `parkedcalls`;
 
@@ -423,15 +573,16 @@ DROP TABLE IF EXISTS `mycdr`;
 CREATE TABLE `mycdr` (
   `id` int(11) NOT NULL auto_increment,
   `calldate` datetime NOT NULL default '0000-00-00 00:00:00',
-  `src` varchar(50) NOT NULL default '',
-  `dst` varchar(50) NOT NULL default '',  
-  `channel` varchar(50) NOT NULL default '',
-  `dstchannel` varchar(50) NOT NULL default '',
+  `src` varchar(40) NOT NULL default '',
+  `dst` varchar(40) NOT NULL default '',
+  `srcname` varchar(100) NOT NULL default '',
+  `channel` varchar(80) NOT NULL default '',
+  `dstchannel` varchar(80) NOT NULL default '',
   `didnumber` varchar(30) NOT NULL default '',
   `duration` int(11) NOT NULL default '0',
   `billsec` int(11) NOT NULL default '0',
   `disposition` varchar(45) NOT NULL default '',
-  `accountcode` varchar(20) NOT NULL default '',
+  `accountcode` varchar(100) NOT NULL default '',
   `userfield` varchar(255) NOT NULL default '',
   `srcuid` varchar(40) NOT NULL default '',
   `dstuid` varchar(40) NOT NULL default '',
@@ -445,6 +596,7 @@ CREATE TABLE `mycdr` (
   `accountid` int(11) NOT NULL default '0',
   `destination` varchar(100) NOT NULL default '',
   `memo` varchar(100) NOT NULL default '',
+  `dialstring` varchar(100) not null default '',
   `customerid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
   `payment`  varchar(15) NOT NULL default '',
@@ -810,6 +962,8 @@ CREATE TABLE `dialedlist` (
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
   `creby` varchar(30) NOT NULL default '',
+  INDEX nnt (`dialednumber`,`dialedtime`),
+  INDEX nnu (`dialednumber`,`uniqueid`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -1004,6 +1158,7 @@ CREATE TABLE `monitorrecord` (
  `fileformat` enum('wav','gsm','mp3','error') NOT NULL DEFAULT 'error',
  `processed` enum('yes','no') NOT NULL DEFAULT 'no',
  `groupid` INT NOT NULL DEFAULT 0,
+ `accountid` INT NOT NULL DEFAULT 0,
  `extension` VARCHAR( 15 ) NOT NULL DEFAULT '',
  `uniqueid` varchar(40) NOT NULL default '',
  `creby` VARCHAR( 30 ) NOT NULL ,
@@ -1114,7 +1269,7 @@ CREATE TABLE `sip_show_peers` (
   `freshtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `pbxserver` varchar(50) NOT NULL default '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
 
@@ -1375,3 +1530,35 @@ CREATE TABLE `knowledge` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+CREATE TABLE `ap_curspools` (
+ `id`  int(11) unsigned NOT NULL auto_increment,
+ `action` varchar(40) NOT NULL DEFAULT '',
+ `creby` varchar(30) NOT NULL default '',
+ `created` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `scheduler` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `priority` int(4) DEFAULT '1',
+ `lasttry` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `try` int(4) DEFAULT '1',
+ `tried` int(4) DEFAULT '1',
+ `connected` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `status` enum("new","pending","success","failed") default 'new',
+ `account` varchar(40) NOT NULL DEFAULT '',
+ `channel` varchar(40) NOT NULL DEFAULT '',
+ `exten` varchar(40) NOT NULL DEFAULT '',
+ `context` varchar(40) NOT NULL DEFAULT '',
+ `waittime` int(4) NOT NULL DEFAULT '45',
+ `callerid` varchar(40) NOT NULL DEFAULT '',	
+ `variable` varchar(255) NOT NULL DEFAULT '',	
+ `application` varchar(255) NOT NULL DEFAULT '',
+ `data` varchar(255) NOT NULL DEFAULT '',
+ `actionid` varchar(35) NOT NULL DEFAULT '',
+ `interval` int(4) NOT NULL DEFAULT '3600',
+ `async` varchar(4) NOT NULL DEFAULT '0',
+ `callback_start` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
+ `callback_end` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
+ `callback_status` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
+ `asteriskserver_id` int(11) NOT NULL DEFAULT '0',
+ PRIMARY KEY (`id`)
+) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
