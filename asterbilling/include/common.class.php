@@ -141,7 +141,9 @@ class Common{
 		if($_SESSION['curuser']['usertype'] == 'clid'){
 			$html .= '<li><a href="login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</li>';
 		}else{
-			$html .= '<li><a href="manager_login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</li>';
+			if ($_SESSION['curuser']['usertype'] == 'admin' or $_SESSION['curuser']['usertype'] == 'reseller'){
+				$html .= '<li><a href="manager_login.php" onclick="if (confirm(\''.$locate_common->Translate("are u sure to exit").'?\')){}else{return false;}">'.$locate_common->Translate("Logout").'</li>';
+			}
 		}
 		$html .= '</ul></div>';
 		$html .= '</div>';

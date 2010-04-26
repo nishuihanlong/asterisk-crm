@@ -421,6 +421,8 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 
 	for ($j=0;$j<count($arrRow);$j++)
 	{
+		$arrRow[$j] = trim($arrRow[$j]);
+
 //		if ($arrRow[$j] != mb_convert_encoding($arrRow[$j],"UTF-8","UTF-8"))
 			//echo "ok";exit;
 //		$arrRow[$j]=mb_convert_encoding($arrRow[$j],"UTF-8","GB2312");

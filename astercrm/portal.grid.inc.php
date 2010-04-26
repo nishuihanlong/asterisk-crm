@@ -63,7 +63,7 @@ class Customer extends astercrm
 									FROM note 
 									LEFT JOIN customer ON customer.id = note.customerid 
 									LEFT JOIN contact ON contact.id = note.contactid 
-									WHERE priority>0 AND note.creby = '".$_SESSION['curuser']['username']."' ";
+									WHERE priority > 0 AND (note.creby = '".$_SESSION['curuser']['username']."' OR (note.private = 0 AND customer.groupid = '".$_SESSION['curuser']['groupid']."'))";
 			
 		}else{
 			$sql = "SELECT customer.id,

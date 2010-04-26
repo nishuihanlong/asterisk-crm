@@ -1,5 +1,6 @@
 <?php
 /*******************************************************************************
+# 接通后如果没有找到destination 那么过5秒钟使用checkDestination再次检查 line 290
 ********************************************************************************/
 require_once ("systemstatus.common.php");
 require_once ("db_connect.php");
@@ -97,10 +98,11 @@ if (!isset($_SESSION['callbacks']))
 
 	// get callback from session
 	foreach ($_SESSION['callbacks'] as $callback){
-		if ($callback['creditlimit'] > 0)
+		if ($callback['creditlimit'] > 0){
 			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","","","'.$config['customers']['enable'].'")');
-		else
+		}else{
 			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","","","","'.$config['customers']['enable'].'")');
+		}
 
 		$objResponse->addScript('xajax_addUnbilled("'.$callback['legB'].'","'.$callback['legA'].'");');
 	}
@@ -283,7 +285,13 @@ function showStatus(){
 				// set display name
 				$objResponse->addAssign("$peer-displayname","style.backgroundColor","green");
 				$destination = '';
-				if($peerstatus[$peer]['destination'] != '') $destination = '<br>&nbsp;'.$peerstatus[$peer]['destination'];
+				if($peerstatus[$peer]['destination'] != ''){
+					$destination = '<br>&nbsp;'.$peerstatus[$peer]['destination'];
+				}else{
+					#print $peerstatus[$peer]['destination'];die;
+					# try get the destination in 5 sec
+					$objResponse->addScript('setTimeout("xajax_checkDestination(\''.$peer.'\')", 5000);');
+				}
 
 				if( $peerstatus[$peer]['direction'] == 'outbound'){
 					$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/outbound.gif'>".$peerstatus[$peer]['dst'].$destination);//here
@@ -418,6 +426,34 @@ function showStatus(){
 	$_SESSION['status'] = $peerstatus;
 	//$objResponse->addScript('setTimeout("showStatus()", 2000);');
 	$objResponse->addAssign("spanLastRefresh",'innerHTML',date ("Y-m-d H:i:s",time()));
+	return $objResponse;
+}
+
+function checkDestination($peer){
+	global $db;
+	$objResponse = new xajaxResponse();
+
+	$peers = $_SESSION['curuser']['extensions'];
+	$query = "SELECT * FROM curcdr WHERE src = '$peer' ";
+	$curcdr = $db->getRow($query);
+	$direction = 'inbound';
+
+	if ($res){
+		if (astercc::array_exist($curcdr['src'], $peers) || astercc::array_exist($curcdr['dst'], $peers)){
+			$direction = 'inbound';
+		}else{
+			if (ereg("\/(.*)-", $curcdr['srcchan'], $myAry) ){
+				$direction = 'inbound';
+			}
+		}
+	}
+	if ($direction == 'inbound'){
+		$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/inbound.gif'>".$curcdr['src'].$curcdr['destination']);
+		$objResponse->addAssign($peer.'-phone','style.color','green');
+	}else{
+		$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/outbound.gif'>".$curcdr['dst'].$curcdr['destination']);//here
+	}
+	#print_r($res);
 	return $objResponse;
 }
 

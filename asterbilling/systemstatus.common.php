@@ -70,4 +70,5 @@ $xajax->registerFunction("checkCustomer");
 $xajax->registerFunction("setFreeCall");
 $xajax->registerFunction("setFreeCallPage");
 $xajax->registerFunction("removeReceipt");
+$xajax->registerFunction("checkDestination");
 ?>

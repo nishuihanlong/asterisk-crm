@@ -403,9 +403,9 @@ CREATE TABLE `curcdr` (
   KEY `srcid` (`src`,`dst`,`didnumber`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `curchannels`;
+DROP TABLE IF EXISTS `ap_curchannels`;
 
-CREATE TABLE `curchannels` (
+CREATE TABLE `ap_curchannels` (
   `id` int(11) NOT NULL auto_increment,
   `created` datetime not null default '0000-00-00 00:00:00',
   `updated` datetime not null default '0000-00-00 00:00:00',
@@ -426,12 +426,13 @@ CREATE TABLE `curchannels` (
   `moh`  datetime not null default '0000-00-00 00:00:00',
   `agent`  varchar(30) not null default '',
   `processed` enum('yes','no') NOT NULL DEFAULT 'no',
+  `delflag` int(1) NOT NULL DEFAULT '0',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `mychannels`;
+DROP TABLE IF EXISTS `ap_mychannels`;
 
-CREATE TABLE `mychannels` (
+CREATE TABLE `ap_mychannels` (
   `id` int(11) NOT NULL ,
   `created` datetime not null default '0000-00-00 00:00:00',
   `updated` datetime not null default '0000-00-00 00:00:00',
@@ -454,38 +455,6 @@ CREATE TABLE `mychannels` (
   `processed` enum('yes','no') NOT NULL DEFAULT 'no'
  ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `curlinks`;
-
-CREATE TABLE `curlinks` (
-  `id` int(11) NOT NULL auto_increment,
-  `created` datetime not null default '0000-00-00 00:00:00',
-  `ended` datetime not null default '0000-00-00 00:00:00',
-  `linked` datetime not null default '0000-00-00 00:00:00',
-  `unlinked` datetime not null default '0000-00-00 00:00:00',
-  `uniqueid` varchar(40) not null default '',
-  `orguniqueid` varchar(40) not null default '',
-  `destuniqueid` varchar(40) not null default '',
-  `dialstring` varchar(100) not null default '',
-  `dialstatus` varchar(30) not null default '',
-  `processed` enum('yes','no','error') NOT NULL DEFAULT 'no',
-  UNIQUE KEY `id` (`id`)
-) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
-
-DROP TABLE IF EXISTS `mylinks`;
-
-CREATE TABLE `mylinks` (
-  `id` int(11) NOT NULL,
-  `created` datetime not null default '0000-00-00 00:00:00',
-  `ended` datetime not null default '0000-00-00 00:00:00',
-  `linked` datetime not null default '0000-00-00 00:00:00',
-  `unlinked` datetime not null default '0000-00-00 00:00:00',
-  `uniqueid` varchar(40) not null default '',
-  `orguniqueid` varchar(40) not null default '',
-  `destuniqueid` varchar(40) not null default '',
-  `dialstring` varchar(100) not null default '',
-  `dialstatus` varchar(30) not null default '',
-  `processed` enum('yes','no','error') NOT NULL DEFAULT 'no'
-) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ## 
 ## table `curmeetmes`
@@ -1560,5 +1529,42 @@ CREATE TABLE `ap_curspools` (
  `callback_end` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
  `callback_status` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
  `asteriskserver_id` int(11) NOT NULL DEFAULT '0',
+ PRIMARY KEY (`id`)
+) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+CREATE TABLE `ap_myspools` (
+ `id`  int(11) unsigned NOT NULL auto_increment,
+ `action` varchar(40) NOT NULL DEFAULT '',
+ `creby` varchar(30) NOT NULL default '',
+ `created` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `scheduler` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `priority` int(4) DEFAULT '1',
+ `lasttry` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `try` int(4) DEFAULT '1',
+ `tried` int(4) DEFAULT '1',
+ `connected` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `status` enum("new","pending","success","failed") default 'new',
+ `account` varchar(40) NOT NULL DEFAULT '',
+ `channel` varchar(40) NOT NULL DEFAULT '',
+ `exten` varchar(40) NOT NULL DEFAULT '',
+ `context` varchar(40) NOT NULL DEFAULT '',
+ `waittime` int(4) NOT NULL DEFAULT '45',
+ `callerid` varchar(40) NOT NULL DEFAULT '',	
+ `variable` varchar(255) NOT NULL DEFAULT '',	
+ `application` varchar(255) NOT NULL DEFAULT '',
+ `data` varchar(255) NOT NULL DEFAULT '',
+ `actionid` varchar(35) NOT NULL DEFAULT '',
+ `interval` int(4) NOT NULL DEFAULT '3600',
+ `async` varchar(4) NOT NULL DEFAULT '0',
+ `callback_start` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
+ `callback_end` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
+ `callback_status` varchar(200) NOT NULL DEFAULT '',	# 是否需要将结果写到其他的表
+ `asteriskserver_id` int(11) NOT NULL DEFAULT '0',
+ `duration` int(4) NOT NULL DEFAULT '0',
+ `agentno` varchar(30) NOT NULL DEFAULT '',
+ `agent_group_id` int(11) NOT NULL DEFAULT '0',
+ `team_id` int(11) NOT NULL DEFAULT '0',
+ `modeltype` varchar(30) NOT NULL DEFAULT '',
+ `model_id` int(11) NOT NULL DEFAULT '0',
  PRIMARY KEY (`id`)
 ) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

@@ -36,7 +36,6 @@ require_once('systemstatus.common.php');
 		<!--
 function addDiv(containerId,divId,creditLimit,num,status,displayname,customereable){
 	var container = document.getElementById(containerId);
-
 	if (displayname == '')
 	{
 		displayname = divId;
