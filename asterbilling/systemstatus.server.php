@@ -436,14 +436,14 @@ function checkDestination($peer){
 	$peers = $_SESSION['curuser']['extensions'];
 	$query = "SELECT * FROM curcdr WHERE src = '$peer' ";
 	$curcdr = $db->getRow($query);
-	$direction = 'inbound';
+	$direction = 'outbound';
 
-	if ($res){
+	if ($curcdr){
 		if (astercc::array_exist($curcdr['src'], $peers) || astercc::array_exist($curcdr['dst'], $peers)){
-			$direction = 'inbound';
+			$direction = 'outbound';
 		}else{
 			if (ereg("\/(.*)-", $curcdr['srcchan'], $myAry) ){
-				$direction = 'inbound';
+				$direction = 'outbound';
 			}
 		}
 	}
