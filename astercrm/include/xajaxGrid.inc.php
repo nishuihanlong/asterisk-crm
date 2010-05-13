@@ -545,13 +545,20 @@ class ScrollTable{
 					<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/>
 					</td>';
 			
-			if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->multiEditFlag != 1){
+			if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->exportFlag != 2 && $this->multiEditFlag != 1){
 				$this->search .= '<input type="hidden" name="optionFlag" id="optionFlag" value="">';
 			}else{
 				$option = '<option value = "'.null.'" >'.$local_grid->Translate("Select Option").'</option>';
 				
 				if($this->exportFlag == 1){
 					$option .= '<option value="export">'.$local_grid->Translate("Export").'</option>';
+					$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Export").'\';}';
+				}
+				if($this->exportFlag == 2){
+					$option .= '<option value="export">'.$local_grid->Translate("Export").' xls</option>';
+					$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Export").'\';}';
+
+					$option .= '<option value="exportcsv">'.$local_grid->Translate("Export").' csv</option>';
 					$optionOnchange .= 'if(this.value==\'export\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("Export").'\';}';
 				}
 				if($this->multiEditFlag == 1){

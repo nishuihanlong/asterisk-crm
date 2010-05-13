@@ -224,7 +224,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'dialednumber';
-	$fieldsFromSearch[] = 'answertime';
+	//$fieldsFromSearch[] = 'answertime';
 	$fieldsFromSearch[] = 'duration';
 	$fieldsFromSearch[] = 'callresult';
 	$fieldsFromSearch[] = 'response';
@@ -241,7 +241,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed Number");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Answer Time");
+	//$fieldsFromSearchShowAs[] = $locate->Translate("Answer Time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Duration");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Call Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Response");
@@ -260,7 +260,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->ordering = $ordering;
 	$table->addRowSearchMore("dialedlist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -305,13 +305,15 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$ordering = $searchFormValue['ordering'];
 	$order = $searchFormValue['order'];
 	$divName = "grid";
-	if($optionFlag == "export"){
+	if($optionFlag == "export" || $optionFlag == "exportcsv"){
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'dialedlist');
 		$joinstr=ltrim($joinstr,'AND');
 		$sql = "SELECT dialedlist.dialednumber,customer.customer,dialedlist.dialtime,dialedlist.answertime,dialedlist.duration,dialedlist.response,dialedlist.campaignresult,dialedlist.dialedby, groupname, campaignname,dialedlist.dialedtime FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid LEFT JOIN customer ON customer.id = dialedlist.customerid ";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", 'dialedlist'); //赋值隐含域
+		$objResponse->addAssign("exporttype", "value", $optionFlag);
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'dialedlist');

@@ -131,6 +131,7 @@ class asterEvent extends PEAR
 					$call['curid'] = trim($list['id']);
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
+					$call['calldate'] = $list['starttime'];
 					return $call;
 				}elseif (strstr($list['dstchan'],$channel) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "AGENT/".$agent ){		//dial in
 					$call['callerChannel'] = $list['srcchan'];
@@ -140,6 +141,7 @@ class asterEvent extends PEAR
 					$call['callerid'] = trim($list['src']);
 					$call['uniqueid'] = trim($list['srcuid']);
 					$call['curid'] = trim($list['id']);
+					$call['calldate'] = $list['starttime'];
 					return $call;
 				}
 			}

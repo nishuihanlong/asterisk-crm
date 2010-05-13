@@ -104,6 +104,7 @@ class Common{
 		}
 		$aryMenu['system'] = array("link"=>"system.php","title"=> $locate_common->Translate("system"));
 		$aryMenu['profile'] = array("link"=>"profile.php","title"=> $locate_common->Translate("profile"));
+		$aryMenu['systemstatus'] = array("link"=>"systemstatus.php","title"=> $locate_common->Translate("systemstatus"));
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			if($config['customers']['enable']){
@@ -121,9 +122,17 @@ class Common{
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			if($config['customers']['enable']){
-				$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile');
+				if($config['system']['sysstatus_new_window'] == 'yes'){
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile');
+				}else{
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile','systemstatus');
+				}
 			}else{
-				$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile');
+				if($config['system']['sysstatus_new_window'] == 'yes'){
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile');
+				}else{
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile','systemstatus');
+				}
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
@@ -131,9 +140,17 @@ class Common{
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}else{ // operator
 			if($config['customers']['enable']){
-				$aryCurMenu = array('report','customerrate','customers','discount','profile');
+				if($config['system']['sysstatus_new_window'] == 'yes'){
+					$aryCurMenu = array('report','customerrate','customers','discount');
+				}else{
+					$aryCurMenu = array('report','customerrate','customers','discount','systemstatus');
+				}
 			}else{
-				$aryCurMenu = array('report','customerrate','profile');
+				if($config['system']['sysstatus_new_window'] == 'yes'){
+					$aryCurMenu = array('report','customerrate');
+				}else{
+					$aryCurMenu = array('report','customerrate','systemstatus');
+				}
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}

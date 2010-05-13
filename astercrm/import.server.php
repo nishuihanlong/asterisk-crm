@@ -179,6 +179,7 @@ function selectTable($tableName){
 function submitForm($aFormValues){
 	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
+	print_R($aFormValues);exit;
 	$order = $aFormValues['order']; //得到的排序数字，数组形式，要添加到数据库的列
 	$fileName = $aFormValues['hidFileName'];
 	$tableName = $aFormValues['hidTableName'];

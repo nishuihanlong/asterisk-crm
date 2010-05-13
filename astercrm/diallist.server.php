@@ -211,7 +211,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearch("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	
-	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->ordering = $ordering;
 	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -380,7 +380,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$ordering = $searchFormValue['ordering'];
 	$order = $searchFormValue['order'];
 	$divName = "grid";
-	if($optionFlag == "export"){
+	if($optionFlag == "export" || $optionFlag == "exportcsv"){
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'diallist'); //得到要导出的sql语句
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'diallist');
 		$joinstr=ltrim($joinstr,'AND');
@@ -389,6 +389,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addAssign("maintable", "value", 'diallist'); //赋值隐含域
+		$objResponse->addAssign("exporttype", "value", $optionFlag);
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'diallist');

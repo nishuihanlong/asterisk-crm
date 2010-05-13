@@ -320,7 +320,7 @@ CREATE TABLE `credithistory` (
 ## table `trunk`
 ## 
 
-DROP TABLE IF EXISTS `trunk`;
+DROP TABLE IF EXISTS `trunks`;
 
 CREATE TABLE `trunks` (
   `id` int(11) NOT NULL auto_increment,
@@ -1476,6 +1476,8 @@ CREATE TABLE `meetmelists` (
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `campaignresult`;
+
 CREATE TABLE `campaignresult` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `resultname` varchar(30) NOT NULL DEFAULT '',
@@ -1489,6 +1491,7 @@ CREATE TABLE `campaignresult` (
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `knowledge`;
 
 CREATE TABLE `knowledge` (
   `id` int(11) unsigned NOT NULL auto_increment,
@@ -1500,6 +1503,7 @@ CREATE TABLE `knowledge` (
   PRIMARY KEY (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `ap_curspools`;
 
 CREATE TABLE `ap_curspools` (
  `id`  int(11) unsigned NOT NULL auto_increment,
@@ -1531,6 +1535,8 @@ CREATE TABLE `ap_curspools` (
  `asteriskserver_id` int(11) NOT NULL DEFAULT '0',
  PRIMARY KEY (`id`)
 ) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `ap_myspools`;
 
 CREATE TABLE `ap_myspools` (
  `id`  int(11) unsigned NOT NULL auto_increment,

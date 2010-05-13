@@ -670,7 +670,7 @@ function setFreeCallPage($id){
 				<tr><td ><b>'.$locate->Translate("Are you sure to set this call free").'?</b></td><tr>
 				<tr><td >'.$locate->Translate("note").':&nbsp;&nbsp;<textarea id="note"></textarea></td><tr>
 				<tr><td >'.$locate->Translate("hidden record").':&nbsp;<input type="checkbox" id="hiddenrecord" value="1"></td><tr>
-				<tr><td align="center"><input type="button" value="'.$locate->Translate("confirm").'" onclick="xajax_setFreeCall(\''.$id.'\',document.getElementById(\'hiddenrecord\').checked,document.getElementById(\'note\').value);">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("cancel").'"  onclick="document.getElementById(\'formDiv\').display =\'none\';document.getElementById(\'formDiv\').innerHTML=\'\';return false;"></td><tr>
+				<tr><td align="center"><input type="button" value="'.$locate->Translate("confirm").'" onclick="xajax_setFreeCall(\''.$id.'\',document.getElementById(\'hiddenrecord\').checked,document.getElementById(\'note\').value);">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("cancel").'"  onclick="document.getElementById(\'formDiv\').style.visibility=\'hidden\';document.getElementById(\'formDiv\').innerHTML = \'\';return false;"></td><tr>
 			 </table>';
 	// End edit zone
 	$html .= Table::Footer();

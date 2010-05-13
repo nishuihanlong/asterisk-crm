@@ -42,6 +42,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 require_once ('include/localization.class.php');
+require_once 'config.php';
 
 if ($_SESSION['curuser']['usertype'] != 'groupadmin' && $_SESSION['curuser']['usertype'] != 'operator')
 	header("Location: index.php");

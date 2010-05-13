@@ -146,7 +146,7 @@ class paypal_class {
     
    }
 
-   function paypal_pdt_return($tx_token,$auth_token){
+   function paypal_pdt_return($tx_token,$auth_token,$log=false){
 
 	   $url_parsed=parse_url($this->verify_url);
 
@@ -167,8 +167,19 @@ class paypal_class {
 		// If possible, securely post back to paypal using HTTPS
 		// Your PHP server will need to be SSL enabled
 		$fp = fsockopen ($this->verify_url, $port, $errno, $errstr, 30);
-
+		if($log){
+			$loghandle = fopen("upload/paypalpdt.log",'rb');
+			$oricontent = fread($loghandle,filesize("upload/paypalpdt.log"));
+			fclose($loghandle);
+			$loghandle = fopen("upload/paypalpdt.log",'w');
+			$date = '#####'.date("Y-m-d H:i:s");
+		}
+						
 		if (!$fp) {
+			if($log){
+				fwrite($loghandle,$oricontent.$date.'-PDT return error:HTTP ERROR'."\n");
+				fclose($loghandle);
+			}
 		// HTTP ERROR
 		} else {
 			fputs ($fp, $header . $req);
@@ -186,6 +197,10 @@ class paypal_class {
 			// header has been read. now read the contents
 					$res .= $line;
 				}
+			}
+			if($log){
+				fwrite($loghandle,$oricontent.$date.'-PDT return result:'.$res."\n");
+				fclose($loghandle);
 			}
 
 			// parse the data

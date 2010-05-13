@@ -32,4 +32,5 @@
 	$scheduler = "拨号时间";
 	$delete_file_success = "删除文件成功";
 	$delete_file = "删除文件";
+	$must_select_one_or_more_columns = "至少要选择一列数据进行导入";
 ?>

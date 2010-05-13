@@ -14,9 +14,9 @@ tb_cdr = mycdr
 [asterisk]
 
 server = 127.0.0.1
-port = 5038
-username = admin
-secret = amp111
+port = admin
+username = amp111
+secret = 
 
 [licence]
 
@@ -54,11 +54,6 @@ useindex = admin
 ;context when dial out, in trixbox this could be from-internal
 outcontext =  from-internal
 
-;default outbound trunk for reseller if you using reselleroutbound.agi
-resellertrunk = 
-;default outbound trunk type, SIP,IAX2 ...
-resellertrunktype = 
-
 ; individual: set the limit in credit limit field to the call
 ; balance: set limit in balance to the call
 creditlimittype = balance
@@ -70,7 +65,7 @@ upload_file_path = ./upload/
 refreshBalance = 0
 
 ; if we use history cdr(move the billed cdr to historycdr and read the cdr from historycdr)
-useHistoryCdr = 0
+useHistoryCdr = 1
 
 ; when we set useHistoryCDR = 1, then here set if we move the no answer cdr to historycdr
 keepNoAnswerCDR = 1
@@ -88,9 +83,12 @@ sipfile = /etc/asterisk/sip_astercc
 ; if require valid code when login
 validcode = no
 
+;if open new window when click pannel button on systemstatus(callshop portal) page
+sysstatus_new_window = no
+
 [epayment]
 ;if enable online payment by paypaly (enable,disable)
-epayment_status = disable
+epayment_status = enable
 
 ;Define here the URL of paypal payment (to test with sandbox)
 ;paypal_payment_url = "https://secure.paypal.com/cgi-bin/webscr"
@@ -117,10 +115,13 @@ currency_code = USD
 amount = 10,20,50,100
 
 ;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
-asterbilling_url =
+asterbilling_url = http://192.168.1.21/astercc/asterbilling
 
 ;your email address for receice a notice when someone payment
 notify_mail = 
+
+;if log the pdt result 0/1
+pdt_log = 1
 
 [customers]
 enable = 0
@@ -132,5 +133,8 @@ customertable = callshop_customers
 discounttable = discount
 username = astercc
 password = asterccsecret
+
+[resellertrunk]
+trunkname = reselleroutbound
 
 #?>

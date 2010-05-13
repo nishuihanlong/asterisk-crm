@@ -69,11 +69,11 @@ exit;
 $charge_callback=0;
 $G_startime = time();
 $agi_date = "Release : no date";
-$agi_version = "Asterisk2Billing - Version 1.4 - Trunk";
+$agi_version = "Version 1.4 - Trunk";
 
 if ($argc > 1 && ($argv[1] == '--version' || $argv[1] == '-v'))
 {
-	echo "A2Billing - Version $agi_version - $agi_date\n";
+	echo "Version $agi_version - $agi_date\n";
 	exit;
 }
 

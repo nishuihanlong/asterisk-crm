@@ -114,6 +114,7 @@ require_once('campaignresult.common.php');
 	<form name="exportForm" id="exportForm" action="dataexport.php" >
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
 		<input type="hidden" value="campaignresult" id="maintable" name="maintable" />
+		<input type="hidden" value="export" id="exporttype" name="exporttype" />
 	</form>
 
 		<div id="divCopyright"></div>

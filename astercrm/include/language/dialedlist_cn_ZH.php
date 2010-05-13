@@ -16,4 +16,12 @@ $like = "包含";
 $number_have_been_recycled = "个号码被成功回收";
 $recycle = "号码回收";
 $worktime_packages = "工作时间范围";
+$customer = "客户";
+$name = "客户名称";
+$call_result = '呼叫结果';
+$uniqueid = "标识";
+$campaign_result = "拨号计划结果";
+$result_by = "处理人";
+$tried = "拨叫次数";
+$dialed_time = "拨号时间";
 ?>

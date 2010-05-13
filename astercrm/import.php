@@ -125,7 +125,21 @@
 						}
 					}
 				}
-
+				var a = document.getElementsByName('order[]');
+				var b = '';
+				for(i=0;i < a.length;i++){
+					//alert(a[i].value);
+					if(a[i].value != ''){
+						b = a[i].value;
+						break;
+					}
+				}
+				if(b == ''){
+					alert("<?echo $locate->Translate("Must select one or more columns");?>");
+					a[0].focus();
+					return;
+				}
+				
 				//alert (document.getElementsById('sltTable').);
 				//return false;
 				//alert("ok");

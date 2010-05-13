@@ -21,12 +21,17 @@ require_once ('include/PHPExcel.php');
 require_once ('include/PHPExcel/IOFactory.php');
 $sql = $_REQUEST['hidSql'];
 $table = $_REQUEST['maintable'];
+$type = $_REQUEST['exporttype'];
 $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],$table);
 
 
 if ($sql == '' && $table != 'report') exit;
 
-$filename = 'astercrm.xls';
+if($type == 'exportcsv'){
+	$filename = 'astercrm.csv';
+}else{
+	$filename = 'astercrm.xls';
+}
 
 if ($_SESSION['curuser']['usertype'] != 'admin' && $table != 'report'){
 	if (strpos(strtolower($sql),'where')){
@@ -47,7 +52,11 @@ if ($_SESSION['curuser']['usertype'] != 'admin' && $table != 'report'){
 }
 
 if($table != ''){ //判断是否传了主表名
-	$filename = $table.'.xls';
+	if($type == 'exportcsv'){
+		$filename = $table.'.csv';
+	}else{
+		$filename = $table.'.xls';
+	}
 }
 if($table != 'report') $res = $db->query($sql);
 global $locate;
@@ -110,77 +119,111 @@ if($table == 'report'){
 		$data[] = $row;
 	}
 }
-$objPHPExcel = new PHPExcel();
+if($type != 'exportcsv'){
+	$objPHPExcel = new PHPExcel();
 
-		$objPHPExcel->setActiveSheetIndex(0);
-		$hfer = '&C&HExported from My DB Unclassified/FOUO';
-		$objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddHeader($hfer);
-		$objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddFooter($hfer);
-		$i = 1;
-		$colA = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
-		$colorcell = '';
-		foreach($data as $row){
-			$m = 0;
-			$n = 0;
-			$s = 0; //是否处于单列号状态
-			foreach($row as $k => $v){
-				if($k == 'color') continue;
-				if($m < 26 && $s == 0){
-					$cols = $colA[$m];
-					$m++;
-				}else{
-					
-					$s = 1;
-					if($m%26 == 0 && $m != 0) $m = 0;					
-					
-					if($n%26 == 0 && $n!=0){
-						$n = 0;					
+			$objPHPExcel->setActiveSheetIndex(0);
+			$hfer = '&C&HExported from My DB Unclassified/FOUO';
+			$objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddHeader($hfer);
+			$objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddFooter($hfer);
+			$i = 1;
+			$colA = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+			$colorcell = '';
+			foreach($data as $row){
+				$m = 0;
+				$n = 0;
+				$s = 0; //是否处于单列号状态
+				foreach($row as $k => $v){
+					if($k == 'color') continue;
+					if($m < 26 && $s == 0){
+						$cols = $colA[$m];
+						$m++;
+					}else{
+						
+						$s = 1;
+						if($m%26 == 0 && $m != 0) $m = 0;					
+						
+						if($n%26 == 0 && $n!=0){
+							$n = 0;					
+						}
+						$cols = $colA[$m].$colA[$n];
+
+						if($n == 25) $m++;
+						$n++;
 					}
-					$cols = $colA[$m].$colA[$n];
 
-					if($n == 25) $m++;
-					$n++;
+					if($i == 1){
+						$objPHPExcel->getActiveSheet()->setCellValue($cols.$i,$k);
+						if(is_numeric($v)) $v .= "\t";
+						$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
+						if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
+							$colorcell = $cols.($i+1).":".$cols.($i+1);
+							$BackgroundColor = new PHPExcel_Style_Color();
+							$BackgroundColor->setRGB($row['color']);				
+									
+							$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
+							$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
+						}
+					}else{
+						//$objPHPExcel->getActiveSheet()->mergeCells(’A18:E22′);合并单元格方法
+						//给单元格赋背景色
+						if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
+							$colorcell = $cols.($i+1).":".$cols.($i+1);
+							$BackgroundColor = new PHPExcel_Style_Color();
+							$BackgroundColor->setRGB($row['color']);				
+									
+							$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
+							$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
+						}
+						if(is_numeric($v)) $v .= "\t";
+						$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
+						
+					}							
 				}
-
-				if($i == 1){
-					$objPHPExcel->getActiveSheet()->setCellValue($cols.$i,$k);
-					if(is_numeric($v)) $v .= "\t";
-					$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
-					if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
-						$colorcell = $cols.($i+1).":".$cols.($i+1);
-						$BackgroundColor = new PHPExcel_Style_Color();
-						$BackgroundColor->setRGB($row['color']);				
-								
-						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
-						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
-					}
-				}else{
-					//$objPHPExcel->getActiveSheet()->mergeCells(’A18:E22′);合并单元格方法
-					//给单元格赋背景色
-					if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
-						$colorcell = $cols.($i+1).":".$cols.($i+1);
-						$BackgroundColor = new PHPExcel_Style_Color();
-						$BackgroundColor->setRGB($row['color']);				
-								
-						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
-						$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
-					}
-					if(is_numeric($v)) $v .= "\t";
-					$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
-					
-				}							
+				$i++;
 			}
-			$i++;
+
+			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+
+	header("charset=uft-8");   
+	header('Content-type:  application/force-download');
+	header('Content-Transfer-Encoding:  Binary');
+	header('Content-disposition:  attachment; filename='.$filename);
+	//echo astercrm::exportDataToCSV($sql,$table);
+
+	//unset($_SESSION['export_sql']);
+	$objWriter->save('php://output');
+}else{
+	ob_start();
+	header("charset=uft-8");   
+	header('Content-type:  application/force-download');
+	header('Content-Transfer-Encoding:  Binary');
+	header('Content-disposition:  attachment; filename='.$filename);
+	#echo astercrm::exportDataToCSV($sql,$table);
+	$first = 'yes';
+	foreach ($data as $row) {
+		$first_line = '';
+		foreach ($row as $key => $val){
+			if($first == 'yes'){
+				if($table = 'surveyresult'){
+					//if()
+				}
+				$first_line .= '"'.$key.'"'.',';
+			}
+			//if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
+			//		$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
+			
+			$txtstr .= "\t".$val."\t".',';
+			#$txtstr .= '"'.$val.'"'.',';
 		}
-
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-
-header("charset=uft-8");   
-header('Content-type:  application/force-download');
-header('Content-Transfer-Encoding:  Binary');
-header('Content-disposition:  attachment; filename='.$filename);
-//echo astercrm::exportDataToCSV($sql,$table);
-
-//unset($_SESSION['export_sql']);
-$objWriter->save('php://output');
+		if($first_line != ''){
+			$first_line .= "\n";
+			$txtstr = $first_line.$txtstr;
+			$first = 'no';
+		}			
+		$txtstr .= "\n";
+	}
+	echo $txtstr;
+	ob_end_flush();
+}
 ?>

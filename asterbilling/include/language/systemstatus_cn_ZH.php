@@ -63,4 +63,5 @@ $debit_card = "借记卡";
 $promotion = "代金券";
 $other = "其它";
 $available_balance = "可用余额";
+$systemstatus = "操作界面";
 ?>

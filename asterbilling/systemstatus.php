@@ -428,10 +428,11 @@ function searchRate(){
 		<div id="divTitle" name="divTitle" style="width: 800px; padding:5px 0;vertical-align:bottom;"></div>
 		<div id="divPanel" name="divPanel" class="divPanel" style="z-index:999;">
 			<ul id="nav">
-				<li><a href="rate.php" target="_blank"><?echo $locate->Translate("Rate");?></a></li>
-				<li><a href="checkout.php" target="_blank"><?echo $locate->Translate("Report");?></a></li>
-				<li><a href="spsystemstatus.php" target="_blank"><?echo $locate->Translate("Profi");?></a></li>
-				<li><a href="clid.php" target="_blank"><?echo $locate->Translate("Clid");?></a></li>
+			<?php if($config['system']['sysstatus_new_window'] == 'yes') $target='_blank'?>
+				<li><a href="rate.php" target="<? echo $target ?>"><?echo $locate->Translate("Rate");?></a></li>
+				<li><a href="checkout.php" target="<? echo $target ?>"><?echo $locate->Translate("Report");?></a></li>
+				<li><a href="spsystemstatus.php" target="<? echo $target ?>"><?echo $locate->Translate("Profi");?></a></li>
+				<li><a href="clid.php" target="<? echo $target ?>"><?echo $locate->Translate("Clid");?></a></li>
 				<li><a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a></li>
 			</ul>
 		</div>

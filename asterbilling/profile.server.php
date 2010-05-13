@@ -28,7 +28,7 @@ require_once ('include/xajaxGrid.inc.php');
 *
 */
 
-function init($get=''){
+function init($get=''){	
 	global $config,$locate;
 	$objResponse = new xajaxResponse();
 
@@ -100,7 +100,11 @@ function init($get=''){
 					if( $identity_token != ''){
 						$p = new paypal_class;
 						$p->verify_url = $config['epayment']['paypal_verify_url'];
-						$return = $p->paypal_pdt_return($get_item['tx'],$identity_token);
+						if($config['epayment']['pdt_log']){
+							$return = $p->paypal_pdt_return($get_item['tx'],$identity_token,true);
+						}else{
+							$return = $p->paypal_pdt_return($get_item['tx'],$identity_token);
+						}
 
 						if($return['flag'] == 'SUCCESS'){
 							$errorFlag = 0;
@@ -386,6 +390,7 @@ function rechargeByPaypal($amount){
 			$p->add_field('item_number',$_SESSION['curuser']['resellerid']);
 			$p->add_field('amount',$amount);
 			$p->add_field('mc_currency',$config['epayment']['currency_code']);
+			$p->add_field('currency_code',$config['epayment']['currency_code']);
 			//custum field userid:usertype:resellerid:gruopid
 			$p->add_field('custom',$_SESSION['curuser']['userid'].':reseller:'.$_SESSION['curuser']['resellerid'].':'.$_SESSION['curuser']['groupid']);
 			
@@ -411,6 +416,7 @@ function rechargeByPaypal($amount){
 			$p->add_field('item_number',$_SESSION['curuser']['groupid']);
 			$p->add_field('amount',$amount);
 			$p->add_field('mc_currency',$config['epayment']['currency_code']);
+			$p->add_field('currency_code',$config['epayment']['currency_code']);
 			//custum field userid:usertype:resellerid:gruopid
 			$p->add_field('custom',$_SESSION['curuser']['userid'].':groupadmin:'.$_SESSION['curuser']['resellerid'].':'.$_SESSION['curuser']['groupid']);
 		}

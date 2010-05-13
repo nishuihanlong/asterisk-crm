@@ -215,7 +215,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
 		$table->ordering = $ordering;
-		$table->exportFlag = '1';//对导出标记进行赋值
+		$table->exportFlag = '2';//对导出标记进行赋值
 		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
@@ -263,10 +263,11 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$divName = "grid";
 
 		//print_r($searchFormValue);exit;
-		if($optionFlag == "export"){
+		if($optionFlag == "export" || $optionFlag == "exportcsv"){
 			$sql = astercrm::getSql($searchContent,$searchField,$searchType,'mycdr'); //得到要导出的sql语句
 			$_SESSION['export_sql'] = $sql;
 			$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+			$objResponse->addAssign("exporttype", "value", $optionFlag);
 			$objResponse->addScript("document.getElementById('exportForm').submit();");
 		}else{
 			if($type == "delete"){

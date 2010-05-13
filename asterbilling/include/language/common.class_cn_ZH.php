@@ -19,4 +19,5 @@ $customer = "客户";
 $discount = "折扣";
 $profile = "用户信息";
 $system = "系统";
+$systemstatus = "操作界面";
 ?>

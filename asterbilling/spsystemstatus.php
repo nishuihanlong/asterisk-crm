@@ -434,7 +434,9 @@ function searchRate(){
 	<body onload="init();">
 		
 		<div id="divMain" style="clear:both; width:100%;">
-		
+		<?php if($config['system']['sysstatus_new_window'] != 'yes'){?>
+		<div id="divPanel" name="divPanel" class="divPanel" style="z-index:999;">&nbsp;&nbsp;&nbsp;&nbsp;<a href="systemstatus.php" target="">&nbsp;&nbsp;<?echo $locate->Translate("systemstatus");?>&nbsp;&nbsp;</a></div>
+		<?}?>
 	<?if ($_SESSION['curuser']['allowcallback'] == 'yes'){?>
 		<div id="divCallback" name="divCallback" class="formDiv drsElement" style="left: 450px; top: 50px;visibility:visible;width:250px;">
 			<table width="100%" border="1" align="center" class="adminlist" >

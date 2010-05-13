@@ -207,8 +207,10 @@ function init(){
 		$objResponse->addAssign("divMonitor", "style.display", "none");		
 		$objResponse->addAssign("monitorTitle", "style.display", "none");
 	}
+	if($_SESSION['curuser']['agent'] != ''){
 
-	if(strtoupper($config['system']['mission_pannel']) == 'OFF'){
+	}
+	if(strtoupper($config['system']['mission_pannel']) == 'OFF' || $_SESSION['curuser']['agent'] != ''){
 		$objResponse->addAssign("divDialList", "style.display", "none");
 		$objResponse->addAssign("misson", "style.display", "none");
 			
@@ -317,9 +319,11 @@ function listenCalls($aFormValues){
 			}
 		}
 	}else{
-		$objResponse->addAssign("agentData","innerHTML", '');
-		$objResponse->addAssign("spnPause","innerHTML", '' );
-		$objResponse->addAssign("breakStatus","value", -1);
+		if($_SESSION['curuser']['agent'] == '' ){
+			$objResponse->addAssign("agentData","innerHTML", '');
+			$objResponse->addAssign("spnPause","innerHTML", '' );
+			$objResponse->addAssign("breakStatus","value", -1);
+		}
 	}
 
 	if($aFormValues['dpnShow'] > 0){ //for refresh diallist pannel
@@ -594,11 +598,14 @@ function waitingCalls($myValue){
 								$objResponse->addScript('maximizeWin();');
 							}
 					}else{
+						//print_r($call);exit;
 						//use external link
 						$myurl = $config['system']['external_crm_url'];
 						$myurl = preg_replace("/\%method/","dial_in",$myurl);
 						$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
 						$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
+						$myurl = preg_replace("/\%uniqueid/",$call['uniqueid'],$myurl);
+						$myurl = preg_replace("/\%calldate/",$call['calldate'],$myurl);
 
 						if($config['system']['external_url_parm'] != ''){
 							if ($config['system']['detail_level'] == 'all')
@@ -673,6 +680,8 @@ function waitingCalls($myValue){
 						$myurl = preg_replace("/\%method/","dial_out",$myurl);
 						$myurl = preg_replace("/\%callerid/",$_SESSION['curuser']['extension'],$myurl);
 						$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
+						$myurl = preg_replace("/\%uniqueid/",$call['uniqueid'],$myurl);
+						$myurl = preg_replace("/\%calldate/",$call['calldate'],$myurl);
 						if ($config['system']['open_new_window'] == false){
 							$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
@@ -948,13 +957,20 @@ function addWithPhoneNumber(){
 }
 
 function checkworkexten() {
-	global $db,$locate;
+	global $db,$locate,$config;
+
 	$objResponse = new xajaxResponse();
+	if($config['system']['checkworkexten'] != 'yes'){
+		$objResponse->addAssign("workingextenstatus","value", "ok" );
+		return $objResponse;
+	}
+	
 	if($_SESSION['curuser']['channel'] == ''){
 		$row = astercrm::getRecordByField("peer","SIP/".$_SESSION['curuser']['extension'],"peerstatus");
 	}else{
 		$row = astercrm::getRecordByField("peer",$_SESSION['curuser']['channel'],"peerstatus");
 	}
+
 	if($row['status'] != 'reachable') {
 		$objResponse->addAssign("workingextenstatus","value", $locate->Translate("extension_unavailable") );
 	}else{

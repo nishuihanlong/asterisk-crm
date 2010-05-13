@@ -37,4 +37,8 @@ $answered = "应答";
 $noanswer = "未应答";
 $parent_result_name = "上级结果";
 $none = "无";
+$remaining = "剩余";
+$dialed_ = '已拨';
+$campaign_result = "拨号计划结果";
+$campaign = "拨号计划";
 ?>

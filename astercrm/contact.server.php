@@ -211,7 +211,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';
 	$table->ordering = $ordering;
 	$table->addRowSearchMore("contact",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -275,11 +275,13 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$ordering = $searchFormValue['ordering'];
 	$order = $searchFormValue['order'];
 	$divName = "grid";
-	if($optionFlag == "export"){
+	if($optionFlag == "export"  || $optionFlag == "exportcsv"){
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'contact'); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("exporttype", "value", $optionFlag);
+		$objResponse->addAssign("maintable", "value", 'contact');
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'contact');

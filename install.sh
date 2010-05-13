@@ -9,13 +9,6 @@ echo "*****************************************************************"
 echo "****************** Installing astercc package *******************"
 echo "*****************************************************************"
 
-curuser=`whoami`
-if [ ${curuser} != "root" ]
-then
-  echo "must be root user to install astercc"
-  exit
-fi
-
 curpath=`pwd`
 #echo "${curpath}/astercrm"
 if [ ! -d "${curpath}/astercrm" ]
@@ -98,13 +91,25 @@ then
   dbbin="/usr/bin"
 fi
 
-${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ping
+#${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ping
+#
+#if [ $? -ne 0 ]
+#then
+#  echo "database connection failed!"
+#  exit
+#fi
 
-if [ $? -ne 0 ]
+${dbbin}/mysqladmin --host=${dbhost} --port=${dbport} -u${dbuser} ${dbpasswdstr} ping >${curpath}/db.test 2>&1
+dbtest=`cat ${curpath}/db.test`
+
+if [ "$dbtest" != "mysqld is alive" ]
 then
+  echo $dbtest
   echo "database connection failed!"
   exit
 fi
+
+rm -rf ${curpath}/db.test 2>&1
 
 echo "If database:'"${dbname}"' is not exists, press 'y' to create," && echo -n "else press 'n' to skip this step:" 
 read dbexisist
@@ -214,6 +219,8 @@ cp -Rf ${curpath}/asterbilling ${mainpath}
 cp -Rf ${curpath}/astercrm ${mainpath}
 cp -f ${curpath}/index.html ${mainpath}
 cp -f ${curpath}/astercc_full_logo.png ${mainpath}
+cp -f ${curpath}/astercc_logo_small.gif ${mainpath}
+cp -f ${curpath}/sonicwell_logo_small.gif ${mainpath}
 chmod -R 644 ${mainpath}
 
 #change dir permissions.
@@ -281,11 +288,21 @@ read monitorconvertflag
 
 if [ "X${monitorconvertflag}" == "Xy" -o "X${monitorconvertflag}" == "XY" ]
 then
+  if [ ! -f "/usr/bin/lame" -a ! -f "/usr/local/bin/lame" ]
+  then
+    echo "Can't locate command:lame in /usr/bin/ and /usr/local/bin/, please install"
+  fi
+
+  if [ ! -f "/usr/bin/sox" -a ! -f "/usr/local/bin/sox" -a ! -f "/usr/bin/soxmix" -a ! -f "/usr/local/bin/soxmix" ]
+  then
+    echo "Can't locate command: 'sox' or 'soxmix' in /usr/bin/ and /usr/local/bin/ , please install"
+  fi
+  
   if [ -f "/etc/redhat-release" ]
   then
-        echo "1 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/root
+        echo "0 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/root
   else
-        echo "1 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/crontabs/root
+        echo "0 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/crontabs/root
         chown root:crontab /var/spool/cron/crontabs/root
         chmod 600 /var/spool/cron/crontabs/root
   fi
@@ -321,7 +338,7 @@ read startflag
 if [ "X${startflag}" == "Xy" -o "X${startflag}" == "XY" ]
 then
   echo "starting asterccd..."
-  /bin/bash ${daemonpath}/asterccd
+  /bin/bash ${daemonpath}/asterccd restart
 fi
 
 exit

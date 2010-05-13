@@ -53,7 +53,7 @@ incontext = from-internal
 
 ;agent_pannel_setting: if display following pannels in agent interface (On/Off)
 extension_pannel = On
-diallist_pannel = On
+diallist_pannel = Off
 transfer_pannel = On
 dial_pannel = On
 monitor_pannel = On
@@ -158,9 +158,10 @@ external_crm_default_url = http://astercc.org
 ; when using external crm, put pop up page here
 ; %callerid		callerid
 ; %calleeid		calleeid
-; %method		dialout or dialin
-;
-external_crm_url = http://astercc.org/index.php?callerid=%callerid&calleeid=%calleeid&method=%method
+; %method		dial_out or dial_in
+; %uniqueid
+; %calldate     starttime of the call
+external_crm_url = http://192.168.1.46:8080/php.php?callerid=%callerid&calleeid=%calleeid&method=%method&uniqueid=%uniqueid&calldate=%calldate
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
@@ -169,6 +170,9 @@ external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 detail_level = group
 
 astercc_conf_path = 
+
+;if check extension status when click "start work" on agent portal
+checkworkexten = yes
 
 [survey]
 ; if need a note after survey option
