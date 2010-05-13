@@ -14,6 +14,35 @@ if (not defined $cfg) {
 	exit(1);
 }
 
+my $lamecmd = '';
+if( -e '/usr/bin/lame'){
+	$lamecmd = '/usr/bin/lame';
+}elsif( -e '/usr/local/bin/lame'){
+	$lamecmd = '/usr/local/bin/lame';
+}
+
+if($lamecmd eq ''){
+	exit;
+}
+
+my $soxcmd = '';
+if( -e '/usr/bin/sox'){
+	$soxcmd = '/usr/bin/sox';
+}elsif( -e '/usr/local/bin/sox'){
+	$soxcmd = '/usr/local/bin/sox';
+}
+
+my $soxmixcmd = '';
+if( -e '/usr/bin/soxmix'){
+	$soxmixcmd = '/usr/bin/soxmix';
+}elsif( -e '/usr/local/bin/soxmix'){
+	$soxmixcmd = '/usr/local/bin/soxmix';
+}
+
+#if($soxmixcmd eq '' && $soxcmd eq ''){
+#	exit;
+#}
+
 my %dbInfo = (
         dbtype => trim($cfg->val('database', 'dbtype')),
         dbhost => trim($cfg->val('database', 'dbhost')),
@@ -32,8 +61,8 @@ my $pidFile = "/var/run/processmonitors.pid";
 $| =1 ;
 
 if ($ARGV[0] eq '-v'){		# print version
-	print "processmonitors version 0.01-091114\n";
-	print "copyright \@2009\n";
+	print "processmonitors version 0.011-100510\n";
+	print "copyright \@2009-2010\n";
 	exit;
 }elsif ($ARGV[0] eq '-t'){	 # test database & asterisk connection 
 	&connection_test;
@@ -126,7 +155,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	my $execstr = '';
 	if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
 		if($ref->{'fileformat'} eq 'wav'){
-			$execstr = "lame --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
+			$execstr = "$lamecmd --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
 
 			system($execstr);
 			
@@ -142,10 +171,16 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		}
 
 	}elsif( -e "$ref->{'filename'}-in.$ref->{'fileformat'}" && -e "$ref->{'filename'}-out.$ref->{'fileformat'}"){
-		$execstr = "sox -m $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
+		if($soxmixcmd ne ''){
+			$execstr = "$soxmixcmd $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
+		}elsif($soxcmd ne ''){
+			$execstr = "$soxcmd -m $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
+		}else{
+			exit;
+		}
 		system($execstr);
 		if($ref->{'fileformat'} eq 'wav'){
-			$execstr = "lame --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
+			$execstr = "$lamecmd --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
 			system($execstr);
 
 			if( -e $mp3file ){
