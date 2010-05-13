@@ -235,6 +235,7 @@ chmod -R 777 ${mainpath}/asterbilling/upload
 
 daemonpath=/opt/asterisk/scripts/astercc
 mkdir -p ${daemonpath}
+rm -rf ${daemonpath}/lib
 mv ${curpath}/scripts/* ${daemonpath}
 chmod +x ${daemonpath}/* 
 

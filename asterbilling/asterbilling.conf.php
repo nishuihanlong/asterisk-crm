@@ -84,7 +84,7 @@ sipfile = /etc/asterisk/sip_astercc
 validcode = no
 
 ;if open new window when click pannel button on systemstatus(callshop portal) page
-sysstatus_new_window = no
+sysstatus_new_window = yes
 
 [epayment]
 ;if enable online payment by paypaly (enable,disable)
