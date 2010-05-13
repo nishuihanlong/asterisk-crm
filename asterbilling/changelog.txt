@@ -122,7 +122,7 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-4-20   fixed can't display report of today
 2009-5-3    fixed bug in flash report
 2009-5-18   add check credit reseller and callshop realtime when booth calling
-2009-5-30   impoved send request by javascript in callshop interface
+2009-5-30   improved send request by javascript in callshop interface
 2009-6-4    fixed don't update blance when cannel limit in booth
 2009-6-9    add delete files what have uploaded
 2009-6-18   fixed can't find astercc license file when don't run in '/opt'
@@ -133,6 +133,21 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-11-14 added professional mode
 2009-11-14 added member mode switch
 2009-11-14 added Portuguese support
+
+----------------------------------------------------------------------------------
+0.012
+2010-03-30 improved profile page of resller and groupadmin(could view the own balance)
+2010-03-30 fixed the currency bug of recharge by paypal
+2010-04-09 added display callshop Balance in systemstatus
+2010-04-16 improve clid page (could control the clid if display in systemstatus as a booth)
+2010-04-17 improved systemstatus(could be open manager page in current page)
+2010-04-29 added set free call function in receipt page
+2010-04-29 improved receipt to close page when paid
+2010-04-30 improved cdr page to set special color for unbilled or free call
+2010-05-10 improved report(display memo and note)
+2010-05-11 added could set a special turnk for each resller dialout
+2010-05-11 astercc daemon support astersik 1.6.x
+----------------------------------------------------------------------------------
 
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能

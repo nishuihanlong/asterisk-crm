@@ -51,8 +51,8 @@ class Common{
 		$html .='
 				<div class="end">
 				<ul>
-				<li>2007-2009 asterCRM - asterCRM home</li>
-				<li>version: 0.061 in asterCC 0.13</li>
+				<li>2007-2010 asterCRM - asterCRM home</li>
+				<li>version: 0.062 in asterCC 0.14 beta</li>
 				</ul>
 				</div>
 				';

@@ -315,7 +315,7 @@ echo "*****Your astercc daemon directory at ${daemonpath}."
 echo "*****************************************************************"
 
 echo "Are you want to auto start astercc daemon when system startup?"
-echo "Must be redhat-release system"
+#echo "Must be redhat-release system"
 echo -n "Press 'y' to auto start:"
 read autostartflag
 
