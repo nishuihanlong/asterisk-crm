@@ -14,4 +14,5 @@ $hangup = "Stop";
 $clear = "Bezahlt";
 $cdr = "CDR";
 $receipt = "Rechnung";
+$available_balance="Aktuelles Guthaben";
 ?>
