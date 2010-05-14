@@ -53,7 +53,7 @@ incontext = from-internal
 
 ;agent_pannel_setting: if display following pannels in agent interface (On/Off)
 extension_pannel = On
-diallist_pannel = Off
+diallist_pannel = on
 transfer_pannel = On
 dial_pannel = On
 monitor_pannel = On

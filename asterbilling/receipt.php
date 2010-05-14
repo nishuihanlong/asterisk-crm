@@ -178,7 +178,7 @@
 				style="left: 250px; top: 200px;width:300px;"></div>
   <div id="copyright" style="background-repeat:repeat-x;height:64px;margin-top:10px;text-align:center;">
 				<ul>
-				<li>2007-2009 asterBilling - asterBilling home</li>
+				<li>2007-2010 asterBilling - asterBilling home</li>
 				<li>version: 0.12 in asterCC 0.14 beta</li>
 				</ul>
   </div>

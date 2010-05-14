@@ -368,6 +368,7 @@ do
 		    fi
 		else
 		    kill -9 $asterccpid
+		    sleep 1
 		    asterccpid=`ps -ef |grep -v grep |grep -E /asterc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		    if [ "x$asterccpid" != "x" ]; then
 			echo "$0 $ARG: astercc could not stop"
@@ -398,6 +399,7 @@ do
 		    fi
 		else
 		    kill -9 $asterctpid
+		    sleep 1
 		    asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		    if [ "x$asterctpid" != "x" ]; then
 			echo "$0 $ARG: astercctools could not stop"
@@ -428,6 +430,7 @@ do
 		    fi
 		else
 		    kill -9 $asterrcpid
+		    sleep 1
 		    asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		    if [ "x$asterrcpid" != "x" ]; then
 			echo "$0 $ARG: asterrc could not stop"
@@ -458,6 +461,7 @@ do
 		    fi
 		else
 		    kill -9 $asterlcpid
+		    sleep 1
 		    asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		    if [ "x$asterlcpid" != "x" ]; then
 			echo "$0 $ARG: astercclock could not stop"
