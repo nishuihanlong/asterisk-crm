@@ -372,7 +372,7 @@ function init(){
 }
 
 function showCallshopStatus(){
-	xajax_setFreeCall('1');
+	//xajax_setFreeCall('1');
 	var myDiv = document.getElementById("divAmount");
 	if (myDiv.style.display == 'block'){
 		myDiv.style.display = 'none';

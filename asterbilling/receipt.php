@@ -165,11 +165,12 @@
 			   $total_price += $myreceipt['credit'];
 			}
 	  }
+	  $total_price_ori = $total_price;
       $total_price = $total_price * (1-$_REQUEST['discount']);
 	  $total_price = astercc::creditDigits($total_price,2);
 	?>
 	<tr><td><? echo $locate->Translate("Total");?>:</td>
-		<td colspan="5" align="right"><? echo $total_price; ?></td>
+		<td colspan="5" align="right" id="total_price"><? echo $total_price; ?></td><input id="total_price_ori" type="hidden" value="<? echo $total_price_ori; ?>"><input id="discount" type="hidden" value="<? echo $_REQUEST['discount']; ?>">
 	</tr>
   </table>
   </div>
@@ -178,7 +179,7 @@
   <div id="copyright" style="background-repeat:repeat-x;height:64px;margin-top:10px;text-align:center;">
 				<ul>
 				<li>2007-2009 asterBilling - asterBilling home</li>
-				<li>version: 0.11 in asterCC 0.13</li>
+				<li>version: 0.12 in asterCC 0.14 beta</li>
 				</ul>
   </div>
   </div>

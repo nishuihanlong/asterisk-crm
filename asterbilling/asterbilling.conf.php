@@ -14,9 +14,9 @@ tb_cdr = mycdr
 [asterisk]
 
 server = 127.0.0.1
-port = admin
-username = amp111
-secret = 
+port = 5038
+username = admin
+secret = amp111
 
 [licence]
 
@@ -85,6 +85,13 @@ validcode = no
 
 ;if open new window when click pannel button on systemstatus(callshop portal) page
 sysstatus_new_window = yes
+
+;which status will be displayed when click call status in systemstatus(callshop portal) page
+callshop_status_amount = 1
+callshop_status_cost = 1
+callshop_status_limit = 1
+callshop_status_credit = 1
+callshop_status_balance = 1
 
 [epayment]
 ;if enable online payment by paypaly (enable,disable)

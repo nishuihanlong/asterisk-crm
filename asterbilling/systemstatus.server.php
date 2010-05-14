@@ -166,8 +166,11 @@ function setGroupBalance(){
 
 	if ($amount == '') $amount = 0;
 	if ($cost == '') $cost = 0;
-	$objResponse->addAssign("spanAmount","innerHTML",$amount);
-
+	$divAmountHtml = '';
+	if($config['system']['callshop_status_amount']){
+		$divAmountHtml .='&nbsp;'.$locate->Translate("Amount").':&nbsp;'.$amount.'&nbsp;&nbsp;&nbsp;&nbsp;';
+	}
+		
 	if ($_SESSION['curuser']['limittype'] == ''){
 			$creditlimit = $locate->Translate("no limit");
 			$objResponse->addAssign("spanLimitStatus","innerHTML",$creditlimit);
@@ -184,11 +187,21 @@ function setGroupBalance(){
 	}
 
 	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-		$objResponse->addAssign("spanLimit","innerHTML",$creditlimit);
-		$objResponse->addAssign("spanCost","innerHTML",$callshopcredit);
-		$objResponse->addAssign("spancurcredit","innerHTML",$curcredit);
-		$objResponse->addAssign("spanbalance","innerHTML",$balance);
+		if($config['system']['callshop_status_cost']){
+		$divAmountHtml .='&nbsp;'.$locate->Translate("Cost").':&nbsp;'.$cost.'&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+		if($config['system']['callshop_status_limit']){
+			$divAmountHtml .='&nbsp;'.$locate->Translate("Limit").':&nbsp;'.$creditlimit.'&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+		if($config['system']['callshop_status_credit']){
+			$divAmountHtml .='&nbsp;'.$locate->Translate("Current Credit").':&nbsp;'.$curcredit.'&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+		if($config['system']['callshop_status_balance']){
+			$divAmountHtml .='&nbsp;'.$locate->Translate("Available Balance").':&nbsp;'.$balance;
+		}
 	}
+
+	$objResponse->addAssign("divAmount","innerHTML",$divAmountHtml);
 
 	if (is_numeric($config['system']['refreshBalance']) && $config['system']['refreshBalance'] != 0){
 		$refreshtime = $config['system']['refreshBalance'] * 1000;
@@ -670,7 +683,7 @@ function setFreeCallPage($id){
 				<tr><td ><b>'.$locate->Translate("Are you sure to set this call free").'?</b></td><tr>
 				<tr><td >'.$locate->Translate("note").':&nbsp;&nbsp;<textarea id="note"></textarea></td><tr>
 				<tr><td >'.$locate->Translate("hidden record").':&nbsp;<input type="checkbox" id="hiddenrecord" value="1"></td><tr>
-				<tr><td align="center"><input type="button" value="'.$locate->Translate("confirm").'" onclick="xajax_setFreeCall(\''.$id.'\',document.getElementById(\'hiddenrecord\').checked,document.getElementById(\'note\').value);">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("cancel").'"  onclick="document.getElementById(\'formDiv\').style.visibility=\'hidden\';document.getElementById(\'formDiv\').innerHTML = \'\';return false;"></td><tr>
+				<tr><td align="center"><input type="button" value="'.$locate->Translate("confirm").'" onclick="xajax_setFreeCall(\''.$id.'\',document.getElementById(\'hiddenrecord\').checked,document.getElementById(\'note\').value,document.getElementById(\'total_price_ori\').value,document.getElementById(\'discount\').value);">&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("cancel").'"  onclick="document.getElementById(\'formDiv\').style.visibility=\'hidden\';document.getElementById(\'formDiv\').innerHTML = \'\';return false;"></td><tr>
 			 </table>';
 	// End edit zone
 	$html .= Table::Footer();
@@ -680,9 +693,17 @@ function setFreeCallPage($id){
 	return $objResponse;
 }
 
-function setFreeCall($id,$hiddenrecord,$note){
+function setFreeCall($id,$hiddenrecord,$note,$total,$discount){
 	global $db;
+	//$discount = 0.5;
 	$objResponse = new xajaxResponse();
+
+	$query = "SELECT * FROM mycdr WHERE id = $id";
+	$row = $db->getRow($query);//print_r($row);exit;
+
+	if($row['credit'] > 0 && $row['setfreecall'] != 'yes'){
+		$total = $total - $row['credit'];
+	}
 	
 	$query = "UPDATE mycdr SET note = '".$note."', setfreecall = 'yes' WHERE id = $id";
 
@@ -693,7 +714,12 @@ function setFreeCall($id,$hiddenrecord,$note){
 			$objResponse->addAssign("rprice-".$id, "innerHTML", '0.00');
 			$objResponse->addAssign("rcdr-".$id, "style.background", '#d5c59f');
 		}
-	}	
+	}
+
+    $total_price = $total * (1-$discount);
+    $total_price = astercc::creditDigits($total_price,2);
+	$objResponse->addAssign("total_price", "innerHTML", $total_price);
+	$objResponse->addAssign("total_price_ori", "value", $total);
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addAssign("formDiv", "innerHTML", '');
 
