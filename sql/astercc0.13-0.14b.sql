@@ -1,8 +1,8 @@
 
-alter table mycdr change `src` `src` varchar(50) NOT NULL default '';
-alter table mycdr change `dst` `dst` varchar(50) NOT NULL default '';
-alter table mycdr change `channel` `channel` varchar(100) NOT NULL default '';
-alter table mycdr change `dstchannel` `dstchannel` varchar(100) NOT NULL default '';
+alter table mycdr change `src` `src` varchar(40) NOT NULL default '';
+alter table mycdr change `dst` `dst` varchar(40) NOT NULL default '';
+alter table mycdr change `channel` `channel` varchar(80) NOT NULL default '';
+alter table mycdr change `dstchannel` `dstchannel` varchar(80) NOT NULL default '';
 alter table mycdr add `srcname` varchar(100) NOT NULL default '';
 alter table mycdr add note text default '';
 alter table mycdr add setfreecall enum('yes','no') default 'no';
