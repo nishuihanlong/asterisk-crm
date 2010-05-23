@@ -263,7 +263,7 @@ function showStatus(){
 	$peers = $_SESSION['curuser']['extensions'];
 	
 	$peerstatus = astercc::checkPeerStatus($_SESSION['curuser']['groupid'],$peers);
-	//print_r($peerstatus);exit;
+	#print_r($peerstatus);exit;
 
 	$event = array('ring' => 1, 'dial' => 2, 'ringing' => 3, 'link' => 4);
 
@@ -283,7 +283,9 @@ function showStatus(){
 			}
 		}
 
+
 		if ($cstatus[$peer]['disposition'] != $peerstatus[$peer]['disposition']){	// status changed
+
 			if ($peerstatus[$peer]['disposition'] == ''){
 				// a hangup event
 				$objResponse->addScript("clearCurchannel('".$peer."');");

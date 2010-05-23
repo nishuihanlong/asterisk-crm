@@ -4002,6 +4002,7 @@ Class astercrm extends PEAR{
 		$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
+		//print_r($res);die;
 		return $res;		
 	}	
 
