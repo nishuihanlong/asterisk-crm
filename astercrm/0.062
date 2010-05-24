@@ -6,6 +6,8 @@ new features in 0.062
 	improved export funciton, supoorts to export xls and cvs format
 	improved report page
 	astercc daemon support astersik 1.6.x
+	added script astercrm_update_cdr(update customer id to mycdr)
+	added astercrm.agi(update call result to dialedlist and Answering Machine Detect when using predictive dialer)
 
 0.062 新功能
 	增加了CDR页面的导出功能
@@ -15,6 +17,8 @@ new features in 0.062
 	改进导出功能,同时支持导出xls及csv两种格式
 	改进报告页,增加对座席通话时长的统计功能
 	astercc进程 对asterisk 1.6.x 全面支持
+	增加了astercrm_update_cdr 脚本(目前用于更新用户id到mycdr)
+	增加了astercrm.agi(使用预拨号器时,用于更新dialedlist的拨号结果及对自动答应机的检测)
 
 astercrm features(0.062)
 

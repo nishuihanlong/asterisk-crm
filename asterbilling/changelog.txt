@@ -147,6 +147,8 @@ add new field amount and total in table accountgroup to store all selling and al
 2010-05-10 improved report(display memo and note)
 2010-05-11 added could set a special turnk for each resller dialout
 2010-05-11 astercc daemon support astersik 1.6.x
+2010-05-15 improved reselleroutbound.agi, support spare trunk
+2010-05-18 added account_log page(records the account login logs)
 ----------------------------------------------------------------------------------
 
 import时如果数据量大会报错
