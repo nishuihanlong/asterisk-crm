@@ -236,8 +236,20 @@ chmod -R 777 ${mainpath}/asterbilling/upload
 daemonpath=/opt/asterisk/scripts/astercc
 mkdir -p ${daemonpath}
 rm -rf ${daemonpath}/lib
-mv ${curpath}/scripts/* ${daemonpath}
+cp -Rf ${curpath}/scripts/* ${daemonpath}
 chmod +x ${daemonpath}/* 
+
+if [ ! -e "/var/lib/asterisk/agi-bin/astercrm.agi" ];then
+	ln -s ${daemonpath}/astercrm.agi /var/lib/asterisk/agi-bin/astercrm.agi
+fi
+
+if [ ! -e "/var/lib/asterisk/agi-bin/reselleroutbound.agi" ];then
+	ln -s ${daemonpath}/reselleroutbound.agi /var/lib/asterisk/agi-bin/reselleroutbound.agi
+fi
+
+if [ ! -e "/var/lib/asterisk/agi-bin/lib" ];then
+	ln -s ${daemonpath}/lib /var/lib/asterisk/agi-bin/lib
+fi
 
 echo Please enter absolute path of asterisk etc 
 echo -n "asterisk etc (default /etc/asterisk):"
@@ -272,12 +284,11 @@ else
 fi
 
 touch ${asterisketc}/sip_astercc.conf
-touch ${asterisketc}/extensions_astercc.conf
 
-echo "[astercc-barge]" >> /etc/asterisk/extensions_astercc.conf
-echo "exten => _X.,1,NoOP(\${EXTEN})" >> /etc/asterisk/extensions_astercc.conf
-echo "exten => _X.,n,meetme(\${EXTEN}|pqdx)" >> /etc/asterisk/extensions_astercc.conf
-echo "exten => _X.,n,hangup" >> /etc/asterisk/extensions_astercc.conf
+if [ ! -f "${asterisketc}/extensions_astercc.conf" ]
+then
+  mv ${curpath}/scripts/extensions_astercc.conf ${asterisketc}
+fi
 
 echo "#include sip_astercc.conf" >> ${asterisketc}/sip.conf
 

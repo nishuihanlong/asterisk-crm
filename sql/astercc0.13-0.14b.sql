@@ -9,6 +9,8 @@ alter table mycdr add setfreecall enum('yes','no') default 'no';
 alter table mycdr add accountid int(11) not null default '0';
 alter table mycdr add `dialstring` varchar(100) NOT NULL default '';
 alter table mycdr change `accountcode` `accountcode` varchar(100) NOT NULL default '';
+alter table mycdr add `crm_customerid` int(11) NOT NULL default 0;
+alter table mycdr add `contactid` int(11) NOT NULL default 0;
 
 alter table curcdr change `src` `src` varchar(50) NOT NULL default '';
 alter table curcdr change `dst` `dst` varchar(50) NOT NULL default '';
@@ -23,13 +25,18 @@ alter table monitorrecord add accountid int(11) not null default '0';
 alter table historycdr add setfreecall enum('yes','no') default 'no';
 alter table historycdr add note text default '';
 
-alter table `resellergroup` add `trunk_id` int(11) NOT NULL default 0;
 alter table clid add isshow enum('yes','no') default 'yes';
 alter table peerstatus add channeltype varchar(30) not null default '';
 alter table peerstatus add responsetime int(11) not null default '0';
 
 ALTER TABLE dialedlist ADD INDEX nnt (`dialednumber`,`dialedtime`);
 ALTER TABLE dialedlist ADD INDEX nnu (`dialednumber`,`uniqueid`);
+
+ALTER TABLE `resellergroup` ADD `trunk1_id` int(11) NOT NULL default 0;
+ALTER TABLE `resellergroup` ADD `trunk2_id` int(11) NOT NULL default 0;
+
+ALTER TABLE `campaign` ADD `nextcontext` varchar(60) NOT NULL default '';
+ALTER TABLE `campaign` ADD `firstcontext` varchar(60) NOT NULL default '';
 
 CREATE TABLE `trunks` (
   `id` int(11) NOT NULL auto_increment,
@@ -38,6 +45,7 @@ CREATE TABLE `trunks` (
   `trunkprotocol` enum('sip','iax') NOT NULL default 'sip',
   `registrystring` varchar(254) NOT NULL default '',
   `trunkdetail` text NOT NULL,
+  `trunktimeout` int(5) NOT NULL default 30,
   `trunkusage` bigint(20) NOT NULL default '0',
   `trunkprefix` varchar(20) NOT NULL default '',
   `removeprefix` varchar(20) NOT NULL default '',
@@ -60,3 +68,16 @@ CREATE TABLE `knowledge` (
   PRIMARY KEY (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+CREATE TABLE `account_log` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `account_id` int(11) NOT NULL DEFAULT 0,
+  `username` varchar(30) NOT NULL default '',
+  `usertype` varchar(30) NOT NULL default '',
+  `ip` varchar(30) NOT NULL default '',
+  `action` varchar(30) NOT NULL default '',
+  `status` enum("success","failed") default 'failed',
+  `failedcause` varchar(100) NOT NULL default '',
+  `failedtimes` int(11) NOT NULL default 0,
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

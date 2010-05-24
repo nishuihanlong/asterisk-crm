@@ -217,7 +217,6 @@ CREATE TABLE `resellergroup` (
   `credit_reseller` DOUBLE( 24, 4 ) NOT NULL default '0.0000',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `trunk_id` int(11) NOT NULL default 0,
   `epayment_account` varchar(255) NOT NULL default '',                 
   `epayment_status` enum('enable','disable') NOT NULL default 'disable',
   `epayment_item_name` varchar(30) NOT NULL default '',     
@@ -329,6 +328,7 @@ CREATE TABLE `trunks` (
   `trunkprotocol` enum('sip','iax') NOT NULL default 'sip',
   `registrystring` varchar(254) NOT NULL default '',
   `trunkdetail` text NOT NULL,
+  `trunktimeout` int(5) NOT NULL default 30,
   `trunkusage` bigint(20) NOT NULL default '0',
   `trunkprefix` varchar(20) NOT NULL default '',
   `removeprefix` varchar(20) NOT NULL default '',
@@ -567,6 +567,8 @@ CREATE TABLE `mycdr` (
   `memo` varchar(100) NOT NULL default '',
   `dialstring` varchar(100) not null default '',
   `customerid` int(11) NOT NULL default 0,
+  `crm_customerid` int(11) NOT NULL default 0,
+  `contactid` int(11) NOT NULL default 0,
   `discount` double(8,4) NOT NULL default '0.0000',
   `payment`  varchar(15) NOT NULL default '',
   `note` text default '',
@@ -756,8 +758,10 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `campaignname` varchar(30) NOT NULL default '',
  `campaignnote` varchar(255) NOT NULL default '',
  `enable` int(1) NOT NULL default '0',
+ `firstcontext` varchar(60) NOT NULL default '',
  `outcontext` varchar(60) NOT NULL default '',
  `incontext` varchar(60) NOT NULL default '',
+ `nextcontext` varchar(60) NOT NULL default '',
  `inexten` varchar(30) NOT NULL default '',
  `callerid` varchar(30) NOT NULL default '',
  `queuename` varchar(15) NOT NULL default '',
@@ -1574,3 +1578,19 @@ CREATE TABLE `ap_myspools` (
  `model_id` int(11) NOT NULL DEFAULT '0',
  PRIMARY KEY (`id`)
 ) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `account_log`;
+
+CREATE TABLE `account_log` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `account_id` int(11) NOT NULL DEFAULT 0,
+  `username` varchar(30) NOT NULL default '',
+  `usertype` varchar(30) NOT NULL default '',
+  `ip` varchar(30) NOT NULL default '',
+  `action` varchar(30) NOT NULL default '',
+  `status` enum("success","failed") default 'failed',
+  `failedcause` varchar(100) NOT NULL default '',
+  `failedtimes` int(11) NOT NULL default 0,
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

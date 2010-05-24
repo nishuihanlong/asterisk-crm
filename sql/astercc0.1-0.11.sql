@@ -58,7 +58,8 @@ alter table `campaign` add `serverid` int(11) NOT NULL default '0';
 alter table note add private int(1) default '1';
 
 alter table historycdr add `customerid` int(11) NOT NULL default 0;
-alter table historycdr add  `discount` double(8,4) NOT NULL default '0.0000';alter table mycdr add `customerid` int(11) NOT NULL default 0;
+alter table historycdr add  `discount` double(8,4) NOT NULL default '0.0000';
+alter table mycdr add `customerid` int(11) NOT NULL default 0;
 alter table mycdr add  `discount` double(8,4) NOT NULL default '0.0000';
 
 alter table historycdr add INDEX `customerid` (`customerid`);
