@@ -358,7 +358,7 @@ function add(){
 function save($f){
 	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
-
+//print_r($f);exit;
 	if (trim($f['resellername']) == ''){
 		$objResponse->addAlert($locate->Translate("please enter the resellername"));
 		return $objResponse;
@@ -369,29 +369,37 @@ function save($f){
 		$f['creditlimit'] = 0;
 	}
 	//print_r($f);exit;
-	if($f['routetype'] == 'customize') {
-		$f['trunkname'] = trim($f['trunkname']);
-		if($f['trunkname'] == '') {
-			$objResponse->addAlert($locate->Translate("please enter the trunkname"));
-			return $objResponse;
-		}
-		$f['detail'] = trim($f['detail']);
-		if($f['detail'] == '') {
-			$objResponse->addAlert($locate->Translate("please enter the detail"));
-			return $objResponse;
-		}
-		if(trim($f['timeout']) == '') {
-			$f['timeout'] = 0;
-		}
-		$pin = Customer::generateUniquePin(10);
-		$n = array('trunkname'=>$f['trunkname'],'trunkprotocol'=>$f['protocoltype'],'registrystring'=>$f['registrystring'],'detail'=>$f['detail'],'timeout'=>$f['timeout'],'trunkprefix'=>$f['trunkprefix'],'removeprefix'=>$f['removeprefix'],'trunkidentity'=>$pin);
-		$resTrunk = Customer::insertNewTrunk($n);
-		$f['trunk_id'] = $resTrunk;
-	} else if($f['routetype'] == 'default') {
-		$f['trunk_id'] = -1;
-	} else if($f['routetype'] == 'auto'){
-		$f['trunk_id'] = 0;
+//	if($f['routetype'] == 'customize') {
+//		$f['trunkname'] = trim($f['trunkname']);
+//		if($f['trunkname'] == '') {
+//			$objResponse->addAlert($locate->Translate("please enter the trunkname"));
+//			return $objResponse;
+//		}
+//		$f['detail'] = trim($f['detail']);
+//		if($f['detail'] == '') {
+//			$objResponse->addAlert($locate->Translate("please enter the detail"));
+//			return $objResponse;
+//		}
+//		if(trim($f['timeout']) == '') {
+//			$f['timeout'] = 0;
+//		}
+//		$pin = Customer::generateUniquePin(10);
+//		$n = array('trunkname'=>$f['trunkname'],'trunkprotocol'=>$f['protocoltype'],'registrystring'=>$f['registrystring'],'detail'=>$f['detail'],'timeout'=>$f['timeout'],'trunkprefix'=>$f['trunkprefix'],'removeprefix'=>$f['removeprefix'],'trunkidentity'=>$pin);
+//		$resTrunk = Customer::insertNewTrunk($n);
+//		$f['trunk_id'] = $resTrunk;
+//	} else if($f['routetype'] == 'default') {
+		//$f['trunk_id'] = -1;
+//	} else if($f['routetype'] == 'auto'){
+		//$f['trunk_id'] = 0;
+//	}
+
+	if($f['trunk1_id'] != $f['tmptrunk1id'] && $f['tmptrunk1id'] > 0){
+		Customer::deleteRecord($f['tmptrunk1id'],'trunks');
 	}
+	if($f['trunk2_id'] != $f['tmptrunk2id'] && $f['tmptrunk2id'] > 0){
+		Customer::deleteRecord($f['tmptrunk2id'],'trunks');
+	}
+	
 	$respOk = Customer::insertNewResellergroup($f); // add a new group
 	if ($respOk){
 		$html = createGrid(0,ROWSXPAGE);
@@ -422,18 +430,26 @@ function update($f){
 	global $locate;
 
 	$objResponse = new xajaxResponse();
-	if($f['routetype'] == 'customize') {
-		$f['trunkname'] = trim($f['trunkname']);
-		if($f['trunkname'] == '') {
-			$objResponse->addAlert($locate->Translate("please enter the trunkname"));
-			return $objResponse;
-		}
-		$f['detail'] = trim($f['detail']);
-		if($f['detail'] == '') {
-			$objResponse->addAlert($locate->Translate("please enter the detail"));
-			return $objResponse;
-		}
+//	if($f['routetype'] == 'customize') {
+//		$f['trunkname'] = trim($f['trunkname']);
+//		if($f['trunkname'] == '') {
+//			$objResponse->addAlert($locate->Translate("please enter the trunkname"));
+//			return $objResponse;
+//		}
+//		$f['detail'] = trim($f['detail']);
+//		if($f['detail'] == '') {
+//			$objResponse->addAlert($locate->Translate("please enter the detail"));
+//			return $objResponse;
+//		}
+//	}
+
+	if($f['trunk1_id'] != $f['tmptrunk1id'] && $f['tmptrunk1id'] > 0){
+		Customer::deleteRecord($f['tmptrunk1id'],'trunks');
 	}
+	if($f['trunk2_id'] != $f['tmptrunk2id'] && $f['tmptrunk2id'] > 0){
+		Customer::deleteRecord($f['tmptrunk2id'],'trunks');
+	}
+
 	if(trim($f['timeout']) == ''){
 		$f['timeout'] = 0;
 	}
@@ -536,6 +552,124 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	}
 	
 	return $objResponse->getXML();
+}
+
+function saveTrunk($f){
+	//print_r($f);exit;
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	if($f['whichtrunk'] == 1){
+		$routetype = $f['routetype1'];
+		$curtrunkid = $f['tmptrunk1id'];
+	}else{
+		$routetype = $f['routetype2'];
+		$curtrunkid = $f['tmptrunk2id'];
+	}
+	
+	if($routetype == 'customize') {
+		$f['trunkname'] = trim($f['trunkname']);
+		if($f['trunkname'] == '') {
+			$objResponse->addAlert($locate->Translate("please enter the trunkname"));
+			return $objResponse;
+		}
+		$f['detail'] = trim($f['detail']);
+		if($f['detail'] == '') {
+			$objResponse->addAlert($locate->Translate("please enter the detail"));
+			return $objResponse;
+		}
+		if(trim($f['timeout']) == '') {
+			$f['timeout'] = 0;
+		}
+		$pin = Customer::generateUniquePin(10);
+		$n = array('trunkname'=>$f['trunkname'],'trunkprotocol'=>$f['protocoltype'],'registrystring'=>$f['registrystring'],'detail'=>$f['detail'],'timeout'=>$f['timeout'],'trunkprefix'=>$f['trunkprefix'],'removeprefix'=>$f['removeprefix'],'trunkidentity'=>$pin,'trunkorder'=>$f['whichtrunk']);
+		if($curtrunkid > 0){
+			$n['curtrunkid'] = $curtrunkid;
+			$resTrunk = Customer::updateNewTrunk($n);
+			if($f['whichtrunk'] == 1){
+				$objResponse->addAssign('trunkname1c', "innerHTML", '<a href="javascript:void(null)" onclick="javascript:xajax_trunkdetail(xajax.$(\'tmptrunk1id\').value,1);">'.$f['trunkname'].'</a>&nbsp;<a href="javascript:void(null)" onclick="javascript:deltrunk(\'1\');">'.$locate->Translate("del").'</a>');
+			}else{
+				$objResponse->addAssign('trunkname2c', "innerHTML", '<a href="javascript:void(null)" onclick="javascript:xajax_trunkdetail(xajax.$(\'tmptrunk2id\').value,2);">'.$f['trunkname'].'</a>&nbsp;<a href="javascript:void(null)" onclick="javascript:deltrunk(\'2\');">'.$locate->Translate("del").'</a>');
+			}
+		}else{
+			$resTrunk = Customer::insertNewTrunk($n);
+			if($f['whichtrunk'] == 1){
+				$objResponse->addAssign('trunk1_id', "value", $resTrunk);
+				$objResponse->addAssign('tmptrunk1id', "value", $resTrunk);
+				$objResponse->addAssign('trunkname1c', "innerHTML", '<a href="javascript:void(null)" onclick="javascript:xajax_trunkdetail(xajax.$(\'tmptrunk1id\').value,1);">'.$f['trunkname'].'</a>&nbsp;<a href="javascript:void(null)" onclick="javascript:deltrunk(\'1\');">'.$locate->Translate("del").'</a>');
+			}else{
+				$objResponse->addAssign('trunk2_id', "value", $resTrunk);
+				$objResponse->addAssign('tmptrunk2id', "value", $resTrunk);
+				$objResponse->addAssign('trunkname2c', "innerHTML", '<a href="javascript:void(null)" onclick="javascript:xajax_trunkdetail(xajax.$(\'tmptrunk2id\').value,2);">'.$f['trunkname'].'</a>&nbsp;<a href="javascript:void(null)" onclick="javascript:deltrunk(\'2\');">'.$locate->Translate("del").'</a>');
+			}
+			$f['trunk_id'] = $resTrunk;
+		}
+	} else if($routetype == 'default') {
+		$f['trunk_id'] = -1;
+	} else if($routetype == 'auto'){
+		$f['trunk_id'] = 0;
+	}
+	
+	$objResponse->addScript('document.getElementById(\'savetrunktip\').style.display=\'\'');
+	$objResponse->addScript('setTimeout("document.getElementById(\'trunk\').style.display=\'none\';document.getElementById(\'savetrunktip\').style.display=\'none\';",1500);');
+	return $objResponse;
+}
+
+function trunkdetail($trunkid,$order){
+	global $db,$locate;
+	$trunk = & Customer::getRecordByID($trunkid,'trunks');
+	$objResponse = new xajaxResponse();
+
+	if($trunk['id'] > 0){
+		$objResponse->addAssign('trunkname', "value", $trunk['trunkname']);
+		$objResponse->addAssign('protocoltype', "value", $trunk['trunkprotocol']);
+		$objResponse->addAssign('registrystring', "value", $trunk['registrystring']);
+		$objResponse->addAssign('trunkprefix', "value", $trunk['trunkprefix']);
+		$objResponse->addAssign('removeprefix', "value", $trunk['removeprefix']);
+		$objResponse->addAssign('timeout', "value", $trunk['trunktimeout']);
+		$objResponse->addAssign('detail', "value", $trunk['trunkdetail']);
+	}
+	//print_r($trunk);
+	//echo $trunkid;exit;
+	if($order == 1){
+		$objResponse->addAssign('whichtrunk', "value", 1);
+		$objResponse->addAssign('whichtrunktip', "innerHTML", $locate->Translate("trunk1"));
+	}else{
+		$objResponse->addAssign('whichtrunk', "value", 2);
+		$objResponse->addAssign('whichtrunktip', "innerHTML", $locate->Translate("trunk2"));
+	}
+	$objResponse->addScript('document.getElementById(\'trunk\').style.display=\'\'');
+	return $objResponse;
+}
+
+function delTrunk($trunkid,$order,$rid=0){
+	global $db;
+	//echo $rid;exit;
+	$objResponse = new xajaxResponse();
+	$trunk = & Customer::deleteRecord($trunkid,'trunks');
+	if($order == 1){
+		$objResponse->addAssign('trunkname1c', "innerHTML",'');
+		$objResponse->addAssign('routetype1', "value",'auto');
+		$objResponse->addAssign('trunk1_id', "value", 0);
+		$objResponse->addAssign('tmptrunk1id', "value", 0);
+		if($rid > 0){
+			$query = "UPDATE resellergroup SET trunk1_id = '0' WHERE id='$rid'";
+			$res =& $db->query($query);
+		}
+	}else{
+		$objResponse->addAssign('trunkname2c', "innerHTML",'');
+		$objResponse->addAssign('routetype2', "value",'auto');
+		$objResponse->addAssign('trunk2_id', "value", 0);
+		$objResponse->addAssign('tmptrunk2id', "value", 0);
+		if($rid > 0){
+			$query = "UPDATE resellergroup SET trunk2_id = '0' WHERE id='$rid'";
+			$res =& $db->query($query);
+		}
+	}
+	//print_r($trunk);
+	//echo $trunkid;exit;
+	$objResponse->addScript('document.getElementById(\'trunk\').style.display=\'none\'');
+	return $objResponse;
 }
 
 $xajax->processRequests();

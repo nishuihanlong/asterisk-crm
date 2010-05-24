@@ -251,6 +251,39 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
+
+	/**
+	*  Insert a account log
+	*
+	*	@param $f			(array)		array contain note fields.
+	*	@return $res	(object) 		object
+	*/
+	
+	function insertAccountLog($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		//print_r($f);
+		$sql = "UPDATE account_log SET failedtimes='".$f['failedtimes']."' WHERE ip='".$f['ip']."'";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+
+		$sql= "INSERT INTO account_log SET "
+				."account_id='".$f['account_id']."', "
+				."username='".$f['username']."', "
+				."usertype='".$f['usertype']."', "
+				."ip='".$f['ip']."', "
+				."action='".$f['action']."', "
+				."status='".$f['status']."', "
+				."failedcause='".$f['failedcause']."', "
+				."failedtimes='".$f['failedtimes']."', "
+				."cretime=now()" ;
+		//print $sql;
+		//exit;
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
 	function insertNewDiallist($f){
 		global $db;
 		$f = astercrm::variableFiler($f);

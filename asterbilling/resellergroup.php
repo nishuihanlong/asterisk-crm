@@ -71,12 +71,93 @@ require_once('resellergroup.common.php');
 		}
 		function showTrunk(obj){
 			var Tvalue = document.getElementById(obj).value;
-			if(Tvalue == 'auto' || Tvalue == 'default'){
+			if(Tvalue == 'auto'){
 				xajax.$("trunk").style.display = 'none';
+				if(obj == 'routetype1'){
+					xajax.$("trunk1_id").value = 0;
+					xajax.$("trunkname1c").style.display = 'none';
+					xajax.$("defaulttrunk1").style.display = 'none';
+				}else{
+					xajax.$("trunk2_id").value = 0;
+					xajax.$("trunkname2c").style.display = 'none';
+					xajax.$("defaulttrunk2").style.display = 'none';
+				}
 			} else if(Tvalue == 'customize'){
-				xajax.$("trunk").style.display = 'block';
+				if(obj == 'routetype1'){
+					xajax.$("trunkname1c").style.display = '';
+					xajax.$("defaulttrunk1").style.display = 'none';
+					xajax.$("whichtrunk").value = 1;
+					xajax.$("whichtrunktip").innerHTML = "<? echo $locate->Translate("trunk1")?>";
+					if(xajax.$("tmptrunk1id").value == 0){
+						xajax.$("trunkname").value = '';
+						xajax.$("protocoltype").value = 'sip';
+						xajax.$("registrystring").value = '';
+						xajax.$("trunkprefix").value = '';
+						xajax.$("removeprefix").value = '';
+						xajax.$("timeout").value = '';
+						xajax.$("detail").value = 'host=***provider ip address***\nusername=***userid***\nsecret=***password***\ntype=peer';
+						xajax.$("trunk").style.display = 'block';
+					}else{
+						xajax.$("trunk").style.display = 'none';
+						xajax.$("trunk1_id").value = xajax.$("tmptrunk1id").value;
+					}
+				}else{
+					xajax.$("trunkname2c").style.display = '';
+					xajax.$("defaulttrunk2").style.display = 'none';
+					xajax.$("whichtrunk").value = 2;
+					xajax.$("whichtrunktip").innerHTML = "<? echo $locate->Translate("trunk2")?>";
+					if(xajax.$("tmptrunk2id").value == 0){
+						xajax.$("trunkname").value = '';
+						xajax.$("protocoltype").value = 'sip';
+						xajax.$("registrystring").value = '';
+						xajax.$("trunkprefix").value = '';
+						xajax.$("removeprefix").value = '';
+						xajax.$("timeout").value = '';
+						xajax.$("detail").value = 'host=***provider ip address***\nusername=***userid***\nsecret=***password***\ntype=peer';
+						xajax.$("trunk").style.display = 'block';
+						xajax.$("trunk").style.display = 'block';
+					}else{
+						xajax.$("trunk").style.display = 'none';
+						xajax.$("trunk2_id").value = xajax.$("tmptrunk2id").value;
+					}
+				}
+				
+			}else if(Tvalue == 'default'){
+				xajax.$("trunk").style.display = 'none';
+				if(obj == 'routetype1'){
+					xajax.$("trunkname1c").style.display = 'none';
+					xajax.$("trunk1_id").value = xajax.$("defaulttrunk1").value;
+					xajax.$("defaulttrunk1").style.display = '';
+				}else{
+					xajax.$("trunkname2c").style.display = 'none';
+					xajax.$("trunk2_id").value = xajax.$("defaulttrunk2").value;
+					xajax.$("defaulttrunk2").style.display = '';
+				}
 			}
 		}
+		
+		function defaultTrunkChg(obj){
+			if(obj.id == 'defaulttrunk1'){
+				xajax.$("trunk1_id").value = obj.value;
+			}else{
+				xajax.$("trunk2_id").value = obj.value;
+			}
+		}
+
+		function deltrunk(order){
+			if(confirm("<? echo $locate->Translate("Are you sure to delete this turnk")?>")){
+				rid = xajax.$("resellerid").value;
+				if(order == 1){
+					turnkid = xajax.$("tmptrunk1id").value;					
+					xajax_delTrunk(turnkid,1,rid);
+				}else{
+					turnkid = xajax.$("tmptrunk2id").value
+					xajax_delTrunk(turnkid,2,rid);
+				}
+			}
+			return false;
+		}
+
 		function EditShowTrunk(obj){
 			var Tvalue = document.getElementById(obj).value;
 			if(Tvalue == 'auto' || Tvalue == 'default'){

@@ -80,7 +80,8 @@ class Customer extends astercrm
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
 				."limittype= '".$f['limittype']."', "
-				."trunk_id= '".$f['trunk_id']."', "
+				."trunk1_id= '".$f['trunk1_id']."', "
+				."trunk2_id= '".$f['trunk2_id']."', "
 				."multiple= '".$f['multiple']."', "
 				."addtime = now() ";
 		astercrm::events($sql);
@@ -101,13 +102,33 @@ class Customer extends astercrm
 				."trunkprotocol='".$f['trunkprotocol']."', "
 				."registrystring = '".$f['registrystring']."', "
 				."trunkdetail = '".$f['detail']."', "
-				."trunkusage = ".$f['timeout'].", "
+				."trunktimeout = ".$f['timeout'].", "
 				."trunkprefix = '".$f['trunkprefix']."',"
 				."trunkidentity = ".$f['trunkidentity'].","
 				."property= 'new', "
 				."removeprefix = '".$f['removeprefix']."',"
 				."creby='".$_SESSION['curuser']['username']."', "
 				."created = now() ";
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		$insertId =mysql_insert_id();
+		return $insertId;
+	}
+
+	function updateNewTrunk($f){
+		global $db;
+		$f = astercrm::variableFiler($f);
+		$sql= "UPDATE trunks SET "
+				."trunkname='".$f['trunkname']."', "
+				."trunkprotocol='".$f['trunkprotocol']."', "
+				."registrystring = '".$f['registrystring']."', "
+				."trunkdetail = '".$f['detail']."', "
+				."trunktimeout = ".$f['timeout'].", "
+				."trunkprefix = '".$f['trunkprefix']."',"
+				."trunkidentity = ".$f['trunkidentity'].","
+				."property= 'new', "
+				."removeprefix = '".$f['removeprefix']."' "
+				."WHERE id='".$f['curtrunkid']."'";
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		$insertId =mysql_insert_id();
@@ -180,56 +201,7 @@ class Customer extends astercrm
 							."operator='".$_SESSION['curuser']['userid']."'";
 							$historyres =& $db->query($historysql);
 		}
-		if($f['routetype'] == 'customize') {
-
-			if(empty($f['trunkid'])) {
-				$trunkidentity = Customer::generateUniquePin(10);
-				$trunk_sql= "INSERT INTO trunks SET "
-					."trunkname='".$f['trunkname']."', "
-					."trunkidentity='".$trunkidentity."', "
-					."trunkprotocol='".$f['protocoltype']."', "
-					."registrystring = '".$f['registrystring']."', "
-					."trunkdetail = '".$f['detail']."', "
-					."trunkusage = ".$f['timeout'].", "
-					."property= 'new', "
-					."trunkprefix = '".$f['trunkprefix']."',"
-					."removeprefix = '".$f['removeprefix']."',"
-					."creby='".$_SESSION['curuser']['username']."', "
-					."created = now() ";
-				astercrm::events($trunk_sql);
-				$trunk_res =& $db->query($trunk_sql);
-				$f['trunkid'] = mysql_insert_id();
-			} else {
-				$trunk_sql= "UPDATE trunks SET "
-					."trunkname='".$f['trunkname']."', "
-					."trunkprotocol='".$f['protocoltype']."', "
-					."registrystring = '".$f['registrystring']."', "
-					."trunkdetail = '".$f['detail']."', "
-					."trunkusage = ".$f['timeout'].", "
-					."trunkprefix = '".$f['trunkprefix']."',"
-					."property= 'edit', "
-					."removeprefix = '".$f['removeprefix']."',"
-					."creby='".$_SESSION['curuser']['username']."', "
-					."updated = now() "
-					."WHERE id='".$f['trunkid']."'";
-				astercrm::events($trunk_sql);
-				$trunk_res =& $db->query($trunk_sql);
-			}
-			
-		} else {
-			if(!empty($f['trunkid'])) {
-				$query = "DELETE FROM trunks WHERE id=".$f['trunkid'];
-				astercrm::events($query);
-				$res =& $db->query($query);
-			}
-		}
-		if($f['routetype'] == 'auto') {
-			$f['trunk_id'] = 0;
-		} else if($f['routetype'] == 'default') {
-			$f['trunk_id'] = -1;
-		} else if($f['routetype'] == 'customize'){
-			$f['trunk_id'] = $f['trunkid'];
-		}
+		
 		$sql= "UPDATE resellergroup SET "
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
@@ -237,7 +209,8 @@ class Customer extends astercrm
 				."creditlimit='".$f['creditlimit']."', "
 				."limittype='".$f['limittype']."', "
 				."multiple= '".$f['multiple']."', "
-				."trunk_id= '".$f['trunk_id']."', "
+				."trunk1_id= '".$f['trunk1_id']."', "
+				."trunk2_id= '".$f['trunk2_id']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."addtime= now() "
 				."WHERE id='".$f['resellerid']."'";
@@ -351,7 +324,11 @@ class Customer extends astercrm
 	{
 		global $db;//& $db->query("SELECT * FROM resellergroup WHERE id=".$id)
 		$result = mysql_fetch_array(mysql_query("SELECT * FROM resellergroup WHERE id=".$id));
-		$query = "DELETE FROM $table WHERE id=".$result['trunk_id'];
+		$query = "DELETE FROM $table WHERE id=".$result['trunk1_id'];
+		astercrm::events($query);
+		$res =& $db->query($query);
+
+		$query = "DELETE FROM $table WHERE id=".$result['trunk2_id'];
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -381,7 +358,7 @@ class Customer extends astercrm
 	*/
 	
 	function formAdd(){
-			global $locate;
+			global $locate,$config;
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -423,22 +400,54 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("trunk").'</td>
+					<td nowrap align="left">'.$locate->Translate("trunk1").'</td>
 					<td align="left">
-					<select id="routetype" name="routetype"  onchange="showTrunk(\'routetype\')">
+					<select id="routetype1" name="routetype1"  onclick="showTrunk(\'routetype1\')">
 						<option value="auto" selected>'.$locate->Translate("auto").'</option>
 						<option value="default">'.$locate->Translate("default").'</option>
 						<option value="customize">'.$locate->Translate("customize").'</option>
 					</select>
+					&nbsp;
+					<select id="defaulttrunk1" name="defaulttrunk1" style="display:none" onchange="defaultTrunkChg(this);">';
+					if($config['resellertrunk']['trunk1'] != ''){
+						$html .= '<option value="-1">'.$config['resellertrunk']['trunk1'].'</option>';
+					}
+					if($config['resellertrunk']['trunk2'] != ''){
+						$html .= '<option value="-2">'.$config['resellertrunk']['trunk2'].'</option>';
+					}
+					$html .= '</select>
+					<input type="hidden" id="trunk1_id" name="trunk1_id" value="0" />
+					<span id="trunkname1c" ></span><input type="hidden" value="0" id="tmptrunk1id" name="tmptrunk1id">
+					</td>
+				</tr>
+
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("trunk2").'</td>
+					<td align="left">
+					<select id="routetype2" name="routetype2"  onclick="showTrunk(\'routetype2\')">
+						<option value="auto" selected>'.$locate->Translate("auto").'</option>
+						<option value="default">'.$locate->Translate("default").'</option>
+						<option value="customize">'.$locate->Translate("customize").'</option>
+					</select>
+					&nbsp;
+					<select id="defaulttrunk2" name="defaulttrunk2" style="display:none" onchange="defaultTrunkChg(this);">';
+					if($config['resellertrunk']['trunk1'] != ''){
+						$html .= '<option value="-1">'.$config['resellertrunk']['trunk1'].'</option>';
+					}
+					if($config['resellertrunk']['trunk2'] != ''){
+						$html .= '<option value="-2">'.$config['resellertrunk']['trunk2'].'</option>';
+					}
+					$html .= '</select>
+					<input type="hidden" id="trunk2_id" name="trunk2_id" value="0" />
+					<span id="trunkname2c" ></span><input type="hidden" value="0" id="tmptrunk2id" name="tmptrunk2id">
 					</td>
 				</tr>
 				
-				
 			 </table>
-			 <table width="500px" class="adminlist" id="trunk" style="display:none;">
+			 <table width="500px" class="adminlist" id="trunk" style="display:none;">			    
 				<tr>
 					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
-					<td align="left"  width="326px"><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"></td>
+					<td align="left"  width="326px"><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"><input type="hidden" id="whichtrunk" name="whichtrunk">&nbsp;(<span id="whichtrunktip"></span>)</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
@@ -471,6 +480,12 @@ class Customer extends astercrm
 username=***userid***
 secret=***password***
 type=peer</textarea></td>
+				</tr>
+				<tr>
+				    <td nowrap align="center" colspan="2"><div id="savetrunktip" style="display:none;">'.$locate->Translate("Save trunk success").'</div></td>
+				</tr>
+				<tr>
+					<td nowrap align="right" colspan="2"><input type="button" value="'.$locate->Translate("save trunk").'" onclick="xajax_saveTrunk(xajax.getFormValues(\'f\'));"></td>
 				</tr>
 			</table>
 			<table width="100%" style="border:0;">
@@ -582,80 +597,174 @@ type=peer</textarea></td>
 					<td align="left">'.$resellergroup['billingtime'].'<BR><INPUT TYPE="BUTTON" VALUE="'.$locate->Translate("Reset").'" onClick="setBillingtime(\''.$resellergroup['id'].'\',\''.$currenttime.'\');">'."(".$currentcredit.$locate->Translate(" By ").$currenttime.")".'</td>
 				</tr>';
 */
+				$default1style = 'style="display:none"';
+				$default2style = 'style="display:none"';
+				$tmptrunk1id = 0;
+				if($resellergroup['trunk1_id'] == 0) {
+					$autos1 = 'selected';
+				}elseif($resellergroup['trunk1_id'] < 0){
+					$default1 = 'selected';
+					$default1style = '';
+					if($resellergroup['trunk1_id'] == -1){
+						$default1v1 = 'selected';
+					}else{
+						$default1v2 = 'selected';
+					}
+				}else{
+					$customize1 = 'selected';
+					$trunk1 =& Customer::getRecordByID($resellergroup['trunk1_id'],'trunks');
+					if($trunk1['id'] > 0){
+						$trunkname1c = '<a href="javascript:void(null)" onclick="javascript:xajax_trunkdetail(xajax.$(\'tmptrunk1id\').value,1);">'.$trunk1['trunkname'].'</a>&nbsp;<a href="javascript:void(null)" onclick="javascript:deltrunk(\'1\');">'.$locate->Translate("del").'</a>';
+						$tmptrunk1id = $trunk1['id'];
+					}
+				}
+
+				if($resellergroup['trunk2_id'] == 0) {
+					$autos2 = 'selected';
+				}elseif($resellergroup['trunk2_id'] < 0){
+					$default2 = 'selected';
+					$default2style = '';
+					if($resellergroup['trunk2_id'] == -1){
+						$default2v1 = 'selected';
+					}else{
+						$default2v2 = 'selected';
+					}
+				}else{
+					$customize2 = 'selected';
+					$trunk2 =& Customer::getRecordByID($resellergroup['trunk2_id'],'trunks');
+					if($trunk2['id'] > 0){
+						$trunkname2c = '<a href="javascript:void(null)" onclick="javascript:xajax_trunkdetail(xajax.$(\'tmptrunk2id\').value,2);">'.$trunk2['trunkname'].'</a>&nbsp;<a href="javascript:void(null)" onclick="javascript:deltrunk(\'2\');">'.$locate->Translate("del").'</a>';
+						$tmptrunk2id = $trunk2['id'];
+					}
+				}
+
 				$html .='
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Billsec Multiple").'</td>
 					<td align="left"><input type="text" id="multiple" name="multiple" size="6" maxlength="6" value="'.$resellergroup['multiple'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("trunk").'</td>
+					<td nowrap align="left">'.$locate->Translate("trunk1").'</td>
 					<td align="left">
-					<select id="routetype" name="routetype"  onchange="EditShowTrunk(\'routetype\')">';
-					$TrunkArray = array();
-					if($resellergroup['trunk_id'] == 0) {
-						$html .= '<option value="auto" selected>'.$locate->Translate("auto").'</option>
-								 <option value="default">'.$locate->Translate("default").'</option>
-								 <option value="customize">'.$locate->Translate("customize").'</option>';
-					} else if($resellergroup['trunk_id'] == -1) {
-						$html .= '<option value="auto" >'.$locate->Translate("auto").'</option>
-								 <option value="default" selected>'.$locate->Translate("default").'</option>
-								 <option value="customize">'.$locate->Translate("customize").'</option>';
-					} else {
-						$TrunkArray =& Customer::getRecordByID($resellergroup['trunk_id'],'trunks');
-						
-						$html .= '<option value="auto" >'.$locate->Translate("auto").'</option>
-								 <option value="default">'.$locate->Translate("default").'</option>
-								 <option value="customize" selected>'.$locate->Translate("customize").'</option>';
-					}
-					$html .= '</select>
+					<select id="routetype1" name="routetype1"  onclick="showTrunk(\'routetype1\')">
+						<option value="auto" '.$autos1.'>'.$locate->Translate("auto").'</option>
+						<option value="default" '.$default1.'>'.$locate->Translate("default").'</option>
+						<option value="customize" '.$customize1.'>'.$locate->Translate("customize").'</option>
+					</select>
+					&nbsp;
+					<select id="defaulttrunk1" name="defaulttrunk1"  onchange="defaultTrunkChg(this);" '.$default1style.'>
+						<option value="-1" '.$default1v1.'>'.$config['resellertrunk']['trunk1'].'</option>
+						<option value="-2" '.$default1v2.'>'.$config['resellertrunk']['trunk2'].'</option>
+					</select>
+					<input type="hidden" id="trunk1_id" name="trunk1_id" value="'.$resellergroup['trunk1_id'].'" />
+					<span id="trunkname1c" >'.$trunkname1c.'</span><input type="hidden" value="'.$tmptrunk1id.'" id="tmptrunk1id" name="tmptrunk1id">
 					</td>
-				</tr>
-			</table>';
-			
-			if(!empty($TrunkArray)) {
-				$html .= '<table width="500px" class="adminlist" id="trunk"><tr>
-					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
-					<td align="left"  width="326px"><input type="hidden" id="trunkid" name="trunkid" value="'.$TrunkArray['id'].'"/><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30" value="'.$TrunkArray['trunkname'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
-					<td align="left">
-						<select id="protocoltype" name="protocoltype">';
-						if($TrunkArray['trunkprotocol'] == 'sip') {
-							$html .= '<option value="sip" selected>'.$locate->Translate("SIP").'</option>
-							<option value="iax">'.$locate->Translate("IAX2").'</option>';
-						} else {
-							$html .= '<option value="sip">'.$locate->Translate("SIP").'</option>
-							<option value="iax" selected>'.$locate->Translate("IAX2").'</option>';
-						} 
-						$html .='
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
-					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="254" value="'.$TrunkArray['registrystring'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
-					<td align="left"><input type="text" id="trunkprefix" name="trunkprefix" size="25" value="'.$TrunkArray['trunkprefix'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Remove Prefix").':</td>
-					<td align="left"><input type="text" id="removeprefix" name="removeprefix" size="25" value="'.$TrunkArray['removeprefix'].'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Timeout").':</td>
-					<td align="left"><input type="text" id="timeout" name="timeout" size="25" value="'.$TrunkArray['trunkusage'].'" onblur="CheckNumeric(\'timeout\')"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
-					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45" > '.$TrunkArray['trunkdetail'].'</textarea></td>
 				</tr>';
-			} else {
-				$html .='<table width="500px" class="adminlist" id="trunk" style="display:none;"><tr>
+
+				$html .='				
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("trunk2").'</td>
+					<td align="left">
+					<select id="routetype2" name="routetype2"  onclick="showTrunk(\'routetype2\')">
+						<option value="auto" '.$autos2.'>'.$locate->Translate("auto").'</option>
+						<option value="default" '.$default2.'>'.$locate->Translate("default").'</option>
+						<option value="customize" '.$customize2.'>'.$locate->Translate("customize").'</option>
+					</select>
+					&nbsp;
+					<select id="defaulttrunk2" name="defaulttrunk2"  onchange="defaultTrunkChg(this);" '.$default2style.'>
+						<option value="-1" '.$default2v1.'>'.$config['resellertrunk']['trunk1'].'</option>
+						<option value="-2" '.$default2v2.'>'.$config['resellertrunk']['trunk2'].'</option>
+					</select>
+					<input type="hidden" id="trunk2_id" name="trunk2_id" value="'.$resellergroup['trunk2_id'].'" />
+					<span id="trunkname2c" >'.$trunkname2c.'</span><input type="hidden" value="'.$tmptrunk2id.'" id="tmptrunk2id" name="tmptrunk2id">
+					</td>
+				</tr>';
+					
+					$html .= '</table>';
+			
+//			if(!empty($TrunkArray)) {
+//				$html .= '<table width="500px" class="adminlist" id="trunk"><tr>
+//					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
+//					<td align="left"  width="326px"><input type="hidden" id="trunkid" name="trunkid" value="'.$TrunkArray['id'].'"/><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30" value="'.$TrunkArray['trunkname'].'"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
+//					<td align="left">
+//						<select id="protocoltype" name="protocoltype">';
+//						if($TrunkArray['trunkprotocol'] == 'sip') {
+//							$html .= '<option value="sip" selected>'.$locate->Translate("SIP").'</option>
+//							<option value="iax">'.$locate->Translate("IAX2").'</option>';
+//						} else {
+//							$html .= '<option value="sip">'.$locate->Translate("SIP").'</option>
+//							<option value="iax" selected>'.$locate->Translate("IAX2").'</option>';
+//						} 
+//						$html .='
+//						</select>
+//					</td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
+//					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="254" value="'.$TrunkArray['registrystring'].'"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
+//					<td align="left"><input type="text" id="trunkprefix" name="trunkprefix" size="25" value="'.$TrunkArray['trunkprefix'].'"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Remove Prefix").':</td>
+//					<td align="left"><input type="text" id="removeprefix" name="removeprefix" size="25" value="'.$TrunkArray['removeprefix'].'"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Timeout").':</td>
+//					<td align="left"><input type="text" id="timeout" name="timeout" size="25" value="'.$TrunkArray['trunkusage'].'" onblur="CheckNumeric(\'timeout\')"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
+//					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45" > '.$TrunkArray['trunkdetail'].'</textarea></td>
+//				</tr>';
+//			} else {
+//				$html .='<table width="500px" class="adminlist" id="trunk" style="display:none;"><tr>
+//					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
+//					<td align="left"  width="326px"><input type="hidden" id="trunkid" name="trunkid" value=""/><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
+//					<td align="left">
+//						<select id="protocoltype" name="protocoltype">
+//							<option value="sip" selected>'.$locate->Translate("SIP").'</option>
+//							<option value="iax">'.$locate->Translate("IAX2").'</option>
+//						</select>
+//					</td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Registry String").':</td>
+//					<td align="left"><input type="text" id="registrystring" name="registrystring" size="25" maxlength="254"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Trunk Prefix").':</td>
+//					<td align="left"><input type="text" id="trunkprefix" name="trunkprefix" size="25"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Remove Prefix").':</td>
+//					<td align="left"><input type="text" id="removeprefix" name="removeprefix" size="25"></td>
+//				</tr>
+//				<tr>
+//					<td nowrap align="left">'.$locate->Translate("Timeout").':</td>
+//					<td align="left"><input type="text" id="timeout" name="timeout" size="25" onblur="CheckNumeric(\'timeout\')"></td>
+//				</tr>
+//				<tr>					
+//					<td nowrap align="left">'.$locate->Translate("Detail").'*:</td>
+//					<td align="left"><textarea id="detail" name="detail" rows="10" cols="45">host=***provider ip address***
+//username=***userid***
+//secret=***password***
+//type=peer</textarea></td>
+//				</tr>';
+//			}
+			$html .='
+			<table width="500px" class="adminlist" id="trunk" style="display:none;">			    
+				<tr>
 					<td width="175px" align="left">'.$locate->Translate("Trunk Name").'*:</td>
-					<td align="left"  width="326px"><input type="hidden" id="trunkid" name="trunkid" value=""/><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"></td>
+					<td align="left"  width="326px"><input type="text" id="trunkname" name="trunkname" size="25" maxlength="30"><input type="hidden" id="whichtrunk" name="whichtrunk">&nbsp;(<span id="whichtrunktip"></span>)</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Protocol").':</td>
@@ -688,19 +797,21 @@ type=peer</textarea></td>
 username=***userid***
 secret=***password***
 type=peer</textarea></td>
-				</tr>';
-			}
-			$html .='
-			</table>
+				</tr>
+				<tr>
+				    <td nowrap align="center" colspan="2"><div id="savetrunktip" style="display:none;">'.$locate->Translate("Save trunk success").'</div></td>
+				</tr>
+				<tr>
+					<td nowrap align="right" colspan="2"><input type="button" value="'.$locate->Translate("save trunk").'" onclick="xajax_saveTrunk(xajax.getFormValues(\'f\'));"></td>
+				</tr>
+			</table>			
 			<table class="adminlist" width="100%">
 				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
 			 </table>
-			';
-
-			
+			';			
 
 		$html .= '
 				</form>

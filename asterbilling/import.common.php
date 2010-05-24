@@ -30,7 +30,7 @@ setcookie('PHPSESSID', session_id());
 require_once ('include/localization.class.php');
 
 if ($_SESSION['curuser']['usertype'] == 'clid' || $_SESSION['curuser']['usertype'] == ''){
-	header("Location: login.php");
+	header("Location: index.php");
 }elseif ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'reseller' && $_SESSION['curuser']['usertype'] != 'groupadmin') 
 	header("Location: systemstatus.php");
 

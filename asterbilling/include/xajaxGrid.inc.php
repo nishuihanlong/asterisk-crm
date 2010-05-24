@@ -199,7 +199,8 @@ class ScrollTable{
 				</th>';
 
 		if($detail){
-			if($detail=='customer'){
+
+			if($detail === 'customer'){
 				$this->header .= '
 				<th style="text-align: center" class="'.$class.'" width="5%" nowrap>
 					'.$local_grid->Translate("CDR").'

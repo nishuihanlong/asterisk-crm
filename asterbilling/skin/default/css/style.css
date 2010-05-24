@@ -243,6 +243,7 @@ outline: none;
 
           #home #header ul a.home,
           #account #header ul a.account,
+		  #account_log #header ul a.account_log,
           #accountgroup #header ul a.accountgroup,
           #resellergroup #header ul a.resellergroup,
           #report #header ul a.report,

@@ -102,15 +102,18 @@ class Common{
 			$aryMenu['customers'] = array("link"=>"customers.php","title"=> $locate_common->Translate("customer"));		
 			$aryMenu['discount'] = array("link"=>"discount.php","title"=> $locate_common->Translate("discount"));	
 		}
+
+		$aryMenu['account_log'] = array("link"=>"account_log.php","title"=> $locate_common->Translate("account_log"));
+
 		$aryMenu['system'] = array("link"=>"system.php","title"=> $locate_common->Translate("system"));
 		$aryMenu['profile'] = array("link"=>"profile.php","title"=> $locate_common->Translate("profile"));
 		$aryMenu['systemstatus'] = array("link"=>"systemstatus.php","title"=> $locate_common->Translate("systemstatus"));
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			if($config['customers']['enable']){
-				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','system');
+				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','account_log','system');
 			}else{
-				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','system');
+				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','account_log','system');
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){

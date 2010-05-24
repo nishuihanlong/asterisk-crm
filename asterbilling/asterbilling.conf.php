@@ -51,6 +51,9 @@ log_file_path = /tmp/astercrmDebug.log
 ;else if set to 'user' defaulf page is user login page
 useindex = admin
 
+;when the times of login failed with one ip greater than this, the ip will be locked for login
+max_incorrect_login = 0
+
 ;context when dial out, in trixbox this could be from-internal
 outcontext =  from-internal
 
@@ -142,6 +145,9 @@ username = astercc
 password = asterccsecret
 
 [resellertrunk]
-trunkname = reselleroutbound
+trunk1_type = sip
+trunk1= reselleroutbound1
+trunk2_type = sip
+trunk2= reselleroutbound2
 
 #?>

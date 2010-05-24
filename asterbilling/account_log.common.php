@@ -1,9 +1,9 @@
 <?php
 /*******************************************************************************
-* resellergroup.common.php
-* resellergroup参数信息文件
+* account.common.php
+* account参数信息文件
 
-* resellergroup parameter file
+* account parameter file
 
 * 功能描述
 	检查用户权限
@@ -22,12 +22,12 @@ registed function:
 *	such as xajax_init()
 
 	showGrid
-	add					show resellergroup add form
-	save				save resellergroup information
-	edit				show resellergroup edit form
-	update				update resellergroup information
-	delete				delete an resellergroup
-	showDetail			show detail information about an resellergroup
+	add					show account add form
+	save				save account information
+	edit				show account edit form
+	update				update account information
+	delete				delete an account
+	showDetail			show detail information about an account
 						return null for now
 	init				init html page
 
@@ -49,17 +49,20 @@ setcookie('PHPSESSID', session_id());
 
 require_once ('include/localization.class.php');
 
-if ($_SESSION['curuser']['usertype'] == 'clid' || $_SESSION['curuser']['usertype'] == ''){
+if (!isset($_SESSION['curuser'])){
 	header("Location: index.php");
-}elseif ($_SESSION['curuser']['usertype'] != 'admin') {
+}
+
+if ($_SESSION['curuser']['usertype'] != 'admin') {
 	header("Location: systemstatus.php");
 }
 
+
 require_once ("include/xajax.inc.php");
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'accountgroup');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'account');
 
-$xajax = new xajax("resellergroup.server.php");
+$xajax = new xajax("account_log.server.php");
 
 $xajax->registerFunction("showGrid");
 $xajax->registerFunction("add");
@@ -70,12 +73,8 @@ $xajax->registerFunction("delete");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
-$xajax->registerFunction("updateBillingtime");
-$xajax->registerFunction("reload");
-$xajax->registerFunction("reloadSip");
-$xajax->registerFunction("saveTrunk");
-$xajax->registerFunction("trunkdetail");
-$xajax->registerFunction("delTrunk");
+$xajax->registerFunction("setGroup");
+$xajax->registerFunction("unlock");
 
 define("ROWSXPAGE", 25); // Number of rows show it per page.
 define("MAXROWSXPAGE", 50);  // Total number of rows show it when click on "Show All" button.

@@ -19,7 +19,7 @@ require_once ('include/common.class.php');
 
 function processForm($aFormValues)
 {
-	global $config;
+	global $config;	
 
 	$objResponse = new xajaxResponse();
 
@@ -151,16 +151,48 @@ function setLang($f){
 function processAccountData($aFormValues)
 {
 	global $db,$config;
+	
 
 	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
-
-	$objResponse = new xajaxResponse();
 	
+	$objResponse = new xajaxResponse();
+
+	if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+		if ($_SERVER["HTTP_CLIENT_IP"]) {
+			$proxy = $_SERVER["HTTP_CLIENT_IP"];
+		} else {
+			$proxy = $_SERVER["REMOTE_ADDR"];
+		}
+	} else {
+		if (isset($_SERVER["HTTP_CLIENT_IP"])) {
+			$ip = $_SERVER["HTTP_CLIENT_IP"];
+		} else {
+			$ip = $_SERVER["REMOTE_ADDR"];
+		}
+	}
+
+	$query = "SELECT * FROM account_log WHERE ip='".$ip."' AND action='login' ORDER BY id DESC LIMIT 1";
+	$res = $db->query($query);
+	if($res->fetchInto($this_ip_log)){
+		$failedtimes = $this_ip_log['failedtimes'];
+	}
+
+	$log = array();
+	$log['action'] = 'login';
+	$log['ip'] = $ip;
+	$log['username'] = $aFormValues['username'];
+
+	if($failedtimes >= $config['system']['max_incorrect_login'] && $config['system']['max_incorrect_login'] > 0){
+		$objResponse->addAlert($locate->Translate("login failed,your ip is locked for login"));
+		$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+		$objResponse->addAssign("loginButton","disabled",false);
+		return $objResponse;
+	}
+
 	$bError = false;
 	
-
 	$loginError = false;
 
 	if (!$bError)
@@ -168,8 +200,13 @@ function processAccountData($aFormValues)
 		$query = "SELECT account.*, accountgroup.accountcode,accountgroup.allowcallback as allowcallbackgroup,resellergroup.allowcallback as allowcallbackreseller,accountgroup.limittype FROM account LEFT JOIN accountgroup ON accountgroup.id = account.groupid LEFT JOIN resellergroup ON resellergroup.id = account.resellerid WHERE username='" . $aFormValues['username'] . "'";
 		$res = $db->query($query);
 		if($res->fetchInto($list))
-		{
-			if ($list['password'] == $aFormValues['password']){
+		{	
+			$log['account_id'] = $list['id'];
+			$log['usertype'] = $list['usertype'];
+			if ($list['password'] == $aFormValues['password']){				
+				$log['status'] = 'success';
+				$log['failedtimes'] = 0;
+				
 				if ($aFormValues['rememberme'] == "forever"){
 				// set cookies for three years
 					setcookie("username", $aFormValues['username'], time() + 94608000);
@@ -226,6 +263,7 @@ function processAccountData($aFormValues)
 				else
 					$objResponse->addScript('window.location.href="account.php";');
 
+				astercrm::insertAccountLog($log);
 				return $objResponse;
 
 
@@ -249,11 +287,22 @@ function processAccountData($aFormValues)
 				$objResponse->addClear("titleDiv","innerHTML");
 				$objResponse->addScript("xajax.$('btnContinue').focus();");
 			} else{
+				//$log['account_id'] = 0;
+				$log['failedtimes'] = $failedtimes + 1;
+				$log['status'] = 'failed';
+				$log['failedcause'] = 'incorrect password';
 				$loginError = true;
 			}			
 		}else{
+			$log['failedtimes'] = $failedtimes + 1;
+			$log['account_id'] = 0;
+			$log['usertype'] = 'manager_login';
+			$log['status'] = 'failed';
+			$log['failedcause'] = 'notexistent user';
 			$loginError = true;
 		}
+		
+		astercrm::insertAccountLog($log);
 
 		if (!$loginError){
 			return $objResponse;
