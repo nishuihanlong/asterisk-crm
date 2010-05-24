@@ -14,35 +14,6 @@ if (not defined $cfg) {
 	exit(1);
 }
 
-my $lamecmd = '';
-if( -e '/usr/bin/lame'){
-	$lamecmd = '/usr/bin/lame';
-}elsif( -e '/usr/local/bin/lame'){
-	$lamecmd = '/usr/local/bin/lame';
-}
-
-if($lamecmd eq ''){
-	exit;
-}
-
-my $soxcmd = '';
-if( -e '/usr/bin/sox'){
-	$soxcmd = '/usr/bin/sox';
-}elsif( -e '/usr/local/bin/sox'){
-	$soxcmd = '/usr/local/bin/sox';
-}
-
-my $soxmixcmd = '';
-if( -e '/usr/bin/soxmix'){
-	$soxmixcmd = '/usr/bin/soxmix';
-}elsif( -e '/usr/local/bin/soxmix'){
-	$soxmixcmd = '/usr/local/bin/soxmix';
-}
-
-#if($soxmixcmd eq '' && $soxcmd eq ''){
-#	exit;
-#}
-
 my %dbInfo = (
         dbtype => trim($cfg->val('database', 'dbtype')),
         dbhost => trim($cfg->val('database', 'dbhost')),
@@ -56,12 +27,14 @@ my $dbprefix = '';
 
 my $debug = trim($cfg->val('database', 'debug'));
 
-my $pidFile = "/var/run/processmonitors.pid";
+my $pidFile = "/var/run/astercrm_update_cdr.pid";
+
+my $maxsec = 86400;
 
 $| =1 ;
 
 if ($ARGV[0] eq '-v'){		# print version
-	print "processmonitors version 0.011-100510\n";
+	print "astercrm_update_cdr version 0.01-100521\n";
 	print "copyright \@2009-2010\n";
 	exit;
 }elsif ($ARGV[0] eq '-t'){	 # test database & asterisk connection 
@@ -75,10 +48,10 @@ if ($ARGV[0] eq '-v'){		# print version
 		my $res;
 		my $res = `kill -9 $line 2>&1`; 
 		if ($res eq '') {
-			print "processmonitors process: $line is killed. \n";
+			print "astercrm_update_cdr process: $line is killed. \n";
 		}else{
 			print "$res \n";
-			print "cant kill processmonitors process. \n";
+			print "cant kill astercrm_update_cdr process. \n";
 			exit;
 		}
 		unlink $pidFile;
@@ -94,23 +67,29 @@ if ($ARGV[0] eq '-v'){		# print version
 		my $res;
 		my $res = `ps  --pid=$line 2>&1`; 
 		if ($res =~ /\n(.*)\n/) {
-			print "processmonitors status: [start]\n";
+			print "astercrm_update_cdr status: [start]\n";
 		}else{
-			print "processmonitors status: [stop]\n";
+			print "astercrm_update_cdr status: [stop]\n";
 		}
     }else{
-		print "cant find $pidFile, processmonitors may not start \n";
+		print "cant find $pidFile, astercrm_update_cdr may not start \n";
 	}
 	exit;
 }elsif  ($ARGV[0] eq '-h'){
-	print "********* processmonitors parameters *********\n";
+	print "********* astercrm_update_cdr parameters *********\n";
 	print "    -h show help message\n";
-	#print "    -i parse all queue logs in the log file\n";
+#	print "    -i parse all queue logs in the log file\n";
 	print "    -d start as a daemon\n";
-	print "    -s show processmonitors status\n";
-	print "    -k stop processmonitors\n";
-	print "    -v show processmonitors version \n";
+	print "    -s show astercrm_update_cdr status\n";
+	print "    -k stop astercrm_update_cdr\n";
+	print "    -v show astercrm_update_cdr version \n";
 	exit;
+}elsif ($ARGV[0] eq '--hours'){
+	
+}elsif ($ARGV[0] eq '--days'){
+	
+}elsif ($ARGV[0] eq '--months'){
+	
 }
 
 
@@ -120,7 +99,7 @@ if (-e $pidFile){
 		my $res;
 		my $res = `ps  --pid=$line 2>&1`; 
 		if ($res =~ /\n(.*)\n/) {
-			print "processmonitors daemon is still running. Please stop first.\n"; #If no please del $pidFile \n";
+			print "astercrm_update_cdr daemon is still running. Please stop first.\n"; #If no please del $pidFile \n";
 			exit;
 		}else{
 			unlink $pidFile;
@@ -146,62 +125,38 @@ if ($ARGV[0] eq '-d'){
 
 my $dbh = &connect_mysql(%dbInfo);
 
-my $query = "SELECT * FROM monitorrecord WHERE processed = 'no'";
-my $rows = &executeQuery($query,'rows');
-
-while ( my $ref = $rows->fetchrow_hashref() ) {
-	my $orifile = "$ref->{'filename'}.$ref->{'fileformat'}";
-	my $mp3file = "$ref->{'filename'}.mp3";
-	my $execstr = '';
-	if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
-		if($ref->{'fileformat'} eq 'wav'){
-			$execstr = "$lamecmd --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
-
-			system($execstr);
-			
-			if( -e $mp3file ){
-				unlink($orifile);
-				$query = "UPDATE monitorrecord SET fileformat = 'mp3',processed = 'yes' WHERE id = $ref->{'id'}";
-				&executeQuery($query,'');
-				&debug("$orifile converted to mp3");
+my $query = "SELECT * FROM mycdr WHERE crm_customerid = '0' AND calldate >= (now()-INTERVAL $maxsec SECOND)";
+#$debug = 11;
+my $n=0;
+while ( 1 ) {
+	$n ++;
+	my $rows = &executeQuery($query,'rows');
+	while ( my $ref = $rows->fetchrow_hashref() ) {
+		my $sql = "SELECT id FROM customer WHERE phone='$ref->{'src'}' OR phone='$ref->{'dst'}' OR mobile='$ref->{'src'}' OR mobile='$ref->{'dst'}' ORDER BY id DESC LIMIT 1";
+		my $customer_rows = &executeQuery($sql,'rows');
+		if(my $customer_ref = $customer_rows->fetchrow_hashref()){
+			#print Dumper($customer_ref);
+			$sql = "UPDATE mycdr SET crm_customerid='$customer_ref->{'id'}' WHERE id='$ref->{'id'}'";
+			&executeQuery($sql,'');
+		}else{
+			my $sql = "SELECT id,customerid FROM contact WHERE phone='$ref->{'src'}' OR phone='$ref->{'dst'}' OR mobile='$ref->{'src'}' OR mobile='$ref->{'dst'}' OR phone1='$ref->{'src'}' OR phone1='$ref->{'dst'}' OR phone2='$ref->{'src'}' OR phone2='$ref->{'dst'}' ORDER BY id DESC LIMIT 1";
+			my $contact_rows = &executeQuery($sql,'rows');
+			if(my $contact_ref = $contact_rows->fetchrow_hashref()){
+				#print Dumper($contact_ref);
+				if($contact_ref->{'customerid'} == 0){
+					$contact_ref->{'customerid'} = -2;
+				}
+				$sql = "UPDATE mycdr SET crm_customerid='$contact_ref->{'customerid'}',contactid='$contact_ref->{'id'}' WHERE id='$ref->{'id'}'";
+				&executeQuery($sql,'');
+			}else{
+				$sql = "UPDATE mycdr SET crm_customerid='-1' WHERE id='$ref->{'id'}'";
+				&executeQuery($sql,'');
 			}
-		}else{
-			$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id = $ref->{'id'}";
-			&executeQuery($query,'');
 		}
-
-	}elsif( -e "$ref->{'filename'}-in.$ref->{'fileformat'}" && -e "$ref->{'filename'}-out.$ref->{'fileformat'}"){
-		if($soxmixcmd ne ''){
-			$execstr = "$soxmixcmd $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
-		}elsif($soxcmd ne ''){
-			$execstr = "$soxcmd -m $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
-		}else{
-			exit;
-		}
-		system($execstr);
-		if($ref->{'fileformat'} eq 'wav'){
-			$execstr = "$lamecmd --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
-			system($execstr);
-
-			if( -e $mp3file ){
-				unlink($orifile);
-				unlink("$ref->{'filename'}-in.$ref->{'fileformat'}");
-				unlink("$ref->{'filename'}-out.$ref->{'fileformat'}");
-
-				$query = "UPDATE monitorrecord SET fileformat = 'mp3' , processed = 'yes' WHERE id = $ref->{'id'}";
-				&executeQuery($query,'');
-				&debug("$orifile mixed and converted to mp3");
-			}
-		}else{
-			$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id = $ref->{'id'}";
-			&executeQuery($query,'');
-		}
-
-	}else{
-		#file not found or only in or out
-		$query = "UPDATE monitorrecord SET fileformat = 'error' , processed = 'yes' WHERE id = $ref->{'id'}";
-		&executeQuery($query,'');
+		#print Dumper($ref);
 	}
+	#print "$n\n";
+	sleep 60;
 }
 
 unlink($pidFile);
@@ -306,7 +261,7 @@ sub debug{
 	my $time=scalar localtime;
 	if ($debug > 0) {
 		if ($ARGV[0] eq '-d'){		# output to file
-			open (HDW,">>$Bin/processmonitorslog.txt");
+			open (HDW,">>$Bin/astercrm_update_cdr.txt");
 			print HDW $time," ",$message,"\n";
 			close HDW;
 		}else{
