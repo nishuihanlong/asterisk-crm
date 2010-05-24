@@ -146,6 +146,8 @@ class Customer extends astercrm
 				."worktime_package_id='".$f['worktime_package_id']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
+				."nextcontext='".$f['nextcontext']."', "
+				."firstcontext='".$f['firstcontext']."', "
 				."inexten='".$f['inexten']."', "
 				."queuename='".$f['queuename']."', "
 				."bindqueue='".$bindqueue."', "
@@ -179,6 +181,8 @@ class Customer extends astercrm
 				."waittime='".$f['waittime']."', "
 				."outcontext='".$f['outcontext']."', "
 				."incontext='".$f['incontext']."', "
+				."nextcontext='".$f['nextcontext']."', "
+				."firstcontext='".$f['firstcontext']."', "
 				."inexten='".$f['inexten']."', "
 				."queuename='".$f['queuename']."', "
 				."bindqueue='".$bindqueue."', "
@@ -377,10 +381,26 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Waitting time").'</td>
 					<td align="left"><input type="text" id="waittime" name="waittime" size="30" maxlength="3" value="45"></td>
-				</tr>				
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Call Result Detect").'</td>
+					<td align="left"><input type="checkbox" id="crdenable" name="crdenable" onclick="if(this.checked){xajax.$(\'crdtr\').style.display=\'\';}else{xajax.$(\'crdtr\').style.display=\'none\';}">&nbsp;</td>
+				</tr>
+				<tr id="crdtr" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("CRD context").'</td>
+					<td align="left"><input type="text" id="crdcontext" name="crdcontext" size="26" maxlength="60" value="'.$config['system']['crdcontext'].'" ></td>
+				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$config['system']['outcontext'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Answering Machine Detect").'</td>
+					<td align="left"><input type="checkbox" id="amdenable" name="amdenable" onclick="if(this.checked){xajax.$(\'amdtr\').style.display=\'\';}else{xajax.$(\'amdtr\').style.display=\'none\';}">&nbsp;</td>
+				</tr>
+				<tr id="amdtr" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("AMD context").'</td>
+					<td align="left"><input type="text" id="amdcontext" name="amdcontext" size="26" maxlength="60" value="'.$config['system']['amdcontext'].'" ></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Incontext").'*</td>
@@ -397,12 +417,12 @@ class Customer extends astercrm
 						<input type="checkbox" name="bindqueue" id="bindqueue">'.$locate->Translate("send calls to this queue directly").'
 					</td>
 				</tr>
-				<!--
+				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30"></td>
 				</tr>
-				-->
+				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>
@@ -443,7 +463,7 @@ class Customer extends astercrm
 	*/
 	
 	function formEdit($id){
-		global $locate,$db;
+		global $locate,$db,$config;
 		$campaign =& Customer::getRecordByID($id,'campaign');
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){ 
@@ -515,6 +535,29 @@ class Customer extends astercrm
 				$html .= 'checked>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" ></td>';
 			else
 				$html .= '>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" checked></td>';
+			
+			if($campaign['nextcontext'] != ''){
+				$amdchecked = 'checked';
+				$incontext = $campaign['nextcontext'];
+				$amdcontext = $campaign['incontext'];
+				$amdtr='';
+			}else{
+				$incontext = $campaign['incontext'];
+				$amdcontext = $config['system']['amdcontext'];
+				$amdtr='style="display:none"';
+			}
+
+			if($campaign['firstcontext'] != ''){
+				$crdchecked = 'checked';
+				$outcontext = $campaign['firstcontext'];
+				$crdcontext = $campaign['outcontext'];
+				$amdtr='';
+			}else{
+				$outcontext = $campaign['outcontext'];
+				$crdcontext = $config['system']['crdcontext'];
+				$crdtr='style="display:none"';
+			}
+
 			$html .= 
 				'</tr>
 				<tr>
@@ -530,12 +573,28 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="waittime" name="waittime" size="30" maxlength="3" value="'.$campaign['waittime'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Call Result Detect").'</td>
+					<td align="left"><input type="checkbox" id="crdenable" name="crdenable" onclick="if(this.checked == true){xajax.$(\'crdtr\').style.display=\'\';}else{xajax.$(\'crdtr\').style.display=\'none\';}" '.$crdchecked.'>&nbsp;</td>
+				</tr>
+				<tr id="crdtr" '.$crdtr.'>
+					<td nowrap align="left">'.$locate->Translate("CRD context").'</td>
+					<td align="left"><input type="text" id="crdcontext" name="crdcontext" size="26" maxlength="60" value="'.$crdcontext.'" ></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
-					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$campaign['outcontext'].'"></td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$outcontext.'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Answering Machine Detect").'</td>
+					<td align="left"><input type="checkbox" id="amdenable" name="amdenable" onclick="if(this.checked == true){xajax.$(\'amdtr\').style.display=\'\';}else{xajax.$(\'amdtr\').style.display=\'none\';}" '.$amdchecked.'>&nbsp;</td>
+				</tr>
+				<tr id="amdtr" '.$amdtr.'>
+					<td nowrap align="left">'.$locate->Translate("AMD context").'</td>
+					<td align="left"><input type="text" id="amdcontext" name="amdcontext" size="26" maxlength="60" value="'.$amdcontext.'" ></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Incontext").'*</td>
-					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$campaign['incontext'].'"></td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$incontext.'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
@@ -549,12 +608,12 @@ class Customer extends astercrm
 						</td>
 				</tr>
 
-				<!--
+
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>
 				</tr>
-				-->
+
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>

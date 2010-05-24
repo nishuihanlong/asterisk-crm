@@ -51,9 +51,15 @@ outcontext = from-internal
 ;context when dial in, in trixbox this could be from-trunk
 incontext = from-internal
 
+;context for Answering Machine Detect(AMD) in campaign
+amdcontext = from-astercrm-amd
+
+;context for call result Detect(CRD) in campaign
+crdcontext = from-astercrm
+
 ;agent_pannel_setting: if display following pannels in agent interface (On/Off)
 extension_pannel = On
-diallist_pannel = on
+diallist_pannel = On
 transfer_pannel = On
 dial_pannel = On
 monitor_pannel = On

@@ -500,7 +500,8 @@ Class astercrm extends PEAR{
 
 		astercrm::events($query);
 		$res =& $db->query($query);
-		return $res;
+		
+		return mysql_insert_id();
 	}
 
 	function insertNewDiallist($f){

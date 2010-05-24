@@ -1002,13 +1002,13 @@ function workstart() {
 		$row['trytime'] = $row['trytime'] + 1;
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
-		astercrm::insertNewDialedlist($row);
+		$dialedlistid = astercrm::insertNewDialedlist($row);
 		$objResponse->loadXML(getContact($phoneNum));
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 		if($config['system']['firstring'] == 'callee'){
-			invite($phoneNum,$_SESSION['curuser']['extension'],$row['campaignid']);
+			invite($phoneNum,$_SESSION['curuser']['extension'],$row['campaignid'],$dialedlistid);
 		}else{
-			invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid']);
+			invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid'],$dialedlistid);
 		}
 	}		
 	return $objResponse;
@@ -1130,7 +1130,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 *  @return	object						xajax response object
 */
 
-function invite($src,$dest,$campaignid=''){
+function invite($src,$dest,$campaignid='',$dialedlistid=0){
 	global $config,$locate;
 	$src = trim($src);
 	$dest = trim($dest);
@@ -1151,17 +1151,32 @@ function invite($src,$dest,$campaignid=''){
 	if($campaignid != ''){
 		$row_campaign = astercrm::getRecordByID($campaignid,"campaign");
 		//print_r($row_campaign);exit;
-		if(trim($row_campaign['incontext']) != '' ) $incontext = $row_campaign['incontext'];
-		else $incontext = $config['system']['incontext'];
-		if(trim($row_campaign['outcontext']) != '' ) $outcontext = $row_campaign['outcontext'];
-		else $outcontext = $config['system']['outcontext'];
+		if(trim($row_campaign['nextcontext']) != '' ){
+			$incontext = $row_campaign['nextcontext'];
+		}elseif(trim($row_campaign['incontext']) != ''){
+			$incontext = $row_campaign['incontext'];
+		}else{
+			$incontext = $config['system']['incontext'];
+		}
+
+		if(trim($row_campaign['firstcontext']) != '' ){
+			$outcontext = $row_campaign['firstcontext'];
+		}elseif(trim($row_campaign['outcontext']) != ''){
+			$outcontext = $row_campaign['outcontext'];
+		}else{
+			$outcontext = $config['system']['outcontext'];
+		}
+
 		if($row_campaign['callerid'] == ""){
 			$variable = '__CUSCID=NONE';
 		}else{
 			//$callerid = $row_campaign['callerid'];
 			$variable .= '__CUSCID='.$row_campaign['callerid'];
 		}
+		$variable .= '__CAMPAIGNID='.$row_campaign['id'].'|'; #传拨号计划id给asterisk
+		$variable .= '__DIALEDLISTID='.$dialedlistid.'|'; #dialedlist id给asterisk
 		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
+		//echo $variable;exit;
 	}else{
 		$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
 
@@ -1334,6 +1349,22 @@ function displayMap($address){
 
 function chanspy($exten,$spyexten,$pam = ''){
 	global $config,$locate;
+
+	if($_SESSION['curuser']['groupid'] > 0){
+		$group = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+		if($group['outcontext'] != ''){
+			$exten .= '@'.$group['outcontext'].'/n';
+		}else{
+			if($config['system']['outcontext'] != ''){
+				$exten .= '@'.$config['system']['outcontext'].'/n';
+			}
+		}
+	}else{
+		if($config['system']['outcontext'] != ''){
+			$exten .= '@'.$config['system']['outcontext'].'/n';
+		}
+	}
+
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
 

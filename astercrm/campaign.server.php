@@ -281,6 +281,7 @@ function add(){
 
 function save($f){
 	global $locate;
+	//print_r($f);exit;
 	$objResponse = new xajaxResponse();
 
 /*	if (!ereg("[0-9]+",$f['groupid'])){
@@ -295,7 +296,34 @@ function save($f){
 
 	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
 		$objResponse->addAlert($locate->Translate("Please enter the queue number"));
+		$objResponse->addScript("document.getElementById('queuename').focus();");
 		return $objResponse->getXML();
+	}
+
+	if($f['amdenable'] == 'on'){
+		if($f['amdcontext'] == ''){
+			$objResponse->addAlert($locate->Translate("Please enter the amdcontext"));
+			$objResponse->addScript("document.getElementById('amdcontext').focus();");
+			return $objResponse->getXML();
+		}else{
+			$f['nextcontext'] = $f['incontext'];
+			$f['incontext'] = $f['amdcontext'];
+		}
+	}else{
+		$f['nextcontext'] = '';
+	}
+
+	if($f['crdenable'] == 'on'){
+		if($f['crdcontext'] == ''){
+			$objResponse->addAlert($locate->Translate("Please enter the crdcontext"));
+			$objResponse->addScript("document.getElementById('crdcontext').focus();");
+			return $objResponse->getXML();
+		}else{
+			$f['firstcontext'] = $f['outcontext'];
+			$f['outcontext'] = $f['crdcontext'];
+		}
+	}else{
+		$f['firstcontext'] = '';
 	}
 
 	$respOk = Customer::insertNewCampaign($f); // add a new account
@@ -328,6 +356,32 @@ function update($f){
 	if ($f['queuename'] == "" && $f['bindqueue'] == "on"){
 		$objResponse->addAlert($locate->Translate("Please enter the queue number"));
 		return $objResponse->getXML();
+	}
+
+	if($f['amdenable'] == 'on'){
+		if($f['amdcontext'] == ''){
+			$objResponse->addAlert($locate->Translate("Please enter the amdcontext"));
+			$objResponse->addScript("document.getElementById('amdcontext').focus();");
+			return $objResponse->getXML();
+		}else{
+			$f['nextcontext'] = $f['incontext'];
+			$f['incontext'] = $f['amdcontext'];
+		}
+	}else{
+		$f['nextcontext'] = '';
+	}
+
+	if($f['crdenable'] == 'on'){
+		if($f['crdcontext'] == ''){
+			$objResponse->addAlert($locate->Translate("Please enter the crdcontext"));
+			$objResponse->addScript("document.getElementById('crdcontext').focus();");
+			return $objResponse->getXML();
+		}else{
+			$f['firstcontext'] = $f['outcontext'];
+			$f['outcontext'] = $f['crdcontext'];
+		}
+	}else{
+		$f['firstcontext'] = '';
 	}
 
 	$respOk = Customer::updateCampaignRecord($f);

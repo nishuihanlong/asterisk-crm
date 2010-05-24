@@ -155,9 +155,25 @@ function showChannelsInfo(){
 }
 
 function chanspy($exten,$spyexten,$pam = ''){
-	//print $spyexten;
-	//exit;
+	
 	global $config,$locate;
+
+	if($_SESSION['curuser']['groupid'] > 0){
+		$group = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+		if($group['outcontext'] != ''){
+			$exten .= '@'.$group['outcontext'].'/n';
+		}else{
+			if($config['system']['outcontext'] != ''){
+				$exten .= '@'.$config['system']['outcontext'].'/n';
+			}
+		}
+	}else{
+		if($config['system']['outcontext'] != ''){
+			$exten .= '@'.$config['system']['outcontext'].'/n';
+		}
+	}
+
+	
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
 
