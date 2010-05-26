@@ -39,7 +39,7 @@ $clientLang = $_GET['locate'];
 		}
 
 		function monitor(){
-			if (xajax.$('callerChannel').value.indexOf("Local") < 0 )
+			if (xajax.$('callerChannel').value.indexOf("local") < 0 )
 				channel = xajax.$('callerChannel').value;
 			else
 				channel = xajax.$('calleeChannel').value;

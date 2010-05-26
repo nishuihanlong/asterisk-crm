@@ -24,8 +24,8 @@
 		$titleHtml .= '<h2 style="padding: 0 0 0 0;position: relative;font-size: 11pt;">'.$group_row['grouptagline'].'</h2>';
 	}
 
-	if (strstr($_REQUEST['peer'],'Local/')) { //for callback
-		$peer = ltrim($peer,'Local/');
+	if (strstr($_REQUEST['peer'],'local/')) { //for callback
+		$peer = ltrim($peer,'local/');
 		foreach ($_SESSION['callbacks'] as $key => $callback) {
 			if( $key == $peer.$callback['legA'] && $callback['legB'] == $peer ){
 				$leg = $callback['legA'];

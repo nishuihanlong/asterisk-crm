@@ -966,7 +966,7 @@ function checkworkexten() {
 	}
 	
 	if($_SESSION['curuser']['channel'] == ''){
-		$row = astercrm::getRecordByField("peer","SIP/".$_SESSION['curuser']['extension'],"peerstatus");
+		$row = astercrm::getRecordByField("peer","sip/".$_SESSION['curuser']['extension'],"peerstatus");
 	}else{
 		$row = astercrm::getRecordByField("peer",$_SESSION['curuser']['channel'],"peerstatus");
 	}
@@ -1065,7 +1065,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 
 	if ($dtmf != '') {
 		$app = 'Dial';
-		$data = 'LOCAL/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
+		$data = 'local/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
 		$first = 'caller';
 	}
 
@@ -1080,7 +1080,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 	if ($first == 'caller'){	//caller will ring first
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
+		$strChannel = "local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
@@ -1096,7 +1096,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 			$myAsterisk->sendCall($strChannel,$phoneNum,$outcontext,1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
-		$strChannel = "Local/".$phoneNum."@".$outcontext."/n";
+		$strChannel = "local/".$phoneNum."@".$outcontext."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 
@@ -1185,7 +1185,7 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 		else $outcontext = $config['system']['outcontext'];
 	}
-	$strChannel = "Local/".$src."@".$incontext."/n";
+	$strChannel = "local/".$src."@".$incontext."/n";
 
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
@@ -1373,7 +1373,7 @@ function chanspy($exten,$spyexten,$pam = ''){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"SIP/".$spyexten,$pam);
+	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam);
 	return $objResponse;
 }
 
@@ -1396,7 +1396,7 @@ function bargeInvite($srcchan,$dstchan,$exten){
 	//if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 	//else $outcontext = $config['system']['outcontext'];
 
-	$strChannel = "Local/".$exten."@".$incontext."/n";
+	$strChannel = "local/".$exten."@".$incontext."/n";
 	$myAsterisk->Originate($strChannel,'','',1,'meetme',$exten."|pqdx",30,$exten,NULL,NULL);
 
 	$myAsterisk->Redirect($srcchan,$dstchan,$exten,"astercc-barge","1");

@@ -278,7 +278,7 @@ chmod 777 ${asterisketc}/agents_astercc.conf
 
 if [ ! -f "${asterisketc}/agents.conf" ]
 then
-  mv ${curpath}/scripts/agents.conf ${asterisketc}
+  cp -f ${curpath}/scripts/agents.conf ${asterisketc}
 else
   echo "#include agents_astercc.conf" >> /etc/asterisk/agents.conf
 fi
@@ -287,7 +287,7 @@ touch ${asterisketc}/sip_astercc.conf
 
 if [ ! -f "${asterisketc}/extensions_astercc.conf" ]
 then
-  mv ${curpath}/scripts/extensions_astercc.conf ${asterisketc}
+  cp -f ${curpath}/scripts/extensions_astercc.conf ${asterisketc}
 fi
 
 echo "#include sip_astercc.conf" >> ${asterisketc}/sip.conf

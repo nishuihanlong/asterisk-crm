@@ -223,6 +223,8 @@ CREATE TABLE `resellergroup` (
   `epayment_identity_token` varchar(255) NOT NULL default '',           
   `epayment_amount_package` varchar(30) NOT NULL default '',            
   `epayment_notify_mail` varchar(60) NOT NULL default '',
+  `trunk1_id` int(11) NOT NULL default 0,
+  `trunk2_id` int(11) NOT NULL default 0,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -1441,7 +1443,7 @@ CREATE TABLE `registry` (
 `refresh` varchar(10) NOT NULL default '',
 `state` varchar(50) NOT NULL default '',
 `reg_time` varchar(50) NOT NULL default '',
-`protocal` enum('SIP','IAX2','other') NOT NULL default 'sip',
+`protocal` enum('sip','iax2','other') not null default 'sip',
  UNIQUE KEY `id` (`id`)
 )ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 

@@ -333,7 +333,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 	
 	if ($dtmf != '') {
 		$app = 'Dial';
-		$data = 'LOCAL/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
+		$data = 'local/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
 		$first = 'caller';
 	}
 
@@ -348,7 +348,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 	if ($first == 'caller'){	//caller will ring first
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
+		$strChannel = "local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
@@ -364,7 +364,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+		$strChannel = "local/".$phoneNum."@".$config['system']['outcontext']."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 

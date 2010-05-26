@@ -38,6 +38,8 @@ ALTER TABLE `resellergroup` ADD `trunk2_id` int(11) NOT NULL default 0;
 ALTER TABLE `campaign` ADD `nextcontext` varchar(60) NOT NULL default '';
 ALTER TABLE `campaign` ADD `firstcontext` varchar(60) NOT NULL default '';
 
+ALTER table registry change protocal protocal enum('sip','iax2','other') not null default 'sip';
+
 CREATE TABLE `trunks` (
   `id` int(11) NOT NULL auto_increment,
   `trunkname` varchar(30) NOT NULL default '',

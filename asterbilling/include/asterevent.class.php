@@ -66,6 +66,7 @@ class astercc extends PEAR
 
 	function checkPeerStatus($groupid,$peers){
 		$curChans =& astercc::getCurChan($groupid);
+		//print_r($curChans);exit;
 		$status =  array();
 		while ($curChans->fetchInto($list)) {
 			// 检查src或者dst是否在peers里
@@ -119,7 +120,7 @@ class astercc extends PEAR
 
 	function getCallback($groupid){
 		global $db;
-		$query = "SELECT * FROM curcdr WHERE groupid = $groupid AND LEFT(srcchan,6) = 'Local/'";
+		$query = "SELECT * FROM curcdr WHERE groupid = $groupid AND LEFT(srcchan,6) = 'local/'";
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;
@@ -302,7 +303,7 @@ class astercc extends PEAR
 				src = "'.$peer.' AND dst="'.$leg.'"" 
 				AND userfield = "UNBILLED" ORDER BY calldate';
 				*/
-			$query = "SELECT * FROM mycdr WHERE channel LIKE 'Local/$peer%' AND src = '$leg' AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+			$query = "SELECT * FROM mycdr WHERE channel LIKE 'local/$peer%' AND src = '$leg' AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
 			//	print $query;
 			//	exit;
 		}
@@ -350,7 +351,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 		if ($peer != '' and $peer != '0'){
 			if ($peer == "-1"){
-				$query .= " AND LEFT(channel,6) = 'Local/' ";
+				$query .= " AND LEFT(channel,6) = 'local/' ";
 			}else{
 				$query .= " AND (src = '$peer' OR dst = '$peer') ";
 			}
@@ -403,7 +404,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 		if ($booth != 0 && $booth != ''){
 			if ($booth == '-1'){
-				$query .= " AND LEFT(channel,6) = 'Local/' ";
+				$query .= " AND LEFT(channel,6) = 'local/' ";
 			}else{
 				$query .= " AND src = '$booth' OR dst = '$booth'";
 			}
@@ -453,7 +454,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 		if ($booth != 0 && $booth != ''){
 			if ($booth == '-1'){
-				$query .= " AND LEFT(channel,6) = 'Local/' ";
+				$query .= " AND LEFT(channel,6) = 'local/' ";
 			}else{
 				$query .= " AND src = '$booth' OR dst = '$booth'";
 			}
@@ -640,7 +641,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 
 		if ($booth != 0 && $booth != ''){
 			if ($booth == '-1'){
-				$query .= " AND LEFT(channel,6) = 'Local/' ";
+				$query .= " AND LEFT(channel,6) = 'local/' ";
 			}else{
 				$query .= " AND src = '$booth' OR dst = '$booth'";
 			}

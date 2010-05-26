@@ -182,7 +182,7 @@ function chanspy($exten,$spyexten,$pam = ''){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"SIP/".$spyexten,$pam);
+	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam);
 	//$objResponse->addAlert($spyexten);
 	return $objResponse;
 
@@ -218,7 +218,7 @@ function dial($phoneNum,$first = ''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 	if ($first == 'caller'){	//caller will ring first
-		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
+		$strChannel = "local/".$_SESSION['curuser']['extension']."@".$config['system']['incontext']."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
@@ -234,7 +234,7 @@ function dial($phoneNum,$first = ''){
 			$myAsterisk->sendCall($strChannel,$phoneNum,$config['system']['outcontext'],1,NULL,NULL,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
-		$strChannel = "Local/".$phoneNum."@".$config['system']['outcontext']."/n";
+		$strChannel = "local/".$phoneNum."@".$config['system']['outcontext']."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
 
@@ -278,7 +278,7 @@ function barge($srcchan,$dstchan){
 	//if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 	//else $outcontext = $config['system']['outcontext'];
 
-	$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
+	$strChannel = "local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
 	$myAsterisk->Originate($strChannel,'','',1,'meetme',$_SESSION['curuser']['extension']."|pqdx",30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
 
 	$myAsterisk->Redirect($srcchan,$dstchan,$_SESSION['curuser']['extension'],"astercc-barge","1");

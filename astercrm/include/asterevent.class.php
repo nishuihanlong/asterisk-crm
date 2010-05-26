@@ -707,7 +707,7 @@ class asterEvent extends PEAR
 			$DestUniqueID = trim(substr($flds[7],13));
 			$callerid = trim(substr($flds[4],9));
 
-			if (preg_match_all("/^Local\/(.*)\@/",$SrcChannel,$match) && $callerid == $_SESSION['curuser']['extension'])
+			if (preg_match_all("/^local\/(.*)\@/",$SrcChannel,$match) && $callerid == $_SESSION['curuser']['extension'])
 				$callerid = trim($match[1][0]);
 			
 			asterEvent::events("incoming from:".$callerid);
@@ -778,7 +778,7 @@ DestUniqueID: 1193886661.15683
 			$callerid = $srcInfo['Extension'];
 			asterEvent::events("dialout: ".$event);
 
-			if (preg_match_all("/^Local\/(.*)\@/",$SrcChannel,$match))
+			if (preg_match_all("/^local\/(.*)\@/",$SrcChannel,$match))
 				$callerid = trim($match[1][0]);
 
 

@@ -192,7 +192,7 @@ $clientDst = $_REQUEST['clientdst'];
 		function monitor(){
 			//alert(xajax.$('chkMonitor').value);
 			callerChannel = xajax.$('callerChannel').value.toUpperCase();
-			if (callerChannel.indexOf("Local") < 0 && callerChannel.indexOf("LOCAL") < 0)
+			if (callerChannel.indexOf("local") < 0 && callerChannel.indexOf("local") < 0)
 				channel = xajax.$('callerChannel').value;
 			else
 				channel = xajax.$('calleeChannel').value;

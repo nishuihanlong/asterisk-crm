@@ -487,7 +487,7 @@ function invite($src,$dest,$campaignid=''){
 		if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 		else $outcontext = $config['system']['outcontext'];
 	}
-	$strChannel = "Local/".$src."@".$incontext."/n";
+	$strChannel = "local/".$src."@".$incontext."/n";
 
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",

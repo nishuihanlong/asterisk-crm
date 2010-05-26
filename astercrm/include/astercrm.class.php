@@ -2123,9 +2123,9 @@ Class astercrm extends PEAR{
 		global $db;
 		foreach ($_SESSION['curuser']['memberExtens'] as $value){
 			$memberextena .= "'".$value."',";
-			$memberextenb .= "'LOCAL/".$value."',";
-			$memberextenc .= "'SIP/".$value."',";
-			$memberextend .= "'IAX/".$value."',";
+			$memberextenb .= "'local/".$value."',";
+			$memberextenc .= "'sip/".$value."',";
+			$memberextend .= "'iax/".$value."',";
 		}
 		foreach ($_SESSION['curuser']['memberAgents'] as $value){
 			$memberagents .= "'AGENT/".$value."',";				

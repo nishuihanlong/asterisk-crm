@@ -152,7 +152,7 @@ function predictiveDialer($f){
 				$exten = split("/",$target);
 				$exten = $exten[1];
 
-				$query = "SELECT queuename FROM queue_agent WHERE agent = '$target' OR agent LIKE 'Local/$exten\@%' ";
+				$query = "SELECT queuename FROM queue_agent WHERE agent = '$target' OR agent LIKE 'local/$exten\@%' ";
 				$queuename = $db->getOne($query);
 				if ($queuename != ""){
 					$query = "SELECT id, groupid FROM campaign WHERE queuename = '".$queuename."' GROUP BY groupid";
@@ -334,7 +334,7 @@ function placeCall($campaignid){
 
 	$actionid=md5(uniqid(""));
 
-	$strChannel = "Local/".$phoneNum."@".$outcontext."/n";
+	$strChannel = "local/".$phoneNum."@".$outcontext."/n";
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($actionid,array('Channel'=>"$strChannel",
 									'WaitTime'=>30,

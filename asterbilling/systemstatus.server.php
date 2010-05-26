@@ -99,9 +99,9 @@ if (!isset($_SESSION['callbacks']))
 	// get callback from session
 	foreach ($_SESSION['callbacks'] as $callback){
 		if ($callback['creditlimit'] > 0){
-			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","","","'.$config['customers']['enable'].'")');
+			$objResponse->addScript('addDiv("divMainContainer","local/'.$callback['legB'].'","'.$callback['creditlimit'] .'","","","'.$config['customers']['enable'].'")');
 		}else{
-			$objResponse->addScript('addDiv("divMainContainer","Local/'.$callback['legB'].'","","","","'.$config['customers']['enable'].'")');
+			$objResponse->addScript('addDiv("divMainContainer","local/'.$callback['legB'].'","","","","'.$config['customers']['enable'].'")');
 		}
 
 		$objResponse->addScript('xajax_addUnbilled("'.$callback['legB'].'","'.$callback['legA'].'");');
@@ -334,7 +334,7 @@ function showStatus(){
 	if (count($callbacks) > 0){
 		foreach ($callbacks as $key => $callback){
 
-			$localChan = 'Local/'.$callback['legB'];
+			$localChan = 'local/'.$callback['legB'];
 			$res = astercc::getCurLocalChan($localChan,$_SESSION['curuser']['groupid']);
 //			print $localChan;
 //			print "\n";
@@ -476,7 +476,7 @@ function removeLocalChannel($chan_val){
 	$objResponse = new xajaxResponse();
 	if (is_array($_SESSION['callbacks'])){
 		foreach ($_SESSION['callbacks'] as $key=> $callbacks){
-			if ('Local/'.$callbacks['legB'] = $chan_val){
+			if ('local/'.$callbacks['legB'] = $chan_val){
 				unset($_SESSION['callbacks'][$key]);
 				break;
 			}
@@ -514,7 +514,7 @@ function invite($src,$dest,$creditLimit){
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 	
-	$strChannel = "Local/".$src."@".$config['system']['outcontext']."/n";
+	$strChannel = "local/".$src."@".$config['system']['outcontext']."/n";
 
 	$_SESSION['callbacks'][$src.$dest] = array('legA' =>$dest,'legB' => $src, 'start' => 0, 'creditLimit' => $creditLimit);
 	if ($config['system']['allow_dropcall'] == true){
@@ -546,7 +546,7 @@ function addUnbilled($peer,$leg = null){
 	}
 	$records = astercc::readUnbilled($peer,$leg,$_SESSION['curuser']['groupid']);
 	if ($leg != null){
-		$peer = 'Local/'.$peer;
+		$peer = 'local/'.$peer;
 	}
 	$totalprice = 0;
 

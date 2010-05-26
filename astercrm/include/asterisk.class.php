@@ -188,7 +188,7 @@ $channel,
                        $application=NULL, $data=NULL,
                        $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL
 */
-		Asterisk::sendCall("Local/$spy",null,null,null,"ChanSpy",$exten."|qb".$pam,30);
+		Asterisk::sendCall("local/$spy",null,null,null,"ChanSpy",$exten."|qb".$pam,30);
 	}
 
 	function zapSpy(){
