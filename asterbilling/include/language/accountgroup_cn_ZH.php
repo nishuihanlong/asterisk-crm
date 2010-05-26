@@ -61,4 +61,5 @@ $customize = "自定义";
 $there_are_new_changes = "有新变动,请点击重载";
 $trunk1 = "中继1";
 $trunk2 = "中继2";
+$save_trunk = "保存中继";
 ?>
