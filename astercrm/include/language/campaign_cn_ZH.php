@@ -41,4 +41,8 @@ $remaining = "剩余";
 $dialed_ = '已拨';
 $campaign_result = "拨号计划结果";
 $campaign = "拨号计划";
+$call_result_detect = "呼叫结果检测";
+$crd_context = "呼叫结果检测context";
+$answering_machine_detect = "自动答应机检测";
+$amd_context = "自动应答机检测context";
 ?>

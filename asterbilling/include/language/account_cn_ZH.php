@@ -27,5 +27,9 @@ $group = "组";
 $group_admin = "组管理员";
 $admin = "系统管理员";
 $operator = "操作员";
-
+$action = "动作";
+$status = "属性";
+$failed_cause = "失败原因";
+$cretime = "创建时间";
+$option = "操作";
 ?>

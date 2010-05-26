@@ -31,6 +31,7 @@ alter table peerstatus add responsetime int(11) not null default '0';
 
 ALTER TABLE dialedlist ADD INDEX nnt (`dialednumber`,`dialedtime`);
 ALTER TABLE dialedlist ADD INDEX nnu (`dialednumber`,`uniqueid`);
+ALTER TABLE `surveyresult` ADD `uniqueid` varchar(40) NOT NULL default '';
 
 ALTER TABLE `resellergroup` ADD `trunk1_id` int(11) NOT NULL default 0;
 ALTER TABLE `resellergroup` ADD `trunk2_id` int(11) NOT NULL default 0;

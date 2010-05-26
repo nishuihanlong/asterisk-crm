@@ -20,4 +20,5 @@ $discount = "折扣";
 $profile = "用户信息";
 $system = "系统";
 $systemstatus = "操作界面";
+$account_log = "登录日志";
 ?>
