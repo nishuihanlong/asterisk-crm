@@ -2,6 +2,7 @@ new features in 0.062
 	added export in cdr page
 	added parameters(uniqueid/calldate) when ust extenal crm
 	Don't display diallist function when login as dynamic agent
+	added update groupid and accountid to mycdr(parameter "update_groupid" in astercc.conf)
 	improved processmonitors
 	improved export funciton, supoorts to export xls and cvs format
 	improved report page
@@ -13,6 +14,7 @@ new features in 0.062
 	增加了CDR页面的导出功能
 	使用外部crm的时增加弹屏的参数(cdr标识/拨号时间)
 	动态座席登录时,不再显示拨号列表相关功能
+	增加了记录座席的groupid及accountid 功能(由astercc.conf 中的update_groupid参数控制)
 	改进录音转换程序
 	改进导出功能,同时支持导出xls及csv两种格式
 	改进报告页,增加对座席通话时长的统计功能
