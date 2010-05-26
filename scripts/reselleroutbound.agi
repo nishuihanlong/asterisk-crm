@@ -68,12 +68,19 @@ if($ref->{'id'} > 0){
 	}
 	my $callstatus = '';
 	if($ref->{'trunk1_id'} > 0 ){
-		$query = "SELECT trunks.trunkname,trunks.trunkidentity,trunks.trunkprotocol FROM trunks WHERE id = $ref->{'trunk1_id'} ";
+		$query = "SELECT * FROM trunks WHERE id = $ref->{'trunk1_id'} ";
 		$rows = &executeQuery($query,'rows');
 		$trunk_ref = $rows->fetchrow_hashref();
+		my $dst = $extension;
+		if($trunk_ref->{'removeprefix'} ne ''){
+			$dst =~ s/^$trunk_ref->{'removeprefix'}//;
+		}
+		if($trunk_ref->{'trunkprefix'} ne ''){
+			$dst = $trunk_ref->{'trunkprefix'}.$dst;
+		}
 
 		$AGI->exec("NoOP","Dialing by $trunk_ref->{'trunkname'}");
-		$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$extension|$timeout|Tt");
+		$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$dst|$timeout|Tt");
 	}else{
 		my	$default_trunk = '';#trim($cfg->val('system', 'resellertrunk'));
 		my	$default_trunk_protocol = '';#trim($cfg->val('system', 'resellertrunktype'));
@@ -98,12 +105,20 @@ if($ref->{'id'} > 0){
 
 	if($callstatus ne 'ANSWER' && $callstatus ne 'CANCEL' && $callstatus ne 'BUSY' ){
 		if($ref->{'trunk2_id'} > 0 ){
-			$query = "SELECT trunks.trunkname,trunks.trunkidentity,trunks.trunkprotocol FROM trunks WHERE id = $ref->{'trunk2_id'} ";
+			$query = "SELECT * FROM trunks WHERE id = $ref->{'trunk2_id'} ";
 			$rows = &executeQuery($query,'rows');
 			$trunk_ref = $rows->fetchrow_hashref();
 
+			my $dst = $extension;
+			if($trunk_ref->{'removeprefix'} ne ''){
+				$dst =~ s/^$trunk_ref->{'removeprefix'}//;
+			}
+			if($trunk_ref->{'trunkprefix'} ne ''){
+				$dst = $trunk_ref->{'trunkprefix'}.$dst;
+			}
+
 			$AGI->exec("NoOP","Dialing by $trunk_ref->{'trunkname'}");
-			$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$extension|$timeout|Tt");
+			$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$dst|$timeout|Tt");
 		}else{
 			my	$default_trunk = '';#trim($cfg->val('system', 'resellertrunk'));
 			my	$default_trunk_protocol = '';#trim($cfg->val('system', 'resellertrunktype'));
