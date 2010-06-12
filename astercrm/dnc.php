@@ -2,12 +2,12 @@
 /*******************************************************************************
 * diallist.php
 * 拨号列表管理界面//
-* diallist  management interface
+* dnc  management interface
 * 功能描述
-	 提供拨号列表信息管理的功能
+	 提供dnc信息管理的功能
 
 * Function Desc
-	diallist management
+	dnc management
 
 * Page elements
 * div:							
@@ -24,7 +24,7 @@
 * 描述: 建立
 ********************************************************************************/
 
-require_once('diallist.common.php');
+require_once('dnc.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -90,10 +90,9 @@ require_once('diallist.common.php');
 	<div id="divNav"></div><br>
 	<br>
 	<div id="divActive" name="divActive">
+		<input type="button" value="<?echo $locate->Translate("DialList")?>" id="btnDiallist" name="btnDiallist" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />
-		<input type="button" value="" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
-		<input type="button" value="<?echo $locate->Translate("Worktime packages")?>" id="btnWorktime" name="btnWorktime" onClick="window.location='worktimepackages.php';" />
-		<input type="button" value="<?echo $locate->Translate("DNC list")?>" id="btnDNC" name="btnDNC" onClick="window.location='dnc.php';" />
+
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

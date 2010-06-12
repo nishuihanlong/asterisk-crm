@@ -41,6 +41,9 @@ ALTER TABLE `campaign` ADD `firstcontext` varchar(60) NOT NULL default '';
 
 ALTER table registry change protocal protocal enum('sip','iax2','other') not null default 'sip';
 
+alter table `peerstatus` add `address` varchar(100) not null default '';
+alter table `peerstatus` add `port` varchar(10) not null default '';
+
 CREATE TABLE `trunks` (
   `id` int(11) NOT NULL auto_increment,
   `trunkname` varchar(30) NOT NULL default '',

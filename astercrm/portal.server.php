@@ -942,13 +942,23 @@ function addWithPhoneNumber(){
 	if ($row['id'] == ''){
 
 	} else {
+		$sql = "SELECT * FROM dnc_list WHERE number='".$row['dialnumber']."' AND (campaignid=0 OR campaignid = '".$row['campaignid']."') AND (groupid = 0 OR groupid='".$row['groupid']."')  LIMIT 1";
+		$dnc_row = $db->getRow($sql);
+		
 		$phoneNum = $row['dialnumber'];
-		$objResponse->loadXML(getContact($phoneNum));
+
+		if($dnc_row['id'] > 0){
+			$row['callresult'] = 'dnc';
+		}else{
+			$objResponse->loadXML(getContact($phoneNum));
+		}		
+		
 		astercrm::deleteRecord($row['id'],"diallist");
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		$row['trytime'] = $row['trytime'] + 1;
 		astercrm::insertNewDialedlist($row);
+	
 	}
 
 	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
@@ -988,6 +998,23 @@ function workstart() {
 	if ($row['id'] == ''){
 
 	} else {
+		$sql = "SELECT * FROM dnc_list WHERE number='".$row['dialnumber']."' AND (campaignid=0 OR campaignid = '".$row['campaignid']."') AND (groupid = 0 OR groupid='".$row['groupid']."')  LIMIT 1";
+		$dnc_row = $db->getRow($sql);
+		
+		if($dnc_row['id'] > 0){
+			$row['callresult'] = 'dnc';
+			$phoneNum = $row['dialnumber'];			
+			astercrm::deleteRecord($row['id'],"diallist");
+
+			$row['trytime'] = $row['trytime'] + 1;
+			$row['dialednumber'] = $phoneNum;
+			$row['dialedby'] = $_SESSION['curuser']['extension'];
+			$dialedlistid = astercrm::insertNewDialedlist($row);
+			$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+			$objResponse->addScript("workctrl('start');");
+			return $objResponse;
+		}
+
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
 		if($config['system']['stop_work_verify'])
 			$objResponse->addEvent("btnWork", "onclick", "workctrl('check');");
@@ -1006,8 +1033,10 @@ function workstart() {
 		$objResponse->loadXML(getContact($phoneNum));
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 		if($config['system']['firstring'] == 'callee'){
+			if($row['callresult'] != 'dnc')
 			invite($phoneNum,$_SESSION['curuser']['extension'],$row['campaignid'],$dialedlistid);
 		}else{
+			if($row['callresult'] != 'dnc')
 			invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid'],$dialedlistid);
 		}
 	}		

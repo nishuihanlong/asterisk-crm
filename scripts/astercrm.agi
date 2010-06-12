@@ -74,7 +74,7 @@ if($DIALPART eq 'CALLEE'){
 		$AGI->verbose("DIALSTATUS:$callstatus");
 
 		if($dialed_id > 0){
-			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$callstatus' WHERE id='$dialed_id' AND callresult=''";
+			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$callstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal')";
 			&executeQuery($query,'');
 		}
 	}
@@ -108,7 +108,7 @@ if($DIALPART eq 'CALLEE'){
 		my $group_id = 0;
 		if($dialed_id > 0 && $campaign_id >0){
 			
-			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$amdstatus' WHERE id='$dialed_id' AND callresult=''";
+			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$amdstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal')";
 			&executeQuery($query,'');
 
 			$query = "SELECT * FROM ".$db_prefix."survey WHERE campaignid = $campaign_id and enable = 1 ORDER BY cretime LIMIT 0,1";

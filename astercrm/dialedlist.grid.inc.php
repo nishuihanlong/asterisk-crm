@@ -66,7 +66,9 @@ class Customer extends astercrm
 	function getNoanswerCallsNumber(){
 		global $db;
 
-		$sql = "SELECT count(*) FROM dialedlist WHERE answertime ='0000-00-00 00:00:00' ";
+		$sql = "SELECT count(*) FROM dialedlist WHERE answertime ='0000-00-00 00:00:00' AND callresult!='dnc'";
+
+		$sql = "SELECT count(*) FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id WHERE answertime ='0000-00-00 00:00:00' AND callresult!='dnc' AND `maxtrytime` > `trytime`";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -84,7 +86,7 @@ class Customer extends astercrm
 		$i = 0;
 		//get phone numbers
 
-		$sql = "SELECT dialedlist.*,campaign.maxtrytime ,customer.customer FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = dialedlist.customerid WHERE answertime ='0000-00-00 00:00:00' ";
+		$sql = "SELECT dialedlist.*,campaign.maxtrytime ,customer.customer FROM dialedlist LEFT JOIN campaign ON dialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = dialedlist.customerid WHERE answertime ='0000-00-00 00:00:00' AND callresult!='dnc' AND `maxtrytime` > `trytime`";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";

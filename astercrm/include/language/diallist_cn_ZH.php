@@ -20,4 +20,8 @@ $worktime_packages = "工作时间范围";
 $call_order = "优先级";
 $customer = "客户";
 $name = "客户名称";
+$dnc_list = "免拨列表";
+$diallist = "拨号列表";
+$add_dnclist = "添加";
+$please_select = "请选择";
 ?>

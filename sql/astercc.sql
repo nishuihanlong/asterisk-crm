@@ -925,7 +925,7 @@ CREATE TABLE `dialedlist` (
   `response` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
   `customerid` int(11) NOT NULL default 0,
   `customername` varchar(100) default '',
-  `callresult` enum('normal','fax','voicemail') default 'normal',
+  `callresult` varchar(60) default '',
   `campaignresult` varchar(60) default '',
   `resultby` varchar(30) NOT NULL default '',
   `uniqueid` varchar(40) NOT NULL default '',											#added by solo 2008#2#1
@@ -1593,6 +1593,19 @@ CREATE TABLE `account_log` (
   `status` enum("success","failed") default 'failed',
   `failedcause` varchar(100) NOT NULL default '',
   `failedtimes` int(11) NOT NULL default 0,
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `dnc_list`;
+
+CREATE TABLE `dnc_list` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `number` varchar(30) NOT NULL DEFAULT '',
+  `campaignid` int(11) NOT NULL default '0',
+  `groupid` int(11) NOT NULL default '0',
+  `status` enum('enable','disabled') default 'enable',
+  `creby` varchar(30) NOT NULL default '',
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
