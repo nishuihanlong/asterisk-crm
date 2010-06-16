@@ -283,13 +283,15 @@ function init(){
 		$objResponse->addAssign("btnMonitor","disabled", 'true');
 	}
 	//if enabled monitor by astercctools
-	Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
-
-	if ($asterccConfig['system']['force_record'] == 1 ) {
-//		echo $asterccConfig['system']['force_record'];exit;
-		$objResponse->addAssign("chkMonitor","checked", false);
-		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
-		$objResponse->addAssign("btnMonitor","disabled", 'true');
+	$configstatus = Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+	if ($configstatus != -2){
+		$objResponse->addAlert("fail to read ".$config['system']['astercc_path'].'/astercc.conf');
+		if ($asterccConfig['system']['force_record'] == 1 ) {
+			echo $asterccConfig['system']['force_record'];exit;
+			$objResponse->addAssign("chkMonitor","checked", false);
+			$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
+			$objResponse->addAssign("btnMonitor","disabled", 'true');
+		}
 	}
 	return $objResponse;
 }
@@ -409,9 +411,11 @@ function incomingCalls($myValue){
 			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
 			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
 			//if chkMonitor be checked or monitor by astercctools btnMonitor must be disabled
-			Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
-			if ($myValue['chkMonitor'] != 'on' && $asterccConfig['system']['force_record'] != 1) {
-				$objResponse->addAssign("btnMonitor","disabled", false );
+			$configstatus = Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+			if ($configstatus != -2){
+				if ($myValue['chkMonitor'] != 'on' && $asterccConfig['system']['force_record'] != 1) {
+					$objResponse->addAssign("btnMonitor","disabled", false );
+				}
 			}
 			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
 			astercrm::events($myValue['chkMonitor'].'-chkMonitor');
