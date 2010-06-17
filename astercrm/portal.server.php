@@ -284,8 +284,9 @@ function init(){
 	}
 	//if enabled monitor by astercctools
 	$configstatus = Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
-	if ($configstatus != -2){
-		$objResponse->addAlert("fail to read ".$config['system']['astercc_path'].'/astercc.conf');
+	if ($configstatus == -2){
+		$objResponse->addAlert("fail to read ".$config['system']['astercc_path'].'/astercc.conf');		
+	}else{
 		if ($asterccConfig['system']['force_record'] == 1 ) {
 			echo $asterccConfig['system']['force_record'];exit;
 			$objResponse->addAssign("chkMonitor","checked", false);
