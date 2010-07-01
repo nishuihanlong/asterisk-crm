@@ -32,15 +32,37 @@ my $AGI = new Asterisk::AGI;
 my %input = $AGI->ReadParse();
 $|=1; #auto flash
 
+#my $conf_file = "$Bin/astercc.conf" ;
+my $conf_file = "/opt/asterisk/scripts/astercc/astercc.conf" ;
+
+# read parameter from conf file
+my $cfg = new Config::IniFiles -file => $conf_file;
+if (not defined $cfg) {
+	&debug("Failed to parse $conf_file:");
+	foreach(@Config::IniFiles::errors) {
+		&debug("Error: $_") ;
+	}
+	exit(1);
+}
+
 my %dbInfo = (
-        dbtype => 'mysql',
-        dbhost => 'localhost',
-        dbname => 'astercc',
-		dbport  => '3306',
- 		dbuser  => 'root',
- 		dbpasswd  => 'astercc',
-		prefix => ''
+        dbtype => trim($cfg->val('database', 'dbtype')),
+        dbhost => trim($cfg->val('database', 'dbhost')),
+        dbname => trim($cfg->val('database', 'dbname')),
+		dbport  => trim($cfg->val('database', 'dbport')),
+ 		dbuser  => trim($cfg->val('database', 'username')),
+ 		dbpasswd  => trim($cfg->val('database', 'password'))
    );
+
+#my %dbInfo = (
+#        dbtype => 'mysql',
+#        dbhost => 'localhost',
+#        dbname => 'astercc',
+#		dbport  => '3306',
+# 		dbuser  => 'root',
+# 		dbpasswd  => 'astercc',
+#		prefix => ''
+#   );
 
 my $dbh = &connect_mysql(%dbInfo);
 my $db_prefix = $dbInfo{'prefix'};
@@ -197,3 +219,10 @@ sub executeQuery
 
 
 
+sub trim($)
+{
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
+}
