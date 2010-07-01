@@ -204,7 +204,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 			$rowc[] = $row['src'];
 			$rowc[] = $row['dst'];
 			$rowc[] = $row['didnumber'];
-			if(strstr($row['dstchannel'],'AGENT')){
+			if(strstr($row['dstchannel'],'agent')){
 				$agent = split('/',$row['dstchannel']);
 				$rowc[] = $agent['1'];
 			}else{

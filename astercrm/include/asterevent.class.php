@@ -101,7 +101,7 @@ class asterEvent extends PEAR
 		
 		if ($config['system']['eventtype'] == 'curcdr'){
 
-			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'AGENT/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND src !='<unknown>' AND id > $curid ";
+			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND src !='<unknown>' AND id > $curid ";
 
 			$res = $db->query($query);
 			asterEvent::events($query);
@@ -133,7 +133,7 @@ class asterEvent extends PEAR
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['calldate'] = $list['starttime'];
 					return $call;
-				}elseif (strstr($list['dstchan'],$channel) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "AGENT/".$agent ){		//dial in
+				}elseif (strstr($list['dstchan'],$channel) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "agent/".$agent ){		//dial in
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['didnumber'] = $didnumber;
@@ -180,7 +180,7 @@ class asterEvent extends PEAR
 
 		if ($config['system']['eventtype'] == 'curcdr'){
 
-			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (src = '$exten' OR dst = '$exten' OR dstchan = 'AGENT/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ";
+			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ";
 			//echo $query;exit;
 			$res = $db->query($query);
 			asterEvent::events($query);
@@ -277,7 +277,7 @@ class asterEvent extends PEAR
 				$phone_status[$peer] = $list['status'];
 			}
 			foreach ( $panellist as $username => $phone ) {
-				$query = "SELECT * FROM curcdr WHERE (src = '".$phone['extension']."' OR dst = '".$phone['extension']."' OR dstchan = 'AGENT/".$phone['agent']."' OR srcchan LIKE '".$phone['channel']."-%' OR dstchan LIKE '".$phone['channel']."-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ORDER BY id ASC";
+				$query = "SELECT * FROM curcdr WHERE (src = '".$phone['extension']."' OR dst = '".$phone['extension']."' OR dstchan = 'agent/".$phone['agent']."' OR srcchan LIKE '".$phone['channel']."-%' OR dstchan LIKE '".$phone['channel']."-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ORDER BY id ASC";
 				$res = $db->query($query);
 				if ($res->fetchInto($cdrrow)) {
 
@@ -303,7 +303,7 @@ class asterEvent extends PEAR
 							$srcchan[$username] = trim($cdrrow['srcchan']);
 							$dstchan[$username] = trim($cdrrow['dstchan']);
 
-						}elseif (strstr($cdrrow['dst'],$phone['extension']) OR strstr($cdrrow['dstchan'],$phone['channel']) OR $cdrrow['dstchan'] == "AGENT/".$phone['agent']) {		//dial in
+						}elseif (strstr($cdrrow['dst'],$phone['extension']) OR strstr($cdrrow['dstchan'],$phone['channel']) OR $cdrrow['dstchan'] == "agent/".$phone['agent']) {		//dial in
 
 							$callerid[$username] = trim($cdrrow['src']);
 							$direction[$username] = "dialin";

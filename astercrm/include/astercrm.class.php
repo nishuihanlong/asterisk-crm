@@ -2128,7 +2128,7 @@ Class astercrm extends PEAR{
 			$memberextend .= "'iax/".$value."',";
 		}
 		foreach ($_SESSION['curuser']['memberAgents'] as $value){
-			$memberagents .= "'AGENT/".$value."',";				
+			$memberagents .= "'agent/".$value."',";				
 		}
 		$memberextens = rtrim($memberextena.$memberextenb.$memberextenc.$memberextend,',');
 		$memberagents = rtrim($memberagents,',');
@@ -2403,7 +2403,7 @@ Class astercrm extends PEAR{
 					}					
 				}else{
 					if($table == 'monitorrecord' && $filter[$i] == 'dstchannel'){
-						$content[$i] = 'AGENT/'.$content[$i];
+						$content[$i] = 'agent/'.$content[$i];
 					}
 				
 					if($type == "equal"){
@@ -2752,7 +2752,7 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
 				$rowc[] = $row['didnumber'];
-				if(strstr($row['dstchannel'],'AGENT')){
+				if(strstr($row['dstchannel'],'agent')){
 					$agent = split('/',$row['dstchannel']);
 					$rowc[] = $agent['1'];
 				}else{
@@ -2891,7 +2891,7 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['src'];
 				$rowc[] = $row['dst'];
 				$rowc[] = $row['didnumber'];
-				if(strstr($row['dstchannel'],'AGENT')){
+				if(strstr($row['dstchannel'],'agent')){
 					$agent = split('/',$row['dstchannel']);
 					$rowc[] = $agent['1'];
 				}else{
@@ -2916,7 +2916,7 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.fileformat,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE (mycdr.src = '".$_SESSION['curuser']['extension']."' OR mycdr.dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'AGENT/".$_SESSION['curuser']['agent']."') AND mycdr.src != '' AND mycdr.dst != '' AND mycdr.src != '<unknown>' AND mycdr.dst != '<unknown>' AND dstchannel != '' GROUP BY mycdr.id";
+				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.fileformat,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE (mycdr.src = '".$_SESSION['curuser']['extension']."' OR mycdr.dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'agent/".$_SESSION['curuser']['agent']."') AND mycdr.src != '' AND mycdr.dst != '' AND mycdr.src != '<unknown>' AND mycdr.dst != '<unknown>' AND dstchannel != '' GROUP BY mycdr.id";
 				if($order == null || is_array($order)){
 					$sql .= " ORDER by mycdr.calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 				}else{
@@ -2990,7 +2990,7 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'AGENT/".$_SESSION['curuser']['agent']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' AND dstchannel != '' ";				
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'agent/".$_SESSION['curuser']['agent']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' AND dstchannel != '' ";				
 				astercrm::events($sql);
 				$res =& $db->getOne($sql);
 				return $res;
@@ -3899,7 +3899,7 @@ Class astercrm extends PEAR{
 			$rowc[] = $row['src'];
 			$rowc[] = $row['dst'];
 			$rowc[] = $row['didnumber'];
-			if(strstr($row['dstchannel'],'AGENT')){
+			if(strstr($row['dstchannel'],'agent')){
 				$agent = split('/',$row['dstchannel']);
 				$rowc[] = $agent['1'];
 			}else{
@@ -4124,7 +4124,7 @@ Class astercrm extends PEAR{
 			$account_str .= "OR src='".$account['extension']."' OR dst='".$account['extension']."' ";
 			if($account['channel'] != '') $account_str .= $channels .= "OR channel LIKE '".$account['channel']."-%' OR dstchannel LIKE '".$account['channel']."-%' ";
 
-			if($account['agent'] != '')  $account_str .= "OR dstchannel='AGENT/".$account['agent']."' ";
+			if($account['agent'] != '')  $account_str .= "OR dstchannel='agent/".$account['agent']."' ";
 			$account_str = '('.ltrim($account_str,'OR').')';
 			$query .= ' AND '.$account_str;
 		}else{
@@ -4136,7 +4136,7 @@ Class astercrm extends PEAR{
 
 						if($row['channel'] != '') $channels .= "OR channel LIKE '".$row['channel']."-%' OR dstchannel LIKE '".$row['channel']."-%' ";
 
-						if($row['agent'] != '') $agents .= "OR dstchannel='AGENT/".$row['agent']."' ";
+						if($row['agent'] != '') $agents .= "OR dstchannel='agent/".$row['agent']."' ";
 					}
 					$group_str = '('.ltrim($extens.$channels.$agents,'OR').')';
 					$query .= ' AND '.$group_str;
@@ -4204,7 +4204,7 @@ Class astercrm extends PEAR{
 			$account_str .= "OR src='".$account['extension']."' OR dst='".$account['extension']."' ";
 			if($account['channel'] != '') $account_str .= $channels .= "OR channel LIKE '".$account['channel']."-%' OR dstchannel LIKE '".$account['channel']."-%' ";
 
-			if($account['agent'] != '')  $account_str .= "OR dstchannel='AGENT/".$account['agent']."' ";
+			if($account['agent'] != '')  $account_str .= "OR dstchannel='agent/".$account['agent']."' ";
 			$account_str = '('.ltrim($account_str,'OR').')';
 			$query .= ' AND '.$account_str;
 			$query_a .= ' AND '.$account_str;
@@ -4237,7 +4237,7 @@ Class astercrm extends PEAR{
 
 						if($row['channel'] != '') $channels = "OR channel LIKE '".$row['channel']."-%' OR dstchannel LIKE '".$row['channel']."-%' ";
 
-						if($row['agent'] != '') $agents = "OR dstchannel='AGENT/".$row['agent']."' ";
+						if($row['agent'] != '') $agents = "OR dstchannel='agent/".$row['agent']."' ";
 						$query .= ' AND ('.ltrim($extens.$channels.$agents,'OR').')'; 
 						$query_a .= ' AND ('.ltrim($extens.$channels.$agents,'OR').')'; 
 					
