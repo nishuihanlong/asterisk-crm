@@ -680,6 +680,7 @@ function waitingCalls($myValue){
 								$objResponse->addScript('maximizeWin();');
 							}
 					}else{
+						//print_r($call);exit;
 						//use external link
 						$myurl = $config['system']['external_crm_url'];
 						$myurl = preg_replace("/\%method/","dial_out",$myurl);
@@ -1281,12 +1282,14 @@ function getContact($callerid){
 			
 
 	//check contact table first
-	if ($config['system']['detail_level'] == 'all')
-		$row = astercrm::getContactByCallerid($mycallerid);
-	else
-		$row = astercrm::getContactByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
+	if($config['system']['enable_contact'] == '0'){
+		if ($config['system']['detail_level'] == 'all')
+			$row = astercrm::getContactByCallerid($mycallerid);
+		else
+			$row = astercrm::getContactByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
+	}
 
-	if ($row['id'] == ''){	//no match
+	if ($row['id'] == '' || $config['system']['enable_contact'] == '0'){	//no match
 		//	print 'no match in contact list';
 
 		//try get customer
