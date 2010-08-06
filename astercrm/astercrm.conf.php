@@ -7,8 +7,8 @@ dbtype = mysql
 dbport = 3306
 dbhost = localhost
 dbname = astercc
-username = astercc
-password = asterccsecret
+username = root
+password = 
 
 [asterisk]
 ;
@@ -148,7 +148,7 @@ upload_file_path = ./upload/
 ;
 ; astercrm will use external crm software if this parameter is true
 ;
-enable_external_crm = 1
+enable_external_crm = 0
 
 ;
 ; asterCRM will open a new browser window when need popup
