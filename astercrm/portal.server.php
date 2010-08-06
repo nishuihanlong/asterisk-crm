@@ -288,7 +288,7 @@ function init(){
 		$objResponse->addAlert("fail to read ".$config['system']['astercc_path'].'/astercc.conf');		
 	}else{
 		if ($asterccConfig['system']['force_record'] == 1 ) {
-			echo $asterccConfig['system']['force_record'];exit;
+			//echo $asterccConfig['system']['force_record'];exit;
 			$objResponse->addAssign("chkMonitor","checked", false);
 			$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
 			$objResponse->addAssign("btnMonitor","disabled", 'true');
