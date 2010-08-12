@@ -1,6 +1,6 @@
 
 ###########   Table structure for asterCC database   ################
-###########   astercc current version: 0.13          ################
+###########   astercc current version: 0.14b-rc1          ################
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -741,6 +741,7 @@ CREATE TABLE `astercrm_accountgroup` (
  `agentinterval` int(5) NULL,
  `billingid` int(11) NOT NULL default 0,
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+ `clear_popup` int(5) NULL,
  `creby` varchar(30) NOT NULL default '',
  UNIQUE (`groupid`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -936,6 +937,7 @@ CREATE TABLE `dialedlist` (
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
+  `memo` varchar(100) NOT NULL default '',				#added by shixb 2010#8#12
   `creby` varchar(30) NOT NULL default '',
   INDEX nnt (`dialednumber`,`dialedtime`),
   INDEX nnu (`dialednumber`,`uniqueid`),
@@ -963,6 +965,7 @@ CREATE TABLE `diallist` (
   `trytime` INT(11) NOT NULL DEFAULT '0',				#added by solo 2008/05/04
   `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
   `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008#2#5
+  `memo` varchar(100) NOT NULL default '',				#added by shixb 2010#8#9
   `creby` varchar(30) NOT NULL default '',			#added by solo 2008#1#15
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008#1#15
   UNIQUE KEY `id` (`id`)
