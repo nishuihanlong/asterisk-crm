@@ -496,7 +496,7 @@ Class astercrm extends PEAR{
 		global $db;
 		$f = astercrm::variableFiler($f);
 		
-		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid,customername,callOrder,creby,callresult) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].",'".$f['customername']."','".$f['callOrder']."',"."'".$f['creby']."','".$f['callresult']."')";
+		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid,customername,callOrder,creby,callresult,memo) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].",'".$f['customername']."','".$f['callOrder']."',"."'".$f['creby']."','".$f['callresult']."','".$f['memo']."')";
 
 		astercrm::events($query);
 		$res =& $db->query($query);
@@ -517,6 +517,7 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
 				."campaignid= ".$f['campaignid'].", "
+				."memo= '".$f['memo']."', "
 				."assign='".$f['assign']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
@@ -536,6 +537,7 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
 				."campaignid= ".$f['campaignid'].", "
+				."memo= '".$f['memo']."', "
 				."assign='".$f['assign']."'"
 				."WHERE id = ".$f['id'];
 		astercrm::events($query);
@@ -1842,6 +1844,11 @@ Class astercrm extends PEAR{
 					<tr>
 						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
 						<td>'.$campaignoptions.'</td>
+					</tr>';
+			$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Memo").'</td>
+						<td><textarea id="memo" name="memo" cols="50" rows="8">'.$diallist['memo'].'</textarea></td>
 					</tr>';
 			$html .= '
 					<tr>
@@ -3311,6 +3318,7 @@ Class astercrm extends PEAR{
 		$fields[] = 'creby';
 		//$fields[] = 'cretime';
 		$fileds[] = 'campaignname';
+		$fileds[] = 'memo';
 		//$fileds[] = 'campaignnote';
 		//$fieeds[] = 'inexten';
 
@@ -3324,6 +3332,7 @@ Class astercrm extends PEAR{
 		$headers[] = $locate->Translate("Creby");
 		//$headers[] = $locate->Translate("Cretime");
 		$headers[] = $locate->Translate("Campaignname");
+		$headers[] = $locate->Translate("Memo");
 		//$headers[] = $locate->Translate("Campaignnote");
 		//$headers[] = $locate->Translate("Inexten");
 
@@ -3422,6 +3431,7 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['trytime'];
 				$rowc[] = $row['creby'];
 				$rowc[] = $row['campaignname'];
+				$rowc[] = $row['memo'];
 
 				$styleStr = '';
 				$tipmins = $config['system']['diallist_pannel_tip'];
@@ -3453,6 +3463,7 @@ Class astercrm extends PEAR{
 				$rowc[] = $row['creby'];
 				//$rowc[] = $row['cretime'];
 				$rowc[] = $row['campaignname'];
+				$rowc[] = $row['memo'];
 				//$rowc[] = $row['campaignnote'];
 				//$rowc[] = $row['inexten'];				
 				$table->addRow("diallist",$rowc,1,1,false,$divName,$fields,$row['creby'],$styleStr);
@@ -3743,6 +3754,11 @@ Class astercrm extends PEAR{
 					<tr>
 						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
 						<td><SELECT id="campaignid" name="campaignid"></SELECT></td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Memo").'</td>
+						<td><textarea id="memo" name="memo" cols="50" rows="8"></textarea></td>
 					</tr>';
 		$html .= $saveHtml;
 		return $html;
@@ -4258,10 +4274,11 @@ Class astercrm extends PEAR{
 
 	function &checkDialedlistCall($dialnumber){
 		global $db;
-		$sql = "SELECT id FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 600 SECOND) ORDER BY dialedtime DESC LIMIT 1";
-//echo $sql;exit;
+		$sql = "SELECT id,campaignid FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 600 SECOND) ORDER BY dialedtime DESC LIMIT 1";
+		//echo $sql;exit;
 		astercrm::events($sql);
-		$res = & $db->getOne($sql);
+		//$res = & $db->getOne($sql);
+		$res = & $db->getRow($sql);
 		return $res;
 	}
 }

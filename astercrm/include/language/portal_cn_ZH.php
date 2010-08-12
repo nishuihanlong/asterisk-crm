@@ -116,4 +116,5 @@ $hour = "小时";
 $min = "分";
 $sec = "秒";
 $total_calls = "通话数量";
+$update_successful = "更新成功";
 ?>

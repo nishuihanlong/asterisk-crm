@@ -57,6 +57,12 @@ require_once('worktime.common.php');
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
 		<script type="text/javascript" src="js/astercrm.js"></script>
 		<script type="text/javascript" src="js/setTime.js"></script>
+		<script type="text/javascript">
+			var hourShow = "<?echo $locate->Translate('hour')?>";
+			var minShow = "<?echo $locate->Translate('min')?>";
+			var secShow = "<?echo $locate->Translate('sec')?>";
+			var inputBtn = "<?echo $locate->Translate('ok')?>";
+		</script>
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 

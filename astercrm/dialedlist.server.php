@@ -308,7 +308,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	if($optionFlag == "export" || $optionFlag == "exportcsv"){
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'dialedlist');
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT dialedlist.dialednumber,customer.customer,dialedlist.dialtime,dialedlist.answertime,dialedlist.duration,dialedlist.response,dialedlist.campaignresult,dialedlist.dialedby, groupname, campaignname,dialedlist.dialedtime FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid LEFT JOIN customer ON customer.id = dialedlist.customerid ";
+		$sql = "SELECT dialedlist.dialednumber,dialedlist.resultby,customer.customer,dialedlist.dialtime,dialedlist.answertime,dialedlist.duration,dialedlist.response,dialedlist.campaignresult,dialedlist.dialedby, groupname, campaignname,dialedlist.dialedtime FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid LEFT JOIN customer ON customer.id = dialedlist.customerid ";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域

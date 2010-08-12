@@ -24,4 +24,6 @@ $dnc_list = "免拨列表";
 $diallist = "拨号列表";
 $add_dnclist = "添加";
 $please_select = "请选择";
+$memo = "备注";
+$cal = "日期";
 ?>

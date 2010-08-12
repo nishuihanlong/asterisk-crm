@@ -108,7 +108,9 @@ $clientDst = $_REQUEST['clientdst'];
 
 		<script type="text/javascript">
 		var intervalID = 0; //for stop setInterval of autoDial
+		var countCheNum = 0;
 		var clientDst = "<?echo $clientDst ?>";
+		var settimeNum = 0;
 		if(clientDst != ''){
 			//document.getElementById("iptCallerid").value=clentDst;
 			xajax_getContact(clientDst);
@@ -144,6 +146,7 @@ $clientDst = $_REQUEST['clientdst'];
 			xajax.$("divMsg").innerHTML = "Hangup";
 			callerChan = xajax.$('callerChannel').value;
 			calleeChan = xajax.$('calleeChannel').value;
+			
 			setTimeout("xajax_hangup(callerChan)",1000);
 			setTimeout("xajax_hangup(calleeChan)",1000);
 		}
@@ -246,23 +249,44 @@ $clientDst = $_REQUEST['clientdst'];
 			if (src == '' && dest == '')
 				return false;
 			if (src == ''){
-				xajax.$('iptSrcNumber').value = xajax.$('extension').value;
+				return false;
+				/*xajax.$('iptSrcNumber').value = xajax.$('extension').value;
 				src = xajax.$('extension').value;
 				xajax.$("divMsg").style.visibility = 'visible';
-				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;
+				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;*/
 			}else {
 				xajax.$("divMsg").style.visibility = 'visible';
 				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;
 			}
-
+			
 			if (dest == ''){
 				xajax.$('iptDestNumber').value = xajax.$('extension').value;
 				dest = xajax.$('extension').value;
 			}
-
+			xajax.$('btnDial').disabled = true;
+			
 			setTimeout("xajax_invite(src,dest)",1000);
+			checkExtensionStatus('extensionStatus');
 		}
-		
+
+		//检测通话状态，处理呼叫(Dial)按钮
+		function checkExtensionStatus(objectId) {
+			extensionStatus = xajax.$('extensionStatus').value;
+			if(extensionStatus == '' || extensionStatus == 'idle') {
+				if(countCheNum < 10) {
+					countCheNum ++;
+					var setTimeout_Dial = setTimeout("checkExtensionStatus('extensionStatus')",1000);
+				} else {
+					clearTimeout(setTimeout_Dial);
+					countCheNum = 0;
+					xajax.$('btnDial').disabled = false;
+				}
+			} else {
+				clearTimeout(setTimeout_Dial);
+				countCheNum = 0;
+			}
+		}
+
 		function transfer(target){
 			if (target == ''){
 				if (xajax.$("iptTtansfer").value != ''){
@@ -454,6 +478,7 @@ $clientDst = $_REQUEST['clientdst'];
 		{
 			result = xajax.$('callresultname').value;
 			xajax_updateCallresult(xajax.$('dialedlistid').value,result);
+			
 			return false;
 		}
 
@@ -538,6 +563,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type='hidden' value="" name="callResultStatus" id="callResultStatus">
 		<input type="hidden" name="dpnShow" id="dpnShow" value="0"/>
 		<input type="hidden" name="awsShow" id="awsShow" value="0"/>
+		<input type="hidden" name="dndlist_campaignid" id="dndlist_campaignid" value="0" />
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
@@ -560,44 +586,45 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<tr>
 				<td style="padding: 0px;">
 					<fieldset>
-		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 450px"></div>
-		<div id="formAgentWordStatDiv"  class="formDiv drsElement" 
-			style="left: 110px; top: 32px;width: 240px;z-index: 999;" ></div>
-		<div id="surveyDiv"  class="formDiv drsElement" 
-			style="left: 20px; top: 20px;width: 500px; z-index: 999;"></div>			
-		<div id="formCustomerInfo" class="formDiv drsElement"
-			style="left: 20px; top: 50px;width: 650px"></div>
-		<div id="formContactInfo" class="formDiv drsElement"
-			style="left: 20px; top: 330px;width: 600px"></div>
-		<div id="formCdr" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 900px"></div>
-		<div id="formRecentCdr" class="formDiv drsElement"
-			style="left: 20px; top: 30px; width:750px"></div>		
-		<div id="formRecords" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 900px"></div>
-		<div id="formDiallist" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 850px"></div>
-		<div id="formaddDiallistInfo"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;z-index:210"></div>
-		<div id="formeditDiallistInfo"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;"></div>
-		<div id="formNoteInfo" class="formDiv  drsElement"
-			style="left: 450px; top: 330px;width: 500px"></div>
-		<div id="formWorkoff" class="formDiv  drsElement"
-			style="left: 300px; top: 0px; z-index: 999; "></div>
-		<div id="formEditInfo" class="formDiv drsElement"
-			style="left: 450px; top: 50px;width: 500px"></div>
-		<div id="formplaymonitor"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 350px; z-index:999"></div>
-		<div id="formDiallistPopup"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 350px; z-index:201"></div>
-		<div id="formDiallistPannel"  class="formDiv drsElement" 
-			style="left: 150px; top: 130px;width: 850px; z-index:201"></div>
-		<div id="formKnowlagePannel"  class="formDiv drsElement" 
-			style="left: 380px; top: 30px;width: 600px; z-index:1"></div>
-		<div id="grid" align="center"></div>
-		<div id="msgZone" name="msgZone" align="left"> </div>
+						<div id="formDiv"  class="formDiv drsElement" 
+							style="left: 450px; top: 50px;width: 450px"></div>
+						<div id="formAgentWordStatDiv"  class="formDiv drsElement" 
+							style="left: 110px; top: 32px;width: 240px;z-index: 999;" ></div>
+						<div id="surveyDiv"  class="formDiv drsElement" 
+							style="left: 20px; top: 20px;width: 500px; z-index: 999;"></div>			
+						<div id="formCustomerInfo" class="formDiv drsElement"
+							style="left: 20px; top: 50px;width: 650px"></div>
+						<div id="formContactInfo" class="formDiv drsElement"
+							style="left: 20px; top: 330px;width: 600px"></div>
+						<div id="formCdr" class="formDiv drsElement"
+							style="left: 20px; top: 330px; width: 900px"></div>
+						<div id="formRecentCdr" class="formDiv drsElement"
+							style="left: 20px; top: 30px; width:750px"></div>		
+						<div id="formRecords" class="formDiv drsElement"
+							style="left: 20px; top: 330px; width: 900px"></div>
+						<div id="formDiallist" class="formDiv drsElement"
+							style="left: 20px; top: 330px; width: 850px"></div>
+						<div id="formaddDiallistInfo"  class="formDiv drsElement" 
+							style="left: 450px; top: 50px;z-index:210"></div>
+						<div id="formeditDiallistInfo"  class="formDiv drsElement" 
+							style="left: 450px; top: 50px;"></div>
+						<div id="formNoteInfo" class="formDiv  drsElement"
+							style="left: 450px; top: 330px;width: 500px"></div>
+						<div id="formWorkoff" class="formDiv  drsElement"
+							style="left: 300px; top: 0px; z-index: 999; "></div>
+						<div id="formEditInfo" class="formDiv drsElement"
+							style="left: 450px; top: 50px;width: 500px"></div>
+						<div id="formplaymonitor"  class="formDiv drsElement" 
+							style="left: 450px; top: 50px;width: 350px; z-index:999"></div>
+						<div id="formDiallistPopup"  class="formDiv drsElement" 
+							style="left: 450px; top: 50px;width: 350px; z-index:201"></div>
+						<div id="formDiallistPannel"  class="formDiv drsElement" 
+							style="left: 150px; top: 130px;width: 850px; z-index:201"></div>
+						<div id="formKnowlagePannel"  class="formDiv drsElement" 
+							style="left: 380px; top: 30px;width: 600px; z-index:1"></div>
+						<div id="grid" align="center"></div>
+						<div id="msgZone" name="msgZone" align="left"> </div>
+						<div id="external_crmDiv" style="display:none;"></div>
 					</fieldset>
 				</td>
 			</tr>

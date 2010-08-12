@@ -272,7 +272,7 @@ function init(){
 			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 		}else{
 			$javascript = "openwindow('".$config['system']['external_crm_default_url']."')";
-			$objResponse->addScript($javascript);
+			$objResponse->addScript("document.getElementById('external_crm_form').submit();");
 		}
 	}
 	$monitorstatus = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'astercrm_accountgroup');
@@ -339,6 +339,7 @@ function listenCalls($aFormValues){
 	}
 
 	if ($aFormValues['uniqueid'] == ''){
+		$objResponse->addAssign("btnDial","disabled",false);;
 		$objResponse->loadXML(waitingCalls($aFormValues));
 	} else{
 		$objResponse->loadXML(incomingCalls($aFormValues));
@@ -390,8 +391,11 @@ function incomingCalls($myValue){
 		if ($call['status'] ==''){
 			return $objResponse;
 		} elseif ($call['status'] =='link'){
+			$objResponse->addAssign("btnDial","disabled",true);
 			if($myValue['callResultStatus'] != '2'){
-				if($dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])){
+				$result = asterCrm::checkDialedlistCall($call['callerid']);
+				$dialedlistid = $result['id'];//$dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])
+				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'ANSWERED');
 					//echo $divCallresult;exit;
 					$objResponse->addAssign("divCallresult", "style.display", "");
@@ -459,6 +463,7 @@ function incomingCalls($myValue){
 				$interval = $_SESSION['curuser']['dialinterval'];
 				$objResponse->addScript("autoDial('$interval');");
 			}
+			$objResponse->addScript("document.getElementById('btnDial').disabled=false;");
 		}
 		$objResponse->addAssign("status","innerHTML", $status );
 //		$objResponse->addAssign("extensionStatus","value", $status );
@@ -550,7 +555,10 @@ function waitingCalls($myValue){
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
-		$dialedlistid = asterCrm::checkDialedlistCall($call['callerid']);
+		$result = asterCrm::checkDialedlistCall($call['callerid']);
+		$dialedlistid = $result['id'];
+		$campaign_id = $result['campaignid'];
+		
 		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
 				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
@@ -606,12 +614,22 @@ function waitingCalls($myValue){
 						//print_r($call);exit;
 						//use external link
 						$myurl = $config['system']['external_crm_url'];
-						$myurl = preg_replace("/\%method/","dial_in",$myurl);
-						$myurl = preg_replace("/\%callerid/",$call['callerid'],$myurl);
-						$myurl = preg_replace("/\%calleeid/",$_SESSION['curuser']['extension'],$myurl);
-						$myurl = preg_replace("/\%uniqueid/",$call['uniqueid'],$myurl);
-						$myurl = preg_replace("/\%calldate/",$call['calldate'],$myurl);
+						
+						$method = "dial_in";
+						$callerid = $call['callerid'];
+						$calleeid = $_SESSION['curuser']['extension'];
+						$uniqueid = $call['uniqueid'];
+						$calldate = $call['calldate'];
 
+						$curHtml = '<form id="external_crm_form" action="'.$myurl.'" target="_blank" method="post">
+								<input type="hidden" name="callerid" value="'.$callerid.'" />
+								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
+								<input type="hidden" name="method" value="'.$method.'" />
+								<input type="hidden" name="uniqueid" value="'.$uniqueid.'" />
+								<input type="hidden" name="calldate" value="'.$calldate.'" />
+							';
+
+						
 						if($config['system']['external_url_parm'] != ''){
 							if ($config['system']['detail_level'] == 'all')
 								$customerid = astercrm::getCustomerByCallerid($call['callerid']);
@@ -624,20 +642,29 @@ function waitingCalls($myValue){
 
 								foreach($url_parm as $parm){
 									if($parm != '' ){
-										$more_parm .= '&'.$parm.'='.urlencode($customer[$parm]);
+										$curHtml .= '<input type="hidden" name="'.$parm.'" value="'.urlencode($customer[$parm]).'" />';
 									}
 								}
-								$myurl .= $more_parm;
 							}
 
 						}
+						$curHtml .="</form>";
 
 						if ($config['system']['open_new_window'] == false){
-								$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
-								$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
 						}else{
-							$javascript = "openwindow('".$myurl."')";
-							$objResponse->addScript($javascript);
+							
+							//print_r($curHtml);exit;
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+							//$javascript = "openwindow('".$myurl."')";
+							//$objResponse->addScript($javascript);
 						}
 					}
 				}
@@ -651,7 +678,9 @@ function waitingCalls($myValue){
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
 		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
-				if($dialedlistid = asterCrm::checkDialedlistCall($call['callerid'])){
+				$result = asterCrm::checkDialedlistCall($call['callerid']);
+				$dialedlistid = $result['id'];
+				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
 					//echo $divCallresult;exit;
 					$objResponse->addAssign("divCallresult", "style.display", "");
@@ -683,17 +712,32 @@ function waitingCalls($myValue){
 						//print_r($call);exit;
 						//use external link
 						$myurl = $config['system']['external_crm_url'];
-						$myurl = preg_replace("/\%method/","dial_out",$myurl);
-						$myurl = preg_replace("/\%callerid/",$_SESSION['curuser']['extension'],$myurl);
-						$myurl = preg_replace("/\%calleeid/",$call['callerid'],$myurl);
-						$myurl = preg_replace("/\%uniqueid/",$call['uniqueid'],$myurl);
-						$myurl = preg_replace("/\%calldate/",$call['calldate'],$myurl);
+
+						$method = "dial_out";
+						$callerid = $_SESSION['curuser']['extension'];
+						$calleeid = $call['callerid'];
+						$uniqueid = $call['uniqueid'];
+						$calldate = $call['calldate'];
+						$curHtml = '<form id="external_crm_form" action="'.$myurl.'" target="_blank" method="post">
+								<input type="hidden" name="callerid" value="'.$callerid.'" />
+								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
+								<input type="hidden" name="method" value="'.$method.'" />
+								<input type="hidden" name="uniqueid" value="'.$uniqueid.'" />
+								<input type="hidden" name="calldate" value="'.$calldate.'" />
+							</form>';
 						if ($config['system']['open_new_window'] == false){
-							$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$myurl.'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
 							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
 						} else {
-							$javascript = "openwindow('".$myurl."')";
-							$objResponse->addScript($javascript);
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+							//$javascript = "openwindow('".$myurl."')";
+							//$objResponse->addScript($javascript);
 						}
 					}
 				}
@@ -1583,7 +1627,7 @@ function updateCallresult($id,$result){
 
 	$res =& $db->query($sql);
 	if ($res){
-//		$objResponse->addAlert("campaign result updated");
+		$objResponse->addAssign("updateresultMsg","innerHTML","<font color='red'><b>".$locate->Translate("Update Successful")."<b></font>");
 	}else{
 		$objResponse->addAlert("fail to update campaign result");
 	}

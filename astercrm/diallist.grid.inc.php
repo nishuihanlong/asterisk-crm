@@ -267,7 +267,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
 						<td align="left">
 							<input type="text" name="dialtime" id="dialtime" size="20" value="">
-			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
+			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="'.$locate->Translate("Cal").'">
 			<br/>
 			'.$locate->Translate("empty means no scheduler").'
 						</td>
@@ -284,7 +284,12 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					</tr>';
 		$html .= '
 					<tr>
-						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_save(xajax.getFormValues(\'formDiallist\'));return false;"></td>
+						<td align="left" width="25%">'.$locate->Translate("Memo").'</td>
+						<td><textarea id="memo" name="memo" cols="50" rows="8"></textarea></td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td nowrap colspan=2 align=center><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_save(xajax.getFormValues(\'formDiallist\'));return false;"></td>
 					</tr>
 				<table>
 				</form>
@@ -354,7 +359,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 						<td nowrap align="left">'.$locate->Translate("Dialtime").'</td>
 						<td align="left">
 							<input type="text" name="dialtime" id="dialtime" size="20" value="'.$diallist['dialtime'].'">
-			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="Cal">
+			<INPUT onclick="displayCalendar(document.getElementById(\'dialtime\'),\'yyyy-mm-dd hh:ii\',this,true)" type="button" value="'.$locate->Translate("Cal").'">
 						</td>
 					</tr>';
 		$html .= '
@@ -366,6 +371,11 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					<tr>
 						<td align="left" width="25%">'.$locate->Translate("Campaign Name").'</td>
 						<td><SELECT id="campaignid" name="campaignid">'.$campaign_options.'</SELECT></td>
+					</tr>';
+		$html .= '
+					<tr>
+						<td align="left" width="25%">'.$locate->Translate("Memo").'</td>
+						<td><textarea id="memo" name="memo" cols="50" rows="8">'.$diallist['memo'].'</textarea></td>
 					</tr>';
 		$html .= '
 					<tr>
@@ -390,7 +400,8 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 				."creby='".$_SESSION['curuser']['username']."', "
 				."cretime= now(), "
 				."campaignid= ".$f['campaignid'].", "
-				."assign='".$f['assign']."'";
+				."assign='".$f['assign']."',"
+				."memo='".$f['memo']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -407,7 +418,8 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 				."dialtime='".$f['dialtime']."', "
 				."callOrder='".$f['callOrder']."', "
 				."campaignid= ".$f['campaignid'].", "
-				."assign='".$f['assign']."'"
+				."assign='".$f['assign']."',"
+				."memo='".$f['memo']."'"
 				."WHERE id='".$f['id']."'";
 
 		astercrm::events($query);
