@@ -393,7 +393,7 @@ function incomingCalls($myValue){
 		} elseif ($call['status'] =='link'){
 			$objResponse->addAssign("btnDial","disabled",true);
 			if($myValue['callResultStatus'] != '2'){
-				$result = asterCrm::checkDialedlistCall($call['callerid']);
+				$result = asterCrm::checkDialedlistCall($myValue['callerid']);
 				$dialedlistid = $result['id'];//$dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])
 				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'ANSWERED');
