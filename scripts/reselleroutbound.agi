@@ -31,7 +31,7 @@ my %dbInfo = (
         dbname => trim($cfg->val('database', 'dbname')),
 		dbport  => trim($cfg->val('database', 'dbport')),
  		dbuser  => trim($cfg->val('database', 'username')),
- 		dbpasswd  => trim($cfg->val('database', 'password'))
+ 		dbpasswd  => trim($cfg->val('database', 'password'))		
    );
 
 my $dbh = &connect_mysql(%dbInfo);
@@ -40,6 +40,7 @@ my $query;
 my $rows;
 my $ref;
 my $extension;
+my $paramdelimiter = trim($cfg->val('asterisk', 'paramdelimiter'));
 
 #$AGI->verbose($input{'extension'});
 #$AGI->verbose($input{'callerid'});
@@ -80,7 +81,7 @@ if($ref->{'id'} > 0){
 		}
 
 		$AGI->exec("NoOP","Dialing by $trunk_ref->{'trunkname'}");
-		$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$dst|$timeout|Tt");
+		$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$dst".$paramdelimiter."$timeout".$paramdelimiter."Tt");
 	}else{
 		my	$default_trunk = '';#trim($cfg->val('system', 'resellertrunk'));
 		my	$default_trunk_protocol = '';#trim($cfg->val('system', 'resellertrunktype'));
@@ -95,7 +96,7 @@ if($ref->{'id'} > 0){
 		
 		if($default_trunk ne "" && $default_trunk_protocol ne ""){
 			$AGI->exec("NoOP","Dialing by default trunk $default_trunk");
-			$AGI->exec('dial',"$default_trunk_protocol/$default_trunk/$extension|$timeout|Tt");
+			$AGI->exec('dial',"$default_trunk_protocol/$default_trunk/$extension".$paramdelimiter."$timeout".$paramdelimiter."Tt");
 		}else{
 			$AGI->exec("NoOP",'default trunk settings incorrect !!!');
 		}
@@ -118,7 +119,7 @@ if($ref->{'id'} > 0){
 			}
 
 			$AGI->exec("NoOP","Dialing by $trunk_ref->{'trunkname'}");
-			$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$dst|$timeout|Tt");
+			$AGI->exec('dial',"$trunk_ref->{'trunkprotocol'}/$trunk_ref->{'trunkidentity'}/$dst".$paramdelimiter."$timeout".$paramdelimiter."Tt");
 		}else{
 			my	$default_trunk = '';#trim($cfg->val('system', 'resellertrunk'));
 			my	$default_trunk_protocol = '';#trim($cfg->val('system', 'resellertrunktype'));
@@ -133,7 +134,7 @@ if($ref->{'id'} > 0){
 			
 			if($default_trunk ne "" && $default_trunk_protocol ne ""){
 				$AGI->exec("NoOP","Dialing by default trunk $default_trunk");
-				$AGI->exec('dial',"$default_trunk_protocol/$default_trunk/$extension|$timeout|Tt");
+				$AGI->exec('dial',"$default_trunk_protocol/$default_trunk/$extension".$paramdelimiter."$timeout".$paramdelimiter."Tt");
 			}else{
 				$AGI->exec("NoOP",'default trunk settings incorrect !!!');
 			}

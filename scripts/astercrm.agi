@@ -31,16 +31,17 @@ use strict;
 my $AGI = new Asterisk::AGI;
 my %input = $AGI->ReadParse();
 $|=1; #auto flash
+my $debug = 1;
 
 #my $conf_file = "$Bin/astercc.conf" ;
-my $conf_file = "/opt/asterisk/scripts/astercc/astercc.conf" ;
+my $conf_file = "/var/www/html/asterCC/astercrm/astercrm.conf.php" ;
 
 # read parameter from conf file
 my $cfg = new Config::IniFiles -file => $conf_file;
 if (not defined $cfg) {
-	&debug("Failed to parse $conf_file:");
+	print "Failed to parse $conf_file:";
 	foreach(@Config::IniFiles::errors) {
-		&debug("Error: $_") ;
+		print "Error: $_\n" ;
 	}
 	exit(1);
 }
@@ -73,12 +74,12 @@ my $campaign_id = 0;
 my $ref;
 my $target;
 my $extension;
+my $paramdelimiter = trim($cfg->val('asterisk', 'paramdelimiter'));
 
-
-$AGI->verbose($input{'extension'});
-$AGI->verbose($input{'callerid'});
-$AGI->verbose($input{'channel'});
-$AGI->verbose($input{'type'});
+#$AGI->verbose($input{'extension'});
+#$AGI->verbose($input{'callerid'});
+#$AGI->verbose($input{'channel'});
+#$AGI->verbose($input{'type'});
 
 $extension = $input{'extension'};
 my $dialed_id = $AGI->get_variable("DIALEDLISTID");
@@ -91,7 +92,8 @@ if($DIALPART eq 'CALLEE'){
 	my $campaign_ref = $campaign_rows->fetchrow_hashref();
 
 	if ($campaign_ref) {
-		$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'firstcontext'}/n,$campaign_ref->{'waittime'},tT");
+		$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'firstcontext'}/n".$paramdelimiter."$campaign_ref->{'waittime'}".$paramdelimiter."tT");
+		$AGI->get_variable("DIALSTATUS");
 		my $callstatus = $AGI->get_variable("DIALSTATUS");
 		$AGI->verbose("DIALSTATUS:$callstatus");
 
@@ -106,7 +108,8 @@ if($DIALPART eq 'CALLEE'){
 	my $customerphone = $input{'callerid'};
 	my $amdstatus = $AGI->get_variable("AMDSTATUS");
 	$AGI->verbose($amdstatus);
-	if($amdstatus eq 'HUMAN' || $amdstatus eq 'NOTSURE'){
+	#$amdstatus = 'NOTSURE';
+	if($amdstatus eq 'HUMAN' || $amdstatus eq 'NOTSURE' ){
 		$query = "SELECT * FROM ".$db_prefix."campaign WHERE id = $campaign_id ";
 		my $campaign_rows = &executeQuery($query,'rows');
 		my $campaign_ref = $campaign_rows->fetchrow_hashref();
@@ -117,7 +120,7 @@ if($DIALPART eq 'CALLEE'){
 				$AGI->set_variable("CALLERID(num)",$cuscid);
 				$customerphone = $cuscid;
 			}
-			$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'nextcontext'}/n,40,tT");
+			$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'nextcontext'}/n".$paramdelimiter."40".$paramdelimiter."tT");
 		}
 		
 	}else{
