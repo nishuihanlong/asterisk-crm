@@ -139,6 +139,7 @@ function initIni(){
 	$objResponse->addAssign("iptPopup_diallist","value",$config["diallist"]["popup_diallist"]);
 
 	$objResponse->addAssign("iptGooglemapkey","value",$config["google-map"]["key"]);
+	$objResponse->addAssign("iptErrorReportLevel","value",$config["error_report"]["error_report_level"]);
 
 	Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
 	$objResponse->addAssign("asterccLicenceto","value",$asterccConfig["licence"]["licenceto"]);
@@ -249,7 +250,7 @@ function initLocate(){
 
 function savePreferences($aFormValues){
 	global $config,$locate;
-	//print_r($aFormValues);
+	//print_r($aFormValues);exit;
 	//exit;
 	$objResponse = new xajaxResponse();
 	//Common::read_ini_file("astercrm.conf.php",$myPreferences);
@@ -311,6 +312,10 @@ function savePreferences($aFormValues){
 	$myPreferences['diallist']['popup_diallist'] = $aFormValues['iptPopup_diallist'];
 
 	$myPreferences['google-map']['key'] = $aFormValues['iptGooglemapkey'];
+	if($aFormValues['iptErrorReportLevel'] == '' || !preg_match('/^[\d]{0,4}$/',$aFormValues['iptErrorReportLevel'])) {
+		$aFormValues['iptErrorReportLevel'] = 0;
+	}
+	$myPreferences['error_report']['error_report_level'] = $aFormValues['iptErrorReportLevel'];
 	if (Common::write_ini_file("astercrm.conf.php",$myPreferences) >0)
 		$objResponse->addAlert($locate->Translate('save_success'));
 	else

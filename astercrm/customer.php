@@ -95,6 +95,18 @@ require_once('customer.common.php');
 		function saveSchedulerDial(){
 			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value);
 		}
+		function searchCdrFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchCdrFormSubmit(searchFormValue,numRows,limit,id,type);
+		}
+		function searchDiallistFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchDiallistFormSubmit(searchFormValue,numRows,limit,id,type);
+		}
+		function searchRecordsFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchRecordsFormSubmit(searchFormValue,numRows,limit,id,type);
+		}
 		//-->
 		</SCRIPT>
 

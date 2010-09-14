@@ -136,6 +136,11 @@ class Customer extends astercrm
 		if ($f['bindqueue'] =="on"){
 			$bindqueue = 1;
 		}
+		if ($f['dialtwoparty'] =="on"){
+			$dialtwoparty = "yes";
+		} else {
+			$dialtwoparty = "no";
+		}
 
 		$query= "INSERT INTO campaign SET "
 				."campaignname='".$f['campaignname']."', "
@@ -156,6 +161,7 @@ class Customer extends astercrm
 				."minduration='".$f['minduration']."', "
 				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."', "
+				."dialtwoparty='".$dialtwoparty."', "
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
 		astercrm::events($query);
@@ -170,6 +176,12 @@ class Customer extends astercrm
 		$bindqueue = 0;
 		if ($f['bindqueue'] =="on"){
 			$bindqueue = 1;
+		}
+		
+		if ($f['dialtwoparty'] =="on"){
+			$dialtwoparty = "yes";
+		} else {
+			$dialtwoparty = "no";
 		}
 
 		$query= "UPDATE campaign SET "
@@ -190,6 +202,7 @@ class Customer extends astercrm
 				."recyletime='".$f['recyletime']."', "
 				."minduration='".$f['minduration']."', "
 				."callerid='".$f['callerid']."', "
+				."dialtwoparty='".$dialtwoparty."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
 		astercrm::events($query);
@@ -407,6 +420,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$config['system']['incontext'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Dial two party at same time").'</td>
+					<td align="left"><input type="checkbox" id="dialtwoparty" name="dialtwoparty">&nbsp;</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>
 					<td align="left"><input type="text" id="inexten" name="inexten" size="30" maxlength="30"></td>
 				</tr>
@@ -485,6 +502,11 @@ class Customer extends astercrm
 		$bindqueue = "";
 		if ($campaign['bindqueue'] == 1){
 			$bindqueue = "checked";
+		}
+
+		$dialTochecked = "";
+		if ($campaign['dialtwoparty'] == "yes"){
+			$dialTochecked = "checked";
 		}
 
 		$query = "SELECT id,name From servers";
@@ -595,6 +617,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Incontext").'*</td>
 					<td align="left"><input type="text" id="incontext" name="incontext" size="30" maxlength="60" value="'.$incontext.'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Dial two party at same time").'</td>
+					<td align="left"><input type="checkbox" id="dialtwoparty" name="dialtwoparty" '.$dialTochecked.'>&nbsp;</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Inexten").'</td>

@@ -142,7 +142,7 @@ function listReport($aFormValues){
 			$exportlist = '<input type="submit" value="'.$locate->Translate("export").'">';
 			$objResponse->addAssign("exportlist","innerHTML",$exportlist);
 			$objResponse->addScript("document.getElementById('frmFilter').action = 'dataexport.php';");
-			$rows = astercrm::readReportAgent($aFormValues['groupid'], $aFormValues['accountid'],  $sdate,$edate);
+			$rows = astercrm::readReportAgent($aFormValues['groupid'], $aFormValues['accountid'],  $aFormValues["sdate"],$aFormValues["edate"]);
 			$html = '<table class="adminlist" border="1" style="width:800px;">';
 			$class = 'row1';
 			if($rows['type'] == 'grouplist'){

@@ -33,4 +33,5 @@
 	$delete_file_success = "删除文件成功";
 	$delete_file = "删除文件";
 	$must_select_one_or_more_columns = "至少要选择一列数据进行导入";
+	$must_select_a_column_for_diallist = "必须选择一列"
 ?>

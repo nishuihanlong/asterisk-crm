@@ -176,3 +176,23 @@ function showObj(objname) {
 //		return false;
 //    }
 //}
+
+function getPosLeft(obj)
+{
+    var l = obj.offsetLeft;
+    while(obj = obj.offsetParent)
+    {
+        l += obj.offsetLeft;
+    }
+    return l;
+}
+
+function getPosTop(obj)
+{
+    var t = obj.offsetTop;
+    while(obj = obj.offsetParent)
+    {
+        t += obj.offsetTop;
+    }
+    return t;
+}

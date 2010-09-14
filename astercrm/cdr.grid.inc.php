@@ -29,8 +29,7 @@ require_once 'db_connect.php';
 require_once 'cdr.common.php';
 require_once 'include/astercrm.class.php';
 
-class Customer extends astercrm
-{
+class Customer extends astercrm {
 
 }
 ?>

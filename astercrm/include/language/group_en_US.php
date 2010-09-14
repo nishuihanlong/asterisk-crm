@@ -27,4 +27,7 @@ $pdcontext = "pdcontext";
 $pdextensions = "pdextensions";
 $digit_only = "groupid digit only";
 $display_all_member = "show member";
+$first_ring = "first ring";
+$caller = "caller";
+$callee = "callee";
 ?>

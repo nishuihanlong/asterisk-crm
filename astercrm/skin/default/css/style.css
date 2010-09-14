@@ -715,7 +715,7 @@ div.main {
 	right: 0%; 
 	top: 0px;
 	background-color: #F1F1F1;
-	overflow: auto;
+	/* overflow: auto; */
 }
 
 #ajax_listOfOptions{
@@ -753,21 +753,30 @@ div.main {
 }
 	
 #processingMessage {
-    background: white;
-    padding: 20px;
-    border: 2px solid green;
+    /*background: white;*/
+    padding: 5px;
+    /*border: 1px solid green;*/
     display: none; /* hidden */
     position: absolute;    
     left: 50%;
     margin-left: -100px;
-    top: 25%;
-    width: 200px;
-    /*height: 100px;*/
+    top: 1%;
+    /*width: 200px;
+    height: 100px;*/
         /*margin-top: -50;*/
     font-weight: bold;
-    font-size: large;
+    /*font-size: large;*/
 	z-index:100;
 }
+
+#processingMessage .asterLoad{display:inline-block;position:relative;}
+#processingMessage .nq{z-index:-2;}
+#processingMessage .vY{height:100%;left:0;position:absolute;top:0;visibility:hidden;width:100%;z-index:5;}
+#processingMessage .UD{border-bottom:3px solid #FFF1A8;border-left:3px dotted transparent;border-right:3px dotted transparent;}
+#processingMessage .vh{background:none repeat scroll 0 0 #FFF1A8;color:#000000;padding:3px 3px 0;}
+#processingMessage .vZ{padding-left:2px;white-space:nowrap;}
+#processingMessage .v1{font-weight:bold;}
+#processingMessage .UB{border-top:3px solid #FFF1A8;border-left:3px dotted transparent;border-right:3px dotted transparent;}
 
 
 
@@ -937,7 +946,7 @@ a.info:hover span{
 	position:absolute;
 	z-index:1;
 	top:2em;
-	left:0em;
+	left:-18em;
 	/*width:20em;*/
 	border:1px solid #E6F2FF;
 	background-color:#E6F2FF;
@@ -990,3 +999,21 @@ div.box{
 	background-color:#E6F2FF;
 }
 
+.divExtensiontitle {
+	margin: 0px;
+	padding: 0 6px;
+	height: 20px;
+	background: url(images/background.jpg) 70%;
+	background-repeat: repeat;
+}
+.divExtensiontitle img{float:right; margin-top:3px; cursor:pointer;}
+
+
+.divGetMsgInCampaigntitle {
+	margin: 0px;
+	padding: 0 6px;
+	height: 20px;
+	background: url(images/background.jpg) 70%;
+	background-repeat: repeat;
+}
+.divGetMsgInCampaigntitle img{float:right; margin-top:3px; cursor:pointer;}

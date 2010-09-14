@@ -23,4 +23,5 @@ $campaign_result = "拨号结果";
 $agent_settings = "动态座席设置";
 $knowledge = "知识库";
 $dnc_list = "免拨列表";
+$ticket_category = "任务类别";
 ?>

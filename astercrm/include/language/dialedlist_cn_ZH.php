@@ -1,7 +1,7 @@
 <?php
 $dialed_number = "已拨号码";
 $answer_time	= "接通时长";
-$duration	= "呼叫时长";
+$duration	= "总时长";
 $response	= "响应";
 $dial_by = '拨号座席';
 $dial_time = '拨号时间';
@@ -24,4 +24,6 @@ $campaign_result = "拨号计划结果";
 $result_by = "处理人";
 $tried = "拨叫次数";
 $dialed_time = "拨号时间";
+$billsec = "双方通话时长";
+$total_billsec = "总通话时长";
 ?>

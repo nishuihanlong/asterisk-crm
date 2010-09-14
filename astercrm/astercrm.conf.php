@@ -7,8 +7,8 @@ dbtype = mysql
 dbport = 3306
 dbhost = localhost
 dbname = astercc
-username = root
-password = 
+username = astercc
+password = astreccsecret
 
 [asterisk]
 ;
@@ -19,6 +19,9 @@ server = 127.0.0.1
 port = 5038
 username = admin
 secret = amp111
+
+;defined delimiter of asterisk parameter , or |.
+paramdelimiter = ,
 
 ; Recorded file path, if you want to lisens records from web,
 ; the path must could be read by apache and allow php to exec
@@ -36,6 +39,7 @@ log_file_path = /tmp/astercrmDebug.log
 
 ;path of astercc daemon
 astercc_path = /opt/asterisk/scripts/astercc
+
 
 ; where astercrm get asterisk call events, set to curcdr when using astercc
 ; option: event, curcdr
@@ -103,7 +107,7 @@ trim_prefix =
 ; when astercrm start a call, it would drop a .call file to asterisk spool
 ; or else astercrm would use AMI command: Originate to start a call
 ;
-allow_dropcall = 0
+allow_dropcall = 1
 
 ;
 ; if astercrm allow same customer name
@@ -158,7 +162,7 @@ open_new_window = 1
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = http://astercc.org
+external_crm_default_url = 
 
 ;
 ; when using external crm, put pop up page here
@@ -167,7 +171,7 @@ external_crm_default_url = http://astercc.org
 ; %method		dial_out or dial_in
 ; %uniqueid
 ; %calldate     starttime of the call
-external_crm_url = http://192.168.1.46:8080/php.php?callerid=%callerid&calleeid=%calleeid&method=%method&uniqueid=%uniqueid&calldate=%calldate
+external_crm_url = http://astercc.org
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
@@ -182,7 +186,7 @@ checkworkexten = yes
 
 [survey]
 ; if need a note after survey option
-enable_surveynote = 0
+enable_surveynote = 1
 
 ; if need close all popups after survey saved
 close_popup_after_survey = 1
@@ -207,4 +211,10 @@ clidcreditlimit = 0
 [google-map]
 
 key = 
+
+
+[error_report]
+;sets the error level
+error_report_level = 0
+
 ;?>

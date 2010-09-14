@@ -23,4 +23,11 @@ $disable = '否';
 $enable = '是';
 $force_monitor = '强制录音';
 $like = "包含";
+$first_ring = "优先振铃";
+$caller = "主叫";
+$callee = "被叫";
+$allowloginqueue = "允许签入队列";
+$yes = "是";
+$no = "否";
+$clear_popup = "清屏间隔";
 ?>

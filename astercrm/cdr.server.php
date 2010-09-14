@@ -112,6 +112,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fields[] = 'credit';
 		$fileds[] = 'destination';
 		$fileds[] = 'memo';
+		$fileds[] = 'filename';
 
 		// HTML table: Headers showed
 		$headers = array();
@@ -126,6 +127,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$headers[] = $locate->Translate("Credit")."<br>";
 		$headers[] = $locate->Translate("Destination")."<br>";
 		$headers[] = $locate->Translate("Memo")."<br>";
+		$headers[] = $locate->Translate("filename")."<br>";
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
@@ -219,6 +221,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
+
 		// Change here by the name of fields of its database table
 			$rowc = array();
 			$rowc[] = $row['id'];
@@ -238,6 +241,12 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 			$rowc[] = $row['credit'];
 			$rowc[] = $row['destination'];
 			$rowc[] = $row['memo'];
+			if($row['processed'] == 'yes' && $row['fileformat'] != 'error' ) {
+				$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
+			} else {
+				$rowc['filename'] = '';
+			}
+			
 			$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
 		}
 		
@@ -288,6 +297,31 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 
 		
 		return $objResponse->getXML();
+}
+
+function playmonitor($path,$l,$t){
+	global $config,$locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
+	if(is_file($path) && !empty($path)){
+		$filebasename = basename($path);
+		$file_extension = strtolower(substr(strrchr($filebasename,"."),1));
+
+		if($file_extension == 'mp3'){
+			$html .='<object type="application/x-shockwave-flash" data="skin/default/player_mp3_maxi.swf" width="200" height="20"><param name="movie" value="skin/default/player_mp3_maxi.swf" /><param name="bgcolor" value="#ffffff" /><param name="FlashVars" value="mp3=records.php?file='.$path.'&amp;loop=0&amp;autoplay=1&amp;autoload=1&amp;volume=75&amp;showstop=1&amp;showinfo=1&amp;showvolume=1&amp;showloading=always" /></object><br><a href="###" onclick="window.location.href=\'records.php?file='.$path.'\'">'.$locate->Translate("download").'</a>';
+		}else{
+			$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$path.'\'">'.$locate->Translate("download").'</a>';
+		}
+	}else{
+		$html .= '<b>404 File not found!</b>';
+	}
+	$html .= Table::Footer();
+	
+    $objResponse->addAssign("formplaymonitor", "style.left", ($l-500)."px");
+    $objResponse->addAssign("formplaymonitor", "style.top", ($t-120)."px");
+	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
+	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	
+	return $objResponse->getXML();
 }
 
 $xajax->processRequests();

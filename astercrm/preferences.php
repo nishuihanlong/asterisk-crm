@@ -669,6 +669,16 @@ require_once('preferences.common.php');
 		<div id="divGooglemapkey" name="divGooglemapkey">&nbsp;</div>
 	</td>
   </tr>
+  <tr>
+	<td width="230" align="left" valign="top" id="popup_diallist" name="popup_diallist">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?echo $locate->Translate('error_report_level')?></td>
+	<td width="200" align="left" valign="top" >
+		<input type="text" id="iptErrorReportLevel" name="iptErrorReportLevel" size="4"/>
+	</td>
+	<td align="left" valign="top" >
+		<div id="divErrorReportLevel" name="divErrorReportLevel">&nbsp;</div>
+	</td>
+  </tr>
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>

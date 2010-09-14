@@ -244,8 +244,22 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("first ring").'</td>
+					<td align="left"><input type="radio" id="firstring" name="firstring" value="caller" checked>'.$locate->Translate("caller").'<input type="radio" id="firstring" name="firstring" value="callee" >'.$locate->Translate("callee").'
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("allowloginqueue").'</td>
+					<td align="left"><input type="radio" id="allowloginqueue" name="allowloginqueue" value="yes">'.$locate->Translate("yes").'<input type="radio" id="allowloginqueue" name="allowloginqueue" value="no" checked>'.$locate->Translate("no").'
+					</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("clear popup").'(s)</td>
+					<td align="left"><input type="text" id="clear_popup" name="clear_popup" size="5" maxlength="5"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group Note").'</td>
@@ -307,11 +321,36 @@ class Customer extends astercrm
 				}else{
 					$html .= '<input type="radio" id="monitorforce" name="monitorforce" value="0" checked>'.$locate->Translate("disable").'<input type="radio" id="monitorforce" name="monitorforce" value="1" >'.$locate->Translate("enable");
 				}
-		$html .=	'</td>
+				
+		$html .='</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("first ring").'</td>
+					<td align="left">';
+				if($account['firstring'] == 'caller'){
+					$html .= '<input type="radio" id="firstring" name="firstring" value="caller"  checked>'.$locate->Translate("caller").'<input type="radio" id="firstring" name="firstring" value="callee">'.$locate->Translate("callee");
+				}else{
+					$html .= '<input type="radio" id="firstring" name="firstring" value="caller">'.$locate->Translate("caller").'<input type="radio" id="firstring" name="firstring" value="callee" checked>'.$locate->Translate("callee");
+				}
+		$html .='</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("allowloginqueue").'</td>
+					<td align="left">';
+				if($account['allowloginqueue'] == 'yes'){
+					$html .= '<input type="radio" id="allowloginqueue" name="allowloginqueue" value="yes"  checked>'.$locate->Translate("yes").'<input type="radio" id="allowloginqueue" name="allowloginqueue" value="no">'.$locate->Translate("no");
+				}else{
+					$html .= '<input type="radio" id="allowloginqueue" name="allowloginqueue" value="yes">'.$locate->Translate("yes").'<input type="radio" id="allowloginqueue" name="allowloginqueue" value="no" checked>'.$locate->Translate("no");
+				}
+		$html .='</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100" value="'.$account['agentinterval'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("clear popup").'(s)</td>
+					<td align="left"><input type="text" id="clear_popup" name="clear_popup" size="5" maxlength="5" value="'.$account['clear_popup'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group Note").'</td>
@@ -350,22 +389,50 @@ class Customer extends astercrm
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left" widht="30%">'.$locate->Translate("groupname").'</td>
-					<td align="left">'.$account['groupname'].'</td>
+					<td nowrap align="left" width="45%">'.$locate->Translate("groupname").'</td>
+					<td align="left" width="55%">'.$account['groupname'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("incontext").'</td>
+					<td align="left">'.$account['incontext'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("outcontext").'</td>
+					<td align="left">'.$account['outcontext'].'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("groupid").'</td>
 					<td align="left">'.$account['groupid'].'</td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("force monitor").'</td>
+					<td align="left">'.$account['monitorforce'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("first ring").'</td>
+					<td align="left">'.$locate->Translate($account['firstring']).'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("allowloginqueue").'</td>
+					<td align="left">'.$locate->Translate($account['allowloginqueue']).'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
+					<td align="left">'.$account['agentinterval'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("clear popup").'(s)</td>
+					<td align="left">'.$account['clear_popup'].'</td>
+				</tr>';
+				/*<tr>
 					<td nowrap align="left">'.$locate->Translate("pdcontext").'</td>
 					<td align="left">'.$account['pdcontext'].'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("pdextensions").'</td>
 					<td align="left">'.$account['pdextension'].'</td>
-				</tr>
-				<tr>
+				</tr>';*/
+			$html .= '<tr>
 					<td>
 						<a href=? onclick="if (xajax.$(\'allMember\').value==\'off\'){xajax.$(\'memberList\').style.display=\'block\';xajax.$(\'allMember\').value=\'on\'}else{xajax.$(\'memberList\').style.display=\'none\';xajax.$(\'allMember\').value=\'off\'} return false;">'.$locate->Translate("display_all_member").'</a>
 						<input type="hidden" id="allMember" name="allMember" value="off">

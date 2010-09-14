@@ -174,7 +174,7 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function insertNewMonitor($callerid,$filename,$uniqueid,$format){
+	function insertNewMonitor($callerid,$filename,$uniqueid,$format,$curid){
 		global $db;
 		$query= "INSERT INTO monitorrecord SET "
 				."callerid = '".$callerid."', "
@@ -187,6 +187,9 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."'";
 		astercrm::events($query);
 		$res =& $db->query($query);
+		$mid = mysql_insert_id();
+		$query = "UPDATE curcdr SET monitored = '".$mid."' WHERE id = '".$curid."'";
+		$db->query($query);
 		return $res;
 	}
 
@@ -478,7 +481,10 @@ Class astercrm extends PEAR{
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now(),"
 				."monitorforce='".$f['monitorforce']."',"
+				."firstring='".$f['firstring']."',"
+				."allowloginqueue='".$f['allowloginqueue']."',"
 				."agentinterval='".$f['agentinterval']."',"
+				."clear_popup='".$f['clear_popup']."',"
 				."groupnote='".$f['groupnote']."',"
 				."billingid='".$f['billingid']."',"
 				."incontext='".$f['incontext']."',"
@@ -693,7 +699,10 @@ Class astercrm extends PEAR{
 		$query= "UPDATE astercrm_accountgroup SET "
 				."groupname='".$f['groupname']."', "
 				."monitorforce='".$f['monitorforce']."', "
+				."firstring='".$f['firstring']."', "
+				."allowloginqueue='".$f['allowloginqueue']."', "
 				."agentinterval='".$f['agentinterval']."', "
+				."clear_popup='".$f['clear_popup']."', "
 				."groupnote='".$f['groupnote']."',"
 				."incontext='".$f['incontext']."', "
 				."outcontext='".$f['outcontext']."' "
@@ -1120,10 +1129,9 @@ Class astercrm extends PEAR{
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
-			
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href=? onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> </td>
+				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href="?" onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> <span id="insert_dnc_list"></span></td>
 			</tr>';
 	
 	if ($customerid == null || $customerid ==0){
@@ -1190,7 +1198,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35"></td>
+					<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35" value="'.$callerid.'"></td>
 				</tr>
 				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
@@ -1379,7 +1387,6 @@ Class astercrm extends PEAR{
 			</form>
 			'.$locate->Translate("ob_fields").'
 			';
-		
 		return $html;
 	}
 
@@ -1742,6 +1749,7 @@ Class astercrm extends PEAR{
 					';
 		}elseif ($type == 'diallist'){
 			$diallist =& astercrm::getRecordByField('id',$id,'diallist');
+			//print_r($diallist);exit;
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$res = Customer::getGroups();
 				$groupoptions .= '<select name="groupid" id="groupid" onchange="setCampaign();">';
@@ -1767,6 +1775,7 @@ Class astercrm extends PEAR{
 				$assignoptions .= '<select name="assign" id="assign">';
 				while ($row = $res->fetchRow()) {
 						$assignoptions .= '<option value="'.$row['extension'].'"';
+						if($row['extension'] == $diallist['assign']) $assignoptions .= " selected";
 						$assignoptions .='>'.$row['extension'].'</option>';
 				}				
 				$assignoptions .= '</select>';
@@ -1954,8 +1963,9 @@ Class astercrm extends PEAR{
 								hideObj(\'trCustomerBankDetails\');
 								xajax.$(\'hidCustomerBankDetails\').value = \'OFF\';
 							}
-							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'out\');return false;">'.$locate->Translate("outbound").'</a>]&nbsp;[<a href=? onclick="xajax_showCdr(\''.$customer['id'].'\',\'in\');return false;">'.$locate->Translate("inbound").'</a>]&nbsp;[<a href=? onclick="xajax_showDiallist(\''.$_SESSION['curuser']['extension'].'\',\''.$customer['id'].'\');return false;">'.$locate->Translate("diallist").'</a>]&nbsp;[<a href=? onclick="xajax_showRecords(\''.$customer['id'].'\');return false;">'.$locate->Translate("monitors").'</a>]
+							return false;">'.$locate->Translate("bank").'</a>]<input type="hidden" value="OFF" name="hidCustomerBankDetails" id="hidCustomerBankDetails">&nbsp;[<a href=? onclick="showDiallist(\''.$_SESSION['curuser']['extension'].'\','.$customer['id'].',0,5,\'\',\'\',\'\',\'formDiallist\',\'\',\'\');return false;">'.$locate->Translate("diallist").'</a>]&nbsp;[<a href=? onclick="xajax_showRecords(\''.$customer['id'].'\');return false;">'.$locate->Translate("Cdr").'</a>]
 							&nbsp; [<a href=? onclick="addSchedulerDial(\''.$customer['id'].'\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
+							&nbsp; [<a href=? onclick="addTicket(\''.$customer['id'].'\'); return false;">'.$locate->Translate("Ticket").'</a>]
 						</td>
 					</tr>
 					<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none"></tr>
@@ -2095,31 +2105,32 @@ Class astercrm extends PEAR{
 		return $row;
 	}
 
-	function getCustomerphoneSqlByid($customerid,$feild,$type = '',$feild1=''){
-
+	function getCustomerphoneSqlByid($customerid,$feild,$type = '',$feild1='',$tableAlias=''){//$tableAlias  is used to sign the table name,add by shixb 2010-09-07
+		
 		$res_customer =astercrm::getRecordById($customerid,'customer');
 		$res_contact =astercrm::getContactListByID($customerid);
 
 		if($feild1 == ''){
 			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " $type $feild='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " $type $feild='".$res_customer['mobile']."' ";
+			if ($res_customer['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['mobile']."' ";
 			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " $type $feild='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " $type $feild='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " $type $feild='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " $type $feild='".$row['mobile']."' ";
+				if ($row['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone']."' ";
+				if ($row['phone1'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone1']."' ";
+				if ($row['phone2'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone2']."' ";
+				if ($row['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['mobile']."' ";
 			}
 			if($sql != '') $sql = ltrim($sql,"\ ".$type);
 		}else{
 			$sql = '';
-			if ($res_customer['phone'] != '') $sql .= " $type $feild='".$res_customer['phone']."' $type $feild1='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '') $sql .= " $type $feild='".$res_customer['mobile']."' $type $feild1='".$res_customer['mobile']."' ";
+			
+			if ($res_customer['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['phone']."' ".$type." ".$tableAlias.".".$feild."='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['mobile']."' ".$type." ".$tableAlias.".".$feild."='".$res_customer['mobile']."' ";
 			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '') $sql .= " $type $feild='".$row['phone']."' $type $feild1='".$row['phone']."' ";
-				if ($row['phone1'] != '') $sql .= " $type $feild='".$row['phone1']."' $type $feild1='".$row['phone1']."' ";
-				if ($row['phone2'] != '') $sql .= " $type $feild='".$row['phone2']."' $type $feild1='".$row['phone2']."' ";
-				if ($row['mobile'] != '') $sql .= " $type $feild='".$row['mobile']."' ";
+				if ($row['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone']."' ".$type." ".$tableAlias.".".$feild."='".$row['phone']."' ";
+				if ($row['phone1'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone1']."' ".$type." ".$tableAlias.".".$feild."='".$row['phone1']."' ";
+				if ($row['phone2'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone2']."' ".$type." ".$tableAlias.".".$feild."='".$row['phone2']."' ";
+				if ($row['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['mobile']."' ";
 			}
 			if($sql != '') $sql = ltrim($sql,"\ ".$type);
 		}
@@ -2720,14 +2731,14 @@ Class astercrm extends PEAR{
 
 			// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 			$eventHeader = array();
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dstchannel","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showRecentCdr("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","id","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';			
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","calldate","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","src","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dstchannel","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","id","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';			
 
 			// Select Box: fields table.
 			$fieldsFromSearch = array();
@@ -2770,7 +2781,7 @@ Class astercrm extends PEAR{
 				if($row['fileformat'] == 'error'){
 					$rowc['filename'] = '';
 				}else{
-					$rowc['filename'] = $row['filename'];
+					$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
 				}
 				$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
 			}
@@ -2919,11 +2930,11 @@ Class astercrm extends PEAR{
 	}
 
 	
-	function &getAllCdrRecords($customerid='',$cdrtype='',$start, $limit, $order = null, $creby = null){
+	function &getAllCdrRecords($customerid='',$cdrtype='',$start, $limit, $order = null, $creby = null){//echo $cdrtype;exit;
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.fileformat,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE (mycdr.src = '".$_SESSION['curuser']['extension']."' OR mycdr.dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'agent/".$_SESSION['curuser']['agent']."') AND mycdr.src != '' AND mycdr.dst != '' AND mycdr.src != '<unknown>' AND mycdr.dst != '<unknown>' AND dstchannel != '' GROUP BY mycdr.id";
+				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.fileformat,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid']."' ";
 				if($order == null || is_array($order)){
 					$sql .= " ORDER by mycdr.calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 				}else{
@@ -2934,7 +2945,7 @@ Class astercrm extends PEAR{
 				$res =& $db->query($sql);
 				return $res;
 			}else{
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				$sql = "SELECT * FROM mycdr WHERE id = 0";
 				astercrm::events($sql);
 				$res =& $db->query($sql);
 				return $res;
@@ -2942,51 +2953,44 @@ Class astercrm extends PEAR{
 		}
 		if($customerid != ''){
 			if($cdrtype == 'out'){
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','','Mycdr');
 				if($sql != ''){
-					$sql = "(".$sql.") AND dstchannel != '' AND src != dst ";
+					$sql = "(".$sql.") AND Mycdr.src != Mycdr.dst ";
 				}else{
-					$sql = " id = 0";
+					$sql = " Mycdr.id = 0";
 				}
 			}else{
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR','','Mycdr');
 				if($sql != ''){
-					$sql = "(".$sql.") AND dstchannel != '' ";
+					$sql = "(".$sql.") ";
 				}else{
-					$sql = " id = 0";
+					$sql = " Mycdr.id = 0";
 				}
 			}
 		}
-
+		
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT * FROM mycdr WHERE dstchannel != '' ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT * FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
+			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored ";
+		}else if ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+			if($_SESSION['curuser']['groupid'] != ''){
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored WHERE dstchannel != '' AND astercrm_groupid=".$_SESSION['curuser']['groupid']." ";
 			}else {
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored WHERE mycdr.id = 0";
 			}
-		}else{			
-			if($sql != '' ) {
-				$sql = "SELECT * FROM mycdr WHERE ".$sql;
-			}else {
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
-			}
-		}
-
-		if($order == null || is_array($order)){
-			$sql .= " ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
-			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+			if($sql != '' ) {
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON ON monitorrecord.id = mycdr.monitored WHERE ".$sql;
+			}else {
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON ON monitorrecord.id = mycdr.monitored WHERE mycdr.id = 0";
+			}
 		}
-
+		//print_r($order);exit;
+		if($order == null || is_array($order) || $order == ''){
+			$sql .= " ORDER BY mycdr.calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+		}else{
+			$sql .= " ORDER BY mycdr.".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
+		}
+		//print_r($sql);exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		
@@ -2997,12 +3001,12 @@ Class astercrm extends PEAR{
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (src = '".$_SESSION['curuser']['extension']."' OR dst ='".$_SESSION['curuser']['extension']."' OR dstchannel = 'agent/".$_SESSION['curuser']['agent']."') AND src != '' AND dst != '' AND src != '<unknown>' AND dst != '<unknown>' AND dstchannel != '' ";				
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid']."' ";				
 				astercrm::events($sql);
 				$res =& $db->getOne($sql);
 				return $res;
 			}else{
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE id = '0'";
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE id = 0";
 				astercrm::events($sql);
 				$res =& $db->getOne($sql);
 				return $res;
@@ -3012,14 +3016,14 @@ Class astercrm extends PEAR{
 			if ($cdrtype == 'out'){
 				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
 				if($sql != ''){
-					$sql = "(".$sql.") AND dstchannel != '' AND src != dst ";
+					$sql = "(".$sql.") AND src != dst ";
 				}else{
 					$sql = " id = 0";
 				}
 			}else{
 				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
 				if($sql != ''){
-					$sql = "(".$sql.") AND dstchannel != '' ";
+					$sql = "(".$sql.") ";
 				}else{
 					$sql = " id = 0";
 				}
@@ -3027,17 +3031,10 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr WHERE dstchannel != '' ";
+			$sql = "SELECT COUNT(*) FROM mycdr ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
+			if($_SESSION['curuser']['groupid'] != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE astercrm_groupid='".$_SESSION['curuser']['groupid']."' ";
 			}else {
 				return '0';
 			}
@@ -3063,40 +3060,32 @@ Class astercrm extends PEAR{
 			$value = preg_replace("/'/","\\'",$value);
 			$value=trim($value);
 			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
-				$joinstr.="AND $filter[$i] like '%".$value."%' ";
+				$joinstr.="AND mycdr.".$filter[$i]." like '%".$value."%' ";
 			}
 			$i++;
 		}
 		if($customerid != ''){
 			if($cdrtype == 'out'){
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
-				$sql = "(".$sql.") AND dstchannel != '' AND src != dst ";
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','','Mycdr');
+				$sql = "(".$sql.") AND Mycdr.dstchannel != '' AND Mycdr.src != Mycdr.dst ";
 			}else{
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
-				$sql = "(".$sql.") AND dstchannel != '' ";
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR','','Mycdr');
+				$sql = "(".$sql.") AND Mycdr.dstchannel != '' ";
 			}
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT * FROM mycdr WHERE dstchannel != '' ";
+			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.dstchannel != '' ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-
-			if($group_str != ''){
-				$sql = "SELECT * FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
+			if($_SESSION['curuser']['groupid'] != ''){
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE dstchannel != '' AND astercrm_groupid=".$_SESSION['curuser']['groupid']." ";
 			}else {
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.id = 0";
 			}
 		}else{
 			if($sql != '' ) {
-				$sql = "SELECT * FROM mycdr WHERE (".$sql.")";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE ".$sql;
 			}else {
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.id = 0";
 			}
 		}
 
@@ -3104,8 +3093,8 @@ Class astercrm extends PEAR{
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr."  ";
 		}
-
-		$sql .= " ORDER BY ".$order
+		
+		$sql .= " ORDER BY mycdr.".$order
 					." DESC LIMIT $start, $limit $ordering";
 
 		astercrm::events($sql);
@@ -3139,15 +3128,8 @@ Class astercrm extends PEAR{
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT COUNT(*) FROM mycdr  WHERE dstchannel != '' ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
+			if($_SESSION['curuser']['groupid'] != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE astercrm_groupid=".$_SESSION['curuser']['groupid']." AND dstchannel != '' ";
 			}else {
 				return '0';
 			}
@@ -3183,17 +3165,10 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr WHERE dstchannel != '' ";
+			$sql = "SELECT COUNT(*) FROM mycdr ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT COUNT(*) FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
+			if($_SESSION['curuser']['groupid'] != ''){
+				$sql = "SELECT COUNT(*) FROM mycdr WHERE astercrm_groupid=".$_SESSION['curuser']['groupid']."  ";
 			}else {
 				return '0';
 			}
@@ -3220,33 +3195,26 @@ Class astercrm extends PEAR{
 
 		if($customerid != ''){
 			if($cdrtype == 'out'){
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR');
-				$sql = "(".$sql.") AND dstchannel != '' AND src != dst ";
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','','Mycdr');
+				$sql = "(".$sql.") AND Mycdr.src != Mycdr.dst ";
 			}else{
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR');
-				$sql = "(".$sql.") AND dstchannel != '' ";
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'src','OR','','Mycdr');
+				$sql = "(".$sql.") ";
 			}
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT * FROM mycdr WHERE dstchannel != '' ";
+			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT * FROM mycdr WHERE (".ltrim($group_str,"\ OR").") AND dstchannel != '' ";
+			if($_SESSION['curuser']['groupid'] != ''){
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE  astercrm_groupid=".$_SESSION['curuser']['groupid']." ";
 			}else {
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.id = 0";
 			}
 		}else{
 			if($sql != '' ) {
-				$sql = "SELECT * FROM mycdr WHERE (".$sql.")";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE ".$sql;
 			}else {
-				$sql = "SELECT * FROM mycdr WHERE id = '0'";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.id = 0";
 			}
 		}
 
@@ -3255,7 +3223,7 @@ Class astercrm extends PEAR{
 			$sql .= " AND ".$joinstr."  ";
 		}
 
-		$sql .= " ORDER BY ".$order
+		$sql .= " ORDER BY mycdr.".$order
 					." DESC LIMIT $start, $limit $ordering";
 
 		astercrm::events($sql);
@@ -3366,16 +3334,16 @@ Class astercrm extends PEAR{
 		if($divName == "formDiallistPannel"){
 			$stype = 'none';
 		}else{
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			//$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","trytime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			//$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			//$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-			//$eventHeader[]= 'onClick=\'xajax_showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.inexten","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","dialtime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			//$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","trytime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			//$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			//$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.id","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+			//$eventHeader[]= 'onClick=\'showDiallist("'.$userexten.'","'.$customerid.'",0,'.$limit.',"'.$filter.'","'.$content.'","diallist.inexten","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		}
 		// Select Box: type table.
 		$typeFromSearch = array();
@@ -3483,7 +3451,7 @@ Class astercrm extends PEAR{
 		if($customerid > 0){
 			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dialnumber','OR');
 		}
-
+		
 		if( $sql != '') {
 			$sql = "SELECT diallist.*,campaign.campaignname,campaign.campaignnote, campaign.inexten FROM diallist LEFT JOIN campaign ON diallist.campaignid = campaign.id WHERE diallist.assign ='".$userexten."' AND (".$sql.")";
 		}else{
@@ -3710,7 +3678,7 @@ Class astercrm extends PEAR{
 								</tr>';
 			$saveHtml = '
 					<tr>
-						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_saveDiallistMain(xajax.getFormValues(\'formaddDiallist\'));return false;"></td>
+						<td nowrap colspan=2 align=right><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="saveDiallistMain(xajax.getFormValues(\'formaddDiallist\'));return false;"></td>
 					</tr>
 				<table>
 				</form>
@@ -3723,7 +3691,7 @@ Class astercrm extends PEAR{
 				
 				<table border="1" width="100%" class="adminlist">'.$customernamehtml.'
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("Dialnumber").'</td>
+						<td nowrap align="left">'.$locate->Translate("Dialnumber").'*</td>
 						<td align="left">'.$numberblank.'</td>
 					</tr>
 					<tr>
@@ -3796,11 +3764,11 @@ Class astercrm extends PEAR{
 				$numRows =& astercrm::getRecNumRows($customerid);
 				$arreglo =& astercrm::getAllRecRecords($customerid,$start,$limit,$order);
 			}elseif($flag3 != 1 ){  //未选择搜索方式
-				$order = "monitorrecord.id";
+				$order = "mycdr.id";
 				$numRows =& astercrm::getRecNumRowsMore($customerid,$filter, $content);
 				$arreglo =& astercrm::getRecRecordsFilteredMore($customerid,$start, $limit, $filter, $content, $order);
 			}else{
-				$order = "monitorrecord.id";
+				$order = "mycdr.id";
 				$numRows =& astercrm::getRecNumRowsMorewithstype($customerid,$filter, $content,$stype);
 				$arreglo =& astercrm::getRecRecordsFilteredMorewithstype($customerid,$start, $limit, $filter, $content, $stype,$order);
 			}
@@ -3905,7 +3873,7 @@ Class astercrm extends PEAR{
 		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,'','','monitorrecord');
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
 		$table->setAttribsCols($attribsCols);
-		$table->addRowSearchMore("monitorrecord",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore("cur_mycdrs",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -3926,8 +3894,9 @@ Class astercrm extends PEAR{
 			if($row['fileformat'] == 'error'){
 				$rowc['filename'] = '';
 			}else{
-				$rowc['filename'] = $row['filename'];
+				$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
 			}
+
 			$rowc[] = $row['creby'];
 			$table->addRow("monitorrecord",$rowc,false,false,false,$divName,$fields);
 		}
@@ -3941,39 +3910,34 @@ Class astercrm extends PEAR{
 
 	function &getAllRecRecords($customerid='',$start, $limit, $order = null, $creby = null){
 		global $db;
+		//echo 'aaaa';exit;
 		if($customerid != ''){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src','mycdr');
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM  mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-			}else {
-				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
-			}
-		}else{			
+						
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' ";
+		}else{
+
 			if($sql != '' ) {
-				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid  WHERE monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+				if($_SESSION['curuser']['usertype'] == 'admin' ){
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id  WHERE (".$sql.") ";
+				}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id  WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND (".$sql.") ";
 				}else{
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid  WHERE monitorrecord.uniqueid != '' AND (".$sql.")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id  WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' AND (".$sql.") ";
 				}
+
 			}else {
-				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
+				$sql = "SELECT mycdr.* FROM monitorrecord LEFT JOIN mycdr ON mycdr.monitored = monitorrecord.id WHERE mycdr.id = 0";
 			}
 		}
 
 		if($order == null || is_array($order)){
-			$sql .= " ORDER by monitorrecord.id DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+			$sql .= " ORDER by mycdr.id DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
 			$sql .= " ORDER BY ".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
@@ -3987,36 +3951,30 @@ Class astercrm extends PEAR{
 	function &getRecNumRows($customerid='',$filter = null, $content = null){
 		global $db;
 		if($customerid != ''){
-				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
+				$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src','mycdr');
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != ''  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+			$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
-			}else {
-				return '0';
-			}
+			
+			$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."'";
+			
 		}else{
 			if($sql != '' ) {
-				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+				if($_SESSION['curuser']['usertype'] == 'admin' ){
+					$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' ";
+				}elseif( $_SESSION['curuser']['usertype'] == 'groupadmin'){
+					$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") AND mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' ";
 				}else{
-					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' GROUP BY mycdr.id ";
+					$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") AND mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' ";
 				}
 			}else {
 				return '0';
 			}
 		}
-		$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
+		
+		//$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		//print_r($res);die;
@@ -4026,33 +3984,25 @@ Class astercrm extends PEAR{
 	function &getRecNumRowsMorewithstype($customerid,$filter, $content,$stype){
 		global $db;
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'monitorrecord');
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'mycdr');
 
 		if($customerid != ''){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src','mycdr');
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != ''  ";
+			$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != '' ";
-			}else {
-				return '0';
-			}
+			$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' ";
+			
 		}else{
 			if($sql != '' ) {
-				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' ";
+				if($_SESSION['curuser']['usertype'] == 'admin' ){
+					$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") ";
+				}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+					$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") AND mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' ";
 				}else{
-					$sql = "SELECT mycdr.id FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != '' AND (".$sql.") AND mycdr.dstchannel != '' ";
+					$sql = "SELECT count(*) FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") AND mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' ";
 				}
 			}else {
 				return '0';
@@ -4061,8 +4011,9 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$sql .= " ".$joinstr;
 		}
-		$sql .= " GROUP BY mycdr.id ";
-		$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
+		//echo $sql;exit;
+		//$sql .= " GROUP BY mycdr.id ";
+		//$sql = "SELECT count(total.id) FROM (".$sql.") AS total ";
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
@@ -4074,32 +4025,24 @@ Class astercrm extends PEAR{
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,'monitorrecord');
 
 		if($customerid != ''){
-			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src');
+			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src','mycdr');
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE  monitorrecord.uniqueid != ''  AND mycdr.dstchannel != '' ";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$group_str = '';
-			foreach($_SESSION['curuser']['memberExtens'] as $value){
-				$group_str .= "OR src = '".$value."' OR dst = '".$value."' ";
-			}
-			foreach($_SESSION['curuser']['memberAgents'] as $value){
-				$group_str .= "OR dstchannel = 'AGNET/".$value."' ";
-			}
-			if($group_str != ''){
-				$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".ltrim($group_str,"\ OR").")  AND mycdr.dstchannel != ''  ";
-			}else {
-				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
-			}
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE  mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."'  ";
+			
 		}else{
 			if($sql != '' ) {
-				if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin'){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".$sql.") AND monitorrecord.creby = '".$_SESSION['curuser']['username']."' AND mycdr.dstchannel != '' ";
+				if($_SESSION['curuser']['usertype'] == 'admin' ){
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.") ";
+				}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE  (".$sql.")  AND mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."'  ";
 				}else{
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.srcuid = monitorrecord.uniqueid WHERE monitorrecord.uniqueid != '' AND (".$sql.")  AND mycdr.dstchannel != ''  ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE (".$sql.")  AND mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."'  ";
 				}
 			}else {
-				$sql = "SELECT * FROM monitorrecord WHERE id = '0'";
+				$sql = "SELECT mycdr.* FROM monitorrecord LEFT JOIN mycdr ON mycdr.monitored = monitorrecord.id WHERE mycdr.id = 0";
 			}
 		}
 
@@ -4108,7 +4051,7 @@ Class astercrm extends PEAR{
 			$sql .= " AND ".$joinstr."  ";
 		}
 
-		$sql .= " GROUP BY mycdr.id ORDER BY ".$order
+		$sql .= " ORDER BY ".$order
 					." DESC LIMIT $start, $limit $ordering";
 
 		astercrm::events($sql);
@@ -4134,32 +4077,18 @@ Class astercrm extends PEAR{
 	function &readReport($groupid,$accountid,$sdate,$edate,$type){
 		global $db;
 		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] == "groupadmin") $groupid = $_SESSION['curuser']['groupid'];
-		$query = "SELECT COUNT(*) as recordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate'";
-		if(is_numeric($accountid) && $accountid > 0){
-			$account = astercrm::getRecordByID($accountid,"astercrm_account");
-			$account_str .= "OR src='".$account['extension']."' OR dst='".$account['extension']."' ";
-			if($account['channel'] != '') $account_str .= $channels .= "OR channel LIKE '".$account['channel']."-%' OR dstchannel LIKE '".$account['channel']."-%' ";
 
-			if($account['agent'] != '')  $account_str .= "OR dstchannel='agent/".$account['agent']."' ";
-			$account_str = '('.ltrim($account_str,'OR').')';
-			$query .= ' AND '.$account_str;
+		$query = "SELECT COUNT(*) as recordNum, SUM(billsec) as seconds FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate'";
+		if(is_numeric($accountid) && $accountid > 0){			
+			$query .= " AND accountid = $accountid";
 		}else{
 			if(is_numeric($groupid)){
-				if($groupid > 0){
-					$member = astercrm::getGroupMemberListByID($groupid);
-					while($member->fetchinto($row)){
-						$extens .= "OR src='".$row['extension']."' OR dst='".$row['extension']."' ";
-
-						if($row['channel'] != '') $channels .= "OR channel LIKE '".$row['channel']."-%' OR dstchannel LIKE '".$row['channel']."-%' ";
-
-						if($row['agent'] != '') $agents .= "OR dstchannel='agent/".$row['agent']."' ";
-					}
-					$group_str = '('.ltrim($extens.$channels.$agents,'OR').')';
-					$query .= ' AND '.$group_str;
+				if($groupid > 0){					
+					$query .= " AND astercrm_groupid = $groupid";
 				}
 			}
 		}
-
+//echo $query;exit;
 		astercrm::events($query);
 		$all_res =& $db->query($query);
 		if($type != 'both'){
@@ -4171,25 +4100,25 @@ Class astercrm extends PEAR{
 
 	function &readReportAgent($groupid,$accountid,$sdate,$edate){
 		global $db;
-		
+
 		$return_arr = array();
 
 		if ($_SESSION['curuser']['usertype'] == "admin"){
 			if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0)){
-				$query = "SELECT COUNT(*) as recordNum, mycdr.groupid,groupname FROM mycdr LEFT JOIN astercrm_accountgroup ON mycdr.groupid = astercrm_accountgroup.id WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 ";
+				$query = "SELECT COUNT(*) as recordNum, mycdr.astercrm_groupid,groupname FROM mycdr LEFT JOIN astercrm_accountgroup ON mycdr.astercrm_groupid = astercrm_accountgroup.id WHERE  calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.astercrm_groupid > 0 ";
 
-				$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds ,mycdr.groupid FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 AND billsec > 0";
+				$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds ,mycdr.astercrm_groupid FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.astercrm_groupid > 0 AND billsec > 0";
 		
-				$query .= " GROUP BY mycdr.groupid ";
-				$query_a .= " GROUP BY mycdr.groupid ";
+				$query .= " GROUP BY mycdr.astercrm_groupid ";
+				$query_a .= " GROUP BY mycdr.astercrm_groupid ";
 				$all_res =& $db->query($query);
 				$return_arr['type'] = 'grouplist';
 
 				while($all_res->fetchinto($row)){
-					$return_arr[$row['groupid']]['recordNum'] = $row['recordNum'];
-					$return_arr[$row['groupid']]['groupname'] = $row['groupname'];
-					$return_arr[$row['groupid']]['arecordNum'] = 0;
-					$return_arr[$row['groupid']]['seconds'] = 0;
+					$return_arr[$row['astercrm_groupid']]['recordNum'] = $row['recordNum'];
+					$return_arr[$row['astercrm_groupid']]['groupname'] = $row['groupname'];
+					$return_arr[$row['astercrm_groupid']]['arecordNum'] = 0;
+					$return_arr[$row['astercrm_groupid']]['seconds'] = 0;
 					
 				}
 
@@ -4197,42 +4126,36 @@ Class astercrm extends PEAR{
 
 				while($answer_res->fetchinto($arow)){
 
-					$return_arr[$arow['groupid']]['arecordNum'] = $arow['arecordNum'];
-					$return_arr[$arow['groupid']]['seconds'] = $arow['seconds'];
+					$return_arr[$arow['astercrm_groupid']]['arecordNum'] = $arow['arecordNum'];
+					$return_arr[$arow['astercrm_groupid']]['seconds'] = $arow['seconds'];
 				}
 				return $return_arr;
 			}
 		}	
 
 		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] == "groupadmin") $groupid = $_SESSION['curuser']['groupid'];
-
-		
 		
 		if(is_numeric($accountid) && $accountid > 0){
-			$query = "SELECT COUNT(*) as recordNum FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 ";
-
-			$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 AND billsec > 0";
-			$query .= " AND mycdr.groupid = ".$groupid." ";
-			$query_a .= " AND mycdr.groupid = ".$groupid." ";
-
 			$return_arr['type'] = 'agentlist';
-			$account = astercrm::getRecordByID($accountid,"astercrm_account");
-			$account_str .= "OR src='".$account['extension']."' OR dst='".$account['extension']."' ";
-			if($account['channel'] != '') $account_str .= $channels .= "OR channel LIKE '".$account['channel']."-%' OR dstchannel LIKE '".$account['channel']."-%' ";
+			$query = "SELECT COUNT(*) as recordNum FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 
-			if($account['agent'] != '')  $account_str .= "OR dstchannel='agent/".$account['agent']."' ";
-			$account_str = '('.ltrim($account_str,'OR').')';
-			$query .= ' AND '.$account_str;
-			$query_a .= ' AND '.$account_str;
+			$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds FROM mycdr WHERE  calldate >= '$sdate' AND  calldate <= '$edate' AND billsec > 0";
+			$query .= " AND mycdr.astercrm_groupid = ".$groupid." ";
+			$query_a .= " AND mycdr.astercrm_groupid = ".$groupid." ";
+			
+			$query .= " AND accountid=".$accountid;
+			$query_a .= " AND accountid=".$accountid;
 
 			$all_count = & $db->getone($query);
 			$answer_row = & $db->getRow($query_a);
 
-			$return_arr[$account['id']]['recordNum'] = $all_count;
-			$return_arr[$account['id']]['username'] = $account['extension'];
-			$return_arr[$account['id']]['name'] = $account['username'];
-			$return_arr[$account['id']]['arecordNum'] = $answer_row['arecordNum'];
-			$return_arr[$account['id']]['seconds'] = $answer_row['seconds'];
+			$account = astercrm::getRecordById($accountid,'astercrm_account');
+
+			$return_arr[$accountid]['recordNum'] = $all_count;
+			$return_arr[$accountid]['username'] = $account['extension'];
+			$return_arr[$accountid]['name'] = $account['username'];
+			$return_arr[$accountid]['arecordNum'] = $answer_row['arecordNum'];
+			$return_arr[$accountid]['seconds'] = $answer_row['seconds'];
 		}else{
 			if(is_numeric($groupid)){
 				if($groupid > 0){
@@ -4242,21 +4165,16 @@ Class astercrm extends PEAR{
 						$extens = '';
 						$channels = '';
 						$agents = '';
-						$query = "SELECT COUNT(*) as recordNum FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 ";
+						$query = "SELECT COUNT(*) as recordNum FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 
-						$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds FROM mycdr WHERE dstchannel != '' AND channel != '' AND dst != '' AND src != '' AND src !='<unknown>' AND calldate >= '$sdate' AND  calldate <= '$edate' AND mycdr.groupid > 0 AND billsec > 0";
+						$query_a = "SELECT COUNT(*) as arecordNum, SUM(billsec) as seconds FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate' AND billsec > 0";
 
-						$query .= " AND mycdr.groupid = ".$groupid." ";
-						$query_a .= " AND mycdr.groupid = ".$groupid." ";
+						$query .= " AND mycdr.astercrm_groupid = ".$groupid." ";
+						$query_a .= " AND mycdr.astercrm_groupid = ".$groupid." ";
 						
-						$extens = "OR src='".$row['extension']."' OR dst='".$row['extension']."' ";
+						$query .= " AND accountid=".$row['id'];
+						$query_a .= " AND accountid=".$row['id'];
 
-						if($row['channel'] != '') $channels = "OR channel LIKE '".$row['channel']."-%' OR dstchannel LIKE '".$row['channel']."-%' ";
-
-						if($row['agent'] != '') $agents = "OR dstchannel='agent/".$row['agent']."' ";
-						$query .= ' AND ('.ltrim($extens.$channels.$agents,'OR').')'; 
-						$query_a .= ' AND ('.ltrim($extens.$channels.$agents,'OR').')'; 
-					
 						$all_count = & $db->getone($query);
 						$answer_row = & $db->getRow($query_a);
 						$return_arr[$row['id']]['recordNum'] = $all_count;
@@ -4269,17 +4187,453 @@ Class astercrm extends PEAR{
 				}
 			}
 		}
+
 		return $return_arr;
 	}
 
 	function &checkDialedlistCall($dialnumber){
 		global $db;
-		$sql = "SELECT id,campaignid FROM dialedlist WHERE dialednumber = $dialnumber AND dialedtime > (now()-INTERVAL 600 SECOND) ORDER BY dialedtime DESC LIMIT 1";
+		$sql = "SELECT id,campaignid FROM dialedlist WHERE dialednumber = '".$dialnumber."' AND dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialedtime DESC LIMIT 1";
 		//echo $sql;exit;
 		astercrm::events($sql);
 		//$res = & $db->getOne($sql);
 		$res = & $db->getRow($sql);
 		return $res;
+	}
+
+	/**
+	*  generate grid HTML code
+	*  @param	start		int			record start
+	*  @param	limit		int			how many records need
+	*  @param	filter		string		the field need to search
+	*  @param	content		string		the contect want to match
+	*  @param	divName		string		which div grid want to be put
+	*  @param	order		string		data order
+	*  @return	html		string		grid HTML code
+	*/
+
+	function createTikcetGrid($Cid=0,$Ctype="",$start=0,$limit=1,$filter=null,$content=null,$order=null,$divName="",$ordering="", $stype=array()){
+		global $locate;
+		$_SESSION['ordering'] = $ordering;
+		if($filter == null or $content == null or $content == 'Array' or $filter == 'Array'){
+			$numRows =& astercrm::getTicketNumRows($filter, $content,$Ctype,$Cid);
+			$arreglo =& astercrm::getAllTicketRecords($start,$limit,$order,$Ctype,$Cid);
+			$content = null;
+			$filter = null;
+		}else{
+			foreach($content as $value){
+				if(trim($value) != ""){  //搜索内容有值
+					$flag = "1";
+					break;
+				}
+			}
+			foreach($filter as $value){
+				if(trim($value) != ""){  //搜索条件有值
+					$flag2 = "1";
+					break;
+				}
+			}
+			foreach($stype as $value){
+				if(trim($value) != ""){  //搜索方式有值
+					$flag3 = "1";
+					break;
+				}
+			}
+			if($flag != "1" || $flag2 != "1"){  //无值
+				$numRows =& astercrm::getTicketNumRows($filter, $content,$Ctype,$Cid);
+				$arreglo =& astercrm::getAllTicketRecords($start,$limit,$order,$Ctype,$Cid);
+			}elseif($flag3 != 1){
+				$order = "id";
+				$numRows =& astercrm::getTicketNumRowsMore($filter, $content,$Ctype,$Cid);
+				$arreglo =& astercrm::getTicketRecordsFilteredMore($start, $limit, $filter, $content, $order,$Ctype,$Cid);
+			}else{
+				$order = "id";
+				$numRows =& astercrm::getTicketNumRowsMorewithstype($filter, $content,$stype,$table,$Ctype,$Cid);
+				$arreglo =& astercrm::getTicketRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,$Ctype,$Cid);
+			}
+		}
+
+		// Select Box: type table.
+		$typeFromSearch = array();
+		$typeFromSearch[] = 'like';
+		$typeFromSearch[] = 'equal';
+		$typeFromSearch[] = 'more';
+		$typeFromSearch[] = 'less';
+
+		// Selecct Box: Labels showed on searchtype select box.
+		$typeFromSearchShowAs = array();
+		$typeFromSearchShowAs[] = $locate->Translate("like");
+		$typeFromSearchShowAs[] = '=';
+		$typeFromSearchShowAs[] = '>';
+		$typeFromSearchShowAs[] = '<';
+
+		// Editable zone
+
+		// Databse Table: fields
+		$fields = array();
+		if($Ctype == 'agent_tickets') {
+			$fields[] = 'ticketname';
+			$fields[] = 'customer';
+			$fields[] = 'status';
+			$fields[] = 'memo';
+			$fields[] = 'creby';
+		} else {
+			$fields[] = 'ticketcategoryname';
+			$fields[] = 'ticketname';
+			$fields[] = 'customer';
+			$fields[] = 'assignto';
+			$fields[] = 'status';
+			$fields[] = 'memo';
+			$fields[] = 'creby';
+		}
+		
+
+		// HTML table: Headers showed
+		$headers = array();
+		if($Ctype != 'agent_tickets') {
+			$headers[] = $locate->Translate("TicketCategory Name");
+		}
+		$headers[] = $locate->Translate("Ticket Name");
+		$headers[] = $locate->Translate("Customer");
+		if($Ctype != 'agent_tickets') {
+			$headers[] = $locate->Translate("AssignTo");
+		}
+		$headers[] = $locate->Translate("Status");
+		$headers[] = $locate->Translate("Memo");
+		$headers[] = $locate->Translate("Creby");
+		
+		if($Ctype == 'agent_tickets') {
+			// HTML table: hearders attributes
+			$attribsHeader = array();
+			$attribsHeader[] = 'width="20%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="30%"';
+			$attribsHeader[] = 'width="20%"';
+
+			// HTML Table: columns attributes
+			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+		} else {
+			// HTML table: hearders attributes
+			$attribsHeader = array();
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+			$attribsHeader[] = 'width=""';
+
+			// HTML Table: columns attributes
+			$attribsCols = array();
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+			$attribsCols[] = 'style="text-align: left"';
+		}
+		
+		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
+		$eventHeader = array();
+		if($Ctype == 'agent_tickets') {
+			$XajaxMath = 'showMyTicketsGrid';
+		} else{
+			$XajaxMath = 'AllTicketOfMyGrid';
+		}
+		if($Ctype != 'agent_tickets') {
+			$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","ticketcategoryname","'.$divName.'","ORDERING");return false;\'';
+		}
+		$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","ticketname","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
+		if($Ctype != 'agent_tickets') {
+			$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
+		}
+		$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
+
+		// Select Box: fields table.
+		$fieldsFromSearch = array();
+		if($Ctype != 'agent_tickets') {
+			$fieldsFromSearch[] = 'ticketcategoryname';
+		}
+		$fieldsFromSearch[] = 'ticketname';
+		$fieldsFromSearch[] = 'customer';
+		if($Ctype != 'agent_tickets') {
+			$fieldsFromSearch[] = 'username';
+		}
+		//$fieldsFromSearch[] = 'status';
+		//$fieldsFromSearch[] = 'memo';
+		$fieldsFromSearch[] = 'creby';
+
+		// Selecct Box: Labels showed on search select box.
+		$fieldsFromSearchShowAs = array();
+		if($Ctype != 'agent_tickets') {
+			$fieldsFromSearchShowAs[] = $locate->Translate("TicketCategory Name");
+		}
+		$fieldsFromSearchShowAs[] = $locate->Translate("Ticket Name");
+		$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
+		if($Ctype != 'agent_tickets') {
+			$fieldsFromSearchShowAs[] = $locate->Translate("AssignTo");
+		}
+		//$fieldsFromSearchShowAs[] = $locate->Translate("Status");
+		//$fieldsFromSearchShowAs[] = $locate->Translate("Memo");
+		$fieldsFromSearchShowAs[] = $locate->Translate("Creby");
+
+		// Create object whit 5 cols and all data arrays set before.
+		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype,$userexten,$table='ticket_details');
+		
+		#$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
+
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
+		$table->ordering = $ordering;
+		$table->addRowSearchMore("ticket_details",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+
+		while ($arreglo->fetchInto($row)) {
+		// Change here by the name of fields of its database table
+			$rowc = array();
+			$rowc[] = $row['id'];
+			if($Ctype != 'agent_tickets') {
+				$rowc[] = $row['ticketcategoryname'];
+			}
+			$rowc[] = $row['ticketname'];
+			$rowc[] = $row['customer'];
+			if($Ctype != 'agent_tickets') {
+				$rowc[] = $row['username'];
+			}
+			$rowc[] = $locate->Translate($row['status']);
+			$rowc[] = $row['memo'];
+			$rowc[] = $row['creby'];
+			$table->addRow("ticket_details",$rowc,0,0,0,$divName,$fields);
+		}
+		$html = $table->render('static');
+		return $html;
+	}
+
+	/**
+	*  Obtiene todos los registros de la tabla paginados.
+	*
+	*  	@param $start	(int)	Inicio del rango de la p&aacute;gina de datos en la consulta SQL.
+	*	@param $limit	(int)	L&iacute;mite del rango de la p&aacute;gina de datos en la consultal SQL.
+	*	@param $order 	(string) Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
+	*	@return $res 	(object) Objeto que contiene el arreglo del resultado de la consulta SQL.
+	*/
+	function &getAllTicketRecords($start,$limit,$order=null,$Ctype,$Cid=0){
+		global $db;
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1 ";
+		}else{
+			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
+		}
+		
+		if($Ctype == 'agent_tickets') {
+			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+		} else {
+			$sql .= " AND ticket_details.customerid=$Cid";
+		}
+		
+		if($order == null){
+			$sql .= " LIMIT $start, $limit";//.$_SESSION['ordering'];
+		}else{
+			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
+		}
+		
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	/**
+	*  Obtiene todos registros de la tabla paginados y aplicando un filtro
+	*
+	*  @param $start		(int) 		Es el inicio de la p&aacute;gina de datos en la consulta SQL
+	*	@param $limit		(int) 		Es el limite de los datos p&aacute;ginados en la consultal SQL.
+	*	@param $filter		(string)	Nombre del campo para aplicar el filtro en la consulta SQL
+	*	@param $content 	(string)	Contenido a filtrar en la conslta SQL.
+	*	@param $order		(string) 	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
+	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
+	*/
+
+	function &getTicketRecordsFilteredMore($start, $limit, $filter, $content, $order, $ordering = "",$Ctype,$Cid=0){
+		global $db;		
+		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1";
+		}else{
+			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
+		}
+		
+		if($Ctype == 'agent_tickets') {
+			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+		} else {
+			$sql .= " AND ticket_details.customerid=$Cid";
+		}
+		
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	/**
+	*  Devuelte el numero de registros de acuerdo a los par&aacute;metros del filtro
+	*
+	*	@param $filter	(string)	Nombre del campo para aplicar el filtro en la consulta SQL
+	*	@param $order	(string)	Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
+	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
+	*/
+	
+	function &getTicketNumRows($filter = null, $content = null,$Ctype,$Cid=0){
+		global $db;
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE 1";
+		}else{
+			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE username = '".$_SESSION['curuser']['username']."'";
+		}
+		
+		if($Ctype == 'agent_tickets') {
+			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+		} else {
+			$sql .= " AND ticket_details.customerid=$Cid";
+		}
+		
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;		
+	}
+
+	function &getTicketNumRowsMore($filter = null, $content = null,$Ctype,$Cid=0){
+		global $db;
+		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
+
+		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1";
+		}else{
+			$sql .= " username='".$_SESSION['curuser']['username']."'";
+		}
+		if($Ctype == 'agent_tickets') {
+			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+		} else {
+			$sql .= " AND ticket_details.customerid=$Cid";
+		}
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr;
+		}else {
+			$sql .= " 1";
+		}
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
+	}
+
+	function &getTicketNumRowsMorewithstype($filter, $content,$stype,$table,$Ctype,$Cid=0){
+		global $db;
+		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
+
+		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1";
+		}else{
+			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
+		}
+		if($Ctype == 'agent_tickets') {
+			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+		} else {
+			$sql .= " AND ticket_details.customerid=$Cid";
+		}
+
+		
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr;
+		}else {
+			$sql .= " 1";
+		}
+		astercrm::events($sql);
+		$res =& $db->getOne($sql);
+		return $res;
+	}
+
+	function &getTicketRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,$Ctype,$Cid=0){
+		global $db;		
+
+		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
+
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " 1";
+		}else{
+			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
+		}
+		if($Ctype == 'agent_tickets') {
+			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+		} else {
+			$sql .= " AND ticket_details.customerid=$Cid";
+		}
+		
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
+			$sql .= " AND ".$joinstr."  "
+					." ORDER BY ".$order
+					." ".$_SESSION['ordering']
+					." LIMIT $start, $limit $ordering";
+		}
+
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+	
+	/**
+	*  create a 'where string' with 'like,<,>,=' assign by stype
+	*
+	*	@param $stype		(array)		assign search type
+	*	@param $filter		(array) 	filter in sql
+	*	@param $content		(array)		content in sql
+	*	@return $joinstr	(string)	sql where string
+	*/
+	function createTicketSqlWithStype($filter,$content,$stype=array(),$table='',$option='search'){
+		$i=0;
+		$joinstr='';
+		foreach($stype as $type){
+			$content[$i] = preg_replace("/'/","\\'",$content[$i]);
+			if($filter[$i] != '' && trim($content[$i]) != ''){
+				if($filter[$i] == 'ticketcategoryname') {
+					$filter[$i] = 'ticketcategory.ticketname';
+				} else if($filter[$i] == 'ticketname') {
+					$filter[$i] = 'tickets.ticketname';
+				}
+				if($type == "equal"){
+					$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
+				}elseif($type == "more"){
+					$joinstr.="AND $filter[$i] > '".trim($content[$i])."' ";
+				}elseif($type == "less"){
+					$joinstr.="AND $filter[$i] < '".trim($content[$i])."' ";
+				}else{
+					$joinstr.="AND $filter[$i] like '%".trim($content[$i])."%' ";
+				}
+			}
+			$i++;
+		}
+		return $joinstr;
 	}
 }
 ?>

@@ -131,6 +131,15 @@ function clearPopup(){
 
 	$objResponse->addAssign("formDiallistPopup","innerHTML", "" );
 	$objResponse->addAssign("formDiallistPopup","style.visibility", "hidden");
+
+	$objResponse->addAssign("formTicketDetailDiv","innerHTML", "" );
+	$objResponse->addAssign("formTicketDetailDiv","style.visibility", "hidden");
+
+	$objResponse->addAssign("formMyTickets","innerHTML", "" );
+	$objResponse->addAssign("formMyTickets","style.visibility", "hidden");
+
+	$objResponse->addAssign("formCurTickets","innerHTML", "" );
+	$objResponse->addAssign("formCurTickets","style.visibility", "hidden");
 	
 	return $objResponse->getXML();
 }
@@ -657,7 +666,7 @@ function showDiallist($userexten,$customerid,$start = 0, $limit = 5,$filter = nu
 	if($userexten != ''){
 		$html = Table::Top($locate->Translate("diallist"),$divName); 			
 		$html .= Customer::createDiallistGrid($userexten,$customerid,$start, $limit,$filter, $content, $stype, $order, $divName, $ordering);	
-		//$html .= Table::Footer();
+		$html .= Table::Footer();
 		//echo $html;exit;
 		$objResponse = new xajaxResponse();
 		$objResponse->addAssign($divName, "style.visibility", "visible");
@@ -670,7 +679,7 @@ function showRecords($id,$start = 0, $limit = 5,$filter = null, $content = null,
 	global $locate;
 
 	if($id != ''){
-		$html = Table::Top($locate->Translate("Monitors"),"formRecords"); 			
+		$html = Table::Top($locate->Translate("Cdr"),"formRecords"); 			
 		$html .= Customer::createRecordsGrid($id,$start, $limit,$filter, $content, $order, $divName, $ordering);	
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
@@ -820,6 +829,10 @@ function saveDiallist($f,$userexten = '',$customerid = ''){
 function saveDiallistMain($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	if($f['dialnumber'] == '' || empty($f['dialnumber'])) {
+		$objResponse->addAlert($locate->Translate("Dialnumber can not be empty"));
+		return $objResponse->getXML();
+	}
 	if($f['campaignid'] == ''){
 		$objResponse->addAlert($locate->Translate("Must select a campaign"));
 		return $objResponse->getXML();
@@ -850,7 +863,7 @@ function saveDiallistMain($f){
 			return $objResponse->getXML();
 		}
 	}
-
+	
 	$id = Customer::insertNewDiallist($f);
 	if($id){
 		$objResponse->addAlert($locate->Translate("Add diallist succeed"));
@@ -895,7 +908,39 @@ function searchRecordsFormSubmit($searchFormValue,$numRows,$limit,$id='',$type='
 	return $objResponse->getXML();
 }
 
-function playmonitor($id){
+function searchTicketsFormSubmit($searchFormValue,$numRows,$limit,$id='',$type=''){
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	$searchField = array();
+	$searchContent = array();
+	$searchType = array();
+	$customerid = $searchFormValue['customerid'];
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
+	$divName = "formCurTickets";
+	$html = Table::Top($locate->Translate("My Tickets"),"formCurTickets");
+	$accountid = Customer::getAccountid();
+	/*if($type == "delete"){
+		$res = Customer::deleteRecord($id,'account');
+		if ($res){
+			$html = Customer::createRecordsGrid($customerid,$searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "");
+			$objResponse = new xajaxResponse();
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
+		}else{
+			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
+		}
+	}else{*/
+
+		$html .= astercrm::createTikcetGrid($accountid,'agent_tickets',$numRows, $limit,$searchField, $searchContent, $searchField[count($searchField)-1], $divName, "",$searchType);
+	//}
+
+	$html .= Table::Footer();
+	$objResponse->addAssign($divName, "innerHTML", $html);
+	return $objResponse->getXML();
+}
+
+/*function playmonitor($id){
 	global $config,$locate;
 	$objResponse = new xajaxResponse();
 	$res = Customer::getRecordByID($id,'monitorrecord');
@@ -906,6 +951,28 @@ function playmonitor($id){
 			$html .='<object type="application/x-shockwave-flash" data="skin/default/player_mp3_maxi.swf" width="200" height="20"><param name="movie" value="skin/default/player_mp3_maxi.swf" /><param name="bgcolor" value="#ffffff" /><param name="FlashVars" value="mp3=records.php?file='.$id.'&amp;loop=0&amp;autoplay=1&amp;autoload=1&amp;volume=75&amp;showstop=1&amp;showinfo=1&amp;showvolume=1&amp;showloading=always" /></object><br><a href="###" onclick="window.location.href=\'records.php?file='.$id.'\'">'.$locate->Translate("download").'</a>';
 		}else{
 			$html .= '<embed src="records.php?file='.$id.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$id.'\'">'.$locate->Translate("download").'</a>';
+		}
+	}else{
+		$html .= '<b>404 File not found!</b>';
+	}
+	$html .= Table::Footer();
+	$objResponse->addAssign("formplaymonitor", "style.visibility", "visible");
+	$objResponse->addAssign("formplaymonitor", "innerHTML", $html);	
+	return $objResponse->getXML();
+}*/
+
+function playmonitor($path){
+	global $config,$locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("playmonitor"),"formplaymonitor");
+	if(is_file($path) && !empty($path)){
+		$filebasename = basename($path);
+		$file_extension = strtolower(substr(strrchr($filebasename,"."),1));
+
+		if($file_extension == 'mp3'){
+			$html .='<object type="application/x-shockwave-flash" data="skin/default/player_mp3_maxi.swf" width="200" height="20"><param name="movie" value="skin/default/player_mp3_maxi.swf" /><param name="bgcolor" value="#ffffff" /><param name="FlashVars" value="mp3=records.php?file='.$path.'&amp;loop=0&amp;autoplay=1&amp;autoload=1&amp;volume=75&amp;showstop=1&amp;showinfo=1&amp;showvolume=1&amp;showloading=always" /></object><br><a href="###" onclick="window.location.href=\'records.php?file='.$path.'\'">'.$locate->Translate("download").'</a>';
+		}else{
+			$html .= '<embed src="records.php?file='.$path.'" autostart="true" width="300" height="40" name="sound" id="sound" enablejavascript="true"><br><a href="###" onclick="window.location.href=\'records.php?file='.$path.'\'">'.$locate->Translate("download").'</a>';
 		}
 	}else{
 		$html .= '<b>404 File not found!</b>';

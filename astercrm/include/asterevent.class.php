@@ -101,7 +101,9 @@ class asterEvent extends PEAR
 		
 		if ($config['system']['eventtype'] == 'curcdr'){
 
-			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND src !='<unknown>' AND id > $curid ";
+			//$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%' OR srcchan LIKE 'local/".$exten."@%' OR dstchan LIKE 'local/".$exten."@%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND src !='<unknown>' AND id > $curid ";
+
+			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND src !='<unknown>' AND src !='<unknown>' AND id > $curid ";
 
 			$res = $db->query($query);
 			asterEvent::events($query);
@@ -119,7 +121,11 @@ class asterEvent extends PEAR
 					if($res_did = $db->getone($sql)) $didnumber = $res_did;
 				}
 
-				if (strstr($list['srcchan'],$channel) OR strstr($list['src'],$exten)) {// dial out
+				if ((strstr($list['srcchan'],$channel) && !strstr($list['srcchan'],'local')) OR strstr($list['src'],$exten)) {// dial out
+					//if($list['src'] != $exten){
+					//	$query = "update curcdr set src='$exten' WHERE id='".$list['id']."'";
+						//$db->query($query);
+					//}
 					$call['status'] = 'dialout';
 					if($list['dst'] == ''){
 						$call['callerid'] = $dst_tmp;
@@ -132,8 +138,23 @@ class asterEvent extends PEAR
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['calldate'] = $list['starttime'];
+					$call['queue'] = $list['queue'];
+					if($call['uniqueid'] == ''){
+						//$call['uniqueid'] = trim($list['dstuid']);
+					}
+					//检查onhold 通话
+					$sql = "SELECT * FROM hold_channel WHERE agentchan='".$list['srcchan']."' ORDER BY id DESC LIMIT 1";
+					$holds = $db->getrow($sql);
+					$call['hold'] = $holds;
+					//print_r($holds);exit;
 					return $call;
-				}elseif (strstr($list['dstchan'],$channel) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "agent/".$agent ){		//dial in
+				}elseif ((strstr($list['dstchan'],$channel) && !strstr($list['srcchan'],'local')) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "agent/".$agent ){		//dial in
+
+					//if($list['dst'] != $exten){
+						//$query = "update curcdr set dst='$exten' WHERE id='".$list['id']."'";
+						//$db->query($query);
+					//}
+					
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['didnumber'] = $didnumber;
@@ -142,8 +163,37 @@ class asterEvent extends PEAR
 					$call['uniqueid'] = trim($list['srcuid']);
 					$call['curid'] = trim($list['id']);
 					$call['calldate'] = $list['starttime'];
+					$call['queue'] = $list['queue'];
+					if(strstr($list['srcchan'],'local/')){
+						$query = "SELECT * FROM curcdr WHERE src='".$list['src']."' AND id < '".$list['id']."'";
+						
+						$lega = $db->getrow($query);
+						//print_r($lega);exit;
+						if($lega['id'] > 0){
+							if($lega['dst'] != '' && $lega['dstchan'] != ''){
+								$call['callerid'] = trim($lega['dst']);
+							}
+							if($lega['dstchan'] != ''){
+								$call['callerChannel'] = $lega['dstchan'];
+							}else{
+								$call['callerChannel'] = $lega['srcchan'];
+							}
+						}
+					}
+
+					$sql = "SELECT * FROM hold_channel WHERE agentchan='".$list['dstchan']."' ORDER BY id DESC LIMIT 1";
+					$holds = $db->getrow($sql);
+					$call['hold'] = $holds;
+
 					return $call;
 				}
+			}else{
+				//检查onhold 通话
+				$sql = "SELECT * FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."' ORDER BY id DESC LIMIT 1";
+				$holds = $db->getrow($sql);
+				$call['hold'] = $holds;
+				//$sql = "DELETE FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."'";
+				//$db->query($sql);
 			}
 
 			$call['status'] = '';
@@ -180,21 +230,36 @@ class asterEvent extends PEAR
 
 		if ($config['system']['eventtype'] == 'curcdr'){
 
-			$query = "SELECT * FROM curcdr WHERE srcuid = '$uniqueid' AND (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ";
+			//$query = "SELECT * FROM curcdr WHERE (srcuid = '$uniqueid' OR dstuid = '$uniqueid') AND (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%' OR srcchan LIKE 'local/".$exten."@%' OR dstchan LIKE 'local/".$exten."@%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' ";
+			$query = "SELECT * FROM curcdr WHERE (srcuid = '$uniqueid' OR dstuid = '$uniqueid') AND (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%' ) AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' OR id = $curid";
 			//echo $query;exit;
 			$res = $db->query($query);
 			asterEvent::events($query);
 			if ($res->fetchInto($list)) {
-				if ($list['answertime'] != '0000-00-00 00:00:00'){
+				//检查onhold 通话
+				$sql = "SELECT * FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."' ORDER BY id DESC LIMIT 1";
+				$holds = $db->getrow($sql);
+				$call['hold'] = $holds;
+				
+				if ($list['answertime'] != '0000-00-00 00:00:00' || $list['disposition'] == 'link'){
 
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
+					$call['consultnum'] = $list['dst'];
+					$call['queue'] = $list['queue'];
 
 					$call['status'] = 'link';		
 				}else{
 					$call['status'] = '';
+					$call['queue'] = $list['queue'];
 				}
 			}else{
+				//检查onhold 通话
+				$sql = "SELECT * FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."' ORDER BY id DESC LIMIT 1";
+				$holds = $db->getrow($sql);
+				$call['hold'] = $holds;
+				//$sql = "DELETE FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."'";
+				//$db->query($sql);
 				$call['status'] = 'hangup';
 			}
 			$call['id'] = $curid;

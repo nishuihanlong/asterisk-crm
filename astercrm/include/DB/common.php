@@ -1152,7 +1152,8 @@ class DB_common extends PEAR
         if (sizeof($params) > 0) {
             $sth = $this->prepare($query);
             if (DB::isError($sth)) {
-                return $sth;
+				print_r($sth);exit;
+				//return $sth;
             }
             $ret =& $this->execute($sth, $params);
             $this->freePrepared($sth, false);
@@ -1160,6 +1161,10 @@ class DB_common extends PEAR
         } else {
             $this->last_parameters = array();
             $result = $this->simpleQuery($query);
+			if(DB::isError($result)){
+				print_r($result);exit;
+				//return $result;
+			}
             if ($result === DB_OK || DB::isError($result)) {
                 return $result;
             } else {
@@ -1227,7 +1232,8 @@ class DB_common extends PEAR
         if (sizeof($params) > 0) {
             $sth = $this->prepare($query);
             if (DB::isError($sth)) {
-                return $sth;
+				print_r($sth);exit;
+                //return $sth;
             }
             $res =& $this->execute($sth, $params);
             $this->freePrepared($sth);
@@ -1236,7 +1242,8 @@ class DB_common extends PEAR
         }
 
         if (DB::isError($res)) {
-            return $res;
+			print_r($res);exit;
+            //return $res;
         }
 
         $err = $res->fetchInto($row, DB_FETCHMODE_ORDERED);
@@ -1291,7 +1298,8 @@ class DB_common extends PEAR
         if (sizeof($params) > 0) {
             $sth = $this->prepare($query);
             if (DB::isError($sth)) {
-                return $sth;
+				print_r($sth);exit;
+                //return $sth;
             }
             $res =& $this->execute($sth, $params);
             $this->freePrepared($sth);
@@ -1300,7 +1308,8 @@ class DB_common extends PEAR
         }
 
         if (DB::isError($res)) {
-            return $res;
+			print_r($res);exit;
+            //return $res;
         }
 
         $err = $res->fetchInto($row, $fetchmode);

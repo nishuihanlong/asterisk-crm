@@ -1,13 +1,13 @@
 <?
-require_once ("db_connect.php");
-global $db;
-if(is_numeric($_REQUEST['file'])){
-	$query = "SELECT * FROM monitorrecord WHERE id = ".$_REQUEST['file'];
-	if($row = $db->getRow($query)){
-		$file = $row['filename'].'.'.$row['fileformat'];
-	}else{
-		die("<b>404 File not found!</b>");
-	}	
+//require_once ("db_connect.php");
+//global $db;
+if(!empty($_REQUEST['file'])){
+	//$query = "SELECT * FROM monitorrecord WHERE id = ".$_REQUEST['file'];
+	//if($row = $db->getRow($query)){
+		$file = $_REQUEST['file'];
+	//}else{
+	//	die("<b>404 File not found!</b>");
+	//}	
 }else{
 	die("<b>404 File not found!</b>");
 }

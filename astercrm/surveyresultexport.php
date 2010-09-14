@@ -30,7 +30,7 @@ if ($_SESSION['curuser']['usertype']  == "groupadmin" ){
 }
 
 #error_reporting(E_ALL);
-error_reporting(0);
+error_reporting($_SESSION['error_report']);
 global $db;
 ob_start();
 header("charset=uft-8");   

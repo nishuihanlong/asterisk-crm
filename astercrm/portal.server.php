@@ -111,7 +111,7 @@ function getPrivateDialListNumber($extension = null){
 
 	$count = astercrm::getDialNumCountByAgent($extension);
 	if ($count == 0){
-		$objResponse->addAssign("divDialList", "innerHTML", $locate->Translate("no_dial_list"));
+		$objResponse->addAssign("spanDialList", "innerHTML", $locate->Translate("no_dial_list"));
 		$objResponse->addAssign("divWork", "innerHTML", '');
 		$objResponse->addAssign("btnWorkStatus","value", "" );
 		$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
@@ -122,11 +122,11 @@ function getPrivateDialListNumber($extension = null){
 		$objResponse->addRemove("spanDialListRecords");
 		$objResponse->addRemove("btnGetAPhoneNumber");
 
-		$objResponse->addCreate("divDialList", "div", "spanDialListRecords");
+		$objResponse->addCreate("spanDialList", "div", "spanDialListRecords");
 		$objResponse->addAssign("spanDialListRecords", "innerHTML", $locate->Translate("records_in_dial_list_table").$count);
 
 		// add start campaign button
-		$objResponse->addCreateInput("divDialList", "button", "btnGetAPhoneNumber", "btnGetAPhoneNumber");
+		$objResponse->addCreateInput("spanDialList", "button", "btnGetAPhoneNumber", "btnGetAPhoneNumber");
 		$objResponse->addAssign("btnGetAPhoneNumber", "value", $locate->Translate("get_a_phone_number"));
 		$objResponse->addEvent("btnGetAPhoneNumber", "onclick", "btnGetAPhoneNumberOnClick();");
 	}
@@ -158,7 +158,7 @@ function init(){
 	$objResponse->addAssign("myevents","innerHTML", $locate->Translate("waiting") );
 //	$objResponse->addAssign("status","innerHTML", $locate->Translate("listening") );
 	$objResponse->addAssign("extensionStatus","value", 'idle');
-	$objResponse->addAssign("processingMessage","innerHTML", $locate->Translate("processing_please_wait") );
+	$objResponse->addAssign("processingContent","innerHTML", $locate->Translate("processing_please_wait") );
 	
 //	$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
 //	$objResponse->addAssign("breakStatus","value", 1);
@@ -170,8 +170,10 @@ function init(){
 //			$objResponse->addAssign("breakStatus","value", 0);
 //			break;
 //		}
-//	}
-
+//	}spanAttendtran
+	if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+		$objResponse->addAssign("spanAttendtran", "style.display", "none");		
+	}
 
 	$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
 	$objResponse->addAssign("btnMonitorStatus","value", "idle" );
@@ -190,8 +192,7 @@ function init(){
 	$objResponse->addAssign("btnMonitor","disabled", true );
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 
-	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
-
+	
 	//$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 	if(strtoupper($config['system']['transfer_pannel']) == 'OFF'){		
 		$objResponse->addAssign("spanTransfer", "style.display", "none");		
@@ -210,16 +211,18 @@ function init(){
 	if($_SESSION['curuser']['agent'] != ''){
 
 	}
-	if(strtoupper($config['system']['mission_pannel']) == 'OFF' || $_SESSION['curuser']['agent'] != ''){
-		$objResponse->addAssign("divDialList", "style.display", "none");
+	if(strtoupper($config['system']['mission_pannel']) == 'OFF' ){
+		$objResponse->addAssign("spanDialList", "style.display", "none");
 		$objResponse->addAssign("misson", "style.display", "none");
 			
+	}else{
+		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 	}
 
 	if(strtoupper($config['system']['diallist_pannel']) != 'OFF'){
 		$objResponse->addAssign("sptAddDiallist", "style.display", "");	
 		$objResponse->addAssign("dpnShow", "value", "1");
-		$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
+		$objResponse->addScript("showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
 
 		//$objResponse->addAssign("formDiallistPannel", "style.visibility", "visible");
 	}
@@ -244,19 +247,28 @@ function init(){
 	for ($i=0;$i<$n;++$i){
 		$objResponse->addScript("addOption('iptDestNumber','".$speednumber[$i]['number']."','".$speednumber[$i]['description']."-".$speednumber[$i]['number']."');");
 	}
+	
+	$curmsg = Customer::getTicketInWork();
+	$panelHTML = '<a href=? onclick="showMyTickets(\'\',\'agent_tickets\');return false;">'.$locate->Translate("MyTickets")."</a><span id='curticketMsg'>".$curmsg.'</span><br/>';
 
 	if ($config['system']['display_recent_cdr'] == true && $_SESSION['curuser']['usertype'] == "agent"){	
 
 	}else{
-		$panelHTML = '<a href=? onclick="xajax_showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a>&nbsp;&nbsp;';
+		$panelHTML .= '<a href=? onclick="showRecentCdr(\'\',\'recent\');return false;">'.$locate->Translate("recentCDR").'</a><br/>';
 	}
 
+	$panelHTML .="<a href=? onclick=\"document.getElementById('dpnShow').value = 1;showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;\">".$locate->Translate("My Diallist")."</a><br/>";//<span id=\"sptAddDiallist\" style=\"display:none\">
+	$panelHTML .="<a href=? id=\"agentWorkstat\" name=\"agentWorkstat\" onclick=\"document.getElementById('awsShow').value = 1;agentWorkstat();return false;\">".$locate->Translate("work stat")."</a><br/>";
+	$panelHTML .="<a href=? id=\"knowledge\" name=\"knowledge\" onclick=\"setKnowledge();return false;\">".$locate->Translate("viewknowledge")."</a><br/>";
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
-		$panelHTML .= '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a>&nbsp;&nbsp;';
+		$panelHTML .= '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a><br/>';
 	}
 
-	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a>";
+	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a><br />";
+
+	
+
 	$objResponse->addAssign("divPanel","innerHTML", $panelHTML);
 
 	if ($config['system']['enable_external_crm'] == false){	//use internal crm
@@ -275,13 +287,20 @@ function init(){
 			$objResponse->addScript("document.getElementById('external_crm_form').submit();");
 		}
 	}
-	$monitorstatus = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'astercrm_accountgroup');
-	
+	$monitorstatus = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'astercrm_accountgroup'); 
 	if ($monitorstatus['monitorforce']) {
 		$objResponse->addAssign("chkMonitor","checked", 'true');
 		$objResponse->addAssign("chkMonitor","style.visibility", 'hidden');
 		$objResponse->addAssign("btnMonitor","disabled", 'true');
 	}
+	$objResponse->addAssign("clear_popup","value",$monitorstatus['clear_popup']);//for clear popup after ($clear_popup) seconds
+	$objResponse->addScript("clearSettimePopup();");
+	if($_SESSION['curuser']['group']['allowloginqueue'] == 'yes'){
+		$objResponse->addScript("getMsgInCampaign();");
+	}else{
+		$objResponse->addAssign("divGetMsgInCampaignP","style.visibility", 'hidden');
+	}
+
 	//if enabled monitor by astercctools
 	$configstatus = Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
 	if ($configstatus == -2){
@@ -294,6 +313,7 @@ function init(){
 			$objResponse->addAssign("btnMonitor","disabled", 'true');
 		}
 	}
+
 	return $objResponse;
 }
 
@@ -305,43 +325,51 @@ function listenCalls($aFormValues){
 	global $config,$locate;
 	//print_r($aFormValues);exit;
 	$objResponse = new xajaxResponse();
-	if($agentData = Customer::getAgentData()){
-		
-		if($aFormValues['breakStatus'] == -1){
-			$span = '<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >';
-			$objResponse->addAssign("spnPause","innerHTML", $span );
-		}
-		if($agentData['cretime'] > $aFormValues['clkPauseTime']){
-			$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
-			if($agentData['agent_status'] != 'paused'){
-				$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
-				$objResponse->addAssign("breakStatus","value", 0);
-			}else{
-				$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
-				$objResponse->addAssign("breakStatus","value", 1);
-			}
-		}
-	}else{
-		if($_SESSION['curuser']['agent'] == '' ){
-			$objResponse->addAssign("agentData","innerHTML", '');
-			$objResponse->addAssign("spnPause","innerHTML", '' );
-			$objResponse->addAssign("breakStatus","value", -1);
-		}
-	}
+//	if($agentData = Customer::getAgentData()){
+//		if(strstr($agentData['agent'],'agent')){
+//			$objResponse->addAssign("spanDialList", "style.display", "none");
+//			$objResponse->addAssign("misson", "style.display", "none");
+//		}else{
+//			$objResponse->addAssign("spanDialList", "style.display", "");
+//			$objResponse->addAssign("misson", "style.display", "");
+//		}
+////		print_r($agentData);exit;
+//		if($aFormValues['breakStatus'] == -1){
+//			$span = '<input type="button" value="" name="btnPause" id="btnPause" onclick="queuePaused();" >';
+//			$objResponse->addAssign("spnPause","innerHTML", $span );
+//		}
+//		if($agentData['cretime'] > $aFormValues['clkPauseTime']){
+//			$objResponse->addAssign("agentData","innerHTML", $agentData['data'] );
+//			if($agentData['agent_status'] != 'paused'){
+//				$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
+//				$objResponse->addAssign("breakStatus","value", 0);
+//			}else{
+//				$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
+//				$objResponse->addAssign("breakStatus","value", 1);
+//			}
+//		}
+//	}else{
+//		if($_SESSION['curuser']['agent'] == '' ){
+//			$objResponse->addAssign("agentData","innerHTML", '');
+//			$objResponse->addAssign("spnPause","innerHTML", '' );
+//			$objResponse->addAssign("breakStatus","value", -1);
+//		}
+//	}
 
 	if($aFormValues['dpnShow'] > 0){ //for refresh diallist pannel
 		$lastDiallistId = Customer::getLastOwnDiallistId();
 		if($lastDiallistId == '') $lastDiallistId = 1;
 		if( $aFormValues['dpnShow'] != $lastDiallistId ){
 			$objResponse->addAssign("dpnShow","value", $lastDiallistId );
-			$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
+			$objResponse->addScript("showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
 		}
 	}
 
 	if ($aFormValues['uniqueid'] == ''){
-		$objResponse->addAssign("btnDial","disabled",false);;
+		$objResponse->addAssign("btnDial","disabled",false);
 		$objResponse->loadXML(waitingCalls($aFormValues));
 	} else{
+		$objResponse->addAssign("btnDial","disabled",true);
 		$objResponse->loadXML(incomingCalls($aFormValues));
 	}
 
@@ -354,11 +382,11 @@ function listenCalls($aFormValues){
 }
 
 /**
-*	 check if there's new event happen
-*
+*	 transfer call
 */
 function transfer($aFormValues){
-	global $config;
+	global $config,$db;
+	//print_r($aFormValues);exit;
 	$myAsterisk = new Asterisk();
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
@@ -372,112 +400,124 @@ function transfer($aFormValues){
 		return $objResponse;
 	}
 
-	if ($aFormValues['direction'] == 'in')		
-		$myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
-	else
-		$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
-	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+	if ($aFormValues['direction'] == 'in'){
+		if($aFormValues['attendtran'] == 'yes'){
+			$sql = "INSERT INTO hold_channel SET number='".$aFormValues['callerid']."',channel='".$aFormValues['callerChannel']."',uniqueid='".$aFormValues['uniqueid']."',status='hold',agentchan='".$aFormValues['calleeChannel']."',direction='in',accountid='".$_SESSION['curuser']['accountid']."',cretime=now()";
+			$db->query($sql);
+			$res = $myAsterisk->Redirect($aFormValues['callerChannel'],$aFormValues['calleeChannel'],'s','astercc-onhold',1);
+			#print_r($res);exit;
+			$res1=$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
+			#print_r($res);print_r($res1);exit;
+		}else{
+			$res= $myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
+			
+		}
+		
+	}else{
+		if($aFormValues['attendtran'] == 'yes'){
+			$sql = "INSERT INTO hold_channel SET number='".$aFormValues['callerid']."',channel='".$aFormValues['calleeChannel']."',uniqueid='".$aFormValues['uniqueid']."',status='hold',agentchan='".$aFormValues['callerChannel']."',direction='out',accountid='".$_SESSION['curuser']['accountid']."',cretime=now()";
+			$db->query($sql);
+
+			$res = $myAsterisk->Redirect($aFormValues['calleeChannel'],$aFormValues['callerChannel'],'s','astercc-onhold',1);
+
+			$res1= $myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
+			#print_r($res);print_r($res1);exit;
+		}else{
+			$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
+		}
+	}
+	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse;
 }
 
-//check if call (uniqueid) hangup
-function incomingCalls($myValue){
-	global $db,$locate,$config;
+/**
+*	attend transfer call
+*/
+function attendtransfer($channel,$consultchan){
+	global $config,$db;
+	//echo $channel,$consultchan;exit;
 	$objResponse = new xajaxResponse();
-
-	if ($myValue['direction'] != ''){
-		$call = asterEvent::checkCallStatus($myValue['curid'],$myValue['uniqueid']);
-
-		if ($call['status'] ==''){
-			return $objResponse;
-		} elseif ($call['status'] =='link'){
-			$objResponse->addAssign("btnDial","disabled",true);
-			if($myValue['callResultStatus'] != '2'){
-				$result = asterCrm::checkDialedlistCall($myValue['callerid']);
-				$dialedlistid = $result['id'];//$dialedlistid = asterCrm::checkDialedlistCall($myValue['callerid'])
-				if($dialedlistid){
-					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'ANSWERED');
-					//echo $divCallresult;exit;
-					$objResponse->addAssign("divCallresult", "style.display", "");
-					$objResponse->addAssign("divCallresult", "innerHTML", $divCallresult);
-					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
-				}else{
-					$objResponse->addAssign("dialedlistid","value", 0 );
-				}
-				$objResponse->addAssign("callResultStatus","value", '2' );
-			}
-
-			if ($myValue['extensionStatus'] == 'link')	 //already get link event
-				return $objResponse;
-//			if ($call['callerChannel'] == '' or $call['calleeChannel'] == '')
-//				return $objResponse;
-			$status	= "link";
-			$info	= $locate->Translate("talking_to").$myValue['callerid'];
-			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
-			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
-			//if chkMonitor be checked or monitor by astercctools btnMonitor must be disabled
-			$configstatus = Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
-			if ($configstatus != -2){
-				if ($myValue['chkMonitor'] != 'on' && $asterccConfig['system']['force_record'] != 1) {
-					$objResponse->addAssign("btnMonitor","disabled", false );
-				}
-			}
-			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
-			astercrm::events($myValue['chkMonitor'].'-chkMonitor');
-			astercrm::events($myValue['btnMonitorStatus'].'-btnMonitorStatus');
-			//echo $myValue['chkMonitor'];exit;
-			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'idle') 
-				$objResponse->addScript("monitor();");			
-			$objResponse->addAssign("btnHangup","disabled", false );
-			if(strtoupper($config['system']['transfer_pannel']) == 'ON'){
-				$objResponse->addAssign("btnTransfer","disabled", false );
-			}
-		} elseif ($call['status'] =='hangup'){
-			//$objResponse->addAssign("divCallresult", "style.display", "none");
-			$objResponse->addAssign("callResultStatus", "value", "");
-			
-			//$objResponse->addAssign("divCallresult", "innerHTML", '<input type="radio" value="normal" id="callresult" name="callresult" onclick="updateCallresult(this.value);" checked>'.$locate->Translate("normal").' <input type="radio" value="fax" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("fax").' <input type="radio" value="voicemail" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("voicemail").'<input type="hidden" id="dialedlistid" name="dialedlistid" value="0">');
-			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'recording') 
-				$objResponse->addScript("monitor();");
-			$status	= 'hang up';
-			$info	= "Hang up call from " . $myValue['callerid'];
-//			$objResponse->addScript('document.title=\'asterCrm\';');
-			$objResponse->addAssign("uniqueid","value", "" );
-			$objResponse->addAssign("callerid","value", "" );
-			$objResponse->addAssign("callerChannel","value", '');
-			$objResponse->addAssign("calleeChannel","value", '');
-			if(strtoupper($config['system']['transfer_pannel']) == 'ON'){
-				$objResponse->addAssign("btnTransfer","disabled", true );
-			}
-
-			//disable monitor
-			$objResponse->addAssign("btnMonitor","disabled", true );
-			$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
-			$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
-
-			//disable hangup button
-			$objResponse->addAssign("btnHangup","disabled", true );
-			$objResponse->addAssign('divTrunkinfo',"innerHTML",'');
-			$objResponse->addAssign('divDIDinfo','innerHTML','');
-			if($myValue['btnWorkStatus'] == 'working') {				
-				$interval = $_SESSION['curuser']['dialinterval'];
-				$objResponse->addScript("autoDial('$interval');");
-			}
-			$objResponse->addScript("document.getElementById('btnDial').disabled=false;");
-		}
-		$objResponse->addAssign("status","innerHTML", $status );
-//		$objResponse->addAssign("extensionStatus","value", $status );
-		$objResponse->addAssign("myevents","innerHTML", $info );
+	//$channel = split('-',$channel);
+	//$consultchan = split('-',$consultchan);
+	$consultchan = '';
+	if($channel == ''){
+		$sql = "SELECT * FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."' ORDER BY id DESC LIMIT 1";
+		$hold = $db->getrow($sql);
+		$channel = $hold['channel'];
 	}
 
+	if($consultchan == ''){
+		$curcall = asterEvent::checkNewCall(0,$_SESSION['curuser']['extension'],$_SESSION['curuser']['channel'],$_SESSION['curuser']['agent']);
+		$consultchan = $curcall['calleeChannel'];
+	}
+	
+	$sql="DELETE FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."'";
+	$db->query($sql);
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$myAsterisk->Redirect($channel,'',$consultchan,'astercc-attend',1);
+	return $objResponse;
+	//$myAsterisk->sendCall($channel['0'],NULL,NULL,1,'Bridge',$consultchan,30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+}
+
+function holdhangup($channel,$consultchan){
+	global $config,$locate,$db;
+	$objResponse = new xajaxResponse();
+	//$channel = split('-',$channel);
+	//$consultchan = split('-',$consultchan);
+	
+	$myAsterisk = new Asterisk();
+	$objResponse = new xajaxResponse();
+	if (trim($channel) == '')
+		return $objResponse;
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		$objResponse->addALert("action Huangup failed");
+		return $objResponse;
+	}
+	$sql="DELETE FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."'";
+	$db->query($sql);
+
+	$myAsterisk->Hangup($channel);
 	return $objResponse;
 }
+
+function turnback($channel,$agentchan){
+	global $config,$db;
+	$objResponse = new xajaxResponse();
+	$sql="SELECT * FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."' ORDER BY id DESC LIMIT 1";
+	$hold = $db->getRow($sql);
+	$sql="DELETE FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."'";
+	$db->query($sql);
+	$myAsterisk = new Asterisk();
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if($agentchan != ''){
+		if($hold['direction'] == 'in'){
+			$myAsterisk->Redirect($channel,'',$agentchan,'astercc-attend',1);
+		}else{
+			$myAsterisk->Redirect($agentchan,'',$channel,'astercc-attend',1);
+		}
+	}else{
+		$context = $_SESSION['curuser']['group']['outcotext'];
+		if($context == ''){
+			$context=$config['system']['outcontext'];
+		}
+		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$context."/n";
+		$myAsterisk->sendCall($strChannel,NULL,NULL,1,'Bridge',$channel,30000,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+	}
+	return $objResponse;
+}
+
 
 /*
 	add a new parameter callerid		by solo2008/2/24
 	when monitor, record the callerid and the filename to database
 */
-function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
+function monitor($channel,$callerid,$action = 'start',$uniqueid = '',$curid){
+	//echo $channel;exit;
 	global $config,$locate;
 	$myAsterisk = new Asterisk();
 	$objResponse = new xajaxResponse();
@@ -494,13 +534,14 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = ''){
 		$filename = $config['asterisk']['monitorpath'].date('Y/m/d/H/').$filename;
 		$filename .= '.'.time();
 		$format = $config['asterisk']['monitorformat'];
-		$mix = true;
+		$mix = false;
 		$res = $myAsterisk->Monitor($channel,$filename,$format,$mix);
+
 		if ($res['Response'] == 'Error'){
 			return $objResponse;
 		}
 		// 录音信息保存到数据库
-		astercrm::insertNewMonitor($callerid,$filename,$uniqueid,$format);
+		astercrm::insertNewMonitor($callerid,$filename,$uniqueid,$format,$curid);
 		$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("recording") );
 		$objResponse->addAssign("btnMonitorStatus","value", "recording" );
 
@@ -545,24 +586,46 @@ function waitingCalls($myValue){
 	//  end
 	//print_r($call['callerid']);exit;
 	if ($call['status'] == ''){
+		
+		if($call['hold']['number'] != ''){
+			//print_r($call);exit;
+			$curcallerid = $call['hold']['number'];
+			$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+			//return $objResponse;
+		}else{
+			$objResponse->addAssign("divHolding","innerHTML",'');
+		}
 		$title	= $locate->Translate("waiting");
 		$status	= 'idle';
 		//$call['curid'] = $curid;
 		$direction	= '';
 		$info	= $locate->Translate("stand_by");
+		$objResponse->addAssign("dndlist_campaignid","value","0");
+		
 	} elseif ($call['status'] == 'incoming'){	//incoming calls here
+		if(strstr($call['calleeChannel'],'agent')){
+			$objResponse->addAssign("attendtran","disabled",true);
+		}else{
+			$objResponse->addAssign("attendtran","disabled",false);
+		}
+		$objResponse->addScript("clearSettimePopup();");
 		$title	= $call['callerid'];
 		$stauts	= 'ringing';
 		$direction	= 'in';
 		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
 		$result = asterCrm::checkDialedlistCall($call['callerid']);
+		
 		$dialedlistid = $result['id'];
 		$campaign_id = $result['campaignid'];
+		if($campaign_id != '') {
+			$objResponse->addAssign("dndlist_campaignid","value",$campaign_id);
+		} else {
+			$objResponse->addAssign("dndlist_campaignid","value","0");
+		}
 		
 		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
 				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
-					//echo $divCallresult;exit;
 					$objResponse->addAssign("divCallresult", "style.display", "");
 					$objResponse->addAssign("divCallresult", "innerHTML", $divCallresult);
 					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
@@ -673,13 +736,29 @@ function waitingCalls($myValue){
 			}
 		}
 	} elseif ($call['status'] == 'dialout'){	//dailing out here
+		
+		$objResponse->addScript("clearSettimePopup();");
 		$title	= $call['callerid'];
 		$status	= 'dialing';
 		$direction	= 'out';
 		$info	= $locate->Translate("dial_out"). ' '. $call['callerid'];
+		if($call['hold']['number'] != ''){
+			//print_r($call);exit;
+			$call['callerid'] = $call['hold']['number'];
+			$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+		}else{
+			$objResponse->addAssign("divHolding","innerHTML",'');
+		}
 		if($myValue['callResultStatus'] == '' && $call['callerid'] != ''){
 				$result = asterCrm::checkDialedlistCall($call['callerid']);
+				//print_r($result);exit;
 				$dialedlistid = $result['id'];
+				$campaign_id = $result['campaignid'];
+				if($campaign_id != '') {
+					$objResponse->addAssign("dndlist_campaignid","value",$campaign_id);
+				} else {
+					$objResponse->addAssign("dndlist_campaignid","value","0");
+				}
 				if($dialedlistid){
 					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'NOANSWER');
 					//echo $divCallresult;exit;
@@ -691,6 +770,15 @@ function waitingCalls($myValue){
 					$objResponse->addAssign("divCallresult", "style.display", "none");
 				}
 				$objResponse->addAssign("callResultStatus","value", '1' );
+
+				//print_r($config['diallist']);exit;
+				if($dialedlistid){
+					if($config['diallist']['popup_diallist'] == 1){
+						$dialistHtml = Customer::formDiallist($dialedlistid);
+						$objResponse->addAssign('formDiallistPopup','innerHTML',$dialistHtml);
+						$objResponse->addAssign('formDiallistPopup',"style.visibility", "visible");
+					}
+				}
 		}
 		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
 		$objResponse->addAssign("btnHangup","disabled", false );
@@ -755,6 +843,180 @@ function waitingCalls($myValue){
 	$objResponse->addAssign("curid","value", $call['curid'] );
 	$objResponse->addAssign("direction","value", $direction );
 	$objResponse->addAssign("myevents","innerHTML", $info);
+
+	return $objResponse;
+}
+
+
+//check if call (uniqueid) hangup
+function incomingCalls($myValue){
+	global $db,$locate,$config;
+	$objResponse = new xajaxResponse();
+//print_r($myValue);exit;
+	if ($myValue['direction'] != ''){
+		$call = asterEvent::checkCallStatus($myValue['curid'],$myValue['uniqueid']);
+//print_r($call);exit;
+		if ($call['status'] ==''){
+			if($call['hold']['number'] != ''){
+			//print_r($myValue);exit;
+				$curcallerid = $call['hold']['number'];
+				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+			}else{
+				$curcallerid = $myValue['callerid'];
+				$objResponse->addAssign("divHolding","innerHTML",'');
+			}
+			return $objResponse;
+		} elseif ($call['status'] =='link'){
+			$objResponse->addAssign("btnDial","disabled",true);
+			$objResponse->addScript("clearSettimePopup();");
+			if ($myValue['direction'] == 'in' && $myValue['trunkinfoStatus'] == 0){
+				if($call['didnumber'] != ''){
+					$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
+					$objResponse->addAssign('divDIDinfo','innerHTML',$didinfo);
+				}
+				
+				$trunk = split("-",$call['callerChannel']);
+				//print_r($trunk);exit;
+				
+				$info	= $info. ' channel: ' . $trunk[0];
+				// get trunk info
+				$mytrunk = astercrm::getTrunkinfo($trunk[0],$call['didnumber']);
+				if ($mytrunk){
+					$infomsg = "<strong>".$mytrunk['trunkname']."</strong><br>";
+					$infomsg .= astercrm::db2html($mytrunk['trunknote']);
+					$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+				}else{
+					$infomsg = $locate->Translate("no information get for trunk").": ".$trunk[0];
+					$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+				}
+				$objResponse->addAssign('trunkinfoStatus',"value",'1');
+			}
+
+			if($myValue['callResultStatus'] != '2'){
+				$result = asterCrm::checkDialedlistCall($myValue['callerid']);
+				//print_r($result);exit;
+				$dialedlistid = $result['id'];//$dialedlistid = 
+				$campaign_id = $result['campaignid'];
+				if($campaign_id != '') {
+					$objResponse->addAssign("dndlist_campaignid","value",$campaign_id);
+				} else {
+					$objResponse->addAssign("dndlist_campaignid","value","0");
+				}
+				if($dialedlistid){
+					$divCallresult = Customer::getCampaignResultHtml($dialedlistid,'ANSWERED');
+					//echo $divCallresult;exit;
+					$objResponse->addAssign("divCallresult", "style.display", "");
+					$objResponse->addAssign("divCallresult", "innerHTML", $divCallresult);
+					$objResponse->addAssign("dialedlistid","value", $dialedlistid );
+				}else{
+					$objResponse->addAssign("dialedlistid","value", 0 );
+				}
+				$objResponse->addAssign("callResultStatus","value", '2' );
+			}
+
+			if ($myValue['extensionStatus'] == 'link')	 //already get link event
+				return $objResponse;
+//			if ($call['callerChannel'] == '' or $call['calleeChannel'] == '')
+//				return $objResponse;
+			$status	= "link";
+
+			if($call['hold']['number'] != ''){
+			//print_r($myValue);exit;
+				$curcallerid = $call['consultnum'];
+				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_attendtransfer(\''.$call['hold']['channel'].'\',\''.$myValue['calleeChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Transfer").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+			}else{
+				$curcallerid = $myValue['callerid'];
+				$objResponse->addAssign("divHolding","innerHTML",'');
+			}
+
+			$info	= $locate->Translate("talking_to").$curcallerid;
+			if($call['queue'] != ''){
+				foreach($_SESSION['curuser']['campaign_queue'] as $row){
+					//print_r($row);exit;
+					if($row['queuename'] == $call['queue']){
+						$objResponse->addAssign("campaignDiv-".$row['id'],"style.background",'red');
+					}					
+				}
+			}
+			$objResponse->addAssign("callerChannel","value", $call['callerChannel'] );
+			$objResponse->addAssign("calleeChannel","value", $call['calleeChannel'] );
+			//if chkMonitor be checked or monitor by astercctools btnMonitor must be disabled
+			$configstatus = Common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+			if ($configstatus != -2){
+				if ($myValue['chkMonitor'] != 'on' && $asterccConfig['system']['force_record'] != 1) {
+					$objResponse->addAssign("btnMonitor","disabled", false );
+				}
+			}
+			//$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+			astercrm::events($myValue['chkMonitor'].'-chkMonitor');
+			astercrm::events($myValue['btnMonitorStatus'].'-btnMonitorStatus');
+			//echo $myValue['chkMonitor'];exit;
+			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'idle') 
+				$objResponse->addScript("monitor();");			
+			$objResponse->addAssign("btnHangup","disabled", false );
+			if(strtoupper($config['system']['transfer_pannel']) == 'ON' && $call['hold']['number'] == ''){
+				$objResponse->addAssign("btnTransfer","disabled", false );
+			}
+		} elseif ($call['status'] =='hangup'){
+			if($call['hold']['number'] != ''){
+			//print_r($myValue);exit;
+				$curcallerid = $call['hold']['number'];
+				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+			}else{
+				$curcallerid = $myValue['callerid'];
+				$objResponse->addAssign("divHolding","innerHTML",'');
+			}
+//			if($call['hold']['channel'] != ''){//检查是否还有onhold的通话,有则呼叫座席进行接回
+//
+//				$myAsterisk = new Asterisk();
+//				$myAsterisk->config['asmanager'] = $config['asterisk'];
+//				$res = $myAsterisk->connect();
+//				$strChannel = "Local/".$_SESSION['curuser']['extension']."@from-internal/n";
+//				$myAsterisk->sendCall($strChannel,NULL,NULL,1,'Bridge',$call['hold']['channel'],30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+//			}
+			//$objResponse->addAssign("divCallresult", "style.display", "none");
+			$objResponse->addAssign("callResultStatus", "value", "");
+			$objResponse->addAssign('trunkinfoStatus',"value",'0');
+			
+			//$objResponse->addAssign("divCallresult", "innerHTML", '<input type="radio" value="normal" id="callresult" name="callresult" onclick="updateCallresult(this.value);" checked>'.$locate->Translate("normal").' <input type="radio" value="fax" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("fax").' <input type="radio" value="voicemail" id="callresult" name="callresult" onclick="updateCallresult(this.value);">'. $locate->Translate("voicemail").'<input type="hidden" id="dialedlistid" name="dialedlistid" value="0">');
+			if ($myValue['chkMonitor'] == 'on' && $myValue['btnMonitorStatus'] == 'recording') 
+				$objResponse->addScript("monitor();");
+			$status	= 'hang up';
+			$info	= "Hang up call from " . $myValue['callerid'];
+//			$objResponse->addScript('document.title=\'asterCrm\';');
+			$objResponse->addAssign("uniqueid","value", "" );
+			$objResponse->addAssign("callerid","value", "" );
+			$objResponse->addAssign("callerChannel","value", '');
+			$objResponse->addAssign("calleeChannel","value", '');
+			if(strtoupper($config['system']['transfer_pannel']) == 'ON'){
+				$objResponse->addAssign("btnTransfer","disabled", true );
+			}
+
+			//disable monitor
+			$objResponse->addAssign("btnMonitor","disabled", true );
+			$objResponse->addAssign("spanMonitorStatus","innerHTML", $locate->Translate("idle") );
+			$objResponse->addAssign("btnMonitor","value", $locate->Translate("start_record") );
+			
+			foreach($_SESSION['curuser']['campaign_queue'] as $row){
+				//print_r($row);exit;
+				$objResponse->addAssign("campaignDiv-".$row['id'],"style.background",'');
+			}
+
+			//disable hangup button
+			$objResponse->addAssign("btnHangup","disabled", true );
+			$objResponse->addAssign('divTrunkinfo',"innerHTML",'');
+			$objResponse->addAssign('divDIDinfo','innerHTML','');
+			if($myValue['btnWorkStatus'] == 'working') {				
+				$interval = $_SESSION['curuser']['dialinterval'];
+				$objResponse->addScript("autoDial('$interval');");
+			}
+			$objResponse->addScript("document.getElementById('btnDial').disabled=false;");
+			$objResponse->addScript("setTimeoutforPopup();");
+		}
+		$objResponse->addAssign("status","innerHTML", $status );
+//		$objResponse->addAssign("extensionStatus","value", $status );
+		$objResponse->addAssign("myevents","innerHTML", $info );
+	}
 
 	return $objResponse;
 }
@@ -842,7 +1104,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("attitude")."<BR>";//"face";
 	$headers[] = $locate->Translate("create_time")."<BR>";//"Create Time";
 //	$headers[] = $locate->Translate("create_by")."<BR>";//"Create By";
-	$headers[] = "P<BR>";
+	$headers[] = $locate->Translate("P")."<BR>";
 	if ($config['system']['portal_display_type'] == "note")
 		$headers[] = $locate->Translate("private")."<BR>";
 //	$headers[] = "D";
@@ -876,16 +1138,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","attitude","'.$divName.'","ORDERING");return false;\'';  //face
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","attitude","'.$divName.'","ORDERING");return false;\'';  //face
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
 	if ($config['system']['portal_display_type'] == "note")
-		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","private","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\'showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","private","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -1082,13 +1344,10 @@ function workstart() {
 		$dialedlistid = astercrm::insertNewDialedlist($row);
 		$objResponse->loadXML(getContact($phoneNum));
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
-		if($config['system']['firstring'] == 'callee'){
-			if($row['callresult'] != 'dnc')
-			invite($phoneNum,$_SESSION['curuser']['extension'],$row['campaignid'],$dialedlistid);
-		}else{
-			if($row['callresult'] != 'dnc')
-			invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid'],$dialedlistid);
-		}
+		
+		if($row['callresult'] != 'dnc')
+		invite($_SESSION['curuser']['extension'],$phoneNum,$row['campaignid'],$dialedlistid);
+		
 	}		
 	return $objResponse;
 }
@@ -1131,7 +1390,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 	$call = asterEvent::checkNewCall($curid,$curid,$_SESSION['curuser']['extension'],$_SESSION['curuser']['channel'],$_SESSION['curuser']['agent']);
 	
 	if($call['status'] != '') {
-		$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+		//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 		$objResponse->addScript("alert('".$locate->Translate("Exten in use")."')");
 		return $objResponse->getXML();
 	}
@@ -1144,13 +1403,17 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 
 	if ($dtmf != '') {
 		$app = 'Dial';
-		$data = 'local/'.$phoneNum.'@'.$config['system']['outcontext'].'|30'.'|D'.$dtmf;
+		$data = 'local/'.$phoneNum.'@'.$incontext.'|30'.'|D'.$dtmf;
 		$first = 'caller';
 	}
 
 	$myAsterisk = new Asterisk();	
 	if ($first == ''){
-		$first = $config['system']['firstring'];
+		if($group_info['firstring'] != ''){
+			$first = $group_info['firstring'];
+		}else{
+			$first = $config['system']['firstring'];
+		}
 	}
 
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
@@ -1159,26 +1422,30 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 
 	if ($first == 'caller'){	//caller will ring first
+		$variable = '__CUSCID='.$_SESSION['curuser']['extension'];
 		$strChannel = "local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
+			$sid = Customer::generateUniquePin();
+
 			$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 								'WaitTime'=>30,
 								'Exten'=>$phoneNum,
 								'Context'=>$outcontext,
 								'Account'=>$_SESSION['curuser']['accountcode'],
-								'Variable'=>"$strVariable",
+								'Variable'=>"$variable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
 								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->sendCall($strChannel,$phoneNum,$outcontext,1,$app,$data,30,$phoneNum,NULL,$_SESSION['curuser']['accountcode']);
+			$myAsterisk->sendCall($strChannel,$phoneNum,$outcontext,1,$app,$data,30,$phoneNum,$variable,$_SESSION['curuser']['accountcode']);
 		}
 	}else{
+		$variable = '__CUSCID='.$_SESSION['curuser']['extension'];
 		$strChannel = "local/".$phoneNum."@".$outcontext."/n";
 
 		if ($config['system']['allow_dropcall'] == true){
-
+			$sid = Customer::generateUniquePin('10');
 /*
 	coz after we use new method to capture dial event
 	there's no good method to make both leg display correct clid for now
@@ -1189,16 +1456,16 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 								'Exten'=>$_SESSION['curuser']['extension'],
 								'Context'=>$incontext,
 								'Account'=>$_SESSION['curuser']['accountcode'],
-								'Variable'=>"$strVariable",
+								'Variable'=>"$variable",
 								'Priority'=>1,
 								'MaxRetries'=>0,
-								'CallerID'=>$_SESSION['curuser']['extension']));
+								'CallerID'=>$phoneNum));
 		}else{
-			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$incontext,1,$app,$data,30,$_SESSION['curuser']['extension'],NULL,NULL);
+			$myAsterisk->sendCall($strChannel,$_SESSION['curuser']['extension'],$incontext,1,$app,$data,30,$phoneNum,$variable,NULL);
 		}
 	}
 	//$myAsterisk->disconnect();
-	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse->getXML();
 }
 
@@ -1211,6 +1478,7 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 
 function invite($src,$dest,$campaignid='',$dialedlistid=0){
 	global $config,$locate;
+	#print_r($_SESSION['curuser']['group']);exit;
 	$src = trim($src);
 	$dest = trim($dest);
 	$objResponse = new xajaxResponse();	
@@ -1225,6 +1493,7 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 	
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
+	
 	if (!$res)
 		$objResponse->addAssign("mobileStatus", "innerText", "Failed");
 	if($campaignid != ''){
@@ -1247,40 +1516,68 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		}
 
 		if($row_campaign['callerid'] == ""){
-			$variable = '__CUSCID=NONE';
-		}else{
-			//$callerid = $row_campaign['callerid'];
-			$variable .= '__CUSCID='.$row_campaign['callerid'];
+			$variable = '__CUSCID=NONE|';
 		}
-		$variable .= '__CAMPAIGNID='.$row_campaign['id'].'|'; #传拨号计划id给asterisk
-		$variable .= '__DIALEDLISTID='.$dialedlistid.'|'; #dialedlist id给asterisk
 		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
 		//echo $variable;exit;
+		if($_SESSION['curuser']['group']['firstring'] == 'caller'){
+			if($row_campaign['dialtwoparty'] == "yes"){
+				$strChannel = "local/".$src."@".$incontext."";
+			}else{
+				$strChannel = "local/".$src."@".$incontext."/n";
+			}
+
+			if($row_campaign['callerid'] != ""){
+				$callerid = $row_campaign['callerid'];
+				$variable = '__CUSCID='.$dest.'|';
+			}
+
+			$incontext = $outcontext;
+		}else{
+			if($row_campaign['dialtwoparty'] == "yes"){
+				$strChannel = "local/".$dest."@".$outcontext."";
+			}else{
+				$strChannel = "local/".$dest."@".$outcontext."/n";
+			}
+
+			if($row_campaign['callerid'] != ""){
+				$callerid = $row_campaign['callerid'];
+				$variable = '__CUSCID='.$dest.'|';
+			}
+			$dest = $src;
+		}
+
+		$variable .= '__CAMPAIGNID='.$row_campaign['id'].'|'; #传拨号计划id给asterisk
+		$variable .= '__DIALEDLISTID='.$dialedlistid.'|'; #dialedlist id给asterisk
+		
 	}else{
+		$variable .= '__CUSCID='.$_SESSION['curuser']['extension'];
 		$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
 
 		if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
 		else $incontext = $config['system']['incontext'];
 		if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 		else $outcontext = $config['system']['outcontext'];
+
+		$strChannel = "local/".$src."@".$outcontext."/n";
 	}
-	$strChannel = "local/".$src."@".$incontext."/n";
+
 
 	if ($config['system']['allow_dropcall'] == true){
 		$myAsterisk->dropCall($sid,array('Channel'=>"$strChannel",
 							'WaitTime'=>30,
 							'Exten'=>$dest,
-							'Context'=>$outcontext,
+							'Context'=>$incontext,
 							'Account'=>$_SESSION['curuser']['accountcode'],
-							'Variable'=>"$strVariable",
+							'Variable'=>"$variable",
 							'Priority'=>1,
 							'MaxRetries'=>0,
 							'CallerID'=>$callerid));
 	}else{
-		$myAsterisk->sendCall($strChannel,$dest,$outcontext,1,NULL,NULL,30,$callerid,$variable,$_SESSION['curuser']['accountcode']);
+		$myAsterisk->sendCall($strChannel,$dest,$incontext,1,NULL,NULL,30,$callerid,$variable,$_SESSION['curuser']['accountcode']);
 	}
 	
-	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse->getXML();
 }
 
@@ -1305,7 +1602,7 @@ function hangup($channel){
 	}
 	$myAsterisk->Hangup($channel);
 	//$objResponse->addAssign("btnHangup", "disabled", true);
-	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse;
 }
 
@@ -1313,6 +1610,10 @@ function getContact($callerid){
 	global $db,$locate,$config;	
 	$mycallerid = $callerid;
 	$objResponse = new xajaxResponse();
+	if($callerid == '') {
+		$objResponse->addALert($locate->Translate('Caller number cannot be empty'));
+		return $objResponse;
+	}
 	$objResponse->addAssign("iptCallerid", "value", $callerid);
 	if ( $config['system']['trim_prefix'] != ''){
 		$prefix = split(",",$config['system']['trim_prefix']);
@@ -1384,6 +1685,7 @@ function getContact($callerid){
 			$html .= Table::Footer();
 			$objResponse->addAssign("formDiv", "style.visibility", "visible");
 			$objResponse->addAssign("formDiv", "innerHTML", $html);
+			$objResponse->addAssign("insert_dnc_list","innerHTML","<input type=\"button\" id=\"insert_dnc_list\" name=\"insert_dnc_list\" value=\"".$locate->Translate("Add Dnc_list")."\" onclick=\"insertIntoDnc();return false;\"/>");
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'customer\','.$callerid.');');
 		}
 	} else{ // one match
@@ -1453,8 +1755,9 @@ function chanspy($exten,$spyexten,$pam = ''){
 	$res = $myAsterisk->connect();
 	if (!$res){
 		return;
-	}
-	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam);
+	}	
+
+	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
 	return $objResponse;
 }
 
@@ -1478,11 +1781,11 @@ function bargeInvite($srcchan,$dstchan,$exten){
 	//else $outcontext = $config['system']['outcontext'];
 
 	$strChannel = "local/".$exten."@".$incontext."/n";
-	$myAsterisk->Originate($strChannel,'','',1,'meetme',$exten."|pqdx",30,$exten,NULL,NULL);
+	$myAsterisk->Originate($strChannel,'','',1,'meetme',$exten.$_SESSION['asterisk']['paramdelimiter']."pqdx",30,$exten,NULL,NULL);
 
 	$myAsterisk->Redirect($srcchan,$dstchan,$exten,"astercc-barge","1");
 
-	$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
 	return $objResponse;
 }
 
@@ -1589,48 +1892,76 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime='',$customeri
 	return $objResponse->getXML();
 }
 
-function queuePaused($paused){
-	global $locate,$config;
-
-	$myAsterisk = new Asterisk();	
-	$myAsterisk->config['asmanager'] = $config['asterisk'];
-	$res = $myAsterisk->connect();
+function addTicket($customerid) {
+	global $locate;
 	$objResponse = new xajaxResponse();
-	$memberstatus = Customer::getMyMemberStatus();
-	if($paused){
-		while ($memberstatus->fetchInto($row)) {
-			if($row['agent_status'] != 'paused'){
-				sleep(1);
-				$myAsterisk->queuePause('',$row['agent'],$paused);				
-			}
-		}
-		$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
-		$objResponse->addAssign("breakStatus","value", $paused);
-	}else{
-		while ($memberstatus->fetchInto($row)) {
-			if($row['agent_status'] == 'paused'){
-				sleep(1);
-				$myAsterisk->queuePause('',$row['agent'],$paused);				
-			}
-		}
-		$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
-		$objResponse->addAssign("breakStatus","value", $paused);
-	}
-	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
-	return $objResponse;
+	$html = Table::Top($locate->Translate("ticket_detail"),"formTicketDetailDiv"); 			
+	$html .= Customer::showTicketDetail($customerid);
+	$html .= Table::Footer();
+	$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
+	$objResponse->addScript("relateByCategory();");
+	return $objResponse->getXML();
 }
 
-function updateCallresult($id,$result){
+function relateByCategory($fid) {
+	$objResponse = new xajaxResponse();
+	$html = Customer::getTicketByCategory($fid);
+	$objResponse->addAssign("ticketMsg", "innerHTML", $html);
+	return $objResponse->getXML();
+}
+
+function saveTicket($f) {
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($f['ticketid'] == 0) {
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	$result = Customer::insertTicket($f);
+	if($result == 1) {
+		$objResponse->addAlert($locate->Translate("Add ticket success"));
+		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
+		$objResponse->addScript('AllTicketOfMyself('.$f['customerid'].');');
+	} else {
+		$objResponse->addAlert($locate->Translate("Add ticket failed"));
+	}
+	return $objResponse->getXML();
+}
+
+function AllTicketOfMy($cid='',$Ctype,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formMyTickets", $ordering = "",$stype = null) {
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	$ticketHtml = Table::Top($locate->Translate("Customer Tickets"),"formMyTickets");
+	$ticketHtml .= astercrm::createTikcetGrid($cid,$Ctype,$start, $limit,$filter, $content, $order, $divName, $ordering, $stype);
+	$ticketHtml .= Table::Footer();
+
+	$objResponse->addAssign("formMyTickets", "style.visibility", "visible");
+	$objResponse->addAssign("formMyTickets", "innerHTML", $ticketHtml);
+
+	return $objResponse->getXML();
+}
+
+
+function updateCallresult($id,$result,$dialnumber){
 	global $locate,$config,$db;
 	$objResponse = new xajaxResponse();
-	$sql = "UPDATE dialedlist SET campaignresult = '$result' , resultby = '".$_SESSION['curuser']['username']."' WHERE id = $id";
-
-	$res =& $db->query($sql);
-	if ($res){
-		$objResponse->addAssign("updateresultMsg","innerHTML","<font color='red'><b>".$locate->Translate("Update Successful")."<b></font>");
-	}else{
-		$objResponse->addAlert("fail to update campaign result");
+	$sql = "SELECT id FROM dialedlist WHERE id=$id";
+	$isExist = & $db->getOne($sql);
+	if(!empty($isExist) && $isExist != '') {
+		$sql = "UPDATE dialedlist SET campaignresult = '$result' , resultby = '".$_SESSION['curuser']['username']."' WHERE id = $id";
+		$res =& $db->query($sql);
+		if ($res){
+			$objResponse->addAssign("updateresultMsg","innerHTML","<font color='red'><b>".$locate->Translate("Update Successful")."<b></font>");
+		}else{
+			$objResponse->addAlert("fail to update campaign result");
+		}
+	} else {
+		$sql = "UPDATE campaigndialedlist SET campaignresult = '".$result."',resultby = '".$_SESSION['curuser']['username']."' WHERE dialednumber = '".$dialnumber."' AND dialedtime > (now()-INTERVAL 600 SECOND) ORDER BY dialednumber DESC LIMIT 1";
+		$res =& $db->query($sql);
 	}
+	
 	return $objResponse;
 }
 
@@ -1739,6 +2070,307 @@ function agentWorkstat(){
 function popupDiallist(){
 }
 
+function insertIntoDnc($callerid,$campaignid) {
+	global $db,$locate;
+	$objResponse = new xajaxResponse();
+	if($callerid == '') {
+		$objResponse->addScript("alert(\"".$locate->Translate('Save failed phone number is empty')."\");");
+		return $objResponse;
+	}
+	$sql = "INSERT INTO dnc_list SET 
+		 number='".$callerid."',
+		 campaignid=".$campaignid.",
+		 groupid=".$_SESSION['curuser']['groupid'].",
+		 status='enable',
+		 creby='".$_SESSION['curuser']['username']."',
+		 cretime=now()";
+	astercrm::events($query);
+	$res = & $db->query($sql);
+	if($res) {
+		$objResponse->addScript("alert(\"".$locate->Translate('Save successful')."\");");
+	} else {
+		$objResponse->addScript("alert(\"".$locate->Translate('Save failed')."\");");
+	}
+	return $objResponse;
+}
+
+function showMyTickets($id='',$Ctype,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formCurTickets", $ordering = "",$stype = null) {
+	global $db,$locate;
+	$customerid = Customer::getAccountid();
+	
+	$html = Table::Top($locate->Translate("My Tickets"),"formCurTickets");
+	
+	$html .= astercrm::createTikcetGrid($customerid,$Ctype,$start, $limit,$filter, $content, $order, $divName, $ordering, $stype);
+	
+	$html .= Table::Footer();
+	
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formCurTickets", "style.visibility", "visible");
+	$objResponse->addAssign("formCurTickets", "innerHTML", $html);
+
+	$curmsg = Customer::getTicketInWork();
+	$objResponse->addAssign("curticketMsg", "innerHTML", $curmsg);
+	return $objResponse->getXML();
+}
+
+/**
+*  show curTicketDetail edit form
+*  @param	id		int		ticket_detail id
+*  @return	objResponse	object		xajax response object
+*/
+
+function curTicketDetail($id){
+	global $locate;
+	
+	$html = Table::Top( $locate->Translate("edit_ticket_detail"),"formTicketDetailDiv"); 
+	$html .= Customer::formTicketEdit($id);
+	$html .= Table::Footer();
+	// End edit zone
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
+	$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value,'edit')");
+	return $objResponse->getXML();
+}
+
+function relateByCategoryId($Cid,$curid=0) {
+	$objResponse = new xajaxResponse();
+	$option = Customer::getTicketByCategory($Cid,$curid);
+	$objResponse->addAssign("ticketMsg","innerHTML",$option);
+	return $objResponse->getXML();
+}
+
+function curCustomerDetail($customername) {
+	global $locate;
+	$customerid = Customer::getCustomerid($customername);
+	$html = Table::Top($locate->Translate("edit_record"),'formEditInfo');
+	$html .= Customer::formEdit($customerid,'customer');
+	$html .= Table::Footer();
+	// End edit zone
+
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign('formEditInfo', "style.visibility", "visible");
+	$objResponse->addAssign('formEditInfo', "innerHTML", $html);
+	return $objResponse->getXML();
+}
+
+function updateCurTicket($f) {
+	global $locate,$db;
+	$objResponse = new xajaxResponse();
+	
+	if(trim($f['ticketcategoryid']) == 0 || trim($f['ticketid']) == 0 || trim($f['customerid']) == 0){
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	$respOk = Customer::updateCurTicket($f);
+
+	$accountid = Customer::getAccountid();
+	
+	if($respOk){
+		$html = Table::Top($locate->Translate("My Tickets"),"formCurTickets");
+		$html .= astercrm::createTikcetGrid($accountid,'agent_tickets',0,ROWSXPAGE,'','','','formCurTickets');
+		$html .= Table::Footer();
+		$objResponse->addAssign("formCurTickets", "innerHTML", $html);
+		$objResponse->addAssign("formCurTickets", "style.visibility", "visible");
+		$objResponse->addAssign("formCurTickets", "innerHTML", $html);
+		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
+		$objResponse->addAssign("formTicketDetailDiv", "innerHTML");
+	}else{
+		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_update"));
+	}
+	
+	return $objResponse->getXML();
+}
+
+function getMsgInCampaign($form) {
+	global $locate;
+	$objResponse = new xajaxResponse();	
+	//print_r($form);exit;
+	$curagentdata = array();
+	$agentDatas = Customer::getAgentData();
+	$dagentflag = 0;
+	$acount = 0;
+
+	while ($agentDatas->fetchInto($agentData)) {
+		if($agentData['cretime'] < $form['clkPauseTime']){
+			return $objResponse;
+		}
+		$acount++;
+		//print_R($agentData);
+		if(strstr(strtolower($agentData['agent']),'agent') ){
+			if((trim($agentData['status']) != 'Unavailable' && trim($agentData['status']) != 'Invalid')){
+				$dagentflag = 1;
+				$curagentdata[$agentData['queuename']]['type'] = 'agent';
+				$curagentdata[$agentData['queuename']]['status'] = $agentData['status'];
+				$curagentdata[$agentData['queuename']]['agent_status'] = $agentData['agent_status'];
+				$curagentdata[$agentData['queuename']]['data'] = $agentData['data'];			
+			}else{
+				continue;
+			}
+		}else{
+			if(is_array($curagentdata[$agentData['queuename']]) && $curagentdata[$agentData['queuename']]['type'] == 'agent'){
+				continue;
+			}
+			if(strtolower(trim($agentData['agent'])) ==  strtolower(trim($_SESSION['curuser']['channel']))){ //直接用channel做memmber如:sip/8000
+				$curagentdata[$agentData['queuename']]['type'] = 'channel';
+			}
+			$curagentdata[$agentData['queuename']]['status'] = $agentData['status'];
+			$curagentdata[$agentData['queuename']]['agent_status'] = $agentData['agent_status'];
+			$curagentdata[$agentData['queuename']]['data'] = $agentData['data'];			
+		}
+		
+	}//exit;
+//echo $form['uniqueid'];exit;
+	if(($acount == 0 || $form['uniqueid'] != '') && $form['clkPauseTime'] > 0){
+		return $objResponse;
+	}
+	if($dagentflag){
+		$objResponse->addAssign("spanDialList", "style.display", "none");
+		$objResponse->addAssign("misson", "style.display", "none");
+	}else{
+		$objResponse->addAssign("spanDialList", "style.display", "");
+		$objResponse->addAssign("misson", "style.display", "");
+	}
+//print_r($curagentdata);exit;
+	//$result = Customer::getMsgInCampaign($_SESSION['curuser']['groupid']);
+	
+	$tableHtml = '';
+	foreach($_SESSION['curuser']['campaign_queue'] as $row) {
+		if(is_array($curagentdata[$row['queuename']]) && !(($curagentdata[$row['queuename']]['status'] == 'Unavailable' || $curagentdata[$row['queuename']]['status'] == 'Invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
+			$campaignSpan = '<div id="campaignDiv-'.$row['id'].'" ><span style="float:left;cursor:pointer;color:green"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-'.$row['queuename'].'" style="float:left;"> </span>';
+			if($curagentdata[$row['queuename']]['agent_status'] == 'dynamic'){			
+				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('logoff').']</a></span>';
+				$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+			}else{
+				if($curagentdata[$row['queuename']]['type'] == 'agent' ){
+					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
+				}elseif( !strstr($curagentdata[$row['queuename']]['data'],'dynamic')){
+					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
+				}else{
+					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('logoff').']</a></span>';
+				}
+
+				if($curagentdata[$row['queuename']]['agent_status'] == 'paused'){
+					$campaignSpan = '<div id="campaignDiv-'.$row['id'].'"><span style="float:left;cursor:pointer;color:#30569D"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-"'.$row['queuename'].'" style="float:left;"> </span>';
+					
+					if($curagentdata[$row['queuename']]['type'] == 'agent' ){
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continuea" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('continue').']</a></span>';
+					}elseif($curagentdata[$row['queuename']]['type'] == 'channel'){
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continuec" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('continue').']</a></span>';
+					}else{
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continue" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('continue').']</a></span>';
+					}
+				}else{
+					if($curagentdata[$row['queuename']]['type'] == 'agent' ){
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pausea" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+					}elseif($curagentdata[$row['queuename']]['type'] == 'channel'){
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pausec" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+					}else{
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+					}
+				}
+			}
+
+			$tableHtml .= $campaignSpan.'&nbsp;&nbsp;&nbsp;<span style="float:right">'.$loginSpan.'&nbsp;&nbsp;'.$pauseSpan.'</span></div>';
+		}else{
+			$tableHtml .= '<div id="campaignDiv-'.$row['id'].'"><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-"'.$row['queuename'].'" style="float:left;"> </span> &nbsp;&nbsp;&nbsp;<span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span></span></div>';
+		}
+	}
+	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
+	$objResponse->addAssign("divGetMsgInCampaign","innerHTML",$tableHtml);
+	return $objResponse->getXML();
+}
+
+function queueAgentControl($queueno,$action){
+	global $locate,$config,$db;
+	$myAsterisk = new Asterisk();	
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	$objResponse = new xajaxResponse();
+
+	if ($_SESSION['curuser']['group']['incontext'] != '' ) $incontext = $group_info['incontext'];
+	else $incontext = $config['system']['incontext'];
+	$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$incontext.'/n';
+
+	if($action == 'login'){
+		$cmd = "queue add member $agentstr to $queueno";
+	}elseif($action == 'logoff'){
+		$cmd = "queue remove member $agentstr from $queueno";
+	}elseif($action == 'pause'){
+		$cmd = "queue pause member $agentstr queue $queueno";
+	}elseif($action == 'continue'){
+		$cmd = "queue unpause member $agentstr queue $queueno";
+	}elseif($action == 'pausea'){
+		$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
+		$cmd = "queue pause member $agentstr queue $queueno";
+	}elseif($action == 'continuea'){
+		$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
+		$cmd = "queue unpause member $agentstr queue $queueno";
+	}elseif($action == 'pausec'){
+		$agentstr = $_SESSION['curuser']['channel'];
+		$cmd = "queue pause member $agentstr queue $queueno";
+	}elseif($action == 'continuec'){
+		$agentstr = $_SESSION['curuser']['channel'];
+		$cmd = "queue unpause member $agentstr queue $queueno";
+	}
+
+	
+	$res = $myAsterisk->Command($cmd);
+	if(strstr($res['data'],'failed')){
+		if($action == 'pausea'){
+			$action == 'pause';
+		}elseif($action == 'continuea'){
+			$action == 'continue';
+		}
+		$objResponse->addAlert($locate->translate($action).' '.$locate->translate('failed'));	
+	}else{
+		$sql = "SELECT * FROM campaign WHERE queuename = '".$queueno."' AND groupid='".$_SESSION['curuser']['groupid']."' AND enable= 1";
+		$res = & $db->query($sql);
+		while ($res->fetchInto($row)) {
+			if($action == 'login'){
+				$objResponse->addAssign("campaign-login-".$row['id'],"innerHTML",'['.$locate->translate('logoff').']');
+				$objResponse->addAssign("campaign-login-".$row['id'],"title",'logoff');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'pause');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"style.color",'');
+
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'green');
+			}elseif($action == 'logoff'){
+				$objResponse->addAssign("campaign-login-".$row['id'],"innerHTML",'['.$locate->translate('login').']');
+
+				$objResponse->addAssign("campaign-login-".$row['id'],"title",'login');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'logoff');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"style.color",'FFFFFF');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'blue');
+			}elseif($action == 'pause'){
+				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continue');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'#30569D');
+			}elseif($action == 'continue'){
+				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('pause').']');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'pause');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'green');
+			}elseif($action == 'pausea'){
+				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continuea');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'#30569D');
+			}elseif($action == 'continuea'){
+				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('pause').']');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'pausea');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'green');
+			}elseif($action == 'pausec'){
+				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continuec');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'#30569D');
+			}elseif($action == 'continuec'){
+				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('pause').']');
+				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'pausec');
+				$objResponse->addAssign("campaign-".$row['id'],"style.color",'green');
+			}
+		}
+	}
+	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
+	return $objResponse;
+}
+
 $xajax->processRequests();
 
-?>

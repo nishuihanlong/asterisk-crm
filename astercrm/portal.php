@@ -101,19 +101,24 @@ $clientDst = $_REQUEST['clientdst'];
 	<script type="text/javascript" src="js/dragresize.js"></script>
 	<script type="text/javascript" src="js/dragresizeInit.js"></script>
 	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="xajax_js/xajax.js"></script>
+	
 	<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
 	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 
 		<script type="text/javascript">
+		
 		var intervalID = 0; //for stop setInterval of autoDial
-		var countCheNum = 0;
+		var countCheNum = 0;//for enable/disable the dial button
 		var clientDst = "<?echo $clientDst ?>";
 		var settimeNum = 0;
+		var popupToclear;
 		if(clientDst != ''){
 			//document.getElementById("iptCallerid").value=clentDst;
-			xajax_getContact(clientDst);
+			ShowProcessingDiv();//show the processing div
+			getContact(clientDst);
 		}
 		
 		function dial(phonenum,first,myvalue,dtmf){
@@ -134,16 +139,16 @@ $clientDst = $_REQUEST['clientdst'];
 			}
 			if (document.getElementById("uniqueid").value != '')
 				return false;
-			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>"+" "+phonenum;			
+			//xajax.$("divMsg").style.visibility = 'visible';
+			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>"+" "+phonenum;			
 			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr)",1000);
 		}
 
 		function hangup(){
 			//alert (xajax.$('callerChannel').value);
 			//alert (xajax.$('calleeChannel').value);
-			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = "Hangup";
+			//xajax.$("divMsg").style.visibility = 'visible';
+			//xajax.$("divMsg").innerHTML = "Hangup";
 			callerChan = xajax.$('callerChannel').value;
 			calleeChan = xajax.$('calleeChannel').value;
 			
@@ -159,21 +164,38 @@ $clientDst = $_REQUEST['clientdst'];
 			xajax.$('processingMessage').style.display = 'none';
 		}
 		
+		//this function is used to resolve the error which xajax.loadingFunction is not a function,please don't delete it
+		function loadingFunction() {
+			xajax.loadingFunction = showProcessingMessage();
+		}
+
+		function ShowProcessingDiv(){
+			try{
+				xajax.loadingFunction = showProcessingMessage();
+				xajax.doneLoadingFunction = hideProcessingMessage;
+			}
+			catch(e){}
+		}
+		
 		function btnGetAPhoneNumberOnClick(){
+			ShowProcessingDiv();
 			xajax_addWithPhoneNumber();
 		}
 
 		function knowledgechange(knowledgeid){
 			if(knowledgeid != ''){
-			    xajax_knowledgechange(knowledgeid);
+				ShowProcessingDiv();
+				xajax_knowledgechange(knowledgeid);
 			}
 		}
 
 		function updateEvents(){
-			myFormValue = xajax.getFormValues("myForm");			
-			//alert(xajax.$('checkInterval').value);
+			//xajax.loadingFunction = showProcessingMessage();
+			myFormValue = xajax.getFormValues("myForm");
 			
 			xajax_listenCalls(myFormValue);
+			//xajax.doneLoadingFunction = hideProcessingMessage;
+
 			//xajax_listenCalls(myFormValue);
 				// dont pop new window when there already a window exsits
 				if (xajax.$('formDiv') != null){
@@ -192,23 +214,35 @@ $clientDst = $_REQUEST['clientdst'];
 			setTimeout("updateEvents()", xajax.$('checkInterval').value);
 		}
 
+		function getMsgInCampaign(){
+			myFormValue = xajax.getFormValues("myForm");
+			xajax_getMsgInCampaign(myFormValue);
+			setTimeout("getMsgInCampaign()", 6000);
+			return;
+		}
+
 		function monitor(){
 			//alert(xajax.$('chkMonitor').value);
+			ShowProcessingDiv();
 			callerChannel = xajax.$('callerChannel').value.toUpperCase();
-			if (callerChannel.indexOf("local") < 0 && callerChannel.indexOf("local") < 0)
-				channel = xajax.$('callerChannel').value;
+			calleeChannel = xajax.$('calleeChannel').value.toUpperCase();
+			//alert(calleeChannel);
+			//alert(callerChannel);
+			if (calleeChannel.indexOf("local") < 0 && calleeChannel.indexOf("local") < 0)
+				channel = calleeChannel;
 			else
-				channel = xajax.$('calleeChannel').value;
+				channel = callerChannel;
+
 			callerid = xajax.$('callerid').value;
 			if (xajax.$('btnMonitorStatus').value == 'recording')
 				xajax_monitor(channel,callerid,'stop');
 			else
-				xajax_monitor(channel,callerid,'start',document.getElementById("uniqueid").value);
-
+				xajax_monitor(channel,callerid,'start',document.getElementById("uniqueid").value,xajax.$('curid').value);
 			return false;
 		}
 
 		function queuePaused(){
+			ShowProcessingDiv();
 			if (xajax.$('breakStatus').value == 1)
 				xajax_queuePaused(0);
 			else
@@ -217,6 +251,8 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function showSurvey(surveyid){
+			ShowProcessingDiv();
+
 			customer = document.getElementById("customerid");
 			contact = document.getElementById("customerid");
 
@@ -226,18 +262,19 @@ $clientDst = $_REQUEST['clientdst'];
 			if (customerid == 0 && contactid == 0){
 				alert("<?echo $locate->Translate("No customer or contact selected");?>");
 			}
-			
 			xajax_showSurvey(surveyid);
 		}
 
 		function init(){
 			xajax_init();
-			updateEvents();
-			xajax_checkworkexten();
-			//make div draggable
-			dragresize.apply(document);
-//			xajax.loadingFunction = showProcessingMessage;
-//			xajax.doneLoadingFunction = hideProcessingMessage;
+			ShowProcessingDiv();
+			setTimeout(function(){
+				updateEvents();
+				xajax_checkworkexten();
+				//make div draggable
+				//dragresize = new DragResize('dragresize', { minWidth: 50, minHeight: 50, minLeft: 20, minTop: 20, maxLeft: window.screen.width-50, maxTop: window.screen.height + 300 ,skipH:1});
+				dragresize.apply(document);				
+			},200);
 		}
 		
 		function invite(){
@@ -255,15 +292,16 @@ $clientDst = $_REQUEST['clientdst'];
 				xajax.$("divMsg").style.visibility = 'visible';
 				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;*/
 			}else {
-				xajax.$("divMsg").style.visibility = 'visible';
-				xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;
+				//xajax.$("divMsg").style.visibility = 'visible';
+				//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>" + " " + src;
 			}
 			
 			if (dest == ''){
 				xajax.$('iptDestNumber').value = xajax.$('extension').value;
 				dest = xajax.$('extension').value;
 			}
-			xajax.$('btnDial').disabled = true;
+			ShowProcessingDiv();
+			//xajax.$('btnDial').disabled = true;
 			
 			setTimeout("xajax_invite(src,dest)",1000);
 			checkExtensionStatus('extensionStatus');
@@ -301,9 +339,9 @@ $clientDst = $_REQUEST['clientdst'];
 			if (target == ''){
 				return false;
 			}
-
-			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + target;
+			ShowProcessingDiv();
+			//xajax.$("divMsg").style.visibility = 'visible';
+			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + target;
 			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",500);
 			return false;
 		}
@@ -313,6 +351,7 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function setCampaign(){
+			ShowProcessingDiv();
 			groupid = document.getElementById("groupid").value;
 			if (groupid == '')
 				return;
@@ -322,6 +361,7 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function workctrl(aciton){
+			ShowProcessingDiv();
 			if (aciton == 'stop'){
 				xajax_workoffcheck();
 			}
@@ -341,7 +381,6 @@ $clientDst = $_REQUEST['clientdst'];
 				}else{
 					xajax_workstart();
 				}
-				
 			}
 			return false;
 		}
@@ -353,8 +392,7 @@ $clientDst = $_REQUEST['clientdst'];
 			intervalID = setInterval("showsec(xajax.$('divWork').innerHTML)",1000);
 		}
 
-		function showsec(i)
-		{	
+		function showsec(i) {
 			if(xajax.$('btnWorkStatus').value == '') {
 				clearInterval(intervalID);
 				xajax.$("divWork").innerHTML = '';				
@@ -372,21 +410,24 @@ $clientDst = $_REQUEST['clientdst'];
 		function bargeInvite(exten){
 			if (document.getElementById("callerChannel").value == '' || document.getElementById("callerChannel").value == 'calleeChannel')
 				return false;
+
 			srcchan = trim(xajax.$('callerChannel').value);
 			dstchan = trim(xajax.$('calleeChannel').value);
 			inviteExten = exten;
 			
-			xajax.$("divMsg").style.visibility = 'visible';
-			xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Inviting ");?>" + " " + exten;
-
+			//xajax.$("divMsg").style.visibility = 'visible';
+			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Inviting ");?>" + " " + exten;
+			
 			setTimeout("xajax_bargeInvite(srcchan,dstchan,inviteExten)",1000);
 		}
 
 		function addSchedulerDial(customerid){
+			ShowProcessingDiv();
 			xajax_addSchedulerDial(xajax.$("trAddSchedulerDial").style.display,xajax.$("callerid").value,customerid);
 		}
 
 		function saveSchedulerDial(customerid){
+			ShowProcessingDiv();
 			xajax_saveSchedulerDial(xajax.$("sDialNum").value,xajax.$("curCampaignid").value,xajax.$("sDialtime").value,customerid);
 		}
 
@@ -410,8 +451,7 @@ $clientDst = $_REQUEST['clientdst'];
 
 		var divTop,divLeft,divWidth,divHeight,docHeight,docWidth,objTimer,i = 0; 
 
-		function getSmartMatchMsg()
-		{ 
+		function getSmartMatchMsg() {
 			try{ 
 				divTop = parseInt(document.getElementById("SmartMatchDiv").style.top,10);			
 				divLeft = parseInt(document.getElementById("SmartMatchDiv").style.left,10); 
@@ -428,8 +468,7 @@ $clientDst = $_REQUEST['clientdst'];
 			catch(e){} 
 		} 
 
-		function resizeDiv() 
-		{ 
+		function resizeDiv() {
 			i+=1 
 			//if(i>300) closeDiv() //自动消失
 			try{ 
@@ -443,12 +482,9 @@ $clientDst = $_REQUEST['clientdst'];
 			catch(e){} 
 		} 
 
-		function moveDiv() 
-		{ 
-			try 
-			{ 
-				if(parseInt(document.getElementById("SmartMatchDiv").style.top,10) <= (docHeight - divHeight + parseInt(document.documentElement.scrollTop,10))) 
-				{ 
+		function moveDiv() {
+			try {
+				if(parseInt(document.getElementById("SmartMatchDiv").style.top,10) <= (docHeight - divHeight + parseInt(document.documentElement.scrollTop,10))) { 
 					window.clearInterval(objTimer);
 					objTimer = window.setInterval("resizeDiv()",1);
 				} 
@@ -458,35 +494,34 @@ $clientDst = $_REQUEST['clientdst'];
 			catch(e){} 
 		} 
 
-		function closeSmartMatch() 
-		{ 
+		function closeSmartMatch() {
 			//document.getElementById("SmartMatchDiv").style.display="none"; 
 			document.getElementById("SmartMatchDiv").style.visibility="hidden";
 			if(objTimer) window.clearInterval(objTimer);
 		}
 		
-		function showMsgBySmartMatch(msgtype,msg)
-		{		
+		function showMsgBySmartMatch(msgtype,msg) {
 			if (document.getElementById(msgtype)){
 				document.getElementById(msgtype).value = msg;
 				return true;
 			}
-			return false;			
+			return false;
 		}
 
-		function updateCallresult()
-		{
+		function updateCallresult() {
+			ShowProcessingDiv();
 			result = xajax.$('callresultname').value;
-			xajax_updateCallresult(xajax.$('dialedlistid').value,result);
-			
+			xajax_updateCallresult(xajax.$('dialedlistid').value,result,xajax.$('tmp60_callerid').value);
 			return false;
 		}
 
 		function setKnowledge(){
+			ShowProcessingDiv();
 			xajax_setKnowledge();
 		}
 
 		function setSecondCampaignResult(){
+			ShowProcessingDiv();
 			xajax.$('callresultname').value = xajax.$('fcallresult').options[xajax.$('fcallresult').selectedIndex].text;
 			//alert(xajax.$('callresultname').value);
 			parentid = document.getElementById("fcallresult").value;
@@ -498,9 +533,125 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function setCallresult(obj){
+			ShowProcessingDiv();
 			id = obj.value;
 			//alert(id);
 			xajax_setCallresult(id);
+		}
+
+		function insertIntoDnc() {
+			ShowProcessingDiv();
+			campaignId = document.getElementById('dndlist_campaignid').value;
+			callerid = document.getElementById('callerid').value;
+			xajax_insertIntoDnc(callerid,campaignId);
+		}
+
+		function setTimeoutforPopup() {
+			if(document.getElementById('clear_popup').value != '0' && document.getElementById('clear_popup').value != '') {
+				popupToclear = setTimeout("xajax_clearPopup()",parseInt(document.getElementById('clear_popup').value)*1000);
+			}
+		}
+		function clearSettimePopup() {
+			clearTimeout(popupToclear);
+		}
+		
+		function addTicket(customerid) {
+			ShowProcessingDiv();
+			xajax_addTicket(customerid);
+		}
+
+		function relateByCategory() {
+			ShowProcessingDiv();
+			xajax_relateByCategory(document.getElementById('ticketcategoryid').value);
+		}
+
+		function saveTicket(f) {
+			ShowProcessingDiv();
+			xajax_saveTicket(f);
+		}
+
+		function AllTicketOfMyself(Cid) {
+			ShowProcessingDiv();
+			xajax_AllTicketOfMy(Cid,'customer_ticket');
+		}
+
+		function showMyTickets(Id,State) {
+			ShowProcessingDiv();
+			xajax_showMyTickets(Id,State);
+		}
+
+		function showRecentCdr(Id,cdrtype) {
+			ShowProcessingDiv();
+			xajax_showRecentCdr(Id,cdrtype);
+		}
+		function saveDiallistMain(f){
+			ShowProcessingDiv();
+			xajax_saveDiallistMain(f);
+		}
+		function getContact(value) {
+			if(value != '') {
+				ShowProcessingDiv();
+			}
+			xajax_getContact(value);
+		}
+
+		function showDiallist(userexten,customerid,start,limit,filter,content,order,divName,ordering,stype) {
+			ShowProcessingDiv();
+			xajax_showDiallist(userexten,customerid,start,limit,filter,content,order,divName,ordering,stype);
+		}
+
+		function agentWorkstat() {
+			ShowProcessingDiv();
+			xajax_agentWorkstat();
+		}
+
+		function showMyTicketsGrid(id,Ctype,start,limit,filter,content,order,divName,ordering,stype) {
+			ShowProcessingDiv();
+			xajax_showMyTickets(id,Ctype,start,limit,filter,content,order,divName,ordering,stype);
+		}
+		function AllTicketOfMyGrid(cid,Ctype,start,limit,filter,content,order,divName,ordering,stype) {
+			ShowProcessingDiv();
+			xajax_AllTicketOfMy(cid,Ctype,start,limit,filter,content,order,divName,ordering,stype);
+		}
+		function showGrid(id,start,limit,filter,content,order,divName,ordering,stype) {
+			ShowProcessingDiv();
+			xajax_showGrid(id,start,limit,filter,content,order,divName,ordering,stype);
+		}
+		function showRecentCdrGrid(id,cdrtype,start,limit,filter,content,order,divName,ordering,stype) {
+			ShowProcessingDiv();
+			xajax_showRecentCdr(id,cdrtype,start,limit,filter,content,order,divName,ordering,stype);
+		}
+		function curTicketDetail(Id) {
+			ShowProcessingDiv();
+			xajax_curTicketDetail(Id);
+		}
+		function curCustomerDetail(Id) {
+			ShowProcessingDiv();
+			xajax_curCustomerDetail(Id);
+		}
+		function relateBycategoryID(Fid,state) {
+			if(state == 'edit') {
+				xajax_relateByCategoryId(Fid,document.getElementById('curTicketid').value);
+			} else {
+				xajax_relateByCategoryId(Fid);
+			}
+		}
+
+		function searchCdrFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchCdrFormSubmit(searchFormValue,numRows,limit,id,type);
+		}
+		function searchDiallistFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchDiallistFormSubmit(searchFormValue,numRows,limit,id,type);
+		}
+		function searchRecordsFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchRecordsFormSubmit(searchFormValue,numRows,limit,id,type);
+		}
+		function searchTicketsFormSubmit(searchFormValue,numRows,limit,id,type){
+			ShowProcessingDiv();
+			xajax_searchTicketsFormSubmit(searchFormValue,numRows,limit,id,type);
 		}
 		</script>
 <?
@@ -517,11 +668,11 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	</head>
 	<body onload="init();" style="PADDING-RIGHT: 20px;PADDING-LEFT: 20px;">
 	<form name="myForm" id="myForm">
-		<div><span id="divUserMsg" name="divUserMsg"></span>&nbsp;&nbsp;&nbsp;<span id="myevents"></span>&nbsp;&nbsp;&nbsp;<span><input type="button" value="<?echo $locate->Translate("Clear Screen")?>" onclick="javascript:xajax_clearPopup();"></span></div><br>
+		<div><span id="divUserMsg" name="divUserMsg"></span>&nbsp;&nbsp;&nbsp;<span id="myevents"></span>&nbsp;&nbsp;&nbsp;<span><input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<input type="button" value="<?echo $locate->Translate("Clear Screen")?>" onclick="javascript:xajax_clearPopup();clearTimeout(popupToclear);"></span></div><br/>
 		
 		<div id="divHangup" name="divHangup">
-			<input type="button" value="<?echo $locate->Translate("Hangup")?>" name="btnHangup" id="btnHangup" onclick="hangup();" disabled="true">&nbsp;&nbsp;&nbsp;<span id="spnPause"><input type="button" value="<?echo $locate->Translate("Break")?>" name="btnPause" id="btnPause" onclick="queuePaused();" ></span><input id="clkPauseTime" name="clkPauseTime" type="hidden">
-			<span id="agentData"></span>
+			<!--&nbsp;&nbsp;&nbsp;<span id="spnPause"><input type="button" value="<?echo $locate->Translate("Break")?>" name="btnPause" id="btnPause" onclick="queuePaused();" ></span><input id="clkPauseTime" name="clkPauseTime" type="hidden">
+			<span id="agentData"></span>-->
 			
 			<div id="divTrunkinfo" name="divTrunkinfo"></div>
 			<div id="divDIDinfo" name="divDIDinfo"></div>
@@ -534,12 +685,14 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			</SELECT>
 			<INPUT TYPE="text" name="iptTtansfer" id="iptTtansfer" size="15">
 			<INPUT type="button" value="<?echo $locate->Translate("Transfer");?>" id="btnTransfer" onclick="transfer('');">
+			<span id="spanAttendtran"><input type="checkbox" value="yes" id="attendtran" name="attendtran"><?echo $locate->Translate("Attended");?></span>
 		</span>
+		<div id="divHolding" name="divHolding" ></div>
+			
 		
-		
-		<span id="monitorTitle"><br><?echo $locate->Translate("monitor")?><br></span>
-		<div id="divMonitor">
-			<span id="spanMonitorStatus" name="spanMonitorStatus"></span><br>
+		<div id="divMonitor"><br/>
+			<span id="monitorTitle"><?echo $locate->Translate("monitor")?></span>
+			<span id="spanMonitorStatus" name="spanMonitorStatus"></span>
 			<input type='button' value='' name="btnMonitor" id="btnMonitor" onclick="monitor();return false;">
 			<input type='hidden' value='' name="btnMonitorStatus" id="btnMonitorStatus">
 			<input type='checkbox' name='chkMonitor' id="chkMonitor">
@@ -564,22 +717,25 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="dpnShow" id="dpnShow" value="0"/>
 		<input type="hidden" name="awsShow" id="awsShow" value="0"/>
 		<input type="hidden" name="dndlist_campaignid" id="dndlist_campaignid" value="0" />
+		<input type="hidden" name="clear_popup" id="clear_popup" value="0" />
+		<input type="hidden" name="trunkinfoStatus" id="trunkinfoStatus" value="0" />
+		<input id="clkPauseTime" name="clkPauseTime" type="hidden" value="0">
+		
 	</form>
 	<input type="hidden" name="mycallerid" id="mycallerid" value=""/>
 	<br>
-	<div id="divDialList" name="divDialList"></div><br/>
-	<div id="processingMessage" name="processingMessage"></div>
-	<div id="misson" name="misson"><input type="button" id="btnWork" name="btnWork" value="<?echo $locate->Translate("Start work")?>"></div>
-	<div id="divWork" name="divWork" align="left" style="font-weight:bold;	"></div>
-	<br>
-	<div id="divInvite">
-		<input type="text" value="" name="iptSrcNumber" id="iptSrcNumber">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber"></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="<?echo $locate->Translate("Dial");?>" onclick="invite();">
-	</div>
+	<div><span id="spanDialList" name="spanDialList"></span>&nbsp;&nbsp;<span id="misson" name="misson"><input type="button" id="btnWork" name="btnWork" value="<?echo $locate->Translate("Start work")?>"></span>&nbsp;<span id="divWork" name="divWork" align="left" style="font-weight:bold;	"></span></div>
+
+	<div id="processingMessage" name="processingMessage"><div class="UD"></div><div class="vh"><div class="asterLoad"><div class="vZ L4XNt"><span class="v1" id="processingContent"></span></div></div><div class="asterLoad"></div></div><div class="UB"></div></div>
+	<!--<div id="processingMessage" name="processingMessage"></div>-->
+	
 	<br/>
 	
-		<br/>
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
-			<span id="sptSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="xajax_getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;</span><span id="sptAddDiallist" style="display:none"><input type="button" value="<?echo $locate->Translate("My Diallist");?>" onclick="document.getElementById('dpnShow').value = 1;xajax_showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;"></span><span><input type="button" id="agentWorkstat" name="agentWorkstat" value="<?echo $locate->Translate("work stat");?>"  onclick="document.getElementById('awsShow').value = 1;xajax_agentWorkstat();"></span><span><input type="button" id="knowledge" name="knowledge" value="<?echo $locate->Translate("viewknowledge");?>"  onclick="setKnowledge();"></span>
+			<span id="divInvite">
+				<input type="text" value="" name="iptSrcNumber" id="iptSrcNumber" onkeyup="if(xajax.$('iptDestNumber').value == ''){return;} var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode; if (keyCode == 13) {invite();}">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber" ></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="<?echo $locate->Translate("Dial");?>" onclick="invite();">
+			</span>&nbsp;&nbsp;&nbsp;
+			<span id="sptSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid" onkeyup="if(xajax.$('iptCallerid').value == ''){return;} var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode; if (keyCode == 13) {getContact(xajax.$('iptCallerid').value);}">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;</span>
 		</div>
 		<div id="divMsg" name="divMsg" align="center" class="divMsg"></div>
 		<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
@@ -587,7 +743,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 				<td style="padding: 0px;">
 					<fieldset>
 						<div id="formDiv"  class="formDiv drsElement" 
-							style="left: 450px; top: 50px;width: 450px"></div>
+							style="left: 450px; top: 50px;width: 510px"></div>
 						<div id="formAgentWordStatDiv"  class="formDiv drsElement" 
 							style="left: 110px; top: 32px;width: 240px;z-index: 999;" ></div>
 						<div id="surveyDiv"  class="formDiv drsElement" 
@@ -601,7 +757,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 						<div id="formRecentCdr" class="formDiv drsElement"
 							style="left: 20px; top: 30px; width:750px"></div>		
 						<div id="formRecords" class="formDiv drsElement"
-							style="left: 20px; top: 330px; width: 900px"></div>
+							style="left: 20px; top: 330px; width: 900px;height:auto"></div>
 						<div id="formDiallist" class="formDiv drsElement"
 							style="left: 20px; top: 330px; width: 850px"></div>
 						<div id="formaddDiallistInfo"  class="formDiv drsElement" 
@@ -619,12 +775,18 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 						<div id="formDiallistPopup"  class="formDiv drsElement" 
 							style="left: 450px; top: 50px;width: 350px; z-index:201"></div>
 						<div id="formDiallistPannel"  class="formDiv drsElement" 
-							style="left: 150px; top: 130px;width: 850px; z-index:201"></div>
+							style="left: 150px; top: 130px;width: 850px; z-index:201;"></div>
 						<div id="formKnowlagePannel"  class="formDiv drsElement" 
 							style="left: 380px; top: 30px;width: 600px; z-index:1"></div>
 						<div id="grid" align="center"></div>
 						<div id="msgZone" name="msgZone" align="left"> </div>
 						<div id="external_crmDiv" style="display:none;"></div>
+						<div id="formTicketDetailDiv"  class="formDiv drsElement" 
+							style="left: 600px; top: 300px;width: 490px"></div>
+						<div id="formMyTickets"  class="formDiv drsElement" 
+							style="left: 500px; top: 150px;width: 800px"></div>
+						<div id="formCurTickets"  class="formDiv drsElement" 
+							style="left: 300px; top: 300px;width: 800px"></div>
 					</fieldset>
 				</td>
 			</tr>
@@ -632,14 +794,23 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	<div id="divCrm" name="divCrm"></div>
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 
-	<div id="divExtension" name="divExtension" 
-		class="divExtension drsElement drsMoveHandle" 
-		style="left: 750px; top: 20px;	width: 160px;
+	<div id="divGetMsgInCampaignP" class="drsElement drsMoveHandle" style="left: 500px; top: 20px; position: absolute;z-index:0;text-align: center;border:1px dashed #EAEAEA;color:#006600; background:#fbfbfb;"> 
+		<div width="100%" class="divGetMsgInCampaigntitle"><?echo $locate->Translate("Campaign Pannel")?>(<?echo $locate->Translate("Queue")?>)&nbsp;&nbsp;&nbsp;&nbsp;<img src="skin/default/images/movedesc.png" onclick="if(xajax.$('divGetMsgInCampaign').style.display!='none'){xajax.$('divGetMsgInCampaign').style.display='none';this.src='skin/default/images/moveasc.png';xajax.$('divGetMsgInCampaignP').style.height='20px';}else{xajax.$('divGetMsgInCampaign').style.display='';this.src='skin/default/images/movedesc.png';xajax.$('divGetMsgInCampaignP').style.height='';}"></div><div width="100%" id="divGetMsgInCampaign"></div>
+	</div>
+
+    <div class="divExtension drsElement drsMoveHandle" 
+		style="left: 760px; top: 20px;	width: 160px;
 				position: absolute; 
 				z-index:0;
 				text-align: center; 
 				border: 1px dashed #EAEAEA;    
-				color:#006600; "></div>
+				color:#006600; background:#fbfbfb;">	
+				
+	<div class="divExtensiontitle"><?echo $locate->Translate("Group Pannel")?> <img src="skin/default/images/movedesc.png" onclick="if(xajax.$('divExtension').style.display!='none'){xajax.$('divExtension').style.display='none';this.src='skin/default/images/moveasc.png'}else{xajax.$('divExtension').style.display='';this.src='skin/default/images/movedesc.png'}"></div>
+	<div id="divExtension" name="divExtension" >
+
+	</div>
+	</div>
 
 	<div id="divMap" class="drsElement" 
 		style="left: 450px; top: 20px;	width: 300px;

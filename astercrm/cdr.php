@@ -62,6 +62,7 @@ require_once('cdr.common.php');
 					<div id="formDiv"  class="formDiv drsElement" style="left: 450px; top: 50px;width:500px;" ></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
+					<div id="formplaymonitor"  class="formDiv drsElement" style="left: 450px; top: 50px;width: 350px"></div>
 				</fieldset>
 			</td>
 		</tr>

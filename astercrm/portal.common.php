@@ -83,8 +83,9 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['extension'] == '' && $_SESSION['curuser']['usertype'] != 'admin') 
+if ($_SESSION['curuser']['extension'] == '' && $_SESSION['curuser']['usertype'] != 'admin') {
 	header("Location: login.php");
+}
 
 if (!isset($_SESSION['curid']) && $_SESSION['curid'] =='' ) $_SESSION['curid']=0;
 
@@ -102,6 +103,9 @@ $xajax->waitCursorOff();
 $xajax->registerFunction("listenCalls");
 $xajax->registerFunction("dial");
 $xajax->registerFunction("transfer");
+$xajax->registerFunction("attendtransfer");
+$xajax->registerFunction("turnback");
+$xajax->registerFunction("holdhangup");
 $xajax->registerFunction("init");
 $xajax->registerFunction("addWithPhoneNumber");
 $xajax->registerFunction("monitor");
@@ -122,6 +126,17 @@ $xajax->registerFunction("setCallresult");
 $xajax->registerFunction("setKnowledge");
 $xajax->registerFunction("getPreDiallist");
 $xajax->registerFunction("agentWorkstat");
+$xajax->registerFunction("insertIntoDnc");
+$xajax->registerFunction("showMyTickets");
+$xajax->registerFunction("curTicketDetail");
+$xajax->registerFunction("relateByCategoryId");
+$xajax->registerFunction("curCustomerDetail");
+$xajax->registerFunction("updateCurTicket");
+$xajax->registerFunction("relateByCategory");
+$xajax->registerFunction("searchTicketsFormSubmit");
+$xajax->registerFunction("getMsgInCampaign");
+$xajax->registerFunction("queueAgentControl");
+
 if ($config['system']['enable_external_crm'] == false){
 	//crm function
 	$xajax->registerFunction("showGrid");
@@ -160,6 +175,9 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("saveSchedulerDial");
 	$xajax->registerFunction("clearPopup");
 	$xajax->registerFunction("knowledgechange");
+	$xajax->registerFunction("addTicket");
+	$xajax->registerFunction("saveTicket");
+	$xajax->registerFunction("AllTicketOfMy");
 }
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.

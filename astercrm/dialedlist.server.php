@@ -115,8 +115,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order,$_SESSION['curuser']['groupid']);
 		}elseif($flag3 != 1){
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"dialedlist");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"survey");
+			$numRows =& Customer::getNumRowsMore($filter, $content,"campaigndialedlist");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"campaigndialedlist");
 		}else{
 			$order = "id";
 			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
@@ -148,8 +148,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'answertime';
 	$fields[] = 'duration';
 	$fields[] = 'callresult';
+	$fields[] = 'billsec';
+	$fields[] = 'billsec_leg_a';
 //	$fields[] = 'response';		
 	$fields[] = 'customer';
+	$fields[] = 'customername';
 	$fields[] = 'uniqueid';
 	$fields[] = 'campaignresult';
 	$fields[] = 'resultby';
@@ -162,9 +165,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Dialed Number");
 //	$headers[] = $locate->Translate("Answer Time");
 	$headers[] = $locate->Translate("Duration");
+	$headers[] = $locate->Translate("Billsec");
+	$headers[] = $locate->Translate("Total Billsec");
 	$headers[] = $locate->Translate("Call Result");
 //	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Customer");
+	$headers[] = $locate->Translate("Name");
 	$headers[] = $locate->Translate("Uniqueid");
 	$headers[] = $locate->Translate("Campaign Result");
 	$headers[] = $locate->Translate("Result By");
@@ -175,6 +181,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -201,6 +209,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'style="text-align: left"';
 
@@ -210,9 +220,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialednumber","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","answertime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec_leg_a","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callresult","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","uniqueid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignresult","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","resultby","'.$divName.'","ORDERING");return false;\'';
@@ -226,9 +239,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'dialednumber';
 	//$fieldsFromSearch[] = 'answertime';
 	$fieldsFromSearch[] = 'duration';
+	$fieldsFromSearch[] = 'billsec';
+	$fieldsFromSearch[] = 'billsec_leg_a';
 	$fieldsFromSearch[] = 'callresult';
 	$fieldsFromSearch[] = 'response';
 	$fieldsFromSearch[] = 'customer';
+	$fieldsFromSearch[] = 'customername';
 	$fieldsFromSearch[] = 'uniqueid';
 	$fieldsFromSearch[] = 'campaignresult';
 	$fieldsFromSearch[] = 'resultby';
@@ -243,9 +259,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed Number");
 	//$fieldsFromSearchShowAs[] = $locate->Translate("Answer Time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Duration");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Billsec");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Total Billsec");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Call Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Response");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Uniqueid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Resultby");
@@ -263,7 +282,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->ordering = $ordering;
-	$table->addRowSearchMore("dialedlist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->addRowSearchMore("campaigndialedlist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
@@ -272,9 +291,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialednumber'];
 //		$rowc[] = $row['answertime'];
 		$rowc[] = $row['duration'];
+		$rowc[] = $row['billsec'];
+		$rowc[] = $row['billsec_leg_a'];
 		$rowc[] = $row['callresult'];
 //		$rowc[] = $row['response'];
 		$rowc[] = $row['customer'];
+		$rowc[] = $row['customername'];
 		$rowc[] = $row['uniqueid'];
 		$rowc[] = $row['campaignresult'];
 		$rowc[] = $row['resultby'];
@@ -282,7 +304,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialedtime'];
 //		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
-		$table->addRow("dialedlist",$rowc,0,1,0,$divName,$fields);
+		$table->addRow("campaigndialedlist",$rowc,0,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -306,22 +328,22 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$order = $searchFormValue['order'];
 	$divName = "grid";
 	if($optionFlag == "export" || $optionFlag == "exportcsv"){
-		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'dialedlist');
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'campaigndialedlist');
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT dialedlist.dialednumber,dialedlist.resultby,customer.customer,dialedlist.dialtime,dialedlist.answertime,dialedlist.duration,dialedlist.response,dialedlist.campaignresult,dialedlist.dialedby, groupname, campaignname,dialedlist.dialedtime FROM dialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dialedlist.groupid LEFT JOIN campaign ON campaign.id = dialedlist.campaignid LEFT JOIN customer ON customer.id = dialedlist.customerid ";
+		$sql = "SELECT campaigndialedlist.dialednumber,customer.customer,campaigndialedlist.customername,campaigndialedlist.dialtime,campaigndialedlist.answertime,campaigndialedlist.duration,campaigndialedlist.billsec,campaigndialedlist.billsec_leg_a as total_billsec,campaigndialedlist.response,campaigndialedlist.campaignresult,campaigndialedlist.resultby,campaigndialedlist.dialedby, groupname, campaignname,campaigndialedlist.dialedtime FROM campaigndialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaigndialedlist.groupid LEFT JOIN campaign ON campaign.id = campaigndialedlist.campaignid LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
-		$objResponse->addAssign("maintable", "value", 'dialedlist'); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", 'campaigndialedlist'); //赋值隐含域
 		$objResponse->addAssign("exporttype", "value", $optionFlag);
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
-		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'dialedlist');
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'campaigndialedlist');
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",'');
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($optionFlag == "recycle"){
-		$num = Customer::recyclefromsearch($searchContent,$searchField,$searchType,'dialedlist');
+		$num = Customer::recyclefromsearch($searchContent,$searchField,$searchType,'campaigndialedlist');
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','',$order,$divName,$ordering,'');
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addALert($num." ".$locate->Translate("number have been recycled"));
@@ -330,7 +352,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addAssign("spanRecycle","innerHTML","No answer calls: $noanswer");
 	}else{
 		if($type == "delete"){
-			$res = Customer::deleteRecord($id,'dialedlist');
+			$res = Customer::deleteRecord($id,'campaigndialedlist');
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,$searchType);
 				$objResponse = new xajaxResponse();
@@ -351,7 +373,7 @@ function deleteByButton($f,$searchFormValue){
 	$objResponse = new xajaxResponse();
 	if(is_array($f['ckb'])){
 		foreach($f['ckb'] as $vaule){
-			$res_customer = astercrm::deleteRecord($vaule,'dialedlist');
+			$res_customer = astercrm::deleteRecord($vaule,'campaigndialedlist');
 		}
 	}
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组

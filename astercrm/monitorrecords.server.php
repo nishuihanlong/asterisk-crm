@@ -215,7 +215,7 @@ function createGrid($customerid='',$start = 0, $limit = 1, $filter = null, $cont
 			if($row['fileformat'] == 'error'){
 				$rowc['filename'] = '';
 			}else{
-				$rowc['filename'] = $row['filename'];
+				$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
 			}
 			$rowc[] = $row['creby'];
 			$table->addRow("monitorrecord",$rowc,false,false,false,$divName,$fields);

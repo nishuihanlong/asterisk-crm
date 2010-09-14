@@ -153,6 +153,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'groupname';
 	$fields[] = 'groupid';
+	$fields[] = 'firstring';
+	$fields[] = 'allowloginqueue';
 	$fields[] = 'incontext';
 	$fields[] = 'outcontext';
 
@@ -160,18 +162,24 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers = array();
 	$headers[] = $locate->Translate("groupname");
 	$headers[] = $locate->Translate("groupid");
+	$headers[] = $locate->Translate("first ring");
+	$headers[] = $locate->Translate("allowloginqueue");
 	$headers[] = $locate->Translate("incontext");
 	$headers[] = $locate->Translate("outcontext");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="25%"';
-	$attribsHeader[] = 'width="25%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="15%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
+	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
@@ -181,6 +189,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader = array();
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupid","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","firstring","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","allowloginqueue","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","incontext","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","outcontext","'.$divName.'","ORDERING");return false;\'';
 	
@@ -188,6 +198,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'groupid';
+	$fieldsFromSearch[] = 'firstring';
+	$fieldsFromSearch[] = 'allowloginqueue';
 	$fieldsFromSearch[] = 'incontext';
 	$fieldsFromSearch[] = 'outcontext';
 	
@@ -195,6 +207,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("groupname");
 	$fieldsFromSearchShowAs[] = $locate->Translate("groupid");
+	$fieldsFromSearchShowAs[] = $locate->Translate("first ring");
+	$fieldsFromSearchShowAs[] = $locate->Translate("allowloginqueue");
 	$fieldsFromSearchShowAs[] = $locate->Translate("incontext");
 	$fieldsFromSearchShowAs[] = $locate->Translate("outcontext");
 
@@ -214,6 +228,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['id'];
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['groupid'];
+		$rowc[] = $locate->Translate($row['firstring']);
+		$rowc[] = $locate->Translate($row['allowloginqueue']);
 		$rowc[] = $row['incontext'];
 		$rowc[] = $row['outcontext'];
 		$table->addRow("group",$rowc,1,1,1,$divName,$fields);

@@ -51,8 +51,8 @@ function processForm($aFormValues)
 {
 	global $locate;
 	$objResponse = new xajaxResponse();
-
-	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
+	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
+	
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
 
@@ -217,6 +217,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $row['extension'];
 				$_SESSION['curuser']['usertype'] = $row['usertype'];
+				$_SESSION['curuser']['accountid'] = $row['id'];
 				$_SESSION['curuser']['accountcode'] = $row['accountcode'];
 				$_SESSION['curuser']['agent'] = $row['agent'];
 
@@ -261,6 +262,17 @@ function processAccountData($aFormValues)
 					$_SESSION['curuser']['dialinterval'] = $_SESSION['curuser']['group']['agentinterval'];
 				}
 
+				if($_SESSION['curuser']['groupid'] > 0){
+					$sql = "SELECT id,campaignname,queuename FROM campaign WHERE queuename != '' AND groupid='".$_SESSION['curuser']['groupid']."' AND enable= 1 ORDER BY queuename ASC";
+					$result = & $db->query($sql);
+
+					$dataArray = array();
+					while($row = $result->fetchRow()) {
+						$dataArray[] = $row;
+					}
+					$_SESSION['curuser']['campaign_queue'] = $dataArray;
+				}
+
 /*
 	if you dont want check manager status and show device status when user login 
 	please uncomment these three line
@@ -271,29 +283,48 @@ function processAccountData($aFormValues)
 //					$objResponse->addScript("selectmode('".$msg."')");
 //					return $objResponse;
 //				}
-				$objResponse->addScript('window.location.href="portal.php";');
-				return $objResponse;
+				//$_SESSION['error_report'] = $config['error_report']['error_report_level'];
+				//$objResponse->addScript('window.location.href="portal.php";');
+				//return $objResponse;
 
 
 				//check AMI connection
 				$myAsterisk = new Asterisk();
 				$myAsterisk->config['asmanager'] = $config['asterisk'];
+				
 				$res = $myAsterisk->connect();
 				
 			
-				$html .= $locate->Translate("server_connection_test");
+				//$html .= $locate->Translate("server_connection_test");
 				if ($res){
-					$html .= '<font color=green>'.$locate->Translate("pass").'</font><br>';
-					$html .= '<b>'.$_SESSION['curuser']['extension'].' '.$locate->Translate("device_status").'</b><br>';
-					$html .= asterisk::getPeerIP($_SESSION['curuser']['extension']).'<br>';
-					$html .= asterisk::getPeerStatus($_SESSION['curuser']['extension']).'<br>';
+					//$html .= '<font color=green>'.$locate->Translate("pass").'</font><br>';
+					//$html .= '<b>'.$_SESSION['curuser']['extension'].' '.$locate->Translate("device_status").'</b><br>';
+					//$html .= asterisk::getPeerIP($_SESSION['curuser']['extension']).'<br>';
+					//$html .= asterisk::getPeerStatus($_SESSION['curuser']['extension']).'<br>';
+					$v = $myAsterisk->Command("core show version");
+					$v = explode(' ',$v['data']);
+					$version = $v['2'];
+					$_SESSION['asterisk']['version'] = $version;
+					$version_arr = split('\.',$version);
+					if($version_arr['1'] > 4){
+						$_SESSION['asterisk']['paramdelimiter'] = ',';
+					}else{
+						$_SESSION['asterisk']['paramdelimiter'] = '|';
+					}
 				}else{
-					$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
+					$_SESSION['asterisk']['paramdelimiter'] = '|';
+					//$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
 				}
+
+				$_SESSION['error_report'] = $config['error_report']['error_report_level'];
+				$objResponse->addScript('window.location.href="portal.php";');
+				return $objResponse;
+
 				$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'portal.php\';">';
 				$objResponse->addAssign("formDiv","innerHTML",$html);
 				$objResponse->addClear("titleDiv","innerHTML");
 				$objResponse->addScript("xajax.$('btnContinue').focus();");
+				
 			} else{
 				$loginError = true;
 			}

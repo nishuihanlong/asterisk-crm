@@ -70,7 +70,7 @@ class Asterisk extends AGI_AsteriskManager{
       if($application) $parameters['Application'] = $application;
       if($data) $parameters['Data'] = $data;
 
-      if($timeout) $parameters['WaitTime'] = $timeout;
+      if($timeout) $parameters['Timeout'] = $timeout*1000;
       if($callerid) $parameters['CallerID'] = $callerid;
       if($variable) $parameters['Variable'] = $variable;
 
@@ -171,7 +171,7 @@ class Asterisk extends AGI_AsteriskManager{
 	*	$exten:		被监听方
 	*	$pam:		监听参数
 	*/
-	function chanSpy($spy, $exten ,$pam){
+	function chanSpy($spy, $exten ,$pam,$pdl){
 
 /*
 Action: originate 
@@ -188,7 +188,8 @@ $channel,
                        $application=NULL, $data=NULL,
                        $timeout=NULL, $callerid=NULL, $variable=NULL, $account=NULL, $async=NULL, $actionid=NULL
 */
-		Asterisk::sendCall("local/$spy",null,null,null,"ChanSpy",$exten."|qb".$pam,30);
+
+		Asterisk::sendCall("local/$spy",null,null,null,"ChanSpy",$exten.$pdl."qb".$pam,30);
 	}
 
 	function zapSpy(){
