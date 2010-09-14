@@ -8,7 +8,7 @@ dbport = 3306
 dbhost = localhost
 dbname = astercc
 username = astercc
-password = astreccsecret
+password = asterccsecret
 
 [asterisk]
 ;
