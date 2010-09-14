@@ -39,4 +39,7 @@ $payment_receiver_error = "收款方账户不符";
 $payment_currency_error = "付款币种不符";
 $payment_order_error = "由于以上原因导致本次充值失败";
 $payment_may_completed = "注: 您本次付款可能已成功,请登录<a href='https://www.paypal.com'>paypal</a>查看详情";
+$callshop_pay_fee = '话吧支付手续费';
+$yes ='是';
+$no = '否';
 ?>

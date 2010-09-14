@@ -77,6 +77,7 @@ class Customer extends astercrm
 		$sql= "INSERT INTO resellergroup SET "
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
+				."clid_context='".$f['clid_context']."', "
 				."allowcallback='".$f['allowcallback']."', "
 				."creditlimit= ".$f['creditlimit'].", "
 				."limittype= '".$f['limittype']."', "
@@ -205,6 +206,7 @@ class Customer extends astercrm
 		$sql= "UPDATE resellergroup SET "
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
+				."clid_context='".$f['clid_context']."', "
 				."curcredit='".$newcurcredit."', "
 				."creditlimit='".$f['creditlimit']."', "
 				."limittype='".$f['limittype']."', "
@@ -373,6 +375,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Clid Context").'</td>
+					<td align="left"><input type="text" id="clid_context" name="clid_context" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">
@@ -526,6 +532,10 @@ type=peer</textarea></td>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$resellergroup['accountcode'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Clid Context").'</td>
+					<td align="left"><input type="text" id="clid_context" name="clid_context" size="25" maxlength="30" value="'.$resellergroup['clid_context'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>

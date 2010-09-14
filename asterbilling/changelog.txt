@@ -128,14 +128,14 @@ add new field amount and total in table accountgroup to store all selling and al
 2009-6-18   fixed can't find astercc license file when don't run in '/opt'
 2009-6-21   fixed ASR and ACD both are '0' in report grid
 ----------------------------------------------------------------------------------
-0.011
+0.11
 2009-11-14 fixed the prefix billing
 2009-11-14 added professional mode
 2009-11-14 added member mode switch
 2009-11-14 added Portuguese support
 
 ----------------------------------------------------------------------------------
-0.012
+0.12
 2010-03-30 improved profile page of resller and groupadmin(could view the own balance)
 2010-03-30 fixed the currency bug of recharge by paypal
 2010-04-09 added display callshop Balance in systemstatus
@@ -149,6 +149,10 @@ add new field amount and total in table accountgroup to store all selling and al
 2010-05-11 astercc daemon support astersik 1.6.x
 2010-05-15 improved reselleroutbound.agi, support spare trunk
 2010-05-18 added account_log page(records the account login logs)
+----------------------------------------------------------------------------------
+0.13
+2010-08-18 fixed bug of update all reseller epayment information in profile page.
+2010-08-25 add the parameter 'callshop_pay_fee' in asterbilling.conf and reseller profile to control if callshop pays the fee by paypal.
 ----------------------------------------------------------------------------------
 
 import时如果数据量大会报错

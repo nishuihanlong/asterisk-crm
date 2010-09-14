@@ -39,4 +39,7 @@ $payment_receiver_error = "payment receiver error";
 $payment_currency_error = "payment currency error";
 $payment_order_error = "Recharge failed beacause above reason";
 $payment_may_completed = "Note: Your payment may be completed<br>Please log into your account at <a href='https://www.paypal.com'>www.paypal.com</a> to view details of this transaction.";
+$callshop_pay_fee = 'Callshop pay fee';
+$yes ='yes';
+$no = 'no';
 ?>

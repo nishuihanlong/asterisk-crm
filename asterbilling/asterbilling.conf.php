@@ -18,6 +18,9 @@ port = 5038
 username = admin
 secret = amp111
 
+;defined delimiter of asterisk parameter , or |.
+paramdelimiter = ,
+
 [licence]
 
 licenceto = free demo
@@ -124,8 +127,11 @@ currency_code = USD
 ;Available amount for payer
 amount = 10,20,50,100
 
+;if callshop pays fee of paypal
+callshop_pay_fee = 0
+
 ;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
-asterbilling_url = http://192.168.1.21/astercc/asterbilling
+asterbilling_url = http://192.168.1.22/asterbilling
 
 ;your email address for receice a notice when someone payment
 notify_mail = 

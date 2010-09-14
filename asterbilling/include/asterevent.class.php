@@ -34,23 +34,42 @@ class astercc extends PEAR
 		global $db,$config;
 
 		if ($config['system']['sipfile'] == '')	return;
+		$accountcode = '';
+		$clid_context = '';
+		
+		$query = "SELECT * FROM resellergroup WHERE id = $resellerid";
+		$reseller = $db->getRow($query);
+		$accountcode = $reseller['accountcode'];
+		$clid_context = $reseller['clid_context'];
 
-		$query = "SELECT id FROM accountgroup WHERE resellerid = $resellerid";
+		$query = "SELECT * FROM accountgroup WHERE resellerid = $resellerid";
 		$group_list = $db->query($query);
 		$content = '';
 		while	($group_list->fetchInto($group)){
+			if($group['accountcode'] != ''){
+				$accountcode = $group['accountcode'];
+			}
 
 			$query = "SELECT * FROM clid WHERE groupid = ".$group['id']." ORDER BY clid ASC";
 			$clid_list = $db->query($query);
 
 			while	($clid_list->fetchInto($row)){
 				$content .= "[".$row['clid']."]\n";
+
 				foreach ($config['sipbuddy'] as  $key=>$value){
+					if($clid_context != '' && strtolower(trim($key)) == 'context'){
+						$content .= "$key = $clid_context\n";
+						continue;
+					}
 					if ($key != '' && $value != '')
 						$content .= "$key = $value\n";
 				}
+				if($accountcode != "" && $accountcode != "''"){
+					$content .= "accountcode = ".$accountcode."\n";
+				}
 				$content .= "secret = ".$row['pin']."\n";
 				$content .= "callerid = \"".$row['clid']."\" <".$row['clid'].">\n\n";
+
 			}
 		}
 

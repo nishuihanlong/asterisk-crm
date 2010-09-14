@@ -311,6 +311,10 @@ function paymentInfoHtml(){
 				<td align="right" valign="top" >'.$locate->Translate('Notify email').':&nbsp;&nbsp;</td>
 				<td align="center" valign="top" ><b>'.$reseller_row['epayment_notify_mail'].'</b></td>
 			  </tr>
+			  <tr bgcolor="#F7F7F7">
+				<td align="right" valign="top" >'.$locate->Translate('Callshop pay fee').':&nbsp;&nbsp;</td>
+				<td align="center" valign="top" ><b>'.$locate->Translate($reseller_row['callshop_pay_fee']).'</b></td>
+			  </tr>
 			  <tr>
 				<td align="right" valign="top" colspan="2"><input type="button" id="epayment_edit" name="epayment_edit" value="'.$locate->Translate('Edit').'" onclick="xajax_resellerPaymentInfoEdit();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			  </tr>
@@ -459,7 +463,11 @@ function processOrder($pdt){
 	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$group_row = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'accountgroup');
 		$srcCredit = $group_row['curcredit'];
-		$updateCurCredit = $srcCredit - $pdt['mc_gross'];
+		if($reseller_row['callshop_pay_fee'] == 'yes'){
+			$updateCurCredit = $srcCredit - $pdt['mc_gross'];
+		}else{
+			$updateCurCredit = $srcCredit - $pdt['mc_gross'] + $pdt['mc_fee'];
+		}
 		$sql = "UPDATE accountgroup SET curcredit = $updateCurCredit WHERE id='".$_SESSION['curuser']['groupid']."'";
 		$mailto = $reseller_row['epayment_notify_mail'];
 		$mailTitle = $locate->Translate('Callshop').': '.$_SESSION['curuser']['username'].' '.$locate->Translate('Paymented').' '.$config['epayment']['currency_code'].$pdt['mc_gross'].' '.$locate->Translate('for').' '.$reseller_row['epayment_item_name'].','.$locate->Translate('Please check it').' -pdt';
@@ -470,6 +478,10 @@ function processOrder($pdt){
 	if($res){
 		$credithistory_sql = "INSERT INTO credithistory SET modifytime=now(), resellerid='".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."',srccredit='".$srcCredit."',modifystatus='reduce',modifyamount='".$pdt['mc_gross']."',comment='Recharge By Paypal',operator='".$_SESSION['curuser']['userid']."',epayment_txn_id='".$pdt['txn_id']."'";
 		$credithistory_res=$db->query($credithistory_sql);
+		if(($_SESSION['curuser']['usertype'] == 'groupadmin' && $reseller_row['callshop_pay_fee'] == 'yes') || ($_SESSION['curuser']['usertype'] == 'reseller' && $config['epayment']['callshop_pay_fee'])){
+			$credithistory_sql = "INSERT INTO credithistory SET modifytime=now(), resellerid='".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."',srccredit='".$srcCredit."',modifystatus='add',modifyamount='".$pdt['mc_fee']."',comment='Fees By Paypal',operator='".$_SESSION['curuser']['userid']."',epayment_txn_id='".$pdt['txn_id']."'";
+			$credithistory_res=$db->query($credithistory_sql);
+		}
 	}
 
 	$subject = 'Instant Payment Notification - Recieved Payment';
@@ -499,6 +511,12 @@ function resellerPaymentInfoEdit(){
 			$enable = 'checked';
 		}else{
 			$diable = 'checked';
+		}
+
+		if($reseller_row['callshop_pay_fee'] == 'yes'){
+			$yesVal = 'checked';
+		}else{
+			$noVal = 'checked';
 		}
 		
 		$html .= '
@@ -539,6 +557,10 @@ function resellerPaymentInfoEdit(){
 						<td align="left"><input type="text" id="epayment_notify_mail" name="epayment_notify_mail" size="35" value="'.$reseller_row['epayment_notify_mail'].'"></td>
 					</tr>
 					<tr>
+						<td nowrap align="left">'.$locate->Translate("Callshop pay fee").'</td>
+						<td align="left"><input type="radio" id="callshop_pay_fee" name="callshop_pay_fee" value="yes" '.$yesVal.'>'.$locate->Translate("Yes").'<input type="radio" id="callshop_pay_fee" name="callshop_pay_fee"  value="no" '.$noVal.'>'.$locate->Translate("No").'</td>
+					</tr>
+					<tr>
 						<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_resellerPaymentInfoUpdate(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
 					</tr>
 				 </table></form>';
@@ -577,7 +599,7 @@ function resellerPaymentInfoUpdate($f){
 		}
 		$amount = rtrim($amount,',');
 
-		$sql = "UPDATE resellergroup SET epayment_status='".$f['epayment_status']."',epayment_account='".$f['epayment_account']."',epayment_item_name='".$f['epayment_item_name']."',epayment_identity_token='".$f['epayment_identity_token']."',epayment_amount_package='".$amount."',epayment_notify_mail='".$f['epayment_notify_mail']."'";
+		$sql = "UPDATE resellergroup SET epayment_status='".$f['epayment_status']."',epayment_account='".$f['epayment_account']."',epayment_item_name='".$f['epayment_item_name']."',epayment_identity_token='".$f['epayment_identity_token']."',epayment_amount_package='".$amount."',epayment_notify_mail='".$f['epayment_notify_mail']."',callshop_pay_fee='".$f['callshop_pay_fee']."' WHERE id='".$_SESSION['curuser']['resellerid']."'";
 		$res = $db->query($sql);
 
 		$objResponse->addAssign("formDiv", "style.visibility", "hidden");
