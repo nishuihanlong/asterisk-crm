@@ -225,6 +225,8 @@ CREATE TABLE `resellergroup` (
   `epayment_notify_mail` varchar(60) NOT NULL default '',
   `trunk1_id` int(11) NOT NULL default 0,
   `trunk2_id` int(11) NOT NULL default 0,
+  `callshop_pay_fee` ENUM('yes','no') NOT NULL DEFAULT 'no',
+  `clid_context` varchar(30) NOT NULL DEFAULT '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -385,8 +387,10 @@ CREATE TABLE `curcdr` (
   `didnumber` varchar(30) NOT NULL default '',
   `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `calldate` datetime not null default '0000-00-00 00:00:00',
   `srcuid` varchar(40) NOT NULL default '',
   `dstuid` varchar(40) NOT NULL default '',
+  `queue` varchar(30) NOT NULL DEFAULT '',
   `disposition` varchar(10) NOT NULL default '',
   `userid` int(11) NOT NULL default '0',
   `groupid` int(11) NOT NULL default '0',
@@ -400,7 +404,7 @@ CREATE TABLE `curcdr` (
   `dialstring` varchar(100) not null default '',
   `memo` varchar(100) NOT NULL default '',
   `accountcode` varchar(100) NOT NULL default '',
-  `monitored` enum('yes','no') NOT NULL default 'no',
+  `monitored` int(11) NOT NULL default 0,
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`didnumber`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -552,11 +556,13 @@ CREATE TABLE `mycdr` (
   `didnumber` varchar(30) NOT NULL default '',
   `duration` int(11) NOT NULL default '0',
   `billsec` int(11) NOT NULL default '0',
+  `billsec_leg_a` int(11) NOT NULL DEFAULT 0,
   `disposition` varchar(45) NOT NULL default '',
   `accountcode` varchar(100) NOT NULL default '',
   `userfield` varchar(255) NOT NULL default '',
   `srcuid` varchar(40) NOT NULL default '',
   `dstuid` varchar(40) NOT NULL default '',
+  `queue` varchar(30) NOT NULL DEFAULT '',
   `calltype` varchar(255) NOT NULL default '',
   `credit` double(24,4) NOT NULL default '0.0000',
   `callshopcredit` double(24,4) NOT NULL default '0.0000',
@@ -566,8 +572,12 @@ CREATE TABLE `mycdr` (
   `userid` int(11) NOT NULL default '0',
   `accountid` int(11) NOT NULL default '0',
   `destination` varchar(100) NOT NULL default '',
+  `monitored` int(11) NOT NULL default 0,
   `memo` varchar(100) NOT NULL default '',
   `dialstring` varchar(100) not null default '',
+  `children`  varchar(255) not null default '',
+  `ischild`  enum('yes','no') not null default 'no',
+  `processed` int(1) NOT NULL default '0', #1->已处理CDR,2已处理录音
   `customerid` int(11) NOT NULL default 0,
   `crm_customerid` int(11) NOT NULL default 0,
   `contactid` int(11) NOT NULL default 0,
@@ -575,6 +585,7 @@ CREATE TABLE `mycdr` (
   `payment`  varchar(15) NOT NULL default '',
   `note` text default '',
   `setfreecall` enum('yes','no') default 'no',
+  `astercrm_groupid` int(11) NOT NULL default 0,
   UNIQUE KEY `id` (`id`),
   INDEX `customerid` (`customerid`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
@@ -718,6 +729,7 @@ CREATE TABLE `queuestatus` (
  `queue` VARCHAR( 40 ) NOT NULL ,
  `position` INT NOT NULL ,
  `count` INT NOT NULL ,
+ `uniqueid` varchar(50) NOT NULL DEFAULT '',
  `cretime` DATETIME NOT NULL ,
  UNIQUE (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -741,6 +753,8 @@ CREATE TABLE `astercrm_accountgroup` (
  `agentinterval` int(5) NULL,
  `billingid` int(11) NOT NULL default 0,
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+ `firstring` ENUM('caller','callee') NOT NULL DEFAULT 'caller',
+ `allowloginqueue` ENUM('yes','no') NOT NULL DEFAULT 'no',
  `clear_popup` int(5) NULL,
  `creby` varchar(30) NOT NULL default '',
  UNIQUE (`groupid`)
@@ -781,6 +795,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `maxtrytime` int(11) NOT NULL default '1',
  `recyletime` int(11) NOT NULL default '3600',
  `minduration` int(11) NOT NULL default '0',
+ `dialtwoparty` enum ("yes","no") not null default "no",
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)
@@ -921,7 +936,9 @@ CREATE TABLE `dialedlist` (
   `dialednumber` varchar(30) NOT NULL default '',
   `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008/05/04
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',		#added by solo 2008#2#1
-  `duration` int(11) NOT NULL default '0',												#added by solo 2008#2#1
+  `duration` int(11) NOT NULL default '0',											#added by solo 2008#2#1
+  `billsec` int(11) NOT NULL DEFAULT 0,
+  `billsec_leg_a` int(11) NOT NULL DEFAULT 0,
   `transfertime` int(11) NOT NULL default '0',				#added by solo 2008#5#4										#added by solo 2008#2#1
   `response` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
   `customerid` int(11) NOT NULL default 0,
@@ -929,7 +946,8 @@ CREATE TABLE `dialedlist` (
   `callresult` varchar(60) default '',
   `campaignresult` varchar(60) default '',
   `resultby` varchar(30) NOT NULL default '',
-  `uniqueid` varchar(40) NOT NULL default '',											#added by solo 2008#2#1
+  `uniqueid` varchar(40) NOT NULL default '',										#added by solo 2008#2#1
+  `channel` varchar(50) NOT NULL DEFAULT '',
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008#2#3
   `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008#2#5
   `assign` varchar(20) NOT NULL default '',												#added by solo 2008#2#10
@@ -937,10 +955,40 @@ CREATE TABLE `dialedlist` (
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
-  `memo` varchar(100) NOT NULL default '',				#added by shixb 2010#8#12
+  `memo` varchar(255) NOT NULL default '',				#added by shixb 2010#8#12
   `creby` varchar(30) NOT NULL default '',
-  INDEX nnt (`dialednumber`,`dialedtime`),
-  INDEX nnu (`dialednumber`,`uniqueid`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE = MEMORY DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `campaigndialedlist`;
+
+CREATE TABLE `campaigndialedlist` (
+  `id` int(11) NOT NULL auto_increment,
+  `mycdr_id` int(11) NOT NULL default 0,
+  `dialednumber` varchar(30) NOT NULL default '',
+  `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',       
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',       
+  `duration` int(4) NOT NULL default '0',               
+  `billsec` int(4) NOT NULL default '0',               
+  `billsec_leg_a` int(4) NOT NULL default '0',               
+  `transfertime` int(11) NOT NULL default '0',
+  `response` varchar(20) NOT NULL default '',
+  `customerid` int(11) NOT NULL default 0,
+  `customername` varchar(100) default '',
+  `callresult` varchar(60) default '',
+  `campaignresult` varchar(60) default '',
+  `memo` varchar(255) not null default '',
+  `resultby` varchar(30) NOT NULL default '',
+  `uniqueid` varchar(40) NOT NULL default '',               
+  `channel` varchar(40) NOT NULL default '',               
+  `groupid` INT NOT NULL DEFAULT '0',                   
+  `campaignid` INT NOT NULL DEFAULT 0,                   
+  `assign` varchar(20) NOT NULL default '',               
+  `trytime` INT(11) NOT NULL DEFAULT '0',
+  `dialedby` varchar(30) NOT NULL default '',
+  `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `callOrder` INT(11) NOT NULL DEFAULT '1',
+  `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
@@ -965,7 +1013,7 @@ CREATE TABLE `diallist` (
   `trytime` INT(11) NOT NULL DEFAULT '0',				#added by solo 2008/05/04
   `callOrder` INT(11) NOT NULL DEFAULT '1',				#added by solo 2009/10/31
   `campaignid` INT NOT NULL DEFAULT 0,					#added by solo 2008#2#5
-  `memo` varchar(100) NOT NULL default '',				#added by shixb 2010#8#9
+  `memo` varchar(255) NOT NULL default '',				#added by shixb 2010#8#9
   `creby` varchar(30) NOT NULL default '',			#added by solo 2008#1#15
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',	#added by solo 2008#1#15
   UNIQUE KEY `id` (`id`)
@@ -1350,6 +1398,7 @@ CREATE TABLE `queue_name` (
   `limit_type` varchar(32) NOT NULL default '',
   `strategy` varchar(32) NOT NULL default '',
   `holdtime` int NOT NULL default 0,
+  `talktime` int(11) not null default 0,
   `w` int NOT NULL default 0,
   `calls_answered` int NOT NULL default 0,
   `calls_unanswered` int NOT NULL default 0,
@@ -1612,3 +1661,63 @@ CREATE TABLE `dnc_list` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+DROP TABLE IF EXISTS `tickets`;
+CREATE TABLE `tickets`(
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`ticketname` VARCHAR(100) NOT NULL DEFAULT '',
+`campaignid` int(11) NOT NULL DEFAULT 0,
+`groupid` int(11) NOT NULL DEFAULT  0,
+`fid` int(11) NOT NULL DEFAULT 0,
+`cretime` datetime DEFAULT NULL,
+`creby` varchar(30) NOT NULL DEFAULT '',
+ UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+ALTER TABLE `tickets` AUTO_INCREMENT=100000;
+
+DROP TABLE IF EXISTS `ticket_details`;
+CREATE TABLE `ticket_details`(
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`ticketcategoryid` int(11) NOT NULL DEFAULT 0,
+`ticketid` int(11) NOT NULL DEFAULT 0,
+`customerid` int(11) NOT NULL DEFAULT 0,
+`status` ENUM('new','panding','closed','cancel') NOT NULL DEFAULT 'new',
+`assignto` int(11) NOT NULL DEFAULT 0,
+`groupid` int(11) NOT NULL DEFAULT 0,
+`memo` varchar(100) NOT NULL DEFAULT '',
+`cretime` datetime DEFAULT NULL,
+`creby` varchar(30) NOT NULL DEFAULT '',
+ UNIQUE KEY `id` (`id`)
+)ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+DROP TABLE IF EXISTS `hold_channel`;
+CREATE TABLE `hold_channel`(
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`number` VARCHAR(30) NOT NULL DEFAULT '',
+`channel` VARCHAR(100) NOT NULL DEFAULT '',
+`uniqueid` VARCHAR(100) NOT NULL DEFAULT '',
+`status` VARCHAR(16) NOT NULL DEFAULT '',
+`agentchan` VARCHAR(100) NOT NULL DEFAULT '',
+`direction` enum('in','out') NOT NULL DEFAULT 'in',
+`accountid` int(11) NOT NULL DEFAULT  0,
+`cretime` datetime DEFAULT NULL,
+ UNIQUE KEY `id` (`id`)
+)ENGINE = MEMORY DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+DROP TABLE IF EXISTS `localchannels`;
+CREATE TABLE `localchannels` (
+`localchannel`  VARCHAR( 60 ) NOT NULL,
+`channel` VARCHAR( 60 ) NOT NULL,
+`channelstate` varchar(10) NOT NULL DEFAULT '',
+`calleridnum` varchar(50) NOT NULL DEFAULT '',
+`calleridname` VARCHAR( 50 ) NOT NULL DEFAULT '',
+`accountcode` VARCHAR( 50 ) NOT NULL DEFAULT '',
+`exten` varchar(20) NOT NULL DEFAULT '',
+`context` VARCHAR(20) NOT NULL DEFAULT '',
+`uniqueid` VARCHAR( 50 ) NOT NULL ,
+PRIMARY KEY ( `channel` ) ,
+UNIQUE (`channel`)
+) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci; 
