@@ -172,6 +172,26 @@ do
   fi
 done
 
+if [ -e "/var/run/asterisk/asterisk.ctl" ];then
+	asterv=`asterisk -rx "core show version"`
+	asterv=`echo $asterv |cut -f 2 -d\ `
+	asterv=`echo $asterv |cut -f 2 -d\.`
+else
+	echo -n "If your asterisk version is above 1.6, plese enter 'yes' ":
+	read astervchoose
+	astervchoose=`echo $astervchoose |tr [:upper:] [:lower:]`
+	if [ "${astervchoose}" == "yes" ];then
+		asterv=6
+	fi
+	
+fi
+
+if [ $asterv -ge 6 ];then
+  paramdelimiter=',';
+else
+  paramdelimiter='|';
+fi
+
 ####modify config file####
 #for astercc.conf
 sed -i '/\[database\]/,/\[asterisk\]/s/dbhost.*/dbhost = '${dbhost}'/1' ${curpath}/scripts/astercc.conf
@@ -183,6 +203,7 @@ sed -i '/\[asterisk\]/,/\[system]/s/server.*/server = '${astserver}'/1' ${curpat
 sed -i '/\[asterisk\]/,/\[system]/s/port.*/port = '${amiport}'/1' ${curpath}/scripts/astercc.conf
 sed -i '/\[asterisk\]/,/\[system]/s/username.*/username = '${amiuser}'/1' ${curpath}/scripts/astercc.conf
 sed -i '/\[asterisk\]/,/\[system]/s/secret.*/secret = '${amisecret}'/1' ${curpath}/scripts/astercc.conf
+sed -i '/\[asterisk\]/,/\[system]/s/paramdelimiter.*/paramdelimiter = '${paramdelimiter}'/1' ${curpath}/scripts/astercc.conf
 
 #for astercrm.conf.php
 sed -i '/\[database\]/,/\[asterisk\]/s/dbhost.*/dbhost = '${dbhost}'/1' ${curpath}/astercrm/astercrm.conf.php
@@ -193,6 +214,7 @@ sed -i '/\[asterisk\]/,/\[system]/s/server.*/server = '${astserver}'/1' ${curpat
 sed -i '/\[asterisk\]/,/\[system]/s/port.*/port = '${amiport}'/1' ${curpath}/astercrm/astercrm.conf.php
 sed -i '/\[asterisk\]/,/\[system]/s/username.*/username = '${amiuser}'/1' ${curpath}/astercrm/astercrm.conf.php
 sed -i '/\[asterisk\]/,/\[system]/s/secret.*/secret = '${amisecret}'/1' ${curpath}/astercrm/astercrm.conf.php
+sed -i '/\[asterisk\]/,/\[system]/s/paramdelimiter.*/paramdelimiter = '${paramdelimiter}'/1' ${curpath}/astercrm/astercrm.conf.php
 
 #for asterbilling.conf.php
 sed -i '/\[database\]/,/\[asterisk\]/s/dbhost.*/dbhost = '${dbhost}'/1' ${curpath}/asterbilling/asterbilling.conf.php
@@ -204,6 +226,7 @@ sed -i '/\[asterisk\]/,/\[system]/s/server.*/server = '${astserver}'/1' ${curpat
 sed -i '/\[asterisk\]/,/\[system]/s/port.*/port = '${amiport}'/1' ${curpath}/asterbilling/asterbilling.conf.php
 sed -i '/\[asterisk\]/,/\[system]/s/username.*/username = '${amiuser}'/1' ${curpath}/asterbilling/asterbilling.conf.php
 sed -i '/\[asterisk\]/,/\[system]/s/secret.*/secret = '${amisecret}'/1' ${curpath}/asterbilling/asterbilling.conf.php
+sed -i '/\[asterisk\]/,/\[system]/s/paramdelimiter.*/paramdelimiter = '${paramdelimiter}'/1' ${curpath}/asterbilling/asterbilling.conf.php
 
 echo Please enter main html directory for astercc
 echo -n "astercc directory(defalut /var/www/html/astercc):"
@@ -239,17 +262,20 @@ rm -rf ${daemonpath}/lib
 cp -Rf ${curpath}/scripts/* ${daemonpath}
 chmod +x ${daemonpath}/* 
 
-if [ ! -e "/var/lib/asterisk/agi-bin/astercrm.agi" ];then
-	ln -s ${daemonpath}/astercrm.agi /var/lib/asterisk/agi-bin/astercrm.agi
+if [ -e "/var/lib/asterisk/agi-bin/astercrm.agi" ];then
+	rm -f /var/lib/asterisk/agi-bin/astercrm.agi
 fi
+ln -s ${daemonpath}/astercrm.agi /var/lib/asterisk/agi-bin/astercrm.agi
 
-if [ ! -e "/var/lib/asterisk/agi-bin/reselleroutbound.agi" ];then
-	ln -s ${daemonpath}/reselleroutbound.agi /var/lib/asterisk/agi-bin/reselleroutbound.agi
+if [ -e "/var/lib/asterisk/agi-bin/reselleroutbound.agi" ];then
+	rm -f /var/lib/asterisk/agi-bin/reselleroutbound.agi
 fi
+ln -s ${daemonpath}/reselleroutbound.agi /var/lib/asterisk/agi-bin/reselleroutbound.agi
 
-if [ ! -e "/var/lib/asterisk/agi-bin/lib" ];then
-	ln -s ${daemonpath}/lib /var/lib/asterisk/agi-bin/lib
+if [ -e "/var/lib/asterisk/agi-bin/lib" ];then
+	rm -rf /var/lib/asterisk/agi-bin/lib
 fi
+ln -s ${daemonpath}/lib /var/lib/asterisk/agi-bin/lib
 
 echo Please enter absolute path of asterisk etc 
 echo -n "asterisk etc (default /etc/asterisk):"
@@ -285,21 +311,28 @@ fi
 
 touch ${asterisketc}/sip_astercc.conf
 
-if [ ! -f "${asterisketc}/extensions_astercc.conf" ]
-then
-  cp -f ${curpath}/scripts/extensions_astercc.conf ${asterisketc}
+
+#if [ ! -f "${asterisketc}/extensions_astercc.conf" ]
+#then
+#  cp -f ${curpath}/scripts/extensions_astercc.conf ${asterisketc}
+#fi
+
+if [ $asterv -ge 6 ];then
+ cp -f ${curpath}/scripts/extensions_astercc.conf_1.6 ${asterisketc}/extensions_astercc.conf
+else
+ cp -f ${curpath}/scripts/extensions_astercc.conf ${asterisketc}/extensions_astercc.conf
 fi
 
 echo "#include sip_astercc.conf" >> ${asterisketc}/sip.conf
 
 echo "#include extensions_astercc.conf" >> ${asterisketc}/extensions.conf
 
-echo "Are you want to auto convert wav monitor records to mp3 format every hour?"
-echo -n "Press 'y' to auto convert:"
-read monitorconvertflag
+#echo "Are you want to auto convert wav monitor records to mp3 format every hour?"
+#echo -n "Press 'y' to auto convert:"
+#read monitorconvertflag
 
-if [ "X${monitorconvertflag}" == "Xy" -o "X${monitorconvertflag}" == "XY" ]
-then
+#if [ "X${monitorconvertflag}" == "Xy" -o "X${monitorconvertflag}" == "XY" ]
+#then
   if [ ! -f "/usr/bin/lame" -a ! -f "/usr/local/bin/lame" ]
   then
     echo "Can't locate command:lame in /usr/bin/ and /usr/local/bin/, please install"
@@ -312,13 +345,15 @@ then
   
   if [ -f "/etc/redhat-release" ]
   then
-        echo "0 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/root
+        echo "0 0 * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/root
+	echo "*/5 * * * * ${daemonpath}/processcdr.pl -d" >> /var/spool/cron/root
   else
-        echo "0 * * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/crontabs/root
+        echo "0 0 * * * ${daemonpath}/processmonitors.pl -d" >> /var/spool/cron/crontabs/root
+	echo "*/5 * * * * ${daemonpath}/processcdr.pl -d" >> /var/spool/cron/crontabs/root
         chown root:crontab /var/spool/cron/crontabs/root
         chmod 600 /var/spool/cron/crontabs/root
   fi
-fi
+#fi
 
 echo "*****************************************************************"
 echo "*******************astercc install finished**********************"
