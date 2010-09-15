@@ -445,6 +445,17 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
+		//print_r($_SESSION['curuser']);exit;
+		if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$searchContent[] = $_SESSION['curuser']['groupid'];
+			$searchField[] = 'groupid';
+			$searchType[] = 'equal';
+		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
+			$searchContent[] = $_SESSION['curuser']['resellerid'];
+			$searchField[] = 'resellerid';
+			$searchType[] = 'equal';
+		}
+		 
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'myrate');
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,1,'');
 		$objResponse->addClear("msgZone", "innerHTML");

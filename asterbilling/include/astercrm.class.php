@@ -1001,7 +1001,7 @@ Class astercrm extends PEAR{
 		}else{
 			$sql = 'TRUNCATE '.$table;
 		}
-
+		//echo $sql;exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 
