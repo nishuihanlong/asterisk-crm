@@ -43,7 +43,6 @@ require_once ('include/astercrm.class.php');
 function init($fileName){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
-	
 	$file_list = getExistfilelist();
 	$objResponse->addScript("addOption('filelist','0','".$locate->Translate('select a existent file')."');");
 	foreach ( $file_list as $file ) {
@@ -60,13 +59,13 @@ function init($fileName){
 	$objResponse->addAssign("divTables","innerHTML",$tableList);
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("divGrid", "innerHTML", '');
-
+	
 	//$objResponse->addScript("xajax_showDivMainRight(document.getElementById('hidFileName').value);");
 	//$objResponse->loadXML(showDivMainRight($fileName));
 	//$objResponse->addAssign("divDiallistImport", "innerHTML", '');
 
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
-
+	
 	if ($_SESSION['curuser']['usertype'] == 'admin') {
 		// add all group
 		$res = astercrm::getGroups();
@@ -77,8 +76,9 @@ function init($fileName){
 		// add self
 		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
 	}
-
+	
 	$objResponse->addScript("setCampaign();");
+	
 	$objResponse->loadXML(showDivMainRight($fileName));
 	return $objResponse;
 }
@@ -114,6 +114,7 @@ function showDivMainRight($filename){
 
 		$diallistBar = getDiallistBar($dataContent['columnNumber']);
 		$objResponse->addAssign("divDiallistImport", "innerHTML", $diallistBar);
+		$objResponse->addScript("setDiallistCase();");
 
 		$objResponse->addAssign("btnImportData", "disabled", false);
 	}else{
@@ -160,6 +161,14 @@ function selectTable($tableName){
 	$objResponse->addAssign("divTableFields", "innerHTML", $HTML);
 	$objResponse->addAssign("hidTableName","value",$tableName);
 	$objResponse->addAssign("hidMaxTableColumnNum","value",$i-1);
+	if($tableName == 'diallist') {
+		$objResponse->addAssign("chkAdd","disabled",true);
+		$objResponse->addAssign("chkAssign","disabled","");
+	} else {
+		$objResponse->addAssign("chkAdd","disabled","");
+		$objResponse->addAssign("chkAssign","disabled",true);
+	}
+	
 //	$objResponse->addAssign("divDiallistImport", "innerHTML", "");
 	return $objResponse;
 }
@@ -179,7 +188,7 @@ function selectTable($tableName){
 function submitForm($aFormValues){
 	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
-	//print_R($aFormValues);exit;
+
 	$order = $aFormValues['order']; //得到的排序数字，数组形式，要添加到数据库的列
 	$fileName = $aFormValues['hidFileName'];
 	$tableName = $aFormValues['hidTableName'];
@@ -253,6 +262,22 @@ function submitForm($aFormValues){
 	$date = date('Y-m-d H:i:s'); //当前时间
 	$groupid = $aFormValues['groupid'];
 	$campaignid = $aFormValues['campaignid'];
+	if($tableName == 'diallist') {
+		$aFormValues['chkAdd'] = '1';
+
+		foreach($order as $key => $value){
+			
+			if($value == '0'){
+				$aFormValues['dialListField'] = $key;
+				break;
+			}
+		}
+		if(empty($aFormValues['dialListField'])){
+			$objResponse->addAlert($locate->Translate('must select a cloumn for dialnumer'));
+			return $objResponse;
+		}
+	}
+	
 	if($aFormValues['chkAdd'] != '' && $aFormValues['chkAdd'] == '1'){ //是否添加到拨号列表
 		$dialListField = trim($aFormValues['dialListField']); //数字,得到将哪列添加到拨号列表
 		$dialListTime = trim($aFormValues['dialListTime']); //数字,下拉列表选择将哪列做为dialtime添加到拨号列表
@@ -361,10 +386,24 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 	$diallistAffectRows = 0;
 	$tableAffectRows = 0;
 	$query = "";
+	$assgignKey = 0;
 
 	foreach($arrData as $arrRow){
-		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$campaignid);
+		if($assignNum > 0 && $tableName == 'diallist'){
+			while ($arryAssign[$assgignKey] == ''){
+				if($assgignKey >$assignNum){
+					$assgignKey = 0;
+				}else{
+					$assgignKey ++;
+				}
+			}
+		}
 		
+		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$assignNum,$arryAssign,$campaignid,$assgignKey);
+
+		$assgignKey++;
+		
+
 		$strSql = $arrRes['strSql'];					//得到插入选择表的sql语句
 
 		$dialListNum = $arrRes['dialListNum'];	//以及要导入diallist的sql语句
@@ -382,7 +421,7 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
 		}
 
-		if (trim($dialListNum) != ""){
+		if (trim($dialListNum) != "" && $tableName != 'diallist'){
 			if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
 				while ($arryAssign[$x] == ''){
 					if($x >$assignNum){
@@ -414,10 +453,10 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 }
 
 //循环列数据，得到sql
-function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$campaignid){
+function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$assignNum,$arryAssign,$campaignid,$assignKey){
 	$fieldName = '';
 	$strData = '';
-
+//echo $dialListField.'111';exit;
 	$phone_field = array( 0 => 'phone',1 => 'phone_ext', 2 => 'fax',3 => 'fax_ext',4 => 'mobile',5 => 'ext',6 => 'phone1',7 => 'ext1',8 => 'phone2',9 => 'ext2');
 
 	for ($j=0;$j<count($arrRow);$j++)
@@ -438,8 +477,24 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 			$strData .= '"'.$arrRow[$j].'"'.',';
 		}
 		if(isset($dialListField) && $dialListField != ''){
-			if($dialListField == $j)
-				$dialNum = astercrm::getDigitsInStr($arrRow[$j]);
+			if($dialListField == $j){
+				if($tableName == 'diallist'){
+					if($assignNum > 0){
+//						while ($arryAssign[$x] == ''){
+//							if($x >$assignNum){
+//								$x = 0;
+//							}else{
+//								$x ++;
+//							}
+//						}
+						$fieldName .= 'assign,';
+						$strData .= '"'.$arryAssign[$assignKey].'"'.',';
+					}
+					
+				}else{
+					$dialNum = astercrm::getDigitsInStr($arrRow[$j]);
+				}
+			}
 		}
 		if(isset($dialListTime) && $dialListTime != ''){
 			if($dialListTime == $j)

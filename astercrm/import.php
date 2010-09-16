@@ -117,35 +117,32 @@
 			}
 
 			function submitFormOnSubmit(){
-				if(document.getElementsByName('chkAdd')[0].checked == true){
-					if(document.getElementsByName('chkAssign')[0].checked == true){
-						if(document.getElementById('assign').value == "")
-						{
-							alert('<?echo $locate->Translate("assign_automaticly");?>');
-						}
+				if(document.getElementsByName('chkAssign')[0].checked == true){
+					if(document.getElementById('assign').value == "")
+					{
+						alert('<?echo $locate->Translate("assign_automaticly");?>');
 					}
+				}
 
-					if(document.getElementById('dialListField').value == '') {
-						alert('<?echo $locate->Translate("Must select a column for diallist");?>');
-						document.getElementById('dialListField').focus();return;
-					}
-				} else {
-					var a = document.getElementsByName('order[]');
-					var b = '';
-					for(i=0;i < a.length;i++){
-						//alert(a[i].value);
-						if(a[i].value != ''){
-							b = a[i].value;
-							break;
-						}
-					}
-					if(b == ''){
-						alert("<?echo $locate->Translate("Must select one or more columns");?>");
-						a[0].focus();
-						return;
+				/*if(document.getElementById('dialListField').value == '') {
+					alert('<?echo $locate->Translate("Must select a column for diallist");?>');
+					document.getElementById('dialListField').focus();return;
+				}*/
+				var a = document.getElementsByName('order[]');
+				var b = '';
+				for(i=0;i < a.length;i++){
+					//alert(a[i].value);
+					if(a[i].value != ''){
+						b = a[i].value;
+						break;
 					}
 				}
 				
+				if(b == ''){
+					alert("<?echo $locate->Translate("Must select one or more columns");?>");
+					a[0].focus();
+					return;
+				}
 				
 				//alert (document.getElementsById('sltTable').);
 				//return false;
@@ -199,6 +196,16 @@
 				//清空campaignid
 				document.getElementById("campaignid").options.length=0
 				xajax_setCampaign(groupid);
+			}
+
+			function setDiallistCase(){
+				if(document.getElementById('sltTable').value == 'diallist'){
+					document.getElementById('chkAdd').disabled = true;
+					document.getElementById('chkAssign').disabled = false;
+				} else {
+					document.getElementById('chkAdd').disabled = false;
+					document.getElementById('chkAssign').disabled = true;
+				}
 			}
 
 		</script>

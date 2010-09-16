@@ -135,7 +135,7 @@
 Class astercrm extends PEAR{
 	function countDailedlist($campaignresult,$campaignid,$groupid){
 		global $db;
-		$query = "SELECT COUNT(*) FROM dialedlist WHERE campaignresult = '$campaignresult' AND campaignid = '$campaignid' AND groupid = '$groupid'";
+		$query = "SELECT COUNT(*) FROM campaigndialedlist WHERE campaignresult = '$campaignresult' AND campaignid = '$campaignid' AND groupid = '$groupid'";
 		$res = $db->getOne($query);
 		return $res;
 	}

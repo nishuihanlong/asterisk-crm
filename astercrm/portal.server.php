@@ -1288,12 +1288,12 @@ function checkworkexten() {
 	}
 	
 	if($_SESSION['curuser']['channel'] == ''){
-		$row = astercrm::getRecordByField("peer","sip/".$_SESSION['curuser']['extension'],"peerstatus");
+		$row = astercrm::getRecordByField("peername","sip/".$_SESSION['curuser']['extension'],"peerstatus");
 	}else{
-		$row = astercrm::getRecordByField("peer",$_SESSION['curuser']['channel'],"peerstatus");
+		$row = astercrm::getRecordByField("peername",$_SESSION['curuser']['channel'],"peerstatus");
 	}
 
-	if($row['status'] != 'reachable') {
+	if($row['status'] != 'reachable' && $row['status'] != 'registered') {
 		$objResponse->addAssign("workingextenstatus","value", $locate->Translate("extension_unavailable") );
 	}else{
 		$objResponse->addAssign("workingextenstatus","value", "ok" );

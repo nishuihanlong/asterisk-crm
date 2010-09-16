@@ -426,5 +426,100 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		$res =& $db->query($query);
 		return $res;
 	}
+
+	function createDupGrid($f){//print_r($f);exit;
+		global $db,$locate;
+		$joinstr = astercrm::createSqlWithStype($f['searchField'],$f['searchContent'],$f['searchType'],"diallist");
+
+		$ajoinstr = str_replace('diallist.','a.',$joinstr);
+		if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				$ajoinstr .= " AND a.groupid = '".$_SESSION['curuser']['groupid']."'";
+				$joinstr .= " AND diallist.groupid = '".$_SESSION['curuser']['groupid']."'";
+		}
+	
+
+		$query = "SELECT a.*,campaign.campaignname FROM diallist as a LEFT JOIN campaign ON campaign.id=a.campaignid,( SELECT * FROM diallist WHERE 1 ".$joinstr." GROUP BY dialnumber HAVING COUNT(dialnumber) > 1 ) as b WHERE a.dialnumber = b.dialnumber AND a.id <> b.id ".$ajoinstr." LIMIT 0,100;";
+		
+
+		$fields = array();
+		$fields[] = 'dialnumber';
+		$fields[] = 'assign';
+		//$fields[] = 'groupid';			
+		$fields[] = 'campaignname';
+
+		// HTML table: Headers showed
+		$headers = array();
+		$headers[] = $locate->Translate("Number").'<br>';
+		$headers[] = $locate->Translate("Assign to").'<br>';
+		//$headers[] = $locate->Translate("Group Name").'<br>';
+		$headers[] = $locate->Translate("Campaign Name").'<br>';
+
+
+		// HTML table: hearders attributes
+		$attribsHeader = array();
+		$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+		//$attribsHeader[] = 'width=""';
+		$attribsHeader[] = 'width=""';
+
+		// HTML Table: columns attributes
+		$attribsCols = array();
+		$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+		//$attribsCols[] = 'style="text-align: left"';
+		$attribsCols[] = 'style="text-align: left"';
+
+	
+		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
+		$eventHeader = array();
+		$eventHeader[]= 'onClick=\'showRecentCdrGrid("NONE","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","a.dialnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'showRecentCdrGrid("NONE","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","a.assign","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		//$eventHeader[]= 'onClick=\'showRecentCdrGrid("","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'showRecentCdrGrid("NONE","'.$cdrtype.'",0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+				
+
+		// Select Box: fields table.
+		$fieldsFromSearch = array();
+	
+		// Selecct Box: Labels showed on search select box.
+		$fieldsFromSearchShowAs = array();
+
+		// Create object whit 5 cols and all data arrays set before.
+		$table = new ScrollTable(4,$start,$limit,$filter,$numRows,$content,$order,$customerid,"diallist_dup");
+		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=false,$delete=false,$detail=false);
+		$table->setAttribsCols($attribsCols);
+		//$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$res = $db->query($query);
+		while ($res->fetchInto($row)) {
+			//print_r($row);exit;
+		// Change here by the name of fields of its database table
+			$rowc = array();
+			$rowc[] = $row['id'];
+			$rowc[] = $row['dialnumber'];
+			$rowc[] = $row['assign'];
+			//$rowc[] = $row['groupid'];
+			$rowc[] = $row['campaignname'];
+			
+			$table->addRow("Duplicate",$rowc,false,false,false,'formDuplicate',$fields);
+		}//exit;
+		$html = $table->render('static');
+		return $html;		
+	}
+
+
+	function deleteDuplicates($f){
+		global $db,$locate;
+		$joinstr = astercrm::createSqlWithStype($f['searchField'],$f['searchContent'],$f['searchType'],"diallist");
+		$ajoinstr = str_replace('diallist.','a.',$joinstr);
+		if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				$ajoinstr .= " AND a.groupid = '".$_SESSION['curuser']['groupid']."'";
+				$joinstr .= " AND diallist.groupid = '".$_SESSION['curuser']['groupid']."'";
+		}
+
+		$query = "DELETE diallist as a FROM diallist as a ,( SELECT * FROM diallist WHERE 1 ".$joinstr." GROUP BY dialnumber HAVING COUNT(dialnumber) > 1 ) as b WHERE a.dialnumber = b.dialnumber AND a.id <> b.id ".$ajoinstr." ";
+
+		$res = $db->query($query);
+		return $res;
+	}
 }
 ?>

@@ -437,6 +437,64 @@ function deleteByButton($f,$searchFormValue){
 	return $objResponse->getXML();
 }
 
+function checkDuplicates($f){
+	global $db,$locate;
+	
+	$html = Table::Top($locate->Translate("Duplicate Recorder"),"formDuplicate"); 			
+	$html .= Customer::createDupGrid($f);	
+	$html .= Table::Footer();
+	//$html .= '<input id="curdupdate" type="hidden" value="">';
+	$objResponse = new xajaxResponse();
+	$objResponse->addScript("var curf = xajax.getFormValues('searchForm');xajax.$('curdupdate').value=curf;");
+	$objResponse->addAssign("formDuplicate", "style.visibility", "visible");
+	$objResponse->addAssign("formDuplicate", "innerHTML", $html);	
+	return $objResponse->getXML();
+
+	
+
+	//DELETE diallist as a FROM diallist as a ,( SELECT * FROM diallist GROUP BY dialnumber HAVING COUNT(dialnumber) > 1 ) as b WHERE a.dialnumber = b.dialnumber and a.id <=  b.id ;
+}
+
+function clearDuplicates($f){
+	global $db,$locate;
+	
+	$r = Customer::deleteDuplicates($f);
+
+	$objResponse = new xajaxResponse();
+	if($r){
+		$objResponse->addAssign("formDuplicate", "style.visibility", "");
+		$objResponse->addAssign("formDuplicate", "innerHTML", '');
+		$objResponse->addScript("xajax_init()");		
+		$objResponse->addAlert($locate->Translate("Clear success"));
+	}else{
+		$objResponse->addAlert($locate->Translate("Clear failed"));
+	}
+	return $objResponse;
+	//DELETE diallist as a FROM diallist as a ,( SELECT * FROM diallist GROUP BY dialnumber HAVING COUNT(dialnumber) > 1 ) as b WHERE a.dialnumber = b.dialnumber and a.id <=  b.id ;
+}
+
+function exportDuplicates($f) {
+
+	$objResponse = new xajaxResponse();
+	$joinstr = astercrm::createSqlWithStype($f['searchField'],$f['searchContent'],$f['searchType'],"diallist");
+	
+	$ajoinstr = str_replace('diallist.','a.',$joinstr);
+	if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$ajoinstr .= " AND a.groupid = '".$_SESSION['curuser']['groupid']."'";
+			$joinstr .= " AND diallist.groupid = '".$_SESSION['curuser']['groupid']."'";
+	}
+
+
+	$query = "SELECT a.*,campaign.campaignname FROM diallist as a LEFT JOIN campaign ON campaign.id=a.campaignid,( SELECT * FROM diallist WHERE 1 ".$joinstr." GROUP BY dialnumber HAVING COUNT(dialnumber) > 1 ) as b WHERE a.dialnumber = b.dialnumber AND a.id <> b.id ".$ajoinstr." ";
+
+	$_SESSION['export_sql'] = $query;
+	$objResponse->addAssign("hidSql", "value", $query); //赋值隐含域
+	$objResponse->addAssign("maintable", "value", 'diallist_dup'); //赋值隐含域
+	$objResponse->addAssign("exporttype", "value", 'exportcsv');
+	$objResponse->addScript("document.getElementById('exportForm').submit();");
+	return $objResponse;
+}
+
 $xajax->processRequests();
 
 ?>

@@ -431,7 +431,7 @@ function Xajax()
 			document.body.style.cursor = 'wait';
 		if (xajaxStatusMessages == true) window.status = 'Sending Request...';
 		clearTimeout(loadingTimeout);
-		loadingTimeout = setTimeout("xajax.loadingFunction();",400);
+		loadingTimeout = setTimeout("xajax.loadingFunction=function(){};",400);
 		if (xajaxDebug) this.DebugMessage("Starting xajax...");
 		if (sRequestType == null) {
 		   var xajaxRequestType = xajaxDefinedPost;

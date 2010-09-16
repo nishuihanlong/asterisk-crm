@@ -338,7 +338,7 @@ class asterEvent extends PEAR
 			$events =& asterEvent::getPeerstatus(0);
 			$phone_status = array();
 			while ($events->fetchInto($list)) {
-				list($tech,$peer) = split('/',$list['peer']);
+				list($tech,$peer) = split('/',$list['peername']);
 				$phone_status[$peer] = $list['status'];
 			}
 			foreach ( $panellist as $username => $phone ) {
@@ -384,7 +384,7 @@ class asterEvent extends PEAR
 				}else{
 					if ($phone_status[$phone['extension']] == 'unreachable' || $phone_status[$phone['extension']] == '') {
 						$status[$username] = 2;
-					}elseif ($phone_status[$phone['extension']] == 'reachable') {
+					}elseif ($phone_status[$phone['extension']] == 'reachable' || $phone_status[$phone['extension']] == 'registered') {
 						$status[$username] = 0;
 					}
 					$callerid[$username] = '';
@@ -614,7 +614,7 @@ class asterEvent extends PEAR
 //		else
 //			$query = "SELECT * FROM peerstatus WHERE id = '0'";
 
-		$query = "SELECT * FROM peerstatus WHERE id > '".$curid."'";
+		$query = "SELECT * FROM peerstatus ";
 
 		asterEvent::events($query);
 		$res = $db->query($query);

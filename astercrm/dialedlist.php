@@ -71,6 +71,7 @@ require_once('dialedlist.common.php');
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
+				<input type="button" value="<?echo $locate->Translate("recycle")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">
 					<div id="formDiv"  class="formDiv drsElement" 
 						style="left: 450px; top: 50px;width: 500px;"></div>
 					<div id="optionDiv"  class="formDiv drsElement" 

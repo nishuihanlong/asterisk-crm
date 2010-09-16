@@ -121,28 +121,7 @@ $clientDst = $_REQUEST['clientdst'];
 			getContact(clientDst);
 		}
 		
-		function dial(phonenum,first,myvalue,dtmf){
-			myFormValue = xajax.getFormValues("myForm");
-			dialnum = phonenum;
-			firststr = first;
-
-			if(typeof(first) != 'undefined'){
-				firststr = first;
-			}else{
-				firststr = '';
-			}
-	
-			if(typeof(dtmf) != 'undefined'){
-				dtmfstr = dtmf;
-			}else{
-				dtmfstr = '';
-			}
-			if (document.getElementById("uniqueid").value != '')
-				return false;
-			//xajax.$("divMsg").style.visibility = 'visible';
-			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>"+" "+phonenum;			
-			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr)",1000);
-		}
+		
 
 		function hangup(){
 			//alert (xajax.$('callerChannel').value);
@@ -163,18 +142,41 @@ $clientDst = $_REQUEST['clientdst'];
 		function hideProcessingMessage(){
 			xajax.$('processingMessage').style.display = 'none';
 		}
-		
-		//this function is used to resolve the error which xajax.loadingFunction is not a function,please don't delete it
-		function loadingFunction() {
+
+		//启用加载进度条
+		function ShowProcessingDiv(){
 			xajax.loadingFunction = showProcessingMessage();
+			xajax.doneLoadingFunction = hideProcessingMessage;
 		}
 
-		function ShowProcessingDiv(){
-			try{
-				xajax.loadingFunction = showProcessingMessage();
-				xajax.doneLoadingFunction = hideProcessingMessage;
+		//长连接这取消加载进度条,调用此函数
+		function CancelLoading(){
+			xajax.loadingFunction = function(){xajax.$('processingMessage').style.display = 'none';};
+			xajax.doneLoadingFunction = function(){xajax.$('processingMessage').style.display = 'none';};
+		}
+
+		function dial(phonenum,first,myvalue,dtmf){
+			myFormValue = xajax.getFormValues("myForm");
+			dialnum = phonenum;
+			firststr = first;
+
+			if(typeof(first) != 'undefined'){
+				firststr = first;
+			}else{
+				firststr = '';
 			}
-			catch(e){}
+	
+			if(typeof(dtmf) != 'undefined'){
+				dtmfstr = dtmf;
+			}else{
+				dtmfstr = '';
+			}
+			CancelLoading();
+			if (document.getElementById("uniqueid").value != '')
+				return false;
+			//xajax.$("divMsg").style.visibility = 'visible';
+			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>"+" "+phonenum;			
+			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr)",1000);
 		}
 		
 		function btnGetAPhoneNumberOnClick(){
@@ -190,12 +192,12 @@ $clientDst = $_REQUEST['clientdst'];
 		}
 
 		function updateEvents(){
-			//xajax.loadingFunction = showProcessingMessage();
 			myFormValue = xajax.getFormValues("myForm");
 			
-			xajax_listenCalls(myFormValue);
-			//xajax.doneLoadingFunction = hideProcessingMessage;
+			CancelLoading();
 
+			xajax_listenCalls(myFormValue);
+			
 			//xajax_listenCalls(myFormValue);
 				// dont pop new window when there already a window exsits
 				if (xajax.$('formDiv') != null){
@@ -216,6 +218,9 @@ $clientDst = $_REQUEST['clientdst'];
 
 		function getMsgInCampaign(){
 			myFormValue = xajax.getFormValues("myForm");
+
+			CancelLoading();
+
 			xajax_getMsgInCampaign(myFormValue);
 			setTimeout("getMsgInCampaign()", 6000);
 			return;
@@ -267,14 +272,14 @@ $clientDst = $_REQUEST['clientdst'];
 
 		function init(){
 			xajax_init();
-			ShowProcessingDiv();
-			setTimeout(function(){
+			//ShowProcessingDiv();
+			//setTimeout(function(){
 				updateEvents();
 				xajax_checkworkexten();
 				//make div draggable
 				//dragresize = new DragResize('dragresize', { minWidth: 50, minHeight: 50, minLeft: 20, minTop: 20, maxLeft: window.screen.width-50, maxTop: window.screen.height + 300 ,skipH:1});
 				dragresize.apply(document);				
-			},200);
+			//},200);
 		}
 		
 		function invite(){
@@ -300,7 +305,7 @@ $clientDst = $_REQUEST['clientdst'];
 				xajax.$('iptDestNumber').value = xajax.$('extension').value;
 				dest = xajax.$('extension').value;
 			}
-			ShowProcessingDiv();
+			CancelLoading();
 			//xajax.$('btnDial').disabled = true;
 			
 			setTimeout("xajax_invite(src,dest)",1000);
@@ -339,7 +344,7 @@ $clientDst = $_REQUEST['clientdst'];
 			if (target == ''){
 				return false;
 			}
-			ShowProcessingDiv();
+			CancelLoading();
 			//xajax.$("divMsg").style.visibility = 'visible';
 			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + target;
 			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",500);
@@ -414,7 +419,7 @@ $clientDst = $_REQUEST['clientdst'];
 			srcchan = trim(xajax.$('callerChannel').value);
 			dstchan = trim(xajax.$('calleeChannel').value);
 			inviteExten = exten;
-			
+			CancelLoading();
 			//xajax.$("divMsg").style.visibility = 'visible';
 			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Inviting ");?>" + " " + exten;
 			

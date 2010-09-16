@@ -146,15 +146,21 @@ class ScrollTable{
 		$this->userexten = $userexten;
 		$this->table = $table; 
 		$this->divName = $divName;
-		
+
 		if ($cdrtype != '') {
-			$this->setSpecFooter('mycdr'); //用于agent页面中customer信息页中的mycdr页脚
+			if($cdrtype == 'diallist_dup'){
+				$this->setSpecFooter('diallist_dup'); //用于agent页面中customer信息页中的mycdr页脚
+			}else{
+				$this->setSpecFooter('mycdr');
+			}
 		}elseif ($userexten != '') {
 			$this->setSpecFooter('diallist');//用于agent页面中customer信息页中的diallist页脚
 		}elseif ($table == 'monitorrecord' && $customerid!='') {
 			$this->setSpecFooter('monitorrecord');//用于agent页面中customer信息页中的monitorrecord页脚
 		}elseif($table == 'agents'){
 			//$this->setSpecFooter('agents');
+		}elseif($table == 'ticket_details'){
+			$this->setSpecFooter('ticket_details');
 		}elseif($table == 'ticket_details'){
 			$this->setSpecFooter('ticket_details');
 		}else{
@@ -192,7 +198,7 @@ class ScrollTable{
 // 					$this->header .= $value;
 // 				}
 			$this->header .= $value;
-			if(strstr($value,'checkbox') || $this->divName == "formDiallistPannel"){
+			if(strstr($value,'checkbox') || $this->divName == "formDiallistPannel" || $class="NONE"){
 				$this->header .= '';
 			}else{
 				$this->header .= '
@@ -720,7 +726,10 @@ class ScrollTable{
 			$form = 'searchTicketsForm';
 			$submit = 'searchTicketsFormSubmit';
 		}elseif($type == 'agents'){
+		}elseif($type == 'diallist_dup'){
+			$pageNav = false;
 		}
+
 		$this->footer = '</table>';
 		$this->footer .= '<table class="adminlist">';
 		
@@ -821,6 +830,17 @@ class ScrollTable{
 				</th>
 			</tr>
 		</table>';
+		if($type == 'diallist_dup'){
+			$this->footer .= $this->search = '
+				<table width="99%" border="0">
+				<tr>
+					<td width="100%" align="right">
+						<button id="submitButton" onClick="if(confirm(\''.$local_grid->Translate("Are you sure clear those duplicate records").'?\')){xajax_clearDuplicates(xajax.$(\'curdupdate\').value);}else{return false;}">'.$local_grid->Translate("Clear Duplicates").'</button>
+						<button id="submitButton" onClick="xajax_exportDuplicates(xajax.$(\'curdupdate\').value);return false;">'.$local_grid->Translate("Export Duplicates").'</button>
+					</td>
+				</tr>
+			</table>';
+		}
 //echo $this->footer;exit;
 	}
 

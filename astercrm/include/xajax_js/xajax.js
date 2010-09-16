@@ -90,7 +90,7 @@ if(key!=null&&value!=null){data[key]=value;key=value=null;}
 return data;}
 }
 this.loadingFunction=function(){};this.doneLoadingFunction=function(){};var loadingTimeout;this.call=function(sFunction,aArgs,sRequestType){var i,r,postData;if(document.body&&xajaxWaitCursor)
-document.body.style.cursor='wait';if(xajaxStatusMessages==true)window.status='Sending Request...';clearTimeout(loadingTimeout);loadingTimeout=setTimeout("loadingFunction();",400);if(xajaxDebug)this.DebugMessage("Starting xajax...");if(sRequestType==null){var xajaxRequestType=xajaxDefinedPost;}
+document.body.style.cursor='wait';if(xajaxStatusMessages==true)window.status='Sending Request...';clearTimeout(loadingTimeout);loadingTimeout=setTimeout("xajax.loadingFunction=function(){};",400);if(xajaxDebug)this.DebugMessage("Starting xajax...");if(sRequestType==null){var xajaxRequestType=xajaxDefinedPost;}
 else{var xajaxRequestType=sRequestType;}
 var uri=xajaxRequestUri;var value;switch(xajaxRequestType){case xajaxDefinedGet:{var uriGet=uri.indexOf("?")==-1?"?xajax="+encodeURIComponent(sFunction):"&xajax="+encodeURIComponent(sFunction);if(aArgs){for(i=0;i<aArgs.length;i++){value=aArgs[i];if(typeof(value)=="object")
 value=this.objectToXML(value);uriGet+="&xajaxargs[]="+encodeURIComponent(value);}

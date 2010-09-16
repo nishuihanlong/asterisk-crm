@@ -33,7 +33,7 @@ if($type == 'exportcsv'){
 	$filename = 'astercrm.xls';
 }
 
-if ($_SESSION['curuser']['usertype'] != 'admin' && $table != 'report' && $table != 'ticket_details'){
+if ($_SESSION['curuser']['usertype'] != 'admin' && $table != 'report' && $table != 'ticket_details' &&  $table != 'diallist_dup'){
 	if (strpos(strtolower($sql),'where')){
 		if($table != ''){ //判断是否传了主表名
 			$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
