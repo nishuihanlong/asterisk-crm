@@ -169,7 +169,7 @@ function predictiveDialer($f){
 				}
 
 				if ($flag == 0){
-					$query = "SELECT groupid, campaignid FROM dialedlist WHERE (dialednumber = '".$row['src']."' OR dialednumber = '".$row['dst']."') AND dialedtime > (now() - INTERVAL 7200 SECOND) ";
+					$query = "SELECT groupid, campaignid FROM campaigndialedlist WHERE (dialednumber = '".$row['src']."' OR dialednumber = '".$row['dst']."') AND dialedtime > (now() - INTERVAL 7200 SECOND) ";
 					$dialedlist = $db->query($query);
 					if ($dialedlist->fetchInto($line)){
 						if ($line['campaignid'] > 0) {
