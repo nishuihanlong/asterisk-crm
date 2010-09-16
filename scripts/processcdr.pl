@@ -168,11 +168,27 @@ while(my $ref = $rows->fetchrow_hashref() ) {
 #print Dumper(\%accountinfo);
 #exit;
 my %cdrprocessed;
-my $query = "SELECT * FROM mycdr WHERE processed = '0' AND src != '' AND dst != '' AND channel != '' AND dstchannel != '' ORDER BY calldate ASC ";
+my $query = "SELECT * FROM mycdr WHERE processed = '0'  ORDER BY calldate ASC ";
 my $rows = &executeQuery($query,'rows');
 
 while ( my $ref = $rows->fetchrow_hashref() ) {
 	if($cdrprocessed{$ref->{'id'}} > 0){
+		next;
+	}
+
+	if($ref->{'src'} == '' || $ref->{'dst'} == '' || $ref->{'channel'} == '' || $ref->{'dstchannel'} == '' ){
+		if($ref->{'queue'}){
+			$query = "SELECT * FROM campaign WHERE queuename = '$ref->{'queue'}' AND enable = '1' order by id desc limit 1";
+			my $campaign_rows = &executeQuery($query,'rows');
+			if(my $campaign_ref = $campaign_rows->fetchrow_hashref()){
+				$query = "UPDATE mycdr set  processed='1',astercrm_groupid='$campaign_ref->{'groupid'}' WHERE id='$ref->{'id'}'";
+				&executeQuery($query,'');
+			}else{
+				$query = "UPDATE mycdr set  processed='1' WHERE id='$ref->{'id'}'";
+			}
+		}else{
+			$query = "UPDATE mycdr set  processed='1' WHERE id='$ref->{'id'}'";
+		}
 		next;
 	}
 
