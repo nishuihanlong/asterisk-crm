@@ -357,17 +357,22 @@ CREATE TABLE `trunks` (
 
 DROP TABLE IF EXISTS `peerstatus`;
 
-CREATE TABLE `peerstatus` (
- `id` INT NOT NULL AUTO_INCREMENT ,
- `status` VARCHAR( 50 ) NOT NULL ,
- `channeltype` varchar(30) not null default '',
- `responsetime` int(11) not null default '0',
- `peer` VARCHAR( 100 ) NOT NULL ,
- `address` VARCHAR( 100 ) NOT NULL ,
- `port` VARCHAR(10) NOT NULL ,
- `lastupdate` DATETIME NOT NULL ,
-UNIQUE (`id`)
-) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+CREATE TABLE peerstatus (
+    peername varchar(50) NOT NULL default '',
+    username varchar(50) NOT NULL default '',
+    host varchar(50) NOT NULL default '',
+    mask varchar(50) NOT NULL default '',
+    dyn char(1) NOT NULL default '',
+    nat char(1) NOT NULL default '',
+    acl char(1) NOT NULL default '',
+    port varchar(5) NOT NULL default '',
+    status varchar(50) NOT NULL default '',
+    responsetime int(4) NOT NULL default '0',
+    freshtime datetime NOT NULL default '0000-00-00 00:00:00',
+    protocol enum ('sip','iax') not null default 'sip',
+    pbxserver varchar(50) NOT NULL default '',
+    UNIQUE KEY peer (`peername`,`protocol`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ## ########################################################
 
@@ -1277,26 +1282,6 @@ CREATE TABLE `speeddial` (
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ##########################################################
-
-## 
-## table `sip_show_peers`
-## 
-
-DROP TABLE IF EXISTS `sip_show_peers`;
-
-CREATE TABLE `sip_show_peers` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `username` varchar(50) NOT NULL default '',
-  `host` varchar(50) NOT NULL default '',
-  `dyn` char(1) NOT NULL default '',
-  `nat` char(1) NOT NULL default '',
-  `port` varchar(5) NOT NULL default '',
-  `status` varchar(20) NOT NULL default '',
-  `freshtime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `pbxserver` varchar(50) NOT NULL default '',
-  PRIMARY KEY (`id`)
-) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
-
 
 
 ####### FOR QUEUE STATS ###########

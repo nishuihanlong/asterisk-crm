@@ -159,3 +159,27 @@ CREATE TABLE `dialedlist` (
 
 
 ALTER TABLE `astercrm_accountgroup` ADD `allowloginqueue` ENUM('yes','no') NOT NULL DEFAULT 'no' AFTER `firstring`;
+
+
+
+#####################  2010-09-16  ######################
+
+DROP TABLE IF EXISTS `sip_show_peers`;
+DROP TABLE IF EXISTS `peerstatus`;
+
+CREATE TABLE peerstatus (
+    peername varchar(50) NOT NULL default '',
+    username varchar(50) NOT NULL default '',
+    host varchar(50) NOT NULL default '',
+    mask varchar(50) NOT NULL default '',
+    dyn char(1) NOT NULL default '',
+    nat char(1) NOT NULL default '',
+    acl char(1) NOT NULL default '',
+    port varchar(5) NOT NULL default '',
+    status varchar(50) NOT NULL default '',
+    responsetime int(4) NOT NULL default '0',
+    freshtime datetime NOT NULL default '0000-00-00 00:00:00',
+    protocol enum ('sip','iax') not null default 'sip',
+    pbxserver varchar(50) NOT NULL default '',
+    UNIQUE KEY peer (`peername`,`protocol`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
