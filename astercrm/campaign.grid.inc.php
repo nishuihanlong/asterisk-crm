@@ -315,7 +315,7 @@ class Customer extends astercrm
 
 	function getCountAnswered($campaignid){
 		global $db;
-		$query = "SELECT COUNT(*) FROM dialedlist WHERE campaignid = $campaignid AND answertime > '0000-00-00 00:00:00'";
+		$query = "SELECT COUNT(*) FROM campaigndialedlist WHERE campaignid = $campaignid AND answertime > '0000-00-00 00:00:00'";
 		Customer::events($query);
 		$res =& $db->getOne($query);
 		return $res;
