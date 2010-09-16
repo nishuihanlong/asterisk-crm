@@ -269,17 +269,18 @@ function showStatus(){
 
 	foreach ($peers as $peer){
 		// update peer status
-		$query = "SELECT status FROM sip_show_peers WHERE username = '$peer' OR username LIKE '$peer/%' ";
-		$peer_status = $db->getOne($query);
+		$query = "SELECT status,responsetime FROM peerstatus WHERE peername LIKE '%/$peer' ";
+
+		$peer_status = $db->getRow($query);//print_r($peer_status );exit;
 		if ($peer_status){
-			if (ereg("\((.*)ms\)", $peer_status, $myAry) ){
-				if ($myAry[1] > 300){
-					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>$peer_status</font>");
+			if ($peer_status['responsetime'] > 0 ){
+				if ($peer_status['responsetime'] > 300){
+					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."(".$peer_status['responsetime'].")</font>");
 				}else{
-					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>$peer_status</font>");
+					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."(".$peer_status['responsetime'].")</font>");
 				}
 			}else{
-				$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>$peer_status</font>");
+				$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
 			}
 		}
 
