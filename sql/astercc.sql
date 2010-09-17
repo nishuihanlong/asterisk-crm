@@ -801,6 +801,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `recyletime` int(11) NOT NULL default '3600',
  `minduration` int(11) NOT NULL default '0',
  `dialtwoparty` enum ("yes","no") not null default "no",
+ `queue_context` varchar(60) not null default '',
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)

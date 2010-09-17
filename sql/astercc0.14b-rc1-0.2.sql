@@ -159,7 +159,7 @@ CREATE TABLE `dialedlist` (
 
 
 ALTER TABLE `astercrm_accountgroup` ADD `allowloginqueue` ENUM('yes','no') NOT NULL DEFAULT 'no' AFTER `firstring`;
-
+ALTER TABLE `campaign` ADD `queue_context` varchar(60) not null default '' AFTER `dialtwoparty`;
 
 
 #####################  2010-09-16  ######################
