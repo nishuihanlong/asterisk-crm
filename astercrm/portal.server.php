@@ -590,7 +590,7 @@ function waitingCalls($myValue){
 		if($call['hold']['number'] != ''){
 			//print_r($call);exit;
 			$curcallerid = $call['hold']['number'];
-			$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+			$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].']</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
 			//return $objResponse;
 		}else{
 			$objResponse->addAssign("divHolding","innerHTML",'');
@@ -745,7 +745,8 @@ function waitingCalls($myValue){
 		if($call['hold']['number'] != ''){
 			//print_r($call);exit;
 			$call['callerid'] = $call['hold']['number'];
-			$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+			$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].']</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;');
+			//<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>
 		}else{
 			$objResponse->addAssign("divHolding","innerHTML",'');
 		}
@@ -860,7 +861,8 @@ function incomingCalls($myValue){
 			if($call['hold']['number'] != ''){
 			//print_r($myValue);exit;
 				$curcallerid = $call['hold']['number'];
-				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].']</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;');
+				//<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>
 			}else{
 				$curcallerid = $myValue['callerid'];
 				$objResponse->addAssign("divHolding","innerHTML",'');
@@ -923,7 +925,8 @@ function incomingCalls($myValue){
 			if($call['hold']['number'] != ''){
 			//print_r($myValue);exit;
 				$curcallerid = $call['consultnum'];
-				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_attendtransfer(\''.$call['hold']['channel'].'\',\''.$myValue['calleeChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Transfer").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].']</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_attendtransfer(\''.$call['hold']['channel'].'\',\''.$myValue['calleeChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Transfer").'</font></a>&nbsp;&nbsp;&nbsp;');
+				//<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>
 			}else{
 				$curcallerid = $myValue['callerid'];
 				$objResponse->addAssign("divHolding","innerHTML",'');
@@ -961,7 +964,8 @@ function incomingCalls($myValue){
 			if($call['hold']['number'] != ''){
 			//print_r($myValue);exit;
 				$curcallerid = $call['hold']['number'];
-				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].'1234567890123]</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>');
+				$objResponse->addAssign("divHolding","innerHTML",'<a href="###" onclick="getContact('.$call['hold']['number'].');">['.$call['hold']['number'].']</a>&nbsp;&nbsp;<a onclick="xajax_turnback(\''.$call['hold']['channel'].'\',\''.$myValue['callerChannel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Turn back").'</font></a>&nbsp;&nbsp;&nbsp;');
+				//<a onclick="xajax_holdhangup(\''.$call['hold']['channel'].'\');return false;" href="###"><font size="2px">'.$locate->Translate("Hangup").'</font></a>
 			}else{
 				$curcallerid = $myValue['callerid'];
 				$objResponse->addAssign("divHolding","innerHTML",'');
