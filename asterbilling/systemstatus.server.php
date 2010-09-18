@@ -275,9 +275,17 @@ function showStatus(){
 		if ($peer_status){
 			if ($peer_status['responsetime'] > 0 ){
 				if ($peer_status['responsetime'] > 300){
-					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."(".$peer_status['responsetime'].")</font>");
+					if(strstr($peer_status['status'],'ok')){
+						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
+					}else{
+						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."(".$peer_status['responsetime']." ms)</font>");
+					}
 				}else{
-					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."(".$peer_status['responsetime'].")</font>");
+					if(strstr($peer_status['status'],'ok')){
+						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."</font>");
+					}else{
+						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."(".$peer_status['responsetime']." ms)</font>");
+					}
 				}
 			}else{
 				$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
