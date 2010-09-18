@@ -1124,14 +1124,23 @@ Class astercrm extends PEAR{
 	*							un nuevo registro.
 	*/
 
-	function formAdd($callerid = null,$customerid = null, $contactid = null){
+	function formAdd($callerid = null,$customerid = null, $contactid = null,$campaignid=0,$diallistid=0){
 	global $locate,$config;
+
 	$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
 			<table border="1" width="100%" class="adminlist">
 			<tr>
-				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href="?" onclick="dial(\''.$callerid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> <span id="insert_dnc_list"></span></td>
+				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href="?" onclick="dial(\''.$callerid.'\',\'\',\'\',\'\',\''.$diallistid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> <span id="diallist_control"></span>';
+			if($campaignid > 0){
+				$html .= "<span id=\"diallist_control\"><input type=\"button\" id=\"insert_dnc_list\" name=\"insert_dnc_list\" value=\"".$locate->Translate("Add Dnc_list")."\" onclick=\"xajax_insertIntoDnc('".$callerid."','".$campaignid."');return false;\"/>";
+				if($diallistid > 0){
+					$html .="&nbsp;&nbsp;&nbsp;<input type=\"button\" id=\"skip_diallist\" name=\"skip_diallist\" value=\"".$locate->Translate("Skip this number")."\" onclick=\"xajax_skipDiallist('".$callerid."','".$diallistid."');return false;\"/>";
+				}
+				$html .= '</span>';
+			}
+			$html .= '</td>
 			</tr>';
 	
 	if ($customerid == null || $customerid ==0){
@@ -2385,6 +2394,7 @@ Class astercrm extends PEAR{
 		}else{
 			$query = "SELECT groupid FROM $table WHERE $field = $content";
 		}
+
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -2410,15 +2420,22 @@ Class astercrm extends PEAR{
 					$group_res = astercrm::getFieldsByField('id','groupname',$content[$i],'astercrm_accountgroup',$type);
 					
 					while ($group_res->fetchInto($group_row)){
-						$group_str.="OR $table.groupid = '".$group_row['id']."' ";					
-					}					
+						$group_str.="OR $table.groupid = '".$group_row['id']."' ";
+					}
+					if($group_str == ''){
+						$group_str.=" $table.groupid = '0' ";
+					}
 				}elseif(($filter[$i] == 'campaignname' OR ($filter[$i] == 'campaign.campaignname' and $option = 'delete')) and $table != "campaign" and $table != ""){
 					
 					$campaign_res = astercrm::getFieldsByField('id','campaignname',$content[$i],'campaign',$type);
 					
 					while ($campaign_res->fetchInto($campaign_row)){
 						$campaign_str.="OR $table.campaignid = '".$campaign_row['id']."' ";					
-					}					
+					}
+					
+					if($campaign_str == ''){
+						$campaign_str.=" $table.campaignid = '0' ";
+					}
 				}else{
 					if($table == 'monitorrecord' && $filter[$i] == 'dstchannel'){
 						$content[$i] = 'agent/'.$content[$i];
@@ -3165,7 +3182,7 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT COUNT(*) FROM mycdr ";
+			$sql = "SELECT COUNT(*) FROM mycdr WHERE 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT COUNT(*) FROM mycdr WHERE astercrm_groupid=".$_SESSION['curuser']['groupid']."  ";
@@ -3182,7 +3199,7 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$sql .= " ".$joinstr;
 		}
-
+//echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
@@ -3203,7 +3220,7 @@ Class astercrm extends PEAR{
 			}
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id ";
+			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE 1";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id WHERE  astercrm_groupid=".$_SESSION['curuser']['groupid']." ";

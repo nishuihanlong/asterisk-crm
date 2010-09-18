@@ -162,6 +162,7 @@ class Customer extends astercrm
 				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
+				."queue_context = '".$f['queue_context']."',"
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
 		astercrm::events($query);
@@ -203,6 +204,7 @@ class Customer extends astercrm
 				."minduration='".$f['minduration']."', "
 				."callerid='".$f['callerid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
+				."queue_context='".$f['queue_context']."', "
 				."groupid='".$f['groupid']."' "
 				."WHERE id=".$f['id'];
 		astercrm::events($query);
@@ -434,10 +436,13 @@ class Customer extends astercrm
 						<input type="checkbox" name="bindqueue" id="bindqueue">'.$locate->Translate("send calls to this queue directly").'
 					</td>
 				</tr>
-				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Queue Context").'</td>
+					<td align="left"><input type="text" id="queue_context" name="queue_context" size="30" maxlength="60"></td>
 				</tr>
 				
 				<tr>
@@ -634,7 +639,10 @@ class Customer extends astercrm
 						</td>
 				</tr>
 
-
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Queue Context").'</td>
+					<td align="left"><input type="text" id="queue_context" name="queue_context" size="30" maxlength="60" value="'.$campaign['queue_context'].'"></td>
+				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>

@@ -600,7 +600,7 @@ class ScrollTable{
 					$option .= '<option value="delete">'.$local_grid->Translate("Delete").'</option>';
 					$optionOnchange .= 'if(this.value==\'delete\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("delete").'\';}';				
 				}
-				if($table == "dialedlist"){
+				if($table == "campaigndialedlist"){
 					$option .= '<option value="recycle">'.$local_grid->Translate("recycle").'</option>';
 					$optionOnchange .= 'if(this.value==\'recycle\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("recycle").'\';}';
 				}

@@ -95,8 +95,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getAllRecords($start,$limit,$order);
 		}elseif($flag3 != 1){
 			$order = "id";
-			$numRows =& Customer::getNumRowsMore($filter, $content,"diallist");
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"diallist");
+			$numRows =& Customer::getNumRowsMore($filter, $content,"dnc_list");
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"dnc_list");
 		}else{
 			$order = "id";
 			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
@@ -191,7 +191,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->ordering = $ordering;
-	$table->addRowSearchMore("diallist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->addRowSearchMore("dnc_list",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -204,7 +204,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 
-		$table->addRow("diallist",$rowc,1,1,0,$divName,$fields);
+		$table->addRow("dnc_list",$rowc,1,1,0,$divName,$fields);
  	}
  	
  	// End Editable Zone
@@ -316,21 +316,21 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'dnc_list'); //得到要导出的sql语句
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'dnc_list');
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT diallist.dialnumber, customer.customer,diallist.dialtime, diallist.assign,diallist.status,groupname,campaignname,diallist.cretime,diallist.creby FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = diallist.groupid LEFT JOIN campaign ON campaign.id = diallist.campaignid  LEFT JOIN customer ON customer.id = diallist.customerid";
+		$sql = "SELECT dnc_list.number,dnc_list.status,groupname,campaignname,dnc_list.cretime,dnc_list.creby FROM dnc_list LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dnc_list.groupid LEFT JOIN campaign ON campaign.id = dnc_list.campaignid ";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
-		$objResponse->addAssign("maintable", "value", 'diallist'); //赋值隐含域
+		$objResponse->addAssign("maintable", "value", 'dnc_list'); //赋值隐含域
 		$objResponse->addAssign("exporttype", "value", $optionFlag);
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
-		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'diallist');
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'dnc_list');
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','',$order,$divName,$ordering,'');
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}else{
 		if($type == "delete"){
-			$res = Customer::deleteRecord($id,'diallist');
+			$res = Customer::deleteRecord($id,'dnc_list');
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $order, $divName, $ordering,$searchType);
 				$objResponse = new xajaxResponse();
@@ -351,7 +351,7 @@ function deleteByButton($f,$searchFormValue){
 	$objResponse = new xajaxResponse();
 	if(is_array($f['ckb'])){
 		foreach($f['ckb'] as $vaule){
-			$res_customer = astercrm::deleteRecord($vaule,'diallist');
+			$res_customer = astercrm::deleteRecord($vaule,'dnc_list');
 		}
 	}
 	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组

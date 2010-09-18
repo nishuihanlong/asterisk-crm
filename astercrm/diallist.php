@@ -100,7 +100,7 @@ require_once('diallist.common.php');
 			<td style="padding: 0px;">
 				<fieldset>
 				<input type="button" value="<?echo $locate->Translate("Check Duplicates")?>" name="btnRecycle" id="btnRecycle" onclick="xajax_checkDuplicates(xajax.getFormValues('searchForm'));">
-				<input type="button" value="<?echo $locate->Translate("Clear Duplicates")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">
+				<!--<input type="button" value="<?echo $locate->Translate("Clear Duplicates")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">-->
 		<div id="formDiv"  class="formDiv drsElement" 
 			style="left: 450px; top: 50px;width: 500px;"></div>
 					<div id="grid" align="center"> </div>
@@ -111,7 +111,7 @@ require_once('diallist.common.php');
 		<input id="curdupdate" type="hidden" value="">
 	</table>
 	<div id="formDuplicate" class="formDiv drsElement"
-							style="left: 20px; top: 30px; width:750px"></div>
+							style="left: 20px; top: 30px; width:750px;max-height:400px;overflow-y:auto"></div>
 	<div id="divCopyright"></div>
 	<form name="exportForm" id="exportForm" action="dataexport.php" >
 		<input type="hidden" value="" id="hidSql" name="hidSql" />

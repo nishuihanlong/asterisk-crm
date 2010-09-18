@@ -139,6 +139,7 @@ $xajax->registerFunction("queueAgentControl");
 $xajax->registerFunction("loadingFunction");
 $xajax->registerFunction("doneLoadingFunction");
 
+
 if ($config['system']['enable_external_crm'] == false){
 	//crm function
 	$xajax->registerFunction("showGrid");
@@ -180,6 +181,7 @@ if ($config['system']['enable_external_crm'] == false){
 	$xajax->registerFunction("addTicket");
 	$xajax->registerFunction("saveTicket");
 	$xajax->registerFunction("AllTicketOfMy");
+	$xajax->registerFunction("skipDiallist");
 }
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.

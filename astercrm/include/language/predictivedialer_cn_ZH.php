@@ -43,4 +43,5 @@ $inexten = '拨入exten';
 $spy = "监听";
 $whisper = "秘语";
 $hangup = "挂断";
+$first_answertime = "第一方接听时间";
 ?>

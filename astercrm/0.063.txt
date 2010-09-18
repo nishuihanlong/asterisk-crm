@@ -24,6 +24,7 @@ new features in 0.063
 	拨号列表增加了备注
 	外部CRM弹屏改进为POST方式传递数据
 	增加了任务功能
+	修正了免拨列表删除功能的问题
 	
 
 astercrm features(0.062)

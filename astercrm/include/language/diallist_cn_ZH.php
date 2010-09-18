@@ -26,4 +26,11 @@ $add_dnclist = "添加";
 $please_select = "请选择";
 $memo = "备注";
 $cal = "日期";
+$check_duplicates = "检测重复号码";
+$clear_duplicates = "清除重复号码";
+$export_duplicates = "导出重复号码";
+$duplicate_recorder = "重复号码列表(显示前100条)";
+$are_you_sure_clear_those_duplicate_records = "您确定要清除重复的号码吗";
+$clear_success = "清除成功";
+$clear_failed = "清除失败";
 ?>

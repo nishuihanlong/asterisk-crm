@@ -94,7 +94,7 @@ class Customer extends astercrm
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
-			$sql .= " diallist.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " dnc_list.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		if ($joinstr!=''){
@@ -122,7 +122,7 @@ class Customer extends astercrm
 	function &getNumRows($filter = null, $content = null){
 		global $db;
 		
-		$sql = "SELECT COUNT(*) AS numRows FROM diallist ";
+		$sql = "SELECT COUNT(*) AS numRows FROM dnc_list ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql = " SELECT COUNT(*) FROM dnc_list LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = dnc_list.groupid  LEFT JOIN campaign ON campaign.id = dnc_list.campaignid ";
@@ -149,11 +149,11 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = diallist.groupid  LEFT JOIN campaign ON campaign.id = diallist.campaignid WHERE ";
+			$sql = "SELECT COUNT(*) FROM dnc_list LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = dnc_list.groupid  LEFT JOIN campaign ON campaign.id = dnc_list.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
-				$sql .= " diallist.groupid = ".$_SESSION['curuser']['groupid']." AND ";
+				$sql .= " dnc_list.groupid = ".$_SESSION['curuser']['groupid']." AND ";
 			}
 
 			if ($joinstr!=''){
@@ -174,7 +174,7 @@ class Customer extends astercrm
 function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
 		global $db;
 
-		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"diallist");
+		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"dnc_list");
 
 		$sql = "SELECT dnc_list.*, groupname,campaignname FROM dnc_list LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = dnc_list.groupid  LEFT JOIN campaign ON campaign.id = dnc_list.campaignid WHERE ";
 
@@ -200,7 +200,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 	function &getNumRowsMorewithstype($filter, $content,$stype,$table){
 		global $db;
 		
-			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"diallist");
+			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype,"dnc_list");
 
 			$sql = "SELECT COUNT(*) FROM dnc_list LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = dnc_list.groupid  LEFT JOIN campaign ON campaign.id = dnc_list.campaignid WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){

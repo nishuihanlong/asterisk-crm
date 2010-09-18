@@ -131,67 +131,46 @@ function setStatus($campaignid, $field, $value){
 function predictiveDialer($f){
 	global $config,$db,$locate;
 	$objResponse = new xajaxResponse();
-
+//print_r($f);exit;
 	$aDyadicArray[] = array($locate->Translate("src"),$locate->Translate("dst"),$locate->Translate("srcchan"),$locate->Translate("dstchan"),$locate->Translate("starttime"),$locate->Translate("answertime"),$locate->Translate("disposition"));
+
+	$cDyadicArray[] = array($locate->Translate("src"),$locate->Translate("dst"),$locate->Translate("srcchan"),$locate->Translate("dstchan"),$locate->Translate("starttime"),$locate->Translate("first answertime"),$locate->Translate("answertime"),$locate->Translate("disposition"));
 
 	// 检查系统目前的通话情况
 
 	//if($_SESSION['curuser']['usertype'] == 'admin'){
-		$curcdr = astercrm::getAll("curcdr");
+		$sql = "SELECT curcdr.*,dialedlist.id as did,dialedlist.dialednumber,dialedlist.campaignid,dialedlist.dialedby,dialedlist.channel FROM curcdr LEFT JOIN dialedlist ON curcdr.srcchan=dialedlist.channel OR curcdr.dstchan=dialedlist.channel WHERE curcdr.id > 0 ORDER by curcdr.id desc";
+		$curdiledlist = $db->query($sql);
+		//$curcdr = astercrm::getAll("curcdr");
 	//}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 	//	$curcdr = astercrm::getGroupCurcdr();
 	//}	
-	
-	while	($curcdr->fetchInto($row)){
-			if ($row['dstchan'] != ""){
-				$flag = 0;
-
-				# check if dstchanis in queue_agent
-				$target = split("-",$row['dstchan']);
-				$target = $target[0];
-				$exten = split("/",$target);
-				$exten = $exten[1];
-
-				$query = "SELECT queuename FROM queue_agent WHERE agent = '$target' OR agent LIKE 'local/$exten\@%' ";
-				$queuename = $db->getOne($query);
-				if ($queuename != ""){
-					$query = "SELECT id, groupid FROM campaign WHERE queuename = '".$queuename."' GROUP BY groupid";
-					$campaigns = $db->query($query);
-					while ($campaigns->fetchInto($campaign)){
-
-
-						$campaignCDR[$campaign['id']][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
-
-						//$groupCDR[$campaign['groupid']][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["srcuid"],$row["dstuid"],$row["disposition"]);
-
-						$flag = 1;
-					}
+	$curdidlist = array();
+	while	($curdiledlist->fetchInto($row)){
+			
+			if($row['did'] > 0){
+				if(in_array($row['did'],$curdidlist)){
+					continue;
+				}else{
+					$curdidlist[] = $row['did'];
+					$campaignCDR[$row['campaignid']][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["calldate"],$row["answertime"],$row["disposition"]);
 				}
+			}else{
+				$query = "SELECT groupid FROM astercrm_account WHERE extension = '".$row['dst']."' OR extension = '".$row['dst']."'  GROUP BY groupid ORDER BY groupid DESC LIMIT 0,1";
 
-				if ($flag == 0){
-					$query = "SELECT groupid, campaignid FROM dialedlist WHERE (dialednumber = '".$row['src']."' OR dialednumber = '".$row['dst']."') AND dialedtime > (now() - INTERVAL 7200 SECOND) ";
-					$dialedlist = $db->query($query);
-					if ($dialedlist->fetchInto($line)){
-						if ($line['campaignid'] > 0) {
-							$campaignCDR[$line['campaignid']][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
-						}else{
-							$groupCDR[$line['groupid']][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
-						}
-					}else{
-						// check if src/dst belongs to any group
-						$query = "SELECT groupid FROM astercrm_account WHERE extension = '".$row['dst']."' OR extension = '".$row['dst']."'  GROUP BY groupid ORDER BY groupid DESC LIMIT 0,1";
-						$groupid = $db->getOne($query);
-						if ( $groupid > 0 ){
-							$groupCDR[$groupid][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
-						}else{
-							$systemCDR[] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
-						}
-					}
+				$groupid = $db->getOne($query);
+				if ( $groupid > 0 ){
+					$groupCDR[$groupid][] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
+				}elseif($_SESSION['curuser']['usertype'] == 'admin'){
+					//print_r($row);exit;
+					$systemCDR[] = array($row["src"],$row["dst"],$row["srcchan"],$row["dstchan"],$row["starttime"],$row["answertime"],$row["disposition"]);
 				}
 			}
+			
 		}
-
-		$systemChannels = common::generateTabelHtml(array_merge($aDyadicArray , $systemCDR));
+		if($_SESSION['curuser']['usertype'] == 'admin'){
+			$systemChannels = common::generateTabelHtml(array_merge($aDyadicArray , $systemCDR));
+		}
 
 		$objResponse->addAssign("idvUnknowChannels", "innerHTML", nl2br(trim($systemChannels)));
 
@@ -218,10 +197,11 @@ function predictiveDialer($f){
 				$objResponse->addAssign("unknown$key", "innerHTML", "");
 			}
 		}
+		
 
 		foreach ($campaignCDR as $key => $value){
 			if (is_array($value)){
-				$campaignChannels = common::generateTabelHtml(array_merge($aDyadicArray , $value));
+				$campaignChannels = common::generateTabelHtml(array_merge($cDyadicArray , $value));
 				$objResponse->addAssign("campaign$key", "innerHTML", nl2br(trim($campaignChannels)));
 			}else{
 				$objResponse->addAssign("campaign$key", "innerHTML", "");

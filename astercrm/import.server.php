@@ -272,7 +272,8 @@ function submitForm($aFormValues){
 				break;
 			}
 		}
-		if(empty($aFormValues['dialListField'])){
+		//echo $aFormValues['dialListField'];exit;
+		if(!is_numeric($aFormValues['dialListField'])){
 			$objResponse->addAlert($locate->Translate('must select a cloumn for dialnumer'));
 			return $objResponse;
 		}
@@ -389,16 +390,23 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 	$assgignKey = 0;
 
 	foreach($arrData as $arrRow){
-		if($assignNum > 0 && $tableName == 'diallist'){
-			while ($arryAssign[$assgignKey] == ''){
-				if($assgignKey >$assignNum){
-					$assgignKey = 0;
-				}else{
-					$assgignKey ++;
+		
+		if($tableName == 'diallist'){			
+
+			if(trim($arrRow[$dialListField]) == ''){
+				continue;
+			}
+
+			if($assignNum > 0 ){
+				while ($arryAssign[$assgignKey] == ''){
+					if($assgignKey >$assignNum){
+						$assgignKey = 0;
+					}else{
+						$assgignKey ++;
+					}
 				}
 			}
 		}
-		
 		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$assignNum,$arryAssign,$campaignid,$assgignKey);
 
 		$assgignKey++;

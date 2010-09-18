@@ -870,6 +870,7 @@ function saveDiallistMain($f){
 		$objResponse->addAssign("formaddDiallistInfo", "style.visibility", "hidden");
 		$objResponse->addClear("formaddDiallistInfo", "innerHTML");
 		$objResponse->addScript("xajax_showDiallist('".$_SESSION['curuser']['extension']."',0,0,5,'','','','formDiallistPannel','','');");
+		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 	}else{
 		$objResponse->addAlert($locate->Translate("Add diallist failed"));
 	}

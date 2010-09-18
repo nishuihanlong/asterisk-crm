@@ -129,6 +129,11 @@ function getPrivateDialListNumber($extension = null){
 		$objResponse->addCreateInput("spanDialList", "button", "btnGetAPhoneNumber", "btnGetAPhoneNumber");
 		$objResponse->addAssign("btnGetAPhoneNumber", "value", $locate->Translate("get_a_phone_number"));
 		$objResponse->addEvent("btnGetAPhoneNumber", "onclick", "btnGetAPhoneNumberOnClick();");
+		if($_SESSION['curuser']['WorkStatus'] == ''){
+			$objResponse->addAssign("btnWorkStatus","value", "" );
+			$objResponse->addAssign("btnWork","value", $locate->Translate("Start work") );
+			$objResponse->addAssign("btnWork","disabled", false );
+		}
 	}
 
 	return $objResponse;
@@ -160,17 +165,6 @@ function init(){
 	$objResponse->addAssign("extensionStatus","value", 'idle');
 	$objResponse->addAssign("processingContent","innerHTML", $locate->Translate("processing_please_wait") );
 	
-//	$objResponse->addAssign("btnPause","value", $locate->Translate("Continue") );
-//	$objResponse->addAssign("breakStatus","value", 1);
-//	$memberstatus = Customer::getMyMemberStatus();
-//
-//	while ($memberstatus->fetchInto($row)) {
-//		if($row['status'] != 'paused'){
-//			$objResponse->addAssign("btnPause","value", $locate->Translate("Break") );
-//			$objResponse->addAssign("breakStatus","value", 0);
-//			break;
-//		}
-//	}spanAttendtran
 	if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 		$objResponse->addAssign("spanAttendtran", "style.display", "none");		
 	}
@@ -295,7 +289,8 @@ function init(){
 	}
 	$objResponse->addAssign("clear_popup","value",$monitorstatus['clear_popup']);//for clear popup after ($clear_popup) seconds
 	$objResponse->addScript("clearSettimePopup();");
-	if($_SESSION['curuser']['group']['allowloginqueue'] == 'yes'){
+	if($_SESSION['curuser']['group']['allowloginqueue'] == 'yes' && is_array($_SESSION['curuser']['campaign_queue'])){
+		//print_r($_SESSION['curuser']['campaign_queue']);exit;
 		$objResponse->addScript("getMsgInCampaign();");
 	}else{
 		$objResponse->addAssign("divGetMsgInCampaignP","style.visibility", 'hidden');
@@ -506,7 +501,7 @@ function turnback($channel,$agentchan){
 			$context=$config['system']['outcontext'];
 		}
 		$strChannel = "Local/".$_SESSION['curuser']['extension']."@".$context."/n";
-		$myAsterisk->sendCall($strChannel,NULL,NULL,1,'Bridge',$channel,30000,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+		$myAsterisk->sendCall($strChannel,NULL,NULL,1,'Bridge',$channel,30000,$hold['number'],NULL,$_SESSION['curuser']['accountcode']);
 	}
 	return $objResponse;
 }
@@ -600,7 +595,7 @@ function waitingCalls($myValue){
 		//$call['curid'] = $curid;
 		$direction	= '';
 		$info	= $locate->Translate("stand_by");
-		$objResponse->addAssign("dndlist_campaignid","value","0");
+		///$objResponse->addAssign("dndlist_campaignid","value","0");
 		
 	} elseif ($call['status'] == 'incoming'){	//incoming calls here
 		if(strstr($call['calleeChannel'],'agent')){
@@ -669,7 +664,7 @@ function waitingCalls($myValue){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
 				if ($myValue['popup'] == 'yes'){
 					if ($config['system']['enable_external_crm'] == false){
-							$objResponse->loadXML(getContact($call['callerid']));
+							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
 								$objResponse->addScript('maximizeWin();');
 							}
@@ -793,7 +788,7 @@ function waitingCalls($myValue){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
 				if ($myValue['popup'] == 'yes'){
 					if ($config['system']['enable_external_crm'] == false ){
-							$objResponse->loadXML(getContact($call['callerid']));
+							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
 								$objResponse->addScript('maximizeWin();');
 							}
@@ -1069,7 +1064,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
 		}
 	}
-
 	// Editable zone
 
 	// Select Box: type table.
@@ -1204,7 +1198,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	if ($config['system']['portal_display_type'] == "note"){
 		$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."');return false;\">".$row['customer']."</a>";
 	}else{
-		$rowc[] = $row['customer'];
+		if($row['phone'] != '') {
+			$rowc[] = "<a href=? onclick=\"getContact('".$row['phone']."','".$row['id']."');return false;\">".$row['customer']." (".$row['phone'].")</a>";
+		} else if($row['mobile'] != ''){
+			$rowc[] = "<a href=? onclick=\"getContact('".$row['mobile']."','".$row['id']."');return false;\">".$row['customer']." (".$row['mobile'].")</a>";
+		} else {
+			$rowc[] = $row['customer'];
+		}
 	}
 
 
@@ -1253,7 +1253,7 @@ function addWithPhoneNumber(){
 	$objResponse = new xajaxResponse();
 	global $db;
 	
-	$row = astercrm::getDialNumByAgent($_SESSION['curuser']['extension']);
+	$row = astercrm::getDialNumByAgent($_SESSION['curuser']['extension']);//print_r($row);exit;
 
 	if ($row['id'] == ''){
 
@@ -1265,15 +1265,20 @@ function addWithPhoneNumber(){
 
 		if($dnc_row['id'] > 0){
 			$row['callresult'] = 'dnc';
+			astercrm::deleteRecord($row['id'],"diallist");
+			$row['dialednumber'] = $phoneNum;
+			$row['dialedby'] = $_SESSION['curuser']['extension'];
+			$row['trytime'] = $row['trytime'] + 1;
+			astercrm::insertNewDialedlist($row);
 		}else{
-			$objResponse->loadXML(getContact($phoneNum));
+			$objResponse->loadXML(getContact($phoneNum,0,$row['campaignid'],$row['id']));
 		}		
 		
-		astercrm::deleteRecord($row['id'],"diallist");
-		$row['dialednumber'] = $phoneNum;
-		$row['dialedby'] = $_SESSION['curuser']['extension'];
-		$row['trytime'] = $row['trytime'] + 1;
-		astercrm::insertNewDialedlist($row);
+//		astercrm::deleteRecord($row['id'],"diallist");
+//		$row['dialednumber'] = $phoneNum;
+//		$row['dialedby'] = $_SESSION['curuser']['extension'];
+//		$row['trytime'] = $row['trytime'] + 1;
+//		astercrm::insertNewDialedlist($row);
 	
 	}
 
@@ -1297,7 +1302,7 @@ function checkworkexten() {
 		$row = astercrm::getRecordByField("peername",$_SESSION['curuser']['channel'],"peerstatus");
 	}
 
-	if($row['status'] != 'reachable' && $row['status'] != 'registered') {
+	if($row['status'] != 'reachable' && $row['status'] != 'registered' && !strstr($row['status'],'ok')) {
 		$objResponse->addAssign("workingextenstatus","value", $locate->Translate("extension_unavailable") );
 	}else{
 		$objResponse->addAssign("workingextenstatus","value", "ok" );
@@ -1331,7 +1336,7 @@ function workstart() {
 			return $objResponse;
 		}
 
-		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work") );
+		$objResponse->addAssign("btnWork","value", $locate->Translate("Stop work"));
 		if($config['system']['stop_work_verify'])
 			$objResponse->addEvent("btnWork", "onclick", "workctrl('check');");
 		else
@@ -1346,7 +1351,7 @@ function workstart() {
 		$row['dialednumber'] = $phoneNum;
 		$row['dialedby'] = $_SESSION['curuser']['extension'];
 		$dialedlistid = astercrm::insertNewDialedlist($row);
-		$objResponse->loadXML(getContact($phoneNum));
+		$objResponse->loadXML(getContact($phoneNum,0,$row['campaignid']));
 		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
 		
 		if($row['callresult'] != 'dnc')
@@ -1384,7 +1389,7 @@ function workoffcheck($f=''){
 # $phoneNum	phone to call
 # $first	which phone will ring first, caller or callee
 
-function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
+function dial($phoneNum,$first = '',$myValue,$dtmf = '',$diallistid=0){
 	global $config,$locate;
 
 	$objResponse = new xajaxResponse();
@@ -1470,6 +1475,19 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = ''){
 	}
 	//$myAsterisk->disconnect();
 	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+
+	if($diallistid > 0){
+		$row = astercrm::getRecordByID($diallistid,'diallist'); 
+		if($row['dialnumber'] != ''){
+			$row['callresult'] = '';
+			astercrm::deleteRecord($row['id'],"diallist");
+			$row['dialednumber'] = $phoneNum;
+			$row['dialedby'] = $_SESSION['curuser']['extension'];
+			$row['trytime'] = $row['trytime'] + 1;
+			astercrm::insertNewDialedlist($row);
+		}
+		$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+	}
 	return $objResponse->getXML();
 }
 
@@ -1610,7 +1628,7 @@ function hangup($channel){
 	return $objResponse;
 }
 
-function getContact($callerid){
+function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 	global $db,$locate,$config;	
 	$mycallerid = $callerid;
 	$objResponse = new xajaxResponse();
@@ -1627,11 +1645,10 @@ function getContact($callerid){
 				break;
 			}
 		}
-	}
-			
+	}		
 
 	//check contact table first
-	if($config['system']['enable_contact'] == '0'){
+	if($config['system']['enable_contact'] == '0' && $customer_id == ''){
 		if ($config['system']['detail_level'] == 'all')
 			$row = astercrm::getContactByCallerid($mycallerid);
 		else
@@ -1648,7 +1665,15 @@ function getContact($callerid){
 			$customerid = astercrm::getCustomerByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
 
 		if ($customerid == ''){
-			$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
+			//$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
+			
+			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the 
+			$html .= Customer::formAdd($callerid,0,0,$campaignid,$diallistid);
+
+			$html .= Table::Footer();
+			$objResponse->addAssign("formDiv", "style.visibility", "visible");
+			$objResponse->addAssign("formDiv", "innerHTML", $html);
+
 			// callerid smart match
 			if ($config['system']['smart_match_remove']) {
 				if ($config['system']['detail_level'] == 'all') {
@@ -1685,20 +1710,23 @@ function getContact($callerid){
 		}else{
 			
 			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
-			$html .= Customer::formAdd($callerid,$customerid);  // <-- Change by your method
+			$html .= Customer::formAdd($callerid,$customerid,0,$campaignid,$diallistid);  // <-- Change by your method
 			$html .= Table::Footer();
 			$objResponse->addAssign("formDiv", "style.visibility", "visible");
-			$objResponse->addAssign("formDiv", "innerHTML", $html);
-			$objResponse->addAssign("insert_dnc_list","innerHTML","<input type=\"button\" id=\"insert_dnc_list\" name=\"insert_dnc_list\" value=\"".$locate->Translate("Add Dnc_list")."\" onclick=\"insertIntoDnc();return false;\"/>");
+			$objResponse->addAssign("formDiv", "innerHTML", $html);			
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'customer\','.$callerid.');');
 		}
 	} else{ // one match
-
-		$customerid = $row['customerid'];
+		if($customer_id == '') {
+			$customerid = $row['customerid'];
+		} else {
+			$customerid = $customer_id;
+		}
+		
 		$contactid = $row['id'];
 		
 		$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
-		$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
+		$html .= Customer::formAdd($callerid,$customerid,$contactid,$campaignid,$diallistid);  // <-- Change by your method
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
@@ -1708,6 +1736,8 @@ function getContact($callerid){
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'customer\','.$callerid.');');
 
 	}
+//echo $campaignid.$diallistid;exit;
+	
 
 	return $objResponse;
 }
@@ -2235,7 +2265,7 @@ function getMsgInCampaign($form) {
 		$objResponse->addAssign("spanDialList", "style.display", "");
 		$objResponse->addAssign("misson", "style.display", "");
 	}
-//print_r($curagentdata);exit;
+//print_r($_SESSION['curuser']['campaign_queue']);exit;
 	//$result = Customer::getMsgInCampaign($_SESSION['curuser']['groupid']);
 	
 	$tableHtml = '';
@@ -2243,41 +2273,41 @@ function getMsgInCampaign($form) {
 		if(is_array($curagentdata[$row['queuename']]) && !(($curagentdata[$row['queuename']]['status'] == 'Unavailable' || $curagentdata[$row['queuename']]['status'] == 'Invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
 			$campaignSpan = '<div id="campaignDiv-'.$row['id'].'" ><span style="float:left;cursor:pointer;color:green"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-'.$row['queuename'].'" style="float:left;"> </span>';
 			if($curagentdata[$row['queuename']]['agent_status'] == 'dynamic'){			
-				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('logoff').']</a></span>';
-				$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('logoff').']</a></span>';
+				$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('pause').']</a></span>';
 			}else{
 				if($curagentdata[$row['queuename']]['type'] == 'agent' ){
 					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
 				}elseif( !strstr($curagentdata[$row['queuename']]['data'],'dynamic')){
 					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
 				}else{
-					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('logoff').']</a></span>';
+					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('logoff').']</a></span>';
 				}
 
 				if($curagentdata[$row['queuename']]['agent_status'] == 'paused'){
 					$campaignSpan = '<div id="campaignDiv-'.$row['id'].'"><span style="float:left;cursor:pointer;color:#30569D"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-"'.$row['queuename'].'" style="float:left;"> </span>';
 					
 					if($curagentdata[$row['queuename']]['type'] == 'agent' ){
-						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continuea" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('continue').']</a></span>';
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continuea" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('continue').']</a></span>';
 					}elseif($curagentdata[$row['queuename']]['type'] == 'channel'){
-						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continuec" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('continue').']</a></span>';
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continuec" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('continue').']</a></span>';
 					}else{
-						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continue" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('continue').']</a></span>';
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="continue" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('continue').']</a></span>';
 					}
 				}else{
 					if($curagentdata[$row['queuename']]['type'] == 'agent' ){
-						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pausea" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pausea" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('pause').']</a></span>';
 					}elseif($curagentdata[$row['queuename']]['type'] == 'channel'){
-						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pausec" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pausec" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('pause').']</a></span>';
 					}else{
-						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span>';
+						$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('pause').']</a></span>';
 					}
 				}
 			}
 
 			$tableHtml .= $campaignSpan.'&nbsp;&nbsp;&nbsp;<span style="float:right">'.$loginSpan.'&nbsp;&nbsp;'.$pauseSpan.'</span></div>';
 		}else{
-			$tableHtml .= '<div id="campaignDiv-'.$row['id'].'"><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-"'.$row['queuename'].'" style="float:left;"> </span> &nbsp;&nbsp;&nbsp;<span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title);">['.$locate->translate('pause').']</a></span></span></div>';
+			$tableHtml .= '<div id="campaignDiv-'.$row['id'].'"><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-"'.$row['queuename'].'" style="float:left;"> </span> &nbsp;&nbsp;&nbsp;<span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('pause').']</a></span></span></div>';
 		}
 	}
 	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
@@ -2285,16 +2315,19 @@ function getMsgInCampaign($form) {
 	return $objResponse->getXML();
 }
 
-function queueAgentControl($queueno,$action){
+function queueAgentControl($queueno,$action,$context){
 	global $locate,$config,$db;
 	$myAsterisk = new Asterisk();	
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
+	if($context == ''){
+		if ($_SESSION['curuser']['group']['incontext'] != '' ) $context = $group_info['incontext'];
+		else $context = $config['system']['incontext'];
+		
+	}
 
-	if ($_SESSION['curuser']['group']['incontext'] != '' ) $incontext = $group_info['incontext'];
-	else $incontext = $config['system']['incontext'];
-	$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$incontext.'/n';
+	$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$context.'/n';
 
 	if($action == 'login'){
 		$cmd = "queue add member $agentstr to $queueno";
@@ -2375,6 +2408,27 @@ function queueAgentControl($queueno,$action){
 	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
 	return $objResponse;
 }
+
+function skipDiallist($dialnumber,$diallistid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$row = astercrm::getRecordByID($diallistid,'diallist'); 
+	if($row['dialnumber'] != ''){
+		$row['callresult'] = 'skip';
+		astercrm::deleteRecord($row['id'],"diallist");
+		$row['dialednumber'] = $phoneNum;
+		$row['dialedby'] = $_SESSION['curuser']['extension'];
+		$row['trytime'] = $row['trytime'] + 1;
+		astercrm::insertNewDialedlist($row);
+	}else{
+		$objResponse->addAlert($locate->translate("Option failed"));
+		return $objResponse;
+	}
+	$objResponse->addScript("xajax_clearPopup()");
+	$objResponse->loadXML(getPrivateDialListNumber($_SESSION['curuser']['extension']));
+	return $objResponse;
+}
+
 
 $xajax->processRequests();
 

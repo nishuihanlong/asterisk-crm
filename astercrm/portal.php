@@ -155,10 +155,11 @@ $clientDst = $_REQUEST['clientdst'];
 			xajax.doneLoadingFunction = function(){xajax.$('processingMessage').style.display = 'none';};
 		}
 
-		function dial(phonenum,first,myvalue,dtmf){
+		function dial(phonenum,first,myvalue,dtmf,diallistid){
 			myFormValue = xajax.getFormValues("myForm");
 			dialnum = phonenum;
 			firststr = first;
+			curdiallistid = diallistid;
 
 			if(typeof(first) != 'undefined'){
 				firststr = first;
@@ -172,11 +173,12 @@ $clientDst = $_REQUEST['clientdst'];
 				dtmfstr = '';
 			}
 			CancelLoading();
+			//ShowProcessingDiv();
 			if (document.getElementById("uniqueid").value != '')
 				return false;
 			//xajax.$("divMsg").style.visibility = 'visible';
 			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Dialing to");?>"+" "+phonenum;			
-			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr)",1000);
+			setTimeout("xajax_dial(dialnum,firststr,myFormValue,dtmfstr,curdiallistid)",1000);
 		}
 		
 		function btnGetAPhoneNumberOnClick(){
@@ -285,6 +287,7 @@ $clientDst = $_REQUEST['clientdst'];
 		function invite(){
 			if (document.getElementById("uniqueid").value != '')
 				return false;
+
 			src = trim(xajax.$('iptSrcNumber').value);
 			dest = trim(xajax.$('iptDestNumber').value);
 			
@@ -305,9 +308,10 @@ $clientDst = $_REQUEST['clientdst'];
 				xajax.$('iptDestNumber').value = xajax.$('extension').value;
 				dest = xajax.$('extension').value;
 			}
-			CancelLoading();
+			ShowProcessingDiv();
 			//xajax.$('btnDial').disabled = true;
-			
+			xajax_getContact(src,0);
+
 			setTimeout("xajax_invite(src,dest)",1000);
 			checkExtensionStatus('extensionStatus');
 		}
@@ -344,7 +348,7 @@ $clientDst = $_REQUEST['clientdst'];
 			if (target == ''){
 				return false;
 			}
-			CancelLoading();
+			ShowProcessingDiv();
 			//xajax.$("divMsg").style.visibility = 'visible';
 			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Transfering to");?>" + " " + target;
 			setTimeout("xajax_transfer(xajax.getFormValues('myForm'))",500);
@@ -419,7 +423,7 @@ $clientDst = $_REQUEST['clientdst'];
 			srcchan = trim(xajax.$('callerChannel').value);
 			dstchan = trim(xajax.$('calleeChannel').value);
 			inviteExten = exten;
-			CancelLoading();
+			
 			//xajax.$("divMsg").style.visibility = 'visible';
 			//xajax.$("divMsg").innerHTML = "<?echo $locate->Translate("Inviting ");?>" + " " + exten;
 			
@@ -593,11 +597,15 @@ $clientDst = $_REQUEST['clientdst'];
 			ShowProcessingDiv();
 			xajax_saveDiallistMain(f);
 		}
-		function getContact(value) {
+		function getContact(value,customerId) {
 			if(value != '') {
 				ShowProcessingDiv();
 			}
-			xajax_getContact(value);
+			//if(customerId == 'undefined')
+			if(typeof(customerId) == 'undefined') {
+				customerId = '';
+			}
+			xajax_getContact(value,customerId);
 		}
 
 		function showDiallist(userexten,customerid,start,limit,filter,content,order,divName,ordering,stype) {

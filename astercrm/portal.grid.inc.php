@@ -75,7 +75,9 @@ class Customer extends astercrm
 									note.creby AS creby,
 									customer.category AS category,
 									customer.contact AS contact,
-									customer.cretime as cretime
+									customer.cretime as cretime,
+									customer.phone as phone,
+									customer.mobile as mobile
 									FROM customer LEFT JOIN note ON customer.id = note.customerid ";
 			if($config['system']['detail_level'] != 'all')						
 				$sql .= " WHERE customer.groupid = '".$_SESSION['curuser']['groupid']."' ";
@@ -157,6 +159,8 @@ class Customer extends astercrm
 											customer.category AS category,
 											customer.contact AS contact,
 											customer.cretime as cretime,
+											customer.phone as phone,
+											customer.mobile as mobile,
 											note.note AS note,
 											note.priority AS priority,
 											note.attitude AS attitude
@@ -172,6 +176,8 @@ class Customer extends astercrm
 											customer.category AS category,
 											customer.contact AS contact,
 											customer.cretime as cretime,
+											customer.phone as phone,
+											customer.mobile as mobile,
 											note.note AS note,
 											note.priority AS priority,
 											note.attitude AS attitude
@@ -378,6 +384,8 @@ class Customer extends astercrm
 											customer.category AS category,
 											customer.contact AS contact,
 											customer.cretime as cretime,
+											customer.phone as phone,
+											customer.mobile as mobile,
 											note.note AS note,
 											note.priority AS priority,
 											note.attitude AS attitude,
@@ -397,6 +405,8 @@ class Customer extends astercrm
 											customer.category AS category,
 											customer.contact AS contact,
 											customer.cretime as cretime,
+											customer.phone as phone,
+											customer.mobile as mobile,
 											note.note AS note,
 											note.priority AS priority,
 											note.attitude AS attitude,

@@ -46,4 +46,5 @@ $crd_context = "呼叫结果检测context";
 $answering_machine_detect = "自动答应机检测";
 $amd_context = "自动应答机检测context";
 $dial_two_party_at_same_time = "同时拨打双方号码";
+$queue_context = "队列context";
 ?>

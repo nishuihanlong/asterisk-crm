@@ -227,6 +227,7 @@ class asterEvent extends PEAR
 		$exten = $_SESSION['curuser']['extension'];
 		$channel = $_SESSION['curuser']['channel'];
 		$agent = $_SESSION['curuser']['agent'];
+		//echo $curid;exit;
 
 		if ($config['system']['eventtype'] == 'curcdr'){
 
@@ -304,8 +305,7 @@ class asterEvent extends PEAR
 				$i++;
 			}
 			//$_SESSION['curuser']['extensions_session'] = $panellist;
-		}
-		else{
+		}else{
 			$alluser = astercrm::getall('astercrm_account');
 			while($alluser->fetchinto($row)){
 				$panellist[$row['username']]['extension'] = $row['extension'];
@@ -353,6 +353,7 @@ class asterEvent extends PEAR
 						$dst_tmp = trim($cdrrow['dst']);
 						$cdrrow['dst'] = '';
 					}
+
 						if ($status[$list['peer']] == 1) continue;
 						if (strstr($cdrrow['src'],$phone['extension']) OR strstr($cdrrow['srcchan'],$phone['channel']) ) {	// dial out
 							if ( $cdrrow['didnumber'] != '' ) {
@@ -384,7 +385,7 @@ class asterEvent extends PEAR
 				}else{
 					if ($phone_status[$phone['extension']] == 'unreachable' || $phone_status[$phone['extension']] == '') {
 						$status[$username] = 2;
-					}elseif ($phone_status[$phone['extension']] == 'reachable' || $phone_status[$phone['extension']] == 'registered') {
+					}elseif ($phone_status[$phone['extension']] == 'reachable' || $phone_status[$phone['extension']] == 'registered' || strstr($phone_status[$phone['extension']],'ok')) {
 						$status[$username] = 0;
 					}
 					$callerid[$username] = '';
@@ -400,14 +401,14 @@ class asterEvent extends PEAR
 				if (strtolower(substr($chan_val,0,3)) != "sip") continue;			
 				if (substr($event_val,0,10) == "PeerStatus") {
 					if (!in_array($chan_val,$phones)) $phones[] = $chan_val;
-					if (substr($stat_val,0,11) == "Unreachable")  { $status[$chan_val] = 2; continue; }
-					if (substr($stat_val,0,12) == "Unregistered") { $status[$chan_val] = 2; continue; }
-					if (substr($stat_val,0,9)  == "Reachable")    {
+					if (substr($stat_val,0,11) == "unreachable")  { $status[$chan_val] = 2; continue; }
+					if (substr($stat_val,0,12) == "unregistered") { $status[$chan_val] = 2; continue; }
+					if (substr($stat_val,0,9)  == "reachable")    {
 						if ($status[$chan_val] == 1) continue;
 						$status[$chan_val] = 0;
 						continue;
 					}
-					if (substr($stat_val,0,12) == "Registered")   { 
+					if (substr($stat_val,0,12) == "registered")   { 
 						if ($status[$chan_val] == 1) continue; 
 						$status[$chan_val] = 0; 
 						continue;
