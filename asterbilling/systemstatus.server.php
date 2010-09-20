@@ -266,6 +266,7 @@ function showStatus(){
 	#print_r($peerstatus);exit;
 
 	$event = array('ring' => 1, 'dial' => 2, 'ringing' => 3, 'link' => 4);
+	$event = array('RING' => 1, 'DIAL' => 2, 'RINGING' => 3, 'LINK' => 4);
 
 	foreach ($peers as $peer){
 		// update peer status
