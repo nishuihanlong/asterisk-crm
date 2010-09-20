@@ -86,7 +86,7 @@ class Customer extends astercrm
 		$i = 0;
 		//get phone numbers
 
-		$sql = "SELECT campaigndialedlist.*,campaign.maxtrytime ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid WHERE answertime ='0000-00-00 00:00:00' AND callresult!='dnc' AND `maxtrytime` > `trytime`";
+		$sql = "SELECT campaigndialedlist.*,campaign.maxtrytime ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid WHERE campaigndialedlist.billsec = 0 AND callresult!='dnc' AND `maxtrytime` > `trytime`";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -107,7 +107,7 @@ class Customer extends astercrm
 			$creby = $row['creby'];
 			$customername = $row['customername'];
 			if($row['maxtrytime'] > $row["trytime"]){
-				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ,customername = '$customername' ";
+				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid ='$groupid', campaignid='$campaignid', creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ,customername = '$customername' ";
 				$db->query($query);
 				$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
 				$db->query($query);	

@@ -182,7 +182,7 @@ function chanspy($exten,$spyexten,$pam = ''){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam,$_SESSION['asterisk']['version']);
+	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
 	//$objResponse->addAlert($spyexten);
 	return $objResponse;
 
@@ -279,7 +279,7 @@ function barge($srcchan,$dstchan){
 	//else $outcontext = $config['system']['outcontext'];
 
 	$strChannel = "local/".$_SESSION['curuser']['extension']."@".$incontext."/n";
-	$myAsterisk->Originate($strChannel,'','',1,'meetme',$_SESSION['curuser']['extension']."|pqdx",30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+	$myAsterisk->Originate($strChannel,'','',1,'meetme',$_SESSION['curuser']['extension'].$_SESSION['asterisk']['paramdelimiter']."pqdx",30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
 
 	$myAsterisk->Redirect($srcchan,$dstchan,$_SESSION['curuser']['extension'],"astercc-barge","1");
 	return $objResponse;

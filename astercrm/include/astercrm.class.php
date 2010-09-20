@@ -501,6 +501,9 @@ Class astercrm extends PEAR{
 	function insertNewDialedlist($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
+		if($f['callresult'] == ''){
+			$f['callresult'] = 'UNKNOWN';
+		}
 		
 		$query = 'INSERT INTO dialedlist (dialednumber,dialedby,dialedtime,groupid,campaignid,trytime,assign,customerid,customername,callOrder,creby,callresult,memo) VALUES ("'.$f['dialednumber'].'","'.$f['dialedby'].'",now(),'.$f['groupid'].','.$f['campaignid'].','.$f['trytime'].',"'.$f['assign'].'",'.$f['customerid'].",'".$f['customername']."','".$f['callOrder']."',"."'".$f['creby']."','".$f['callresult']."','".$f['memo']."')";
 
@@ -2055,6 +2058,7 @@ Class astercrm extends PEAR{
 							</td>
 							<td>';
 							$survey = astercrm::countSurvey($callerid);
+							//print_r($survey);exit;
 							if($survey['count'] == 1){
 								$html .= '<a href="?" onclick="xajax_showSurvey(\''.$survey['id'].'\',\''.$id.'\',0,\''.$survey['callerid'].'\',\''.$survey['campaignid'].'\');return false;">'.$locate->Translate("Add Survey").'</a>';
 							}else{

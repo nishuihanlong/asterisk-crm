@@ -117,8 +117,8 @@ class asterEvent extends PEAR
 				if($list['didnumber'] != '' ){
 					$didnumber = $list['didnumber'];
 				}else{
-					$sql = "SELECT didnumber FROM curcdr WHERE srcchan = '".$list['didnumber']."' AND didnumber != ''";
-					if($res_did = $db->getone($sql)) $didnumber = $res_did;
+					//$sql = "SELECT didnumber FROM curcdr WHERE srcchan = '".$list['didnumber']."' AND didnumber != ''";
+					//if($res_did = $db->getone($sql)) $didnumber = $res_did;
 				}
 
 				if ((strstr($list['srcchan'],$channel) && !strstr($list['srcchan'],'local')) OR strstr($list['src'],$exten)) {// dial out
@@ -242,17 +242,19 @@ class asterEvent extends PEAR
 				$holds = $db->getrow($sql);
 				$call['hold'] = $holds;
 				
-				if ($list['answertime'] != '0000-00-00 00:00:00' || $list['disposition'] == 'link'){
+				if (strtolower($list['disposition']) == 'link'){
 
 					$call['callerChannel'] = $list['srcchan'];
 					$call['calleeChannel'] = $list['dstchan'];
 					$call['consultnum'] = $list['dst'];
 					$call['queue'] = $list['queue'];
 
-					$call['status'] = 'link';		
+					$call['status'] = 'link';
+					$call['didnumber'] = $list['didnumber'];
 				}else{
 					$call['status'] = '';
 					$call['queue'] = $list['queue'];
+					$call['didnumber'] = $list['didnumber'];
 				}
 			}else{
 				//检查onhold 通话
@@ -383,7 +385,7 @@ class asterEvent extends PEAR
 							$status[$username] = 0;
 						}
 				}else{
-					if ($phone_status[$phone['extension']] == 'unreachable' || $phone_status[$phone['extension']] == '') {
+					if ($phone_status[$phone['extension']] == 'unknown' || $phone_status[$phone['extension']] == 'unreachable' || $phone_status[$phone['extension']] == '') {
 						$status[$username] = 2;
 					}elseif ($phone_status[$phone['extension']] == 'reachable' || $phone_status[$phone['extension']] == 'registered' || strstr($phone_status[$phone['extension']],'ok')) {
 						$status[$username] = 0;
