@@ -83,6 +83,13 @@ PRIMARY KEY ( `channel` ) ,
 UNIQUE (`channel`)
 ) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci; 
 
+ALTER TABLE campaign add `billsec` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `billsec_leg_a` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `duration_answered` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `duration_noanswer` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `answered` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `dialed` int(4) NOT NULL default '0';
+
 DROP TABLE IF EXISTS `campaigndialedlist`;
 CREATE TABLE `campaigndialedlist` (
   `id` int(11) NOT NULL auto_increment,
@@ -91,7 +98,7 @@ CREATE TABLE `campaigndialedlist` (
   `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',       
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',       
   `duration` int(4) NOT NULL default '0',               
-  `billsec` int(4) NOT NULL default '0',               
+  `billsec` int(4) NOT NULL default '0', 
   `billsec_leg_a` int(4) NOT NULL default '0',               
   `transfertime` int(11) NOT NULL default '0',
   `response` varchar(20) NOT NULL default '',
@@ -109,6 +116,7 @@ CREATE TABLE `campaigndialedlist` (
   `trytime` INT(11) NOT NULL DEFAULT '0',
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `processed` enum('yes','no') NOT NULL default 'no',
   `callOrder` INT(11) NOT NULL DEFAULT '1',
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
@@ -152,10 +160,6 @@ CREATE TABLE `dialedlist` (
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
-
-
-#SELECT * FROM dialedlist WHERE (dialednumber = '123321' OR dialednumber = '44555') AND answertime = '0000-00-00 00:00:00' AND dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialedtime DESC LIMIT 1
-
 
 
 ALTER TABLE `astercrm_accountgroup` ADD `allowloginqueue` ENUM('yes','no') NOT NULL DEFAULT 'no' AFTER `firstring`;

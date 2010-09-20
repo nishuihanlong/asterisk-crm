@@ -802,6 +802,12 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `minduration` int(11) NOT NULL default '0',
  `dialtwoparty` enum ("yes","no") not null default "no",
  `queue_context` varchar(60) not null default '',
+ `billsec` int(4) NOT NULL default '0',
+ `billsec_leg_a` int(4) NOT NULL default '0',
+ `duration_answered` int(4) NOT NULL default '0',
+ `duration_noanswer` int(4) NOT NULL default '0',
+ `answered` int(4) NOT NULL default '0',
+ `dialed` int(4) NOT NULL default '0',
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)
@@ -994,6 +1000,7 @@ CREATE TABLE `campaigndialedlist` (
   `dialedby` varchar(30) NOT NULL default '',
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `callOrder` INT(11) NOT NULL DEFAULT '1',
+  `processed` enum('yes','no') NOT NULL default 'no',
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
