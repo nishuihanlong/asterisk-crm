@@ -226,7 +226,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		next;
 	}
 	
-	my $hcdrinfo = \%cdrinfo;	
+	my $hcdrinfo = \%cdrinfo;
 	
 	#print Dumper($hcdrinfo);exit;
 	foreach my $curchan (sort keys %$hcdrinfo) {
@@ -295,21 +295,21 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 						$start = ($curcalldatestr - $first_calldate - $first_ringtime);
 					}
 						
-					print "curcalldatestr:$curcalldatestr\n";
+					#print "curcalldatestr:$curcalldatestr\n";
 					
 					my $thisbillsec = $hcdrinfo->{$curchan}->{$curid}->{'billsec'};
 					my $execstr = "$soxcmd $filename-all.$fileformat $curfile.$fileformat trim $start $thisbillsec";
-					print "trimcmd:$execstr\n";
+					#print "trimcmd:$execstr\n";
 					system($execstr);
 				}
-				print "$curid|||$curfile\n";
+				#print "$curid|||$curfile\n";
 
 				#转成mp3文件
 				if( -e "$curfile.$fileformat" ){
 					
 					if($fileformat eq 'wav'){
 						my $execstr = "$lamecmd --cbr -m m -t -F $curfile.$fileformat $curfile.mp3 2>&1";
-						print "convertcmd:$execstr";
+						#print "convertcmd:$execstr";
 						system($execstr);
 						if( -e "$curfile.mp3" ){
 							$query = "UPDATE monitorrecord SET processed = 'yes', fileformat='mp3' WHERE id ='$hcdrinfo->{$curchan}->{$curid}->{'monitored'}'";
@@ -348,7 +348,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	}
 	if($joinmainstr ne ''){
 		my $execstr = "$soxcmd $joinmainstr $ref->{'filename'}-all.$ref->{'fileformat'}";
-		print "joinmainstr:$execstr\n";
+		#print "joinmainstr:$execstr\n";
 		system($execstr);
 		system("rm -f $joinmainstr");
 		if( -e "$ref->{'filename'}-all.$ref->{'fileformat'}" ){
@@ -357,7 +357,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 
 			if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
 				my $execstr = "$lamecmd --cbr -m m -t -F $ref->{'filename'}.$ref->{'fileformat'} $ref->{'filename'}.mp3 2>&1";
-				print "convertcmd:$execstr";
+				#print "convertcmd:$execstr";
 				system($execstr);
 				if( -e "$ref->{'filename'}.mp3" ){
 					$query = "UPDATE monitorrecord SET processed = 'yes', fileformat='mp3' WHERE id ='$ref->{'monitored'}'";

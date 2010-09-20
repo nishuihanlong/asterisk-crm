@@ -237,6 +237,32 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	&executeQuery($query,'');
 }
 
+my %campaigndata;
+my $query = "SELECT * FROM campaigndialedlist WHERE processed = 'no' ORDER BY dialedtime ASC ";
+my $rows = &executeQuery($query,'rows');
+while ( my $ref = $rows->fetchrow_hashref() ) {
+	%campaigndata->{$ref->{'campaignid'}}{'billsec'} += $ref->{'billsec'};
+	%campaigndata->{$ref->{'campaignid'}}{'billsec_leg_a'} += $ref->{'billsec_leg_a'};
+	if($ref->{'billsec'} > 0){
+		%campaigndata->{$ref->{'campaignid'}}{'duration_answered'} += $ref->{'duration'};
+		%campaigndata->{$ref->{'campaignid'}}{'answered'} += 1;
+	}else{
+		%campaigndata->{$ref->{'campaignid'}}{'duration_noanswer'} += $ref->{'duration'};
+	}
+	%campaigndata->{$ref->{'campaignid'}}{'dialed'} += 1;
+
+	$query = "UPDATE campaigndialedlist SET processed='yes' WHERE id='$ref->{'id'}' ";
+	&executeQuery($query,'');
+}
+
+foreach my $curcampaignid (sort keys %campaigndata) {
+	if($curcampaignid > 0){
+		my $curdata = %campaigndata->{$curcampaignid};
+
+		my $query = "UPDATE campaign SET billsec = billsec + '$curdata->{'billsec'}' ,billsec_leg_a = billsec_leg_a + '$curdata->{'billsec_leg_a'}' ,duration_answered = duration_answered + '$curdata->{'duration_answered'}', duration_noanswer = duration_noanswer + '$curdata->{'duration_noanswer'}', answered = answered + '$curdata->{'answered'}', dialed = dialed + '$curdata->{'dialed'}' WHERE id='$curcampaignid'";
+		&executeQuery($query,'');
+	}
+}
 unlink($pidFile);
 exit;
 

@@ -99,7 +99,11 @@ if($DIALPART eq 'CALLEE'){
 
 		if($dialed_id > 0){
 			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$callstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal')";
-			&executeQuery($query,'');
+			my $affect = &executeQuery($query,'');
+			if($affect > 0){
+			}else{
+				$query = "UPDATE ".$db_prefix."campaigndialedlist SET callresult='$callstatus' WHERE dialednumber='$extension' AND (callresult='' OR callresult='normal') AND dialedtime > (now()-INTERVAL 60 SECOND) ";
+			}
 		}
 	}
 	exit;
@@ -134,7 +138,11 @@ if($DIALPART eq 'CALLEE'){
 		if($dialed_id > 0 && $campaign_id >0){
 			
 			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$amdstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal')";
-			&executeQuery($query,'');
+			my $affect = &executeQuery($query,'');
+			if($affect > 0){
+			}else{
+				$query = "UPDATE ".$db_prefix."campaigndialedlist SET callresult='$amdstatus' WHERE dialednumber='$extension' AND (callresult='' OR callresult='normal') AND dialedtime > (now()-INTERVAL 60 SECOND) ";
+			}
 
 			$query = "SELECT * FROM ".$db_prefix."survey WHERE campaignid = $campaign_id and enable = 1 ORDER BY cretime LIMIT 0,1";
 			my $survey_rows = &executeQuery($query,'rows');
