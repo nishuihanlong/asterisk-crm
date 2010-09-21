@@ -32,8 +32,8 @@
 #
 astercc=1
 astercctools=1
-asterrc=1
-astercclock=1
+asterrc=0
+astercclock=0
 asterccdaemon=1
 # the absolute path to your astercc binary,must included shell name, can not include options
 asterccpath="/opt/asterisk/scripts/astercc/astercc"
@@ -248,75 +248,85 @@ do
 	;;
     stop)
 	#for stop monitor
-	if [ ${asterccdaemon} -eq 1 ]; then
+	#if [ ${asterccdaemon} -eq 1 ]; then
 		monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 		if [ "x$monitorpid" != "x" ]; then
 			if kill -9 $monitorpid ; then
 				echo "$0 $ARG: asterrccdaemon stopped"
 			else
-				echo "$0 $ARG: asterrccdaemon could not be stopped"
-				ERROR=12
+				if [ ${asterccdaemon} -eq 1 ]; then
+					echo "$0 $ARG: asterrccdaemon could not be stopped"
+					ERROR=12
+				fi
 			fi
 		else	
 			echo "$0 $ARG: asterrccdaemon not running"
 		fi
-	fi
+	#fi
 
 	#for astercc
-	if [ ${astercc} -eq 1 ]; then
+	#if [ ${astercc} -eq 1 ]; then
 		if [ $asterccRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterccSTATUS"
 		else
 		    if kill $asterccpid ; then
 			echo "$0 $ARG: astercc stopped"
 		    else
-			echo "$0 $ARG: astercc could not be stopped"
-			ERROR=4
+		        if [ ${astercc} -eq 1 ]; then
+				echo "$0 $ARG: astercc could not be stopped"
+				ERROR=4
+			fi
 		    fi
 		fi
-	fi
+	#fi
 
 	#for astercctools
-	if [ ${astercctools} -eq 1 ]; then
+	#if [ ${astercctools} -eq 1 ]; then
 		if [ $asterctRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterctSTATUS"
 		else
 		    if kill $asterctpid ; then
 			echo "$0 $ARG: astercctools stopped"
 		    else
-			echo "$0 $ARG: astercctools could not be stopped"
-			ERROR=4
+			if [ ${astercctools} -eq 1 ]; then
+				echo "$0 $ARG: astercctools could not be stopped"
+				ERROR=4
+			fi
 		    fi
 		fi
-	fi
+	#fi
 
 	#for asterrc
-	if [ ${asterrc} -eq 1 ]; then
+	#if [ ${asterrc} -eq 1 ]; then
 		if [ $asterrcRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterrcSTATUS"
 		else
 		    if kill $asterrcpid ; then
 			echo "$0 $ARG: asterrc stopped"
 		    else
-			echo "$0 $ARG: asterrc could not be stopped"
-			ERROR=8
+			    if [ ${asterrc} -eq 1 ]; then
+				echo "$0 $ARG: asterrc could not be stopped"
+				ERROR=8
+			    fi
 		    fi
 		fi
-	fi
+	#fi
 	
 	#for astercclock
-	if [ ${astercclock} -eq 1 ]; then
+	#if [ ${astercclock} -eq 1 ]; then
 		if [ $asterlcRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterlcSTATUS"
 		else
 		    if kill $asterlcpid ; then
 			echo "$0 $ARG: astercclock stopped"
 		    else
-			echo "$0 $ARG: astercclock could not be stopped"
-			ERROR=8
+			if [ ${astercclock} -eq 1 ]; then
+				echo "$0 $ARG: astercclock could not be stopped"
+				ERROR=8
+			fi
 		    fi
 		fi
-	fi
+	#fi
 
 	;;
     restart)
