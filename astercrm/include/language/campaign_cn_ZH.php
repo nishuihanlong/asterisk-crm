@@ -47,4 +47,13 @@ $answering_machine_detect = "自动答应机检测";
 $amd_context = "自动应答机检测context";
 $dial_two_party_at_same_time = "同时拨打双方号码";
 $queue_context = "队列context";
+$total_calls = "呼叫总数";
+$answered_calls = "接通总数";
+$answered_duration = "接通总时长";
+$asr = "接通率";
+$acd = "平均通话时长";
+$rsd = "平均振铃时长";
+$hour = "小时";
+$min = "分";
+$sec = "秒";
 ?>

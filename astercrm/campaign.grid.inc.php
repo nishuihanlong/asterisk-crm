@@ -663,8 +663,49 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Min Duration").'</td>
 					<td align="left"><input type="text" id="minduration" name="minduration" size="10" maxlength="10" value="'.$campaign['minduration'].'"></td>
-				</tr>
-				<tr>
+				</tr>';
+				//print_r($campaign);exit;
+				$ad_hours = intval($campaign['billsec']/3600);
+				$ad_min = intval(($campaign['billsec']%3600)/60);
+				$ad_sec = $campaign['billsec']%60;
+			
+				$asr = round($campaign['answered']/$campaign['dialed'] * 100,2);
+				$acd = round($campaign['billsec']/$campaign['answered']/60,1);
+				if($acd > 1){
+					$acd = $acd.'&nbsp;'.$locate->Translate("min");
+				}else{
+					$acd = round($campaign['billsec']/$campaign['answered'],0);
+					$acd = $acd.'&nbsp;'.$locate->Translate("sec");
+				}
+
+				$rsd = round(($campaign['duration_answered'] + $campaign['duration_noanswer'] - $campaign['billsec_leg_a'])/$campaign['dialed'],0);
+				//统计数据
+				$html .= '<tr>
+					<td colspan="2" nowrap align="left"><table border="1" width="100%" class="adminlist">
+						<tr>
+							<td>
+								'.$locate->Translate("Total calls").':&nbsp;<b>'.$campaign['dialed'].'</b>
+							</td>
+							<td>
+								'.$locate->Translate("Answered calls").':&nbsp;<b>'.$campaign['answered'].'</b>
+							</td>							
+						<tr>
+						<tr>							
+							<td>
+								'.$locate->Translate("Answered duration").':&nbsp;<b>'.$ad_hours.'&nbsp;'.$locate->Translate("hour").'&nbsp;'.$ad_min.$locate->Translate("min").'&nbsp;'.$ad_sec.'&nbsp;'.$locate->Translate("sec").'&nbsp;</b>
+							</td>
+							<td>								'.$locate->Translate("ASR").':&nbsp;<b>'.$asr.'%</b>
+							</td>
+						<tr>
+						<tr>							
+							<td>								'.$locate->Translate("ACD").':&nbsp;<b>'.$acd.'</b>
+							</td>
+							<td>								'.$locate->Translate("RSD").':&nbsp;<b>'.$rsd.'&nbsp;'.$locate->Translate("sec").'</b>
+							</td>
+						<tr>
+					</table></td>
+				</tr>';
+				$html .= '<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 

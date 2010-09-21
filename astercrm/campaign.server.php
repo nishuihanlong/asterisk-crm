@@ -239,9 +239,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		else 
 			$rowc[] = $locate->Translate("Default server");
 		$total = astercrm::getCountByField('campaignid',$row['id'],'diallist');
-		$dialed = astercrm::getCountByField('campaignid',$row['id'],'campaigndialedlist');
-		$answered = customer::getCountAnswered($row['id']);
-		$rowc[] = $total.'/'.$dialed.'/'.$answered;
+		#$dialed = $row['dialed'];
+		#$answered = customer::getCountAnswered($row['id']);
+		$rowc[] = $total.'/'.$row['dialed'].'/'.$row['answered'];
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];
 		$table->addRow("campaign",$rowc,1,1,0,$divName,$fields);
