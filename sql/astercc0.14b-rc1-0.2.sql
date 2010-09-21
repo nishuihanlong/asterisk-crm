@@ -83,13 +83,6 @@ PRIMARY KEY ( `channel` ) ,
 UNIQUE (`channel`)
 ) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci; 
 
-ALTER TABLE campaign add `billsec` int(4) NOT NULL default '0';
-ALTER TABLE campaign add `billsec_leg_a` int(4) NOT NULL default '0';
-ALTER TABLE campaign add `duration_answered` int(4) NOT NULL default '0';
-ALTER TABLE campaign add `duration_noanswer` int(4) NOT NULL default '0';
-ALTER TABLE campaign add `answered` int(4) NOT NULL default '0';
-ALTER TABLE campaign add `dialed` int(4) NOT NULL default '0';
-
 DROP TABLE IF EXISTS `campaigndialedlist`;
 CREATE TABLE `campaigndialedlist` (
   `id` int(11) NOT NULL auto_increment,
@@ -187,3 +180,11 @@ CREATE TABLE peerstatus (
     pbxserver varchar(50) NOT NULL default '',
     UNIQUE KEY peer (`peername`,`protocol`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+ALTER TABLE campaign add `billsec` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `billsec_leg_a` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `duration_answered` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `duration_noanswer` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `answered` int(4) NOT NULL default '0';
+ALTER TABLE campaign add `dialed` int(4) NOT NULL default '0';
