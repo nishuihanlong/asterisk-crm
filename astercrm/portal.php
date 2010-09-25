@@ -756,7 +756,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	
 		<div id="divSearchContact" name="divSearchContact" class="divSearchContact">
 			<span id="divInvite">
-				<input type="text" value="" name="iptSrcNumber" id="iptSrcNumber" onkeyup="if(xajax.$('iptDestNumber').value == ''){return;} var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode; if (keyCode == 13) {invite();}">&nbsp;->&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber" ></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="<?echo $locate->Translate("Dial");?>" onclick="invite();">
+				<input type="text" value="" name="iptSrcNumber" id="iptSrcNumber" onkeyup="if(xajax.$('iptDestNumber').value == ''){return;} var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode; if (keyCode == 13) {invite();}">&nbsp;<span id="inviteFlag">-></span>&nbsp;<SELECT id="iptDestNumber" name="iptDestNumber" ></SELECT>&nbsp;<input type="button" id="btnDial" name="btnDial" value="<?echo $locate->Translate("Dial");?>" onclick="invite();">
 			</span>&nbsp;&nbsp;&nbsp;
 			<span id="sptSearchContact"><input type="text" value="" name="iptCallerid" id="iptCallerid" onkeyup="if(xajax.$('iptCallerid').value == ''){return;} var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode; if (keyCode == 13) {getContact(xajax.$('iptCallerid').value);}">&nbsp;<input type="button" id="btnSearchContact" name="btnSearchContact" value="<?echo $locate->Translate("Search");?>"  onclick="getContact(xajax.$('iptCallerid').value);">&nbsp;&nbsp;</span>
 		</div>

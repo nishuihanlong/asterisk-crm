@@ -186,7 +186,11 @@ function init(){
 	$objResponse->addAssign("btnMonitor","disabled", true );
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 
-	
+	if($_SESSION['curuser']['group']['firstring'] == 'caller'){
+		$objResponse->addAssign("inviteFlag","innerHTML",'<-');
+	}else{
+		$objResponse->addAssign("inviteFlag","innerHTML",'->');
+	}
 	//$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 	if(strtoupper($config['system']['transfer_pannel']) == 'OFF'){		
 		$objResponse->addAssign("spanTransfer", "style.display", "none");		
@@ -1582,7 +1586,14 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 		else $outcontext = $config['system']['outcontext'];
 
-		$strChannel = "local/".$src."@".$outcontext."/n";
+		
+		if($_SESSION['curuser']['group']['firstring'] == 'caller'){
+			$strChannel = "local/".$dest."@".$incontext."/n";
+			$dest = $src;
+			$incontext = $outcontext;
+		}else{
+			$strChannel = "local/".$src."@".$outcontext."/n";
+		}
 	}
 
 
