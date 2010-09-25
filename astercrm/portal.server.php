@@ -481,6 +481,7 @@ function holdhangup($channel,$consultchan){
 
 function turnback($channel,$agentchan){
 	global $config,$db;
+//	print $channel.'||'.$agentchan;exit;
 	$objResponse = new xajaxResponse();
 	$sql="SELECT * FROM hold_channel WHERE accountid='".$_SESSION['curuser']['accountid']."' ORDER BY id DESC LIMIT 1";
 	$hold = $db->getRow($sql);
@@ -1236,9 +1237,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			if($row['private'] == 1) 
 				$rowc[] = '<img src="images/groups_icon01.gif"  border="0"';
 			else $rowc[] = '';
-			$table->addRow("note",$rowc,1,1,1,$divName,$fields);
+			$table->addRow("note",$rowc,1,1,1,$divName,$fields,null,'','forportal');
 		}else{
-			$table->addRow("customer",$rowc,1,0,1,$divName,$fields);
+			$table->addRow("customer",$rowc,1,0,1,$divName,$fields,null,'','forportal');
 		}
  	}
  	
@@ -2226,17 +2227,19 @@ function getMsgInCampaign($form) {
 	$acount = 0;
 
 	while ($agentDatas->fetchInto($agentData)) {
+		//print_r($agentData);exit;
 		if($agentData['cretime'] < $form['clkPauseTime']){
 			return $objResponse;
 		}
 		$acount++;
 		//print_R($agentData);
 		if(strstr(strtolower($agentData['agent']),'agent') ){
-			if((trim($agentData['status']) != 'Unavailable' && trim($agentData['status']) != 'Invalid')){
+			if((trim($agentData['agent_status']) != 'unavailable' && trim($agentData['agent_status']) != 'invalid')){
 				$dagentflag = 1;
 				$curagentdata[$agentData['queuename']]['type'] = 'agent';
-				$curagentdata[$agentData['queuename']]['status'] = $agentData['status'];
-				$curagentdata[$agentData['queuename']]['agent_status'] = $agentData['agent_status'];
+				$curagentdata[$agentData['queuename']]['status'] = $agentData['agent_status'];
+				$curagentdata[$agentData['queuename']]['ispaused'] = $agentData['ispaused'];
+				$curagentdata[$agentData['queuename']]['isdynamic'] = $agentData['isdynamic'];
 				$curagentdata[$agentData['queuename']]['data'] = $agentData['data'];			
 			}else{
 				continue;
@@ -2248,8 +2251,9 @@ function getMsgInCampaign($form) {
 			if(strtolower(trim($agentData['agent'])) ==  strtolower(trim($_SESSION['curuser']['channel']))){ //直接用channel做memmber如:sip/8000
 				$curagentdata[$agentData['queuename']]['type'] = 'channel';
 			}
-			$curagentdata[$agentData['queuename']]['status'] = $agentData['status'];
-			$curagentdata[$agentData['queuename']]['agent_status'] = $agentData['agent_status'];
+			$curagentdata[$agentData['queuename']]['status'] = $agentData['agent_status'];
+			$curagentdata[$agentData['queuename']]['ispaused'] = $agentData['ispaused'];
+			$curagentdata[$agentData['queuename']]['isdynamic'] = $agentData['isdynamic'];
 			$curagentdata[$agentData['queuename']]['data'] = $agentData['data'];			
 		}
 		
@@ -2270,21 +2274,21 @@ function getMsgInCampaign($form) {
 	
 	$tableHtml = '';
 	foreach($_SESSION['curuser']['campaign_queue'] as $row) {
-		if(is_array($curagentdata[$row['queuename']]) && !(($curagentdata[$row['queuename']]['status'] == 'Unavailable' || $curagentdata[$row['queuename']]['status'] == 'Invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
+		if(is_array($curagentdata[$row['queuename']]) && !(($curagentdata[$row['queuename']]['status'] == 'unavailable' || $curagentdata[$row['queuename']]['status'] == 'invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
 			$campaignSpan = '<div id="campaignDiv-'.$row['id'].'" ><span style="float:left;cursor:pointer;color:green"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-'.$row['queuename'].'" style="float:left;"> </span>';
-			if($curagentdata[$row['queuename']]['agent_status'] == 'dynamic'){			
+			if($curagentdata[$row['queuename']]['isdynamic']){			
 				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('logoff').']</a></span>';
 				$pauseSpan = '<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="pause" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('pause').']</a></span>';
 			}else{
 				if($curagentdata[$row['queuename']]['type'] == 'agent' ){
 					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
-				}elseif( !strstr($curagentdata[$row['queuename']]['data'],'dynamic')){
+				}elseif( !$curagentdata[$row['queuename']]['isdynamic']){
 					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
 				}else{
 					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\');">['.$locate->translate('logoff').']</a></span>';
 				}
 
-				if($curagentdata[$row['queuename']]['agent_status'] == 'paused'){
+				if($curagentdata[$row['queuename']]['ispaused']){
 					$campaignSpan = '<div id="campaignDiv-'.$row['id'].'"><span style="float:left;cursor:pointer;color:#30569D"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span><span id="spanQueueCall-"'.$row['queuename'].'" style="float:left;"> </span>';
 					
 					if($curagentdata[$row['queuename']]['type'] == 'agent' ){
@@ -2352,7 +2356,7 @@ function queueAgentControl($queueno,$action,$context){
 	}
 
 	
-	$res = $myAsterisk->Command($cmd);
+	$res = $myAsterisk->Command($cmd);print_r($res);exit;
 	if(strstr($res['data'],'failed')){
 		if($action == 'pausea'){
 			$action == 'pause';

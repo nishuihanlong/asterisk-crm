@@ -512,9 +512,9 @@ class Customer extends astercrm
 	function getAgentData(){
 		global $db;
 		if($_SESSION['curuser']['channel'] == ''){
-			$sql = "SELECT * From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."' OR agent LIKE 'local/".$_SESSION['curuser']['extension']."@%'";
+			$sql = "SELECT * From queue_agent WHERE agent = 'agent/".$_SESSION['curuser']['agent']."' OR agent LIKE 'local/".$_SESSION['curuser']['extension']."@%'";
 		}else{
-			$sql = "SELECT * From queue_agent WHERE agent = 'Agent/".$_SESSION['curuser']['agent']."' OR agent LIKE 'local/".$_SESSION['curuser']['extension']."@%' OR agent = '".$_SESSION['curuser']['channel']."'";
+			$sql = "SELECT * From queue_agent WHERE agent = 'agent/".$_SESSION['curuser']['agent']."' OR agent LIKE 'local/".$_SESSION['curuser']['extension']."@%' OR agent = '".$_SESSION['curuser']['channel']."'";
 		}
 		//echo $sql;exit;
 		Customer::events($sql);

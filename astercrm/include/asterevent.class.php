@@ -165,7 +165,7 @@ class asterEvent extends PEAR
 					$call['calldate'] = $list['starttime'];
 					$call['queue'] = $list['queue'];
 					if(strstr($list['srcchan'],'local/')){
-						$query = "SELECT * FROM curcdr WHERE src='".$list['src']."' AND id < '".$list['id']."'";
+						$query = "SELECT * FROM curcdr WHERE src='".$list['src']."' AND id < '".$list['id']."' ORDER BY id ASC LIMIT 1";
 						
 						$lega = $db->getrow($query);
 						//print_r($lega);exit;
@@ -177,6 +177,10 @@ class asterEvent extends PEAR
 								$call['callerChannel'] = $lega['dstchan'];
 							}else{
 								$call['callerChannel'] = $lega['srcchan'];
+							}
+
+							if($call['didnumber'] == ''){
+								$call['didnumber'] = $lega['didnumber'];
 							}
 						}
 					}

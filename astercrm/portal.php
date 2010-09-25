@@ -666,6 +666,16 @@ $clientDst = $_REQUEST['clientdst'];
 			ShowProcessingDiv();
 			xajax_searchTicketsFormSubmit(searchFormValue,numRows,limit,id,type);
 		}
+
+		function edit(parm,table){
+			ShowProcessingDiv();
+			xajax_edit(parm,table);
+		}
+
+		function showDetail(parm){
+			ShowProcessingDiv();
+			xajax_showDetail(parm);
+		}
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){

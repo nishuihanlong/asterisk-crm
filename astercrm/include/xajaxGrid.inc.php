@@ -257,8 +257,9 @@ class ScrollTable{
 	*
 	*/
 
-	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$privilege=null,$styleStr = ""){
+	function addRow($table,$arr,$edit=true,$delete=true,$detail=true,$divName="grid",$fields=null,$privilege=null,$styleStr = "",$forPortal = ""){
 		global $local_grid;
+		
 		if($_SESSION['curuser']['usertype'] == 'agent') $delete = false;
 		$nameRow = $divName."Row".$arr[0];
 	    $row = '<tr id="'.$nameRow.'" class="'.$this->rowStyle.'" >'."\n";
@@ -299,7 +300,7 @@ class ScrollTable{
 			}
    			$ind++;
 		}
-
+		
 		if ($divName == 'formDiallist' || $divName == 'formDiallistPannel'){
 			if($privilege == $_SESSION['curuser']['username'] || $_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'groupadmin'){
 				if($edit){
@@ -317,21 +318,38 @@ class ScrollTable{
 			}else $row .= '<td align="center" width="5%" nowrap>&nbsp;</td>
 							<td	align="center" width="5%" nowrap>&nbsp;</td>';
 		}else{
-			if($edit)
-				$row .= '
+			if($edit){
+				if($forPortal == 'forportal') {
+					$row .= '
+						<td align="center" width="5%" nowrap>
+							<a href="?" onClick="edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
+						</td>';
+				} else {
+					$row .= '
 						<td align="center" width="5%" nowrap>
 							<a href="?" onClick="xajax_edit('.$arr[0].',\''.$table.'\');return false;"><img src="skin/default/images/edit.png" border="0"></a>
 						</td>';
+				}
+			}
 			if($delete)
 				$row .= '
 						<td align="center" width="5%" nowrap>
 							<a href="?" onClick="if (confirm(\''.$deleteAlert.'\')){  xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,5,\''.$arr[0].'\',\'delete\');}return false;"><img src="skin/default/images/trash.png" border="0"></a>
 						</td>';
-			if($detail)
-				$row .= '
+			if($detail){
+				if($forPortal == 'forportal') {
+					$row .= '
+						<td align="center" width="5%" nowrap>
+							<a href="?" onClick="showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
+						</td>';
+				} else {
+					$row .= '
 						<td align="center" width="5%" nowrap>
 							<a href="?" onClick="xajax_showDetail(\''.$arr[0].'\');return false;">'.$local_grid->Translate("detail").'</a>
 						</td>';
+				}
+			}
+				
 		}
 
 		$row .= "</tr>\n";

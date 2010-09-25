@@ -161,4 +161,5 @@ $queue = "队列";
 $group_pannel = "工作组面板";
 $skip_this_number = "跳过此号码";
 $option_failed = "操作失败";
+$total_billsec = "总通话时长";
 ?>

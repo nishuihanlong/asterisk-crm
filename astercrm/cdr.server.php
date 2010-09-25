@@ -109,6 +109,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fields[] = 'duration';
 		$fields[] = 'billsec';
 		$fields[] = 'disposition';
+		$fields[] = 'billsec_leg_a';
 		$fields[] = 'credit';
 		$fileds[] = 'destination';
 		$fileds[] = 'memo';
@@ -124,6 +125,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$headers[] = $locate->Translate("Duration")."<br>";
 		$headers[] = $locate->Translate("Billsec")."<br>";
 		$headers[] = $locate->Translate("Disposition")."<br>";
+		$headers[] = $locate->Translate("Total Billsec")."<br>";
 		$headers[] = $locate->Translate("Credit")."<br>";
 		$headers[] = $locate->Translate("Destination")."<br>";
 		$headers[] = $locate->Translate("Memo")."<br>";
@@ -131,6 +133,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 
 		// HTML table: hearders attributes
 		$attribsHeader = array();
+		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
@@ -169,6 +172,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec_leg_a","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -238,6 +242,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
 			$rowc[] = $row['disposition'];
+			$rowc[] = $row['billsec_leg_a'];
 			$rowc[] = $row['credit'];
 			$rowc[] = $row['destination'];
 			$rowc[] = $row['memo'];
