@@ -15,35 +15,6 @@ if (not defined $cfg) {
 	exit(1);
 }
 
-my $lamecmd = '';
-if( -e '/usr/bin/lame'){
-	$lamecmd = '/usr/bin/lame';
-}elsif( -e '/usr/local/bin/lame'){
-	$lamecmd = '/usr/local/bin/lame';
-}
-
-if($lamecmd eq ''){
-	print "can't find 'lame' commond\n";
-	exit;
-}
-
-my $soxcmd = '';
-if( -e '/usr/bin/sox'){
-	$soxcmd = '/usr/bin/sox';
-}elsif( -e '/usr/local/bin/sox'){
-	$soxcmd = '/usr/local/bin/sox';
-}
-
-my $soxmixcmd = '';
-if( -e '/usr/bin/soxmix'){
-	$soxmixcmd = '/usr/bin/soxmix';
-}elsif( -e '/usr/local/bin/soxmix'){
-	$soxmixcmd = '/usr/local/bin/soxmix';
-}
-
-#if($soxmixcmd eq '' && $soxcmd eq ''){
-#	exit;
-#}
 
 my %dbInfo = (
         dbtype => trim($cfg->val('database', 'dbtype')),
@@ -176,7 +147,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		next;
 	}
 
-	if($ref->{'src'} == '' || $ref->{'dst'} == '' || $ref->{'channel'} == '' || $ref->{'dstchannel'} == '' ){
+	if($ref->{'src'} eq '' || $ref->{'dst'} eq '' || $ref->{'channel'} eq '' || $ref->{'dstchannel'} eq '' ){
 		if($ref->{'queue'}){
 			$query = "SELECT * FROM campaign WHERE queuename = '$ref->{'queue'}' AND enable = '1' order by id desc limit 1";
 			my $campaign_rows = &executeQuery($query,'rows');
@@ -185,9 +156,11 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				&executeQuery($query,'');
 			}else{
 				$query = "UPDATE mycdr set  processed='1' WHERE id='$ref->{'id'}'";
+				&executeQuery($query,'');
 			}
 		}else{
 			$query = "UPDATE mycdr set  processed='1' WHERE id='$ref->{'id'}'";
+			&executeQuery($query,'');
 		}
 		next;
 	}
