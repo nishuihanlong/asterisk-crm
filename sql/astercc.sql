@@ -1412,9 +1412,11 @@ DROP TABLE IF EXISTS `queue_agent`;
 CREATE TABLE `queue_agent` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `queuename` varchar(32) NOT NULL default '',
+  `agentname` varchar(50) NOT NULL default '',
   `agent` varchar(255) NOT NULL default '',
   `agent_status` varchar(32) NOT NULL default '',
-  `status` varchar(32) NOT NULL default '',
+  `ispaused` int(1) NOT NULL default 0,
+  `isdynamic` int(1) NOT NULL default 0,
   `takencalls` int NOT NULL default 0,
   `lastcall` int NOT NULL default 0,
   `data` varchar(255) NOT NULL default '',

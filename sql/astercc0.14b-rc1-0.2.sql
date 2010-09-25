@@ -188,3 +188,22 @@ ALTER TABLE campaign add `duration_answered` int(4) NOT NULL default '0';
 ALTER TABLE campaign add `duration_noanswer` int(4) NOT NULL default '0';
 ALTER TABLE campaign add `answered` int(4) NOT NULL default '0';
 ALTER TABLE campaign add `dialed` int(4) NOT NULL default '0';
+
+#####################  2010-09-26  ######################
+
+DROP TABLE IF EXISTS `queue_agent`;
+
+CREATE TABLE `queue_agent` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `queuename` varchar(32) NOT NULL default '',
+  `agentname` varchar(50) NOT NULL default '',
+  `agent` varchar(255) NOT NULL default '',
+  `agent_status` varchar(32) NOT NULL default '',
+  `ispaused` int(1) NOT NULL default 0,
+  `isdynamic` int(1) NOT NULL default 0,
+  `takencalls` int NOT NULL default 0,
+  `lastcall` int NOT NULL default 0,
+  `data` varchar(255) NOT NULL default '',
+  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
