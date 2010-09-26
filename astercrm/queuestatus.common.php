@@ -59,6 +59,7 @@ $xajax->registerFunction("showStatus");
 $xajax->registerFunction("chanspy");
 $xajax->registerFunction("agentLogoff");
 $xajax->registerFunction("hangup");
+$xajax->registerFunction("agentPause");
 
 define("ROWSXPAGE", 5); // Number of rows show it per page.
 define("MAXROWSXPAGE", 25);  // Total number of rows show it when click on "Show All" button.

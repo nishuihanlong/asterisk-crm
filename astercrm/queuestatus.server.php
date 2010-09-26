@@ -62,8 +62,9 @@ function init(){
 *  @return	objResponse		object		xajax response object
 */
 
-function showStatus(){
+function showStatus($curupdated){
 	global $db;
+	//echo $curupdated;exit;
 	$objResponse = new xajaxResponse();
 	if ($_SESSION['curuser']['usertype'] == 'admin') {
 		// display all queue
@@ -74,6 +75,7 @@ function showStatus(){
 	}
 	$res = $db->query($query);
 	$html = '<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="95%"><tbody>';
+	$updated = 0;
 	while ($res->fetchInto($row)) {
 		//"<li></li>"
 		$html .= '<tr><th colspan="2">'.$row['data'].'</th></tr>';
@@ -83,51 +85,74 @@ function showStatus(){
 		$html .='<tr><td valign="top">';
 		$html .='<table class="groups_channel" cellspacing="0" cellpadding="0" border="0" width="95%"><tbody>';
 		while ($res_agent->fetchInto($row_agent)) {
+			if($updated == 0){
+				$updated = $row_agent['cretime'];
+			}
+			if($updated < $curupdated){
+				return $objResponse;
+			}
 			$logoffBtn = '';
 			$able = 'disabled';	
 			$html .='<tr><td>';
 			if(strstr(strtoupper($row_agent['agent']),'AGENT')){
 				$agent = substr($row_agent['agent'],6);
-				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="Logoff" onclick="xajax_agentLogoff('.$agent.')"';
-				if($row_agent['status'] == 'Unavailable' || $row_agent['status'] == 'Invalid'){
+
+				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="Logoff" onclick="xajax_agentLogoff(\''.$agent.'\');this.disabled=true;"';
+				if($row_agent['agent_status'] == 'unavailable' || $row_agent['agent_status'] == 'invalid'){
 					$logoffBtn .= 'disabled';
 				}
-				$logoffBtn .= '>';
-				if($row_agent['status'] == 'Busy'){
-					$query = "SELECT * FROM curcdr WHERE dstchan = '".strtoupper($row_agent['agent'])."'";
+				$logoffBtn .= '>';//echo $logoffBtn;exit;
+				if($row_agent['agent_status'] == 'busy'){
+					$query = "SELECT * FROM curcdr WHERE dstchan = '".strtoupper($row_agent['agent'])."'  AND queue='".$row_agent['queuename']."'";
 					if($agent_cdr = $db->getRow($query)){
 						$srcchan = $agent_cdr['srcchan'];
+						$able = '';
 					}
-					$able = '';
+					
 					$query = "SELECT * FROM astercrm_account WHERE agent = '$agent'";
 					if($agent_exten = $db->getRow($query)){
 						$exten = $agent_exten['extension'];
 					}
 				}
 			}else{
-				if($row_agent['status'] == 'In use'){
+				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="Logoff" onclick="xajax_agentLogoff(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\');this.disabled=true;"';
+				if(!$row_agent['isdynamic']){
+					$logoffBtn .= 'disabled';
+				}
+				$logoffBtn .= '>';
+
+				if($row_agent['agent_status'] == 'in use'){
 					$dstchan = explode('@',$row_agent['agent']);
 					$dstchan = $dstchan['0'];
 					$exten = explode('/',$dstchan);
 					$exten = $exten['1'];
-					$query = "SELECT * FROM curcdr WHERE dstchan LIKE  '".$dstchan."@%'";
+					$query = "SELECT * FROM curcdr WHERE dstchan LIKE  '%/".$exten."-%' AND queue='".$row_agent['queuename']."'";
+					
 					if($agent_cdr = $db->getRow($query)){
 						$srcchan = $agent_cdr['srcchan'];
-					}
-					$able = '';
+						$able = '';
+					}					
 				}
 			}
 			
 			$html .= '<input type="button" value="Spy" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\')" '.$able.'>';
 			$html .= '&nbsp;&nbsp;<input type="button" value="Whisper" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\',\'w\')" '.$able.'>';
 			$html .= '&nbsp;&nbsp;<input type="button" value="Hangup" onclick="xajax_hangup(\''.$srcchan.'\')" '.$able.'>';
+			
+			if($row_agent['ispaused']){
+				$html .= '&nbsp;&nbsp;<input type="button" value="Continue" title="continue"  onclick="xajax_agentPause(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\',this.title);this.title=\'pause\';this.value=\'  Pause  \'"" >';
+			}else{
+				$html .= '&nbsp;&nbsp;<input type="button" value="  Pause  "  title="pause" onclick="xajax_agentPause(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\',this.title);this.title=\'continue\';this.value=\'Continue\'" >';
+			}
+
 			$html .= $logoffBtn;
-			if($row_agent['status'] == 'In use' || $row_agent['status'] == 'Not in use' || $row_agent['status'] == 'Busy'){
+			if($row_agent['agent_status'] == 'in use' || $row_agent['agent_status'] == 'not in use' || $row_agent['agent_status'] == 'busy'){
 				$html .= '&nbsp;&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';
 			}else{
 				$html .= '&nbsp;&nbsp;<span style="color:#999999;">'.$row_agent['data'].'</span>&nbsp;&nbsp;';
 			}
 			$html .= '</td></tr>';
+			
 		}//<button>Spy</button><button>Whisper</button>
 		$html .='</tbody></table></td><td valign="top">';
 		$query = "SELECT * FROM queue_caller WHERE queuename = '".$row['queuename']."' ";
@@ -141,6 +166,8 @@ function showStatus(){
 	}
 	$html .= '</tbody></table>';//echo $html;exit;
 	$objResponse->addAssign("channels","innerHTML",$html);
+	//echo $updated;exit;
+	$objResponse->addAssign("updated","value",$updated);
 	return $objResponse;
 }
 
@@ -155,7 +182,7 @@ function chanspy($exten,$spyexten,$pam = ''){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam);
+	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
 	return $objResponse;
 
 }
@@ -177,7 +204,7 @@ function hangup($channel){
 }
 
 
-function agentLogoff($agent){
+function agentLogoff($agent,$queueno='',$action){
 	global $locate,$config;
 
 	$myAsterisk = new Asterisk();	
@@ -186,8 +213,39 @@ function agentLogoff($agent){
 	if (!$res){
 		return;
 	}
-	$res = $myAsterisk->agentLogoff($agent);
+	if($queueno != ''){
+		$cmd = "queue remove member $agent from $queueno";
+		//echo $cmd;exit;
+		$res = $myAsterisk->Command($cmd);
+	}else{
+		$res = $myAsterisk->agentLogoff($agent);
+	}
+	
 	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("updated","value", date("Y-m-d H:i:s"));
+	return $objResponse;
+}
+
+function agentPause($agent,$queueno='',$action){
+	global $locate,$config;
+
+	$myAsterisk = new Asterisk();	
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();
+	if (!$res){
+		return;
+	}
+	
+	if($action == 'pause'){
+		$cmd = "queue pause member $agent queue $queueno";		
+	}else{
+		$cmd = "queue unpause member $agent queue $queueno";
+	}
+
+	$res = $myAsterisk->Command($cmd);
+
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("updated","value", date("Y-m-d H:i:s"));
 	return $objResponse;
 }
 

@@ -29,7 +29,10 @@ require_once('queuestatus.common.php');
 		<!--
 			var timerShowStatus,timerShowChannelsInfo;
 			function showStatus(){
-				xajax_showStatus();
+				var curupdated = xajax.$('updated').value;
+				//alert(curupdated);
+				xajax_showStatus(curupdated);				
+				
 				timerShowStatus = setTimeout("showStatus()", xajax.$('check_interval').value);
 			}
 
@@ -57,5 +60,6 @@ require_once('queuestatus.common.php');
 		<div id="channels" align="left" class="groupsystem_channel"></div>
 		<div id="divCopyright"></div>
 		<input type="hidden" id="check_interval" name="check_interval" value="2000">
+		<input type="hidden" id="updated" name="updated" value="0">
 	</body>
 </html>
