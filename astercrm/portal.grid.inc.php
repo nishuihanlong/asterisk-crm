@@ -574,7 +574,8 @@ class Customer extends astercrm
 
 	function getAgentWorkStat(){
 		global $db;
-		$sql = "SELECT COUNT(*) AS count, SUM(billsec) AS billsec FROM mycdr WHERE calldate >= '".date("Y-m-d")." 00:00:00' AND  calldate <= '".date("Y-m-d")." 23:59:59' AND mycdr.astercrm_groupid > 0 AND billsec > 0";
+		$sql = "SELECT COUNT(*) AS count, SUM(billsec) AS billsec FROM mycdr WHERE calldate >= '".date("Y-m-d")." 00:00:00' AND  calldate <= '".date("Y-m-d")." 23:59:59' AND mycdr.astercrm_groupid > 0 AND billsec > 0 AND accountid = '".$_SESSION['curuser']['accountid']."'";
+
 		$res = $db->getRow($sql);
 		return $res;
 	}
