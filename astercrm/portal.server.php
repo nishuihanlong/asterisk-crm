@@ -665,6 +665,15 @@ function waitingCalls($myValue){
 		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
 		$objResponse->addAssign("btnHangup","disabled", false );
 
+		if($call['queue'] != ''){
+			foreach($_SESSION['curuser']['campaign_queue'] as $row){
+				//print_r($row);exit;
+				if($row['queuename'] == $call['queue']){
+					$objResponse->addAssign("campaignDiv-".$row['id'],"style.background",'red');
+				}					
+			}
+		}
+
 		if ($config['system']['pop_up_when_dial_in']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
 				if ($myValue['popup'] == 'yes'){
