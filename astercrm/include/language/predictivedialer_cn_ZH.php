@@ -44,4 +44,9 @@ $spy = "监听";
 $whisper = "秘语";
 $hangup = "挂断";
 $first_answertime = "第一方接听时间";
+$logoff = "签出";
+$pause = "暂停";
+$continue = "继续";
+$members = "座席列表";
+$waiting_callers = "排队号码";
 ?>

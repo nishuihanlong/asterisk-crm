@@ -389,7 +389,7 @@ class asterEvent extends PEAR
 							$status[$username] = 0;
 						}
 				}else{
-					if ($phone_status[$phone['extension']] == 'unknown' || $phone_status[$phone['extension']] == 'unreachable' || $phone_status[$phone['extension']] == '') {
+					if ($phone_status[$phone['extension']] == 'unknown' || $phone_status[$phone['extension']] == 'unreachable' || $phone_status[$phone['extension']] == '' || $phone_status[$phone['extension']] == 'unregistered') {
 						$status[$username] = 2;
 					}elseif ($phone_status[$phone['extension']] == 'reachable' || $phone_status[$phone['extension']] == 'registered' || strstr($phone_status[$phone['extension']],'ok')) {
 						$status[$username] = 0;

@@ -63,7 +63,7 @@ function init(){
 */
 
 function showStatus($curupdated){
-	global $db;
+	global $db,$locate;
 	//echo $curupdated;exit;
 	$objResponse = new xajaxResponse();
 	if ($_SESSION['curuser']['usertype'] == 'admin') {
@@ -79,7 +79,7 @@ function showStatus($curupdated){
 	while ($res->fetchInto($row)) {
 		//"<li></li>"
 		$html .= '<tr><th colspan="2">'.$row['data'].'</th></tr>';
-		$html .= '<tr><td width="70%"><b>'.'Members'.'</b></td><td><b>Waiting callers</b></td></tr>';
+		$html .= '<tr><td width="70%"><b>'.$locate->Translate("Members").'</b></td><td><b>'.$locate->Translate("Waiting callers").'</b></td></tr>';
 		$query = "SELECT * FROM queue_agent WHERE queuename = '".$row['queuename']."' ORDER BY agent ASC";
 		$res_agent = $db->query($query);
 		$html .='<tr><td valign="top">';
@@ -92,12 +92,13 @@ function showStatus($curupdated){
 				return $objResponse;
 			}
 			$logoffBtn = '';
-			$able = 'disabled';	
+			$able = 'disabled';
+			$hable = 'disabled';	
 			$html .='<tr><td>';
 			if(strstr(strtoupper($row_agent['agent']),'AGENT')){
 				$agent = substr($row_agent['agent'],6);
 
-				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="Logoff" onclick="xajax_agentLogoff(\''.$agent.'\');this.disabled=true;"';
+				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Logoff").'" onclick="xajax_agentLogoff(\''.$agent.'\');this.disabled=true;"';
 				if($row_agent['agent_status'] == 'unavailable' || $row_agent['agent_status'] == 'invalid'){
 					$logoffBtn .= 'disabled';
 				}
@@ -105,8 +106,11 @@ function showStatus($curupdated){
 				if($row_agent['agent_status'] == 'busy'){
 					$query = "SELECT * FROM curcdr WHERE dstchan = '".strtoupper($row_agent['agent'])."'  AND queue='".$row_agent['queuename']."'";
 					if($agent_cdr = $db->getRow($query)){
-						$srcchan = $agent_cdr['srcchan'];
-						$able = '';
+						$dstchan = $agent_cdr['dstchan'];
+						if($agent_cdr['disposition'] == 'LINK'){
+							$able = '';
+						}
+						$hable = '';
 					}
 					
 					$query = "SELECT * FROM astercrm_account WHERE agent = '$agent'";
@@ -115,7 +119,7 @@ function showStatus($curupdated){
 					}
 				}
 			}else{
-				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="Logoff" onclick="xajax_agentLogoff(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\');this.disabled=true;"';
+				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Logoff").'" onclick="xajax_agentLogoff(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\');this.disabled=true;"';
 				if(!$row_agent['isdynamic']){
 					$logoffBtn .= 'disabled';
 				}
@@ -129,20 +133,23 @@ function showStatus($curupdated){
 					$query = "SELECT * FROM curcdr WHERE dstchan LIKE  '%/".$exten."-%' AND queue='".$row_agent['queuename']."'";
 					
 					if($agent_cdr = $db->getRow($query)){
-						$srcchan = $agent_cdr['srcchan'];
-						$able = '';
+						$dstchan = $agent_cdr['dstchan'];
+						if($agent_cdr['disposition'] == 'LINK'){
+							$able = '';
+						}
+						$hable = '';
 					}					
 				}
 			}
 			
-			$html .= '<input type="button" value="Spy" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\')" '.$able.'>';
-			$html .= '&nbsp;&nbsp;<input type="button" value="Whisper" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\',\'w\')" '.$able.'>';
-			$html .= '&nbsp;&nbsp;<input type="button" value="Hangup" onclick="xajax_hangup(\''.$srcchan.'\')" '.$able.'>';
+			$html .= '<input type="button" value="'.$locate->Translate("Spy").'" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\')" '.$able.'>';
+			$html .= '&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Whisper").'" onclick="xajax_chanspy(\''.$_SESSION['curuser']['extension'].'\',\''.$exten.'\',\'w\')" '.$able.'>';
+			$html .= '&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Hangup").'" onclick="xajax_hangup(\''.$dstchan.'\')" '.$hable.'>';
 			
 			if($row_agent['ispaused']){
-				$html .= '&nbsp;&nbsp;<input type="button" value="Continue" title="continue"  onclick="xajax_agentPause(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\',this.title);this.title=\'pause\';this.value=\'  Pause  \'"" >';
+				$html .= '&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Continue").'" title="continue"  onclick="xajax_agentPause(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\',this.title);this.title=\'pause\';this.value=\'  '.$locate->Translate("Pause").'  \'" >';
 			}else{
-				$html .= '&nbsp;&nbsp;<input type="button" value="  Pause  "  title="pause" onclick="xajax_agentPause(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\',this.title);this.title=\'continue\';this.value=\'Continue\'" >';
+				$html .= '&nbsp;&nbsp;<input type="button" value="  '.$locate->Translate("Pause").'  "  title="pause" onclick="xajax_agentPause(\''.$row_agent['agent'].'\',\''.$row_agent['queuename'].'\',this.title);this.title=\'continue\';this.value=\''.$locate->Translate("Continue").'\'" >';
 			}
 
 			$html .= $logoffBtn;
