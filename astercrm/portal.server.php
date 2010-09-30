@@ -1417,11 +1417,11 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = '',$diallistid=0){
 		$objResponse->addScript("alert('".$locate->Translate("Exten in use")."')");
 		return $objResponse->getXML();
 	}
-	$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+	//$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
 
-	if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+	if ($_SESSION['curuser']['group']['incontext'] != '' ) $incontext = $_SESSION['curuser']['group']['incontext'];
 	else $incontext = $config['system']['incontext'];
-	if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
+	if ($_SESSION['curuser']['group']['outcontext'] != '' ) $outcontext = $_SESSION['curuser']['group']['outcontext'];
 	else $outcontext = $config['system']['outcontext'];
 
 	if ($dtmf != '') {
@@ -1432,8 +1432,8 @@ function dial($phoneNum,$first = '',$myValue,$dtmf = '',$diallistid=0){
 
 	$myAsterisk = new Asterisk();	
 	if ($first == ''){
-		if($group_info['firstring'] != ''){
-			$first = $group_info['firstring'];
+		if($_SESSION['curuser']['group']['firstring'] != ''){
+			$first = $_SESSION['curuser']['group']['firstring'];
 		}else{
 			$first = $config['system']['firstring'];
 		}
@@ -1588,11 +1588,11 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		
 	}else{
 		$variable .= '__CUSCID='.$_SESSION['curuser']['extension'];
-		$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+		//$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
 
-		if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+		if ($_SESSION['curuser']['group']['incontext'] != '' ) $incontext = $_SESSION['curuser']['group']['incontext'];
 		else $incontext = $config['system']['incontext'];
-		if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
+		if ($_SESSION['curuser']['group']['outcontext'] != '' ) $outcontext = $_SESSION['curuser']['group']['outcontext'];
 		else $outcontext = $config['system']['outcontext'];
 
 		
@@ -1828,9 +1828,9 @@ function bargeInvite($srcchan,$dstchan,$exten){
 		return;
 	}
 
-	$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
+	//$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
 
-	if ($group_info['incontext'] != '' ) $incontext = $group_info['incontext'];
+	if ($_SESSION['curuser']['group']['incontext'] != '' ) $incontext = $_SESSION['curuser']['group']['incontext'];
 	else $incontext = $config['system']['incontext'];
 	//if ($group_info['outcontext'] != '' ) $outcontext = $group_info['outcontext'];
 	//else $outcontext = $config['system']['outcontext'];
@@ -2345,9 +2345,8 @@ function queueAgentControl($queueno,$action,$context){
 	$res = $myAsterisk->connect();
 	$objResponse = new xajaxResponse();
 	if($context == ''){
-		if ($_SESSION['curuser']['group']['incontext'] != '' ) $context = $group_info['incontext'];
-		else $context = $config['system']['incontext'];
-		
+		if ($_SESSION['curuser']['group']['incontext'] != '' ) $context = $_SESSION['curuser']['group']['incontext'];
+		else $context = $config['system']['incontext'];		
 	}
 
 	$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$context.'/n';
@@ -2357,25 +2356,52 @@ function queueAgentControl($queueno,$action,$context){
 	}elseif($action == 'logoff'){
 		$cmd = "queue remove member $agentstr from $queueno";
 	}elseif($action == 'pause'){
-		$cmd = "queue pause member $agentstr queue $queueno";
+//		print_R($_SESSION['asterisk']['paramdelimiter'] == '|');exit;
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agentstr,1);
+		}else{
+			$cmd = "queue pause member $agentstr queue $queueno";
+		}
 	}elseif($action == 'continue'){
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agentstr,0);
+		}else{
+			$cmd = "queue pause member $agentstr queue $queueno";
+		}
 		$cmd = "queue unpause member $agentstr queue $queueno";
 	}elseif($action == 'pausea'){
 		$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
-		$cmd = "queue pause member $agentstr queue $queueno";
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agentstr,1);
+		}else{
+			$cmd = "queue pause member $agentstr queue $queueno";
+		}
 	}elseif($action == 'continuea'){
 		$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
-		$cmd = "queue unpause member $agentstr queue $queueno";
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agentstr,0);
+		}else{
+			$cmd = "queue unpause member $agentstr queue $queueno";
+		}
 	}elseif($action == 'pausec'){
 		$agentstr = $_SESSION['curuser']['channel'];
-		$cmd = "queue pause member $agentstr queue $queueno";
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agentstr,1);
+		}else{
+			$cmd = "queue pause member $agentstr queue $queueno";
+		}
 	}elseif($action == 'continuec'){
 		$agentstr = $_SESSION['curuser']['channel'];
-		$cmd = "queue unpause member $agentstr queue $queueno";
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agentstr,0);
+		}else{
+			$cmd = "queue unpause member $agentstr queue $queueno";
+		}
 	}
 
-	
-	$res = $myAsterisk->Command($cmd);//print_r($res);exit;
+	if(!empty($cmd)){	
+		$res = $myAsterisk->Command($cmd);//print_r($res);exit;
+	}
 	if(strstr($res['data'],'failed')){
 		if($action == 'pausea'){
 			$action == 'pause';

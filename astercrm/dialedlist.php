@@ -35,6 +35,7 @@ require_once('dialedlist.common.php');
 		function init(){
 			xajax_init();
 			//make div draggable
+			CampaignDialedlist();
 			dragresize.apply(document);
 		}
 		
@@ -50,15 +51,20 @@ require_once('dialedlist.common.php');
 				}
 			}			
 		}
+
+		function CampaignDialedlist(){
+			xajax_getReport(xajax.getFormValues("formCampaign"));
+		}
 		//-->
 		</SCRIPT>
 		<script language="JavaScript" src="js/astercrm.js"></script>
 		<script type="text/javascript" src="js/dragresize.js"></script>
 		<script type="text/javascript" src="js/dragresizeInit.js"></script>
+		<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
-
+	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div><br><br>
@@ -67,21 +73,37 @@ require_once('dialedlist.common.php');
 		<input type="button" value="" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />
 		<input type="button" value="<?echo $locate->Translate("Worktime packages")?>" id="btnWorktime" name="btnWorktime" onClick="window.location='worktimepackages.php';" />
 	</div>
+	<form id="formCampaign" name="formCampaign">
+		<div style="margin:3px auto 5px 10px;">
+			<a href="javascript:void(null);" onclick="xajax_speedDate('td')"><?echo $locate->Translate("Today")?></a>&nbsp;|
+			<a href="javascript:void(null);" onclick="xajax_speedDate('tw')"><?echo $locate->Translate("This week")?></a>&nbsp;|
+			<a href="javascript:void(null);" onclick="xajax_speedDate('tm')"><?echo $locate->Translate("This month")?></a>&nbsp;|
+			<a href="javascript:void(null);" onclick="xajax_speedDate('l3m')"><?echo $locate->Translate("Last 3 months")?></a>&nbsp;|
+			<a href="javascript:void(null);" onclick="xajax_speedDate('ty')"><?echo $locate->Translate("This year")?></a>&nbsp;|
+			<a href="javascript:void(null);" onclick="xajax_speedDate('ly')"><?echo $locate->Translate("Last year")?></a>
+			
+			<?echo $locate->Translate("From")?>: <input type="text" name="sdate" id="sdate" size="20" value="<?echo date("Y-m-d H:i",time()-86400);?>" readonly>
+			<input onclick="displayCalendar(document.forms[0].sdate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
+			<?echo $locate->Translate("To")?>:<input type="text" name="edate" id="edate" size="20" value="<?echo date("Y-m-d H:i",time());?>" readonly>
+			<input onclick="displayCalendar(document.forms[0].edate,'yyyy-mm-dd hh:ii',this,true)" type="button" value="<?echo $locate->Translate("Cal")?>">
+			<input type="button" onclick="CampaignDialedlist();return false;" value="<?echo $locate->Translate("Query")?>">&nbsp;
+		</div>
+		<div id="campaignReport"></div>
+	</form>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
-				<input type="button" value="<?echo $locate->Translate("recycle")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">
+					<input type="button" value="<?echo $locate->Translate("recycle")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">
+					<span id="spanRecycleUp" name="spanRecycle"></span>
 					<div id="formDiv"  class="formDiv drsElement" 
 						style="left: 450px; top: 50px;width: 500px;"></div>
 					<div id="optionDiv"  class="formDiv drsElement" 
 						style="left: 450px; top: 80px;"></div>
 					<div id="grid" align="center"> </div>
 					<div id="msgZone" name="msgZone" align="left"> </div>
-					<div>
-						<span id="spanRecycle" name="spanRecycle"></span>
-					</div>
 					<input type="button" value="<?echo $locate->Translate("recycle")?>" name="btnRecycle" id="btnRecycle" onclick="recycle();">
+					<span id="spanRecycleDown" name="spanRecycle"></span>
 				</fieldset>
 			</td>
 		</tr>

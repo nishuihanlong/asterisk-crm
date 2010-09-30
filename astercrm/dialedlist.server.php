@@ -58,7 +58,8 @@ function init(){
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 
 	$noanswer = Customer::getNoanswerCallsNumber();
-	$objResponse->addAssign("spanRecycle","innerHTML","No answer calls: $noanswer");
+	$objResponse->addAssign("spanRecycleUp","innerHTML","No answer calls and never recycle: $noanswer");
+	$objResponse->addAssign("spanRecycleDown","innerHTML","No answer calls and never recycle: $noanswer");
 
 	return $objResponse;
 }
@@ -158,6 +159,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'resultby';
 	$fields[] = 'dialedby';
 //	$fields[] = 'groupname';
+	$fields[] = 'recycles';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -178,6 +180,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Dialed Time");
 //	$headers[] = $locate->Translate("Group");
 	$headers[] = $locate->Translate("Campaign");
+	$headers[] = $locate->Translate("Recycles");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -233,6 +236,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialedtime","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","recycles","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -253,6 +257,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'dialedtime';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'campaignname';
+	$fieldsFromSearch[] = 'recycles';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -267,12 +272,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Uniqueid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Result");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Resultby");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed By");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Result By");
+	//$fieldsFromSearchShowAs[] = $locate->Translate("Dialed By");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Tried");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Recycles");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -304,6 +310,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['dialedtime'];
 //		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
+		$rowc[] = $row['recycles'];
 		$table->addRow("campaigndialedlist",$rowc,0,1,0,$divName,$fields);
  	}
  	
@@ -349,7 +356,8 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addALert($num." ".$locate->Translate("number have been recycled"));
 		$objResponse->addAssign($divName, "innerHTML", $html);
 		$noanswer = Customer::getNoanswerCallsNumber();
-		$objResponse->addAssign("spanRecycle","innerHTML","No answer calls: $noanswer");
+		$objResponse->addAssign("spanRecycleUp","innerHTML","No answer calls and never recycle: $noanswer");
+		$objResponse->addAssign("spanRecycleDown","innerHTML","No answer calls and never recycle: $noanswer");
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'campaigndialedlist');
@@ -383,6 +391,82 @@ function deleteByButton($f,$searchFormValue){
 	$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField,'grid');
 	$objResponse->addAssign('grid', "innerHTML", $html);
 	return $objResponse->getXML();
+}
+
+function speedDate($date_type){
+	switch($date_type){
+		case "td":
+			$start_date = date("Y-m-d")." 00:00";
+			$end_date = date("Y-m-d")." 23:59";
+			break;
+		case "tw":
+			$date = date("Y-m-d");
+			$end_date = date("Y-m-d",strtotime("$date Sunday"))." 23:59";
+			$start_date = date("Y-m-d",strtotime("$end_date -6 days"))." 00:00";
+			break;
+		case "tm":
+			$date = date("Y-m-d");
+			$start_date = date("Y-m-01",strtotime($date))." 00:00";
+			$end_date = date("Y-m-d",strtotime("$start_date +1 month -1 day"))." 23:59";
+			break;
+		case "l3m":
+			$date = date("Y-m-d");
+			$start_date = date("Y-m-01",strtotime("$date - 2 month"))." 00:00";	
+			$date = date("Y-m-01");
+			$end_date = date("Y-m-d",strtotime("$date +1 month -1 day"))." 23:59";
+			break;
+		case "ty":
+			$start_date = date("Y-01-01")." 00:00";
+			$end_date = date("Y-12-31")." 23:59";
+			break;
+		case "ly":
+			$year = date("Y") - 1;
+			$start_date = date("$year-01-01")." 00:00";
+			$end_date = date("$year-12-31")." 23:59";			
+			break;
+			
+	}
+
+	$objResponse = new xajaxResponse();
+	if(isset($start_date)) $objResponse->addAssign("sdate","value",$start_date);
+
+	if(isset($end_date)) $objResponse->addAssign("edate","value",$end_date);
+	$objResponse->addScript("CampaignDialedlist();");
+	return $objResponse;
+}
+
+function getReport($aFormValues){
+	global $locate;
+	
+	$objResponse = new xajaxResponse();
+		
+	list ($syear,$smonth,$sday,$stime) = split("[ -]",$aFormValues['sdate']);
+	$syear = (int)$syear;
+	$smonth = (int)$smonth;
+	$sday = (int)$sday;
+	list($shours,$smins) = split("[ :]",$stime);
+	$shours = (int)$shours;
+	if($shours == 0) $shours = '00';
+	$smins = (int)$smins;
+	if($smins == 0) $smins = '00';
+
+	list ($eyear,$emonth,$eday,$etime) = split("[ -]",$aFormValues['edate']);
+	$eyear = (int)$eyear;
+	$emonth = (int)$emonth;
+	$eday = (int)$eday;
+	list($ehours,$emins) = split("[ :]",$etime);
+	$ehours = (int)$ehours;
+	if($ehours == 0) $ehours = '00';
+	$emins = (int)$emins;
+	if($emins == 0) $emins = '00';
+
+	$ary = array();
+    $aFormValues['sdate']=$syear."-".$smonth."-".$sday.' '.$shours.':'.$smins;
+    $aFormValues['edate']=$eyear."-".$emonth."-".$eday.' '.$ehours.':'.$emins;
+	
+	$tableHtml = Customer::getCampaignReport($aFormValues);
+	$objResponse->addAssign('campaignReport','innerHTML',$tableHtml);
+	return $objResponse;
 }
 
 $xajax->processRequests();

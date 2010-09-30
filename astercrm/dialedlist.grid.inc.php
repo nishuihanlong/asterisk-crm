@@ -66,10 +66,10 @@ class Customer extends astercrm
 	function getNoanswerCallsNumber(){
 		global $db;
 
-		$sql = "SELECT count(*) FROM campaigndialedlist WHERE answertime ='0000-00-00 00:00:00' AND callresult!='dnc'";
+		//$sql = "SELECT count(*) FROM campaigndialedlist WHERE billsec = 0 AND callresult!='dnc'";
 
-		$sql = "SELECT count(*) FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id WHERE answertime ='0000-00-00 00:00:00' AND callresult!='dnc' AND `maxtrytime` > `trytime`";
-
+		$sql = "SELECT count(*) FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id WHERE campaigndialedlist.billsec = 0 AND campaigndialedlist.callresult!='dnc' AND campaign.`maxtrytime` > campaigndialedlist.`trytime` AND campaigndialedlist.recycles = 0";
+		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
@@ -86,14 +86,14 @@ class Customer extends astercrm
 		$i = 0;
 		//get phone numbers
 
-		$sql = "SELECT campaigndialedlist.*,campaign.maxtrytime ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid WHERE campaigndialedlist.billsec = 0 AND callresult!='dnc' AND `maxtrytime` > `trytime`";
+		$sql = "SELECT campaigndialedlist.*,campaign.maxtrytime ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid WHERE campaigndialedlist.billsec = 0 AND campaigndialedlist.callresult!='dnc' AND `maxtrytime` > `trytime` AND campaigndialedlist.recycles = 0";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
 			$sql .= " AND campaigndialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
-
+		
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		
@@ -105,11 +105,13 @@ class Customer extends astercrm
 			$trytime = $row["trytime"];
 			$customerid = $row['customerid'];
 			$creby = $row['creby'];
+			$recycles = (int)($row['recycles']+1);
 			$customername = $row['customername'];
 			if($row['maxtrytime'] > $row["trytime"]){
 				$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid ='$groupid', campaignid='$campaignid', creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ,customername = '$customername' ";
 				$db->query($query);
-				$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
+				$query = "UPDATE campaigndialedlist SET recycles=$recycles WHERE id=".$row['id'];
+				//$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
 				$db->query($query);	
 				$i++;
 			}					
@@ -136,10 +138,12 @@ class Customer extends astercrm
 		$customerid = $row['customerid'];
 		$customername = $row['customername'];
 		$callOrder = $row['callOrder'];
+		$recycles = (int)($row['recycles']+1);
 		if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
 		$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign' ,customerid = $customerid ,customername = '$customername' ,callOrder = '$callOrder' ";
 		$db->query($query);
-		$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
+		$query = "UPDATE campaigndialedlist SET recycles=$recycles WHERE id=".$row['id'];
+		//$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
 		$db->query($query);	
 		$i++;
 
@@ -170,10 +174,12 @@ class Customer extends astercrm
 			$creby = $row["creby"];
 			$customername = $row['customername'];
 			$callOrder = $row['callOrder'];
+			$recycles = (int)($row['recycles']+1);
 			if($trytime >= $row["maxtrytime"]) $trytime = $row["maxtrytime"] - 1;
 			$query = "INSERT INTO diallist SET dialnumber = '$number', cretime = now(), groupid =$groupid, campaignid=$campaignid, creby = '$creby',trytime= '$trytime', assign = '$assign',customerid = $customerid ,customername = '$customername' ,callOrder = '$callOrder' ";
 			$db->query($query);
-			$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
+			$query = "UPDATE campaigndialedlist SET recycles=$recycles WHERE id=".$row['id'];
+			//$query = "DELETE FROM campaigndialedlist WHERE id = ".$row['id'];
 			$db->query($query);	
 			$i++;
 			//}					
@@ -330,6 +336,57 @@ class Customer extends astercrm
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
+	}
+
+	function getCampaignReport($aFormValues){
+		global $db,$locate;
+		
+		if($_SESSION['curuser']['usertype'] == 'admin') {
+			$sql = "SELECT COUNT(*) AS total,SUM(campaigndialedlist.billsec) AS billsec,SUM(campaigndialedlist.billsec_leg_a) AS billsec_leg_a,SUM(campaigndialedlist.duration) AS duration,campaign.campaignname FROM campaigndialedlist LEFT JOIN campaign ON campaign.id  = campaigndialedlist.campaignid WHERE campaigndialedlist.dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' ";
+		} else {
+			$sql = "SELECT COUNT(*) AS total,SUM(campaigndialedlist.billsec) AS billsec,SUM(campaigndialedlist.billsec_leg_a) AS billsec_leg_a,SUM(campaigndialedlist.duration) AS duration,campaign.campaignname FROM campaigndialedlist LEFT JOIN campaign ON campaign.id  = campaigndialedlist.campaignid WHERE campaigndialedlist.groupid = ".$_SESSION['curuser']['groupid']." AND campaigndialedlist.dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' ";
+		}
+
+		$an_sql = $sql." AND campaigndialedlist.billsec>0 GROUP BY campaigndialedlist.campaignid ";//for query the result by answered/查询接通记录的sql语句
+		
+		$sql = $sql." GROUP BY campaigndialedlist.campaignid ";
+		
+		Customer::events($sql);
+		$total_result =& $db->query($sql);
+
+		$result = array();
+		while ($total_result->fetchInto($row)){
+			$result[$row['campaignname']]['totalnum'] = $row['total'];
+			$result[$row['campaignname']]['tbillsec'] = $row['billsec'];
+			$result[$row['campaignname']]['tbillsec_leg_a'] = $row['billsec_leg_a'];
+			$result[$row['campaignname']]['tduration'] = $row['duration'];
+		}
+		
+		Customer::events($an_sql);
+		$answer_result = & $db->query($an_sql);//查询接通的数据
+		while ($answer_result->fetchInto($arow)){
+			$result[$arow['campaignname']]['atotalnum'] = $arow['total'];//接通总数
+			$result[$arow['campaignname']]['abillsec'] = $arow['billsec'];
+			$result[$arow['campaignname']]['abillsec_leg_a'] = $arow['billsec_leg_a'];
+			$result[$arow['campaignname']]['aduration'] = $arow['duration'];
+		}
+		
+		$campiangStr = '<table><tr><th>'.$locate->Translate("Campaign Name").'</th><th>'.$locate->Translate("ToalCallNum").'</th><th>'.$locate->Translate("ToalAnsweredNum").'</th><th>'.$locate->Translate("AnsweredRate").'</th><th>'.$locate->Translate("AvgOfCustomerAnswered").'</th><th>'.$locate->Translate("AvgOfTalk").'</th><th>'.$locate->Translate("AvgOfRing").'</th><th>'.$locate->Translate("AvgOfRingByAnswer").'</th></tr>';
+		
+		foreach($result as $key=>$val) {
+			
+			$ToalCallNum = $val['totalnum'];//总通话数
+			$ToalAnsweredNum = $val['atotalnum'];//接通总数
+			$AnsweredRate = (round($val['atotalnum']/$val['totalnum'],4)*100).'%';//接通率
+			$AvgOfCustomerAnswered = round($val['abillsec']/$val['atotalnum'],3);//平均通话时长
+			$AvgOfTalk = round($val['tbillsec_leg_a']/$val['totalnum'],3);//平均客户接听时长
+			$AvgOfRing = round(($val['tduration']-$val['tbillsec_leg_a'])/$val['totalnum'],3);//平均振铃时长
+			$AvgOfRingByAnswer = round(($val['aduration']-$val['abillsec_leg_a'])/$val['atotalnum'],3);//平均接听振铃时长
+			if($ToalAnsweredNum == ''){$ToalAnsweredNum = 0;}
+			$campiangStr .= '<tr><td>'.$key.'</td><td>'.$ToalCallNum.'</td><td>'.$ToalAnsweredNum.'</td><td>'.$AnsweredRate.'</td><td>'.$AvgOfCustomerAnswered.'</td><td>'.$AvgOfTalk.'</td><td>'.$AvgOfRing.'</td><td>'.$AvgOfRingByAnswer.'</td></tr>';
+		}
+		$campiangStr .= '</table>';
+		return $campiangStr;
 	}
 }
 ?>

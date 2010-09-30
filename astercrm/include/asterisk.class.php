@@ -201,8 +201,8 @@ $channel,
 		$req .= "Interface: $interface\r\n";
 		$req .= "Paused: $paused\r\n";
 		$req .= "\r\n";
-		fwrite($this->socket, $req);
-		return ;
+		$res = fwrite($this->socket, $req);
+		return $res;
 	}
 
 	function agentLogoff($agent = ''){

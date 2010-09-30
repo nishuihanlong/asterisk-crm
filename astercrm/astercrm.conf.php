@@ -107,7 +107,7 @@ trim_prefix =
 ; when astercrm start a call, it would drop a .call file to asterisk spool
 ; or else astercrm would use AMI command: Originate to start a call
 ;
-allow_dropcall = 1
+allow_dropcall = 0
 
 ;
 ; if astercrm allow same customer name

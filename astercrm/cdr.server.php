@@ -106,6 +106,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fields[] = 'dst';
 		$fields[] = 'didnumber';
 		$fields[] = 'dstchannel';
+		$fields[] = 'username';
+		$fields[] = 'groupname';
 		$fields[] = 'duration';
 		$fields[] = 'billsec';
 		$fields[] = 'disposition';
@@ -122,6 +124,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$headers[] = $locate->Translate("Dst")."<br>";
 		$headers[] = $locate->Translate("Callee Id")."<br>";
 		$headers[] = $locate->Translate("Agent").'<br>';
+		$headers[] = $locate->Translate("UserName").'<br>';
+		$headers[] = $locate->Translate("AgentGroup Name").'<br>';
 		$headers[] = $locate->Translate("Duration")."<br>";
 		$headers[] = $locate->Translate("Billsec")."<br>";
 		$headers[] = $locate->Translate("Disposition")."<br>";
@@ -169,6 +173,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dst","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","didnumber","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dstchannel","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","duration","'.$divName.'","ORDERING");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
@@ -197,6 +203,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fieldsFromSearch[] = 'calldate';
 		$fieldsFromSearch[] = 'dst';
 		$fieldsFromSearch[] = 'didnumber';
+		$fieldsFromSearch[] = 'username';
+		$fieldsFromSearch[] = 'groupname';
 		$fieldsFromSearch[] = 'billsec';
 		$fieldsFromSearch[] = 'disposition';
 		$fieldsFromSearch[] = 'credit';
@@ -209,6 +217,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fieldsFromSearchShowAs[] = $locate->Translate("calldate");
 		$fieldsFromSearchShowAs[] = $locate->Translate("dst");
 		$fieldsFromSearchShowAs[] = $locate->Translate("callee id");
+		$fieldsFromSearchShowAs[] = $locate->Translate("UserName");
+		$fieldsFromSearchShowAs[] = $locate->Translate("AgentGroup Name");
 		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 		$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
 		$fieldsFromSearchShowAs[] = $locate->Translate("credit");
@@ -225,7 +235,7 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$table->addRowSearchMore("mycdr",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 		while ($arreglo->fetchInto($row)) {
-
+			
 		// Change here by the name of fields of its database table
 			$rowc = array();
 			$rowc[] = $row['id'];
@@ -239,6 +249,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 			}else{
 				$rowc[]='';
 			}
+			$rowc[] = $row['username'];
+			$rowc[] = $row['groupname'];
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
 			$rowc[] = $row['disposition'];
@@ -278,7 +290,10 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 
 		//print_r($searchFormValue);exit;
 		if($optionFlag == "export" || $optionFlag == "exportcsv"){
-			$sql = astercrm::getSql($searchContent,$searchField,$searchType,'mycdr'); //得到要导出的sql语句
+			$fieldArray = array('mycdr.*','astercrm_accountgroup.groupname','astercrm_account.username');
+			$leftjoinArray = array('astercrm_accountgroup'=>array('astercrm_accountgroup.id','mycdr.astercrm_groupid'),'astercrm_account'=>array('astercrm_account.id','mycdr.accountid'));
+			$sql = astercrm::getSql($searchContent,$searchField,$searchType,'mycdr',$fieldArray,$leftjoinArray); //得到要导出的sql语句
+			//print_r($sql);exit;
 			$_SESSION['export_sql'] = $sql;
 			$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 			$objResponse->addAssign("exporttype", "value", $optionFlag);

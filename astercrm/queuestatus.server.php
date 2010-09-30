@@ -244,12 +244,20 @@ function agentPause($agent,$queueno='',$action){
 	}
 	
 	if($action == 'pause'){
-		$cmd = "queue pause member $agent queue $queueno";		
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agent,1);
+		}else{
+			$cmd = "queue pause member $agent queue $queueno";
+			$res = $myAsterisk->Command($cmd);
+		}
 	}else{
-		$cmd = "queue unpause member $agent queue $queueno";
+		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+			$res = $myAsterisk->queuePause($queueno,$agent,0);
+		}else{
+			$cmd = "queue unpause member $agent queue $queueno";
+			$res = $myAsterisk->Command($cmd);
+		}
 	}
-
-	$res = $myAsterisk->Command($cmd);
 
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("updated","value", date("Y-m-d H:i:s"));
