@@ -29,12 +29,12 @@ my $dbprefix = '';
 
 my $debug = trim($cfg->val('database', 'debug'));
 
-my $pidFile = "/var/run/processmonitors.pid";
+my $pidFile = "/var/run/processcdr.pid";
 
 $| =1 ;
 
 if ($ARGV[0] eq '-v'){		# print version
-	print "processmonitors version 0.011-100510\n";
+	print "processcdr version 0.011-100928\n";
 	print "copyright \@2009-2010\n";
 	exit;
 }elsif ($ARGV[0] eq '-t'){	 # test database & asterisk connection 
@@ -48,10 +48,10 @@ if ($ARGV[0] eq '-v'){		# print version
 		my $res;
 		my $res = `kill -9 $line 2>&1`; 
 		if ($res eq '') {
-			print "processmonitors process: $line is killed. \n";
+			print "processcdr process: $line is killed. \n";
 		}else{
 			print "$res \n";
-			print "cant kill processmonitors process. \n";
+			print "cant kill processcdr process. \n";
 			exit;
 		}
 		unlink $pidFile;
@@ -67,22 +67,22 @@ if ($ARGV[0] eq '-v'){		# print version
 		my $res;
 		my $res = `ps  --pid=$line 2>&1`; 
 		if ($res =~ /\n(.*)\n/) {
-			print "processmonitors status: [start]\n";
+			print "processcdr status: [start]\n";
 		}else{
-			print "processmonitors status: [stop]\n";
+			print "processcdr status: [stop]\n";
 		}
     }else{
-		print "cant find $pidFile, processmonitors may not start \n";
+		print "cant find $pidFile, processcdr may not start \n";
 	}
 	exit;
 }elsif  ($ARGV[0] eq '-h'){
-	print "********* processmonitors parameters *********\n";
+	print "********* processcdr parameters *********\n";
 	print "    -h show help message\n";
 	#print "    -i parse all queue logs in the log file\n";
 	print "    -d start as a daemon\n";
-	print "    -s show processmonitors status\n";
-	print "    -k stop processmonitors\n";
-	print "    -v show processmonitors version \n";
+	print "    -s show processcdr status\n";
+	print "    -k stop processcdr\n";
+	print "    -v show processcdr version \n";
 	exit;
 }
 
@@ -93,7 +93,7 @@ if (-e $pidFile){
 		my $res;
 		my $res = `ps  --pid=$line 2>&1`; 
 		if ($res =~ /\n(.*)\n/) {
-			print "processmonitors daemon is still running. Please stop first.\n"; #If no please del $pidFile \n";
+			print "processcdr daemon is still running. Please stop first.\n"; #If no please del $pidFile \n";
 			exit;
 		}else{
 			unlink $pidFile;
@@ -139,33 +139,17 @@ while(my $ref = $rows->fetchrow_hashref() ) {
 #print Dumper(\%accountinfo);
 #exit;
 my %cdrprocessed;
+my $query = "SELECT * FROM mycdr WHERE processed = '0' AND calldate > (now()-INTERVAL 3000 SECOND)  ORDER BY calldate ASC ";
+
 my $query = "SELECT * FROM mycdr WHERE processed = '0'  ORDER BY calldate ASC ";
 my $rows = &executeQuery($query,'rows');
 
 while ( my $ref = $rows->fetchrow_hashref() ) {
+	#print Dumper $ref;next;
 	if($cdrprocessed{$ref->{'id'}} > 0){
 		next;
 	}
 
-	if($ref->{'src'} eq '' || $ref->{'dst'} eq '' || $ref->{'channel'} eq '' || $ref->{'dstchannel'} eq '' ){
-		if($ref->{'queue'}){
-			$query = "SELECT * FROM campaign WHERE queuename = '$ref->{'queue'}' AND enable = '1' order by id desc limit 1";
-			my $campaign_rows = &executeQuery($query,'rows');
-			if(my $campaign_ref = $campaign_rows->fetchrow_hashref()){
-				$query = "UPDATE mycdr set  processed='1',astercrm_groupid='$campaign_ref->{'groupid'}' WHERE id='$ref->{'id'}'";
-				&executeQuery($query,'');
-			}else{
-				$query = "UPDATE mycdr set  processed='1' WHERE id='$ref->{'id'}'";
-				&executeQuery($query,'');
-			}
-		}else{
-			$query = "UPDATE mycdr set  processed='1' WHERE id='$ref->{'id'}'";
-			&executeQuery($query,'');
-		}
-		next;
-	}
-
-	my $joinrecords = '';
 	my $pflag = 0;
 	#检查当前有没有和本条cdr相关的且没有结束的通话
 	$query = "SELECT * FROM curcdr WHERE srcchan='$ref->{'channel'}' OR srcchan='$ref->{'dstchannel'}'  OR dstchan='$ref->{'channel'}' OR dstchan='$ref->{'dstchannel'}' ";
@@ -173,42 +157,137 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	if(my $curcdr_ref = $curcdr_rows->fetchrow_hashref()){
 		$pflag = 1;
 	}
-	
-	my @chan_tmp = split(/\-/,$ref->{'channel'});
-	my $srcchan = $chan_tmp['0'];
-	my @dstchan_tmp = split(/\-/,$ref->{'dstchannel'});
-	my $dstchan = $dstchan_tmp['0'];
 
-	my %accounts;
-	if($accountinfo{$ref->{'src'}}{'id'} > 0 ){
-		$accounts{'id'} = $accountinfo{$ref->{'src'}}{'id'};
-		$accounts{'groupid'} = $accountinfo{$ref->{'src'}}{'groupid'};
-	}elsif($accountinfo{$ref->{'dst'}}{'id'} > 0){
-		$accounts{'id'} = $accountinfo{$ref->{'dst'}}{'id'};
-		$accounts{'groupid'} = $accountinfo{$ref->{'dst'}}{'groupid'};
-	}elsif($accountinfo{$srcchan}{'id'} > 0){
-		$accounts{'id'} = $accountinfo{$srcchan}{'id'};
-		$accounts{'groupid'} = $accountinfo{$srcchan}{'groupid'};
-	}elsif($accountinfo{$dstchan}{'id'} > 0){
-		$accounts{'id'} = $accountinfo{$dstchan}{'id'};
-		$accounts{'groupid'} = $accountinfo{$dstchan}{'groupid'};
-	}
-
-	#print Dumper(\%accounts);
-	#next;
+	my %droprecords;
 	my $children = '';
-	$query = "SELECT * FROM mycdr WHERE id > $ref->{'id'} AND (channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}' OR dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') ORDER BY calldate ASC ";
-	my $clild_rows = &executeQuery($query,'rows');
-	while ( my $clild_ref = $clild_rows->fetchrow_hashref() ) {
-		$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
-		$children .= "$clild_ref->{'id'},";
-		$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$accounts{'id'}',astercrm_groupid='$accounts{'groupid'}' WHERE id='$clild_ref->{'id'}'";
-		&executeQuery($query,'');
+	my $relate_count = 0;
+	my %relates;
+	my %childrens;
+	my $answerflag = 0;
+
+	$query = "SELECT * FROM mycdr WHERE (((channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}') AND channel != '') OR ((dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') AND dstchannel != '')) ORDER BY calldate ASC ";
+	my $relate_rows = &executeQuery($query,'rows');
+
+
+	while ( my $relate_ref = $relate_rows->fetchrow_hashref() ) {
+		$relate_count++;
+		
+		$cdrprocessed{$relate_ref->{'id'}} = $relate_ref->{'id'};
+		if($relate_ref->{'billsec'} > 0 && !$answerflag){
+			$query = "SELECT * FROM mycdr WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') ORDER BY calldate ASC ";
+			my $clild_rows = &executeQuery($query,'rows');
+			while ( my $clild_ref = $clild_rows->fetchrow_hashref() ) {
+				$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
+				if($clild_ref->{'billsec'} == 0 && $clild_ref->{'queue'} eq $relate_ref->{'queue'}){
+					next;
+				}
+				$childrens{$clild_ref->{'id'}} = $clild_ref;				
+			}
+			$childrens{'main'} = $relate_ref;
+			$answerflag = 1;
+		}else{
+			$relates{$relate_ref->{'id'}} = $relate_ref;
+		}
+		
+#		print Dumper $clild_ref;next;
+#		$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
+#		$children .= "$clild_ref->{'id'},";
+#		$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$accounts{'id'}',astercrm_groupid='$accounts{'groupid'}' WHERE id='$clild_ref->{'id'}'";
+#		&executeQuery($query,'');
 	}
 
-	$query = "UPDATE mycdr set children = '$children', processed='1',accountid='$accounts{'id'}',astercrm_groupid='$accounts{'groupid'}' WHERE id='$ref->{'id'}'";
-	&executeQuery($query,'');
-}
+	#if($relate_count > 1){
+		my %mainaccounts;
+		$mainaccounts{'id'} = 0;
+		$mainaccounts{'groupid'} = 0;
+		if(exists $childrens{'main'}){
+			my @chan_tmp = split(/\-/,$childrens{'main'}->{'channel'});
+			my $srcchan = $chan_tmp['0'];
+			my @dstchan_tmp = split(/\-/,$childrens{'main'}->{'dstchannel'});
+			my $dstchan = $dstchan_tmp['0'];
+
+			if($accountinfo{$dstchan}{'id'} > 0){
+				$mainaccounts{'id'} = $accountinfo{$dstchan}{'id'};
+				$mainaccounts{'groupid'} = $accountinfo{$dstchan}{'groupid'};
+			}elsif($accountinfo{$srcchan}{'id'} > 0){
+				$mainaccounts{'id'} = $accountinfo{$srcchan}{'id'};
+				$mainaccounts{'groupid'} = $accountinfo{$srcchan}{'groupid'};
+			}elsif($accountinfo{$childrens{'main'}->{'dst'}}{'id'} > 0){
+				$mainaccounts{'id'} = $accountinfo{$childrens{'main'}->{'dst'}}{'id'};
+				$mainaccounts{'groupid'} = $accountinfo{$childrens{'main'}->{'dst'}}{'groupid'};
+			}elsif($accountinfo{$childrens{'main'}->{'src'}}{'id'} > 0 ){
+				$mainaccounts{'id'} = $accountinfo{$childrens{'main'}->{'src'}}{'id'};
+				$mainaccounts{'groupid'} = $accountinfo{$childrens{'main'}->{'src'}}{'groupid'};
+			}
+		}
+
+		foreach my $curid (sort keys %childrens) {
+			if($curid eq 'main'){
+				next;
+			}
+			$children .= "$curid,";	
+			$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$curid'";
+			#print $query."\n";
+			&executeQuery($query,'');
+		}
+
+		if(exists $childrens{'main'}){
+			$query = "UPDATE mycdr set children = '$children', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$childrens{'main'}->{'id'}'";
+			#print $query."\n";
+			&executeQuery($query,'');
+		}
+		
+		foreach my $curid (sort keys %relates) {
+			if(exists $childrens{$curid}){
+				next;		
+			}
+
+			if((($relates{$curid}->{'dstchannel'} eq '' || $relates{$curid}->{'channel'} =~ /^local\//) && $relate_count > 1) || ($relates{$curid}->{'dstchannel'} eq '' && $relates{$curid}->{'channel'} =~ /^local\// && $relate_count == 1)){
+				$droprecords{$curid} = $relates{$curid};
+				next;
+			}
+
+			my @chan_tmp = split(/\-/,$relates{$curid}->{'channel'});
+			my $srcchan = $chan_tmp['0'];
+			my @dstchan_tmp = split(/\-/,$relates{$curid}->{'dstchannel'});
+			my $dstchan = $dstchan_tmp['0'];
+
+			my $accountid = 0;
+			my $astercrm_groupid = 0;
+
+			if($accountinfo{$dstchan}{'id'} > 0){
+				$accountid = $accountinfo{$dstchan}{'id'};
+				$astercrm_groupid = $accountinfo{$dstchan}{'groupid'};
+			}elsif($accountinfo{$srcchan}{'id'} > 0){
+				$accountid = $accountinfo{$srcchan}{'id'};
+				$astercrm_groupid = $accountinfo{$srcchan}{'groupid'};
+			}elsif($accountinfo{$relates{$curid}->{'dst'}}{'id'} > 0){
+				$accountid = $accountinfo{$relates{$curid}->{'dst'}}{'id'};
+				$astercrm_groupid = $accountinfo{$relates{$curid}->{'dst'}}{'groupid'};
+			}elsif($accountinfo{$relates{$curid}->{'src'}}{'id'} > 0 ){
+				$accountid = $accountinfo{$relates{$curid}->{'src'}}{'id'};
+				$astercrm_groupid = $accountinfo{$relates{$curid}->{'src'}}{'groupid'};
+			}
+			
+			$query = "UPDATE mycdr set processed='1',accountid='$accountid',astercrm_groupid='$astercrm_groupid' WHERE id='$curid'";
+			#print $query."\n";
+			&executeQuery($query,'');
+		}
+
+		foreach my $curid (sort keys %droprecords) {
+			$query = "UPDATE mycdr set processed='-1' WHERE id='$curid'";
+			#print $query."\n";
+			&executeQuery($query,'');
+		}
+
+		print "curidchlid:$children\n";
+	#}
+	#print Dumper \%relates;
+	#print Dumper \%childrens;
+	#print Dumper \%droprecords;
+	#exit;
+	
+}exit;
 
 my %campaigndata;
 my $query = "SELECT * FROM campaigndialedlist WHERE processed = 'no' ORDER BY dialedtime ASC ";
@@ -338,7 +417,7 @@ sub debug{
 	my $time=scalar localtime;
 	if ($debug > 0) {
 		if ($ARGV[0] eq '-d'){		# output to file
-			open (HDW,">>$Bin/processmonitorslog.txt");
+			open (HDW,">>$Bin/processcdrlog.txt");
 			print HDW $time," ",$message,"\n";
 			close HDW;
 		}else{

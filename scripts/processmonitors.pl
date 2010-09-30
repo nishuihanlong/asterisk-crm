@@ -163,7 +163,9 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		$cdrinfo{$ref->{'dstchannel'}}->{$ref->{'id'}} = $ref;
 		$cdrinfo{$ref->{'dstchannel'}}->{'filename'} = $ref->{'filename'};
 		$cdrinfo{$ref->{'dstchannel'}}->{'fileformat'} = $ref->{'fileformat'};
-		$joinmainstr .= " $ref->{'filename'}.$ref->{'fileformat'} ";
+		if($ref->{'filename'} ne ''){
+			$joinmainstr .= " $ref->{'filename'}.$ref->{'fileformat'} ";
+		}
 		my $childs = $ref->{'children'};
 		$childs =~ s/\,+$//;
 		$query = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored WHERE mycdr.id > $ref->{'id'} AND mycdr.id in($childs) ORDER BY calldate ASC";
@@ -173,63 +175,69 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				$cdrinfo{$child_ref->{'dstchannel'}}->{$child_ref->{'id'}} = $child_ref;
 				$cdrinfo{$child_ref->{'dstchannel'}}->{'filename'} = $child_ref->{'filename'};
 				$cdrinfo{$child_ref->{'dstchannel'}}->{'fileformat'} = $child_ref->{'fileformat'};
-				$joinmainstr .= " $child_ref->{'filename'}.$child_ref->{'fileformat'} ";
+				if($child_ref->{'filename'} ne ''){
+					$joinmainstr .= " $child_ref->{'filename'}.$child_ref->{'fileformat'} ";
+				}
 			}
 			#print Dumper($child_ref);
 		}
 	}else{ #单条cdr处理	
-		if( (-e "$ref->{'filename'}\-in.$ref->{'fileformat'}") && (-e "$ref->{'filename'}\-out.$ref->{'fileformat'}")){
-			if($soxmixcmd ne ''){
-				my $execstr = "$soxmixcmd $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}";
-				#print "soxmixcmd:$execstr\n";
-				system($execstr);
-				system("rm -f $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'}");
-			}elsif($soxcmd ne ''){
-				my $execstr = "$soxcmd -m $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}";
-				system($execstr);
-				system("rm -f $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'}");
-			}else{
-				print "ERROR:Can't find sox and soxmix commond!\n";
-				exit;
-			}
-		}else{
-			if(-e "$ref->{'filename'}\-in.$ref->{'fileformat'}"){
-				system("rm -f $ref->{'filename'}\-in.$ref->{'fileformat'}");
-			}elsif(-e "$ref->{'filename'}\-out.$ref->{'fileformat'}"){
-				system("rm -f $ref->{'filename'}\-out.$ref->{'fileformat'}");
-			}
-		}
-
-		if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
-			if($ref->{'fileformat'} eq 'wav'){
-				my $execstr = "$lamecmd --cbr -m m -t -F $ref->{'filename'}.$ref->{'fileformat'} $ref->{'filename'}.mp3 2>&1";
-				#print "convertcmd:$execstr";
-				system($execstr);
-				if( -e "$ref->{'filename'}.mp3" ){
-					$query = "UPDATE monitorrecord SET processed = 'yes', fileformat='mp3' WHERE id ='$ref->{'monitored'}'";
-					&executeQuery($query,'');
-					system("rm -f $ref->{'filename'}.$ref->{'fileformat'}");
+		if($ref->{'monitored'} > 0){
+			if( (-e "$ref->{'filename'}\-in.$ref->{'fileformat'}") && (-e "$ref->{'filename'}\-out.$ref->{'fileformat'}")){
+				if($soxmixcmd ne ''){
+					my $execstr = "$soxmixcmd $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}";
+					#print "soxmixcmd:$execstr\n";
+					system($execstr);
+					system("rm -f $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'}");
+				}elsif($soxcmd ne ''){
+					my $execstr = "$soxcmd -m $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}";
+					system($execstr);
+					system("rm -f $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'}");
 				}else{
-					$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id ='$ref->{'monitored'}'";
-						&executeQuery($query,'');
+					print "ERROR:Can't find sox and soxmix commond!\n";
+					exit;
 				}
 			}else{
-				$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id ='$ref->{'monitored'}'";
+				if(-e "$ref->{'filename'}\-in.$ref->{'fileformat'}"){
+					system("rm -f $ref->{'filename'}\-in.$ref->{'fileformat'}");
+				}elsif(-e "$ref->{'filename'}\-out.$ref->{'fileformat'}"){
+					system("rm -f $ref->{'filename'}\-out.$ref->{'fileformat'}");
+				}
+			}
+
+			if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
+				if($ref->{'fileformat'} eq 'wav'){
+					my $execstr = "$lamecmd --cbr -m m -t -F $ref->{'filename'}.$ref->{'fileformat'} $ref->{'filename'}.mp3 2>&1";
+					#print "convertcmd:$execstr";
+					system($execstr);
+					if( -e "$ref->{'filename'}.mp3" ){
+						$query = "UPDATE monitorrecord SET processed = 'yes', fileformat='mp3' WHERE id ='$ref->{'monitored'}'";
+						&executeQuery($query,'');
+						system("rm -f $ref->{'filename'}.$ref->{'fileformat'}");
+					}else{
+						$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id ='$ref->{'monitored'}'";
+							&executeQuery($query,'');
+					}
+				}else{
+					$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id ='$ref->{'monitored'}'";
+					&executeQuery($query,'');
+				}
+			}else{
+				$query = "UPDATE monitorrecord SET processed = 'yes',fileformat='error' WHERE id ='$ref->{'monitored'}'";
 				&executeQuery($query,'');
 			}
-		}else{
-			$query = "UPDATE monitorrecord SET processed = 'yes',fileformat='error' WHERE id ='$ref->{'monitored'}'";
-			&executeQuery($query,'');
 		}
 		$query = "UPDATE mycdr SET processed='2' WHERE id='$ref->{'id'}'";
 		&executeQuery($query,'');
 		next;
 	}
-	
+
 	my $hcdrinfo = \%cdrinfo;
 	
 	#print Dumper($hcdrinfo);exit;
 	foreach my $curchan (sort keys %$hcdrinfo) {
+
+		#print Dumper $hcdrinfo->{$curchan};exit;
 		my $fileflag = 1;
 		my $filename = $hcdrinfo->{$curchan}->{'filename'};
 		delete $hcdrinfo->{$curchan}->{'filename'};
@@ -238,7 +246,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 
 		my $chancount = keys( %{$hcdrinfo->{$curchan}} );
 
-		if( (-e "$filename\-in.$fileformat") && (-e "$filename\-out.$fileformat")){
+		if( (-e "$filename\-in.$fileformat") && (-e "$filename\-out.$fileformat") && $filename ne ''){
 			if($soxmixcmd ne ''){
 				my $execstr = "$soxmixcmd $filename-in.$fileformat $filename-out.$fileformat $filename.$fileformat";
 				#print "soxmixcmd:$execstr\n";
@@ -253,14 +261,14 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				exit;
 			}
 		}else{
-			if(-e "$filename\-in.$fileformat"){
+			if(-e "$filename\-in.$fileformat" && $filename ne ''){
 				system("rm -f $filename\-in.$fileformat");
-			}elsif(-e "$filename\-out.$fileformat"){
+			}elsif(-e "$filename\-out.$fileformat" && $filename ne ''){
 				system("rm -f $filename\-out.$fileformat");
 			}
 		}
 
-		if( -e "$filename.$fileformat"){
+		if( -e "$filename.$fileformat" && $filename ne ''){
 			if($chancount > 1){ #多条cdr共用一个录音文件
 				system("mv $filename.$fileformat $filename-all.$fileformat");
 				#print "mv $filename.$fileformat $filename-all.$fileformat";
@@ -298,14 +306,16 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 					#print "curcalldatestr:$curcalldatestr\n";
 					
 					my $thisbillsec = $hcdrinfo->{$curchan}->{$curid}->{'billsec'};
-					my $execstr = "$soxcmd $filename-all.$fileformat $curfile.$fileformat trim $start $thisbillsec";
-					#print "trimcmd:$execstr\n";
-					system($execstr);
+					if($thisbillsec > 0 && $curfile ne ''){
+						my $execstr = "$soxcmd $filename-all.$fileformat $curfile.$fileformat trim $start $thisbillsec";
+						#print "trimcmd:$execstr\n";
+						system($execstr);
+					}
 				}
 				#print "$curid|||$curfile\n";
 
 				#转成mp3文件
-				if( -e "$curfile.$fileformat" ){
+				if( -e "$curfile.$fileformat" && $curfile ne ''){
 					
 					if($fileformat eq 'wav'){
 						my $execstr = "$lamecmd --cbr -m m -t -F $curfile.$fileformat $curfile.mp3 2>&1";
@@ -325,7 +335,9 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 					}
 				}else{
 					#文件不存在, 从合并主录音串中移除
-					$joinmainstr =~ s/$curfile\.$fileformat//;
+					if($curfile ne ''){
+						$joinmainstr =~ s/$curfile\.$fileformat//;
+					}
 					$query = "UPDATE monitorrecord SET processed = 'yes', fileformat='error' WHERE id ='$hcdrinfo->{$curchan}->{$curid}->{'monitored'}'";
 					&executeQuery($query,'');
 				}
@@ -333,8 +345,10 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				#print Dumper($curchandata{$curid});exit;
 				
 			}else{
-				#文件不存在, 从合并主录音串中移除
-				$joinmainstr =~ s/$hcdrinfo->{$curchan}->{$curid}->{'filename'}\.$fileformat//;
+				if($hcdrinfo->{$curchan}->{$curid}->{'filename'} ne ''){
+					#文件不存在, 从合并主录音串中移除
+					$joinmainstr =~ s/$hcdrinfo->{$curchan}->{$curid}->{'filename'}\.$fileformat//;				
+				}
 				$query = "UPDATE monitorrecord SET processed = 'yes', fileformat='error' WHERE id ='$hcdrinfo->{$curchan}->{$curid}->{'monitored'}'";
 				&executeQuery($query,'');
 			}
@@ -343,15 +357,18 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		}
 		#多条cdr共用一个录音文件
 		if($chancount > 1){
-			system("rm -f $filename-all.$fileformat");
+			if( -e "$filename-all.$fileformat" && $filename ne ''){
+				system("rm -f $filename-all.$fileformat");
+			}
 		}
 	}
-	if($joinmainstr ne ''){
+	
+	if($joinmainstr ne '' && $ref->{'filename'} ne ''){
 		my $execstr = "$soxcmd $joinmainstr $ref->{'filename'}-all.$ref->{'fileformat'}";
 		#print "joinmainstr:$execstr\n";
 		system($execstr);
 		system("rm -f $joinmainstr");
-		if( -e "$ref->{'filename'}-all.$ref->{'fileformat'}" ){
+		if( -e "$ref->{'filename'}-all.$ref->{'fileformat'}" && $ref->{'filename'} ne ''){
 			print "mv -f $ref->{'filename'}-all.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}\n";
 			system("mv -f $ref->{'filename'}-all.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}");
 
