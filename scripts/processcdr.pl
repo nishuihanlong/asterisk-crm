@@ -136,8 +136,14 @@ while(my $ref = $rows->fetchrow_hashref() ) {
 		$accountinfo{"agent/$ref->{'agent'}"}{'groupid'} = $ref->{'groupid'};
 	}
 }
-#print Dumper(\%accountinfo);
-#exit;
+
+my $query="SELECT queuename,groupid FROM campaign WHERE queuename != '' AND enable = 1 ORDER BY id DESC";
+my $rows = &executeQuery($query,'rows');
+
+while(my $ref = $rows->fetchrow_hashref() ) {
+		$accountinfo{"queuegroup"}{$ref->{'queuename'}} = $ref->{'groupid'};
+}
+
 my %cdrprocessed;
 my $query = "SELECT * FROM mycdr WHERE processed = '0' AND calldate > (now()-INTERVAL 3000 SECOND)  ORDER BY calldate ASC ";
 
@@ -267,6 +273,8 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			}elsif($accountinfo{$relates{$curid}->{'src'}}{'id'} > 0 ){
 				$accountid = $accountinfo{$relates{$curid}->{'src'}}{'id'};
 				$astercrm_groupid = $accountinfo{$relates{$curid}->{'src'}}{'groupid'};
+			}elsif($accountinfo{'queuegroup'}{$relates{$curid}->{'queue'}} > 0){
+				$astercrm_groupid = $accountinfo{'queuegroup'}{$relates{$curid}->{'queue'}};
 			}
 			
 			$query = "UPDATE mycdr set processed='1',accountid='$accountid',astercrm_groupid='$astercrm_groupid' WHERE id='$curid'";
@@ -280,14 +288,14 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			&executeQuery($query,'');
 		}
 
-		print "curidchlid:$children\n";
+	#	print "curidchlid:$children\n";
 	#}
 	#print Dumper \%relates;
 	#print Dumper \%childrens;
 	#print Dumper \%droprecords;
 	#exit;
 	
-}exit;
+}
 
 my %campaigndata;
 my $query = "SELECT * FROM campaigndialedlist WHERE processed = 'no' ORDER BY dialedtime ASC ";
