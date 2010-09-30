@@ -207,3 +207,8 @@ CREATE TABLE `queue_agent` (
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+
+
+ALTER TABLE `campaigndialedlist` ADD `recycles` int(11) NOT NULL default 0 AFTER `processed`;#2010/09/28

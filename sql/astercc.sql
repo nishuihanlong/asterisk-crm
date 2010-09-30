@@ -1001,6 +1001,7 @@ CREATE TABLE `campaigndialedlist` (
   `dialedtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `callOrder` INT(11) NOT NULL DEFAULT '1',
   `processed` enum('yes','no') NOT NULL default 'no',
+  `recycles` int(11) NOT NULL default 0,
   `creby` varchar(30) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
