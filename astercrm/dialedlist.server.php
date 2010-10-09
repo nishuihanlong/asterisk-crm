@@ -243,8 +243,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'dialednumber';
 	//$fieldsFromSearch[] = 'answertime';
 	$fieldsFromSearch[] = 'duration';
-	$fieldsFromSearch[] = 'billsec';
-	$fieldsFromSearch[] = 'billsec_leg_a';
+	$fieldsFromSearch[] = 'campaigndialedlist.billsec';
+	$fieldsFromSearch[] = 'campaigndialedlist.billsec_leg_a';
 	$fieldsFromSearch[] = 'callresult';
 	$fieldsFromSearch[] = 'response';
 	$fieldsFromSearch[] = 'customer';
