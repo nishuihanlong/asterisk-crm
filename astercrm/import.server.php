@@ -147,7 +147,7 @@ function selectTable($tableName){
 		$type_arr = explode(' ',$row['flags']);
 		if(!in_array('auto_increment',$type_arr))
 		{
-			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" || $row['name'] == "campaignid" || $row['name'] == "trytime"){
+			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" || $row['name'] == "campaignid" ){
 			}else{
 				$HTML .= "<li height='20px'>";
 				$HTML .= $i.":&nbsp;&nbsp;".$row['name'];
@@ -246,7 +246,7 @@ function submitForm($aFormValues){
 		$type_arr = explode(' ',$row['flags']);
 		if(!in_array('auto_increment',$type_arr))
 		{
-				if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
+				if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" || $row['name'] == "campaignid"){
 
 				}else{
 					$tableStructure[]= $row;
