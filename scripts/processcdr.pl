@@ -171,35 +171,43 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	my %childrens;
 	my $answerflag = 0;
 
-	$query = "SELECT * FROM mycdr WHERE (((channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}') AND channel != '') OR ((dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') AND dstchannel != '')) ORDER BY calldate ASC ";
-	my $relate_rows = &executeQuery($query,'rows');
-
-
-	while ( my $relate_ref = $relate_rows->fetchrow_hashref() ) {
+	if($ref->{'channel'} =~ /^dahdi\// ||  $ref->{'dstchannel'} =~ /^dahdi\//){#filter dahdi channel from childer process
 		$relate_count++;
-		
-		$cdrprocessed{$relate_ref->{'id'}} = $relate_ref->{'id'};
-		if($relate_ref->{'billsec'} > 0 && !$answerflag){
-			$query = "SELECT * FROM mycdr WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') ORDER BY calldate ASC ";
-			my $clild_rows = &executeQuery($query,'rows');
-			while ( my $clild_ref = $clild_rows->fetchrow_hashref() ) {
-				$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
-				if($clild_ref->{'billsec'} == 0 && $clild_ref->{'queue'} eq $relate_ref->{'queue'}){
-					next;
+		$cdrprocessed{$ref->{'id'}} = $ref->{'id'};
+		$relates{$ref->{'id'}} = $ref;
+	}else{
+
+		$query = "SELECT * FROM mycdr WHERE (((channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}') AND channel != '') OR ((dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') AND dstchannel != '')) AND calldate > ('$ref->{'calldate'}'-INTERVAL 3600 SECOND) ORDER BY calldate ASC ";
+
+		my $relate_rows = &executeQuery($query,'rows');
+
+
+		while ( my $relate_ref = $relate_rows->fetchrow_hashref() ) {
+			$relate_count++;
+			
+			$cdrprocessed{$relate_ref->{'id'}} = $relate_ref->{'id'};
+			if($relate_ref->{'billsec'} > 0 && !$answerflag){
+				$query = "SELECT * FROM mycdr WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') ORDER BY calldate ASC ";
+				my $clild_rows = &executeQuery($query,'rows');
+				while ( my $clild_ref = $clild_rows->fetchrow_hashref() ) {
+					$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
+					if($clild_ref->{'billsec'} == 0 && $clild_ref->{'queue'} eq $relate_ref->{'queue'}){
+						next;
+					}
+					$childrens{$clild_ref->{'id'}} = $clild_ref;				
 				}
-				$childrens{$clild_ref->{'id'}} = $clild_ref;				
+				$childrens{'main'} = $relate_ref;
+				$answerflag = 1;
+			}else{
+				$relates{$relate_ref->{'id'}} = $relate_ref;
 			}
-			$childrens{'main'} = $relate_ref;
-			$answerflag = 1;
-		}else{
-			$relates{$relate_ref->{'id'}} = $relate_ref;
+			
+	#		print Dumper $clild_ref;next;
+	#		$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
+	#		$children .= "$clild_ref->{'id'},";
+	#		$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$accounts{'id'}',astercrm_groupid='$accounts{'groupid'}' WHERE id='$clild_ref->{'id'}'";
+	#		&executeQuery($query,'');
 		}
-		
-#		print Dumper $clild_ref;next;
-#		$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
-#		$children .= "$clild_ref->{'id'},";
-#		$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$accounts{'id'}',astercrm_groupid='$accounts{'groupid'}' WHERE id='$clild_ref->{'id'}'";
-#		&executeQuery($query,'');
 	}
 
 	#if($relate_count > 1){
