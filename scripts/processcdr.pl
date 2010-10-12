@@ -232,6 +232,8 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			}elsif($accountinfo{$childrens{'main'}->{'src'}}{'id'} > 0 ){
 				$mainaccounts{'id'} = $accountinfo{$childrens{'main'}->{'src'}}{'id'};
 				$mainaccounts{'groupid'} = $accountinfo{$childrens{'main'}->{'src'}}{'groupid'};
+			}elsif($accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}} > 0){
+				$astercrm_groupid = $accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}};
 			}
 		}
 
