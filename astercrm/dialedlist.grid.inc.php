@@ -378,10 +378,10 @@ class Customer extends astercrm
 			$ToalCallNum = $val['totalnum'];//总通话数
 			$ToalAnsweredNum = $val['atotalnum'];//接通总数
 			$AnsweredRate = (round($val['atotalnum']/$val['totalnum'],4)*100).'%';//接通率
-			$AvgOfCustomerAnswered = round($val['abillsec']/$val['atotalnum'],3);//平均通话时长
-			$AvgOfTalk = round($val['tbillsec_leg_a']/$val['totalnum'],3);//平均客户接听时长
-			$AvgOfRing = round(($val['tduration']-$val['tbillsec_leg_a'])/$val['totalnum'],3);//平均振铃时长
-			$AvgOfRingByAnswer = round(($val['aduration']-$val['abillsec_leg_a'])/$val['atotalnum'],3);//平均接听振铃时长
+			$AvgOfCustomerAnswered = (int)($val['abillsec']/$val['atotalnum'])." (".$locate->Translate("sec").")";//平均通话时长
+			$AvgOfTalk = (int)($val['tbillsec_leg_a']/$val['totalnum'])." (".$locate->Translate("sec").")";//平均客户接听时长
+			$AvgOfRing = (int)(($val['tduration']-$val['tbillsec_leg_a'])/$val['totalnum'])." (".$locate->Translate("sec").")";//平均振铃时长
+			$AvgOfRingByAnswer = (int)(($val['aduration']-$val['abillsec_leg_a'])/$val['atotalnum'])." (".$locate->Translate("sec").")";//平均接听振铃时长
 			if($ToalAnsweredNum == ''){$ToalAnsweredNum = 0;}
 			$campiangStr .= '<tr><td>'.$key.'</td><td>'.$ToalCallNum.'</td><td>'.$ToalAnsweredNum.'</td><td>'.$AnsweredRate.'</td><td>'.$AvgOfCustomerAnswered.'</td><td>'.$AvgOfTalk.'</td><td>'.$AvgOfRing.'</td><td>'.$AvgOfRingByAnswer.'</td></tr>';
 		}

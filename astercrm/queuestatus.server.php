@@ -99,11 +99,11 @@ function showStatus($curupdated){
 				$agent = substr($row_agent['agent'],6);
 
 				$logoffBtn .= '&nbsp;&nbsp;<input type="button" value="'.$locate->Translate("Logoff").'" onclick="xajax_agentLogoff(\''.$agent.'\');this.disabled=true;"';
-				if($row_agent['agent_status'] == 'unavailable' || $row_agent['agent_status'] == 'invalid'){
+				if(strtolower($row_agent['agent_status']) == 'unavailable' || $row_agent['agent_status'] == 'invalid'){
 					$logoffBtn .= 'disabled';
 				}
 				$logoffBtn .= '>';//echo $logoffBtn;exit;
-				if($row_agent['agent_status'] == 'busy'){
+				if(strtolower($row_agent['agent_status']) == 'busy'){
 					$query = "SELECT * FROM curcdr WHERE dstchan = '".strtoupper($row_agent['agent'])."'  AND queue='".$row_agent['queuename']."'";
 					if($agent_cdr = $db->getRow($query)){
 						$dstchan = $agent_cdr['dstchan'];
@@ -125,7 +125,7 @@ function showStatus($curupdated){
 				}
 				$logoffBtn .= '>';
 
-				if($row_agent['agent_status'] == 'in use'){
+				if(strtolower($row_agent['agent_status']) == 'in use'){
 					$dstchan = explode('@',$row_agent['agent']);
 					$dstchan = $dstchan['0'];
 					$exten = explode('/',$dstchan);
@@ -153,7 +153,7 @@ function showStatus($curupdated){
 			}
 
 			$html .= $logoffBtn;
-			if($row_agent['agent_status'] == 'in use' || $row_agent['agent_status'] == 'not in use' || $row_agent['agent_status'] == 'busy'){
+			if(strtolower($row_agent['agent_status']) == 'in use' || strtolower($row_agent['agent_status']) == 'not in use' || strtolower($row_agent['agent_status']) == 'busy'){
 				$html .= '&nbsp;&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';
 			}else{
 				$html .= '&nbsp;&nbsp;<span style="color:#999999;">'.$row_agent['data'].'</span>&nbsp;&nbsp;';

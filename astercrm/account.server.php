@@ -280,7 +280,10 @@ function save($f){
 	global $locate,$db,$config;
 
 	$objResponse = new xajaxResponse();
-	
+	$f['extension'] = strtolower($f['extension']);
+	$f['agent'] = strtolower($f['agent']);
+	$f['channel'] = strtolower($f['channel']);
+
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		//$objResponse->addScript('window.location.href="portal.php";');
 		$objResponse->addScript('alert("abc")');
@@ -391,7 +394,11 @@ function save($f){
 function update($f){
 	global $locate,$db;
 	$objResponse = new xajaxResponse();
-
+	
+	$f['extension'] = strtolower($f['extension']);
+	$f['agent'] = strtolower($f['agent']);
+	$f['channel'] = strtolower($f['channel']);
+	
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();

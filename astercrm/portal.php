@@ -233,7 +233,8 @@ $clientDst = $_REQUEST['clientdst'];
 			ShowProcessingDiv();
 			callerChannel = xajax.$('callerChannel').value.toUpperCase();
 			calleeChannel = xajax.$('calleeChannel').value.toUpperCase();
-			//alert(calleeChannel);
+			direction = xajax.$('direction').value.toUpperCase();
+			//alert(direction);
 			//alert(callerChannel);
 			if (calleeChannel.indexOf("local") < 0 && calleeChannel.indexOf("local") < 0)
 				channel = calleeChannel;
@@ -244,7 +245,7 @@ $clientDst = $_REQUEST['clientdst'];
 			if (xajax.$('btnMonitorStatus').value == 'recording')
 				xajax_monitor(channel,callerid,'stop');
 			else
-				xajax_monitor(channel,callerid,'start',document.getElementById("uniqueid").value,xajax.$('curid').value);
+				xajax_monitor(channel,callerid,'start',document.getElementById("uniqueid").value,xajax.$('curid').value,direction);
 			return false;
 		}
 

@@ -44,6 +44,7 @@ function init($fileName){
 	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$file_list = getExistfilelist();
+	$objResponse->addAssign('filelist','innerHTML','');
 	$objResponse->addScript("addOption('filelist','0','".$locate->Translate('select a existent file')."');");
 	foreach ( $file_list as $file ) {
 		$objResponse->addScript("addOption('filelist','".$file['fileid']."','".$file['originalname']."');");
@@ -383,6 +384,7 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 	global $db;
 
 	$arrData = getSourceData($filePath);
+	
 	$x = 0;
 	$diallistAffectRows = 0;
 	$tableAffectRows = 0;
@@ -476,15 +478,16 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 //		$arrRow[$j]=mb_convert_encoding($arrRow[$j],"UTF-8","GB2312");
 
 		$fieldOrder = trim($order[$j]);//得到字段顺序号
-
-		if($fieldOrder != ''){
+		
+		if($fieldOrder != '' && $arrRow[$j] != ''){
+			
 			$fieldName .= $tableStructure[$fieldOrder]['name'].',';
 			if (in_array($tableStructure[$fieldOrder]['name'],$phone_field)){
 				$arrRow[$j] = astercrm::getDigitsInStr($arrRow[$j]);
 			}
 			$strData .= '"'.$arrRow[$j].'"'.',';
 		}
-		if(isset($dialListField) && $dialListField != ''){
+		if(isset($dialListField) && $dialListField != ''  && $arrRow[$j] != ''){
 			if($dialListField == $j){
 				if($tableName == 'diallist'){
 					if($assignNum > 0){

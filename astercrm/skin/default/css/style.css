@@ -1005,6 +1005,7 @@ div.box{
 	height: 20px;
 	background: url(images/background.jpg) 70%;
 	background-repeat: repeat;
+	clear:both;
 }
 .divExtensiontitle img{float:right; margin-top:3px; cursor:pointer;}
 
@@ -1015,6 +1016,7 @@ div.box{
 	height: 20px;
 	background: url(images/background.jpg) 70%;
 	background-repeat: repeat;
+	clear:both;
 }
 .divGetMsgInCampaigntitle img{float:right; margin-top:3px; cursor:pointer;}
 
