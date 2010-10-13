@@ -29,6 +29,17 @@ my $dbprefix = '';
 
 my $debug = trim($cfg->val('database', 'debug'));
 
+my $curcdrTbl = trim($cfg->val('database', 'tb_curchan'));
+my $cdrTbl = trim($cfg->val('database', 'tb_cdr'));
+
+if($curcdrTbl eq '' ){
+	$curcdrTbl = 'curcdr';
+}
+
+if($cdrTbl eq '' ){
+	$cdrTbl = 'mycdr';
+}
+
 my $pidFile = "/var/run/processcdr.pid";
 
 $| =1 ;
@@ -116,6 +127,12 @@ if ($ARGV[0] eq '-d'){
 	close PIDFILE;
 }
 
+my $cdr_lastid = 0;
+if( -e "$Bin/processcdrlastid.txt"){
+	open( LASTCDRID,"$Bin/processcdrlastid.txt");
+	my @lastcdrid = <LASTCDRID>; 
+	$cdr_lastid = $lastcdrid['0'];
+}
 
 my $dbh = &connect_mysql(%dbInfo);
 
@@ -145,23 +162,19 @@ while(my $ref = $rows->fetchrow_hashref() ) {
 }
 
 my %cdrprocessed;
-my $query = "SELECT * FROM mycdr WHERE processed = '0' AND calldate > (now()-INTERVAL 3000 SECOND)  ORDER BY calldate ASC ";
+my $idflag = 0;
+my $mycdrid = 0;
 
-my $query = "SELECT * FROM mycdr WHERE processed = '0'  ORDER BY calldate ASC ";
+#my $query = "SELECT * FROM $cdrTbl WHERE processed = '0' AND calldate > (now()-INTERVAL 3000 SECOND) AND id > '$cdr_lastid' ORDER BY calldate ASC ";
+
+my $query = "SELECT * FROM $cdrTbl WHERE processed = '0' AND id > '$cdr_lastid' ORDER BY calldate ASC ";
 my $rows = &executeQuery($query,'rows');
 
 while ( my $ref = $rows->fetchrow_hashref() ) {
 	#print Dumper $ref;next;
+	
 	if($cdrprocessed{$ref->{'id'}} > 0){
 		next;
-	}
-
-	my $pflag = 0;
-	#检查当前有没有和本条cdr相关的且没有结束的通话
-	$query = "SELECT * FROM curcdr WHERE srcchan='$ref->{'channel'}' OR srcchan='$ref->{'dstchannel'}'  OR dstchan='$ref->{'channel'}' OR dstchan='$ref->{'dstchannel'}' ";
-	my $curcdr_rows = &executeQuery($query,'rows');
-	if(my $curcdr_ref = $curcdr_rows->fetchrow_hashref()){
-		$pflag = 1;
 	}
 
 	my %droprecords;
@@ -177,7 +190,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		$relates{$ref->{'id'}} = $ref;
 	}else{
 
-		$query = "SELECT * FROM mycdr WHERE (((channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}') AND channel != '') OR ((dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') AND dstchannel != '')) AND calldate > ('$ref->{'calldate'}'-INTERVAL 3600 SECOND) ORDER BY calldate ASC ";
+		$query = "SELECT * FROM $cdrTbl WHERE (((channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}') AND channel != '') OR ((dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') AND dstchannel != '')) AND id > '$cdr_lastid' ORDER BY calldate ASC ";
 
 		my $relate_rows = &executeQuery($query,'rows');
 
@@ -187,7 +200,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			
 			$cdrprocessed{$relate_ref->{'id'}} = $relate_ref->{'id'};
 			if($relate_ref->{'billsec'} > 0 && !$answerflag){
-				$query = "SELECT * FROM mycdr WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') ORDER BY calldate ASC ";
+				$query = "SELECT * FROM $cdrTbl WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') AND id > '$cdr_lastid' ORDER BY calldate ASC ";
 				my $clild_rows = &executeQuery($query,'rows');
 				while ( my $clild_ref = $clild_rows->fetchrow_hashref() ) {
 					$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
@@ -198,6 +211,15 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				}
 				$childrens{'main'} = $relate_ref;
 				$answerflag = 1;
+				#检查当前有没有和本条cdr相关的且没有结束的通话
+				$query = "SELECT * FROM $curcdrTbl WHERE srcchan='$relate_ref->{'channel'}' OR srcchan='$relate_ref->{'dstchannel'}'  OR dstchan='$relate_ref->{'channel'}' OR dstchan='$relate_ref->{'dstchannel'}' ";
+				my $curcdr_rows = &executeQuery($query,'rows');
+				if(my $curcdr_ref = $curcdr_rows->fetchrow_hashref()){
+					$idflag++;
+					$childrens{'main'}->{'pflag'} = 0;
+				}else{					
+					$childrens{'main'}->{'pflag'} = 1;
+				}
 			}else{
 				$relates{$relate_ref->{'id'}} = $relate_ref;
 			}
@@ -208,6 +230,10 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	#		$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$accounts{'id'}',astercrm_groupid='$accounts{'groupid'}' WHERE id='$clild_ref->{'id'}'";
 	#		&executeQuery($query,'');
 		}
+	}
+
+	if($idflag == 0){
+		$mycdrid = $ref->{'id'};
 	}
 
 	#if($relate_count > 1){
@@ -233,7 +259,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				$mainaccounts{'id'} = $accountinfo{$childrens{'main'}->{'src'}}{'id'};
 				$mainaccounts{'groupid'} = $accountinfo{$childrens{'main'}->{'src'}}{'groupid'};
 			}elsif($accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}} > 0){
-				$astercrm_groupid = $accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}};
+				$mainaccounts{'groupid'} = $accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}};
 			}
 		}
 
@@ -242,15 +268,17 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				next;
 			}
 			$children .= "$curid,";	
-			$query = "UPDATE mycdr set ischild = 'yes', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$curid'";
+			$query = "UPDATE $cdrTbl set ischild = 'yes', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$curid'";
 			#print $query."\n";
 			&executeQuery($query,'');
 		}
 
 		if(exists $childrens{'main'}){
-			$query = "UPDATE mycdr set children = '$children', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$childrens{'main'}->{'id'}'";
-			#print $query."\n";
-			&executeQuery($query,'');
+			if($childrens{'main'}->{'pflag'}){
+				$query = "UPDATE $cdrTbl set children = '$children', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$childrens{'main'}->{'id'}'";
+				#print $query."\n";
+				&executeQuery($query,'');
+			}
 		}
 		
 		foreach my $curid (sort keys %relates) {
@@ -287,13 +315,13 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				$astercrm_groupid = $accountinfo{'queuegroup'}{$relates{$curid}->{'queue'}};
 			}
 			
-			$query = "UPDATE mycdr set processed='1',accountid='$accountid',astercrm_groupid='$astercrm_groupid' WHERE id='$curid'";
+			$query = "UPDATE $cdrTbl set processed='1',accountid='$accountid',astercrm_groupid='$astercrm_groupid' WHERE id='$curid'";
 			#print $query."\n";
 			&executeQuery($query,'');
 		}
 
 		foreach my $curid (sort keys %droprecords) {
-			$query = "UPDATE mycdr set processed='-1' WHERE id='$curid'";
+			$query = "UPDATE $cdrTbl set processed='-1' WHERE id='$curid'";
 			#print $query."\n";
 			&executeQuery($query,'');
 		}
@@ -306,6 +334,14 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	#exit;
 	
 }
+
+if($mycdrid > 0){
+	$cdr_lastid = $mycdrid;
+}
+
+open (CIPHERTEXT, ">$Bin/processcdrlastid.txt");
+print CIPHERTEXT $cdr_lastid;
+close CIPHERTEXT;
 
 my %campaigndata;
 my $query = "SELECT * FROM campaigndialedlist WHERE processed = 'no' ORDER BY dialedtime ASC ";
