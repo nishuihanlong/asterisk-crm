@@ -2811,10 +2811,10 @@ Class astercrm extends PEAR{
 				}
 				$rowc[] = $row['duration'];
 				$rowc[] = $row['billsec'];
-				if($row['fileformat'] == 'error'){
-					$rowc['filename'] = '';
-				}else{
+				if($row['processed'] == 'yes' && $row['fileformat'] != 'error' ) {
 					$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
+				} else {
+					$rowc['filename'] = '';
 				}
 				$table->addRow("mycdr",$rowc,false,false,false,$divName,$fields);
 			}
