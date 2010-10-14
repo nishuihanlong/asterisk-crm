@@ -4,7 +4,7 @@ new features in 0.063
 	could add the number to dnc list in agent portal page
 	could set if add '/n' when dial in campaign page
 	added disabed dial button when agent in call
-	added attend tranfer(with asterisk 1.6.x)
+	added attend tranfer(with asterisk 1.6.x) in portal page
 	added check current asterisk version
 	fixed bug of import diallist
 	added memo in diallist
@@ -140,3 +140,8 @@ astercrm features(0.063)
 	agent break function
 	realtime queue status 
 	reload or restart asterisk in web
+	my tickets
+	dialedlist statistic
+	loigin/logoff as dynamic agent to queue
+	attend tranfer(with asterisk 1.6.x) in portal page
+	
