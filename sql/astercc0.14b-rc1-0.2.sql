@@ -115,6 +115,7 @@ CREATE TABLE `campaigndialedlist` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+ALTER TABLE dialedlist ADD `processed` enum('yes','no') NOT NULL default 'no';
 ALTER TABLE dialedlist ADD `memo` varchar(255) NOT NULL default '';
 ALTER TABLE dialedlist ADD billsec int(11) NOT NULL DEFAULT 0 after `duration` ;
 ALTER TABLE dialedlist ADD billsec_leg_a int(11) NOT NULL DEFAULT 0 after `billsec` ;
