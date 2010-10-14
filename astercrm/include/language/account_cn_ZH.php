@@ -31,4 +31,6 @@ $can_not_delete_your_own_account = "不能删除自己的账户";
 $like = "包含";
 $please_add_group_first = "请先添加用户组";
 $adding_agents = '添加动态坐席';
+$agent = '坐席';
+$name = '名字';
 ?>

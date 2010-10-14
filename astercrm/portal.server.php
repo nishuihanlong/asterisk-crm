@@ -1570,7 +1570,7 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 
 			if($row_campaign['callerid'] != ""){
 				$callerid = $row_campaign['callerid'];
-				$variable = '__CUSCID='.$dest.'|';
+				$variable = '__CUSCID='.$dest.$_SESSION['asterisk']['paramdelimiter'];
 			}
 
 			$incontext = $outcontext;
@@ -1583,13 +1583,13 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 
 			if($row_campaign['callerid'] != ""){
 				$callerid = $row_campaign['callerid'];
-				$variable = '__CUSCID='.$dest.'|';
+				$variable = '__CUSCID='.$dest.$_SESSION['asterisk']['paramdelimiter'];
 			}
 			$dest = $src;
 		}
 
-		$variable .= '__CAMPAIGNID='.$row_campaign['id'].'|'; #传拨号计划id给asterisk
-		$variable .= '__DIALEDLISTID='.$dialedlistid.'|'; #dialedlist id给asterisk
+		$variable .= '__CAMPAIGNID='.$row_campaign['id'].$_SESSION['asterisk']['paramdelimiter']; #传拨号计划id给asterisk
+		$variable .= '__DIALEDLISTID='.$dialedlistid; #dialedlist id给asterisk
 		
 	}else{
 		$variable .= '__CUSCID='.$_SESSION['curuser']['extension'];

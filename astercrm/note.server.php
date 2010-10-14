@@ -126,6 +126,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'priority';
 	$fields[] = 'contact';
 	$fields[] = 'customer';
+	$fields[] = 'callerid';
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 
@@ -136,6 +137,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("priority");
 	$headers[] = $locate->Translate("contact");
 	$headers[] = $locate->Translate("customer_name");//"Customer Name";
+	$headers[] = $locate->Translate("callerid");
 	$headers[] = $locate->Translate("create_time");//"Create By";
 	$headers[] = $locate->Translate("create_by");
 
@@ -144,8 +146,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="8%"';
 	$attribsHeader[] = 'width="19%"';
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="15%"';
-	$attribsHeader[] = 'width="22%"';
+	$attribsHeader[] = 'width="12%"';
+	$attribsHeader[] = 'width="20%"';
+	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
 //	$attribsHeader[] = 'width="5%"';
@@ -166,8 +169,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callerid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
+	
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -175,6 +180,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'priority';
 	$fieldsFromSearch[] = 'contact.contact';
 	$fieldsFromSearch[] = 'customer.customer';
+	$fieldsFromSearch[] = 'note.callerid';
 	$fieldsFromSearch[] = 'note.cretime';
 	$fieldsFromSearch[] = 'note.creby';
 
@@ -184,6 +190,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("priority");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("callerid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
 
@@ -206,6 +213,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['priority'];
 		$rowc[] = $row['contact'];
 		$rowc[] = $row['customer'];
+		$rowc[] = $row['callerid'];
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';

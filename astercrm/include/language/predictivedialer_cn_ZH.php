@@ -49,4 +49,11 @@ $pause = "暂停";
 $continue = "继续";
 $members = "座席列表";
 $waiting_callers = "排队号码";
+$agenttotal = "座席总数";
+$in_use = "使用中";
+$paused = "已暂停";
+$unavailable = "不可用";
+$invalid = "无效";
+$has_taken_no_calls_yet = "未接听电话座席数";
+$longest_idle_agent = "空闲时间最长座席";
 ?>

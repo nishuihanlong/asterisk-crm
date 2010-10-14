@@ -423,10 +423,10 @@ Class astercrm extends PEAR{
 	
 	function insertNewNote($f,$customerid,$contactid){
 		global $db;
-
 		$f = astercrm::variableFiler($f);
 		$query= "INSERT INTO note SET "
 				."note='".$f['note']."', "
+				."callerid='".$f['iptcallerid']."', "
 				."attitude='".$f['attitude']."', "
 				."priority=".$f['priority'].", "
 				."private='".$f['private']."', "
