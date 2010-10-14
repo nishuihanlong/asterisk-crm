@@ -56,5 +56,5 @@ $paused = "已暂停";
 $unavailable = "不可用";
 $invalid = "无效";
 $has_taken_no_calls_yet = "未接听电话座席数";
-$longest_idle_agent = "空闲时间最长座席";
+$longest_waitting_agent = "等待时间最长座席";
 ?>

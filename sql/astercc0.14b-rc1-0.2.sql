@@ -212,3 +212,5 @@ CREATE TABLE `queue_agent` (
 
 
 ALTER TABLE `campaigndialedlist` ADD `recycles` int(11) NOT NULL default 0 AFTER `processed`;#2010/09/28
+
+ALTER TABLE `note` ADD `callerid` varchar(30) NOT NULL default '';

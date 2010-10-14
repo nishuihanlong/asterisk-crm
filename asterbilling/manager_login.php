@@ -104,7 +104,9 @@ require_once('manager_login.common.php');
 				  </table>
 
 				</div>
-				<div class="right"></div><div id="outputDiv"></div>
+				<div class="right">&nbsp;</div>
+				<div class="right">&copy; 2004-2010 astercc.org</div>
+				<div class="right">version: 0.13 in asterCC 0.2</div>
 		  </div></form></div>
 	    </div>
 	</body>

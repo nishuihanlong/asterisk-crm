@@ -152,7 +152,8 @@ add new field amount and total in table accountgroup to store all selling and al
 ----------------------------------------------------------------------------------
 0.13
 2010-08-18 fixed bug of update all reseller epayment information in profile page.
-2010-08-25 add the parameter 'callshop_pay_fee' in asterbilling.conf and reseller profile to control if callshop pays the fee by paypal.
+2010-08-25 added the parameter 'callshop_pay_fee' in asterbilling.conf and reseller profile to control if callshop pays the fee by paypal.
+2010-10-12 improved removePrefix in astercc.conf, supports like "removePrefix = 00,011"
 ----------------------------------------------------------------------------------
 
 import时如果数据量大会报错

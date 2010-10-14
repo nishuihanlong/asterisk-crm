@@ -111,7 +111,7 @@ function showStatus($curupdated){
 				$idletime_tmp = $idletime_tmp['0'];
 				preg_match("/[0-9]+/",$idletime_tmp,$idletime);
 				$idletime = $idletime['0'];
-				if($idletime > $longestidletime){
+				if($idletime > $longestidletime && !$row_agent['ispaused'] && strtolower($row_agent['agent_status']) == 'not in use'){
 					$longestidle = $row_agent['agent']."($idletime secs)";
 					$longestidletime = $idletime;
 				}
@@ -129,7 +129,7 @@ function showStatus($curupdated){
 			}elseif(strtolower($row_agent['agent_status']) == 'invalid'){
 				$invalidcount++;
 			}else{
-				if(strtolower($row_agent['ispaused'])){
+				if($row_agent['ispaused']){
 					$pausedcount++;
 				}elseif(strtolower($row_agent['agent_status']) == 'not in use'){
 					$waittingcount++;
@@ -214,7 +214,7 @@ function showStatus($curupdated){
 			$dhtml .= "<tr><td>".$row_caller['data']."</td></tr>";
 		}
 
-		$agenthtml = "<tr><td><b>".$locate->Translate("agenttotal").":&nbsp;</b>$agenttotal &nbsp;<b>".$locate->Translate("In use").":&nbsp;</b>$inusecount &nbsp;<b>".$locate->Translate("Waitting").":&nbsp;</b>$waittingcount &nbsp;<b>".$locate->Translate("Paused").":&nbsp;</b>$pausedcount &nbsp;<b>".$locate->Translate("Unavailable").":&nbsp;</b>$unavailablecount &nbsp;<b>".$locate->Translate("Invalid").":&nbsp;</b>$invalidcount  &nbsp;<b>".$locate->Translate("has taken no calls yet").":&nbsp;</b>$nocallcount	<div><b>".$locate->Translate("Longest idle agent").":&nbsp;</b>$longestidle</div></td></tr>";
+		$agenthtml = "<tr><td><b>".$locate->Translate("agenttotal").":&nbsp;</b>$agenttotal &nbsp;<b>".$locate->Translate("In use").":&nbsp;</b>$inusecount &nbsp;<b>".$locate->Translate("Waitting").":&nbsp;</b>$waittingcount &nbsp;<b>".$locate->Translate("Paused").":&nbsp;</b>$pausedcount &nbsp;<b>".$locate->Translate("Unavailable").":&nbsp;</b>$unavailablecount &nbsp;<b>".$locate->Translate("Invalid").":&nbsp;</b>$invalidcount  &nbsp;<b>".$locate->Translate("has taken no calls yet").":&nbsp;</b>$nocallcount	<div><b>".$locate->Translate("Longest waitting agent").":&nbsp;</b>$longestidle</div></td></tr>";
 		$dhtml = $dthtml.$agenthtml.$dhtml;
 		$html .= $dhtml."</tbody></table></td></tr>";
 		$dhtml = '';

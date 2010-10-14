@@ -34,7 +34,7 @@ $|=1; #auto flash
 my $debug = 1;
 
 #my $conf_file = "$Bin/astercc.conf" ;
-my $conf_file = "/var/www/html/asterCC/astercrm/astercrm.conf.php" ;
+my $conf_file = "/opt/asterisk/scripts/astercc/astercc.conf" ;
 
 # read parameter from conf file
 my $cfg = new Config::IniFiles -file => $conf_file;
@@ -74,7 +74,11 @@ my $campaign_id = 0;
 my $ref;
 my $target;
 my $extension;
-my $paramdelimiter = trim($cfg->val('asterisk', 'paramdelimiter'));
+
+my $paramdelimiter = '|';
+if ($input{'version'} =~ /1\.6/ ) {
+	$paramdelimiter = ',';
+}
 
 #$AGI->verbose($input{'extension'});
 #$AGI->verbose($input{'callerid'});
