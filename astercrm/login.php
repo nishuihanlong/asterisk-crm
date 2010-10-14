@@ -125,10 +125,11 @@ require_once('login.common.php');
 			  <td><div id="loginDiv" name="loginDiv" ></div></td>
 			</tr>
 		  </table>
-		<div id="copyright"><br>&copy; 2004-2008 Sonicwell Inc.All Rights Reserved.</div>
+		<div id="copyright"><br><span style="font-size:20px;">&copy;</span> 2004-2010 astercc.org </div>
 		</form>
 		</div>
-		<div id="sonicwelllogo"><img src="skin/default/images/sonicwell_logo.gif" /></div>
+		<div id="sonicwelllogo">version: 0.063 in asterCC 0.2</div>
+		<!--<div id="sonicwelllogo"><img src="skin/default/images/sonicwell_logo.gif" /></div>-->
 		</div>
 	</body>
 </html>

@@ -51,6 +51,7 @@ $members = "座席列表";
 $waiting_callers = "排队号码";
 $agenttotal = "座席总数";
 $in_use = "使用中";
+$waitting = "等待中";
 $paused = "已暂停";
 $unavailable = "不可用";
 $invalid = "无效";

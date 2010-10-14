@@ -90,6 +90,7 @@ function showStatus($curupdated){
 		$invalidcount = 0;
 		$unavailablecount = 0;
 		$nocallcount = 0;
+		$waittingcount = 0;
 		$agenttotal = 0;
 		$longestidle = '';
 		$longestidletime = 0;
@@ -111,7 +112,7 @@ function showStatus($curupdated){
 				preg_match("/[0-9]+/",$idletime_tmp,$idletime);
 				$idletime = $idletime['0'];
 				if($idletime > $longestidletime){
-					$longestidle = $row_agent['agent']."($idletime)";
+					$longestidle = $row_agent['agent']."($idletime secs)";
 					$longestidletime = $idletime;
 				}
 			}else{
@@ -130,6 +131,8 @@ function showStatus($curupdated){
 			}else{
 				if(strtolower($row_agent['ispaused'])){
 					$pausedcount++;
+				}elseif(strtolower($row_agent['agent_status']) == 'not in use'){
+					$waittingcount++;
 				}
 			}
 			
@@ -211,7 +214,7 @@ function showStatus($curupdated){
 			$dhtml .= "<tr><td>".$row_caller['data']."</td></tr>";
 		}
 
-		$agenthtml = "<tr><td><b>".$locate->Translate("agenttotal").":&nbsp;</b>$agenttotal &nbsp;<b>".$locate->Translate("In use").":&nbsp;</b>$inusecount &nbsp;<b>".$locate->Translate("Paused").":&nbsp;</b>$pausedcount &nbsp;<b>".$locate->Translate("Unavailable").":&nbsp;</b>$unavailablecount &nbsp;<b>".$locate->Translate("Invalid").":&nbsp;</b>$invalidcount &nbsp;<b>".$locate->Translate("has taken no calls yet").":&nbsp;</b>$nocallcount	<div><b>".$locate->Translate("Longest idle agent").":&nbsp;</b>$longestidle</div></td></tr>";
+		$agenthtml = "<tr><td><b>".$locate->Translate("agenttotal").":&nbsp;</b>$agenttotal &nbsp;<b>".$locate->Translate("In use").":&nbsp;</b>$inusecount &nbsp;<b>".$locate->Translate("Waitting").":&nbsp;</b>$waittingcount &nbsp;<b>".$locate->Translate("Paused").":&nbsp;</b>$pausedcount &nbsp;<b>".$locate->Translate("Unavailable").":&nbsp;</b>$unavailablecount &nbsp;<b>".$locate->Translate("Invalid").":&nbsp;</b>$invalidcount  &nbsp;<b>".$locate->Translate("has taken no calls yet").":&nbsp;</b>$nocallcount	<div><b>".$locate->Translate("Longest idle agent").":&nbsp;</b>$longestidle</div></td></tr>";
 		$dhtml = $dthtml.$agenthtml.$dhtml;
 		$html .= $dhtml."</tbody></table></td></tr>";
 		$dhtml = '';
