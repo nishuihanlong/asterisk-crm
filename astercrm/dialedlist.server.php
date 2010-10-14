@@ -273,7 +273,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Uniqueid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Result By");
-	//$fieldsFromSearchShowAs[] = $locate->Translate("Dialed By");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed By");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Tried");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Dialed time");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group");
