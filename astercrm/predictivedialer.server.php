@@ -139,7 +139,7 @@ function predictiveDialer($f){
 	// 检查系统目前的通话情况
 
 	//if($_SESSION['curuser']['usertype'] == 'admin'){
-		$sql = "SELECT curcdr.*,dialedlist.id as did,dialedlist.dialednumber,dialedlist.campaignid,dialedlist.dialedby,dialedlist.channel FROM curcdr LEFT JOIN dialedlist ON curcdr.srcchan=dialedlist.channel OR curcdr.dstchan=dialedlist.channel WHERE curcdr.id > 0 ORDER by curcdr.id desc";
+		$sql = "SELECT curcdr.*,dialedlist.id as did,dialedlist.dialednumber,dialedlist.campaignid,dialedlist.dialedby,dialedlist.channel FROM curcdr LEFT JOIN dialedlist ON curcdr.srcchan=dialedlist.channel OR curcdr.dstchan=dialedlist.channel WHERE curcdr.id > 0 AND dialedlist.channel != '' ORDER by curcdr.id desc";
 		$curdiledlist = $db->query($sql);
 		//$curcdr = astercrm::getAll("curcdr");
 	//}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){

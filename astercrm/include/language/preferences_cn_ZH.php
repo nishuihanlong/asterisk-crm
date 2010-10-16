@@ -72,4 +72,9 @@ $asterisk_have_been_restart = "重启asterisk完毕";
 $server_is_rebooting = "服务器正在重启";
 $server_is_shuting_down = "服务器正在关机";
 $sys_agent_pannel_setting = "控制座席页各面板默认是否显示";
+$survey = '问卷';
+$enable_surveynote = '启用问卷备注';
+$close_popup_after_survey = '问卷添加后,关闭弹出信息';
+$popup_diallist = '弹出拨号列表相关信息';
+$diallist = '拨号列表';
 ?>

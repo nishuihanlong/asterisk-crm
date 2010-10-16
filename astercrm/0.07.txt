@@ -1,0 +1,147 @@
+new features in 0.07
+	improved error debug with executed sql
+	added auto clear popup after call hangup
+	could add the number to dnc list in agent portal page
+	could set if add '/n' when dial in campaign page
+	added disabed dial button when agent in call
+	added attend tranfer(with asterisk 1.6.x) in portal page
+	added check current asterisk version
+	fixed bug of import diallist
+	added memo in diallist
+	improved use post methed to popup external crm page
+	added my tickets
+	fixed bug of deleted in dnc list
+	improved processcdr.pl
+	improved processmonitors.pl
+	added billsec_leg_a ang queue number in cdr
+	added statistic in dialedlist page
+	merged the cdr and monitorrecord page
+	added loigin/logoff as dynamic agent to queue(the queue in campaign)
+	improved import page
+	improved astercrm.agi
+	added the memory table dialedlist
+	improved the predictivedialer daemon
+	improved the astercc daemon
+	added initTables(if we clear all temp data when restart astercc) in astercc.conf
+	added removeIncompleteCDR(change this to 1 if you dont want to keep cdr without dstchan) in astercc.conf
+	improved queuestatus page
+	added check duplicates in diallist page
+
+
+0.07 新功能
+	改善对错误的处理,数据库操作出错时打印错误信息
+	增加自动清除弹屏功能,组管理中可设置通话结束后,指定时长内自动清除弹屏页
+	坐席页增加将号码加入免拨列表的功能
+	拨号计划中增加了控制是否同时拨打双方号码的参数
+	通话状态下禁用拨号按钮
+	座席页面增加咨询转接(asterisk 1.6.x)
+	增加了对当前使用的asterisk版本的判断
+	解决了已拨列表导出时缺少字段的问题
+	拨号列表增加了备注
+	外部CRM弹屏改进为POST方式传递数据
+	增加了任务功能
+	修正了免拨列表删除功能的问题
+	改进了processcdr.pl
+	改进了processmonitor.pl,录音改为后合并，后处理，以提高系统性能
+	cdr中增加了第一方接通时长的记录
+	cdr中增加了对队列号码的记录
+	已拨列表页增加了统计功能
+	录音记录页与通话记录页合并
+	座席页增加了以动态座席方式签入签出队列功能(所在组拨号计划中指定的队列)
+	改进了导入功能页
+	改进了astercrm.agi
+	增加了dialedlist内存表,减少预拨号对系统资源消耗
+	改进了预拨号器
+	改进了astercc进程
+	astercc.conf 增加initTable参数,控制启动astercc进程时是否处理curcdr等缓存表
+	astercc.conf 增加removeIncompleteCDR,控制是否保留不完整的cdr记录
+	改进了队列状态页
+	拨号列表页增加了号码去重功能
+
+astercrm features(0.063)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	list and listen to the monitor records
+	check history phone recorded on line
+	customer call history
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list
+	scheduler dialer
+	customer dialer
+	could work with astercc
+	cdr(in astercc mode)
+	DID inforamtion when pop up
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)
+	support dynamic agent mode
+	extension whisper
+	DID number display
+	support predictive dial dial out strategy
+	support import file which exist in server
+	recent cdr bind to monitor records
+	fax ext
+	support play gsm file in web
+	force monitor by group
+	update licence in web
+	auto install
+	system status monitor by groupadmin
+	predictive dial by groupadmin
+	multi mode search(like,=,<,>)
+	advance survey
+	callerid smart mathcing
+	barge-in and invite
+	predictive dialer direct to queue
+	dialer support dialout mutil-servers
+	support chinese address of google map 
+	support post more customer infomation to external CRM by URL
+	support count how long dynamic agent loged in the queue
+	private note
+	support licence with time limit
+	campaign result statistics
+	agent dialed result statistics
+	support set start time and end time for campaign
+	supply a shell for backup file and database
+	agent can add a scheduler dial for a customer
+	support set dial waittime in campaign	
+	agent can add a transfer link in note
+	astercrm workwith asterbilling simplely
+	supoort delete a uploaded file
+	agent break function
+	realtime queue status 
+	reload or restart asterisk in web
+	my tickets
+	dialedlist statistic
+	loigin/logoff as dynamic agent to queue
+	attend tranfer(with asterisk 1.6.x) in portal page
+	
