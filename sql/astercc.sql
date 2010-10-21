@@ -1717,4 +1717,25 @@ CREATE TABLE `localchannels` (
 `uniqueid` VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( `channel` ) ,
 UNIQUE (`channel`)
-) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci; 
+) ENGINE = HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `sendevent`;
+
+CREATE TABLE `sendevent` (
+  `id` int(11) NOT NULL auto_increment,
+  `src` varchar(50) NOT NULL default '',
+  `dst` varchar(50) NOT NULL default '',
+  `srcname` varchar(100) NOT NULL default '',  
+  `srcchan` varchar(100) NOT NULL default '',
+  `dstchan` varchar(100) NOT NULL default '',  
+  `didnumber` varchar(30) NOT NULL default '',
+  `starttime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `answertime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `calldate` datetime not null default '0000-00-00 00:00:00',  
+  `queue` varchar(30) NOT NULL DEFAULT '',  
+  `disposition` varchar(10) NOT NULL default '',
+  `curcdrid` int(11) NOT NULL default 0,
+  `pushstr` varchar(555) NOT NULL default '',
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY eventid(disposition,curcdrid)
+) ENGINE=HEAP DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
