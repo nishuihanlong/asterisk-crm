@@ -32,8 +32,8 @@
 #
 astercc=1
 astercctools=1
-asterrc=0
-astercclock=0
+asterrc=1
+astercclock=1
 asterccdaemon=1
 # the absolute path to your astercc binary,must included shell name, can not include options
 asterccpath="/opt/asterisk/scripts/astercc/astercc"
@@ -269,7 +269,7 @@ do
 		if [ $asterccRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterccSTATUS"
 		else
-		    if kill $asterccpid ; then
+		    if kill -9 $asterccpid ; then
 			echo "$0 $ARG: astercc stopped"
 		    else
 		        if [ ${astercc} -eq 1 ]; then
@@ -285,7 +285,7 @@ do
 		if [ $asterctRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterctSTATUS"
 		else
-		    if kill $asterctpid ; then
+		    if kill -9 $asterctpid ; then
 			echo "$0 $ARG: astercctools stopped"
 		    else
 			if [ ${astercctools} -eq 1 ]; then
@@ -301,7 +301,7 @@ do
 		if [ $asterrcRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterrcSTATUS"
 		else
-		    if kill $asterrcpid ; then
+		    if kill -9 $asterrcpid ; then
 			echo "$0 $ARG: asterrc stopped"
 		    else
 			    if [ ${asterrc} -eq 1 ]; then
@@ -317,7 +317,7 @@ do
 		if [ $asterlcRUNNING -eq 0 ]; then
 		    echo "$0 $ARG: $asterlcSTATUS"
 		else
-		    if kill $asterlcpid ; then
+		    if kill -9 $asterlcpid ; then
 			echo "$0 $ARG: astercclock stopped"
 		    else
 			if [ ${astercclock} -eq 1 ]; then

@@ -114,24 +114,8 @@ if($DIALPART eq 'CALLEE'){
 }elsif($DIALPART eq 'CALLER'){
 	#$AGI->exec("AMD");
 	my $customerphone = $input{'callerid'};
-	my $amdstatus = $AGI->get_variable("AMDSTATUS");
-	$AGI->verbose($amdstatus);
-	#$amdstatus = 'NOTSURE';
-	if($amdstatus eq 'HUMAN' || $amdstatus eq 'NOTSURE' ){
-		$query = "SELECT * FROM ".$db_prefix."campaign WHERE id = $campaign_id ";
-		my $campaign_rows = &executeQuery($query,'rows');
-		my $campaign_ref = $campaign_rows->fetchrow_hashref();
 
-		if ($campaign_ref) {
-			my $cuscid = $AGI->get_variable("CUSCID");
-			if($cuscid ne 'NONE'){
-				$AGI->set_variable("CALLERID(num)",$cuscid);
-				$customerphone = $cuscid;
-			}
-			$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'nextcontext'}/n".$paramdelimiter."40".$paramdelimiter."tT");
-		}
-		
-	}else{
+	if($extension eq 'fax'){
 		my $cuscid = $AGI->get_variable("CUSCID");
 		if($cuscid ne 'NONE'){
 			$AGI->set_variable("CALLERID(num)",$cuscid);
@@ -141,11 +125,11 @@ if($DIALPART eq 'CALLEE'){
 		my $group_id = 0;
 		if($dialed_id > 0 && $campaign_id >0){
 			
-			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$amdstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal')";
+			$query = "UPDATE ".$db_prefix."dialedlist SET detect='FAX' WHERE id='$dialed_id' ";
 			my $affect = &executeQuery($query,'');
 			if($affect > 0){
 			}else{
-				$query = "UPDATE ".$db_prefix."campaigndialedlist SET callresult='$amdstatus' WHERE dialednumber='$extension' AND (callresult='' OR callresult='normal') AND dialedtime > (now()-INTERVAL 60 SECOND) ";
+				$query = "UPDATE ".$db_prefix."campaigndialedlist SET detect='FAX' WHERE dialednumber='$extension' AND campaignid = $campaign_id AND dialedtime > (now()-INTERVAL 60 SECOND) ";
 			}
 
 			$query = "SELECT * FROM ".$db_prefix."survey WHERE campaignid = $campaign_id and enable = 1 ORDER BY cretime LIMIT 0,1";
@@ -179,9 +163,86 @@ if($DIALPART eq 'CALLEE'){
 			}else{
 				$customerid = $ref_customer->{'id'};
 			}
+			
 
-			$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$customerphone', surveynote = '$amdstatus', surveyid = '$survey_id', campaignid = '$campaign_id', uniqueid= '".$input{'uniqueid'}."', groupid = '$group_id',creby = 'system', cretime = now(), customerid='$customerid', contactid='$contactid'  ";
+			$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$customerphone', surveynote = 'FAX', surveyid = '$survey_id', campaignid = '$campaign_id', uniqueid= '".$input{'uniqueid'}."', groupid = '$group_id',creby = 'system', cretime = now(), customerid='$customerid', contactid='$contactid'  ";
 			&executeQuery($query);
+		}
+		
+	}else{
+		my $amdstatus = $AGI->get_variable("AMDSTATUS");
+		$AGI->verbose($amdstatus);
+		#$amdstatus = 'NOTSURE';
+		if($amdstatus eq 'HUMAN' || $amdstatus eq 'NOTSURE' ){
+			
+			$query = "UPDATE ".$db_prefix."dialedlist SET detect='$amdstatus' WHERE id='$dialed_id' ";
+			my $affect = &executeQuery($query,'');
+
+			$query = "SELECT * FROM ".$db_prefix."campaign WHERE id = $campaign_id ";
+			my $campaign_rows = &executeQuery($query,'rows');
+			my $campaign_ref = $campaign_rows->fetchrow_hashref();
+
+			if ($campaign_ref) {
+				my $cuscid = $AGI->get_variable("CUSCID");
+				if($cuscid ne 'NONE'){
+					$AGI->set_variable("CALLERID(num)",$cuscid);
+					$customerphone = $cuscid;
+				}
+				$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'nextcontext'}/n".$paramdelimiter."40".$paramdelimiter."tT");
+			}
+			
+		}else{
+			my $cuscid = $AGI->get_variable("CUSCID");
+			if($cuscid ne 'NONE'){
+				$AGI->set_variable("CALLERID(num)",$cuscid);
+				$customerphone = $cuscid;
+			}
+			my $survey_id;
+			my $group_id = 0;
+			if($dialed_id > 0 && $campaign_id >0){
+				
+				$query = "UPDATE ".$db_prefix."dialedlist SET detect='$amdstatus' WHERE id='$dialed_id' ";
+				my $affect = &executeQuery($query,'');
+				if($affect > 0){
+				}else{
+					$query = "UPDATE ".$db_prefix."campaigndialedlist SET detect='$amdstatus' WHERE dialednumber='$extension' AND campaignid = $campaign_id AND dialedtime > (now()-INTERVAL 60 SECOND) ";
+				}
+
+				$query = "SELECT * FROM ".$db_prefix."survey WHERE campaignid = $campaign_id and enable = 1 ORDER BY cretime LIMIT 0,1";
+				my $survey_rows = &executeQuery($query,'rows');
+				my $survey_ref = $survey_rows->fetchrow_hashref();
+
+				if ($survey_ref) {
+					$survey_id = $survey_ref->{'id'};
+					$group_id = $survey_ref->{'groupid'};
+				}else{
+					# 没有定义问卷
+					$survey_id = 0;
+				}
+			}
+
+			if ($survey_id>0) {
+				# 更新 surveyresult, 增加 phonenum 字段
+				my $customerid = 0;
+				my $contactid = 0;
+
+				$query = "SELECT id FROM customer WHERE phone='$customerphone' OR mobile='$customerphone' ORDER BY id DESC LIMIT 1";
+				my $rows_customer = &executeQuery($query,'rows');
+				my $ref_customer = $rows_customer->fetchrow_hashref();
+				if (!$ref_customer) {
+					$query = "SELECT id FROM contact WHERE phone='$customerphone' OR mobile='$customerphone' OR phone1='$customerphone'  OR phone2='$customerphone' ORDER BY id DESC LIMIT 1";
+					my $rows_contact = &executeQuery($query,'rows');
+					my $ref_contact = $rows_contact->fetchrow_hashref();
+					if ($ref_contact) {
+						$contactid = $ref_contact->{'id'};
+					}
+				}else{
+					$customerid = $ref_customer->{'id'};
+				}
+
+				$query = "INSERT INTO ".$db_prefix."surveyresult SET phonenumber = '$customerphone', surveynote = '$amdstatus', surveyid = '$survey_id', campaignid = '$campaign_id', uniqueid= '".$input{'uniqueid'}."', groupid = '$group_id',creby = 'system', cretime = now(), customerid='$customerid', contactid='$contactid'  ";
+				&executeQuery($query);
+			}
 		}
 	}
 	exit;
