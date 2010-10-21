@@ -524,9 +524,10 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = '',$curid,$dir
 
 	$myAsterisk->config['asmanager'] = $config['asterisk'];
 	$res = $myAsterisk->connect();
+
 	if (!$res){
 		$objResponse->addAlert($locate->Translate("failed when connect to AMI"));
-		return;
+		return $objResponse;
 	}
 
 	if ($action == 'start'){
@@ -2439,6 +2440,8 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'logoff');
 				$objResponse->addAssign("campaign-pause-".$row['id'],"style.color",'FFFFFF');
 				$objResponse->addAssign("campaign-".$row['id'],"style.color",'blue');
+				$objResponse->addAssign("campaign-".$row['id'],"style.cursor",'');
+				$objResponse->addAssign("campaign-".$row['id'],"title",'');
 			}elseif($action == 'pause'){
 				$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
 				$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continue');

@@ -46,4 +46,5 @@ $cal = "选择日期";
 $query = "查询";
 $recycles = "回收次数";
 $sec = "秒";
+$detect = "检测结果";
 ?>

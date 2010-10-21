@@ -131,7 +131,6 @@ $clientDst = $_REQUEST['clientdst'];
 		<input type="hidden" value="" id="maintable" name="maintable" />
 		<input type="hidden" value="export" id="exporttype" name="exporttype" />
 	</form>
-
 		<div id="divCopyright"></div>
 	</body>
 </html>

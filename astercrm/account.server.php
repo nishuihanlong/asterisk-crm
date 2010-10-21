@@ -286,8 +286,8 @@ function save($f){
 
 	if(trim($f['username']) == '' || trim($f['password']) == '' || trim($f['extension']) == '' || trim($f['usertype']) == '' || trim($f['firstname']) == '' || trim($f['lastname']) == ''){
 		//$objResponse->addScript('window.location.href="portal.php";');
-		$objResponse->addScript('alert("abc")');
-		//$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		//$objResponse->addScript('alert("abc")');
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
 
