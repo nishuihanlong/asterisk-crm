@@ -56,4 +56,6 @@ $rsd = "平均振铃时长";
 $hour = "小时";
 $min = "分";
 $sec = "秒";
+$this_campaing_is_busy_now = "此拨号计划已开启预拨号";
+$can_not_set_to_disable = "请停止后再禁用";
 ?>

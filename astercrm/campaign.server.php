@@ -300,19 +300,6 @@ function save($f){
 		return $objResponse->getXML();
 	}
 
-	if($f['amdenable'] == 'on'){
-		if($f['amdcontext'] == ''){
-			$objResponse->addAlert($locate->Translate("Please enter the amdcontext"));
-			$objResponse->addScript("document.getElementById('amdcontext').focus();");
-			return $objResponse->getXML();
-		}else{
-			$f['nextcontext'] = $f['incontext'];
-			$f['incontext'] = $f['amdcontext'];
-		}
-	}else{
-		$f['nextcontext'] = '';
-	}
-
 	if($f['crdenable'] == 'on'){
 		if($f['crdcontext'] == ''){
 			$objResponse->addAlert($locate->Translate("Please enter the crdcontext"));
@@ -322,8 +309,18 @@ function save($f){
 			$f['firstcontext'] = $f['outcontext'];
 			$f['outcontext'] = $f['crdcontext'];
 		}
+
+		if($f['amdcontext'] == ''){
+			$objResponse->addAlert($locate->Translate("Please enter the amdcontext"));
+			$objResponse->addScript("document.getElementById('amdcontext').focus();");
+			return $objResponse->getXML();
+		}else{
+			$f['nextcontext'] = $f['incontext'];
+			$f['incontext'] = $f['amdcontext'];
+		}
 	}else{
 		$f['firstcontext'] = '';
+		$f['nextcontext'] = '';
 	}
 
 	$respOk = Customer::insertNewCampaign($f); // add a new account
@@ -349,6 +346,15 @@ function save($f){
 function update($f){
 	global $locate;
 	$objResponse = new xajaxResponse();
+	
+	if( $f['enable'] == 0){
+		$campaign = Customer::getRecordById($f['id'],'campaign');
+		if($campaign['status'] == 'busy'){
+			$objResponse->addAlert($locate->Translate("This campaing is busy now").','.$locate->Translate("can not set to Disable"));
+			return $objResponse->getXML();
+		}
+	}
+
 	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
@@ -357,20 +363,7 @@ function update($f){
 		$objResponse->addAlert($locate->Translate("Please enter the queue number"));
 		return $objResponse->getXML();
 	}
-
-	if($f['amdenable'] == 'on'){
-		if($f['amdcontext'] == ''){
-			$objResponse->addAlert($locate->Translate("Please enter the amdcontext"));
-			$objResponse->addScript("document.getElementById('amdcontext').focus();");
-			return $objResponse->getXML();
-		}else{
-			$f['nextcontext'] = $f['incontext'];
-			$f['incontext'] = $f['amdcontext'];
-		}
-	}else{
-		$f['nextcontext'] = '';
-	}
-
+	
 	if($f['crdenable'] == 'on'){
 		if($f['crdcontext'] == ''){
 			$objResponse->addAlert($locate->Translate("Please enter the crdcontext"));
@@ -380,8 +373,18 @@ function update($f){
 			$f['firstcontext'] = $f['outcontext'];
 			$f['outcontext'] = $f['crdcontext'];
 		}
+
+		if($f['amdcontext'] == ''){
+			$objResponse->addAlert($locate->Translate("Please enter the amdcontext"));
+			$objResponse->addScript("document.getElementById('amdcontext').focus();");
+			return $objResponse->getXML();
+		}else{
+			$f['nextcontext'] = $f['incontext'];
+			$f['incontext'] = $f['amdcontext'];
+		}
 	}else{
 		$f['firstcontext'] = '';
+		$f['nextcontext'] = '';
 	}
 
 	$respOk = Customer::updateCampaignRecord($f);

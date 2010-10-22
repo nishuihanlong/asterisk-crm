@@ -818,8 +818,9 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	<div id="divCrm" name="divCrm"></div>
 	<div id="divPanel" name="divPanel" class="divPanel"></div>
 
-	<div id="divGetMsgInCampaignP" class="drsElement drsMoveHandle" style="left: 500px; top: 20px; position: absolute;z-index:0;text-align: center;border:1px dashed #EAEAEA;color:#006600; background:#fbfbfb;"> 
-		<div width="100%" class="divGetMsgInCampaigntitle"><?echo $locate->Translate("Campaign Pannel")?>(<?echo $locate->Translate("Queue")?>)&nbsp;&nbsp;&nbsp;&nbsp;<img src="skin/default/images/movedesc.png" onclick="if(xajax.$('divGetMsgInCampaign').style.display!='none'){xajax.$('divGetMsgInCampaign').style.display='none';this.src='skin/default/images/moveasc.png';xajax.$('divGetMsgInCampaignP').style.height='20px';}else{xajax.$('divGetMsgInCampaign').style.display='';this.src='skin/default/images/movedesc.png';xajax.$('divGetMsgInCampaignP').style.height='';}"></div><div width="100%" id="divGetMsgInCampaign"></div>
+	<div id="divGetMsgInCampaignP" class="drsElement drsMoveHandle" style="left: 500px; top: 20px; position: absolute;z-index:2;text-align: center;border:1px dashed #EAEAEA;color:#006600; background:#fbfbfb;"> 
+		<div width="100%" class="divGetMsgInCampaigntitle"><img src="skin/default/images/movedesc.png" onclick="if(xajax.$('divGetMsgInCampaign').style.display!='none'){xajax.$('divGetMsgInCampaign').style.display='none';this.src='skin/default/images/moveasc.png';xajax.$('divGetMsgInCampaignP').style.height='20px';}else{xajax.$('divGetMsgInCampaign').style.display='';this.src='skin/default/images/movedesc.png';xajax.$('divGetMsgInCampaignP').style.height='';}"><?echo $locate->Translate("Campaign Pannel")?>(<?echo $locate->Translate("Queue")?>)</div>
+		<div width="100%" id="divGetMsgInCampaign"></div>
 	</div>
 
     <div class="divExtension drsElement drsMoveHandle" 
@@ -830,7 +831,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 				border: 1px dashed #EAEAEA;    
 				color:#006600; background:#fbfbfb;">	
 				
-	<div class="divExtensiontitle"><?echo $locate->Translate("Group Pannel")?> <img src="skin/default/images/movedesc.png" onclick="if(xajax.$('divExtension').style.display!='none'){xajax.$('divExtension').style.display='none';this.src='skin/default/images/moveasc.png'}else{xajax.$('divExtension').style.display='';this.src='skin/default/images/movedesc.png'}"></div>
+	<div class="divExtensiontitle"><img src="skin/default/images/movedesc.png" onclick="if(xajax.$('divExtension').style.display!='none'){xajax.$('divExtension').style.display='none';this.src='skin/default/images/moveasc.png'}else{xajax.$('divExtension').style.display='';this.src='skin/default/images/movedesc.png'}"><?echo $locate->Translate("Group Pannel")?> </div>
 	<div id="divExtension" name="divExtension" >
 
 	</div>
@@ -868,4 +869,21 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 			<tr><td><fieldset><legend><?echo $locate->Translate("which customer has similar number"); ?>:</legend><div id="smartMsgDiv" style="width: 280px;height:160px;OVERFLOW-y:auto;OVERFLOW-x:auto;"></div></fieldset></td></tr></table></div>
 	<div id="divCopyright"></div>
 	</body>
+	<script type="text/javascript">
+        var Sys = {};
+        var ua = navigator.userAgent.toLowerCase();
+        var s;
+        (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] : 0;
+        //(s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+        //(s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+        //(s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+        //(s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+
+        //以下进行测试
+        if (Sys.ie == '7.0') xajax.$('divGetMsgInCampaignP').style.right = 250;//document.write('IE: ' + Sys.ie);
+        //if (Sys.firefox) document.write('Firefox: ' + Sys.firefox);
+        //if (Sys.chrome) document.write('Chrome: ' + Sys.chrome);
+        //if (Sys.opera) document.write('Opera: ' + Sys.opera);
+        //if (Sys.safari) document.write('Safari: ' + Sys.safari);
+    </script> 
 </html>

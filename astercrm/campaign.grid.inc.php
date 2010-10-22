@@ -399,7 +399,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Call Result Detect").'</td>
-					<td align="left"><input type="checkbox" id="crdenable" name="crdenable" onclick="if(this.checked){xajax.$(\'crdtr\').style.display=\'\';}else{xajax.$(\'crdtr\').style.display=\'none\';}">&nbsp;</td>
+					<td align="left"><input type="checkbox" id="crdenable" name="crdenable" onclick="if(this.checked){xajax.$(\'crdtr\').style.display=\'\';xajax.$(\'amdtr\').style.display=\'\';}else{xajax.$(\'crdtr\').style.display=\'none\';xajax.$(\'amdtr\').style.display=\'none\';}">&nbsp;</td>
 				</tr>
 				<tr id="crdtr" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("CRD context").'</td>
@@ -409,10 +409,7 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$config['system']['outcontext'].'"></td>
 				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Answering Machine Detect").'</td>
-					<td align="left"><input type="checkbox" id="amdenable" name="amdenable" onclick="if(this.checked){xajax.$(\'amdtr\').style.display=\'\';}else{xajax.$(\'amdtr\').style.display=\'none\';}">&nbsp;</td>
-				</tr>
+				
 				<tr id="amdtr" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("AMD context").'</td>
 					<td align="left"><input type="text" id="amdcontext" name="amdcontext" size="26" maxlength="60" value="'.$config['system']['amdcontext'].'" ></td>
@@ -563,26 +560,24 @@ class Customer extends astercrm
 			else
 				$html .= '>&nbsp;'.$locate->Translate("Disable").'&nbsp;<input type="radio" id="enable" name="enable" value="0" checked></td>';
 			
-			if($campaign['nextcontext'] != ''){
+			if($campaign['firstcontext'] != '' && $campaign['nextcontext'] != ''){
+				$crdchecked = 'checked';
+				$outcontext = $campaign['firstcontext'];
+				$crdcontext = $campaign['outcontext'];
+				$crdtr='';
+
 				$amdchecked = 'checked';
 				$incontext = $campaign['nextcontext'];
 				$amdcontext = $campaign['incontext'];
 				$amdtr='';
 			}else{
-				$incontext = $campaign['incontext'];
-				$amdcontext = $config['system']['amdcontext'];
-				$amdtr='style="display:none"';
-			}
-
-			if($campaign['firstcontext'] != ''){
-				$crdchecked = 'checked';
-				$outcontext = $campaign['firstcontext'];
-				$crdcontext = $campaign['outcontext'];
-				$amdtr='';
-			}else{
 				$outcontext = $campaign['outcontext'];
 				$crdcontext = $config['system']['crdcontext'];
 				$crdtr='style="display:none"';
+
+				$incontext = $campaign['incontext'];
+				$amdcontext = $config['system']['amdcontext'];
+				$amdtr='style="display:none"';
 			}
 
 			$html .= 
@@ -601,7 +596,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Call Result Detect").'</td>
-					<td align="left"><input type="checkbox" id="crdenable" name="crdenable" onclick="if(this.checked == true){xajax.$(\'crdtr\').style.display=\'\';}else{xajax.$(\'crdtr\').style.display=\'none\';}" '.$crdchecked.'>&nbsp;</td>
+					<td align="left"><input type="checkbox" id="crdenable" name="crdenable" onclick="if(this.checked == true){xajax.$(\'crdtr\').style.display=\'\';xajax.$(\'amdtr\').style.display=\'\';}else{xajax.$(\'crdtr\').style.display=\'none\';xajax.$(\'amdtr\').style.display=\'none\';}" '.$crdchecked.'>&nbsp;</td>
 				</tr>
 				<tr id="crdtr" '.$crdtr.'>
 					<td nowrap align="left">'.$locate->Translate("CRD context").'</td>
@@ -610,11 +605,7 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Outcontext").'*</td>
 					<td align="left"><input type="text" id="outcontext" name="outcontext" size="30" maxlength="60" value="'.$outcontext.'"></td>
-				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("Answering Machine Detect").'</td>
-					<td align="left"><input type="checkbox" id="amdenable" name="amdenable" onclick="if(this.checked == true){xajax.$(\'amdtr\').style.display=\'\';}else{xajax.$(\'amdtr\').style.display=\'none\';}" '.$amdchecked.'>&nbsp;</td>
-				</tr>
+				</tr>				
 				<tr id="amdtr" '.$amdtr.'>
 					<td nowrap align="left">'.$locate->Translate("AMD context").'</td>
 					<td align="left"><input type="text" id="amdcontext" name="amdcontext" size="26" maxlength="60" value="'.$amdcontext.'" ></td>
