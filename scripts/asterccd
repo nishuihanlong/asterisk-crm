@@ -30,25 +30,53 @@
 #
 # which daeman could be control by this script, set daemonname=1 if you want to control else set daemonname=0.
 #
-astercc=1
-astercctools=1
-asterrc=1
-astercclock=1
-asterccdaemon=1
-# the absolute path to your astercc binary,must included shell name, can not include options
-asterccpath="/opt/asterisk/scripts/astercc/astercc"
+asterccmainpath="/opt/asterisk/scripts/astercc/"
+
+astercc=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${astercc}" == "X" ]; then
+  astercc=0
+fi
+
+astercctools=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${astercctools}" == "X" ]; then
+  astercctools=0
+fi
+
+asterrc=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep asterrc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${asterrc}" == "X" ]; then
+  asterrc=0
+fi
+
+astercclock=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercclock_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${astercclock}" == "X" ]; then
+  astercclock=0
+fi
+
+asterccdaemon=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep asterccdaemon_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${asterccdaemon}" == "X" ]; then
+  asterccdaemon=0
+fi
+
+#path of your astercc
+asterccpath="${asterccmainpath}/astercc"
 #
-# the absolute path to your asterrc binary,must included shell name, can not include options
-asterrcpath="/opt/asterisk/scripts/astercc/asterrc"
+#path of your asterrc
+asterrcpath="${asterccmainpath}/asterrc"
 #
-# the absolute path to your astercctools binary, must included shell name, can not be included options
-asterctpath="/opt/asterisk/scripts/astercc/astercctools"
+#path of your astercctools
+asterctpath="${asterccmainpath}/astercctools"
 #
-#the absolute path to your astercclock binary, must included shell name, can not be included options
-asterlcpath="/opt/asterisk/scripts/astercc/astercclock"
+#path of your astercclock
+asterlcpath="${asterccmainpath}/astercclock"
 #
-# the absolute path to your asterrc monitor---asterccdaemon, must included shell name, can not be included options
-asterccdaemonpath="/opt/asterisk/scripts/astercc/asterccdaemon"
+# the absolute path to your asterrc monitor---asterccdaemon
+asterccdaemonpath="${asterccmainpath}/asterccdaemon"
+
 #
 # --------------------                              --------------------
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
@@ -61,31 +89,6 @@ asterccpid=`ps -ef |grep -v grep |grep -E /asterc[a-z]{0,1\}[.\ ]+-d |awk '{prin
 asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
-
-#generate monitor parm
-if [ ${astercc} -eq 1 ]; then
-	monitorparm='yes'
-else
-	monitorparm='no'
-fi
-
-if [ ${astercctools} -eq 1 ]; then
-	monitorparm=${monitorparm}' yes'
-else
-	monitorparm=${monitorparm}' no'
-fi
-
-if [ ${asterrc} -eq 1 ]; then
-	monitorparm=${monitorparm}' yes'
-else
-	monitorparm=${monitorparm}' no'
-fi 
-
-if [ ${astercclock} -eq 1 ]; then
-	monitorparm=${monitorparm}' yes'
-else
-	monitorparm=${monitorparm}' no'
-fi
 
 if [ "x$ARGV" = "x" ] ; then 
     ARGS="start"
@@ -230,7 +233,7 @@ do
 			if [ "x$monitorpid" != "x" ]; then
 				echo "$0 $ARG: asterccdaemon (pid $monitorpid) already running"
 			else
-				/bin/bash $asterccdaemonpath ${monitorparm} &
+				/bin/bash $asterccdaemonpath &
 				monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 				if [ "x$monitorpid" != "x" ]; then
 					echo "$0 $ARG: asterccdaemon started"
@@ -335,7 +338,7 @@ do
 		if [ "x$monitorpid" == "x" ]; then
 			echo "$0 $ARG: asterccdaemon not running, trying to start"
 			if test $asterccdaemonpath; then
-				/bin/bash $asterccdaemonpath ${monitorparm} &
+				/bin/bash $asterccdaemonpath &
 				monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 				if [ "x$monitorpid" == "x" ]; then
 					echo "$0 $ARG: asterccdaemon could not be started"
@@ -348,7 +351,7 @@ do
 		else
 			if kill -9 $monitorpid; then
 				if test $asterccdaemonpath; then
-					/bin/bash $asterccdaemonpath ${monitorparm} &
+					/bin/bash $asterccdaemonpath &
 					monitorpid=`ps -ef |grep -v grep |grep asterccdaemon |awk '{print $2}'`
 					if [ "x$monitorpid" == "x" ]; then
 						echo "$0 $ARG: asterccdaemon could not be started"

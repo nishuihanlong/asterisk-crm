@@ -9,47 +9,81 @@
 # |||||||||||||||||||| CONFIGURATION SECTION  ||||||||||||||||||||
 # --------------------                              --------------------   
 #
-# the absolute path to your asterccd shell, must included shell name, can not include options
-asterccdpath="/opt/asterisk/scripts/astercc/asterccd"
-# the absolute path to your monitor log, can not include logfile name
-monitorlogpath="/opt/asterisk/scripts/astercc/"
+
+# the absolute path to your astercc script diretory
+asterccpath="/opt/asterisk/scripts/astercc/"
+
+asterccdpath=${asterccpath}/asterccd
+
 i=0
+
+sleepsec=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep asterccdaemon_sleep[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${sleepsec}" == "X" ];then
+	sleepsec=1
+fi
+
 #
 # --------------------                              --------------------
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
 
-if [ ! -f $monitorlogpath/asterccmonitor.log ];then 
-	echo 0 > $monitorlogpath/asterccmonitor.log
+if [ ! -f $asterccpath/asterccmonitor.log ];then 
+	echo 0 > $asterccpath/asterccmonitor.log
 else
-	sed -i '1d' $monitorlogpath/asterccmonitor.log
-	sed -i '1i\0' $monitorlogpath/asterccmonitor.log
+	sed -i '1d' $asterccpath/asterccmonitor.log
+	sed -i '1i\0' $asterccpath/asterccmonitor.log
+fi
+
+astercc_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${astercc_start}" == "X" ]; then
+  astercc_start=0
+fi
+
+astercctools_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${astercctools_start}" == "X" ]; then
+  astercctools_start=0
+fi
+
+asterrc_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep asterrc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${asterrc_start}" == "X" ]; then
+  asterrc_start=0
+fi
+
+astercclock_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercclock_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+if [ "X${astercclock_start}" == "X" ]; then
+  astercclock_start=0
 fi
 
 while   [   1   ]   
 	do
-		sleep  60
-		if [ "x${1}" == "x" -o "x${1}" == "xyes" ]; 
+		sleep  ${sleepsec}		
+
+		if [ ${astercc_start} -eq 1 ]; 
 		then
 			asterccpid=`ps -ef |grep -v grep |grep -E /asterc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterccpid='pass'
-		fi
-
-		if [ "x${2}" == "x" -o "x${2}" == "xyes" ];
+		fi		
+		
+		if [ ${astercctools_start} -eq 1 ]; 
 		then
 			asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterctpid='pass'
-		fi
-
-		if [ "x${3}" == "x" -o "x${3}" == "xyes" ];
+		fi		
+		
+		if [ ${asterrc_start} -eq 1 ]; 
 		then
 			asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
 			asterrcpid='pass'
-		fi
-
-		if [ "x${4}" == "x" -o "x${4}" == "xyes" ];
+		fi		
+		
+		if [ ${astercclock_start} -eq 1 ]; 
 		then
 			asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
 		else
@@ -61,20 +95,20 @@ while   [   1   ]
 			if test -s $asterccdpath; then
 				$asterccdpath > /dev/null
 				if [ $? -ne 0 ];then				  
-				  echo "start asterccd faild at "`date`" ERROR="$? >> $monitorlogpath/asterccmonitor.log
-				  break_tip=`grep "^break_tip.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				  tip_times=`grep "^tip_times.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				  tip_limit=`sed -n -e"1p" $monitorlogpath/asterccmonitor.log`
+				  echo "start asterccd faild at "`date`" ERROR="$? >> $asterccpath/asterccmonitor.log
+				  break_tip=`grep "^break_tip.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				  tip_times=`grep "^tip_times.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				  tip_limit=`sed -n -e"1p" $asterccpath/asterccmonitor.log`
 				  if [ $break_tip -ne 0 -a $tip_limit -lt $tip_times ];then
 				    let tip_limit=tip_limit+1
-				    sed -i '1d' $monitorlogpath/asterccmonitor.log
-				    sed -i '1i'${tip_limit} $monitorlogpath/asterccmonitor.log
-				    host=`grep "^server.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`     #for asterisk host IP and port
-				    port=`grep "^port.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    ami_admin=`grep "^admin_amiuser.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    ami_secret=`grep "^admin_amisecret.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    admin_context=`grep "^admin_context.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
-				    admin_phone=`grep "^admin_phone.*=" ${monitorlogpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    sed -i '1d' $asterccpath/asterccmonitor.log
+				    sed -i '1i'${tip_limit} $asterccpath/asterccmonitor.log
+				    host=`grep "^server.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`     #for asterisk host IP and port
+				    port=`grep "^port.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    ami_admin=`grep "^admin_amiuser.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    ami_secret=`grep "^admin_amisecret.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    admin_context=`grep "^admin_context.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
+				    admin_phone=`grep "^admin_phone.*=" ${asterccpath}/astercc.conf |awk -F = '{print $2}' |sed -e 's/[ ]*[ ]//g'`
 				    (echo Action: login
 				    sleep 1
 				    echo Username: $ami_admin               
@@ -98,10 +132,10 @@ while   [   1   ]
 				    echo "")|telnet $host $port > /dev/null
 				  fi 
 				else
-					echo "start asterccd start successed at "`date` >> $monitorlogpath/asterccmonitor.log
+					echo "start asterccd start successed at "`date` >> $asterccpath/asterccmonitor.log
 				fi
 			else
-				echo Not asterccd in $asterccdpath >> $monitorlogpath/asterccmonitor.log
+				echo Not asterccd in $asterccdpath >> $asterccpath/asterccmonitor.log
 			fi	
 		fi
 done
