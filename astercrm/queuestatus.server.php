@@ -198,10 +198,17 @@ function showStatus($curupdated){
 			}
 
 			$dhtml .= $logoffBtn;
-			if(strtolower($row_agent['agent_status']) == 'in use' || strtolower($row_agent['agent_status']) == 'not in use' || strtolower($row_agent['agent_status']) == 'busy'){
-				$dhtml .= '&nbsp;&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';
+
+			if(strtolower($row_agent['agent_status']) == 'in use' ||  strtolower($row_agent['agent_status']) == 'busy'){
+				$dhtml .= '&nbsp;&nbsp;<span style="background: none repeat scroll 0% 0% rgb(208, 48, 63); width: 1em;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.$row_agent['data'].'&nbsp;&nbsp;';
+			}elseif(strtolower($row_agent['agent_status']) == 'not in use' || strtolower($row_agent['agent_status']) == 'unknown'){
+				if($row_agent['ispaused']){
+					$dhtml .= '&nbsp;&nbsp;<span style="background: none repeat scroll 0% 0% rgb(0, 0, 0);">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.$row_agent['data'].'</span>&nbsp;&nbsp;';
+				}else{
+					$dhtml .= '&nbsp;&nbsp;<span style=" background: none repeat scroll 0% 0% rgb(0, 255, 0);">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.$row_agent['data'].'</span>&nbsp;&nbsp;';
+				}
 			}else{
-				$dhtml .= '&nbsp;&nbsp;<span style="color:#999999;">'.$row_agent['data'].'</span>&nbsp;&nbsp;';
+				$dhtml .= '&nbsp;&nbsp;<span style="background: none repeat scroll 0% 0% rgb(218, 218, 218);">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#999999;">&nbsp;'.$row_agent['data'].'</span>&nbsp;&nbsp;';
 			}
 			$dhtml .= '</td></tr>';
 			
