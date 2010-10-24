@@ -67,7 +67,7 @@ function btnConfirmContactOnClick(){
 	{
 		xajax_add(xajax.$('iptcallerid').value,xajax.$('customerid').value);
 	}else{
-		xajax_confirmContact(xajax.$('contact').value,xajax.$('customerid').value,xajax.$('iptcallerid').value);
+		xajax_confirmContact(xajax.$('contact').value,xajax.$('customerid').value,xajax.$('iptcallerid').value,xajax.$('note').value);
 	}
 }
 

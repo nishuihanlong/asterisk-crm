@@ -1127,7 +1127,7 @@ Class astercrm extends PEAR{
 	*							un nuevo registro.
 	*/
 
-	function formAdd($callerid = null,$customerid = null, $contactid = null,$campaignid=0,$diallistid=0){
+	function formAdd($callerid = null,$customerid = null, $contactid = null,$campaignid=0,$diallistid=0,$note=''){
 	global $locate,$config;
 
 	$html = '
@@ -1365,7 +1365,7 @@ Class astercrm extends PEAR{
 			<tr>
 				<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}">'.$locate->Translate("share").')<input type="hidden" value="1" name="private" id="private"></td>
 				<td align="left">
-					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;"></textarea>
+					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;">'.$note.'</textarea>
 				</td>
 			</tr>
 			<tr>

@@ -235,15 +235,16 @@ function confirmCustomer($customerName,$callerID = null,$contactID){
 }
 
 //判断是否存在$contactName
-function confirmContact($contactName,$customerID,$callerID){
+function confirmContact($contactName,$customerID,$callerID,$note){
 	global $locate;
 
 	$objResponse = new xajaxResponse();
 	$contactID = Customer::checkValues("contact","contact",$contactName,"string","customerid",$customerID,"int"); 
+
 	if ($contactID){//存在
 
 		$html = Table::Top($locate->Translate("add_record"),"formDiv"); 
-		$html .= Customer::formAdd($callerID,$customerID,$contactID);
+		$html .= Customer::formAdd($callerID,$customerID,$contactID,0,0,$note);
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
