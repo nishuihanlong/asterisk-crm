@@ -2427,7 +2427,7 @@ Class astercrm extends PEAR{
 						$group_str.="OR $table.groupid = '".$group_row['id']."' ";
 					}
 					if($group_str == ''){
-						$group_str.=" $table.groupid = '0' ";
+						$group_str.=" $table.groupid = '-1' ";
 					}
 				}elseif(($filter[$i] == 'campaignname' OR ($filter[$i] == 'campaign.campaignname' and $option = 'delete')) and $table != "campaign" and $table != ""){
 					
