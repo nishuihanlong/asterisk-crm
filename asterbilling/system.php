@@ -45,6 +45,8 @@ require_once('system.common.php');
 					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('reload')?>?";
 				}else if(type == 'restart'){
 					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('restart')?>?";
+				}else if(type == 'restartasterrc'){
+					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('restart asterrc')?>?";
 				}else if(type == 'reboot'){
 					var msg = "<?echo $locate->Translate('Are you sure to')?> <? echo $locate->Translate('reboot')?>?";
 				}else if(type == 'shutdown'){
@@ -80,6 +82,11 @@ require_once('system.common.php');
 	  </tr>
 	</table>
 	<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="650"> 
+
+				<tr bgcolor="#F7F7F7">
+					<td width="25%" align="center" valign="center" height="30"><input type="button" onclick="systemAction('restartasterrc');return false;"  value="<?echo $locate->Translate('Restart asterrc');?>" style="width:110px;"/></td>
+					<td  align="left" valign="center" height="30">&nbsp;&nbsp;<?echo $locate->Translate('- Restart asterrc daemon');?></td>					
+				  </tr>
 				  <tr bgcolor="#F7F7F7">
 					<td width="25%" align="center" valign="center" height="30"><input type="button" onclick="systemAction('reload');return false;"  value="<?echo $locate->Translate('Reload asterisk');?>" style="width:110px;"/></td>
 					<td  align="left" valign="center" height="30">&nbsp;&nbsp;<?echo $locate->Translate('reload info');?></td>					

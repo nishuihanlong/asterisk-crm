@@ -46,6 +46,22 @@ function systemAction($type){
 	if($type == 'reload'){
 		$r = $myAsterisk->reloadAsterisk();
 		$objResponse->addAssign("divmsg","innerHTML","<span class='passed'>".$locate->Translate('asterisk have been reloaded')."</span");
+	}elseif($type == "restartasterrc"){
+		$pso = exec("ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'");
+		
+		$rk = exec("sudo /opt/asterisk/scripts/astercc/asterrc -k",$rkd);
+
+		$rd = exec("sudo /opt/asterisk/scripts/astercc/asterrc -d",$rdd,$rdv);
+
+		$psn = exec("ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'");
+		if($psn == ''){
+			$objResponse->addAssign("divmsg","innerHTML","<span class='passed'>".$locate->Translate('start asterrc failed, asterrc is not running')."</span");
+		}elseif($psn != $pso){
+			$objResponse->addAssign("divmsg","innerHTML","<span class='passed'>".$locate->Translate('asterrc have been restart')."</span");
+		}elseif($psn == $pso ){
+			$objResponse->addAssign("divmsg","innerHTML","<span class='passed'>".$locate->Translate('asterrc restart failed')."</span");
+		}
+		
 	}elseif($type == "restart"){
 		$objResponse->addAssign("divmsg","innerHTML","<span class='passed'>".$locate->Translate('asterisk have been restart')."</span");
 		$myAsterisk->restartAsterisk();

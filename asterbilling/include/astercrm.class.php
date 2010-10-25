@@ -866,12 +866,20 @@ Class astercrm extends PEAR{
 					
 					while ($group_res->fetchInto($group_row)){
 						$group_str.="OR $table.groupid = '".$group_row['id']."' ";					
-					}				
+					}
+					
+					if($group_str == ''){
+						$group_str.=" $table.groupid = '-1' ";
+					}
 				}elseif($filter[$i] == 'resellername' and $table != "resellergroup" and $table != ""){
 					$reseller_res = astercrm::getFieldsByField('id','resellername',$content[$i],'resellergroup',$type);
 					
 					while ($reseller_res->fetchInto($reseller_row)){
 						$reseller_str.="OR $table.resellerid = '".$reseller_row['id']."' ";
+					}
+
+					if($reseller_str == ''){
+						$reseller_str.=" $table.resellerid = '-1' ";
 					}
 				}else{
 				
@@ -1001,7 +1009,7 @@ Class astercrm extends PEAR{
 		}else{
 			$sql = 'TRUNCATE '.$table;
 		}
-		//echo $sql;exit;
+		echo $sql;exit;
 		Customer::events($sql);
 		$res =& $db->query($sql);
 
