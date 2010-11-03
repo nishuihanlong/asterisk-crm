@@ -198,7 +198,7 @@ class ScrollTable{
 // 					$this->header .= $value;
 // 				}
 			$this->header .= $value;
-			if(strstr($value,'checkbox') || $this->divName == "formDiallistPannel" || $class="NONE"){
+			if(strstr($value,'checkbox') || $this->divName == "formDiallistPannel" || $class=="NONE"){
 				$this->header .= '';
 			}else{
 				$this->header .= '

@@ -1173,6 +1173,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$fieldsFromSearch[] = 'customer';
 		$fieldsFromSearch[] = 'category';
 		$fieldsFromSearch[] = 'contact.contact';
+		$fieldsFromSearch[] = 'customer.fax';
 		$fieldsFromSearch[] = 'note';
 		$fieldsFromSearch[] = 'attitude';  //face
 		$fieldsFromSearch[] = 'priority';
@@ -1181,6 +1182,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$fieldsFromSearch[] = 'customer.customer';
 		$fieldsFromSearch[] = 'customer.category';
 		$fieldsFromSearch[] = 'customer.contact';
+		$fieldsFromSearch[] = 'customer.fax';
 		$fieldsFromSearch[] = 'note.note';
 		$fieldsFromSearch[] = 'note.attitude';  //face
 		$fieldsFromSearch[] = 'note.priority';
@@ -1192,6 +1194,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("category");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
+	$fieldsFromSearchShowAs[] = $locate->Translate("fax");
 	$fieldsFromSearchShowAs[] = $locate->Translate("note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("attitude"); //face
 	$fieldsFromSearchShowAs[] = $locate->Translate("priority");

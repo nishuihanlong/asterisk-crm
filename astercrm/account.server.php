@@ -156,6 +156,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'password';
 	$fields[] = 'extension';
 	$fields[] = 'agent';
+	$fields[] = 'channel';
 	$fields[] = 'extensions';
 	$fields[] = 'usertype';
 	$fields[] = 'groupname';
@@ -166,6 +167,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("password")."<BR \>";
 	$headers[] = $locate->Translate("extension")."<BR \>";
 	$headers[] = $locate->Translate("dynamic agent")."<BR \>";
+	$headers[] = $locate->Translate("channel")."<BR \>";
 	$headers[] = $locate->Translate("extensions").','.$locate->Translate("extensions_note")."<BR \>";
 	$headers[] = $locate->Translate("usertype").'<BR \>'.$locate->Translate("usertype_note")."";
 	$headers[] = $locate->Translate("Group Name")."<BR \>";
@@ -196,8 +198,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","password","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extension","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","agent","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","channel","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","extensions","'.$divName.'","ORDERING");return false;\'';	
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","usertype","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
@@ -238,6 +241,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['password'];
 		$rowc[] = $row['extension'];
 		$rowc[] = $row['agent'];
+		$rowc[] = $row['channel'];
 		$rowc[] = $row['extensions'];
 		$rowc[] = $row['usertype'];
 		$rowc[] = $row['groupname'];

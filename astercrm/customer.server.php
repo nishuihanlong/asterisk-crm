@@ -208,6 +208,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'state';
 	$fieldsFromSearch[] = 'city';
 	$fieldsFromSearch[] = 'phone';
+	$fieldsFromSearch[] = 'fax';
 	$fieldsFromSearch[] = 'contact';
 	$fieldsFromSearch[] = 'website';
 	$fieldsFromSearch[] = 'category';
@@ -220,6 +221,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("state");
 	$fieldsFromSearchShowAs[] = $locate->Translate("city");
 	$fieldsFromSearchShowAs[] = $locate->Translate("phone");
+	$fieldsFromSearchShowAs[] = $locate->Translate("fax");
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("website");
 	$fieldsFromSearchShowAs[] = $locate->Translate("category");

@@ -168,9 +168,9 @@ Class astercrm extends PEAR{
 			."creby='".$_SESSION['curuser']['username']."', "
 			."cretime= now(), "
 			."campaignid= ".$f['curCampaignid']." ";
-		$res =$db->query($sql);
+		
 		astercrm::events($query);
-		$res =& $db->query($query);
+		$res =$db->query($sql);
 		return $res;
 	}
 

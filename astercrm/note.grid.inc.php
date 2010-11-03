@@ -220,10 +220,10 @@ class Customer extends astercrm
 		}
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); 
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+			$sql = "SELECT note.*,contact.contact,customer.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
 					." WHERE ".$joinstr." ";
 		}else {
-			$sql = "SELECT contact.contact,customer.customer,note.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
+			$sql = "SELECT note.*,contact.contact,customer.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
 		}
 		return $sql;
 	}

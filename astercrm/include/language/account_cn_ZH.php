@@ -16,7 +16,7 @@ $obligatory_fields = "带*的为必填项目";
 $adding_account = "添加用户";
 $edit_account = "编辑用户";
 $usertype = "用户类型";
-$usertype_note = "只能使用 admin 或者为空";
+$usertype_note = " ";
 $channel	= "通道";	// added 2007/10/30 by solo
 $account_detail		= "账户信息";	// added 2007/10/30 by solo
 $account_code		= "账户标识";	// added 2007/11/12 by solo
@@ -33,4 +33,5 @@ $please_add_group_first = "请先添加用户组";
 $adding_agents = '添加动态坐席';
 $agent = '坐席号码';
 $name = '名字';
+$user_type="用户类型";
 ?>
