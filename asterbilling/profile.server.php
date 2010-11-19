@@ -456,16 +456,22 @@ function processOrder($pdt){
 
 	if($_SESSION['curuser']['usertype'] == 'reseller'){
 		$srcCredit = $reseller_row['curcredit'];
-		$updateCurCredit = $srcCredit - $pdt['mc_gross'];
+		if($config['epayment']['callshop_pay_fee']){
+			$creditBeforeFee = $srcCredit - $pdt['mc_gross'];
+			$updateCurCredit = $srcCredit - $pdt['mc_gross'] + $pdt['mc_fee'];
+		}else{
+			$updateCurCredit = $srcCredit - $pdt['mc_gross'];
+		}
 		$sql = "UPDATE resellergroup SET curcredit = $updateCurCredit WHERE id = '".$_SESSION['curuser']['resellerid']."'";
 		$mailto = $config['epayment']['notify_mail'];
 		$mailTitle = $locate->Translate('Reseller').': '.$_SESSION['curuser']['username'].' '.$locate->Translate('Paymented').' '.$config['epayment']['currency_code'].$pdt['mc_gross'].' '.$locate->Translate('for').' '.$config['epayment']['item_name'].','.$locate->Translate('Please check it').' -pdt';
 	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$group_row = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'accountgroup');
 		$srcCredit = $group_row['curcredit'];
-		if($reseller_row['callshop_pay_fee'] == 'yes'){
+		if($reseller_row['callshop_pay_fee'] == 'no'){
 			$updateCurCredit = $srcCredit - $pdt['mc_gross'];
 		}else{
+			$creditBeforeFee = $srcCredit - $pdt['mc_gross'];
 			$updateCurCredit = $srcCredit - $pdt['mc_gross'] + $pdt['mc_fee'];
 		}
 		$sql = "UPDATE accountgroup SET curcredit = $updateCurCredit WHERE id='".$_SESSION['curuser']['groupid']."'";
@@ -479,7 +485,7 @@ function processOrder($pdt){
 		$credithistory_sql = "INSERT INTO credithistory SET modifytime=now(), resellerid='".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."',srccredit='".$srcCredit."',modifystatus='reduce',modifyamount='".$pdt['mc_gross']."',comment='Recharge By Paypal',operator='".$_SESSION['curuser']['userid']."',epayment_txn_id='".$pdt['txn_id']."'";
 		$credithistory_res=$db->query($credithistory_sql);
 		if(($_SESSION['curuser']['usertype'] == 'groupadmin' && $reseller_row['callshop_pay_fee'] == 'yes') || ($_SESSION['curuser']['usertype'] == 'reseller' && $config['epayment']['callshop_pay_fee'])){
-			$credithistory_sql = "INSERT INTO credithistory SET modifytime=now(), resellerid='".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."',srccredit='".$srcCredit."',modifystatus='add',modifyamount='".$pdt['mc_fee']."',comment='Fees By Paypal',operator='".$_SESSION['curuser']['userid']."',epayment_txn_id='".$pdt['txn_id']."'";
+			$credithistory_sql = "INSERT INTO credithistory SET modifytime=now() + 1, resellerid='".$_SESSION['curuser']['resellerid']."',groupid='".$_SESSION['curuser']['groupid']."',srccredit='".$creditBeforeFee."',modifystatus='add',modifyamount='".$pdt['mc_fee']."',comment='Fees By Paypal',operator='".$_SESSION['curuser']['userid']."',epayment_txn_id='".$pdt['txn_id']."'";
 			$credithistory_res=$db->query($credithistory_sql);
 		}
 	}
