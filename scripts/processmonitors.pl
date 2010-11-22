@@ -61,6 +61,7 @@ my %dbInfo = (
 my $dbprefix = '';
 
 my $debug = trim($cfg->val('database', 'debug'));
+my $convert_mp3 = trim($cfg->val('system', 'convert_mp3'));
 
 my $pidFile = "/var/run/processmonitors.pid";
 
@@ -206,7 +207,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			}
 
 			if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
-				if($ref->{'fileformat'} eq 'wav'){
+				if($ref->{'fileformat'} eq 'wav' && $convert_mp3){
 					my $execstr = "$lamecmd --cbr -m m -t -F $ref->{'filename'}.$ref->{'fileformat'} $ref->{'filename'}.mp3 2>&1";
 					#print "convertcmd:$execstr";
 					system($execstr);
@@ -317,7 +318,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				#转成mp3文件
 				if( -e "$curfile.$fileformat" && $curfile ne ''){
 					
-					if($fileformat eq 'wav'){
+					if($fileformat eq 'wav' && $convert_mp3){
 						my $execstr = "$lamecmd --cbr -m m -t -F $curfile.$fileformat $curfile.mp3 2>&1";
 						#print "convertcmd:$execstr";
 						system($execstr);
@@ -372,7 +373,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			print "mv -f $ref->{'filename'}-all.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}\n";
 			system("mv -f $ref->{'filename'}-all.$ref->{'fileformat'} $ref->{'filename'}.$ref->{'fileformat'}");
 
-			if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
+			if( -e "$ref->{'filename'}.$ref->{'fileformat'}" && $ref->{'fileformat'} == 'wav' && $convert_mp3){
 				my $execstr = "$lamecmd --cbr -m m -t -F $ref->{'filename'}.$ref->{'fileformat'} $ref->{'filename'}.mp3 2>&1";
 				#print "convertcmd:$execstr";
 				system($execstr);
@@ -383,67 +384,6 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 				}
 			}
 		}
-	}
-}
-
-exit;
-
-####以下为旧的录音处理代码
-my $query = "SELECT * FROM monitorrecord WHERE processed = 'no'";
-my $rows = &executeQuery($query,'rows');
-
-while ( my $ref = $rows->fetchrow_hashref() ) {
-	my $orifile = "$ref->{'filename'}.$ref->{'fileformat'}";
-	my $mp3file = "$ref->{'filename'}.mp3";
-	my $execstr = '';
-	if( -e "$ref->{'filename'}.$ref->{'fileformat'}" ){
-		if($ref->{'fileformat'} eq 'wav'){
-			$execstr = "$lamecmd --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
-
-			system($execstr);
-			
-			if( -e $mp3file ){
-				unlink($orifile);
-				$query = "UPDATE monitorrecord SET fileformat = 'mp3',processed = 'yes' WHERE id = $ref->{'id'}";
-				&executeQuery($query,'');
-				&debug("$orifile converted to mp3");
-			}
-		}else{
-			$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id = $ref->{'id'}";
-			&executeQuery($query,'');
-		}
-
-	}elsif( -e "$ref->{'filename'}-in.$ref->{'fileformat'}" && -e "$ref->{'filename'}-out.$ref->{'fileformat'}"){
-		if($soxmixcmd ne ''){
-			$execstr = "$soxmixcmd $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
-		}elsif($soxcmd ne ''){
-			$execstr = "$soxcmd -m $ref->{'filename'}-in.$ref->{'fileformat'} $ref->{'filename'}-out.$ref->{'fileformat'} $orifile";
-		}else{
-			exit;
-		}
-		system($execstr);
-		if($ref->{'fileformat'} eq 'wav'){
-			$execstr = "$lamecmd --cbr -m m -t -F ".$orifile." ".$mp3file." 2>&1";
-			system($execstr);
-
-			if( -e $mp3file ){
-				unlink($orifile);
-				unlink("$ref->{'filename'}-in.$ref->{'fileformat'}");
-				unlink("$ref->{'filename'}-out.$ref->{'fileformat'}");
-
-				$query = "UPDATE monitorrecord SET fileformat = 'mp3' , processed = 'yes' WHERE id = $ref->{'id'}";
-				&executeQuery($query,'');
-				&debug("$orifile mixed and converted to mp3");
-			}
-		}else{
-			$query = "UPDATE monitorrecord SET processed = 'yes' WHERE id = $ref->{'id'}";
-			&executeQuery($query,'');
-		}
-
-	}else{
-		#file not found or only in or out
-		$query = "UPDATE monitorrecord SET fileformat = 'error' , processed = 'yes' WHERE id = $ref->{'id'}";
-		&executeQuery($query,'');
 	}
 }
 

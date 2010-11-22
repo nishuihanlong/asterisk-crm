@@ -73,7 +73,7 @@ do
   let dircount=dircount+1
   dirpath=`echo $dirinfo |cut -d: -f1`
   dstfile=`echo $dirinfo |cut -d: -f2`
-  if [ "X${dstfile}" == "X" ];then
+  if [ "X${dstfile}" == "X${dirpath}" ];then
     dstfile=`basename ${dirpath}`
   fi
   if [ -e ${dirpath} ];then

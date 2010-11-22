@@ -80,10 +80,10 @@ if ($input{'version'} =~ /1\.6/ ) {
 	$paramdelimiter = ',';
 }
 
-#$AGI->verbose($input{'extension'});
-#$AGI->verbose($input{'callerid'});
-#$AGI->verbose($input{'channel'});
-#$AGI->verbose($input{'type'});
+$AGI->verbose($input{'extension'});
+$AGI->verbose($input{'callerid'});
+$AGI->verbose($input{'channel'});
+$AGI->verbose($input{'type'});
 
 $extension = $input{'extension'};
 my $dialed_id = $AGI->get_variable("DIALEDLISTID");

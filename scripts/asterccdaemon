@@ -11,7 +11,7 @@
 #
 
 # the absolute path to your astercc script diretory
-asterccpath="/opt/asterisk/scripts/astercc/"
+asterccpath="/opt/asterisk/scripts/astercc"
 
 asterccdpath=${asterccpath}/asterccd
 
