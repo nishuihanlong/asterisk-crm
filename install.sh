@@ -42,7 +42,7 @@ then
 fi
 
 echo Please enter database information 
-echo -n "database host(default localhost):"
+echo -n "database host(default 127.0.0.1):"
 read dbhost
 
 echo -n "database port(default 3306):"
@@ -63,7 +63,7 @@ read dbbin
 
 if [ "X${dbhost}" == "X" ];
 then
-  dbhost="localhost"
+  dbhost="127.0.0.1"
 fi
 
 if [ "X${dbport}" == "X" ];

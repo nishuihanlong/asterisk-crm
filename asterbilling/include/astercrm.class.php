@@ -1007,7 +1007,11 @@ Class astercrm extends PEAR{
 			$joinstr=ltrim($joinstr,'AND');
 			$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr;
 		}else{
-			$sql = 'TRUNCATE '.$table;
+			if($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql = 'TRUNCATE '.$table;
+			}else{
+				$sql = "DELETE FROM ".$table." WHERE ".$table.".groupid = '".$_SESSION['curuser']['groupid']."'";
+			}
 		}
 		//echo $sql;exit;
 		Customer::events($sql);

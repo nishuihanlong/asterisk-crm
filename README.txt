@@ -1,9 +1,9 @@
 ====================================================================================
 
-	asterCC  (C) 2006,2007,2008  Solo Fu  solo@astercc.org
+	asterCC 0.2  (C) 2006-2010  Solo Fu  solo@astercc.org
 
 ====================================================================================
-asterCC is a software package, in which we provide two asterisk solutions for now:
+asterCC 0.2 is a software package, in which we provide two asterisk solutions for now:
 
     * asterCRM, an open source contact center solution for asterisk
     * asterBilling, a realtime billing solution for asterisk, could be used for hosted callshop, asterisk pbx billing
@@ -19,7 +19,7 @@ Here’re the benefits of solutions using astercc daemon
       we have tested that astercc could support more than 240 calls in asterisk
    2. good compatibility
 
-      astercc could work with all asterisk based solutions, and it support both asterisk 1.2.X and 1.4.X
+      astercc could work with all asterisk based solutions, and it support both asterisk 1.2.X , 1.4.X and 1.6.X
    3. distributed solution
 
       no need install astercc daemon on your asterisk server, even an embedded asterisk product could use astercc for expand
@@ -33,27 +33,22 @@ Installation:
 	 php (or php4)
 	 php-mysql
 	 php-gd
+	 lame
+	 sox
 
  A Auto install by 'install.sh'
   In this way, just to run 
 	/bin/sh install.sh
   as root in astercc main directory and enter some parameter require by it.
 
-  Update asterisk dialplan for barge(If you want to use barge function in asterCRM)
-	add following line to asterisk extensions.conf(might any other extensions file you use,in freepbx could be extensions_custom.conf)
-	;;;for asterCRM barge in
-	;;;start astercc-barge;;;
-	[astercc-barge]
-	exten => _X.,1,NoOP(${EXTEN})
-	exten => _X.,n,meetme(${EXTEN}|pqdx)
-	exten => _X.,n,hangup
-	;;;end astercc-barge;;;
+  last:
+  add #include extensions_astercc.conf to end of extensions.conf
 
  B install manual
   1) Download and unzip the source (assuming your WEB root is /var/www/html)
 
 	cd /var/www/html
-	unzip astercc-X.X.zip
+	tar zxvf astercc-X.X.tar.gz
 	mv astercc-X.X astercc
 	
 	/var/www/html/astercc/astercrm		# main directory and PHP scripts of astercrm
@@ -90,22 +85,22 @@ Installation:
 	;the following line could be changed by yourself
 	[astercc]
 	secret = astercc
-	read = system,call,log,verbose,command,agent,user
+	read = system,call,agent
 	write = system,call,log,verbose,command,agent,user
 	deny=0.0.0.0/0.0.0.0
 	; if you want to run astercc on another server
 	; use your astercc ip to replace 127.0.0.1 or add a new line
 	permit=127.0.0.1/255.255.255.0
 
-  4) Update asterisk dialplan for barge(If you want to use barge function in asterCRM)
-	add following line to asterisk extensions.conf(might any other extensions file you use,in freepbx could be extensions_custom.conf)
-	;;;for asterCRM barge in
-	;;;start astercc-barge;;;
-	[astercc-barge]
-	exten => _X.,1,NoOP(${EXTEN})
-	exten => _X.,n,meetme(${EXTEN}|pqdx)
-	exten => _X.,n,hangup
-	;;;end astercc-barge;;;
+  4) Add extensions_astercc.conf 
+	if you are using asterisk 1.4.x or under versions
+	mv /var/www/html/astercc/script/extensions_astercc.conf /etc/asterisk
+
+	if you are using asterisk 1.6.x or above versions
+	mv /var/www/html/astercc/script/extensions_astercc.conf_1.6 /etc/asterisk/extensions_astercc.conf
+	
+	and 
+	add #include extensions_astercc.conf to end of extensions.conf
 
   5) Create the directories and move daemon scripts:
 
@@ -219,7 +214,14 @@ Installation:
 	for asterbilling
 	chmod 777 /var/www/html/astercc/asterbilling/upload
 
-  9) web browsing 
+  9)  configure crontab
+      crontab -e 
+      and add following line 
+      0 0 * * * /opt/asterisk/scripts/astercc/processmonitors.pl -d
+      */5 * * * * /opt/asterisk/scripts/astercc/processcdr.pl -d
+      save crontab
+
+  10) web browsing 
 	for astercc guide
 	http://localhost/astercc
 
@@ -335,6 +337,22 @@ however, multiple servers enhance performance.
 	support count how long dynamic agent loged in the queue
 	private note
 	support licence with time limit
+	campaign result statistics
+	agent dialed result statistics
+	support set start time and end time for campaign
+	supply a shell for backup file and database
+	agent can add a scheduler dial for a customer
+	support set dial waittime in campaign	
+	agent can add a transfer link in note
+	astercrm workwith asterbilling simplely
+	supoort delete a uploaded file
+	agent break function
+	realtime queue status 
+	reload or restart asterisk in web
+	my tickets
+	dialedlist statistic
+	loigin/logoff as dynamic agent to queue
+	attend tranfer(with asterisk 1.6.x) in portal page
 
 *Manager Interface 
 

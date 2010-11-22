@@ -441,7 +441,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
 		$res = Customer::deleteRecords('groupid',$id,'clid');
-		$res = Customer::deleteRecords('groupid',$id,'rate');
+		$res = Customer::deleteRecords('groupid',$id,'myrate');
 		$res = Customer::deleteRecords('groupid',$id,'callshoprate');
 		$res = Customer::deleteRecords('groupid',$id,'account');
 		$res = Customer::deleteRecord($id,'accountgroup');

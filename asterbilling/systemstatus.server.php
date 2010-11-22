@@ -126,7 +126,7 @@ function searchRate($content,$type){
 	
 	$rate = astercc::searchRate($content,$_SESSION['curuser']['groupid'],$_SESSION['curuser']['resellerid'],"myrate",$type);
 
-	$rateDesc = astercc::readRateDesc($rate);
+	$rateDesc = astercc::readRateDesc($rate,'search');
 	// remove the connect charge part
 	// $rateDesc = split("seconds",$rateDesc);
 	// $rateDesc = $rateDesc[1]." seconds";

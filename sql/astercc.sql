@@ -957,6 +957,7 @@ CREATE TABLE `dialedlist` (
   `customername` varchar(100) default '',
   `callresult` varchar(60) default '',
   `campaignresult` varchar(60) default '',
+  `detect` varchar(30) NOT NULL default '',
   `resultby` varchar(30) NOT NULL default '',
   `uniqueid` varchar(40) NOT NULL default '',										#added by solo 2008#2#1
   `channel` varchar(50) NOT NULL DEFAULT '',
@@ -989,6 +990,7 @@ CREATE TABLE `campaigndialedlist` (
   `customername` varchar(100) default '',
   `callresult` varchar(60) default '',
   `campaignresult` varchar(60) default '',
+  `detect` varchar(30) NOT NULL default '',
   `memo` varchar(255) not null default '',
   `resultby` varchar(30) NOT NULL default '',
   `uniqueid` varchar(40) NOT NULL default '',               
@@ -1324,7 +1326,6 @@ CREATE TABLE `qevent` (
 ## Dumping data for table `qevent`
 ##
 
-
 INSERT INTO qevent VALUES (1,'ABANDON');
 INSERT INTO qevent VALUES (2,'AGENTDUMP');
 INSERT INTO qevent VALUES (3,'AGENTLOGIN');
@@ -1343,7 +1344,6 @@ INSERT INTO qevent VALUES (15,'SYSCOMPAT');
 INSERT INTO qevent VALUES (16,'TRANSFER');
 INSERT INTO qevent VALUES (17,'PAUSE');
 INSERT INTO qevent VALUES (18,'UNPAUSE');
-INSERT INTO qevent VALUES (19,'RINGNOANSWER');
 
 
 ##
