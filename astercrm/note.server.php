@@ -127,8 +127,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'contact';
 	$fields[] = 'customer';
 	$fields[] = 'callerid';
-	$fields[] = 'cretime';
-	$fields[] = 'creby';
+	$fields[] = 'note.cretime';
+	$fields[] = 'note.creby';
 
 	// HTML table: Headers showed
 	$headers = array();
@@ -170,8 +170,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callerid","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note.cretime","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note.creby","'.$divName.'","ORDERING");return false;\'';
 	
 
 	// Select Box: fields table.
@@ -199,7 +199,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
 	$table->setAttribsCols($attribsCols);
-	$table->exportFlag = '1';//对导出标记进行赋值
+	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';
 	$table->ordering = $ordering;
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
@@ -240,10 +240,12 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$order = $searchFormValue['order'];
 	$divName = "grid";
 	$searchType =  $searchFormValue['searchType'];
-	if($optionFlag == "export"){
-		$sql =& Customer::getSql($searchContent,$searchField,'note'); //得到要导出的sql语句
+	if($optionFlag == "export" || $optionFlag == "exportcsv"){
+		$sql =& Customer::getExportSql($searchContent,$searchField,$searchType,'note'); //得到要导出的sql语句
 		//$_SESSION['export_sql'] = $sql;
+		//echo $sql;exit;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
+		$objResponse->addAssign("exporttype", "value", $optionFlag);
 		$objResponse->addAssign("maintable", "value", "note");//传递主表名，防止groupid等字段在各表中重复
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){

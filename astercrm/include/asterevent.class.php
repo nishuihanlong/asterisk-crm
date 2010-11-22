@@ -121,7 +121,7 @@ class asterEvent extends PEAR
 					//if($res_did = $db->getone($sql)) $didnumber = $res_did;
 				}
 
-				if ((strstr($list['srcchan'],$channel) && !strstr($list['srcchan'],'local')) OR strstr($list['src'],$exten)) {// dial out
+				if ((strstr($list['srcchan'],$channel) && !strstr($list['srcchan'],'local')) OR $list['src'] == $exten) {// dial out
 					//if($list['src'] != $exten){
 					//	$query = "update curcdr set src='$exten' WHERE id='".$list['id']."'";
 						//$db->query($query);
@@ -146,9 +146,9 @@ class asterEvent extends PEAR
 					$sql = "SELECT * FROM hold_channel WHERE agentchan='".$list['srcchan']."' ORDER BY id DESC LIMIT 1";
 					$holds = $db->getrow($sql);
 					$call['hold'] = $holds;
-					//print_r($holds);exit;
+					//print_r($call);exit;
 					return $call;
-				}elseif ((strstr($list['dstchan'],$channel) && !strstr($list['srcchan'],'local')) OR strstr($list['dst'],$exten) OR strstr($list['dst'],$agent) OR $list['dstchan'] == "agent/".$agent ){		//dial in
+				}elseif ((strstr($list['dstchan'],$channel) && !strstr($list['srcchan'],'local')) OR $list['dst'] == $exten OR $list['dstchan'] == "agent/".$agent ){	//OR strstr($list['dst'],$agent)	//dial in
 
 					//if($list['dst'] != $exten){
 						//$query = "update curcdr set dst='$exten' WHERE id='".$list['id']."'";

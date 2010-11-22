@@ -45,7 +45,7 @@ if ($category == "call_result_analysis"){
 	echo '<tr><th colspan=3>Call Result Analysis</tr>';
 	echo '<tr><th>Result</th><th>Count</th><th>Detail</th></tr>';
 	# get all call result from campaign but skip top level
-	$query = "SELECT campaignresult, count(*) as campaigncount FROM dialedlist WHERE campaignid = '$campaignid' GROUP BY campaignresult ORDER BY campaigncount DESC";
+	$query = "SELECT campaignresult, count(*) as campaigncount FROM campaigndialedlist WHERE campaignid = '$campaignid' GROUP BY campaignresult ORDER BY campaigncount DESC";
 	$res = $db->query($query);
 	while ($res->fetchInto($row)) {
 		echo '<tr><td>'.$row['campaignresult'].'</td><td>'.$row['campaigncount'].'</td><td><a href="campaignreport.php?category=campaignresult&campaignid='.$campaignid.'&campaignresult='.$row['campaignresult'].'"  target="_blank">Detail</a></td></tr>';
@@ -56,7 +56,7 @@ if ($category == "call_result_analysis"){
 	echo '<tr><th colspan=2>Hit Rate Analysis</tr>';
 	echo '<tr><th>Dialed Time</th><th>Count</th></tr>';
 
-	$query = "SELECT trytime, COUNT(*) as trytimecount FROM dialedlist GROUP BY trytime";
+	$query = "SELECT trytime, COUNT(*) as trytimecount FROM campaigndialedlist GROUP BY trytime";
 	$res = $db->query($query);
 	while ($res->fetchInto($row)) {
 		echo '<tr><td>'.$row['trytime'].'</td><td>'.$row['trytimecount'].'</td></tr>';
@@ -67,7 +67,7 @@ if ($category == "call_result_analysis"){
 	echo '<tr><th colspan=2>Referals vs Contacts</tr>';
 	echo '<tr><th>Creby</th><th>Count</th></tr>';
 
-	$query = "SELECT creby, COUNT(*) as crebycount FROM dialedlist GROUP BY creby";
+	$query = "SELECT creby, COUNT(*) as crebycount FROM campaigndialedlist GROUP BY creby";
 	$res = $db->query($query);
 	while ($res->fetchInto($row)) {
 		echo '<tr><td>'.$row['creby'].'</td><td>'.$row['crebycount'].'</td></tr>';
@@ -79,7 +79,7 @@ if ($category == "call_result_analysis"){
 	echo '<tr><th colspan=2>Campaignresult Detail</tr>';
 	echo '<tr><th>Creby</th><th>Count</th></tr>';
 
-	$query = "SELECT resultby, COUNT(*) as resultbycount FROM dialedlist WHERE campaignresult = '$campaignresult' GROUP BY resultby";
+	$query = "SELECT resultby, COUNT(*) as resultbycount FROM campaigndialedlist WHERE campaignresult = '$campaignresult' GROUP BY resultby";
 	$res = $db->query($query);
 	while ($res->fetchInto($row)) {
 		echo '<tr><td>'.$row['resultby'].'</td><td>'.$row['resultbycount'].'</td></tr>';
@@ -90,7 +90,7 @@ if ($category == "call_result_analysis"){
 	echo '<tr><th colspan=2>Agents</tr>';
 	echo '<tr><th>Resultby</th><th>Duration</th></tr>';
 
-	$query = "SELECT SUM(duration) as duration, resultby FROM dialedlist WHERE campaignresult = '$campaignresult' GROUP BY resultby";
+	$query = "SELECT SUM(billsec) as duration, resultby FROM campaigndialedlist WHERE campaignresult = '$campaignresult' GROUP BY resultby";
 	$res = $db->query($query);
 	while ($res->fetchInto($row)) {
 		echo '<tr><td>'.$row['resultby'].'</td><td>'.$row['duration'].'</td></tr>';

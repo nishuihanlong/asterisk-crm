@@ -106,6 +106,7 @@ require_once('note.common.php');
 	</form>
 	<form name="exportForm" id="exportForm" action="dataexport.php">
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
+		<input type="hidden" value="export" id="exporttype" name="exporttype" />
 		<input type="hidden" value="" id="maintable" name="maintable" />
 	</form>
 	<div id="divCopyright"></div>

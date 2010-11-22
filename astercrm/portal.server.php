@@ -257,7 +257,7 @@ function init(){
 
 	$panelHTML .="<a href=? onclick=\"document.getElementById('dpnShow').value = 1;showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;\">".$locate->Translate("My Diallist")."</a><br/>";//<span id=\"sptAddDiallist\" style=\"display:none\">
 	$panelHTML .="<a href=? id=\"agentWorkstat\" name=\"agentWorkstat\" onclick=\"document.getElementById('awsShow').value = 1;agentWorkstat();return false;\">".$locate->Translate("work stat")."</a><br/>";
-	$panelHTML .="<a href=? id=\"knowledge\" name=\"knowledge\" onclick=\"setKnowledge();return false;\">".$locate->Translate("viewknowledge")."</a><br/>";
+	$panelHTML .="<a href=? id=\"knowledge\" name=\"knowledge\" onclick=\"setKnowledge();return false;\">".$locate->Translate("viewknowledge")."</a><br/>";	
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
 		$panelHTML .= '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a><br/>';

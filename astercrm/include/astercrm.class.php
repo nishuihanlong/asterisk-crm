@@ -158,7 +158,7 @@ Class astercrm extends PEAR{
 
 	function insertNewSchedulerDial($f){
 		global $db;
-	$sql = "INSERT INTO diallist SET "
+		$sql = "INSERT INTO diallist SET "
 			."dialnumber='".astercrm::getDigitsInStr($f['sDialNum'])."', "
 			."groupid='".$_SESSION['curuser']['groupid']."', "
 			."dialtime='".$f['sDialtime']."', "
@@ -4241,7 +4241,7 @@ Class astercrm extends PEAR{
 
 	function &checkDialedlistCall($dialnumber){
 		global $db;
-		$sql = "SELECT id,campaignid FROM dialedlist WHERE dialednumber = '".$dialnumber."' AND dialedtime > (now()-INTERVAL 60 SECOND) ORDER BY dialedtime DESC LIMIT 1";
+		$sql = "SELECT id,campaignid FROM dialedlist WHERE dialednumber = '".$dialnumber."' ORDER BY dialedtime DESC LIMIT 1";
 		//echo $sql;exit;
 		astercrm::events($sql);
 		//$res = & $db->getOne($sql);

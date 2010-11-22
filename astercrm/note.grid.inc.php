@@ -206,21 +206,14 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function getSql($searchContent,$searchField,$table){
+	function getExportSql($searchContent,$searchField,$searchType,$table){
 		global $db;
 		$i=0;
-		$joinstr='';
-		foreach ($searchContent as $value){
-			$value = preg_replace("/'/","\\'",$value);
-			$value=trim($value);
-			if (strlen($value)!=0 && strlen($searchField[$i]) != 0){
-				$joinstr.="AND $searchField[$i] like '%".$value."%' ";
-			}
-			$i++;
-		}
+		
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType);
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); 
-			$sql = "SELECT note.*,contact.contact,customer.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
+			$sql = "SELECT note.id AS noteid,note.note,note.callerid AS customerphone,note.priority,note.attitude,note.cretime AS notecretime,note.creby AS notecreby,note.private,contact.contact,customer.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid "
 					." WHERE ".$joinstr." ";
 		}else {
 			$sql = "SELECT note.*,contact.contact,customer.* FROM note LEFT JOIN customer ON customer.id = note.customerid LEFT JOIN contact ON contact.id = note.contactid ";
