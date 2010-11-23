@@ -78,7 +78,7 @@ CREATE TABLE `accountgroup` (
   `grouplogo` varchar(30) NOT NULL default '',
   `grouplogostatus` int(1) NOT NULL default 1,
   `accountcode` varchar(20) NOT NULL default '',
-  `allowcallback` varchar(10) NOT NULL default '',
+  `allowcallback` varchar(10) NOT NULL default 'no',
   `creditlimit` double(24,4) NOT NULL default '0.0000',
   `limittype` varchar(10) NOT NULL default '',
   `group_multiple` double(8,4) NOT NULL default '1.0000',

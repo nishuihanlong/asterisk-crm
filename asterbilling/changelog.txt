@@ -155,6 +155,9 @@ add new field amount and total in table accountgroup to store all selling and al
 2010-08-25 added the parameter 'callshop_pay_fee' in asterbilling.conf and reseller profile to control if callshop pays the fee by paypal.
 2010-10-12 improved removePrefix in astercc.conf, supports like "removePrefix = 00,011"
 ----------------------------------------------------------------------------------
+0.14
+2010-11-22 fixed bug of epayment with callshop_pay_fee setting
+2010-11-22 no longer support callback function(could use callback in version 0.12(asterCC 0.14))
 
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能

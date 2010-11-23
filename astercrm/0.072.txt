@@ -1,0 +1,104 @@
+new features in 0.072
+	fixed a bug of predictive dialer when dial a ivalid number with dahdi
+	fixed a popup bug when dialed number similar on agent number
+	added parameter convert_mp3 in astercc.conf to control processmonitors if converts records to mp3
+	fixed sql error when link without queue 
+	added export customer data in note page
+	fixed bugs of Campaign Report
+	fixed a bug of doesnt display trunk info in portal page
+0.072 新功能
+	修正了通过dahdi拨号时 被叫号码不存在的情况下 占用预拨号通道过长的bug
+	修正了当坐席分机号码与用户号码近似时弹屏的bug
+	astercc.conf 中增加了convert_mp3 参数,控制processmonitors是否将录音转成mp3格式
+	改进了没有queue但直接使用link事件时产生的sql语句错误
+	增加了note页导出相关客户信息的功能
+	修正了Campaign Report的bug
+	修正了不显示线路信息的bug
+
+astercrm features(0.063)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	list and listen to the monitor records
+	check history phone recorded on line
+	customer call history
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list
+	scheduler dialer
+	customer dialer
+	could work with astercc
+	cdr(in astercc mode)
+	DID inforamtion when pop up
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)
+	support dynamic agent mode
+	extension whisper
+	DID number display
+	support predictive dial dial out strategy
+	support import file which exist in server
+	recent cdr bind to monitor records
+	fax ext
+	support play gsm file in web
+	force monitor by group
+	update licence in web
+	auto install
+	system status monitor by groupadmin
+	predictive dial by groupadmin
+	multi mode search(like,=,<,>)
+	advance survey
+	callerid smart mathcing
+	barge-in and invite
+	predictive dialer direct to queue
+	dialer support dialout mutil-servers
+	support chinese address of google map 
+	support post more customer infomation to external CRM by URL
+	support count how long dynamic agent loged in the queue
+	private note
+	support licence with time limit
+	campaign result statistics
+	agent dialed result statistics
+	support set start time and end time for campaign
+	supply a shell for backup file and database
+	agent can add a scheduler dial for a customer
+	support set dial waittime in campaign	
+	agent can add a transfer link in note
+	astercrm workwith asterbilling simplely
+	supoort delete a uploaded file
+	agent break function
+	realtime queue status 
+	reload or restart asterisk in web
+	my tickets
+	dialedlist statistic
+	loigin/logoff as dynamic agent to queue
+	attend tranfer(with asterisk 1.6.x) in portal page
+	

@@ -81,7 +81,8 @@ class Customer extends astercrm
 				."grouptitle='".$f['grouptitle']."', "
 				."grouptagline='".$f['grouptagline']."', "
 				."accountcode='".$f['accountcode']."', "
-				."allowcallback='".$f['allowcallback']."', "
+				#."allowcallback='".$f['allowcallback']."', "
+				."allowcallback='no', "
 				."creditlimit= ".$f['creditlimit'].", "
 				."limittype= '".$f['limittype']."', "
 				."group_multiple= '".$f['group_multiple']."', "
@@ -142,7 +143,8 @@ class Customer extends astercrm
 				."limittype='".$f['limittype']."', "
 				."group_multiple= '".$f['group_multiple']."', "
 				."customer_multiple= '".$f['customer_multiple']."', "
-				."allowcallback='".$f['allowcallback']."', "
+				#."allowcallback='".$f['allowcallback']."', "
+				."allowcallback='no', "
 				."addtime= now(), "
 				."accountcode='".$f['accountcode']."' "
 				."WHERE id='".$f['groupid']."'";
@@ -368,7 +370,7 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30">'."(".$locate->Translate("might be useful for callback").")".'</td>
 				</tr>
-				<tr>
+				<!--<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
@@ -387,7 +389,7 @@ class Customer extends astercrm
 		$html .=
 					'</select>
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Credit Limit").'</td>
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30"></td>
@@ -492,7 +494,7 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Account Code").'</td>
 					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="30" value="'.$group['accountcode'].'">'."(".$locate->Translate("might be useful for callback").")".'</td>
 				</tr>
-				<tr>
+				<!--<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
@@ -511,7 +513,7 @@ class Customer extends astercrm
 					$html .='
 					</select>
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Credit Limit").'*</td>
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30" value="'.$group['creditlimit'].'"></td>

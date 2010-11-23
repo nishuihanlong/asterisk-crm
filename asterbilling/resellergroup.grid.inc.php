@@ -78,7 +78,8 @@ class Customer extends astercrm
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
 				."clid_context='".$f['clid_context']."', "
-				."allowcallback='".$f['allowcallback']."', "
+				#."allowcallback='".$f['allowcallback']."', "
+				."allowcallback='no', "
 				."creditlimit= ".$f['creditlimit'].", "
 				."limittype= '".$f['limittype']."', "
 				."trunk1_id= '".$f['trunk1_id']."', "
@@ -213,7 +214,8 @@ class Customer extends astercrm
 				."multiple= '".$f['multiple']."', "
 				."trunk1_id= '".$f['trunk1_id']."', "
 				."trunk2_id= '".$f['trunk2_id']."', "
-				."allowcallback='".$f['allowcallback']."', "
+				#."allowcallback='".$f['allowcallback']."', "
+				."allowcallback='no', "
 				."addtime= now() "
 				."WHERE id='".$f['resellerid']."'";
 
@@ -378,7 +380,7 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("Clid Context").'</td>
 					<td align="left"><input type="text" id="clid_context" name="clid_context" size="25" maxlength="30"></td>
 				</tr>
-				<tr>
+				<!--<tr>
 					<td nowrap align="left">'.$locate->Translate("Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">
@@ -386,7 +388,7 @@ class Customer extends astercrm
 						<option value="no">'.$locate->Translate("No").'</option>
 					</select>
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Credit Limit").'</td>
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30"></td>
@@ -537,7 +539,7 @@ type=peer</textarea></td>
 					<td nowrap align="left">'.$locate->Translate("Clid Context").'</td>
 					<td align="left"><input type="text" id="clid_context" name="clid_context" size="25" maxlength="30" value="'.$resellergroup['clid_context'].'"></td>
 				</tr>
-				<tr>
+				<!--<tr>
 					<td nowrap align="left">'.$locate->Translate("Allow Callback").'</td>
 					<td align="left">
 					<select id="allowcallback" name="allowcallback">';
@@ -553,7 +555,7 @@ type=peer</textarea></td>
 					$html .='
 					</select>
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Credit Limit").'</td>
 					<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30" value="'.$resellergroup['creditlimit'].'"></td>
