@@ -16,6 +16,22 @@ if (not defined $cfg) {
 	exit(1);
 }
 
+my %dbInfo = (
+        dbtype => trim($cfg->val('database', 'dbtype')),
+        dbhost => trim($cfg->val('database', 'dbhost')),
+        dbname => trim($cfg->val('database', 'dbname')),
+		dbport  => trim($cfg->val('database', 'dbport')),
+ 		dbuser  => trim($cfg->val('database', 'username')),
+ 		dbpasswd  => trim($cfg->val('database', 'password'))
+   );
+
+my $dbprefix = '';
+
+my $debug = trim($cfg->val('database', 'debug'));
+my $convert_mp3 = trim($cfg->val('system', 'convert_mp3'));
+
+my $pidFile = "/var/run/processmonitors.pid";
+
 my $lamecmd = '';
 if( -e '/usr/bin/lame'){
 	$lamecmd = '/usr/bin/lame';
@@ -24,8 +40,9 @@ if( -e '/usr/bin/lame'){
 }
 
 if($lamecmd eq ''){
-	print "can't find 'lame' commond\n";
-	exit;
+	print "Warning: can't find 'lame' commond,could not convert the records to mp3!\n";
+	$convert_mp3 = 0;
+	#exit;
 }
 
 my $soxcmd = '';
@@ -48,22 +65,6 @@ if( -e '/usr/bin/soxmix'){
 #if($soxmixcmd eq '' && $soxcmd eq ''){
 #	exit;
 #}
-
-my %dbInfo = (
-        dbtype => trim($cfg->val('database', 'dbtype')),
-        dbhost => trim($cfg->val('database', 'dbhost')),
-        dbname => trim($cfg->val('database', 'dbname')),
-		dbport  => trim($cfg->val('database', 'dbport')),
- 		dbuser  => trim($cfg->val('database', 'username')),
- 		dbpasswd  => trim($cfg->val('database', 'password'))
-   );
-
-my $dbprefix = '';
-
-my $debug = trim($cfg->val('database', 'debug'));
-my $convert_mp3 = trim($cfg->val('system', 'convert_mp3'));
-
-my $pidFile = "/var/run/processmonitors.pid";
 
 $| =1 ;
 

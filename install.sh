@@ -335,12 +335,12 @@ echo "#include extensions_astercc.conf" >> ${asterisketc}/extensions.conf
 #then
   if [ ! -f "/usr/bin/lame" -a ! -f "/usr/local/bin/lame" ]
   then
-    echo "Can't locate command:lame in /usr/bin/ and /usr/local/bin/, please install"
+    echo "Warning: can't locate command:lame in /usr/bin/ and /usr/local/bin/, please install"
   fi
 
   if [ ! -f "/usr/bin/sox" -a ! -f "/usr/local/bin/sox" -a ! -f "/usr/bin/soxmix" -a ! -f "/usr/local/bin/soxmix" ]
   then
-    echo "Can't locate command: 'sox' or 'soxmix' in /usr/bin/ and /usr/local/bin/ , please install"
+    echo "Warning: can't locate command: 'sox' or 'soxmix' in /usr/bin/ and /usr/local/bin/ , please install"
   fi
   
   if [ -f "/etc/redhat-release" ]
@@ -355,11 +355,14 @@ echo "#include extensions_astercc.conf" >> ${asterisketc}/extensions.conf
   fi
 #fi
 
-echo "*****************************************************************"
-echo "*******************astercc install finished**********************"
+echo "*****************************************************************************"
+echo "*******************astercc install finished**********************************"
 echo "*****Your astercc web directory at ${mainpath}."
 echo "*****Your astercc daemon directory at ${daemonpath}."
-echo "*****************************************************************"
+echo "*****Suggestion: Adjust your asterisk AMI user(manager.conf) :"
+echo "*****set 'read = agent,call,system' for astercc running of greater efficiency"
+echo "*****Note: write for AMI user must be 'all'"
+echo "******************************************************************************"
 
 echo "Are you want to auto start astercc daemon when system startup?"
 #echo "Must be redhat-release system"

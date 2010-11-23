@@ -128,8 +128,8 @@ if ($ARGV[0] eq '-d'){
 }
 
 my $cdr_lastid = 0;
-if( -e "$Bin/processcdrlastid.txt"){
-	open( LASTCDRID,"$Bin/processcdrlastid.txt");
+if( -e "$Bin/processcdrlastid"){
+	open( LASTCDRID,"$Bin/processcdrlastid");
 	my @lastcdrid = <LASTCDRID>; 
 	$cdr_lastid = $lastcdrid['0'];
 }
@@ -339,7 +339,7 @@ if($mycdrid > 0){
 	$cdr_lastid = $mycdrid;
 }
 
-open (CIPHERTEXT, ">$Bin/processcdrlastid.txt");
+open (CIPHERTEXT, ">$Bin/processcdrlastid");
 print CIPHERTEXT $cdr_lastid;
 close CIPHERTEXT;
 
