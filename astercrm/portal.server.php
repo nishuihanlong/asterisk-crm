@@ -1561,7 +1561,7 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		}
 
 		if($row_campaign['callerid'] == ""){
-			$variable = '__CUSCID=NONE|';
+			$variable = '__CUSCID='.$_SESSION['curuser']['extension'].$_SESSION['asterisk']['paramdelimiter'];
 		}
 		//if($row_campaign['inexten'] != '') $src = $row_campaign['inexten'];
 		//echo $variable;exit;
