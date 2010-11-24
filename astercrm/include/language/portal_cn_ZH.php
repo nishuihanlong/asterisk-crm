@@ -165,4 +165,9 @@ $total_billsec = "总通话时长";
 $agentgroup_name = "坐席组";
 $username="用户名";
 $call_result='呼叫结果';
+$mr = "先生";
+$miss = "小姐";
+$mrs = "太太";
+$ms = "女士";
+$other = "其它";
 ?>

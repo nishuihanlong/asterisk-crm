@@ -346,6 +346,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		$query= "INSERT INTO customer SET "
 				."customer='".$f['customer']."', "
+				."customertitle='".$f['customertitle']."', "
 				."website='".$f['website']."', "
 				."country='".$f['country']."', "
 				."address='".$f['address']."', "
@@ -566,6 +567,7 @@ Class astercrm extends PEAR{
 		$f = astercrm::variableFiler($f);
 		$query= "UPDATE customer SET "
 				."customer='".$f['customer']."', "
+				."customertitle='".$f['customertitle']."', "
 				."website='".$f['website']."', "
 				."country='".$f['country']."', "
 				."address='".$f['address']."', "
@@ -1151,7 +1153,29 @@ Class astercrm extends PEAR{
 		$html .= '
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-					<td align="left"><input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off"><br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
+					<td align="left">';
+					if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
+						$html .= '<select id="customertitle" name="customertitle">
+								<option value="Mr" >'.$locate->Translate("Mr").'</option>
+								<option value="Miss">'.$locate->Translate("Miss").'</option>
+								<option value="Ms" >'.$locate->Translate("Ms").'</option>
+								<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
+								<option value="other" >'.$locate->Translate("Other").'</option>
+						</select>&nbsp;
+						<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off">';
+					}else{
+						$html .= '<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off">&nbsp;
+						<select id="customertitle" name="customertitle">
+								<option value="Mr" >'.$locate->Translate("Mr").'</option>
+								<option value="Miss">'.$locate->Translate("Miss").'</option>
+								<option value="Ms" >'.$locate->Translate("Ms").'</option>
+								<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
+								<option value="other" >'.$locate->Translate("Other").'</option>
+						</select>';
+					}
+					
+
+					$html .= '<br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
 					<input type="hidden" id="hidAddCustomerDetails" name="hidAddCustomerDetails" value="OFF">
 					[<a href=? onclick="
 						if (xajax.$(\'hidAddCustomerDetails\').value == \'OFF\'){
@@ -1263,7 +1287,13 @@ Class astercrm extends PEAR{
 		$html .= '
 				<tr>
 					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
-					<td align="left"><input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly><BR /><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
+					<td align="left">';
+					if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
+						$html .= $locate->Translate($customer['customertitle']).'&nbsp;<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>';
+					}else{
+						$html .= '<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>&nbsp;'.$locate->Translate($customer['customertitle']);
+					}
+					$html .= '<BR /><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 				</tr>
 				';
 	}
@@ -1361,10 +1391,17 @@ Class astercrm extends PEAR{
 	//$html .= '</tr></td>';
 	//if(!defined('HOME_DIR')) define('HOME_DIR',dirname(dirname(__FILE__)));
 	//add note html
+
 	$html .='
 			<tr>
-				<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}">'.$locate->Translate("share").')<input type="hidden" value="1" name="private" id="private"></td>
-				<td align="left">
+				<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}"';
+				if($config['system']['default_share_note']){
+				
+					$html .= 'checked>'.$locate->Translate("share").')<input type="hidden" value="0" name="private" id="private"></td>';
+				}else{
+					$html .= '>'.$locate->Translate("share").')<input type="hidden" value="1" name="private" id="private"></td>';
+				}
+				$html .='<td align="left">
 					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;">'.$note.'</textarea>
 				</td>
 			</tr>
@@ -1660,8 +1697,31 @@ Class astercrm extends PEAR{
 					<table border="0" width="100%">
 					<tr id="customerTR" name="customerTR">
 						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-						<td align="left"><input type="text" id="customer" name="customer" size="35" maxlength="100" value="' . $customer['customer'] . '">
-						<input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'"><BR />
+						<td align="left">';
+						if($customer['customertitle'] == 'Mr'){
+							$slt['Mr'] = 'selected';
+						}elseif($customer['customertitle'] == 'Miss'){
+							$slt['Miss'] = 'selected';
+						}elseif($customer['customertitle'] == 'Ms'){
+							$slt['Ms'] = 'selected';
+						}elseif($customer['customertitle'] == 'Mrs'){
+							$slt['Mrs'] = 'selected';
+						}elseif($customer['customertitle'] == 'other'){
+							$slt['other'] = 'selected';
+						}
+						$customertile = '<select id="customertitle" name="customertitle">
+								<option value="Mr" '.$slt['Mr'].'>'.$locate->Translate("Mr").'</option>
+								<option value="Miss" '.$slt['Miss'].'>'.$locate->Translate("Miss").'</option>
+								<option value="Ms" '.$slt['Ms'].'>'.$locate->Translate("Ms").'</option>
+								<option value="Mrs" '.$slt['Mrs'].'>'.$locate->Translate("Mrs").'</option>
+								<option value="other" '.$slt['other'].'>'.$locate->Translate("Other").'</option>
+						</select>';
+						if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
+							$html .= $customertile.'&nbsp;<input type="text" id="customer" name="customer" size="35" maxlength="100" value="' . $customer['customer'] . '">';
+						}else{
+							$html .= '<input type="text" id="customer" name="customer" size="35" maxlength="100" value="' . $customer['customer'] . '">&nbsp;'.$customertile;
+						}
+						$html .= '<input type="hidden" id="customerid"  name="customerid" value="'.$customer['id'].'"><BR />
 						<input type="hidden" id="hidEditCustomerDetails" name="hidEditCustomerDetails" value="ON">
 						<input type="hidden" id="hidEditBankDetails" name="hidEditBankDetails" value="ON">
 					[<a href=? onclick="
@@ -1967,7 +2027,13 @@ Class astercrm extends PEAR{
 				<table border="0" width="100%">
 				<tr>
 					<td nowrap align="left" width="160">' .$locate->Translate("customer_name").'&nbsp;[<a href=? onclick="xajax_showNote(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("note").'</a>]</td>
-					<td align="left"><b>'.$customer['customer'].'</b>&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]&nbsp; [<a href=? onclick="
+					<td align="left">';
+					if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
+						$html .= $locate->Translate($customer['customertitle']).'&nbsp;<b>'.$customer['customer'].'</b>';
+					}else{
+						$html .= '&nbsp;<b>'.$customer['customer'].'</b>'.$locate->Translate($customer['customertitle']);
+					}
+					$html .= '&nbsp;[<a href=? onclick="xajax_edit(\''.$customer['id'].'\',\'customer\');return false;">'.$locate->Translate("edit").'</a>]&nbsp; [<a href=? onclick="
 							if (xajax.$(\'hidCustomerBankDetails\').value == \'OFF\'){
 								showObj(\'trCustomerBankDetails\');
 								xajax.$(\'hidCustomerBankDetails\').value = \'ON\';

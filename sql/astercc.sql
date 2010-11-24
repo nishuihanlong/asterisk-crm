@@ -409,6 +409,7 @@ CREATE TABLE `curcdr` (
   `dialstring` varchar(100) not null default '',
   `memo` varchar(100) NOT NULL default '',
   `accountcode` varchar(100) NOT NULL default '',
+  `pushcall` varchar(10) default 'no',
   `monitored` int(11) NOT NULL default 0,
   UNIQUE KEY `id` (`id`),
   KEY `srcid` (`src`,`dst`,`didnumber`,`srcchan`,`dstchan`,`srcuid`,`dstuid`,`disposition`)
@@ -909,6 +910,7 @@ DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
  `id` int(11) NOT NULL auto_increment,
  `customer` varchar(120) NOT NULL default '',
+ `customertitle` varchar(30) default '',
  `address` varchar(200) NOT NULL default '',
  `zipcode` varchar(10) NOT NULL default '',
  `website` varchar(100) NOT NULL default '',

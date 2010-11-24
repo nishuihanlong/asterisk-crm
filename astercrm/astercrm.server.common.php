@@ -214,7 +214,7 @@ function showSurvey($sureyid,$customerid, $contactid, $callerid='', $campaignid=
 
 
 // 判断是否存在$customerName, 如果存在就显示
-function confirmCustomer($customerName,$callerID = null,$contactID){
+function confirmCustomer($customerName,$callerID = null,$contactID,$campaignid=0,$note=''){
 	global $locate;
 	$objResponse = new xajaxResponse();
 	if (trim($customerName) == '')
@@ -223,7 +223,7 @@ function confirmCustomer($customerName,$callerID = null,$contactID){
 	$customerID = Customer::checkValues("customer","customer",$customerName); 
 	if ($customerID && $customerID !=0){//存在
 		$html = Table::Top($locate->Translate("add_record"),"formDiv");
-		$html .= Customer::formAdd($callerID,$customerID,$contactID);
+		$html .= Customer::formAdd($callerID,$customerID,$contactID,$campaignid,$diallistid,$note);
 		$html .= Table::Footer();
 		$objResponse->addAssign("formDiv", "style.visibility", "visible");
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
@@ -490,14 +490,18 @@ function save($f){
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
 	$objResponse->addAssign("formContactInfo", "style.visibility", "hidden");
+	$objResponse->addAssign("formNoteInfo", "style.visibility", "hidden");
 
 	$objResponse->addClear("formDiv", "innerHTML");
 
 	$objResponse->addClear("formCustomerInfo", "innerHTML");
 	$objResponse->addClear("formContactInfo", "innerHTML");
+	$objResponse->addClear("formNoteInfo", "innerHTML");
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
-	$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
-	$objResponse->addAssign("formCustomerInfo", "innerHTML", $chtml);
+	if($chtml != ''){
+		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
+		$objResponse->addAssign("formCustomerInfo", "innerHTML", $chtml);
+	}
 	return $objResponse->getXML();
 }
 
@@ -568,14 +572,14 @@ function editField($table, $field, $cell, $value, $id){
 	return $objResponse->getXML();
 }
 
-function add($callerid = null,$customerid = null,$contactid = null){
+function add($callerid = null,$customerid = null,$contactid = null,$campaignid=0,$note=''){
 	global $locate;
 	$objResponse = new xajaxResponse();
 //	return $objResponse;
 
 	$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
 //	$html .= Customer::formAdd($callerid,$customerid,$contactid);  // <-- Change by your method
-	$html .= Customer::formAdd($callerid,$customerid,$contactid);
+	$html .= Customer::formAdd($callerid,$customerid,$contactid,$campaignid,$dialedid,$note);
 //	$objResponse->addAlert($callerid);
 	// End edit zone
 	$html .= Table::Footer();

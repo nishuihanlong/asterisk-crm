@@ -46,3 +46,4 @@ exten => _X.,1,NoOp(${CUSCID})
 exten => _X.,n,GoToIf($["${CUSCID}" = "NONE"]?dial)
 exten => _X.,n,Set(CALLERID(num)=${CUSCID})
 exten => _X.,n(dial),GoTo(from-internal,${EXTEN},1)
+

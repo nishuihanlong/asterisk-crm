@@ -52,4 +52,9 @@ $no_read = "no remind";
 $readed = "reminded";
 $google_map = "Google Map";
 $viewknowledge = "Knowledge";
+$mr = "Mr.";
+$miss = "Miss.";
+$mrs = "Mrs.";
+$ms = "Ms.";
+$other = "other";
 ?>

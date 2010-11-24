@@ -82,4 +82,9 @@ $add_diallist_succeed = 'Add diallist succeed';
 $caller_number_cannot_be_empty = 'Caller number cannot be empty';
 $cancel = 'cancel';
 $edit_ticket_detail = 'Edit ticket_detail';
+$mr = "Mr.";
+$miss = "Miss.";
+$mrs = "Mrs.";
+$ms = "Ms.";
+$other = "other";
 ?>

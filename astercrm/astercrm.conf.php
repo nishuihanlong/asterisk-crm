@@ -89,7 +89,7 @@ stop_work_verify = 0
 phone_number_length = 0
 
 ;how many digits end of callerid remove when incoming call smart matching, disabled if set it to 0
-smart_match_remove = 1
+smart_match_remove = 0
 ;
 
 ;time intervals of update event in pages
@@ -114,6 +114,12 @@ allow_dropcall = 0
 ;
 
 allow_same_data = 0
+
+;if auto popup note when popup customer info
+auto_note_popup = 0
+
+;default note share status
+default_share_note = 0
 
 ; if need display the recend cdr link
 display_recent_cdr = 1
@@ -145,7 +151,7 @@ firstring = caller
 ;
 ; astercrm will show contact
 ;
-enable_contact = 
+enable_contact = 1
 
 upload_file_path = ./upload/
 
@@ -177,7 +183,7 @@ external_crm_url = http://astercc.org
 ; note: the field must in customer table
 external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 
-detail_level = group
+detail_level = all
 
 astercc_conf_path = 
 

@@ -292,8 +292,8 @@ function showStatus(){
 				$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
 			}
 		}
-
-
+//echo "C".$cstatus[$peer]['disposition'].'P'.$peerstatus[$peer]['disposition'];exit;
+//print_r($peerstatus);exit;
 		if ($cstatus[$peer]['disposition'] != $peerstatus[$peer]['disposition']){	// status changed
 
 			if ($peerstatus[$peer]['disposition'] == ''){
@@ -327,14 +327,19 @@ function showStatus(){
 				$objResponse->addAssign($peer.'-startat','innerHTML',$peerstatus[$peer]['starttime']);
 				$objResponse->addAssign($peer.'-channel','value',$peerstatus[$peer]['srcchan']);
 				if ($peerstatus[$peer]['answertime'] != '0000-00-00 00:00:00'){
-					$now = time();
-	 				$initSec = $now - strtotime($peerstatus[$peer]['answertime']);
-					$objResponse->addScript("putCurrentTime('".$peer."-localanswertime',$initSec);");
+					if($peerstatus[$peer]['pushcall'] == 'LINK' || $peerstatus[$peer]['pushcall'] == 'no'){
+					
+						$now = time();
+	 					$initSec = $now - strtotime($peerstatus[$peer]['answertime']);
+						$objResponse->addScript("putCurrentTime('".$peer."-localanswertime',$initSec);");
+					}else{
+						$peerstatus[$peer]['disposition'] = $peerstatus[$peer]['pushcall'];
+					}
 				}
 			}
 		}
 		//credit changed
-		if ($cstatus[$peer]['credit'] != $peerstatus[$peer]['credit']){
+		if ($cstatus[$peer]['credit'] != $peerstatus[$peer]['credit'] && ($peerstatus[$peer]['pushcall'] == 'LINK' || $peerstatus[$peer]['pushcall'] == 'no')){
 				$objResponse->addAssign($peer.'-price','innerHTML',astercc::creditDigits($peerstatus[$peer]['credit']));
 		}
 	}

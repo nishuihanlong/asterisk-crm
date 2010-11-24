@@ -38,14 +38,14 @@ function btnConfirmCustomerOnClick(){
 
 	if (document.f.customer.readOnly  == true)
 	{
-		xajax_add(xajax.$('iptcallerid').value,0,contactid);
+		xajax_add(xajax.$('iptcallerid').value,0,contactid,document.getElementById('dndlist_campaignid').value,document.f.note.value);
 	}else{
 		if (document.f.customer.value == '')
 		{
 			return false;
 		}
 
-		xajax_confirmCustomer(document.f.customer.value,xajax.$('iptcallerid').value,contactid);
+		xajax_confirmCustomer(document.f.customer.value,xajax.$('iptcallerid').value,contactid,document.getElementById('dndlist_campaignid').value,document.f.note.value);
 	}
 }
 

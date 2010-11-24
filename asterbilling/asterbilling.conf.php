@@ -30,12 +30,12 @@ channel = 5
 [sipbuddy]
 type = friend
 host = dynamic
-insecure = very
+insecure = port,invite
 canreinvite = no
 nat = yes
 disallow = all
 allow = ulaw,alaw,g729,g723.1
-context = yourcontext
+context = from-internal
 dtmfmode=rfc2833
 qualify = yes
 
@@ -128,7 +128,7 @@ currency_code = USD
 amount = 10,20,50,100
 
 ;if callshop pays fee of paypal
-callshop_pay_fee = 0
+callshop_pay_fee = 1
 
 ;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
 asterbilling_url = http://192.168.1.22/asterbilling

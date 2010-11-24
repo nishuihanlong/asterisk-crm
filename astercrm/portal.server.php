@@ -1745,6 +1745,9 @@ function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 			$objResponse->addAssign("formDiv", "style.visibility", "visible");
 			$objResponse->addAssign("formDiv", "innerHTML", $html);			
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'customer\','.$callerid.');');
+			if($config['system']['auto_note_popup']){
+				$objResponse->addScript('xajax_showNote(\''.$customerid.'\',\'customer\');');
+			}
 		}
 	} else{ // one match
 		if($customer_id == '') {
@@ -1762,8 +1765,17 @@ function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 		$objResponse->addAssign("formDiv", "innerHTML", $html);
 
 		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
-		if ($customerid != 0)
+		
+		if ($customerid != 0){
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'customer\','.$callerid.');');
+			if($config['system']['auto_note_popup']){
+				$objResponse->addScript('xajax_showNote(\''.$customerid.'\',\'customer\');');
+			}
+		}else{
+			if($config['system']['auto_note_popup']){
+				$objResponse->addScript('xajax_showNote(\''.$contactid.'\',\'contact\');');
+			}
+		}
 
 	}
 //echo $campaignid.$diallistid;exit;

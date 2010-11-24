@@ -6,6 +6,10 @@ new features in 0.072
 	added export customer data in note page
 	fixed bugs of Campaign Report
 	fixed a bug of doesnt display trunk info in portal page
+	added parameter auto_note_popup in astercrm.conf.php for if auto popup note info
+	added parameter default_share_note in astercrm.conf.php for if share note default
+	added customertitle(Mr,Miss,Ms,Mrs,other) in customer table
+	fixed note to blank when confirm or cannel a customer
 0.072 新功能
 	修正了通过dahdi拨号时 被叫号码不存在的情况下 占用预拨号通道过长的bug
 	修正了当坐席分机号码与用户号码近似时弹屏的bug
@@ -14,6 +18,10 @@ new features in 0.072
 	增加了note页导出相关客户信息的功能
 	修正了Campaign Report的bug
 	修正了不显示线路信息的bug
+	astercrm.conf.php增加了auto_note_popup,控制弹屏时是否自动弹出note信息
+	astercrm.conf.php增加了default_share_note,控制添加note信息时，默认是否为共享
+	客户信息中增加了称谓字段(先生,小姐,女士,太太,其它)
+	解决了当确认或取消客户时已填写的备注被清空的问题
 
 astercrm features(0.063)
 
