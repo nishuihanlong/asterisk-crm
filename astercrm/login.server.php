@@ -268,7 +268,7 @@ function processAccountData($aFormValues)
 
 					$dataArray = array();
 					while($row = $result->fetchRow()) {
-						$dataArray[] = $row;
+						$dataArray[$row['id']] = $row;
 					}
 					$_SESSION['curuser']['campaign_queue'] = $dataArray;
 				}

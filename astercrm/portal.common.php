@@ -136,6 +136,7 @@ $xajax->registerFunction("relateByCategory");
 $xajax->registerFunction("searchTicketsFormSubmit");
 $xajax->registerFunction("getMsgInCampaign");
 $xajax->registerFunction("queueAgentControl");
+$xajax->registerFunction("setAutoPauseQueue");
 $xajax->registerFunction("loadingFunction");
 $xajax->registerFunction("doneLoadingFunction");
 

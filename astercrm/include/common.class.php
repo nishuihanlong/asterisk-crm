@@ -52,7 +52,7 @@ class Common{
 				<div class="end">
 				<ul>
 				<li>2007-2010 asterCRM - <a href="http://www.astercc.org" target="_blank">asterCRM home</a></li>
-				<li>version: 0.072 in asterCC 0.2</li>
+				<li>version: 0.072 in asterCC 0.2 beta rc2</li>
 				</ul>
 				</div>
 				';

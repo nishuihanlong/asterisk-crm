@@ -522,6 +522,25 @@ require_once('preferences.common.php');
 		<div id="divSysUploadFilePath" name="divSysUploadFilePath"></div>
 	</td>
   </tr>
+
+  <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysAuto_note_popup" name="SysAuto_note_popup">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto_note_popup</td>
+    <td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysAuto_note_popup" name="iptSysAuto_note_popup" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysAuto_note_popup" name="divSysAuto_note_popup"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+    <td width="230" align="left" valign="top"  id="SysDefault_share_note" name="SysDefault_share_note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default_share_note</td>
+    <td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysDefault_share_note" name="iptSysDefault_share_note" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysDefault_share_note" name="divSysDefault_share_note"></div>
+	</td>
+  </tr>
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>

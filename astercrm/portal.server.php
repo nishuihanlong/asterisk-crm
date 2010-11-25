@@ -950,8 +950,15 @@ function incomingCalls($myValue){
 			$info	= $locate->Translate("talking_to").$curcallerid;
 			if($call['queue'] != ''){
 				foreach($_SESSION['curuser']['campaign_queue'] as $row){
-					//print_r($row);exit;
+					
 					if($row['queuename'] == $call['queue']){
+						if($row['autopause'] == 'checked'){
+							$pagent = '';
+							if(strstr($call['calleeChannel'],'agent')){
+								$pagent = $call['calleeChannel'];
+							}
+							$objResponse->addScript("xajax_queueAgentControl('".$row['queuename']."','pause','".$row['queue_context']."','".$pagent."');");	
+						}
 						$objResponse->addAssign("campaignDiv-".$row['id'],"style.background",'red');
 					}					
 				}
@@ -2314,20 +2321,21 @@ function getMsgInCampaign($form) {
 	}
 	
 	$tableHtml = '';
+	//print_r($_SESSION['curuser']['campaign_queue']);exit;
 	foreach($_SESSION['curuser']['campaign_queue'] as $row) {
 		if(is_array($curagentdata[$row['queuename']]) && !((strtolower($curagentdata[$row['queuename']]['status']) == 'unavailable' || $curagentdata[$row['queuename']]['status'] == 'invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
 
 			$campaignSpan = '<span style="float:left;cursor:pointer;color:green"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span>';
 			if($curagentdata[$row['queuename']]['isdynamic']){			
-				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
+				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
 				
 			}else{
 				if($curagentdata[$row['queuename']]['type'] == 'agent' ){
-					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
+					$loginSpan = '<input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
 				}elseif( !$curagentdata[$row['queuename']]['isdynamic']){
-					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
+					$loginSpan = '<input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
 				}else{
-					$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
+					$loginSpan = '<input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
 				}				
 			}
 
@@ -2353,7 +2361,7 @@ function getMsgInCampaign($form) {
 
 			$tableHtml .= '<div id="campaignDiv-'.$row['id'].'" style="clear:both;"><span style="float:right">'.$loginSpan.'&nbsp;&nbsp;'.$pauseSpan.'</span>'.$campaignSpan.'&nbsp;&nbsp;&nbsp;</div>';
 		}else{
-			$tableHtml .= '<div style="clear:both;" id="campaignDiv-'.$row['id'].'" ><span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('pause').']</a></span></span><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')&nbsp;&nbsp;&nbsp;</span> </div>';
+			$tableHtml .= '<div style="clear:both;" id="campaignDiv-'.$row['id'].'" ><span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('pause').']</a></span></span><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')&nbsp;&nbsp;&nbsp;</span> </div>';
 		}
 	}
 	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
@@ -2485,6 +2493,18 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 		}
 	}
 	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
+	return $objResponse;
+}
+
+function setAutoPauseQueue($id,$action){
+	$objResponse = new xajaxResponse();
+	if($id != ''){
+		if($action == 'checked'){
+			$_SESSION['curuser']['campaign_queue'][$id]['autopause'] = 'checked';
+		}else{
+			$_SESSION['curuser']['campaign_queue'][$id]['autopause'] = '';
+		}
+	}
 	return $objResponse;
 }
 

@@ -10,6 +10,7 @@ new features in 0.072
 	added parameter default_share_note in astercrm.conf.php for if share note default
 	added customertitle(Mr,Miss,Ms,Mrs,other) in customer table
 	fixed note to blank when confirm or cannel a customer
+	added auto pause on queue pannel of agent portal page
 0.072 新功能
 	修正了通过dahdi拨号时 被叫号码不存在的情况下 占用预拨号通道过长的bug
 	修正了当坐席分机号码与用户号码近似时弹屏的bug
@@ -22,6 +23,7 @@ new features in 0.072
 	astercrm.conf.php增加了default_share_note,控制添加note信息时，默认是否为共享
 	客户信息中增加了称谓字段(先生,小姐,女士,太太,其它)
 	解决了当确认或取消客户时已填写的备注被清空的问题
+	队列面板增加了自动置忙功能
 
 astercrm features(0.063)
 

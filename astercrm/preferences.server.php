@@ -146,6 +146,9 @@ function initIni(){
 	$objResponse->addAssign("asterccChannels","value",$asterccConfig["licence"]["channel"]);
 	$objResponse->addAssign("asterccKey","value",$asterccConfig["licence"]["key"]);
 
+	$objResponse->addAssign("iptSysAuto_note_popup","value",$config["system"]["auto_note_popup"]);
+	$objResponse->addAssign("iptSysDefault_share_note","value",$config["system"]["default_share_note"]);
+
 	return $objResponse;
 }
 
@@ -240,6 +243,9 @@ function initLocate(){
 	$objResponse->addAssign("divSysExternalCrmUrl","innerHTML",$locate->Translate('sys_external_crm_url'));
 
 	$objResponse->addAssign("divSysUploadFilePath","innerHTML",$locate->Translate('sys_upload_file_path'));
+
+	$objResponse->addAssign("divSysAuto_note_popup","innerHTML",$locate->Translate('if_auto_popup_note_info'));
+	$objResponse->addAssign("divSysDefault_share_note","innerHTML",$locate->Translate('if_share_note_default'));
 	
 	$objResponse->addAssign("divEnable_surveynote","innerHTML",$locate->Translate('enable_surveynote'));
 	$objResponse->addAssign("divClose_popup_after_survey","innerHTML",$locate->Translate('close_popup_after_survey'));
@@ -307,6 +313,9 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
+	$myPreferences['system']['auto_note_popup'] = $aFormValues['iptSysAuto_note_popup'];
+	$myPreferences['system']['default_share_note'] = $aFormValues['iptSysDefault_share_note'];
+
 	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
 	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];
 	$myPreferences['diallist']['popup_diallist'] = $aFormValues['iptPopup_diallist'];
