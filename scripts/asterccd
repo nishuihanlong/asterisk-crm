@@ -32,31 +32,31 @@
 #
 asterccmainpath="/opt/asterisk/scripts/astercc"
 
-astercc=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+astercc=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercc}" == "X" ]; then
   astercc=0
 fi
 
-astercctools=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+astercctools=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercctools}" == "X" ]; then
   astercctools=0
 fi
 
-asterrc=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep asterrc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+asterrc=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep asterrc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${asterrc}" == "X" ]; then
   asterrc=0
 fi
 
-astercclock=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercclock_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+astercclock=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep astercclock_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercclock}" == "X" ]; then
   astercclock=0
 fi
 
-asterccdaemon=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep asterccdaemon_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+asterccdaemon=`sed -n '/\[system]/,/\[.*\]/p' ${asterccmainpath}/astercc.conf |grep asterccdaemon_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${asterccdaemon}" == "X" ]; then
   asterccdaemon=0
