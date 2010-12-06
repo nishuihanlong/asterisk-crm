@@ -17,7 +17,7 @@ asterccdpath=${asterccpath}/asterccd
 
 i=0
 
-sleepsec=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep asterccdaemon_sleep[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+sleepsec=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep asterccdaemon_sleep[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${sleepsec}" == "X" ];then
 	sleepsec=1
@@ -34,25 +34,25 @@ else
 	sed -i '1i\0' $asterccpath/asterccmonitor.log
 fi
 
-astercc_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+astercc_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercc_start}" == "X" ]; then
   astercc_start=0
 fi
 
-astercctools_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+astercctools_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercctools_start}" == "X" ]; then
   astercctools_start=0
 fi
 
-asterrc_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep asterrc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+asterrc_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep asterrc_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${asterrc_start}" == "X" ]; then
   asterrc_start=0
 fi
 
-astercclock_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercclock_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+astercclock_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercclock_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercclock_start}" == "X" ]; then
   astercclock_start=0
