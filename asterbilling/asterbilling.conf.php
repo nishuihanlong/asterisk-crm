@@ -21,12 +21,6 @@ secret = amp111
 ;defined delimiter of asterisk parameter , or |.
 paramdelimiter = ,
 
-[licence]
-
-licenceto = free demo
-key = 
-channel = 5
-
 [sipbuddy]
 type = friend
 host = dynamic

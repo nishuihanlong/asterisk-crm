@@ -556,6 +556,12 @@ function multiEditUpdate($searchContent = array(),$searchField = array(),$search
 	if($f['multioption'] == 'modify'){
 
 		$query = "SELECT id,".trim($field)." FROM ".$table." WHERE 1 ".$joinstr.$groupJoinStr.$resellerJoinStr;
+		if($_SESSION['curuser']['usertype'] == 'reseller'){
+			$query .= " AND resellerid =".$f['resellerid']." ";
+		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$query .= " AND groupid =".$f['groupid']." ";
+		}
+
 		astercrm::events($query);
 		$res = $db->query($query);
 			

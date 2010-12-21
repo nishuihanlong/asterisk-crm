@@ -68,6 +68,7 @@ require_once('callshoprate.common.php');
 		</table>
 		<form name="exportForm" id="exportForm" action="dataexport.php" >
 			<input type="hidden" value="" id="hidSql" name="hidSql" />
+			<input type="hidden" value="callshoprate" id="table" name="table" />
 		</form>
 		<div id="divCopyright"></div>
 	</body>

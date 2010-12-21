@@ -530,7 +530,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	}elseif($type == "delete"){
 		$res = Customer::deleteRecords('resellerid',$id,'clid');
 		$res = Customer::deleteRecords('resellerid',$id,'accountgroup');
-		$res = Customer::deleteRecords('resellerid',$id,'rate');
+		$res = Customer::deleteRecords('resellerid',$id,'myrate');
 		$res = Customer::deleteRecords('resellerid',$id,'callshoprate');
 		$res = Customer::deleteRecords('resellerid',$id,'resellerrate');
 		$res = Customer::deleteRecords('resellerid',$id,'account');

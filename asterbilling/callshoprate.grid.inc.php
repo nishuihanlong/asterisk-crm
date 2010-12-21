@@ -217,7 +217,7 @@ class Customer extends astercrm
 		return $res;
 	}
 
-	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table){
+	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,$mode=''){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
@@ -229,7 +229,16 @@ class Customer extends astercrm
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql .= " (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)";
 		}else{
-			$sql .= " ((callshoprate.groupid = ".$_SESSION['curuser']['groupid']." OR callshoprate.groupid = 0) AND (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)) ";
+			if($mode != 'on'){
+				if(in_array('groupname',$filter)){
+					$sql .= " (callshoprate.groupid = ".$_SESSION['curuser']['groupid']." ) ";					
+				}else{
+					$sql .= " (callshoprate.groupid = 0 AND (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)) ";
+				}
+			}else{
+
+				$sql .= " ((callshoprate.groupid = ".$_SESSION['curuser']['groupid']." OR callshoprate.groupid = 0) AND (callshoprate.resellerid = ".$_SESSION['curuser']['resellerid']." OR callshoprate.resellerid = 0)) ";
+			}
 		}
 
 		if ($joinstr!=''){

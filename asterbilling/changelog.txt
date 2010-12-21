@@ -158,6 +158,7 @@ add new field amount and total in table accountgroup to store all selling and al
 0.14
 2010-11-22 fixed bug of epayment with callshop_pay_fee setting
 2010-11-22 no longer support callback function(could use callback in version 0.12(asterCC 0.14))
+2010-11-29 fixed issue of astercclock cause for high CPU usage
 
 import时如果数据量大会报错
 需要在网页上提供重启asterrc的功能

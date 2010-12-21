@@ -1128,5 +1128,20 @@ Class astercrm extends PEAR{
 		return $html;
 	}
 
+	function FormatSec($sec){
+		$formateStr = '00:00:00';
+		if($sec >= 86400) {
+			$h = intval($sec/3600);
+			$m = intval(($sec%3600)/60);
+			$s = intval(($sec%3600)%60);
+			if(strlen($h) == 1) $h = '0'.$h;
+			if(strlen($m) == 1) $m = '0'.$m;
+			if(strlen($s) == 1) $s = '0'.$s;
+			$formateStr = $h.':'.$m.':'.$s;
+		} else {
+			$formateStr = gmstrftime("%H:%M:%S",$sec);
+		}
+		return $formateStr;
+	}
 }
 ?>

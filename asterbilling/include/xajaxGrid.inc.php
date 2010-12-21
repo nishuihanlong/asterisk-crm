@@ -388,7 +388,7 @@ class ScrollTable{
 	* customer addRowSearth
 	*/
     //增加搜索选项
-	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$typeFromSearch = null,$typeFromSearchShowAs = null,$stype = null){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$typeFromSearch = null,$typeFromSearchShowAs = null,$stype = null,$displaymode){
 		global $local_grid;
 		$ind = 0;
 		$ind_type = 0;
@@ -506,6 +506,14 @@ class ScrollTable{
 			$this->search .='<td>
 								<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';
 								//echo $option;exit;
+		}
+		if($table == 'callshoprate' && $_SESSION['curuser']['usertype'] == 'groupadmin'){
+			if($displaymode == 'on'){
+				$this->search .= '<input type="checkbox" name="displaymode" id="displaymode" checked>';
+			}else{
+				$this->search .= '<input type="checkbox" name="displaymode" id="displaymode" >';
+			}
+			$this->search .= $local_grid->Translate("Display All");
 		}
 
 		$this->search .='</tr>

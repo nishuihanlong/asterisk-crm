@@ -256,8 +256,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['calldate'];
 		$rowc[] = $row['src'];
 		$rowc[] = $row['dst'];
-		$rowc[] = $row['duration'];
-		$rowc[] = $row['billsec'];
+		$rowc[] = astercrm::FormatSec($row['duration']);
+		$rowc[] = astercrm::FormatSec($row['billsec']);
 		$rowc[] = $row['disposition'];
 		$rowc[] = $row['credit'];
 		$rowc[] = $row['destination'];

@@ -295,7 +295,7 @@ class astercc extends PEAR
 		$credit = $cdr['credit'];
 		// insert the record to historycdr
 		if($config['system']['useHistoryCdr'] == 1){
-			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',customerid = $costomerid, discount = $discount ,payment='".$payment."',note='".$cdr['note']."',setfreecall='".$cdr['setfreecall']."'";
+			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."',`srcname` = '".$cdr['srcname']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `billsec_leg_a` = '".$cdr['billsec_leg_a']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."',`queue` = '".$cdr['queue']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `accountid` = '".$cdr['accountid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',`dialstring` = '".$cdr['dialstring']."',children = '".$cdr['children']."',ischild = '".$cdr['ischild']."',processed = '".$cdr['processed']."',customerid = $costomerid,crm_customerid = '".$cdr['crm_customerid']."',contactid = '".$cdr['contactid']."', discount = $discount ,payment='".$payment."',note='".$cdr['note']."',setfreecall='".$cdr['setfreecall']."',astercrm_groupid='".$cdr['astercrm_groupid']."'";
 		}else {
 			$sql = "UPDATE mycdr SET userfield = 'BILLED' ,customerid = $costomerid, discount = $discount , payment='".$payment."' WHERE id = $id ";
 		}
@@ -398,9 +398,9 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 		}
 
 		if ($groupby == ""){
-			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(billsec_leg_a) as billsec_leg_a, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 		}else{
-			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, $groupby FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
+			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(billsec_leg_a) as billsec_leg_a, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, $groupby FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 		}
 		
 		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
@@ -451,7 +451,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			$table = 'historycdr';
 		}
 
-		$query = "SELECT count(*) as answeredNum FROM $table WHERE disposition = 'ANSWERED' AND calldate >= '$sdate' AND  calldate <= '$edate' ";
+		$query = "SELECT count(*) as answeredNum FROM $table WHERE (disposition = 'ANSWERED' OR billsec_leg_a >0) AND calldate >= '$sdate' AND  calldate <= '$edate' ";
 				
 		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
 			$groupid = $_SESSION['curuser']['groupid'];

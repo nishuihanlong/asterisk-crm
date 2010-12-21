@@ -123,14 +123,21 @@ function parseReport($myreport,$answeredNum = ''){
 	$minute = intval($myreport['seconds'] % 3600 / 60);
 	$sec = intval($myreport['seconds'] % 60);
 	$mins = intval($myreport['seconds'] / 60);
+
+	$amins = intval($myreport['billsec_leg_a'] / 60);
+
 	if($sec > 0) $mins+=1;
 	$asr = round($answeredNum/$myreport['recordNum'] * 100,2);
 	$acd = round($myreport['seconds']/$answeredNum/60,1);
 
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
+		$html .= $locate->Translate("Answered").": ".$answeredNum."<br>";
 		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$mins."min)<br>";
+		$html .= $locate->Translate("Billsec").": ".astercrm::FormatSec($myreport['seconds'])."(".$mins."min)<br>";
+
+		$html .= $locate->Translate("Billsec_Leg_A").": ".astercrm::FormatSec($myreport['billsec_leg_a'])."(".$amins."min)<br>";
+
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
 			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
@@ -144,7 +151,7 @@ function parseReport($myreport,$answeredNum = ''){
 	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$mins."min)<br>";
+		$html .= $locate->Translate("Billsec").": ".astercrm::FormatSec($myreport['seconds'])."(".$mins."min)<br>";
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
 			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
@@ -156,7 +163,7 @@ function parseReport($myreport,$answeredNum = ''){
 	}else if ($_SESSION['curuser']['usertype'] == 'operator'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
-		$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$mins."min)<br>";
+		$html .= $locate->Translate("Billsec").": ".astercrm::FormatSec($myreport['seconds'])."(".$mins."min)<br>";
 		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
@@ -270,6 +277,7 @@ function listCDR($aFormValues){
 					$ary['credit'] += $result['data']['credit'];
 					$ary['callshopcredit'] += $result['data']['callshopcredit'];
 					$ary['resellercredit'] += $result['data']['resellercredit'];
+					$ary['billsec_leg_a'] += $myreport['billsec_leg_a'];
 					$answeredNumTotal += $answeredNum;
 				}
 			}
@@ -438,7 +446,7 @@ function listCDR($aFormValues){
 						<td width="60"></td>
 						<td width="160">'.$row['destination'].'</td>
 						<td width="120">'.$row['recordNum'].'</td>
-						<td width="120">'.$row['seconds'].'</td>
+						<td width="120">'.astercrm::FormatSec($row['seconds']).'</td>
 						<td width="120">'.$row['credit'].'</td>
 						<td width="120">'.$row['callshopcredit'].'</td>
 						<td width="120">'.$row['resellercredit'].'</td>
@@ -449,7 +457,7 @@ function listCDR($aFormValues){
 						<td width="60"></td>
 						<td width="160">'.$row['destination'].'</td>
 						<td width="120">'.$row['recordNum'].'</td>
-						<td width="120">'.$row['seconds'].'</td>
+						<td width="120">'.astercrm::FormatSec($row['seconds']).'</td>
 						<td width="120">'.$row['credit'].'</td>
 						<td width="120">'.$row['callshopcredit'].'</td>
 						<td width="120">'.($row['credit'] - $row['callshopcredit']).'</td>
@@ -459,7 +467,7 @@ function listCDR($aFormValues){
 						<td width="60"></td>
 						<td width="160">'.$row['destination'].'</td>
 						<td width="120">'.$row['recordNum'].'</td>
-						<td width="120">'.$row['seconds'].'</td>
+						<td width="120">'.astercrm::FormatSec($row['seconds']).'</td>
 						<td width="120">'.$row['credit'].'</td>
 						</tr>';		
 				}
@@ -612,9 +620,9 @@ function listCDR($aFormValues){
 						<td>'.$mycdr['calldate'].'</td>
 						<td>'.$mycdr['src'].'</td>
 						<td>'.$mycdr['dst'].'</td>
-						<td>'.$mycdr['duration'].'</td>
+						<td>'.astercrm::FormatSec($mycdr['duration']).'</td>
 						<td>'.$mycdr['disposition'].'</td>
-						<td>'.$mycdr['billsec'].'</td>
+						<td>'.astercrm::FormatSec($mycdr['billsec']).'</td>
 						<td>'.$mycdr['destination'].'</td>
 						<td>'.$ratedesc.'</td>';
 		if ($_SESSION['curuser']['usertype'] == 'operator') {

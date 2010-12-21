@@ -70,15 +70,15 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "", $exportFlag="",$stype=array()){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "", $exportFlag="",$stype=array(),$displaymode='on'){
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
 		$content = null;
 		$filter = null;
-		$numRows =& Customer::getNumRows();
-		$arreglo =& Customer::getAllRecords($start,$limit,$order);
+		$numRows =& Customer::getNumRows($displaymode);
+		$arreglo =& Customer::getAllRecords($start,$limit,$order,$displaymode);
 	}else{
 		foreach($content as $value){
 			if(trim($value) != ""){  //搜索内容有值
@@ -109,8 +109,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,"callshoprate");
 		}else{
 			$order = "id";
-			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
-			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
+			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table,$displaymode);
+			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,$displaymode);
 		}
 	}
 
@@ -240,7 +240,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller')
 		$table->addRowSearchMore("callshoprate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	else
-		$table->addRowSearchMore("callshoprate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		$table->addRowSearchMore("callshoprate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype,$displaymode);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -403,7 +403,7 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
 	if($exportFlag == "1" || $optionFlag == "export"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'callshoprate'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'callshoprate',$searchFormValue['displaymode']); //得到要导出的sql语句
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
@@ -417,12 +417,12 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$searchField[] = 'resellerid';
 			$searchType[] = 'equal';
 		}
-		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'callshoprate');
-		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,$searchType);
+		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'callshoprate',$searchFormValue['displaymode']);
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,$searchType,$searchFormValue['displaymode']);
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($optionFlag == "multiEdit"){
-		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType);
+		$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,1,$searchType,$searchFormValue['displaymode']);
 		$showMutiEdit = Table::Top($locate->Translate("Multi Edit"),"formDiv");
 		$showMutiEdit .= astercrm::formMutiEdit($searchContent,$searchField,$searchType,'callshoprate');
 		$showMutiEdit .= Table::Footer();		
@@ -434,14 +434,14 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'callshoprate');
 			if ($res){
-				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,$searchType);
+				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,$searchType,$searchFormValue['displaymode']);
 				$objResponse = new xajaxResponse();
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted")); 
 			}else{
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record cannot be deleted")); 
 			}
 		}else{
-			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,$searchType);
+			$html = createGrid($numRows, $limit,$searchField, $searchContent, $searchField, $divName, "",1,$searchType,$searchFormValue['displaymode']);
 		}
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
@@ -648,7 +648,7 @@ function multiEditUpdate($searchContent = array(),$searchField = array(),$search
 		}
 		$objResponse->addAlert($sucessNum.$locate->Translate("records have been added"));		
 	}
-	$html = createGrid(0, 25,$searchField, $searchContent, $searchField, 'grid', "",1,1,$searchType);
+	$html = createGrid(0, 25,$searchField, $searchContent, $searchField, 'grid', "",1,1,$searchType,$f['displaymode']);
 
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign('grid', "innerHTML", $html);
