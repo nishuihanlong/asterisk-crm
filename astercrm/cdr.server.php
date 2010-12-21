@@ -114,6 +114,8 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fields[] = 'billsec_leg_a';
 		$fields[] = 'credit';
 		$fileds[] = 'destination';
+		$fileds[] = 'transfertime';
+		$fileds[] = 'transfertarget';
 		$fileds[] = 'memo';
 		$fileds[] = 'filename';
 
@@ -131,8 +133,10 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$headers[] = $locate->Translate("Disposition")."<br>";
 		$headers[] = $locate->Translate("Total Billsec")."<br>";
 		$headers[] = $locate->Translate("Credit")."<br>";
-		$headers[] = $locate->Translate("Destination")."<br>";
-		$headers[] = $locate->Translate("Memo")."<br>";
+		#$headers[] = $locate->Translate("Destination")."<br>";
+		$headers[] = $locate->Translate("Transfer Time")."<br>";
+		$headers[] = $locate->Translate("Transfer Target")."<br>";
+		#$headers[] = $locate->Translate("Memo")."<br>";
 		$headers[] = $locate->Translate("filename")."<br>";
 
 		// HTML table: hearders attributes
@@ -147,8 +151,10 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
+		#$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
 		$attribsHeader[] = 'width=""';
+		#$attribsHeader[] = 'width=""';
 
 		// HTML Table: columns attributes
 		$attribsCols = array();
@@ -160,9 +166,11 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
+		#$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
 		$attribsCols[] = 'style="text-align: left"';
+		#$attribsCols[] = 'style="text-align: left"';
 
 
 		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
@@ -180,8 +188,10 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","disposition","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec_leg_a","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","credit","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
-		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","transfertime","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","transfertarget","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		#$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
+		#$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","memo","'.$divName.'","ORDERING","'.$stype.'");return false;\'';
 		
 		// Select Box: type table.
 		$typeFromSearch = array();
@@ -208,7 +218,9 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fieldsFromSearch[] = 'billsec';
 		$fieldsFromSearch[] = 'disposition';
 		$fieldsFromSearch[] = 'credit';
-		$fieldsFromSearch[] = 'destination';
+		$fieldsFromSearch[] = 'transfertime';
+		$fieldsFromSearch[] = 'transfertarget';
+		#$fieldsFromSearch[] = 'destination';
 		$fieldsFromSearch[] = 'memo';
 
 		// Selecct Box: Labels showed on search select box.
@@ -222,7 +234,9 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 		$fieldsFromSearchShowAs[] = $locate->Translate("billsec");
 		$fieldsFromSearchShowAs[] = $locate->Translate("disposition");
 		$fieldsFromSearchShowAs[] = $locate->Translate("credit");
-		$fieldsFromSearchShowAs[] = $locate->Translate("destination");
+		$fieldsFromSearchShowAs[] = $locate->Translate("transfer time");
+		$fieldsFromSearchShowAs[] = $locate->Translate("transfer target");
+		#$fieldsFromSearchShowAs[] = $locate->Translate("destination");
 		$fieldsFromSearchShowAs[] = $locate->Translate("memo");
 
 
@@ -251,13 +265,15 @@ function createGrid($customerid='',$cdrtype='',$start = 0, $limit = 1, $filter =
 			}
 			$rowc[] = $row['username'];
 			$rowc[] = $row['groupname'];
-			$rowc[] = $row['duration'];
-			$rowc[] = $row['billsec'];
+			$rowc[] = astercrm::FormatSec($row['duration']);
+			$rowc[] = astercrm::FormatSec($row['billsec']);
 			$rowc[] = $row['disposition'];
-			$rowc[] = $row['billsec_leg_a'];
+			$rowc[] = astercrm::FormatSec($row['billsec_leg_a']);
 			$rowc[] = $row['credit'];
-			$rowc[] = $row['destination'];
-			$rowc[] = $row['memo'];
+			#$rowc[] = $row['destination'];
+			$rowc[] = $row['transfertime'];
+			$rowc[] = $row['transfertarget'];
+			#$rowc[] = $row['memo'];
 			if($row['processed'] == 'yes' && $row['fileformat'] != 'error' ) {
 				$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
 			} else {

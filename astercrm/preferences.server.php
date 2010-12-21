@@ -148,6 +148,12 @@ function initIni(){
 
 	$objResponse->addAssign("iptSysAuto_note_popup","value",$config["system"]["auto_note_popup"]);
 	$objResponse->addAssign("iptSysDefault_share_note","value",$config["system"]["default_share_note"]);
+	$objResponse->addAssign("iptSysCustomer_leads","value",$config["system"]["customer_leads"]);
+	$objResponse->addAssign("iptSysEnableCode","value",$config["system"]["enable_code"]);
+	$objResponse->addAssign("iptSysUpdateOnlineInterval","value",$config["system"]["update_online_interval"]);
+
+	//sms
+	$objResponse->addAssign("iptSysEnableSMS","value",$config["system"]["enable_sms"]);
 
 	return $objResponse;
 }
@@ -250,6 +256,10 @@ function initLocate(){
 	$objResponse->addAssign("divEnable_surveynote","innerHTML",$locate->Translate('enable_surveynote'));
 	$objResponse->addAssign("divClose_popup_after_survey","innerHTML",$locate->Translate('close_popup_after_survey'));
 	$objResponse->addAssign("divPopup_diallist","innerHTML",$locate->Translate('popup_diallist'));
+
+	$objResponse->addAssign("divSysEnableCode","innerHTML",$locate->Translate('if_enable_code'));
+	$objResponse->addAssign("divSysUpdateOnlineInterval","innerHTML",$locate->Translate('the_smaller_the_value_the_more_accurate'));//sms
+	$objResponse->addAssign("divSysEnableSMS","innerHTML",$locate->Translate('enable_sms_pop'));
 	
 	return $objResponse;
 }
@@ -315,6 +325,10 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
 	$myPreferences['system']['auto_note_popup'] = $aFormValues['iptSysAuto_note_popup'];
 	$myPreferences['system']['default_share_note'] = $aFormValues['iptSysDefault_share_note'];
+	$myPreferences['system']['customer_leads'] = $aFormValues['iptSysCustomer_leads'];
+	$myPreferences['system']['enable_code'] = $aFormValues['iptSysEnableCode'];
+	$myPreferences['system']['update_online_interval'] = $aFormValues['iptSysUpdateOnlineInterval'];
+	$myPreferences['system']['enable_sms'] = $aFormValues['iptSysEnableSMS'];
 
 	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
 	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];

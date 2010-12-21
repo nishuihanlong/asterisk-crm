@@ -24,4 +24,7 @@ $agent_settings = "动态座席设置";
 $knowledge = "知识库";
 $dnc_list = "免拨列表";
 $ticket_category = "任务类别";
+$useronline_report = "坐席在线报表";
+$user_online = "坐席在线";
+$sms_templates = "sms模版";
 ?>

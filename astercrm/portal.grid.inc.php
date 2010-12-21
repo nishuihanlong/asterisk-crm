@@ -534,7 +534,7 @@ class Customer extends astercrm
 
 	function formDiallist($dialedlistid){
 		global $locate, $db;
-		$sql = "SELECT dialednumber, customername,memo FROM dialedlist WHERE id = $dialedlistid";
+		$sql = "SELECT dialednumber, customername,memo,campaignid FROM dialedlist WHERE id = $dialedlistid";
 		Customer::events($sql);
 		$row =& $db->getRow($sql);
 		$html = '';
@@ -543,7 +543,15 @@ class Customer extends astercrm
 			$html .= '<table border="1" width="100%" class="adminlist" id="d" name="d">
 						<tr><td width="45%">&nbsp;'.$locate->Translate("Customer Name").':&nbsp;</td><td>'.$row['customername'].'</td></tr>
 						<tr><td>&nbsp;'.$locate->Translate("Pone Number").':&nbsp;</td><td>'.$row['dialednumber'].'</td></tr>
-						<tr><td>&nbsp;'.$locate->Translate("Memo").':&nbsp;</td><td>'.$row['memo'].'</td></tr>
+						<tr><td>&nbsp;'.$locate->Translate("Memo").':&nbsp;</td><td>'.$row['memo'].'</td></tr>';
+
+			if($row['campaignid'] != 0 && $row['campaignid'] != '') {
+				//获取拨号计划的备注
+				$CampaignNote = Customer::getCampaignNote($row['campaignid']);
+				$html .= '<tr><td>&nbsp;'.$locate->Translate("Campaign Memo").':&nbsp;</td><td>'.$CampaignNote.'</td></tr>';
+			}
+			
+			$html .= '
 					</table>'; // <-- Change by your method
 			$html .= Table::Footer();
 		}
@@ -975,5 +983,120 @@ class Customer extends astercrm
 		}
 		return $dataArray;
 	}
+
+	function getCampaignNote($campaign_id){
+		global $db;
+		$sql = "SELECT campaignnote FROM campaign WHERE id = $campaign_id ";
+		astercrm::events($sql);
+		$result = & $db->getOne($sql);
+		return $result;
+	}
+
+	function createSMSForm($sendType,$objId=null){
+		global $locate;
+		if($sendType == 'callerid') {
+			$sms_templates = Customer::getSMSTemplates();
+		} else if($sendType == 'campaign_number') {
+			$sms_templates = Customer::getSMSTemplates('campaign_number',$objId);
+		} else if($sendType == 'trunk_number') {
+			$sms_templates = Customer::getSMSTemplates('trunk_number',$objId);
+		}
+		
+		$html = 
+			'<form id="sendsmsForm" name="sendsmsForm" method="post">
+			<table class="adminlist" width="100%" border="1" align="center">
+				<tr>
+					<td>'.$locate->translate('Sender').'<input type="hidden" id="incomeNumber" name="incomeNumber" value="'.$objId.'"></td>
+					<td>';
+					if($sendType == 'callerid' && $objId != null) {
+						$html .= '<input type="text" id="sender" name="sender" size="40" maxlength="20" value="'.$objId.'" />';
+					} else if($sendType == 'trunk_number' && $objId != null) {
+						$html .= '<input type="text" id="sender" name="sender" size="40" maxlength="20" value="'.$objId.'" />';
+					} else if($sendType == 'campaign_number' && $objId != null) {
+						$sms_number = Customer::getSmsNumberByCampaign($objId);
+						$html .= '<input type="text" id="sender" name="sender" size="40" maxlength="20" value="'.$sms_number.'" />';
+					}
+					$html .= '</td>
+				</tr>
+				<tr>
+					<td>'.$locate->translate('SMS Template').'</td>
+					<td><select id="sms_template" name="sms_template" onchange="xajax_templateChange(this.value);">'.$sms_templates.'</select></td>
+				</tr>
+				<tr>
+					<td>'.$locate->translate('Text').'</td>
+					<td>
+						'.$locate->translate('you can enter').' <span id="inputcodeLength">70</span> '.$locate->translate('characters').'<br/>
+						<textarea id="SMSmessage" name="SMSmessage" cols="50" rows="8" onkeyup="calculateMessage(this);"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"><input type="button" value="'.$locate->translate('send').'" onclick="SendSms(xajax.getFormValues(\'sendsmsForm\'));return false;" /></td>
+				</tr>
+			</table>
+			</form>';
+
+		return $html;
+	}
+
+
+	function getSMSTemplates($belongto,$objId=null){
+		global $db;
+		$sql = "SELECT * FROM sms_templates WHERE ";
+		if($belongto == 'campaign_number') {
+			if($objId != null) {
+				$sql .= " (belongto = 'campaign' AND campaign_id=".$objId.") OR belongto = 'all' ";
+			} else {
+				$sql .= " belongto IN ('campaign','all') ";
+			}
+		} else if($belongto == 'trunk_number') {
+			if($objId != null) {
+				$sql .= " (belongto = 'trunk' AND trunkinf_id=".$objId.") OR  belongto = 'all' ";
+			} else {
+				$sql .= " belongto IN ('trunk','all') ";
+			}
+		} else {
+			$sql .= " belongto='all' ";
+		}
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		
+		$optionHtml = '<option value=""></option>';
+		while($row = $result->fetchRow()) {
+			$optionHtml .= '<option value="'.$row['id'].'">'.$row['templatetitle'].'</option>';
+		}
+		return $optionHtml;
+	}
+
+	function getTemplateById($id){
+		global $db;
+		$sql = "SELECT * FROM sms_templates WHERE id=$id ";
+		astercrm::events($sql);
+		$result = & $db->getRow($sql);
+		return $result;
+	}
+
+	function getSmsNumberByCampaign($campaignid){
+		global $db;
+		$sql = "SELECT sms_number FROM campaign WHERE id=$campaignid ";
+		astercrm::events($sql);
+		$result = & $db->getOne($sql);
+		return $result;
+	}
+
+	function insertSentSms($f){
+		global $db;
+		if($f['incomeNumber'] == 0) $f['incomeNumber'] = '';
+		$sql = "INSERT INTO sms_sents SET
+				username = '".$_SESSION['curuser']['username']."',
+				callerid = '".$f['incomeNumber']."',
+				target   = '".$f['sender']."',
+				content  = '".$f['SMSmessage']."',
+				cretime  = now()
+		";
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		return $result;
+	}
+
 }
 ?>

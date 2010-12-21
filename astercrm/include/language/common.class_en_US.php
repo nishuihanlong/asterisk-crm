@@ -13,5 +13,8 @@ $log_out				= "Logout";
 $import					= "Import";
 $export					= "Export";
 $back					= "Back";
-$knowledge              = "Knowledge";
+$knowledge				= "Knowledge";
+$useronline_report		= "Useronline Report";
+$user_online = "User Online";
+$sms_templates = "SMS Templates";
 ?>

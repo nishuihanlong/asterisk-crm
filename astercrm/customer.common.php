@@ -124,6 +124,10 @@ $xajax->registerFunction("showSurvey");
 $xajax->registerFunction("surveySave");
 $xajax->registerFunction("addSchedulerDial");
 $xajax->registerFunction("saveSchedulerDial");
+$xajax->registerFunction("noteAdd");
+$xajax->registerFunction("saveNote");
+$xajax->registerFunction("displayMap");
+$xajax->registerFunction("customerLeadsAction");
 
 //define(ENABLE_CONTACT, $config['system']['enable_contact']);  // Enable contact
 define("ROWSXPAGE", 15); // Number of rows show it per page.

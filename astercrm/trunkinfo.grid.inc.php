@@ -205,6 +205,7 @@ class Customer extends astercrm
 				."trunkname='".$f['trunkname']."', "
 				."trunkchannel='".$f['trunkchannel']."', "
 				."didnumber='".$f['didnumber']."', "
+				."trunk_number='".$f['trunk_number']."', "
 				."trunknote='".$f['trunknote']."', "
 				."cretime=now(), "
 				."creby='".$_SESSION['curuser']['username']."'";
@@ -240,6 +241,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("DID Number").' </td>
 					<td align="left"><input type="text" id="didnumber" name="didnumber" size="30" maxlength="30"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Number").' </td>
+					<td align="left"><input type="text" id="trunk_number" name="trunk_number" size="30" maxlength="30"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Note").'</td>
@@ -290,6 +295,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="didnumber" name="didnumber" size="30" maxlength="50" value="'.$trunkinfo['didnumber'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Trunk Number").' </td>
+					<td align="left"><input type="text" id="trunk_number" name="trunk_number" size="30" maxlength="30" value="'.$trunkinfo['trunk_number'].'"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Trunk Note").'</td>
 					<td align="left"><textarea rows="8" cols="50" id="trunknote" name="trunknote">'.$trunkinfo['trunknote'].'</textarea></td>
 				</tr>
@@ -318,6 +327,7 @@ class Customer extends astercrm
 				."trunkname='".$f['trunkname']."', "
 				."trunkchannel='".$f['trunkchannel']."', "
 				."didnumber='".$f['didnumber']."', "
+				."trunk_number='".$f['trunk_number']."', "
 				."trunknote='".$f['trunknote']."', "
 				."cretime= now() "
 				."WHERE id= ".$f['id']." ";

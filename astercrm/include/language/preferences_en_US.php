@@ -54,4 +54,6 @@ $popup_diallist = "if popup customer infomation in diallist";
 $sys_agent_pannel_setting = "if display these pannels in agent interface";
 $if_auto_popup_note_info = 'if auto popup note info';
 $if_share_note_default = 'if share note default';
+$if_enable_code = 'if enable code';
+$the_smaller_the_value_the_more_accurate = "the smaller the value the more accurate";
 ?>

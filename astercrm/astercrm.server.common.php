@@ -303,6 +303,7 @@ function showCustomer($id = 0, $type="customer",$callerid=''){
 		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
 		$html .= Customer::showCustomerRecord($id,$type,$callerid); 		
 		$html .= Table::Footer();
+		$objResponse->addScript("xajax_showNote('".$id."','customer')");
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
 		return $objResponse->getXML();
@@ -365,7 +366,6 @@ function saveSurvey($f){
 }
 
 function save($f){
-
 	$objResponse = new xajaxResponse();
 	global $locate,$config;
 
@@ -381,7 +381,7 @@ function save($f){
 		if ($f['customerid'] == '' || $f['customerid'] == 0){
 			if ($config['system']['allow_same_data'] == false){
 				//检查是否有完全匹配的customer记录
-				$customer = Customer::checkValues("customer","customer",$f['customer']);
+				$customer = Customer::checkValues("customer","customer",addslashes($f['customer']));
 			}else{
 				$customer = '';
 			}
@@ -396,11 +396,13 @@ function save($f){
 					$objResponse->addAlert($locate->Translate("customer_add_error"));
 					return $objResponse;
 				}
-				//$objResponse->addScript('xajax_showCustomer(\''.$customerID.'\',\'customer\','.$callerid.');');
-				$chtml = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
-				$chtml .= Customer::showCustomerRecord($respOk,'customer',$f['iptcallerid']); 		
-				$chtml .= Table::Footer();
-					
+				$chtml = '';
+				if($f['customer_leads_check'] != 'on' ||($f['customer_leads_check'] == 'on' && $config['system']['customer_leads'] != 'move' && $config['system']['customer_leads'] != 'default_move')) {
+					//$objResponse->addScript('xajax_showCustomer(\''.$customerID.'\',\'customer\','.$callerid.');');
+					$chtml .= Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
+					$chtml .= Customer::showCustomerRecord($respOk,'customer',$f['iptcallerid']); 		
+					$chtml .= Table::Footer();
+				}
 				$objResponse->addAlert($locate->Translate("a_new_customer_added"));
 				
 			}
@@ -457,13 +459,10 @@ function save($f){
 		$respOk = Customer::insertNewSurveyResult($f['surveyid'],$f['surveyoption'],$f['surveynote'],$customerID,$contactID); 
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("survey_added"));
 	}
-	
-	if ($respOk)
 
-	if(empty($f['note'])) {
-
-	} else{
-
+	$saveNote = '';
+	if(!empty($f['note']) || !empty($f['note_code'])) {
+		$saveNote = true;
 		$respOk = Customer::insertNewNote($f,$customerID,$contactID); // add a new Note
 		if ($respOk){
 			$html = createGrid(0,ROWSXPAGE);
@@ -473,6 +472,8 @@ function save($f){
 			$objResponse->addAlert($locate->Translate("note_add_error"));
 			return $objResponse;
 		}
+	} else{
+		$saveNote = false;
 	}
 
 	// 查看是否有scheduler call
@@ -485,7 +486,12 @@ function save($f){
 			$objResponse->addAlert($locate->Translate("Scheduler Call added"));
 		}
 	}
-
+	
+	if($f['customer_leads_check'] == 'on') {
+		if($customerID != '' && $customerID != 0) {
+			astercrm::insertNewCustomerLead($customerID,$config['system']['customer_leads'],$saveNote);
+		}
+	}
 
 	$objResponse->addAssign("formDiv", "style.visibility", "hidden");
 	$objResponse->addAssign("formCustomerInfo", "style.visibility", "hidden");
@@ -498,10 +504,12 @@ function save($f){
 	$objResponse->addClear("formContactInfo", "innerHTML");
 	$objResponse->addClear("formNoteInfo", "innerHTML");
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
+
 	if($chtml != ''){
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formCustomerInfo", "innerHTML", $chtml);
 	}
+
 	return $objResponse->getXML();
 }
 

@@ -62,7 +62,8 @@ function init(){
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
-	global $locate;
+	global $locate,$config;
+	
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null or $content == 'Array' or $filter == 'Array'){
@@ -135,6 +136,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\">";//"select all for delete";
 	$headers[] = $locate->Translate("note");
 	$headers[] = $locate->Translate("priority");
+	if($config['system']['enable_code']) {
+		$headers[] = $locate->Translate("codes");
+	}
 	$headers[] = $locate->Translate("contact");
 	$headers[] = $locate->Translate("customer_name");//"Customer Name";
 	$headers[] = $locate->Translate("callerid");
@@ -147,11 +151,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="19%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="12%"';
-	$attribsHeader[] = 'width="20%"';
 	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="10%"';
-//	$attribsHeader[] = 'width="5%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
+	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -167,6 +171,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","priority","'.$divName.'","ORDERING");return false;\'';
+	if($config['system']['enable_code']) {
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","codes","'.$divName.'","ORDERING");return false;\'';
+	}
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callerid","'.$divName.'","ORDERING");return false;\'';
@@ -178,6 +185,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'note';
 	$fieldsFromSearch[] = 'priority';
+	if($config['system']['enable_code']) {
+		$fieldsFromSearch[] = 'codes';
+	}
 	$fieldsFromSearch[] = 'contact.contact';
 	$fieldsFromSearch[] = 'customer.customer';
 	$fieldsFromSearch[] = 'note.callerid';
@@ -188,6 +198,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("priority");
+	if($config['system']['enable_code']) {
+		$fieldsFromSearchShowAs[] = $locate->Translate("codes");
+	}
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("callerid");
@@ -211,6 +224,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['note'];
 		$rowc[] = $row['priority'];
+		if($config['system']['enable_code']) {
+			$rowc[] = $row['codes'];
+		}
 		$rowc[] = $row['contact'];
 		$rowc[] = $row['customer'];
 		$rowc[] = $row['callerid'];

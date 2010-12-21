@@ -47,4 +47,8 @@ $query = "查询";
 $recycles = "回收次数";
 $sec = "秒";
 $detect = "检测结果";
+$transferednum = "转接次数";
+$transferedrate = "转接率";
+$transfertarget = "转接目标";
+$transfertime = "转接时间";
 ?>

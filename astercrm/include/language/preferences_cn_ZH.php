@@ -79,4 +79,6 @@ $popup_diallist = '弹出拨号列表相关信息';
 $diallist = '拨号列表';
 $if_auto_popup_note_info = '控制弹屏时是否自动弹出note信息';
 $if_share_note_default = '控制添加note信息时，默认是否为共享';
+$if_enable_code = '是否启用code';
+$the_smaller_the_value_the_more_accurate = "数值越小越精准";
 ?>

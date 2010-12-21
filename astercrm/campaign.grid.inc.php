@@ -163,6 +163,7 @@ class Customer extends astercrm
 				."groupid='".$f['groupid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context = '".$f['queue_context']."',"
+				."sms_number = '".$f['sms_number']."',"
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
 		astercrm::events($query);
@@ -185,6 +186,11 @@ class Customer extends astercrm
 			$dialtwoparty = "no";
 		}
 
+		$limit_type = '';
+		if ($f['queuename'] == ""){
+			$limit_type = 'channel';
+		}
+
 		$query= "UPDATE campaign SET "
 				."campaignname='".$f['campaignname']."', "
 				."campaignnote='".$f['campaignnote']."', "
@@ -205,8 +211,14 @@ class Customer extends astercrm
 				."callerid='".$f['callerid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context='".$f['queue_context']."', "
-				."groupid='".$f['groupid']."' "
-				."WHERE id=".$f['id'];
+				."sms_number='".$f['sms_number']."', "
+				."groupid='".$f['groupid']."' ";
+		if($limit_type != ''){
+			$query .= ",limit_type='$limit_type' ";
+		}
+
+		$query .= "WHERE id=".$f['id'];
+
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -459,6 +471,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="minduration" value="0" name="minduration" size="10" maxlength="10"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("SMS Number").'</td>
+					<td align="left"><input type="text" id="sms_number" name="sms_number" size="20" maxlength="30"></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -654,7 +670,12 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Min Duration").'</td>
 					<td align="left"><input type="text" id="minduration" name="minduration" size="10" maxlength="10" value="'.$campaign['minduration'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("SMS Number").'</td>
+					<td align="left"><input type="text" id="sms_number" name="sms_number" size="20" maxlength="30" value="'.$campaign['sms_number'].'"></td>
 				</tr>';
+
 				//print_r($campaign);exit;
 				$ad_hours = intval($campaign['billsec']/3600);
 				$ad_min = intval(($campaign['billsec']%3600)/60);
@@ -670,6 +691,7 @@ class Customer extends astercrm
 				}
 
 				$rsd = round(($campaign['duration_answered'] + $campaign['duration_noanswer'] - $campaign['billsec_leg_a'])/$campaign['dialed'],0);
+				//print_r($campaign);exit;
 				//统计数据
 				$html .= '<tr>
 					<td colspan="2" nowrap align="left"><table border="1" width="100%" class="adminlist">
@@ -679,6 +701,14 @@ class Customer extends astercrm
 							</td>
 							<td>
 								'.$locate->Translate("Answered calls").':&nbsp;<b>'.$campaign['answered'].'</b>
+							</td>							
+						<tr>
+						<tr>
+							<td>
+								'.$locate->Translate("Transfered").':&nbsp;<b>'.$campaign['transfered'].'</b>
+							</td>
+							<td>
+								'.$locate->Translate("Transfere Rate").':&nbsp;<b>'.round(($campaign['transfered']/$campaign['answered'])*100,2).'%</b>
 							</td>							
 						<tr>
 						<tr>							

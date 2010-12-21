@@ -526,7 +526,10 @@ require_once('preferences.common.php');
   <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysAuto_note_popup" name="SysAuto_note_popup">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto_note_popup</td>
     <td width="200" align="left" valign="top" >
-		<input type="text" size="30" id="iptSysAuto_note_popup" name="iptSysAuto_note_popup" />
+		<select name="iptSysAuto_note_popup" id="iptSysAuto_note_popup">
+			<option value="0">0</option>
+			<option value="1">1</option>
+		</select>
 	</td>
     <td align="left" valign="top" >
 		<div id="divSysAuto_note_popup" name="divSysAuto_note_popup"></div>
@@ -535,10 +538,63 @@ require_once('preferences.common.php');
   <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysDefault_share_note" name="SysDefault_share_note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default_share_note</td>
     <td width="200" align="left" valign="top" >
-		<input type="text" size="30" id="iptSysDefault_share_note" name="iptSysDefault_share_note" />
+		<select name="iptSysDefault_share_note" id="iptSysDefault_share_note">
+			<option value="0">0</option>
+			<option value="1">1</option>
+		</select>
 	</td>
     <td align="left" valign="top" >
 		<div id="divSysDefault_share_note" name="divSysDefault_share_note"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysCustomer_leads" 
+	name="SysCustomer_leads">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;customer_leads</td> 	<td width="200" align="left" valign="top" >
+		<select name="iptSysCustomer_leads" id="iptSysCustomer_leads">
+			<option value="move">move</option>
+			<option value="copy">copy</option>
+			<option value="default_move">default_move</option>
+			<option value="default_copy">default_copy</option>
+			<option value="disabled">disabled</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysCustomer_leads" name="divSysCustomer_leads"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysEnableCode" 
+	name="SysEnableCode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_code</td> 	<td width="200" align="left" valign="top" >
+		<select name="iptSysEnableCode" id="iptSysEnableCode">
+			<option value="0">0</option>
+			<option value="1">1</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysEnableCode" name="divSysEnableCode"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysUpdateOnlineInterval" 
+	name="SysUpdateOnlineInterval">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;update_online_interval</td> 	<td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysUpdateOnlineInterval" name="iptSysUpdateOnlineInterval" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysUpdateOnlineInterval" name="divSysUpdateOnlineInterval"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysEnableSMS" 
+	name="SysEnableSMS">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_sms</td> 	<td width="200" align="left" valign="top" >
+		<select name="iptSysEnableSMS" id="iptSysEnableSMS">
+			<option value="disabled">disabled</option>
+			<option value="callerid">callerid</option>
+			<option value="campaign_number">campaign number</option>
+			<option value="trunk_number">trunk number</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysEnableCode" name="divSysEnableCode"></div>
 	</td>
   </tr>
 </table>

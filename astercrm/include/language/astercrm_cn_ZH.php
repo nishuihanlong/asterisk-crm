@@ -113,4 +113,14 @@ $like = "包含";
 $private = "私有"; 
 $callerid = '号码';
 $share = '共享';
+$customer_leads = "客户lead表";
+$mr = "先生";
+$miss = "小姐";
+$mrs = "太太";
+$ms = "女士";
+$other = "其它";
+$codes = "标识";
+$note_code = "标识";
+$copy_to_customer_lead = "拷贝到客户lead表";
+$move_to_customer_lead = "移动到客户lead表";
 ?>

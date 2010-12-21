@@ -128,7 +128,7 @@ require_once('login.common.php');
 		<div id="copyright"><br><span style="font-size:20px;">&copy;</span> 2004-2010 astercc.org </div>
 		</form>
 		</div>
-		<div id="sonicwelllogo">version: 0.072 in asterCC 0.2 beta rc2</div>
+		<div id="sonicwelllogo">version: 0.072 in asterCC 0.2</div>
 		<!--<div id="sonicwelllogo"><img src="skin/default/images/sonicwell_logo.gif" /></div>-->
 		</div>
 	</body>

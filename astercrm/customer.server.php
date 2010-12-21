@@ -41,6 +41,7 @@ require_once ('astercrm.server.common.php');
 require_once ('include/common.class.php');
 require_once ('include/astercrm.class.php');
 require_once ('include/asterisk.class.php');
+require_once ('include/phoogle.php');
 
 /**
 *  initialize page elements
@@ -48,7 +49,7 @@ require_once ('include/asterisk.class.php');
 */
 
 function init(){
-	global $locate;
+	global $locate,$config;
 
 	$objResponse = new xajaxResponse();
 
@@ -59,7 +60,14 @@ function init(){
 
 	$objResponse->addAssign("btnContact","value",$locate->Translate("contact"));
 	$objResponse->addAssign("btnNote","value",$locate->Translate("note"));
-
+	$objResponse->addAssign("btnCustomerLead","value",$locate->Translate("customer_leads"));
+	if($config['system']['customer_leads'] == 'default_move' || $config['system']['customer_leads'] =='move') {
+		$objResponse->addAssign("customerLeadAction","innerHTML","<input type=\"button\" onclick=\"xajax_customerLeadsAction('".$config['system']['customer_leads']."',xajax.getFormValues('delGrid'),xajax.getFormValues('searchForm'));\" id=\"btnCustomerlead\" name=\"btnCustomerlead\" value=\"".$locate->Translate("move_to_customerleads")."\">");
+	} else if($config['system']['customer_leads'] == 'default_copy' || $config['system']['customer_leads'] =='copy'){
+		$objResponse->addAssign("customerLeadAction","innerHTML","<input type=\"button\" onclick=\"xajax_customerLeadsAction('".$config['system']['customer_leads']."',xajax.getFormValues('delGrid'),xajax.getFormValues('searchForm'));\" id=\"btnCustomerlead\" name=\"btnCustomerlead\" value=\"".$locate->Translate("copy_to_customerleads")."\">");
+	} else {
+		$objResponse->addAssign("customerLeadAction","innerHTML","");
+	}
 	//*******
 	$objResponse->addAssign("by","value",$locate->Translate("by"));  //搜索条件
 	$objResponse->addAssign("search","value",$locate->Translate("search")); //搜索内容
@@ -80,10 +88,10 @@ function init(){
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$exportFlag="",$stype=array()){
-	global $locate;
+	global $locate,$config;//
 	//echo $ordering.$order;exit;
 	$_SESSION['ordering'] = $ordering;
-	
+	//if($order == 'code' || $order == 'code');exit;
 	if($filter == null or $content == null or $content == 'Array' or $filter == 'Array'){
 		$numRows =& Customer::getNumRows();
 		$arreglo =& Customer::getAllRecords($start,$limit,$order);
@@ -147,6 +155,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'contact';
 	$fields[] = 'website';
 	$fields[] = 'category';
+	if($config['system']['enable_code']) {
+		$fields[] = 'note';
+		$fields[] = 'codes';
+		$fields[] = 'noteCretime';
+	}
 	$fields[] = 'cretime';
 	$fields[] = 'creby';
 
@@ -159,23 +172,43 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("phone")."<BR \>";//"Contact";
 	$headers[] = $locate->Translate("contact")."<BR \>";//"Category";
 	$headers[] = $locate->Translate("website")."<BR \>";//"Note";
-	$headers[] = $locate->Translate("category")."<BR \>";//"Create Time";
+	$headers[] = $locate->Translate("category")."<BR \>";//"Category";
+	if($config['system']['enable_code']) {
+		$headers[] = $locate->Translate("note");
+		$headers[] = $locate->Translate("codes");
+		$headers[] = $locate->Translate("note_cretime");
+	}
 	$headers[] = $locate->Translate("create_time")."<BR \>";//"Create By";
 	$headers[] = $locate->Translate("create_by")."<BR \>";
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
-	$attribsHeader[] = 'width="5%"';
-	$attribsHeader[] = 'width="16%"';
-	$attribsHeader[] = 'width="7%"';
-	$attribsHeader[] = 'width="8%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="18%"';
-	$attribsHeader[] = 'width="10%"';
-	$attribsHeader[] = 'width="9%"';
-	$attribsHeader[] = 'width="7%"';
-//	$attribsHeader[] = 'width="5%"';
+	if($config['system']['enable_code']) {
+		$attribsHeader[] = 'width="5%"';
+		$attribsHeader[] = 'width="12%"';
+		$attribsHeader[] = 'width="7%"';
+		$attribsHeader[] = 'width="8%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="8%"';
+		$attribsHeader[] = 'width="8%"';
+		$attribsHeader[] = 'width="7%"';
+		$attribsHeader[] = 'width="5%"';
+	} else {
+		$attribsHeader[] = 'width="5%"';
+		$attribsHeader[] = 'width="16%"';
+		$attribsHeader[] = 'width="7%"';
+		$attribsHeader[] = 'width="8%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="15%"';
+		$attribsHeader[] = 'width="10%"';
+		$attribsHeader[] = 'width="9%"';
+		$attribsHeader[] = 'width="7%"';
+		$attribsHeader[] = 'width="5%"';
+	}
+	
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -199,6 +232,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","contact","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","website","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","category","'.$divName.'","ORDERING");return false;\'';
+	if($config['system']['enable_code']) {
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","codes","'.$divName.'","ORDERING");return false;\'';
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","noteCretime","'.$divName.'","ORDERING");return false;\'';
+	}
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 
@@ -208,12 +246,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'state';
 	$fieldsFromSearch[] = 'city';
 	$fieldsFromSearch[] = 'phone';
-	$fieldsFromSearch[] = 'fax';
+	//$fieldsFromSearch[] = 'fax';
+	if($config['system']['enable_code']) {
+		$fieldsFromSearch[] = 'note';
+		$fieldsFromSearch[] = 'codes';
+		$fieldsFromSearch[] = 'note.cretime';
+	}
 	$fieldsFromSearch[] = 'contact';
 	$fieldsFromSearch[] = 'website';
 	$fieldsFromSearch[] = 'category';
-	$fieldsFromSearch[] = 'cretime';
-	$fieldsFromSearch[] = 'creby';
+	$fieldsFromSearch[] = 'customer.cretime';
+	$fieldsFromSearch[] = 'customer.creby';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -221,7 +264,12 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("state");
 	$fieldsFromSearchShowAs[] = $locate->Translate("city");
 	$fieldsFromSearchShowAs[] = $locate->Translate("phone");
-	$fieldsFromSearchShowAs[] = $locate->Translate("fax");
+	//$fieldsFromSearchShowAs[] = $locate->Translate("fax");
+	if($config['system']['enable_code']) {
+		$fieldsFromSearchShowAs[] = $locate->Translate("note");
+		$fieldsFromSearchShowAs[] = $locate->Translate("codes");
+		$fieldsFromSearchShowAs[] = $locate->Translate("note_cretime");
+	}
 	$fieldsFromSearchShowAs[] = $locate->Translate("contact");
 	$fieldsFromSearchShowAs[] = $locate->Translate("website");
 	$fieldsFromSearchShowAs[] = $locate->Translate("category");
@@ -233,6 +281,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order);
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
 	$table->setAttribsCols($attribsCols);
+
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';
 	$table->ordering = $ordering;
@@ -249,6 +298,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['contact'];
 		$rowc[] = $row['website'];
 		$rowc[] = $row['category'];
+		if($config['system']['enable_code']) {
+			$rowc[] = $row['note'];
+			$rowc[] = $row['codes'];
+			$rowc[] = $row['noteCretime'];
+		}
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
@@ -283,8 +337,7 @@ function showDetail($customerid){
 }
 
 function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
-	global $locate,$db;
-
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -297,7 +350,12 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 //	print_r($searchFormValue);exit;
 	$divName = "grid";
 	if($optionFlag == "export"  || $optionFlag == "exportcsv"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'customer'); //得到要导出的sql语句
+		if($config['system']['enable_code']) {
+			$sql = Customer::specialGetSql($searchContent,$searchField,$searchType,'customer',array('customer.*','note.note'=>'note','note.codes'=>'codes','note.creby'=>'last_note_created_by','note.cretime'=>'noteCretime'),array('note'=>array('note.id','customer.last_note_id'))); //得到要导出的sql语句
+			
+		} else {
+			$sql = Customer::specialGetSql($searchContent,$searchField,$searchType,'customer'); //得到要导出的sql语句
+		}
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addAssign("maintable", "value", 'customer'); //赋值隐含域
@@ -315,6 +373,27 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 
+	} else if($optionFlag == "move_to_customerleads" || $optionFlag == "copy_to_customerleads"){
+		$lead_sql= Customer::specialGetSql($searchContent,$searchField,$searchType,'customer');
+		Customer::events($lead_sql);
+		$customer_lead =& $db->query($lead_sql);
+		$i = 0;
+		while($customer_lead->fetchInto($row)){
+			$res = astercrm::insertNewCustomerLead($row['id'],$config['system']['customer_leads'],true);
+			if($res) {
+				$i ++ ;
+			}
+		}
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','',$order,$divName,$ordering,'');
+		//$objResponse->addClear("msgZone", "innerHTML");
+		$showHtml = '';
+		if($config['system']['customer_leads'] == 'move' || $config['system']['customer_leads'] == 'default_move') {
+			$showHtml = $i.$locate->Translate(" customer was moved to customer_leads");
+		} else if($config['system']['customer_leads'] == 'copy' || $config['system']['customer_leads'] == 'default_copy'){
+			$showHtml = $i.$locate->Translate(" customer was copied to customer_leads");
+		}
+		$objResponse->addAssign($divName, "innerHTML", $html);
+		$objResponse->addAssign("msgZone", "innerHTML",$showHtml);
 	}else{
 		if($type == "delete"){
 			$res = Customer::deleteRecord($id,'customer');
@@ -486,6 +565,45 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime=''){
 	}else{
 		$objResponse->addAlert($locate->Translate("Add scheduler dial failed"));
 	}
+	return $objResponse->getXML();
+}
+
+
+function displayMap($address){
+	global $config,$locate;
+	$objResponse = new xajaxResponse();
+	if($config['google-map']['key'] == ''){
+		$objResponse->addAssign("divMap","style.visibility","hidden");
+		$objResponse->addScript("alert('".$locate->Translate("google_map_no_key")."')");	
+		return $objResponse;
+	}
+	if ($address == '')
+		return $objResponse;
+	$map = new PhoogleMap();
+	$map->setAPIKey($config['google-map']['key']);
+	$map->addAddress($address);
+	//$map->showMap();
+	$js = $map->generateJs();
+
+	$objResponse->addAssign("divMap","style.visibility","visible");
+	//$objResponse->addScript("alert('".$js."')");
+	$objResponse->addScript($js);
+	return $objResponse->getXML();
+}
+
+function customerLeadsAction($leadType,$f,$searchFormValue){
+	$objResponse = new xajaxResponse();
+	if(is_array($f['ckb'])){
+		foreach($f['ckb'] as $vaule){
+			$res_contact = astercrm::insertNewCustomerLead($vaule,$leadType,true);
+		}
+	}
+	$searchContent = $searchFormValue['searchContent'];  //搜索内容 数组
+	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
+	$numRows = $searchFormValue['numRows'];
+	$limit = $searchFormValue['limit'];     
+	$html = createGrid($numRows, $limit,$searchField, $searchContent,'','grid');
+	$objResponse->addAssign('grid', "innerHTML", $html);
 	return $objResponse->getXML();
 }
 

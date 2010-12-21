@@ -89,7 +89,7 @@ stop_work_verify = 0
 phone_number_length = 0
 
 ;how many digits end of callerid remove when incoming call smart matching, disabled if set it to 0
-smart_match_remove = 0
+smart_match_remove = 1
 ;
 
 ;time intervals of update event in pages
@@ -115,11 +115,21 @@ allow_dropcall = 0
 
 allow_same_data = 0
 
-;if auto popup note when popup customer info
 auto_note_popup = 0
 
-;default note share status
 default_share_note = 0
+
+;if use customer_leads table move/copy/default_move/default_copy/disabled
+customer_leads = default_move
+
+enable_code = 1
+
+;how long to update last_update_time field in table astercrm_account
+;unit is the minute
+update_online_interval = 2
+
+;if enable sms popup   disabled/callerid/campaign_number/trunk_number
+enable_sms = campaign_number
 
 ; if need display the recend cdr link
 display_recent_cdr = 1
@@ -151,7 +161,7 @@ firstring = caller
 ;
 ; astercrm will show contact
 ;
-enable_contact = 1
+enable_contact = 
 
 upload_file_path = ./upload/
 
@@ -163,12 +173,12 @@ enable_external_crm = 0
 ;
 ; asterCRM will open a new browser window when need popup
 ;
-open_new_window = 1
+open_new_window = 0
 
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = 
+external_crm_default_url = road_accident.php
 
 ;
 ; when using external crm, put pop up page here
@@ -177,7 +187,7 @@ external_crm_default_url =
 ; %method		dial_out or dial_in
 ; %uniqueid
 ; %calldate     starttime of the call
-external_crm_url = http://astercc.org
+external_crm_url = road_accident.php
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
@@ -216,7 +226,7 @@ clidcreditlimit = 0
 
 [google-map]
 
-key = 
+key = ABQIAAAAlXY_fXV4_Oe0ybBhc69s-hRQ1G4EKjJ_eNALtJW0c9DV46DF-BQkpm0dJl1kG_QosmGpwYsi4cnyYg
 
 
 [error_report]

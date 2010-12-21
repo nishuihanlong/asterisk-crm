@@ -11,6 +11,7 @@ new features in 0.072
 	added customertitle(Mr,Miss,Ms,Mrs,other) in customer table
 	fixed note to blank when confirm or cannel a customer
 	added auto pause on queue pannel of agent portal page
+	added parameter singleOutboundTrunk in astercc.conf
 0.072 新功能
 	修正了通过dahdi拨号时 被叫号码不存在的情况下 占用预拨号通道过长的bug
 	修正了当坐席分机号码与用户号码近似时弹屏的bug
@@ -24,6 +25,7 @@ new features in 0.072
 	客户信息中增加了称谓字段(先生,小姐,女士,太太,其它)
 	解决了当确认或取消客户时已填写的备注被清空的问题
 	队列面板增加了自动置忙功能
+	astercc.conf 中增加参数 singleOutboundTrunk
 
 astercrm features(0.063)
 

@@ -139,6 +139,9 @@ $xajax->registerFunction("queueAgentControl");
 $xajax->registerFunction("setAutoPauseQueue");
 $xajax->registerFunction("loadingFunction");
 $xajax->registerFunction("doneLoadingFunction");
+$xajax->registerFunction("SendSmsForm");
+$xajax->registerFunction("SendSMS");
+$xajax->registerFunction("templateChange");
 
 
 if ($config['system']['enable_external_crm'] == false){

@@ -257,12 +257,14 @@ function init(){
 
 	$panelHTML .="<a href=? onclick=\"document.getElementById('dpnShow').value = 1;showDiallist('',0,0,5,'','','','formDiallistPannel','','');return false;\">".$locate->Translate("My Diallist")."</a><br/>";//<span id=\"sptAddDiallist\" style=\"display:none\">
 	$panelHTML .="<a href=? id=\"agentWorkstat\" name=\"agentWorkstat\" onclick=\"document.getElementById('awsShow').value = 1;agentWorkstat();return false;\">".$locate->Translate("work stat")."</a><br/>";
-	$panelHTML .="<a href=? id=\"knowledge\" name=\"knowledge\" onclick=\"setKnowledge();return false;\">".$locate->Translate("viewknowledge")."</a><br/>";	
+	$panelHTML .="<a href=? id=\"knowledge\" name=\"knowledge\" onclick=\"setKnowledge();return false;\">".$locate->Translate("viewknowledge")."</a><br/>";
+
+	$panelHTML .= '<a href=? id="sendSMS" name="sendSMS" onclick="SendSmsForm(\''.$config['system']['enable_sms'].'\');return false;">'.$locate->Translate("Send SMS").'</a><br/>';
 
 	if ($_SESSION['curuser']['usertype'] != "agent"  ){
 		$panelHTML .= '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a><br/>';
 	}
-
+	
 	$panelHTML .="<a href='login.php'>".$locate->Translate("logout")."</a><br />";
 
 	
@@ -278,10 +280,10 @@ function init(){
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");
 		if ($config['system']['open_new_window'] == false){
-			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 		}else{
-			$javascript = "openwindow('".$config['system']['external_crm_default_url']."')";
+			$javascript = "openwindow('".$config['system']['external_crm_default_url']."?curid=0')";
 			$objResponse->addScript("document.getElementById('external_crm_form').submit();");
 		}
 	}
@@ -323,6 +325,7 @@ function init(){
 function listenCalls($aFormValues){
 	global $config,$locate;
 	//print_r($aFormValues);exit;
+	
 	$objResponse = new xajaxResponse();
 //	if($agentData = Customer::getAgentData()){
 //		if(strstr($agentData['agent'],'agent')){
@@ -354,7 +357,14 @@ function listenCalls($aFormValues){
 //			$objResponse->addAssign("breakStatus","value", -1);
 //		}
 //	}
-
+	
+	//根据后台设置的update_online_interval 判断多长时间进行更新astecrm_account表里的last_update_time字段值
+	if(isset($_SESSION['curuser']['update_online_interval']) && $_SESSION['curuser']['update_online_interval'] != ''){
+		if((strtotime(date("Y-m-d H:i:s"))-strtotime($_SESSION['curuser']['update_online_interval'])) >= ($config['system']['update_online_interval']*60)){
+			astercrm::updateAgentOnlineTime('update',date("Y-m-d H:i:s"),$_SESSION['curuser']['accountid']);
+		}
+	}
+	
 	if($aFormValues['dpnShow'] > 0){ //for refresh diallist pannel
 		$lastDiallistId = Customer::getLastOwnDiallistId();
 		if($lastDiallistId == '') $lastDiallistId = 1;
@@ -581,7 +591,7 @@ function waitingCalls($myValue){
 	}else{
 		$objResponse->addAssign("divExtension","style.visibility", 'hidden');
 	}
-
+	
 	//	modified 2007/10/30 by solo
 	//  start
 	//print_r($_SESSION);exit;
@@ -663,9 +673,19 @@ function waitingCalls($myValue){
 			$infomsg = "<strong>".$mytrunk['trunkname']."</strong><br>";
 			$infomsg .= astercrm::db2html($mytrunk['trunknote']);
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+			$objResponse->addAssign('trunkinfo_number',"innerHTML",$mytrunk['trunk_number']);
 		}else{
 			$infomsg = $locate->Translate("no information get for trunk").": ".$trunk[0];
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+			$objResponse->addAssign('trunkinfo_number',"innerHTML");
+		}
+			
+		if($config['system']['enable_sms'] == 'callerid' && $call['callerid'] != '') {
+			$objResponse->addScript('xajax_SendSmsForm("callerid",'.$call['callerid'].')');
+		} else if($config['system']['enable_sms'] == 'trunk_number' && $mytrunk['trunk_number'] != '') {
+			$objResponse->addScript('xajax_SendSmsForm("trunk_number",'.$mytrunk['trunk_number'].')');
+		} else if($config['system']['enable_sms'] == 'campaign_number' && $campaign_id != ''){
+			$objResponse->addScript('xajax_SendSmsForm("campaign_number",'.$campaign_id.')');
 		}
 		
 		$objResponse->addAssign("iptCallerid","value", $call['callerid'] );
@@ -699,7 +719,7 @@ function waitingCalls($myValue){
 						$uniqueid = $call['uniqueid'];
 						$calldate = $call['calldate'];
 
-						$curHtml = '<form id="external_crm_form" action="'.$myurl.'" target="_blank" method="post">
+						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'" target="_blank" method="post">
 								<input type="hidden" name="callerid" value="'.$callerid.'" />
 								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
 								<input type="hidden" name="method" value="'.$method.'" />
@@ -729,7 +749,7 @@ function waitingCalls($myValue){
 						$curHtml .="</form>";
 
 						if ($config['system']['open_new_window'] == false){
-							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
 							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
@@ -822,7 +842,7 @@ function waitingCalls($myValue){
 						$calleeid = $call['callerid'];
 						$uniqueid = $call['uniqueid'];
 						$calldate = $call['calldate'];
-						$curHtml = '<form id="external_crm_form" action="'.$myurl.'" target="_blank" method="post">
+						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'" target="_blank" method="post">
 								<input type="hidden" name="callerid" value="'.$callerid.'" />
 								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
 								<input type="hidden" name="method" value="'.$method.'" />
@@ -830,7 +850,7 @@ function waitingCalls($myValue){
 								<input type="hidden" name="calldate" value="'.$calldate.'" />
 							</form>';
 						if ($config['system']['open_new_window'] == false){
-							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="100%"></iframe>';
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
 							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
@@ -886,6 +906,7 @@ function incomingCalls($myValue){
 		} elseif ($call['status'] =='link'){
 			$objResponse->addAssign("btnDial","disabled",true);
 			$objResponse->addScript("clearSettimePopup();");
+			
 			if ($myValue['direction'] == 'in' && $myValue['trunkinfoStatus'] == 0){
 				if($call['didnumber'] != ''){
 					$didinfo = $locate->Translate("Callee id")."&nbsp;:&nbsp;<b>".$call['didnumber']."</b>";
@@ -902,11 +923,21 @@ function incomingCalls($myValue){
 					$infomsg = "<strong>".$mytrunk['trunkname']."</strong><br>";
 					$infomsg .= astercrm::db2html($mytrunk['trunknote']);
 					$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+					$objResponse->addAssign('trunkinfo_number',"innerHTML",$mytrunk['trunk_number']);
 				}else{
 					$infomsg = $locate->Translate("no information get for trunk").": ".$trunk[0];
 					$objResponse->addAssign('divTrunkinfo',"innerHTML",$infomsg);
+					$objResponse->addAssign('trunkinfo_number',"innerHTML");
 				}
 				$objResponse->addAssign('trunkinfoStatus',"value",'1');
+
+				if($config['system']['enable_sms'] == 'callerid' && $myValue['callerid'] != '') {
+					$objResponse->addScript('xajax_SendSmsForm("callerid",'.$myValue['callerid'].')');
+				} else if($config['system']['enable_sms'] == 'trunk_number' && $mytrunk['trunk_number'] != '') {
+					$objResponse->addScript('xajax_SendSmsForm("trunk_number",'.$mytrunk['trunk_number'].')');
+				} else if($config['system']['enable_sms'] == 'campaign_number' && $result['campaignid'] != ''){
+					$objResponse->addScript('xajax_SendSmsForm("campaign_number",'.$result['campaignid'].')');
+				}
 			}
 
 			if($myValue['callResultStatus'] != '2'){
@@ -1031,6 +1062,7 @@ function incomingCalls($myValue){
 			//disable hangup button
 			$objResponse->addAssign("btnHangup","disabled", true );
 			$objResponse->addAssign('divTrunkinfo',"innerHTML",'');
+			$objResponse->addAssign('trunkinfo_number',"innerHTML",'');
 			$objResponse->addAssign('divDIDinfo','innerHTML','');
 			if($myValue['btnWorkStatus'] == 'working') {				
 				$interval = $_SESSION['curuser']['dialinterval'];
@@ -2528,5 +2560,59 @@ function skipDiallist($dialnumber,$diallistid){
 	return $objResponse;
 }
 
+function SendSmsForm($sendType,$objId){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("Send SMS"),"formSendSMS");
+	$html .= Customer::createSMSForm($sendType,$objId);
+	$html .= Table::Footer();
+	$objResponse->addAssign("formSendSMS", "innerHTML", $html);
+	$objResponse->addAssign("formSendSMS", "style.visibility", "visible");
+	return $objResponse->getXML();
+}
+
+function SendSMS($f){
+	global $db,$locate,$config;
+	$objResponse = new xajaxResponse();
+	if($f['sender'] == '') {
+		$objResponse->addAlert($locate->translate('sender can not be empty'));
+		return $objResponse;
+	}
+	
+	require_once('astercc-sms.class.php');
+	$SendSMS = new SendSMSclass();
+	$f['sender'] = str_replace("+","%2b",$f['sender']);
+	$f['SMSmessage'] = str_replace("+","%2b",$f['SMSmessage']);
+	$result = $SendSMS->SendSMS($f['sender'],$conf['SMSmessage']);
+
+	if($result == '-1') {//发送失败
+		$objResponse->addAlert($locate->translate('Send Error'));
+	} else {//发送成功
+		$sentsResult = Customer::insertSentSms($f);//记录已发送的sms
+		$objResponse->addAlert($locate->translate('Send Success'));
+	}
+	return $objResponse;
+	
+}
+
+function templateChange($curval){
+	global $db;
+	$objResponse = new xajaxResponse();
+	if($curval == '') {
+		$objResponse->addAssign('SMSmessage','innerHTML');
+		$objResponse->addAssign('SMSmessage','disabled',false);
+	} else {
+		$templateResult = Customer::getTemplateById($curval);
+		$objResponse->addAssign('SMSmessage','innerHTML',$templateResult['content']);
+		$objResponse->addScript('calculateMessage("");');
+		if($templateResult['is_edit'] == 'yes') {
+			$objResponse->addAssign('SMSmessage','disabled',false);
+		} else {
+			$objResponse->addAssign('SMSmessage','disabled',true);
+		}
+		
+	}
+	return $objResponse;
+}
 
 $xajax->processRequests();

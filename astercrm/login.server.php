@@ -146,8 +146,19 @@ function init($aFormValue){
 	$objResponse->addAssign("rememberme","checked",$checked);
 	$objResponse->addAssign("locate","value",$language);
 
-	unset($_SESSION['curuser']);
-	unset($_SESSION['status']);
+	/* --------------------- 计算用户在线时间 ------------------------*/
+	if(!empty($_SESSION['curuser'])) {
+		$identity = astercrm::calculateAgentOntime('logout',$_SESSION['curuser']['username']);
+		if($identity != '') {
+			unset($_SESSION['curuser']);
+			unset($_SESSION['status']);
+		}
+	} else {
+		unset($_SESSION['curuser']);
+		unset($_SESSION['status']);
+	}
+
+	
 
 	return $objResponse;
 }
@@ -197,6 +208,11 @@ function processAccountData($aFormValues)
 		if ($row['id'] != '' ){
 			if ($row['password'] == $aFormValues['password'])
 			{
+				$identity = astercrm::calculateAgentOntime('login',trim($aFormValues['username']));
+				if($identity){
+					$update = astercrm::updateAgentOnlineTime('login',date('Y-m-d H:i:s'),$row['id']);
+				}
+				
 				if ($aFormValues['rememberme'] == "forever"){
 				// set cookies for three years
 					setcookie("username", $aFormValues['username'], time() + 94608000);
@@ -220,6 +236,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['accountid'] = $row['id'];
 				$_SESSION['curuser']['accountcode'] = $row['accountcode'];
 				$_SESSION['curuser']['agent'] = $row['agent'];
+				$_SESSION['curuser']['update_online_interval'] = date("Y-m-d H:i:s");
 
 				// added by solo 2007-10-90
 				$_SESSION['curuser']['channel'] = $row['channel'];

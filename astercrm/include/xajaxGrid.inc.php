@@ -622,6 +622,18 @@ class ScrollTable{
 					$option .= '<option value="recycle">'.$local_grid->Translate("recycle").'</option>';
 					$optionOnchange .= 'if(this.value==\'recycle\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("recycle").'\';}';
 				}
+				if($table == "customer"){
+					global $config;
+					
+					if($config['system']['customer_leads'] == 'move'||$config['system']['customer_leads'] == 'default_move') {
+						$option .= '<option value="move_to_customerleads">'.$local_grid->Translate("move_to_customerleads").'</option>';
+						$optionOnchange .= 'if(this.value==\'move_to_customerleads\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("move_to_customerleads").'\';}';
+					} else if($config['system']['customer_leads'] == 'copy'||$config['system']['customer_leads'] == 'default_copy'){
+						$option .= '<option value="copy_to_customerleads">'.$local_grid->Translate("copy_to_customerleads").'</option>';
+						$optionOnchange .= 'if(this.value==\'copy_to_customerleads\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("copy_to_customerleads").'\';}';
+					}
+					
+				}
 				$optionOnchange .= 'if(this.value==\'\'){document.getElementById(\'searchButton\').value=\''.$local_grid->Translate("continue").'\';}';
 				$this->search .='<td>
 									<select name="optionFlag" id="optionFlag" onchange="'.$optionOnchange.'"> '.$option.'</select></td>';

@@ -677,6 +677,47 @@ $clientDst = $_REQUEST['clientdst'];
 			ShowProcessingDiv();
 			xajax_showDetail(parm);
 		}
+
+		function addVirginMobile(){
+			ShowProcessingDiv();
+			var curid = document.getElementById('curid').value;
+			if(curid != '' && typeof(curid) != 'undefined' && curid != null && curid != 0) {
+				window.open('virginmobile.php?curid='+curid);
+			} else {
+				window.open('virginmobile.php');
+			}
+		}
+
+		function calculateMessage(obj){
+			if(obj == '') {
+				obj = document.getElementById('SMSmessage');
+			}
+			var curCode = obj.value;
+			if(curCode.length <= 70) {
+				var remainCodes = 70-curCode.length;
+				document.getElementById('inputcodeLength').innerHTML = remainCodes;
+			} else {
+				document.getElementById('SMSmessage').value = curCode.substr(0,70);
+			}
+		}
+
+		function SendSms(f){
+			ShowProcessingDiv();
+			xajax_SendSMS(f);
+		}
+
+		function SendSmsForm(sendtype){
+			ShowProcessingDiv();
+			var objId = '';
+			if(sendtype == 'callerid') {
+				objId = document.getElementById('callerid').value;
+			} else if(sendtype == 'campaign_number') {
+				objId = document.getElementById('dndlist_campaignid').value;
+			} else if(sendtype == 'trunk_number') {
+				objId = document.getElementById('trunkinfo_number').value;
+			}
+			xajax_SendSmsForm(sendtype,objId);
+		}
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
@@ -743,6 +784,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 		<input type="hidden" name="dndlist_campaignid" id="dndlist_campaignid" value="0" />
 		<input type="hidden" name="clear_popup" id="clear_popup" value="0" />
 		<input type="hidden" name="trunkinfoStatus" id="trunkinfoStatus" value="0" />
+		<input type="hidden" name="trunkinfo_number" id="trunkinfo_number" value="" />
 		<input id="clkPauseTime" name="clkPauseTime" type="hidden" value="0">
 		
 	</form>
@@ -811,6 +853,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 							style="left: 500px; top: 150px;width: 800px"></div>
 						<div id="formCurTickets"  class="formDiv drsElement" 
 							style="left: 300px; top: 300px;width: 800px"></div>
+						<div id="formSendSMS"  class="formDiv drsElement" 
+							style="left: 300px; top: 200px;width: 500px"></div>
 					</fieldset>
 				</td>
 			</tr>

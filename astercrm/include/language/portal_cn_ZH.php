@@ -171,4 +171,10 @@ $mrs = "太太";
 $ms = "女士";
 $other = "其它";
 $auto_pause = "自动置忙";
+$copy_to_customer_lead = "拷贝到客户lead表";
+$move_to_customer_lead = "移动到客户lead表";
+$transfer_time = "转接时间";
+$transfer_target = "转接目标";
+$note_code = "标识";
+$campaign_memo = "拨号计划备注";
 ?>

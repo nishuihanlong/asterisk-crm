@@ -103,7 +103,9 @@ class asterEvent extends PEAR
 
 			//$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%' OR srcchan LIKE 'local/".$exten."@%' OR dstchan LIKE 'local/".$exten."@%') AND dstchan != '' AND srcchan != '' AND dst != '' AND src != '' AND src !='<unknown>' AND id > $curid ";
 
-			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND id > $curid ";
+			$query = "SELECT * FROM curcdr WHERE (src = '$exten' OR dst = '$exten' OR srcchan = 'agent/$agent' OR dstchan = 'agent/$agent' OR srcchan LIKE '$channel-%' OR dstchan LIKE '$channel-%') AND dstchan != '' AND srcchan != '' AND id > $curid ";
+
+			//echo $query;exit;
 
 			$res = $db->query($query);
 			asterEvent::events($query);
@@ -121,7 +123,7 @@ class asterEvent extends PEAR
 					//if($res_did = $db->getone($sql)) $didnumber = $res_did;
 				}
 
-				if ((strstr($list['srcchan'],$channel) && !strstr($list['srcchan'],'local')) OR $list['src'] == $exten) {// dial out
+				if ((strstr($list['srcchan'],$channel) && !strstr($list['srcchan'],'local')) OR $list['src'] == $exten OR $list['srcchan'] == "agent/".$agent) {// dial out
 					//if($list['src'] != $exten){
 					//	$query = "update curcdr set src='$exten' WHERE id='".$list['id']."'";
 						//$db->query($query);

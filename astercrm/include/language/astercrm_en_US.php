@@ -79,4 +79,14 @@ $found_customer_replaced	= "found a same customer, use old data replaced";
 $search = "Search";
 $by = "By";
 $add_search = "Add Search Object";
+$customer_leads = "Customer Leads";
+$mr = "Mr";
+$miss = "Miss";
+$mrs = "Mrs";
+$ms = "Ms";
+$other = "Other";
+$codes = "Code";
+$note_code = "Code";
+$copy_to_customer_lead = "copy to customer lead";
+$move_to_customer_lead = "move to customer lead";
 ?>

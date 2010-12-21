@@ -34,6 +34,7 @@
 * 描述: 建立
 ********************************************************************************/
 
+require_once('customer.server.php');
 require_once('customer.common.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -117,10 +118,20 @@ require_once('customer.common.php');
 		<script type="text/javascript" src="js/ajax.js"></script>
 		<script type="text/javascript" src="js/ajax-dynamic-list.js"></script>
 		<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
-	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
-	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
-	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
-
+		<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
+		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
+		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
+<?
+if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
+	if($_SESSION['curuser']['country'] == 'cn') 
+		$map_locate = 'ditu';
+	else
+		$map_locate = 'maps';
+?>
+	<script src="http://<?echo $map_locate;?>.google.com/maps?file=api&v=2&key=<?echo $config['google-map']['key'];?>" type="text/javascript"></script>
+<?
+}
+?>
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
@@ -128,37 +139,39 @@ require_once('customer.common.php');
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnContact" name="btnContact" onClick="window.location='contact.php';" />
 		<input type="button" value="" id="btnNote" name="btnNote" onClick="window.location='note.php';" />
+		<input type="button" value="" id="btnCustomerLead" name="btnCustomerLead" onClick="window.location='customer_leads.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">
 				<fieldset>
-		<div id="surveyDiv"  class="formDiv drsElement" 
-			style="left: 20px; top: 20px;width:700px;"></div>			
-		<div id="formDiv"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width:500px;"></div>
-		<div id="formCustomerInfo" class="formDiv drsElement"
-			style="left: 20px; top: 50px; width: 650px"></div>
-		<div id="formContactInfo" class="formDiv drsElement"
-			style="left: 20px; top: 330px;width: 600px"></div>
-		<div id="formCdr" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 850px"></div>
-		<div id="formDiallist" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 800px"></div>
-		<div id="formRecords" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 800px"></div>
-		<div id="formNoteInfo" class="formDiv  drsElement"
-			style="left: 450px; top: 330px;"></div>
-		<div id="formEditInfo" class="formDiv drsElement"
-			style="left: 450px; top: 50px;width: 500px"></div>
-		<div id="grid" align="center"></div>
-		<div id="msgZone" name="msgZone" align="left"> </div>
-		<div id="formDiallist" class="formDiv drsElement"
-			style="left: 20px; top: 330px; width: 800px"></div>
-		<div id="formaddDiallistInfo"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 500px"></div>
-		<div id="formeditDiallistInfo"  class="formDiv drsElement" 
-			style="left: 450px; top: 50px;width: 500px"></div>
+					<span id="customerLeadAction"></span>
+					<div id="surveyDiv"  class="formDiv drsElement" 
+						style="left: 20px; top: 20px;width:700px;"></div>			
+					<div id="formDiv"  class="formDiv drsElement" 
+						style="left: 450px; top: 50px;width:500px;"></div>
+					<div id="formCustomerInfo" class="formDiv drsElement"
+						style="left: 20px; top: 50px; width: 650px"></div>
+					<div id="formContactInfo" class="formDiv drsElement"
+						style="left: 20px; top: 330px;width: 600px"></div>
+					<div id="formCdr" class="formDiv drsElement"
+						style="left: 20px; top: 330px; width: 850px"></div>
+					<div id="formDiallist" class="formDiv drsElement"
+						style="left: 20px; top: 330px; width: 800px"></div>
+					<div id="formRecords" class="formDiv drsElement"
+						style="left: 20px; top: 330px; width: 800px"></div>
+					<div id="formNoteInfo" class="formDiv  drsElement"
+						style="left: 450px; top: 330px;width: 500px;z-index:5;"></div>
+					<div id="formEditInfo" class="formDiv drsElement"
+						style="left: 450px; top: 50px;width: 500px"></div>
+					<div id="grid" align="center"></div>
+					<div id="msgZone" name="msgZone" align="left"> </div>
+					<div id="formDiallist" class="formDiv drsElement"
+						style="left: 20px; top: 330px; width: 800px"></div>
+					<div id="formaddDiallistInfo"  class="formDiv drsElement" 
+						style="left: 450px; top: 50px;width: 500px"></div>
+					<div id="formeditDiallistInfo"  class="formDiv drsElement" 
+						style="left: 450px; top: 50px;width: 500px"></div>
 				</fieldset>
 			</td>
 		</tr>
@@ -167,7 +180,31 @@ require_once('customer.common.php');
 		<input type="hidden" value="" id="hidSql" name="hidSql" />
 		<input type="hidden" value="" id="maintable" name="maintable" />
 		<input type="hidden" value="export" id="exporttype" name="exporttype" />
+		<input type="hidden" name="dndlist_campaignid" id="dndlist_campaignid" value="0" />
 	</form>
+	<div id="divMap" class="drsElement" 
+		style="left: 450px; top: 20px;	width: 300px;
+					position: absolute; 
+					z-index:0;
+					text-align: center; 
+					border: 1px dashed #EAEAEA;    
+					color:#006600;
+					visibility:hidden;">
+		<table width="100%" border="1" align="center" class="adminlist" >
+			<tr class="drsMoveHandle">
+				<th align="right" valign="center" >
+					<img src="skin/default/images/close.png" onClick='javascript: document.getElementById("divMap").style.visibility="hidden";return false;' title="Close Window" style="cursor: pointer; height: 16px;">
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<fieldset><legend><?echo $locate->Translate("Google Map")?></legend>
+					<div id="map" style="width: 300px; height: 300px"></div>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<div id="divCopyright"></div>
 	</body>
 </html>

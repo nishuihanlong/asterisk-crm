@@ -87,4 +87,7 @@ $miss = "Miss.";
 $mrs = "Mrs.";
 $ms = "Ms.";
 $other = "other";
+$copy_to_customer_lead = "copy to customer lead";
+$move_to_customer_lead = "move to customer lead";
+$campaign_memo = "Campaign Memo";
 ?>

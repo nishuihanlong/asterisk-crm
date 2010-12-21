@@ -45,4 +45,5 @@ $xajax->registerFunction("processForm");	 //register xajax_processForm
 $xajax->registerFunction("init");				//register xajax_init
 $xajax->registerFunction("setLang");
 $xajax->registerFunction("clearDynamicMode");
+$xajax->registerFunction("calculateOntime");
 ?>

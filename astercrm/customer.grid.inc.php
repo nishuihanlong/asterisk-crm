@@ -44,16 +44,16 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 
-		$sql = "SELECT * FROM customer ";
+		$sql = "SELECT customer.*,note.note,note.codes,note.cretime AS noteCretime FROM customer LEFT JOIN note ON customer.last_note_id = note.id ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
 		}else{
-			$sql .= " WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql .= " WHERE customer.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		if($order == null){
-			$sql .= " ORDER BY cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
+			$sql .= " ORDER BY customer.cretime DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
 			$sql .= " ORDER BY $order ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
@@ -88,7 +88,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT customer.* FROM customer WHERE ";
+		$sql = "SELECT customer.*,note.note,note.codes,note.cretime AS noteCretime FROM customer  LEFT JOIN note ON customer.last_note_id = note.id WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -119,9 +119,9 @@ class Customer extends astercrm
 		global $db;
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM customer ";
+			$sql = " SELECT COUNT(*) FROM customer LEFT JOIN note ON customer.last_note_id = note.id ";
 		}else{
-			$sql = " SELECT COUNT(*) FROM customer WHERE customer.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM customer  LEFT JOIN note ON customer.last_note_id = note.id WHERE customer.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -143,7 +143,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM customer WHERE ";
+			$sql = "SELECT COUNT(*) FROM customer  LEFT JOIN note ON customer.last_note_id = note.id WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -170,7 +170,7 @@ class Customer extends astercrm
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-		$sql = "SELECT customer.* FROM customer WHERE ";
+		$sql = "SELECT customer.*,note.note,note.codes,note.cretime AS noteCretime FROM customer  LEFT JOIN note ON customer.last_note_id = note.id WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -196,7 +196,7 @@ class Customer extends astercrm
 		
 			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-			$sql = "SELECT COUNT(*) FROM customer WHERE ";
+			$sql = "SELECT COUNT(*) FROM customer  LEFT JOIN note ON customer.last_note_id = note.id WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -242,6 +242,49 @@ class Customer extends astercrm
 		$res =& $db->query($sql);
 
 		return $res;
+	}
+
+	
+	function specialGetSql($searchContent,$searchField,$searchType=array(),$table,$fields = '',$leftjoins=array()){
+		global $db;
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
+		$fieldstr = '';
+		if(is_array($fields)){
+			foreach($fields as $field => $alias){
+				if(!is_numeric($field)) {
+					$fieldstr .= " ".$field." AS ".$alias.",";
+				} else {
+					$fieldstr .= " ".$alias.",";
+				}
+			}
+		}
+		$leftStr = '';
+		if(!empty($leftjoins)) {
+			foreach($leftjoins as $model=>$param) {// the keys of array $leftjoins are the table which need to left join
+				$leftStr .= 'LEFT JOIN '.$model.' ON '.$param[0].'='.$param[1].' ';
+			}
+		}
+		
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND');
+
+			if($fieldstr != ''){
+				$fieldstr=rtrim($fieldstr,',');
+				$query = 'SELECT '.$fieldstr.' FROM '.$table.' '.$leftStr.' WHERE '.$joinstr;
+			}else{
+				$query = 'SELECT * FROM '.$table.' '.$leftStr.' WHERE '.$joinstr;
+			}
+			
+		}else {
+
+			if($fieldstr != ''){
+				$fieldstr=rtrim($fieldstr,',');
+				$query = 'SELECT '.$fieldstr.' FROM '.$table.' '.$leftStr.' ';
+			}else{
+				$query = 'SELECT * FROM '.$table.'';
+			}			
+		}
+		return $query;
 	}
 }
 ?>

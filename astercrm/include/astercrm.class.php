@@ -435,12 +435,19 @@ Class astercrm extends PEAR{
 				."creby='".$_SESSION['curuser']['username']."', "
 				."groupid = ".$_SESSION['curuser']['groupid'].", "
 				."customerid=". $customerid . ", "
-				."contactid=". $contactid ;
+				."contactid=". $contactid .", "
+				."codes='". $f['note_code']."' " ;
 		//print $query;
 		//exit;
 		astercrm::events($query);
 
 		$res =& $db->query($query);
+		if($res) {
+			$noteId = mysql_insert_id();
+			$sql = "UPDATE customer SET last_note_id=$noteId WHERE id=$customerid ";
+			$res =& $db->query($sql);
+		}
+		
 		return $res;
 	}
 
@@ -843,7 +850,7 @@ Class astercrm extends PEAR{
 		while	($noteList->fetchInto($row)){
 			$html .= '
 				<tr><td align="left" width="25">'. $row['creby'] .'
-				</td><td>'.nl2br($row['note']).'</td><td>'.$row['cretime'].'</td></tr>
+				</td><td>'.nl2br($row['note']).'</td><td>'.$row['codes'].'</td><td>'.$row['cretime'].'</td></tr>
 				';
 		}
 		$html .= '</table>';
@@ -1009,6 +1016,18 @@ Class astercrm extends PEAR{
 						</td>
 					</tr>
 					<tr>
+						<td nowrap align="left">'.$locate->Translate("note_code").'</td>
+						<td align="left"><select id="note_code" name="note_code">';
+
+			$getAllNoteCodes =& astercrm::getAllNoteCodes();
+			foreach($getAllNoteCodes as $tmp) {
+				$html .='<option value="'.$tmp['code'].'">'.$tmp['code'].'</option>';
+			}
+		
+			$html .='
+						</select></td>
+					</tr>
+					<tr>
 						<td nowrap align="left">'.$locate->Translate("priority").'</td>
 						<td align="left">
 							<select id="priority" name="priority">
@@ -1138,6 +1157,7 @@ Class astercrm extends PEAR{
 			<table border="1" width="100%" class="adminlist">
 			<tr>
 				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href="?" onclick="dial(\''.$callerid.'\',\'\',\'\',\'\',\''.$diallistid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> <span id="diallist_control"></span>';
+			
 			if($campaignid > 0){
 				$html .= "<span id=\"diallist_control\"><input type=\"button\" id=\"insert_dnc_list\" name=\"insert_dnc_list\" value=\"".$locate->Translate("Add Dnc_list")."\" onclick=\"xajax_insertIntoDnc('".$callerid."','".$campaignid."');return false;\"/>";
 				if($diallistid > 0){
@@ -1162,9 +1182,9 @@ Class astercrm extends PEAR{
 								<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
 								<option value="other" >'.$locate->Translate("Other").'</option>
 						</select>&nbsp;
-						<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off">';
+						<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">';
 					}else{
-						$html .= '<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off">&nbsp;
+						$html .= '<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">&nbsp;
 						<select id="customertitle" name="customertitle">
 								<option value="Mr" >'.$locate->Translate("Mr").'</option>
 								<option value="Miss">'.$locate->Translate("Miss").'</option>
@@ -1173,7 +1193,15 @@ Class astercrm extends PEAR{
 								<option value="other" >'.$locate->Translate("Other").'</option>
 						</select>';
 					}
-					
+					if($config['system']['customer_leads'] == 'move') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("move_to_customer_lead");
+					} else if($config['system']['customer_leads'] == 'copy') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("copy_to_customer_lead");
+					} else if($config['system']['customer_leads'] == 'default_move') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("move_to_customer_lead");
+					} else if($config['system']['customer_leads'] == 'default_copy') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("copy_to_customer_lead");
+					}
 
 					$html .= '<br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
 					<input type="hidden" id="hidAddCustomerDetails" name="hidAddCustomerDetails" value="OFF">
@@ -1289,10 +1317,20 @@ Class astercrm extends PEAR{
 					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
 					<td align="left">';
 					if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
-						$html .= $locate->Translate($customer['customertitle']).'&nbsp;<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>';
+						$html .= $locate->Translate($customer['customertitle']).'&nbsp;<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" readOnly>';
 					}else{
-						$html .= '<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly>&nbsp;'.$locate->Translate($customer['customertitle']);
+						$html .= '<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" readOnly>&nbsp;'.$locate->Translate($customer['customertitle']);
 					}
+					if($config['system']['customer_leads'] == 'move') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("move_to_customer_lead");
+					} else if($config['system']['customer_leads'] == 'copy') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("copy_to_customer_lead");
+					} else if($config['system']['customer_leads'] == 'default_move') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("move_to_customer_lead");
+					} else if($config['system']['customer_leads'] == 'default_copy') {
+						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("copy_to_customer_lead");
+					}
+
 					$html .= '<BR /><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 				</tr>
 				';
@@ -1404,6 +1442,17 @@ Class astercrm extends PEAR{
 				$html .='<td align="left">
 					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;">'.$note.'</textarea>
 				</td>
+			</tr>
+			<tr>
+				<td nowrap align="left">'.$locate->Translate("note_code").'</td>
+				<td align="left"><select id="note_code" name="note_code">';
+
+	$getAllNoteCodes =& astercrm::getAllNoteCodes();
+	foreach($getAllNoteCodes as $tmp) {
+		$html .='<option value="'.$tmp['code'].'">'.$tmp['code'].'</option>';
+	}
+	
+	$html .='</select></td>
 			</tr>
 			<tr>
 				<td nowrap align="left">'.$locate->Translate("priority").'</td>
@@ -2069,7 +2118,7 @@ Class astercrm extends PEAR{
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
-					<td align="left">'.$customer['email'].'</td>
+					<td align="left"><a href="mailto:'.$customer['email'].'">'.$customer['email'].'</a></td>
 				</tr>	
 				<!--**********************-->
 				<tr>
@@ -2373,7 +2422,7 @@ Class astercrm extends PEAR{
 		$html .='
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("email").'</td>
-					<td align="left">'.$contact['email'].'</td>
+					<td align="left"><a href="mailto:'.$contact['email'].'">'.$contact['email'].'</a></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("create_time").'</td>
@@ -2649,7 +2698,7 @@ Class astercrm extends PEAR{
 
 			if($fieldstr != ''){
 				$fieldstr=rtrim($fieldstr,',');
-				$query = 'SELECT '.$fieldstr.' FROM '.$table.'';
+				$query = 'SELECT '.$fieldstr.' FROM '.$table.' '.$leftStr.' ';
 			}else{
 				$query = 'SELECT * FROM '.$table.'';
 			}			
@@ -4749,6 +4798,155 @@ Class astercrm extends PEAR{
 			$i++;
 		}
 		return $joinstr;
+	}
+
+
+	/**
+	*	get note code
+	*/
+
+	function &getAllNoteCodes(){
+		global $db;
+		$query = "SELECT * FROM codes";
+		astercrm::events($query);
+		$result =& $db->query($query);
+		$array = array();
+		while($result->fetchInto($row)) {
+			$array[] = $row;
+		}
+		return $array;
+	}
+
+	/**
+	*  insert a record to customer_leads table
+	*
+	*	@param $customerID			(int)		customer id fields.
+	*	@param $customerLead		(varchar)	customer_leads
+	*	@param $saveNote			boolean		if save note
+	*	@return $customerid	(object) 	id number for the record just inserted.
+	*/
+	
+	function insertNewCustomerLead($customerID,$customerLead,$saveNote){
+		global $db,$config;
+		$sql ="SELECT * FROM customer WHERE id=$customerID";
+		$f =& $db->getRow($sql);
+		
+		$query= "INSERT INTO customer_leads SET "
+			."customer='".addslashes($f['customer'])."', "
+			."customertitle='".addslashes($f['customertitle'])."', "
+			."website='".addslashes($f['website'])."', "
+			."country='".addslashes($f['country'])."', "
+			."address='".addslashes($f['address'])."', "
+			."zipcode='".addslashes($f['zipcode'])."', "
+			."city='".addslashes($f['city'])."', "
+			."state='".addslashes($f['state'])."', "
+			."contact='".addslashes($f['contact'])."', "
+			."contactgender='".addslashes($f['contactgender'])."', "
+			."phone='".$f['phone']."', "
+			."phone_ext='".addslashes($f['phone_ext'])."', "
+			."category='".$f['category']."', "
+			."bankname='".addslashes($f['bankname'])."', "
+			."bankzip='".addslashes($f['bankzip'])."', "
+			."bankaccount='".addslashes($f['bankaccount'])."', "
+			."bankaccountname='".addslashes($f['bankaccountname'])."', "
+			."fax='".addslashes($f['fax'])."', "
+			."fax_ext='".addslashes($f['fax_ext'])."', "
+			."mobile='".$f['mobile']."', "
+			."email='".addslashes($f['email'])."', "
+			."cretime=now(), "
+			."groupid = ".$f['groupid'].", "
+			."last_note_id = 0, "
+			."creby='".$f['creby']."'";
+		$res =& $db->query($query);
+		$customerid = mysql_insert_id();
+
+		if($customerid) {
+			if($saveNote) {
+				$note_sql = "SELECT * FROM note WHERE id=".$f['last_note_id']." ";
+				$noteResult = & $db->getRow($note_sql);
+				if(!empty($noteResult)) {
+					$noteSql = "INSERT INTO note_leads SET `note`='".$noteResult['note']."',`callerid`='".$noteResult['callerid']."',`priority`=".$noteResult['priority'].",`attitude`=".$noteResult['attitude'].",`cretime`=now(),`creby`='".$noteResult['creby']."',`customerid`=".$customerid.",`contactid`=0,`groupid`=".$noteResult['groupid'].",`codes`='".$noteResult['codes']."',`private`=".$noteResult['private']." ";
+					$note =& $db->query($noteSql);
+					$last_note_id = mysql_insert_id();
+
+					//更新customer_leads对应数据的last_note_id值
+					$update_sql = "UPDATE customer_leads SET last_note_id=$last_note_id WHERE id=$customerid ";
+					$res =& $db->query($update_sql);
+				}
+			}
+		}
+		
+		if($customerLead == 'move' || $customerLead == 'default_move') {
+			astercrm::deleteRecord($customerID,'customer');
+			astercrm::deleteRecords("customerid",$customerID,'note');
+			//astercrm::deleteRecords("customerid",$customerID,'contact');
+			//$deleteSql = "DELETE FROM customer WHERE id=$customerID";
+			//astercrm::events($deleteSql);
+			//$res =& $db->query($deleteSql);
+		}
+		
+		return $customerID;
+	}
+
+	function FormatSec($sec){
+		$formateStr = '00:00:00';
+		if($sec >= 86400) {
+			$h = intval($sec/3600);
+			$m = intval(($sec%3600)/60);
+			$s = intval(($sec%3600)%60);
+			if(strlen($h) == 1) $h = '0'.$h;
+			if(strlen($m) == 1) $m = '0'.$m;
+			if(strlen($s) == 1) $s = '0'.$s;
+			$formateStr = $h.':'.$m.':'.$s;
+		} else {
+			$formateStr = gmstrftime("%H:%M:%S",$sec);
+		}
+		return $formateStr;
+	}
+
+	function updateAgentOnlineTime($type='',$time,$accountid){
+		global $db;
+		$sql = "UPDATE astercrm_account SET last_update_time='".$time."' ";
+		if($type == 'login') {
+			$sql .= ",last_login_time='".$time."' ";
+		}
+		$sql .= " WHERE id=$accountid";
+		$result = & $db->query($sql);
+		return $result;
+	}
+
+	function calculateAgentOntime($usrtype,$username){
+		global $db,$config;
+		$query = "SELECT * FROM astercrm_account WHERE username='$username' ;";
+		$result = & $db->getRow($query);
+		$last_login_time = $result['last_login_time'];
+		$last_update_time = $result['last_update_time'];
+		$identity = false;
+		if($last_login_time != '0000-00-00 00:00:00') {
+			//是否超过坐席在线更新时间
+			$updateInterval = strtotime(date("Y-m-d H:i:s"))-strtotime($last_update_time);
+			//如果当前时间跟last_update_time 的时间间隔 大于 系统的坐席更新时间，将会把时间更新到坐席在线时间表里
+			
+			$sql = "INSERT INTO agent_online_time SET username='$username',login_time='$last_login_time' ";
+			if($usrtype == 'logout') {
+				$sql .= ",logout_time='".date('Y-m-d H:i:s')."',onlinetime=".(strtotime(date("Y-m-d H:i:s"))-strtotime($last_login_time))." ";
+			} else {
+				if($updateInterval > ($config['system']['update_online_interval']*60)) {
+					$sql .= ",logout_time='".$last_update_time."',onlinetime=".(strtotime($last_update_time)-strtotime($last_login_time))." ";
+				}
+			}
+			$res = & $db->query($sql);
+			if($res) {
+				$empty_sql = "UPDATE astercrm_account SET last_login_time='0000-00-00 00:00:00',last_update_time='0000-00-00 00:00:00' WHERE username='$username'";
+				$empty = & $db->query($empty_sql);
+				$identity = true;
+			}
+		} else {
+			$empty_sql = "UPDATE astercrm_account SET last_login_time='0000-00-00 00:00:00',last_update_time='0000-00-00 00:00:00' WHERE username='$username'";
+			$empty = & $db->query($empty_sql);
+			$identity = true;
+		}
+		return $identity;
 	}
 }
 ?>
