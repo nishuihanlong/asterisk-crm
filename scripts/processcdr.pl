@@ -15,7 +15,6 @@ if (not defined $cfg) {
 	exit(1);
 }
 
-
 my %dbInfo = (
         dbtype => trim($cfg->val('database', 'dbtype')),
         dbhost => trim($cfg->val('database', 'dbhost')),
@@ -128,10 +127,17 @@ if ($ARGV[0] eq '-d'){
 }
 
 my $cdr_lastid = 0;
+my $dialedlist_lastid = 0;
 if( -e "$Bin/processcdrlastid"){
 	open( LASTCDRID,"$Bin/processcdrlastid");
 	my @lastcdrid = <LASTCDRID>; 
-	$cdr_lastid = $lastcdrid['0'];
+
+	if(trim($lastcdrid['0']) > 0){
+		$cdr_lastid = trim($lastcdrid['0']);
+	}
+	if(trim($lastcdrid['1']) > 0){
+		$dialedlist_lastid = trim($lastcdrid['1']);
+	}
 }
 
 my $dbh = &connect_mysql(%dbInfo);
@@ -249,24 +255,58 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 			if($accountinfo{$dstchan}{'id'} > 0){
 				$mainaccounts{'id'} = $accountinfo{$dstchan}{'id'};
 				$mainaccounts{'groupid'} = $accountinfo{$dstchan}{'groupid'};
+				$mainaccounts{'match'} = 'dst';
 			}elsif($accountinfo{$srcchan}{'id'} > 0){
 				$mainaccounts{'id'} = $accountinfo{$srcchan}{'id'};
 				$mainaccounts{'groupid'} = $accountinfo{$srcchan}{'groupid'};
+				$mainaccounts{'match'} = 'src';
 			}elsif($accountinfo{$childrens{'main'}->{'dst'}}{'id'} > 0){
 				$mainaccounts{'id'} = $accountinfo{$childrens{'main'}->{'dst'}}{'id'};
 				$mainaccounts{'groupid'} = $accountinfo{$childrens{'main'}->{'dst'}}{'groupid'};
+				$mainaccounts{'match'} = 'dst';
 			}elsif($accountinfo{$childrens{'main'}->{'src'}}{'id'} > 0 ){
 				$mainaccounts{'id'} = $accountinfo{$childrens{'main'}->{'src'}}{'id'};
 				$mainaccounts{'groupid'} = $accountinfo{$childrens{'main'}->{'src'}}{'groupid'};
+				$mainaccounts{'match'} = 'src';
 			}elsif($accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}} > 0){
 				$mainaccounts{'groupid'} = $accountinfo{'queuegroup'}{$childrens{'main'}->{'queue'}};
+				$mainaccounts{'match'} = 'queue';
 			}
 		}
 
+		my %transfer;
+		$transfer{'target'} = '';
+		$transfer{'time'} = '0000:00:00 00:00:00';
 		foreach my $curid (sort keys %childrens) {
 			if($curid eq 'main'){
 				next;
 			}
+
+			if($transfer{'target'} eq ''){
+				if($mainaccounts{'match'} eq 'src'){
+					if($childrens{$curid}->{'src'} ne $childrens{'main'}->{'src'} && $childrens{$curid}->{'dst'} ne $childrens{'main'}->{'src'}){
+						if($childrens{$curid}->{'src'} eq $childrens{'main'}->{'dst'}){
+							$transfer{'target'} = $childrens{$curid}->{'dst'};
+							$transfer{'time'} = $childrens{$curid}->{'calldate'};
+						}else{
+							$transfer{'target'} = $childrens{$curid}->{'src'};
+							$transfer{'time'} = $childrens{$curid}->{'calldate'};
+						}
+					}
+				}else{
+					if($childrens{$curid}->{'src'} ne $childrens{'main'}->{'dst'} && $childrens{$curid}->{'dst'} ne $childrens{'main'}->{'dst'}){
+						if($childrens{$curid}->{'src'} eq $childrens{'main'}->{'src'}){
+							$transfer{'target'} = $childrens{$curid}->{'dst'};
+							$transfer{'time'} = $childrens{$curid}->{'calldate'};
+						}else{
+							$transfer{'target'} = $childrens{$curid}->{'src'};
+							$transfer{'time'} = $childrens{$curid}->{'calldate'};
+						}
+					}
+				}
+				
+			}
+			
 			$children .= "$curid,";	
 			$query = "UPDATE $cdrTbl set ischild = 'yes', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$curid'";
 			#print $query."\n";
@@ -275,7 +315,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 
 		if(exists $childrens{'main'}){
 			if($childrens{'main'}->{'pflag'}){
-				$query = "UPDATE $cdrTbl set children = '$children', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}' WHERE id='$childrens{'main'}->{'id'}'";
+				$query = "UPDATE $cdrTbl set children = '$children', processed='1',accountid='$mainaccounts{'id'}',astercrm_groupid='$mainaccounts{'groupid'}',transfertime='$transfer{'time'}',transfertarget='$transfer{'target'}' WHERE id='$childrens{'main'}->{'id'}'";
 				#print $query."\n";
 				&executeQuery($query,'');
 			}
@@ -339,14 +379,12 @@ if($mycdrid > 0){
 	$cdr_lastid = $mycdrid;
 }
 
-open (CIPHERTEXT, ">$Bin/processcdrlastid");
-print CIPHERTEXT $cdr_lastid;
-close CIPHERTEXT;
-
 my %campaigndata;
-my $query = "SELECT * FROM campaigndialedlist WHERE processed = 'no' ORDER BY dialedtime ASC ";
+my $query = "SELECT campaigndialedlist.*,$cdrTbl.transfertime AS mytransfertime,$cdrTbl.transfertarget AS mytransfertarget FROM campaigndialedlist LEFT JOIN $cdrTbl ON campaigndialedlist.mycdr_id = $cdrTbl.id WHERE campaigndialedlist.id > $dialedlist_lastid AND campaigndialedlist.processed = 'no' ORDER BY dialedtime ASC ";
+
 my $rows = &executeQuery($query,'rows');
 while ( my $ref = $rows->fetchrow_hashref() ) {
+	
 	%campaigndata->{$ref->{'campaignid'}}{'billsec'} += $ref->{'billsec'};
 	%campaigndata->{$ref->{'campaignid'}}{'billsec_leg_a'} += $ref->{'billsec_leg_a'};
 	if($ref->{'billsec'} > 0){
@@ -357,15 +395,25 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	}
 	%campaigndata->{$ref->{'campaignid'}}{'dialed'} += 1;
 
-	$query = "UPDATE campaigndialedlist SET processed='yes' WHERE id='$ref->{'id'}' ";
+	if($ref->{'mytransfertarget'} ne '' ){
+		$query = "UPDATE campaigndialedlist SET transfertime = '$ref->{'mytransfertime'}', transfertarget='$ref->{'mytransfertarget'}',processed='yes' WHERE id='$ref->{'id'}'";
+		%campaigndata->{$ref->{'campaignid'}}{'transfered'} += 1;
+	}else{
+		$query = "UPDATE campaigndialedlist SET processed='yes' WHERE id='$ref->{'id'}' ";
+	}
 	&executeQuery($query,'');
+	$dialedlist_lastid = $ref->{'id'};
 }
+
+open (CIPHERTEXT, ">$Bin/processcdrlastid");
+print CIPHERTEXT "$cdr_lastid\n$dialedlist_lastid";
+close CIPHERTEXT;
 
 foreach my $curcampaignid (sort keys %campaigndata) {
 	if($curcampaignid > 0){
 		my $curdata = %campaigndata->{$curcampaignid};
 
-		my $query = "UPDATE campaign SET billsec = billsec + '$curdata->{'billsec'}' ,billsec_leg_a = billsec_leg_a + '$curdata->{'billsec_leg_a'}' ,duration_answered = duration_answered + '$curdata->{'duration_answered'}', duration_noanswer = duration_noanswer + '$curdata->{'duration_noanswer'}', answered = answered + '$curdata->{'answered'}', dialed = dialed + '$curdata->{'dialed'}' WHERE id='$curcampaignid'";
+		my $query = "UPDATE campaign SET billsec = billsec + '$curdata->{'billsec'}' ,billsec_leg_a = billsec_leg_a + '$curdata->{'billsec_leg_a'}' ,duration_answered = duration_answered + '$curdata->{'duration_answered'}', duration_noanswer = duration_noanswer + '$curdata->{'duration_noanswer'}', answered = answered + '$curdata->{'answered'}', dialed = dialed + '$curdata->{'dialed'}', transfered = transfered + '$curdata->{'transfered'}' WHERE id='$curcampaignid'";
 		&executeQuery($query,'');
 	}
 }
