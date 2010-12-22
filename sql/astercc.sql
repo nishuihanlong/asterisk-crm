@@ -1873,3 +1873,28 @@ CREATE TABLE `agent_online_time` (
  `onlinetime` int(11) NOT NULL default 0,
  UNIQUE KEY `id` (`id`)
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+CREATE TABLE `sms_templates` (
+  `id` int(11) NOT NULL auto_increment,
+  `templatetitle` varchar(80) NOT NULL default '',
+  `belongto` enum('all','campaign','trunk') NOT NULL default 'all',
+  `campaign_id` int(11) NOT NULL default 0,
+  `trunkinfo_id` int(11) NOT NULL default 0,
+  `content` varchar(70) NOT NULL default '',
+  `is_edit` enum('yes','no') NOT NULL default 'yes',
+  `cretime` datetime NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+CREATE TABLE `sms_sents` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(30) NOT NULL default '',
+  `callerid` varchar(30) NOT NULL default '',
+  `target` varchar(20) NOT NULL default '',
+  `is_edit` enum('yes','no') NOT NULL default 'yes',
+  `content` varchar(70) NOT NULL default '',
+  `cretime` datetime NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
