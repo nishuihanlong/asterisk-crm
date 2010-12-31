@@ -63,7 +63,7 @@ require_once('codes.common.php');
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div><br>
+		<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 		<input type="button" value="Group" id="btnCustomer" name="btnCustomer" onClick="window.location='customer.php';" />
 	</div>

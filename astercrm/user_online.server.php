@@ -39,7 +39,7 @@ function init(){
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 		}
 		$objResponse->addScript("addOption('agent_username','".""."','".$locate->Translate("All")."');");
-	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+	}else{
 		// set one group
 		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".$_SESSION['curuser']['group']['groupname']."');");
 

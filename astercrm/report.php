@@ -135,7 +135,7 @@ require_once('report.common.php');
 
 	<body onload="init();" id="report">
 		<div id="divNav"></div>
-		<br>
+
 		<form name="frmFilter" id="frmFilter" method="post">
 		<br>
 		<div style="margin-left: 30px; margin-right: auto;">

@@ -103,7 +103,7 @@ function showChannelsInfo(){
 	if($config['system']['eventtype'] == 'curcdr'){
 		if($_SESSION['curuser']['usertype'] == 'admin'){		
 			$curcdr = astercrm::getAll("curcdr");			
-		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		}else{
 			//print_r($_SESSION['curuser']['memberExtens']);exit;
 			$curcdr = astercrm::getGroupCurcdr();
 		}

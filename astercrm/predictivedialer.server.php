@@ -50,7 +50,7 @@ function init(){
 	// get all groups
 	if($_SESSION['curuser']['usertype'] == 'admin'){
 		$groups = astercrm::getAll("astercrm_accountgroup");
-	}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
+	}else{
 		$groups = astercrm::getRecordsByField('id',$_SESSION['curuser']['groupid'],'astercrm_accountgroup');
 	}
 

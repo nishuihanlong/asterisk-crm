@@ -185,12 +185,32 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,0);
-	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->ordering = $ordering;
-	$table->addRowSearchMore("sms_templates",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+
+	$editFlag = 1;
+	$deleteFlag = 1;
+	$deleteBtnFlag = 1;
+	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
+		if($_SESSION['curuser']['privileges']['sms_templates']['delete']) {
+			$deleteFlag = 1;
+			$table->deleteFlag = '1';
+			$deleteBtnFlag = 1;
+		} else {
+			$deleteFlag = 0;
+			$table->deleteFlag = '0';
+			$deleteBtnFlag = 0;
+		}
+		if($_SESSION['curuser']['privileges']['sms_templates']['edit']) {
+			$editFlag = 1;
+		}else {
+			$editFlag = 0;
+		}
+	}
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$editFlag,$deleteFlag,0);
+	$table->setAttribsCols($attribsCols);
+	$table->addRowSearchMore("sms_templates",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$deleteBtnFlag,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -203,7 +223,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['trunkname'];
 		$rowc[] = $row['content'];
 		$rowc[] = $row['cretime'];
-		$table->addRow("sms_templates",$rowc,1,1,0,$divName,$fields);
+		$table->addRow("sms_templates",$rowc,$editFlag,$deleteFlag,0,$divName,$fields);
  	}
  	
  	// End Editable Zone

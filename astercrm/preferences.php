@@ -100,7 +100,7 @@ require_once('preferences.common.php');
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div><br><br>
+		<div id="divNav"></div>
 <form name="formPreferences" id="formPreferences" method="post">
 <center>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">

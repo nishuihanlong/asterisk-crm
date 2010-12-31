@@ -42,7 +42,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['extension'] == '' or  ($_SESSION['curuser']['usertype'] != 'admin' and  $_SESSION['curuser']['usertype'] != 'groupadmin')) 
+if ($_SESSION['curuser']['extension'] == '' or  ($_SESSION['curuser']['usertype'] != 'admin' and  $_SESSION['curuser']['usertype'] != 'groupadmin' && !is_array($_SESSION['curuser']['privileges']['systemstatus']))) 
 	header("Location: portal.php");
 
 

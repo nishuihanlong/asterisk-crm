@@ -29,11 +29,21 @@ require_once('dialedlist.common.php');
 <html>
 	<head>
 		<?php $xajax->printJavascript('include/'); ?>
+		<?php	
+				$get = '';
+				//print_r($_GET);exit;
+				if($_GET['action'] != '' ){
+					foreach($_GET as $key => $value){
+						$get .= $key.':'.$value.',';
+					}
+				}
+		?>
 		<meta http-equiv="Content-Language" content="utf-8" />
 		<SCRIPT LANGUAGE="JavaScript">
 		<!--
 		function init(){
-			xajax_init();
+			post = "<?php echo $get; ?>"
+			xajax_init(post);
 			//make div draggable
 			CampaignDialedlist();
 			dragresize.apply(document);
@@ -67,7 +77,7 @@ require_once('dialedlist.common.php');
 	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 	</head>
 	<body onload="init();">
-	<div id="divNav"></div><br><br>
+	<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnDial" name="btnDial" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />

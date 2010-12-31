@@ -56,7 +56,7 @@ require_once('knowledge.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
-		<div style="height:30px;"></div>
+
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">

@@ -11,7 +11,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype'] != 'groupadmin') 
+if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype'] != 'groupadmin' && !is_array($_SESSION['curuser']['privileges']['surveyresult'])) 
 	header("Location: portal.php");
 
 require_once ("db_connect.php");
@@ -22,7 +22,7 @@ $table = trim(strtolower($_REQUEST['maintable']));
 //echo $sql.$table;exit;
 $sql = " 1 $sql ";
 
-if ($_SESSION['curuser']['usertype']  == "groupadmin" ){
+if ($_SESSION['curuser']['usertype']  != "admin" ){
 	if($table != '')//判断是否传了主表名
 		$sql .= " and $table.groupid = ".$_SESSION['curuser']['groupid'];
 	else

@@ -61,10 +61,8 @@ require_once('user_online.common.php');
 		<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
 
 	</head>
-
 	<body onload="init();" id="report">
 		<div id="divNav"></div>
-		<br>
 		<form name="frmFilter" id="frmFilter" method="post">
 		<br>
 		<div style="margin-left: 30px; margin-right: auto;">

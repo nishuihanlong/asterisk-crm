@@ -54,7 +54,6 @@ require_once('cdr.common.php');
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-	<br><br>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
 			<td style="padding: 0px;">

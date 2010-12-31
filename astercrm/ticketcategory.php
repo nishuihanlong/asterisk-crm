@@ -106,7 +106,7 @@ $clientDst = $_REQUEST['clientdst'];
 
 	</head>
 	<body onload="init();">
-	<div id="divNav"></div><br><br>
+	<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 		<input type="button" value="Group" id="btnGroup" name="btnGroup" onClick="window.location='group.php';" />
 		<input type="button" value="Campaign" id="btnCampaign" name="btnCampaign" onClick="window.location='campaign.php';" />

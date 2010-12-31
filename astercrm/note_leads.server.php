@@ -206,13 +206,27 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
-	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';
 	$table->ordering = $ordering;
+
+	$deleteFlag = 1;
+	$deleteBtnFlag = 1;
+	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
+		if($_SESSION['curuser']['privileges']['note_leads']['delete']) {
+			$deleteFlag = 1;
+			$table->deleteFlag = '1';
+			$deleteBtnFlag = 1;
+		} else {
+			$deleteFlag = 0;
+			$table->deleteFlag = '0';
+			$deleteBtnFlag = 0;
+		}
+	}
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,$deleteFlag,0);
+	$table->setAttribsCols($attribsCols);
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
-	$table->addRowSearchMore("note_leads",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->addRowSearchMore("note_leads",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$deleteBtnFlag,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
@@ -228,7 +242,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
-		$table->addRow("note_leads",$rowc,0,1,0,$divName,$fields);
+		$table->addRow("note_leads",$rowc,0,$deleteFlag,0,$divName,$fields);
  	}
  	
  	// End Editable Zone

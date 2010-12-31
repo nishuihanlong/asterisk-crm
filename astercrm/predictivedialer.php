@@ -135,8 +135,7 @@ require_once('predictivedialer.common.php');
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>
-		<br><br>
-		<br><br>
+		
 		<div id="divAMIStatus" name="divAMIStatus"></div>
 
 		<form action="" method="post" name="f" id="f">

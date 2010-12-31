@@ -40,7 +40,7 @@ function init(){
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 		}
 
-	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+	}else{
 		// set one group
 		$objResponse->addScript("addOption('groupid','".$_SESSION['curuser']['groupid']."','".""."');");
 

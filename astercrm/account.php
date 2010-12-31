@@ -45,6 +45,14 @@ require_once('account.common.php');
 				dragresize.apply(document);
 			}
 
+			function usertypeChange(obj){
+				if(obj.value == '' || obj.value == 'agent' || obj.value == 'groupadmin' || obj.value == 'admin') {
+					document.getElementById('usertype_id').value = '0';
+				} else {
+					document.getElementById('usertype_id').value = obj.options[obj.selectedIndex].label;
+				}
+			}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
@@ -55,7 +63,7 @@ require_once('account.common.php');
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div><br>
+		<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 		<input type="button" value="Group" id="btnGroup" name="btnGroup" onClick="window.location='group.php';" />
 	</div>

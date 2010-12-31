@@ -261,7 +261,7 @@ function init(){
 
 	$panelHTML .= '<a href=? id="sendSMS" name="sendSMS" onclick="SendSmsForm(\''.$config['system']['enable_sms'].'\');return false;">'.$locate->Translate("Send SMS").'</a><br/>';
 
-	if ($_SESSION['curuser']['usertype'] != "agent"  ){
+	if ( !empty($_SESSION['curuser']['privileges']) || $_SESSION['curuser']['usertype'] == "admin" || $_SESSION['curuser']['usertype'] == "groupadmin" ){
 		$panelHTML .= '<a href=# onclick="this.href=\'managerportal.php\'">'.$locate->Translate("manager").'</a><br/>';
 	}
 	

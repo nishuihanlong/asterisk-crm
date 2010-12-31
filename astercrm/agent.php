@@ -55,7 +55,7 @@ require_once('agent.common.php');
 
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div><br>
+		<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 		<br>
 	</div>

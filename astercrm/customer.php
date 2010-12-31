@@ -135,7 +135,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-	<br><br>
+
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnContact" name="btnContact" onClick="window.location='contact.php';" />
 		<input type="button" value="" id="btnNote" name="btnNote" onClick="window.location='note.php';" />

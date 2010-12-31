@@ -35,9 +35,9 @@ require_once ('include/xajaxGrid.inc.php');
 require_once ('include/common.class.php');
 
 
-function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = ""){
-	
-	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering);
+function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$action='',$campaign_id=0){
+
+	$html = createGrid($start, $limit,$filter, $content, $order, $divName, $ordering,$stype=array(),$action,$campaign_id);
 	$objResponse = new xajaxResponse();
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);
@@ -45,17 +45,36 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 	return $objResponse->getXML();
 }
 
-function init(){
+function init($post=''){
 	global $locate;//,$config,$db;
+	
+	$aciton = '';
+	$campaign_id = 0;
+	if($post != ''){
+		$post = explode(',',$post);
+		foreach($post as $key => $value){
+			if($value != ''){
+				$v = explode(':',$value);
+				if($v['0'] == 'cid'){
+					if(is_numeric($v['1'])){
+						$campaign_id = $v['1'];
+					}					
+				}elseif($v['0'] == 'action'){
+					$aciton = $v['1'];
+				}
+			}
+		}
+	}
 
 	$objResponse = new xajaxResponse();
 
+	
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("btnDial","value",$locate->Translate("Dial list"));
 	$objResponse->addAssign("btnCampaign","value",$locate->Translate("Campaign"));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
-	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
+	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','','grid','','".$aciton."',".$campaign_id.")");
 
 	$noanswer = Customer::getNoanswerCallsNumber();
 	$objResponse->addAssign("spanRecycleUp","innerHTML","No answer calls and never recycle: $noanswer");
@@ -82,7 +101,14 @@ function recycle($f){
 }
 
 //	create grid
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array(),$action='',$campaign_id=0){
+	
+	if($action == 'abandoned' && $campaign_id > 0){
+		$campaignrow = astercrm::getRecordById($campaign_id,'campaign');
+		$filter = array('campaigndialedlist.billsec_leg_a','campaigndialedlist.billsec','campaignname');
+		$content = array(0,0,$campaignrow['campaignname']);
+		$stype = array('more','equal','equal');
+	}
 	global $locate;
 	$_SESSION['ordering'] = $ordering;
 	
@@ -301,12 +327,32 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
-	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$table->ordering = $ordering;
-	$table->addRowSearchMore("campaigndialedlist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+
+	$editFlag = 1;
+	$deleteFlag = 1;
+	$deleteBtnFlag = 1;
+	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
+		if($_SESSION['curuser']['privileges']['dialedlist']['delete']) {
+			$deleteFlag = 1;
+			$table->deleteFlag = '1';
+			$deleteBtnFlag = 1;
+		} else {
+			$deleteFlag = 0;
+			$table->deleteFlag = '0';
+			$deleteBtnFlag = 0;
+		}
+		if($_SESSION['curuser']['privileges']['dialedlist']['edit']) {
+			$editFlag = 1;
+		}else {
+			$editFlag = 0;
+		}
+	}
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,$deleteFlag,0);
+	$table->setAttribsCols($attribsCols);
+	$table->addRowSearchMore("campaigndialedlist",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$deleteBtnFlag,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
@@ -332,7 +378,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //		$rowc[] = $row['groupname'];
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['recycles'];
-		$table->addRow("campaigndialedlist",$rowc,0,1,0,$divName,$fields);
+		$table->addRow("campaigndialedlist",$rowc,0,$deleteFlag,0,$divName,$fields);
  	}
  	
  	// End Editable Zone

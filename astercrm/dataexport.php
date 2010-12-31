@@ -11,7 +11,7 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype'] != 'groupadmin') 
+if ($_SESSION['curuser']['usertype'] != 'admin' &&$_SESSION['curuser']['usertype'] != 'groupadmin'  && !is_array($_SESSION['curuser']['privileges'])) 
 	header("Location: portal.php");
 
 require_once ("db_connect.php");

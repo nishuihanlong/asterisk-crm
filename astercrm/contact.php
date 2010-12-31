@@ -104,7 +104,7 @@ require_once('contact.common.php');
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-	<br>
+
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnCustomer" name="btnCustomer" onClick="window.location='customer.php';" />
 		<input type="button" value="" id="btnNote" name="btnNote" onClick="window.location='note.php';" />

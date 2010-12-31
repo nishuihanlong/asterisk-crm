@@ -233,6 +233,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['extension'] = $row['extension'];
 				$_SESSION['curuser']['usertype'] = $row['usertype'];
+				$_SESSION['curuser']['usertype_id'] = $row['usertype_id'];
 				$_SESSION['curuser']['accountid'] = $row['id'];
 				$_SESSION['curuser']['accountcode'] = $row['accountcode'];
 				$_SESSION['curuser']['agent'] = $row['agent'];
@@ -241,8 +242,19 @@ function processAccountData($aFormValues)
 				// added by solo 2007-10-90
 				$_SESSION['curuser']['channel'] = $row['channel'];
 				$_SESSION['curuser']['extensions'] = array();
-				$_SESSION['curuser']['groupid'] = $row['groupid'];				
+				$_SESSION['curuser']['groupid'] = $row['groupid'];
 
+				$privilege = array();
+				if($row['usertype_id'] > 0){
+					$privileges = $db->getAll("SELECT * FROM user_privileges WHERE user_type_id='".$row['usertype_id']."'");
+
+					foreach($privileges as $p){
+						$privilege[$p['page']][$p['action']] = 1;
+					}
+				}
+				
+				$_SESSION['curuser']['privileges'] = $privilege;
+				
 				if ($row['extensions'] != ''){
 					$_SESSION['curuser']['extensions'] = split(',',$row['extensions']);
 				}
@@ -255,7 +267,7 @@ function processAccountData($aFormValues)
 				}
 
 				// if it's a group admin, then add all group extension to it
-				if ($row['usertype'] == 'groupadmin'){
+				if ($row['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['systemstatus'])  || is_array($_SESSION['curuser']['privileges']['import'])){
 					$_SESSION['curuser']['memberExtens'] = array();
 					$_SESSION['curuser']['memberNames'] = array();
 					$_SESSION['curuser']['memberAgents'] = array();
@@ -268,6 +280,7 @@ function processAccountData($aFormValues)
 						}
 					}
 				}
+
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 
 				// get group information

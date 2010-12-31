@@ -59,9 +59,8 @@ require_once('useronline.common.php');
 	</head>
 	<body onload="init();">
 	<div id="divNav"></div>
-	<br>
 	<div id="divActive" name="divActive">
-		<input type="button" value="" id="btnCustomer" name="btnCustomer" onClick="window.location='customer.php';" />
+
 		<input type="button" value="" id="btnUseronlineReport" name="btnUseronlineReport" onClick="window.location='useronline_report.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">

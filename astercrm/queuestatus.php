@@ -54,8 +54,7 @@ require_once('queuestatus.common.php');
 	<body onload="init();">
 		<div id="divNav"></div>
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
-		<br>
-		<br>
+
 		<div id="divStatus" align="center"></div>
 		<div id="channels" align="left" class="groupsystem_channel"></div>
 		<div id="divCopyright"></div>

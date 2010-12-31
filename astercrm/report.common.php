@@ -37,7 +37,7 @@ error_reporting($_SESSION['error_report']);
 
 require_once ('include/localization.class.php');
 
-if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin' ) {
+if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin' && !is_array($_SESSION['curuser']['privileges']['report'])) {
 	header("Location: portal.php");
 }
 

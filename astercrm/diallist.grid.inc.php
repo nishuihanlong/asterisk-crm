@@ -432,7 +432,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		$joinstr = astercrm::createSqlWithStype($f['searchField'],$f['searchContent'],$f['searchType'],"diallist");
 
 		$ajoinstr = str_replace('diallist.','a.',$joinstr);
-		if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		if ($_SESSION['curuser']['usertype'] != 'admin'){
 				$ajoinstr .= " AND a.groupid = '".$_SESSION['curuser']['groupid']."'";
 				$joinstr .= " AND diallist.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}
@@ -511,7 +511,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 		global $db,$locate;
 		$joinstr = astercrm::createSqlWithStype($f['searchField'],$f['searchContent'],$f['searchType'],"diallist");
 		$ajoinstr = str_replace('diallist.','a.',$joinstr);
-		if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+		if ($_SESSION['curuser']['usertype'] != 'admin'){
 				$ajoinstr .= " AND a.groupid = '".$_SESSION['curuser']['groupid']."'";
 				$joinstr .= " AND diallist.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}

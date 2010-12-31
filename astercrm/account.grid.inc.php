@@ -295,15 +295,21 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'*</td>
 					<td align="left">
-					<select id="usertype" name="usertype">
+					<select id="usertype" name="usertype" onchange="usertypeChange(this)">
 						<option value=""></option>
 						<option value="agent">agent</option>
 						<option value="groupadmin">groupadmin</option>';
 						if ($_SESSION['curuser']['usertype'] == 'admin') {
 							$html .='<option value="admin">admin</option>';
 						}
+					$userTyperesult = Customer::getAstercrmUsertype();
+					if(!empty($userTyperesult)) {
+						foreach($userTyperesult as $usertype) {
+							$html .='<option value="'.$usertype['usertype_name'].'" label="'.$usertype['id'].'">'.$usertype['usertype_name'].'</option>';
+						}
+					}
 			$html .='
-					</select></td>
+					</select><input type="hidden" id="usertype_id" name="usertype_id" value="0" /></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("account_code").'</td>
@@ -345,7 +351,7 @@ class Customer extends astercrm
 	function formEdit($id){
 		global $locate;
 		$account =& Customer::getRecordByID($id,'astercrm_account');
-
+		
 	if ($_SESSION['curuser']['usertype'] == 'admin'){ 
 			$grouphtml .=	'<select name="groupid" id="groupid" >';
 			$res = Customer::getGroups();
@@ -403,7 +409,7 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'*</td>
 					<td align="left">
-					<select id="usertype" name="usertype">
+					<select id="usertype" name="usertype" onchange="usertypeChange(this)">
 						<option value="" ';
 						if($account['usertype'] == ''){
 							$html .= ' selected ';
@@ -420,13 +426,22 @@ class Customer extends astercrm
 						}
 				$html .='>groupadmin</option>';
 
-			if ($_SESSION['curuser']['usertype'] == 'admin') {
-				$html .='<option value="admin"';
-				if($account['usertype'] == 'admin')	$html .= ' selected ';
-				$html .='>admin</option>';
-			}
-
-				$html .=	'</select>
+				if ($_SESSION['curuser']['usertype'] == 'admin') {
+					$html .='<option value="admin"';
+					if($account['usertype'] == 'admin')	$html .= ' selected ';
+					$html .='>admin</option>';
+				}
+				$userTyperesult = Customer::getAstercrmUsertype();
+				if(!empty($userTyperesult)) {
+					foreach($userTyperesult as $usertype) {
+						$html .='<option value="'.$usertype['usertype_name'].'" label="'.$usertype['id'].'"';
+						if($usertype['id'] == $account['usertype_id']) {
+							$html .=' selected';
+						}
+						$html .='>'.$usertype['usertype_name'].'</option>';
+					}
+				}
+				$html .=	'</select><input type="hidden" id="usertype_id" name="usertype_id" value="'.$account['usertype_id'].'" />
 					<!--<input type="text" id="usertype" name="usertype" size="25" maxlength="30" value="'.$account['usertype'].'">--></td>
 				</tr>
 				<tr>
@@ -522,6 +537,19 @@ class Customer extends astercrm
 			';
 
 		return $html;
+	}
+
+
+	function getAstercrmUsertype(){
+		global $db;
+		$sql = "SELECT * FROM user_types ";
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		$usertype = array();
+		while($result->fetchInto($row)) {
+			$usertype[] = $row;
+		}
+		return $usertype;
 	}
 
 }

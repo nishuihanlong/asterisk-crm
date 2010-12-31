@@ -184,10 +184,25 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,1,1,1);
-	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '2';//对导出标记进行赋值
 	$table->ordering = $ordering;
+
+	$editFlag = 1;
+	$deleteFlag = 1;
+	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
+		if($_SESSION['curuser']['privileges']['survey']['delete']) {
+			$deleteFlag = 1;
+		} else {
+			$deleteFlag = 0;
+		}
+		if($_SESSION['curuser']['privileges']['survey']['edit']) {
+			$editFlag = 1;
+		}else {
+			$editFlag = 0;
+		}
+	}
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$editFlag,$deleteFlag,1);
+	$table->setAttribsCols($attribsCols);
 	$table->addRowSearchMore("survey",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
@@ -205,7 +220,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['cretime'];
 		$rowc[] = $row['creby'];
 //		$rowc[] = 'Detail';
-		$table->addRow("survey",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("survey",$rowc,$editFlag,$deleteFlag,1,$divName,$fields);
  	}
  	
  	// End Editable Zone

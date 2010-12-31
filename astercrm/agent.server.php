@@ -183,9 +183,23 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,'','','','agents');
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader);
-	$table->setAttribsCols($attribsCols);
 	$table->ordering = $ordering;
+	$editFlag = 1;
+	$deleteFlag = 1;
+	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
+		if($_SESSION['curuser']['privileges']['agent']['delete']) {
+			$deleteFlag = 1;
+		} else {
+			$deleteFlag = 0;
+		}
+		if($_SESSION['curuser']['privileges']['agent']['edit']) {
+			$editFlag = 1;
+		}else {
+			$editFlag = 0;
+		}
+	}
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$editFlag,$deleteFlag);
+	$table->setAttribsCols($attribsCols);
 	$table->addRowSearchMore("agents",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,'none');
 //print_r($arreglo);exit;
 	foreach ($arreglo as $row) {
@@ -196,7 +210,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['password'];
 		$rowc[] = $row['name'];
 		
-		$table->addRow("agents",$rowc,1,1,1,$divName,$fields);
+		$table->addRow("agents",$rowc,$editFlag,$deleteFlag,1,$divName,$fields);
  	}
  	
  	// End Editable Zone

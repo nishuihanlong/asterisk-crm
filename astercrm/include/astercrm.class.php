@@ -474,6 +474,7 @@ Class astercrm extends PEAR{
 				."extensions='".$f['extensions']."', "	// added 2007/11/12 by solo
 				."groupid='".$f['groupid']."', "	// added 2007/11/12 by solo
 				."dialinterval='".$f['dialinterval']."', "
+				."usertype_id = '".$f['usertype_id']."',"
 				."accountcode='".$f['accountcode']."'";
 
 		astercrm::events($query);
@@ -696,7 +697,8 @@ Class astercrm extends PEAR{
 				."extensions='".$f['extensions']."', "
 				."groupid='".$f['groupid']."', "     // new add 2007-11-15
 				."dialinterval='".$f['dialinterval']."', "
-				."accountcode='".$f['accountcode']."' "	// added 2007/11/12 by solo
+				."accountcode='".$f['accountcode']."',"	// added 2007/11/12 by solo
+				."usertype_id='".$f['usertype_id']."' "	// added 2010/12/31 by shixb
 				."WHERE id='".$f['id']."'";
 
 		astercrm::events($query);
@@ -3119,7 +3121,7 @@ Class astercrm extends PEAR{
 		
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.processed >= 0 ";
-		}else if ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+		}else if (($_SESSION['curuser']['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['cdr'])) && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE dstchannel != '' AND astercrm_groupid=".$_SESSION['curuser']['groupid']." AND mycdr.processed >= 0 ";
 			}else {
@@ -3127,9 +3129,9 @@ Class astercrm extends PEAR{
 			}
 		}else{
 			if($sql != '' ) {
-				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE ".$sql." AND mycdr.processed >= 0 ";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE ".$sql." AND mycdr.processed >= 0 ";
 			}else {
-				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.id = 0";
+				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.id = 0";
 			}
 		}
 		
@@ -3181,7 +3183,7 @@ Class astercrm extends PEAR{
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.processed >= 0 ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+		}elseif (($_SESSION['curuser']['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['cdr']))&& $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE astercrm_groupid='".$_SESSION['curuser']['groupid']."' AND mycdr.processed >= 0 ";
 			}else {
@@ -3230,7 +3232,7 @@ Class astercrm extends PEAR{
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.dstchannel != ''  AND mycdr.processed >= 0 ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+		}elseif (($_SESSION['curuser']['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['cdr'])) && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE dstchannel != '' AND astercrm_groupid=".$_SESSION['curuser']['groupid']."  AND mycdr.processed >= 0 ";
 			}else {
@@ -3289,7 +3291,7 @@ Class astercrm extends PEAR{
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE dstchannel != ''  AND mycdr.processed >= 0 ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+		}elseif (($_SESSION['curuser']['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['cdr'])) && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE astercrm_groupid=".$_SESSION['curuser']['groupid']." AND dstchannel != ''  AND mycdr.processed >= 0 ";
 			}else {
@@ -3328,7 +3330,7 @@ Class astercrm extends PEAR{
 		
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE 1  AND mycdr.processed >= 0 ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+		}elseif (($_SESSION['curuser']['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['cdr'])) && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT COUNT(*) FROM mycdr LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE astercrm_groupid=".$_SESSION['curuser']['groupid']." AND mycdr.processed >= 0 ";
 			}else {
@@ -3366,7 +3368,7 @@ Class astercrm extends PEAR{
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
 			$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE 1 AND mycdr.processed >= 0 ";
-		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
+		}elseif (($_SESSION['curuser']['usertype'] == 'groupadmin' || is_array($_SESSION['curuser']['privileges']['cdr'])) && $customerid == ''){
 			if($_SESSION['curuser']['groupid'] != ''){
 				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE  astercrm_groupid=".$_SESSION['curuser']['groupid']." AND mycdr.processed >= 0 ";
 			}else {
@@ -4239,7 +4241,7 @@ Class astercrm extends PEAR{
 
 	function &readReport($groupid,$accountid,$sdate,$edate,$type){
 		global $db;
-		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] == "groupadmin") $groupid = $_SESSION['curuser']['groupid'];
+		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] != "admin") $groupid = $_SESSION['curuser']['groupid'];
 
 		$query = "SELECT COUNT(*) as recordNum, SUM(billsec) as seconds FROM mycdr WHERE calldate >= '$sdate' AND  calldate <= '$edate'";
 		if(is_numeric($accountid) && $accountid > 0){			
@@ -4296,7 +4298,7 @@ Class astercrm extends PEAR{
 			}
 		}	
 
-		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] == "groupadmin") $groupid = $_SESSION['curuser']['groupid'];
+		if(($groupid == '' || $groupid == 0) && ($accountid == '' || $accountid == 0) && $_SESSION['curuser']['usertype'] != "admin") $groupid = $_SESSION['curuser']['groupid'];
 		
 		if(is_numeric($accountid) && $accountid > 0){
 			$return_arr['type'] = 'agentlist';

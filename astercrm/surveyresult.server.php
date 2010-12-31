@@ -254,10 +254,20 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Create object whit 5 cols and all data arrays set before.
 	$table = new ScrollTable(6,$start,$limit,$filter,$numRows,$content,$order);
-	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,1,0);
-	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->deleteFlag = '1';//对删除标记进行赋值
+	$deleteFlag = 1;
+	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
+		if($_SESSION['curuser']['privileges']['surveyresult']['delete']) {
+			$deleteFlag = 1;
+			$table->deleteFlag = '1';
+		} else {
+			$deleteFlag = 0;
+			$table->deleteFlag = '0';
+		}
+	}
+	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,$deleteFlag,0);
+	$table->setAttribsCols($attribsCols);
 	$table->ordering = $ordering;
 	$table->addRowSearchMore("surveyresult",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
@@ -275,7 +285,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['campaignname'];
 		$rowc[] = $row['cretime'];
 
-		$table->addRow("surveyresult",$rowc,0,1,0,$divName,$fields);
+		$table->addRow("surveyresult",$rowc,0,$deleteFlag,0,$divName,$fields);
 
  	}
  	

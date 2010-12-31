@@ -691,6 +691,9 @@ class Customer extends astercrm
 				}
 
 				$rsd = round(($campaign['duration_answered'] + $campaign['duration_noanswer'] - $campaign['billsec_leg_a'])/$campaign['dialed'],0);
+
+				$abandoned = & $db->getOne("SELECT COUNT(*) FROM campaigndialedlist WHERE billsec_leg_a > 0 AND billsec = 0 AND campaignid = '$id'");
+
 				//print_r($campaign);exit;
 				//统计数据
 				$html .= '<tr>
@@ -722,6 +725,14 @@ class Customer extends astercrm
 							<td>								'.$locate->Translate("ACD").':&nbsp;<b>'.$acd.'</b>
 							</td>
 							<td>								'.$locate->Translate("RSD").':&nbsp;<b>'.$rsd.'&nbsp;'.$locate->Translate("sec").'</b>
+							</td>
+						<tr>
+
+						<tr>							
+							<td>								'.$locate->Translate("abandoned").':&nbsp;<b>'.$abandoned.'</b>
+							</td>
+							<td>
+							<a href="dialedlist.php?cid='.$id.'&action=abandoned">'.$locate->Translate("abandoned detail").'</a></b>
 							</td>
 						<tr>
 					</table></td>

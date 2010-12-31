@@ -355,7 +355,7 @@ class Customer extends astercrm
 
 		astercrm::events($transfer_sql);
 		$transfered = & $db->getAll($transfer_sql);
-		
+				
 		$resultArray = array();
 		foreach($total as $tol){
 			$resultArray[$tol['campaignid']]['totalnum'] = $tol['total'];
@@ -373,6 +373,14 @@ class Customer extends astercrm
 		}
 		foreach($transfered as $tran){
 			$resultArray[$tran['campaignid']]['transferednum'] = $tran['transferednum'];
+		}
+
+		$campaigns = & $db->getAll('select id,campaignname from campaign');
+
+		foreach($campaigns as $row){
+			if(array_key_exists($row['id'],$resultArray)){
+				$resultArray[$row['id']]['campaignname'] = $row['campaignname'];
+			}
 		}
 		
 		$campiangStr = '<table style="width:95%;"><tr><th>'.$locate->Translate("Campaign Name").'</th><th>'.$locate->Translate("ToalCallNum").'</th><th>'.$locate->Translate("ToalAnsweredNum").'</th><th>'.$locate->Translate("AnsweredRate").'</th><th>'.$locate->Translate("AvgOfCustomerAnswered").'</th><th>'.$locate->Translate("AvgOfTalk").'</th><th>'.$locate->Translate("AvgOfRing").'</th><th>'.$locate->Translate("AvgOfRingByAnswer").'</th><th>'.$locate->Translate("TransferedNum").'</th><th>'.$locate->Translate("TransferedRate").'</th></tr>';
@@ -396,7 +404,7 @@ class Customer extends astercrm
 
 			$AvgOfTransferedNum = (round(($val['transferednum']/$ToalAnsweredNum)*100,2)).'%';//转接比率
 			if($ToalAnsweredNum == ''){$ToalAnsweredNum = 0;}
-			$campiangStr .= '<tr><td>'.$key.'</td><td>'.$ToalCallNum.'</td><td>'.$ToalAnsweredNum.'</td><td>'.$AnsweredRate.'</td><td>'.$AvgOfCustomerAnswered.'</td><td>'.$AvgOfTalk.'</td><td>'.$AvgOfRing.'</td><td>'.$AvgOfRingByAnswer.'</td><td>'.$val['transferednum'].'</td><td>'.$AvgOfTransferedNum.'</td></tr>';
+			$campiangStr .= '<tr><td>'.$val['campaignname'].'</td><td>'.$ToalCallNum.'</td><td>'.$ToalAnsweredNum.'</td><td>'.$AnsweredRate.'</td><td>'.$AvgOfCustomerAnswered.'</td><td>'.$AvgOfTalk.'</td><td>'.$AvgOfRing.'</td><td>'.$AvgOfRingByAnswer.'</td><td>'.$val['transferednum'].'</td><td>'.$AvgOfTransferedNum.'</td></tr>';
 		}
 		$campiangStr .= '</table>';
 		return $campiangStr;

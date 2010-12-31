@@ -87,8 +87,8 @@ require_once('dnc.common.php');
 	<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 	</head>
 	<body onload="init();">
-	<div id="divNav"></div><br>
-	<br>
+	<div id="divNav"></div>
+
 	<div id="divActive" name="divActive">
 		<input type="button" value="<?echo $locate->Translate("DialList")?>" id="btnDiallist" name="btnDiallist" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />

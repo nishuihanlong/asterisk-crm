@@ -47,7 +47,7 @@ session_set_cookie_params(0);
 if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
-if ($_SESSION['curuser']['usertype'] != 'admin')
+if ($_SESSION['curuser']['usertype'] != 'admin' && !is_array($_SESSION['curuser']['privileges']['codes'])) 
 	header("Location: portal.php");
 
 

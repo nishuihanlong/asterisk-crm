@@ -148,7 +148,7 @@ require_once('worktimepackages.common.php');
 		</script>
 	</head>
 	<body onload="init();">
-		<div id="divNav"></div><br><br>
+		<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 		<input type="button" value="" id="btnDial" name="btnDial" onClick="window.location='diallist.php';" />
 		<input type="button" value="" id="btnDialed" name="btnDialed" onClick="window.location='dialedlist.php';" />

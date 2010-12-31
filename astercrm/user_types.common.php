@@ -1,8 +1,9 @@
 <?php
 /*******************************************************************************
-* trunkinfo.common.php
-* trunkinfo
-* trunkinfo parameter file
+* account.common.php
+* account参数信息文件
+
+* account parameter file
 
 * 功能描述
 	检查用户权限
@@ -20,24 +21,18 @@ registed function:
 *	call these function by xajax_ + funcionname
 *	such as xajax_init()
 
-
-* Revision 0.045  2007/10/18 15:14:00  modified by solo
-* Desc: comment added
-
-	init
 	showGrid
-	add
-	save
-	delete
-	edit
-	editField
-	updateField
-	showDetail
-	setSurvey
+	add					show account add form
+	save				save account information
+	edit				show account edit form
+	update				update account information
+	delete				delete an account
+	showDetail			show detail information about an account
+						return null for now
+	init				init html page
 
-* Revision 0.0461  2008/2/2 15:25:00  modified by solo
-* Desc: page create
-* 描述: 页面建立
+* Revision 0.045  2007/10/17 15:25:00  modified by solo
+* Desc: page created
 
 ********************************************************************************/
 
@@ -53,25 +48,27 @@ if (!session_id()) session_start();
 setcookie('PHPSESSID', session_id());
 
 
-if ($_SESSION['curuser']['usertype'] != 'admin' && !is_array($_SESSION['curuser']['privileges']['trunkinfo'])) 
+if ($_SESSION['curuser']['usertype'] != 'admin') 
 	header("Location: portal.php");
+
 
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'trunkinfo');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'user_types');
 
-$xajax = new xajax("trunkinfo.server.php");
+$xajax = new xajax("user_types.server.php");
 
-$xajax->registerFunction("init");
 $xajax->registerFunction("showGrid");
-$xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("add");
 $xajax->registerFunction("save");
 $xajax->registerFunction("edit");
-$xajax->registerFunction("update");
+$xajax->registerFunction("updateUserTypeRecord");
+$xajax->registerFunction("delete");
+$xajax->registerFunction("init");
+$xajax->registerFunction("searchFormSubmit");
 
-define("ROWSXPAGE", 50); // Number of rows show it per page.
-// Total number of rows show it when click on "Show All" button.
-define("MAXROWSXPAGE", 100);
+define("ROWSXPAGE", 10); // Number of rows show it per page.
+define("MAXROWSXPAGE", 25);  // Total number of rows show it when click on "Show All" button.
+
 ?>

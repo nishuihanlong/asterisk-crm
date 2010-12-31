@@ -291,7 +291,7 @@ function submitForm($aFormValues){
 
 				$arryAssign = explode(',',$tmpStr);
 				//判断这些分机是否在该组管理范围内
-				if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				if ($_SESSION['curuser']['usertype'] != 'admin'){
 					foreach ($arryAssign as $key => $myAssign){
 						if ( ! in_array(trim($myAssign), $_SESSION['curuser']['memberExtens'])){ //该组不包含该分机
 							unset($arryAssign[$key]);
@@ -309,7 +309,7 @@ function submitForm($aFormValues){
 						$arryAssign[] = $row['extension']; //$array_extension数组,存放extension数据
 					}
 					$assignNum = count($arryAssign); //extension数据的个数
-				}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+				}else{
 					$arryAssign = $_SESSION['curuser']['memberExtens'];
 					$assignNum = count($arryAssign); //extension数据的个数
 				}
