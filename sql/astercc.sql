@@ -694,6 +694,7 @@ CREATE TABLE `astercrm_account` (
  `extensions` varchar(200) NOT NULL default '',
  `channel` varchar(30) NOT NULL default '',
  `usertype` varchar(20) NOT NULL default '',
+ `usertype_id` int(11) NOT NULL default 0,
  `dialinterval` int(5) NULL,
  `accountcode` varchar(20) NOT NULL default '',
  `last_login_time` datetime NOT NULL default '0000-00-00 00:00:00',#agent last_login_time
@@ -1898,3 +1899,19 @@ CREATE TABLE `sms_sents` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+CREATE TABLE `user_types` (
+  `id` int(11) NOT NULL auto_increment,
+  `usertype_name` varchar(50) NOT NULL default '',
+  `memo` varchar(255) NOT NULL default '',
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+CREATE TABLE `user_privileges` (
+  `id` int(11) NOT NULL auto_increment,
+  `action` enum('view','edit','delete') NOT NULL default 'view',
+  `page` varchar(100) NOT NULL default '',
+  `user_type_id` varchar(255) NOT NULL default '',
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

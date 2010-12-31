@@ -160,3 +160,34 @@ CREATE TABLE `sms_sents` (
 
 ALTER TABLE `trunkinfo` ADD `trunk_number` varchar(30) NOT NULL default '';
 ALTER TABLE `campaign` ADD `sms_number` varchar(30) NOT NULL default '';
+
+
+
+###########################   2010-12-31 ###########################################
+ALTER TABLE `astercrm_account` ADD `usertype_id` int(11) NOT NULL default 0;#2010-12-31
+
+## 
+## table `user_types`
+## 
+
+DROP TABLE IF EXISTS `user_types`;
+CREATE TABLE `user_types` (
+  `id` int(11) NOT NULL auto_increment,
+  `usertype_name` varchar(50) NOT NULL default '',
+  `memo` varchar(255) NOT NULL default '',
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## 
+## table `user_privileges`
+## 
+DROP TABLE IF EXISTS `user_privileges`;
+CREATE TABLE `user_privileges` (
+  `id` int(11) NOT NULL auto_increment,
+  `action` enum('view','edit','delete') NOT NULL default 'view',
+  `page` varchar(100) NOT NULL default '',
+  `user_type_id` varchar(255) NOT NULL default '',
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
