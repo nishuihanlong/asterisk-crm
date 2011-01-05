@@ -771,6 +771,12 @@ function waitingCalls($myValue){
 			}
 		}
 	} elseif ($call['status'] == 'dialout'){	//dailing out here
+
+//		if(strstr($call['callerChannel'],'agent')){
+//			$objResponse->addAssign("attendtran","disabled",true);
+//		}else{
+//			$objResponse->addAssign("attendtran","disabled",false);
+//		}
 		
 		$objResponse->addScript("clearSettimePopup();");
 		$title	= $call['callerid'];
@@ -1870,9 +1876,11 @@ function chanspy($exten,$spyexten,$pam = ''){
 	$res = $myAsterisk->connect();
 	if (!$res){
 		return;
-	}	
+	}
+	$spyexten = split('-',$spyexten);
+	$spyexten = $spyexten['0'];
 
-	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
+	$myAsterisk->chanSpy($exten,$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
 	return $objResponse;
 }
 

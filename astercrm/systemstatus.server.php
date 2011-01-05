@@ -182,7 +182,12 @@ function chanspy($exten,$spyexten,$pam = ''){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->chanSpy($exten,"sip/".$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
+
+	$spyexten = split('-',$spyexten);
+	$spyexten = $spyexten['0'];
+
+	$myAsterisk->chanSpy($exten,$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
+	#$myAsterisk->chanSpy($exten,"agent/1000",$pam,$_SESSION['asterisk']['paramdelimiter']);
 	//$objResponse->addAlert($spyexten);
 	return $objResponse;
 
