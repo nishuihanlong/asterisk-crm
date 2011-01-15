@@ -410,7 +410,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'diallist'); //得到要导出的sql语句
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'diallist');
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT diallist.dialnumber, customer.customer,diallist.dialtime, diallist.assign,diallist.status,groupname,campaignname,diallist.cretime,diallist.creby,diallist.memo FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = diallist.groupid LEFT JOIN campaign ON campaign.id = diallist.campaignid  LEFT JOIN customer ON customer.id = diallist.customerid";
+		$sql = "SELECT diallist.dialnumber, customer.customer,diallist.customername,diallist.dialtime, diallist.assign,diallist.status,groupname,campaignname,diallist.cretime,diallist.creby,diallist.memo FROM diallist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = diallist.groupid LEFT JOIN campaign ON campaign.id = diallist.campaignid  LEFT JOIN customer ON customer.id = diallist.customerid";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域

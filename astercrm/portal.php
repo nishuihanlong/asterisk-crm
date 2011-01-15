@@ -682,9 +682,9 @@ $clientDst = $_REQUEST['clientdst'];
 			ShowProcessingDiv();
 			var curid = document.getElementById('curid').value;
 			if(curid != '' && typeof(curid) != 'undefined' && curid != null && curid != 0) {
-				window.open('virginmobile.php?curid='+curid);
+				window.open('clientinformation_agent.php?curid='+curid);
 			} else {
-				window.open('virginmobile.php');
+				window.open('clientinformation_agent.php');
 			}
 		}
 

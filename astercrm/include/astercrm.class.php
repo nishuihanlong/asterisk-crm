@@ -4867,7 +4867,8 @@ Class astercrm extends PEAR{
 				$note_sql = "SELECT * FROM note WHERE id=".$f['last_note_id']." ";
 				$noteResult = & $db->getRow($note_sql);
 				if(!empty($noteResult)) {
-					$noteSql = "INSERT INTO note_leads SET `note`='".$noteResult['note']."',`callerid`='".$noteResult['callerid']."',`priority`=".$noteResult['priority'].",`attitude`=".$noteResult['attitude'].",`cretime`=now(),`creby`='".$noteResult['creby']."',`customerid`=".$customerid.",`contactid`=0,`groupid`=".$noteResult['groupid'].",`codes`='".$noteResult['codes']."',`private`=".$noteResult['private']." ";
+					$noteSql = "INSERT INTO note_leads SET `note`='".addslashes($noteResult['note'])."',`callerid`='".addslashes($noteResult['callerid'])."',`priority`=".$noteResult['priority'].",`attitude`=".$noteResult['attitude'].",`cretime`=now(),`creby`='".$noteResult['creby']."',`customerid`=".$customerid.",`contactid`=0,`groupid`=".$noteResult['groupid'].",`codes`='".addslashes($noteResult['codes'])."',`private`=".$noteResult['private']." ";
+					
 					$note =& $db->query($noteSql);
 					$last_note_id = mysql_insert_id();
 

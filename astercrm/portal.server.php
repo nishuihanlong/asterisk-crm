@@ -411,10 +411,26 @@ function transfer($aFormValues){
 
 	if ($aFormValues['direction'] == 'in'){
 		if($aFormValues['attendtran'] == 'yes'){
+			if(strstr($aFormValues['calleeChannel'],'agent/')){
+				$query = "SELECT * FROM agentlogin_history WHERE agent='".$_SESSION['curuser']['agent']."' ORDER BY agentlogin DESC LIMIT 1";
+				$agentrow = $db->getRow($query);
+				//print_r($agentrow);
+				//print_r($aFormValues);exit;
+				$isagent = 1;
+				$aFormValues['calleeChannel'] = $agentrow['channel'];
+			}
+
 			$sql = "INSERT INTO hold_channel SET number='".$aFormValues['callerid']."',channel='".$aFormValues['callerChannel']."',uniqueid='".$aFormValues['uniqueid']."',status='hold',agentchan='".$aFormValues['calleeChannel']."',direction='in',accountid='".$_SESSION['curuser']['accountid']."',cretime=now()";
 			$db->query($sql);
-			$res = $myAsterisk->Redirect($aFormValues['callerChannel'],$aFormValues['calleeChannel'],'s','astercc-onhold',1);
+			
 			#print_r($res);exit;
+			if($isagent){
+				$res = $myAsterisk->Redirect($aFormValues['callerChannel'],'','s','astercc-onhold',1);
+
+				#$res1 = $myAsterisk->sendCall("Local/$action@".$config['system']['outcontext'],NULL,NULL,1,'Bridge',$aFormValues['calleeChannel'],30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+			}else{
+				$res = $myAsterisk->Redirect($aFormValues['callerChannel'],$aFormValues['calleeChannel'],'s','astercc-onhold',1);				
+			}
 			$res1=$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
 			#print_r($res);print_r($res1);exit;
 		}else{
@@ -424,18 +440,39 @@ function transfer($aFormValues){
 		
 	}else{
 		if($aFormValues['attendtran'] == 'yes'){
+			if(strstr($aFormValues['callerChannel'],'agent/')){
+				$query = "SELECT * FROM agentlogin_history WHERE agent='".$_SESSION['curuser']['agent']."' ORDER BY agentlogin DESC LIMIT 1";
+				$agentrow = $db->getRow($query);
+				//print_r($agentrow);
+				//print_r($aFormValues);exit;
+				$isagent = 1;
+				$aFormValues['callerChannel'] = $agentrow['channel'];
+			}
+
+			#echo $aFormValues['callerChannel'],$action,$config['system']['outcontext'];exit;
+
 			$sql = "INSERT INTO hold_channel SET number='".$aFormValues['callerid']."',channel='".$aFormValues['calleeChannel']."',uniqueid='".$aFormValues['uniqueid']."',status='hold',agentchan='".$aFormValues['callerChannel']."',direction='out',accountid='".$_SESSION['curuser']['accountid']."',cretime=now()";
 			$db->query($sql);
 
-			$res = $myAsterisk->Redirect($aFormValues['calleeChannel'],$aFormValues['callerChannel'],'s','astercc-onhold',1);
+			
+			if($isagent){
+				$res = $myAsterisk->Redirect($aFormValues['calleeChannel'],'','s','astercc-onhold',1);
 
-			$res1= $myAsterisk->Redirect($aFormValues['callerChannel'],'',$action,$config['system']['outcontext'],1);
+				#$res1 = $myAsterisk->sendCall("Local/$action@".$config['system']['outcontext'],NULL,NULL,1,'Bridge',$aFormValues['callerChannel'],30,$_SESSION['curuser']['extension'],NULL,$_SESSION['curuser']['accountcode']);
+			}else{
+				$res = $myAsterisk->Redirect($aFormValues['calleeChannel'],$aFormValues['callerChannel'],'s','astercc-onhold',1);				
+			}
+
+			$res1= $myAsterisk->Redirect($aFormValues['callerChannel'],$aFormValues['callerChannel'],$action,$config['system']['outcontext'],1);
+
 			#print_r($res);print_r($res1);exit;
+			
 		}else{
 			$myAsterisk->Redirect($aFormValues['calleeChannel'],'',$action,$config['system']['outcontext'],1);
 		}
 	}
 	//$objResponse->addAssign("divMsg", "style.visibility", "hidden");
+	$objResponse->addAssign("curid", "value", 0);
 	return $objResponse;
 }
 
@@ -619,11 +656,11 @@ function waitingCalls($myValue){
 		///$objResponse->addAssign("dndlist_campaignid","value","0");
 		
 	} elseif ($call['status'] == 'incoming'){	//incoming calls here
-		if(strstr($call['calleeChannel'],'agent')){
-			$objResponse->addAssign("attendtran","disabled",true);
-		}else{
-			$objResponse->addAssign("attendtran","disabled",false);
-		}
+//		if(strstr($call['calleeChannel'],'agent')){
+//			$objResponse->addAssign("attendtran","disabled",true);
+//		}else{
+//			$objResponse->addAssign("attendtran","disabled",false);
+//		}
 		$objResponse->addScript("clearSettimePopup();");
 		$title	= $call['callerid'];
 		$stauts	= 'ringing';

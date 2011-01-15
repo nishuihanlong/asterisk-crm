@@ -246,7 +246,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'state';
 	$fieldsFromSearch[] = 'city';
 	$fieldsFromSearch[] = 'phone';
-	//$fieldsFromSearch[] = 'fax';
+	$fieldsFromSearch[] = 'fax';
 	if($config['system']['enable_code']) {
 		$fieldsFromSearch[] = 'note';
 		$fieldsFromSearch[] = 'codes';
@@ -264,7 +264,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("state");
 	$fieldsFromSearchShowAs[] = $locate->Translate("city");
 	$fieldsFromSearchShowAs[] = $locate->Translate("phone");
-	//$fieldsFromSearchShowAs[] = $locate->Translate("fax");
+	$fieldsFromSearchShowAs[] = $locate->Translate("fax");
 	if($config['system']['enable_code']) {
 		$fieldsFromSearchShowAs[] = $locate->Translate("note");
 		$fieldsFromSearchShowAs[] = $locate->Translate("codes");
