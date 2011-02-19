@@ -172,7 +172,7 @@ do
   fi
 done
 
-asterv = "no"
+asterv="no"
 
 if [ -e "/var/run/asterisk/asterisk.ctl" ];then
 	asterv=`asterisk -rx "core show version"`
