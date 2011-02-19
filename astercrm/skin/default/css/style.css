@@ -236,6 +236,21 @@ A IMG {
 #extenBtnR li:hover ul {left: auto;}
 #extenBtnR li.sfhover ul {left: auto;}
 
+#extenBtnRV {display:block; line-height: 25px; list-style-type: none; margin-top:5px;margin:0;padding:0;}        
+#extenBtnRV a { display: block; width: 100px; text-align:center; font-size:16px;font-weight: bold;} 
+#extenBtnRV a:link { color:#CC0033; text-decoration:none;margin:0;}     
+#extenBtnRV a:visited {color:#CC0033;text-decoration:none;margin:0;}  
+#extenBtnRV a:hover {color:#CC0033;text-decoration:none;}              
+#extenBtnRV li {float: left;}                 
+#extenBtnRV li a:hover{background:gainsboro;}
+#extenBtnRV li ul {line-height: 18px; background:white; list-style-type: none;text-align:left;left: -999em; width:80px; position: absolute;border-width: 1px;border-top-style: none;border-right-style: solid;border-bottom-style: solid;border-left-style: solid; padding:1px;left: auto;}      
+#extenBtnRV li ul a{display:block; width: 80px;text-align:left;padding-left:0px;}                 
+#extenBtnRV li ul a:link {color:#0d5097; text-decoration:none; font-size:11px}                                   
+#extenBtnRV li ul a:visited {color:#0d5097;text-decoration:none;font-size:11px}                                 
+#extenBtnRV li ul a:hover {color:#FFF;text-decoration:none;font-weight:normal;background:lightblue ;}
+#extenBtnRV li:hover ul {left: auto;}
+#extenBtnRV li.sfhover ul {left: auto;}
+
 #wrapper {
         border: 0px;
         margin: 0px;

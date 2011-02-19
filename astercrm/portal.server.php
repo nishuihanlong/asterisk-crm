@@ -283,6 +283,9 @@ function init(){
 			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 		}else{
+			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+
 			$javascript = "openwindow('".$config['system']['external_crm_default_url']."?curid=0')";
 			$objResponse->addScript("document.getElementById('external_crm_form').submit();");
 		}
@@ -412,12 +415,15 @@ function transfer($aFormValues){
 	if ($aFormValues['direction'] == 'in'){
 		if($aFormValues['attendtran'] == 'yes'){
 			if(strstr($aFormValues['calleeChannel'],'agent/')){
-				$query = "SELECT * FROM agentlogin_history WHERE agent='".$_SESSION['curuser']['agent']."' ORDER BY agentlogin DESC LIMIT 1";
+				$query = "SELECT * FROM curcdr WHERE id = '".$aFormValues['curid']."'";
 				$agentrow = $db->getRow($query);
 				//print_r($agentrow);
 				//print_r($aFormValues);exit;
 				$isagent = 1;
-				$aFormValues['calleeChannel'] = $agentrow['channel'];
+				$aFormValues['calleeChannel'] = $agentrow['agentchan'];
+				$query = "UPDATE curcdr SET starttime=now() WHERE srcchan = '".$agentrow['agentchan']."'";
+				$db->query($query);
+				#print_r($query);exit;
 			}
 
 			$sql = "INSERT INTO hold_channel SET number='".$aFormValues['callerid']."',channel='".$aFormValues['callerChannel']."',uniqueid='".$aFormValues['uniqueid']."',status='hold',agentchan='".$aFormValues['calleeChannel']."',direction='in',accountid='".$_SESSION['curuser']['accountid']."',cretime=now()";
@@ -441,12 +447,16 @@ function transfer($aFormValues){
 	}else{
 		if($aFormValues['attendtran'] == 'yes'){
 			if(strstr($aFormValues['callerChannel'],'agent/')){
-				$query = "SELECT * FROM agentlogin_history WHERE agent='".$_SESSION['curuser']['agent']."' ORDER BY agentlogin DESC LIMIT 1";
+				$query = "SELECT * FROM curcdr WHERE id = '".$aFormValues['curid']."'";
 				$agentrow = $db->getRow($query);
 				//print_r($agentrow);
 				//print_r($aFormValues);exit;
 				$isagent = 1;
-				$aFormValues['callerChannel'] = $agentrow['channel'];
+				$aFormValues['callerChannel'] = $agentrow['agentchan'];
+				$query = "UPDATE curcdr SET starttime=now() WHERE srcchan = '".$agentrow['agentchan']."'";
+				$db->query($query);
+
+				//print_r($query);exit;
 			}
 
 			#echo $aFormValues['callerChannel'],$action,$config['system']['outcontext'];exit;
@@ -739,7 +749,7 @@ function waitingCalls($myValue){
 
 		if ($config['system']['pop_up_when_dial_in']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
-				if ($myValue['popup'] == 'yes'){
+				if ($myValue['popup'] == 'yes' || $config['system']['enable_external_crm']){
 					if ($config['system']['enable_external_crm'] == false){
 							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
@@ -755,6 +765,7 @@ function waitingCalls($myValue){
 						$calleeid = $_SESSION['curuser']['extension'];
 						$uniqueid = $call['uniqueid'];
 						$calldate = $call['calldate'];
+						$didnumber = $call['didnumber'];
 
 						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'" target="_blank" method="post">
 								<input type="hidden" name="callerid" value="'.$callerid.'" />
@@ -762,6 +773,7 @@ function waitingCalls($myValue){
 								<input type="hidden" name="method" value="'.$method.'" />
 								<input type="hidden" name="uniqueid" value="'.$uniqueid.'" />
 								<input type="hidden" name="calldate" value="'.$calldate.'" />
+								<input type="hidden" name="didnumber" value="'.$didnumber.'" />
 							';
 
 						
@@ -885,12 +897,14 @@ function waitingCalls($myValue){
 						$calleeid = $call['callerid'];
 						$uniqueid = $call['uniqueid'];
 						$calldate = $call['calldate'];
+						$didnumber = $call['didnumber'];
 						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'" target="_blank" method="post">
 								<input type="hidden" name="callerid" value="'.$callerid.'" />
 								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
 								<input type="hidden" name="method" value="'.$method.'" />
 								<input type="hidden" name="uniqueid" value="'.$uniqueid.'" />
 								<input type="hidden" name="calldate" value="'.$calldate.'" />
+								<input type="hidden" name="didnumber" value="'.$didnumber.'" />
 							</form>';
 						if ($config['system']['open_new_window'] == false){
 							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
@@ -1678,7 +1692,11 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		$variable .= '__DIALEDLISTID='.$dialedlistid; #dialedlist id给asterisk
 		
 	}else{
-		$variable .= '__CUSCID='.$_SESSION['curuser']['extension'];
+		if($_SESSION['curuser']['callerid'] == '' ){
+			$variable .= '__CUSCID='.$_SESSION['curuser']['extension'];
+		}else{
+			$variable .= '__CUSCID='.$_SESSION['curuser']['callerid'];
+		}
 		//$group_info = astercrm::getRecordByID($_SESSION['curuser']['groupid'],"astercrm_accountgroup");
 
 		if ($_SESSION['curuser']['group']['incontext'] != '' ) $incontext = $_SESSION['curuser']['group']['incontext'];
@@ -2031,6 +2049,11 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime='',$customeri
 		$objResponse->addAlert($locate->Translate("Campaign can not be blank"));
 		return $objResponse->getXML();
 	}
+	$customerMsg = astercrm::getRecordsByField('id',$customerid,'customer');
+	
+	while($customerMsg->fetchInto($tmp)) {
+		$customername = $tmp['customer'];
+	}
 	/*
 	if($dialtime == ''){
 		$objResponse->addAlert($locate->Translate("Dial time can not be blank"));
@@ -2038,6 +2061,7 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime='',$customeri
 	}	
 	*/
 	$f['customerid'] = $customerid;
+	$f['customername'] = $customername;
 	$f['curCampaignid'] = $campaignid;
 	$f['sDialNum'] = $dialnumber;
 	$f['sDialtime'] = $dialtime;

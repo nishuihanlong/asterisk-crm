@@ -47,7 +47,7 @@ if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertyp
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'useronline');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'user_online');
 
 $xajax = new xajax("useronline.server.php");
 

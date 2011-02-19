@@ -57,4 +57,5 @@ $unavailable = "不可用";
 $invalid = "无效";
 $has_taken_no_calls_yet = "未接听电话座席数";
 $longest_waitting_agent = "等待时间最长座席";
+$not_in_worktime = "不在工作时间范围内";
 ?>

@@ -294,7 +294,7 @@ class asterEvent extends PEAR
 	return	$html					(string)	HTML code for extension status
 */
 
-	function checkExtensionStatus($curid, $type = 'list'){
+	function checkExtensionStatus($curid, $type = 'list',$curhover){
 		global $db,$config;
 		/* 
 			if type is list, then only check some specific extension
@@ -477,7 +477,7 @@ class asterEvent extends PEAR
 			$action =& asterEvent::listStatus($phones,$status,$callerid,$direction,$srcchan,$dstchan);
 		}else{
 			//$_SESSION['curuser']['extensions_session'] = $phones;
-			$action =& asterEvent::tableStatus($panellist,$status,$callerid,$direction,$srcchan,$dstchan);
+			$action =& asterEvent::tableStatus($panellist,$status,$callerid,$direction,$srcchan,$dstchan,$curhover);
 		}
 		$_SESSION['extension_status'] = $status;
 		$_SESSION['callerid'] = $callerid;
@@ -500,7 +500,7 @@ class asterEvent extends PEAR
 	return	$html					(string)	HTML code for extension status
 
 	*/
-	function &tableStatus($phones,$status,$callerid,$direction,$srcchan = null,$dstchan = null){
+	function &tableStatus($phones,$status,$callerid,$direction,$srcchan = null,$dstchan = null,$curhover=''){
 		//print_r($srcchan);exit;
 		global $locate;
 		$action .= '<table width="100%" cellpadding=2 cellspacing=2 border=0>';
@@ -513,10 +513,10 @@ class asterEvent extends PEAR
 			}
 
 			if ( (($i %  6) == 0) && ($i != 0) ) $action .= "</tr><tr>";
-			$action .= "<td align=center ><br><div id='div_exten'>";
+			$action .= "<td align=center ><br><div id=\"".$username."\" onmouseover=\"document.getElementById('curhover').value=this.id;\" style=\"width:100px;height:25px;\"><div id='div_exten' >";
 			if (isset($status[$username])) {
 				if ($status[$username] == 2) {
-					$action .= "<UL id='extenBtnU'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
+					$action .= "<UL id='extenBtnU'><LI id=\"".$username."\" ><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 				}else {
 					if ($status[$username] == 1) {
 						#print_r($direction);print_r($srcchan);print_r($dstchan);exit;
@@ -525,22 +525,37 @@ class asterEvent extends PEAR
 						}else{
 							$spychan = $srcchan[$username];
 						}
-						$action .= "<UL id='extenBtnR'><LI><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$spychan."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$spychan."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A><A href='###' onclick=\"xajax_barge ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A><A href='###' onclick=\"hangup ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Hangup')."</font>-</A></UL></LI>";
+						if($username == $curhover){
+							$id = 'extenBtnRV';
+						}else{
+							$id='extenBtnR';
+						}						
+
+						$action .= "<UL id='".$id."'><LI id=\"".$username."\" ><a href='###' >".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$spychan."');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Spy')."</font>-</A><A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$spychan."','w');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Whisper')."</font>-</A>";
+						if($_SESSION['asterisk']['paramdelimiter'] == ','){
+							$action .= "<A href='###' onclick=\"xajax_chanspy (".$_SESSION['curuser']['extension'].",'".$spychan."','B');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A>";
+						}else{
+							$action .= "<A href='###' onclick=\"xajax_barge ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Barge')."</font>-</A>";
+						}
+
+						$action .= "<A href='###' onclick=\"hangup ('".$srcchan[$username]."','".$dstchan[$username]."');return false;\" >&nbsp;-<font size='2px'>".$locate->Translate('Hangup')."</font>-</A></UL></LI>";
 					}
 					else {
-						$action .= "<UL id='extenBtnG'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
+						$action .= "<UL id='extenBtnG'><LI id=\"".$username."\" ><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 					}
 				}
 			}
 			else {
-				$action .= "<UL id='extenBtnB'><LI><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
+				$action .= "<UL id='extenBtnB'><LI id=\"".$username."\" ><a href='###'>".$username."</a><UL><A href='###'>&nbsp;-<font size='2px'>".$row['extension']."</font>-</A><A href='###' onclick=\"dial('".$exten."','callee');return false;\">&nbsp;-<font size='2px'>".$locate->Translate('Dial')."</font>-</A></UL></LI>";
 			}
-			$action .= "</UL></div>";
+			$action .= "</UL></div></div>";
 
 			if ($status[$username] == 1) {
 				//$action .= "<span align=left>";
-				$action .= $direction[$username];
-				$action .= "<BR>".$callerid[$username]."";
+				if($id != 'extenBtnRV'){
+					$action .= $direction[$username];
+					$action .= "<BR>".$callerid[$username]."";
+				}
 				//$action .= "</span>";
 			}
 			$action .=  "</td>\n";

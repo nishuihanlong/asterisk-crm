@@ -60,4 +60,11 @@ $this_campaing_is_busy_now = "此拨号计划已开启预拨号";
 $can_not_set_to_disable = "请停止后再禁用";
 $transfered = "转接次数";
 $transfere_rate = "转接率";
+$enable_auto_recyle = "自动回收";
+$agent_answer_min_duration = "坐席最少应答时间";
+$customer_answer_min_duration = "被叫最少应答时间";
+$min_duration = "最少总时长";
+$sms_number = "短信号码";
+$callerid = "主叫号码";
+$any_time = "所有时间";
 ?>

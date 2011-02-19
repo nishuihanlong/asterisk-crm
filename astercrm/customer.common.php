@@ -128,6 +128,12 @@ $xajax->registerFunction("noteAdd");
 $xajax->registerFunction("saveNote");
 $xajax->registerFunction("displayMap");
 $xajax->registerFunction("customerLeadsAction");
+$xajax->registerFunction("addTicket");
+$xajax->registerFunction("relateByCategoryId");
+$xajax->registerFunction("relateByCategory");
+$xajax->registerFunction("AllTicketOfMy");
+$xajax->registerFunction("saveTicket");
+$xajax->registerFunction("playmonitor");
 
 //define(ENABLE_CONTACT, $config['system']['enable_contact']);  // Enable contact
 define("ROWSXPAGE", 15); // Number of rows show it per page.

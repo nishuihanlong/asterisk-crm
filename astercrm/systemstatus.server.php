@@ -78,10 +78,11 @@ function listCommands(){
 *  @return	objResponse		object		xajax response object
 */
 
-function showStatus(){
+function showStatus($curhover){
+	
 	$objResponse = new xajaxResponse();
 	$html .= "<br><br><br><br>";
-	$html .= asterEvent::checkExtensionStatus(0,'table');
+	$html .= asterEvent::checkExtensionStatus(0,'table',$curhover);
 	$objResponse->addAssign("divStatus", "innerHTML", $html);
 	$objResponse->addScript("menuFix();");
 	return $objResponse;
@@ -155,7 +156,7 @@ function showChannelsInfo(){
 }
 
 function chanspy($exten,$spyexten,$pam = ''){
-	
+
 	global $config,$locate;
 
 	if($_SESSION['curuser']['groupid'] > 0){
@@ -185,6 +186,7 @@ function chanspy($exten,$spyexten,$pam = ''){
 
 	$spyexten = split('-',$spyexten);
 	$spyexten = $spyexten['0'];
+#	echo $spyexten;exit;
 
 	$myAsterisk->chanSpy($exten,$spyexten,$pam,$_SESSION['asterisk']['paramdelimiter']);
 	#$myAsterisk->chanSpy($exten,"agent/1000",$pam,$_SESSION['asterisk']['paramdelimiter']);

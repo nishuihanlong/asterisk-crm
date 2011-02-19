@@ -124,4 +124,5 @@ $note_code = "标识";
 $copy_to_customer_lead = "拷贝到客户lead表";
 $move_to_customer_lead = "移动到客户lead表";
 $note_leads = "备注lead表";
+$move_to_customerleads = "移动到客户lead表";
 ?>

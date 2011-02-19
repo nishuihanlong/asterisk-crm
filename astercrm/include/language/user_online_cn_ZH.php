@@ -14,4 +14,8 @@ $to = "到";
 $cal = "日期";
 $list = "列表";
 $text = "文本";
+$useronline_report = "账户在线报表";
+$username = "账户名";
+$login_time = "登录时间";
+$online_time = "在线时长";
 ?>

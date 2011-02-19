@@ -62,6 +62,17 @@ function init(){
 
 		$campaignHTML = '';
 		while	($campaigns->fetchInto($campaign)){
+				// get worktime
+				$localtime = localtime(time(), true);
+				$wday = $localtime['tm_wday'];
+				if($localtime['tm_wday'] == 0){
+					$wday = 7;
+				}
+				$cur = $localtime['tm_hour'].":".$localtime['tm_min'].":".$localtime['tm_sec'];
+				$query = " SELECT worktimes.*,worktimepackages.worktimepackage_status FROM worktimepackage_worktimes LEFT JOIN worktimes ON worktimes.id = worktimepackage_worktimes.worktime_id LEFT JOIN worktimepackages ON worktimepackages.id = worktimepackage_worktimes.worktimepackage_id WHERE worktimepackages.worktimepackage_status = 'enable' AND worktimepackage_id = ".$campaign['worktime_package_id']." AND ( starttime <= '{$cur}' AND endtime >= '{$cur}' ) AND (startweek <= {$wday} AND endweek >= {$wday} ) ";
+				$worktime = $db->getOne($query);
+
+
 				// get numbers in diallist
 				$query = "SELECT COUNT(*) FROM diallist WHERE campaignid = ".$campaign['id'];
 				$phoneNumber = $db->getOne($query);
@@ -90,21 +101,33 @@ function init(){
 				$campaignHTML .= '<div class="group01content">';
 
 				if ($has_queue != 0){
-					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'"> '.$campaign['campaignname'].' ( '.$locate->Translate("queue").': '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' )</acronym> </div>
-				<div class="group01r">
-				<input type="checkbox" onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
-				<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="channel" '.$channel_checked.'> '.$locate->Translate("Limited by max calls").' 
-				<input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="3" class="inputlimit" onblur="setMaxChannel(this);">
-				<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="queue" '.$queue_checked.'> '.$locate->Translate("Limited by agents and multipled by").' 
-				<input type="text" value="'.$campaign['queue_increasement'].'" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="4" maxlength="4" class="inputlimit" onblur="setQueueRate(this);">
-				</div>';
+					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'"> '.$campaign['campaignname'].' ( '.$locate->Translate("queue").': '.$campaign['queuename'].' ) ( <span id="numbers-'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' )</acronym> </div>';
+					if(!$worktime && $campaign['worktime_package_id'] != 0){
+							$campaignHTML .= '
+						<div class="group01r">'.$locate->Translate("not in worktime").'</div>';
+					}else{
+							$campaignHTML .= '
+						<div class="group01r">
+						<input type="checkbox" onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
+						<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="channel" '.$channel_checked.'> '.$locate->Translate("Limited by max calls").' 
+						<input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="3" class="inputlimit" onblur="setMaxChannel(this);">
+						<input type="radio" onclick="setLimitType(this);" id="'.$campaign['id'].'-limittpye" name="'.$campaign['id'].'-limittpye" value="queue" '.$queue_checked.'> '.$locate->Translate("Limited by agents and multipled by").' 
+						<input type="text" value="'.$campaign['queue_increasement'].'" id="'.$campaign['id'].'-rate" name="'.$campaign['id'].'-rate" size="4" maxlength="4" class="inputlimit" onblur="setQueueRate(this);">
+						</div>';
+					}
 				}else{
-					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'">'.$campaign['campaignname'].' ( '.$locate->Translate("no queue for this campaign").' ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </acronym></div>
-				<div class="group01r">
-				<input type="checkbox"  onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
-				<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" '.$channel_checked.'>
-				'.$locate->Translate("Limited by max calls").' <input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit" onblur="setMaxChannel(this);">
-				</div>';
+					$campaignHTML .= "<div class='group01l'>".'<img src="images/groups_icon02.gif" width="20" height="20" align="absmiddle" /><acronym title="'.$locate->Translate("inexten").':'.$campaign['inexten'].'&nbsp;|&nbsp;'.$locate->Translate("Outcontext").':'.$campaign['outcontext'].'&nbsp;|&nbsp;'.$locate->Translate("Incontext").':'.$campaign['incontext'].'">'.$campaign['campaignname'].' ( '.$locate->Translate("no queue for this campaign").' ) ( <span id="numbers'.$campaign['id'].'">'.$phoneNumber.'</span> '.$locate->Translate("numbers in dial list").' ) </acronym></div>';
+					if(!$worktime && $campaign['worktime_package_id'] != 0){
+							$campaignHTML .= '
+						<div class="group01r">'.$locate->Translate("not in worktime").'</div>';
+					}else{
+							$campaignHTML .= '
+						<div class="group01r">
+						<input type="checkbox"  onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
+						<input type="radio" name="'.$campaign['id'].'-limittpye[]" value="channel" '.$channel_checked.'>
+						'.$locate->Translate("Limited by max calls").' <input type="text" value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit" onblur="setMaxChannel(this);">
+						</div>';
+					}
 				}
 				$campaignHTML .= '</div>';
 

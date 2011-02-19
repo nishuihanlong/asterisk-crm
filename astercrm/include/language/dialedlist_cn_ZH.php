@@ -51,4 +51,5 @@ $transferednum = "转接次数";
 $transferedrate = "转接率";
 $transfertarget = "转接目标";
 $transfertime = "转接时间";
+$no_answer_calls_and_never_recycle = "未接并且从未回收过";
 ?>

@@ -108,6 +108,30 @@ require_once('customer.common.php');
 			ShowProcessingDiv();
 			xajax_searchRecordsFormSubmit(searchFormValue,numRows,limit,id,type);
 		}
+
+		function addTicket(customerid) {
+			xajax_addTicket(customerid);
+		}
+		function relateByCategory() {
+			xajax_relateByCategory(document.getElementById('ticketcategoryid').value);
+		}
+
+		function relateBycategoryID(Fid,state) {
+			if(state == 'edit') {
+				xajax_relateByCategoryId(Fid,document.getElementById('curTicketid').value);
+			} else {
+				xajax_relateByCategoryId(Fid);
+			}
+		}
+		function AllTicketOfMyself(Cid) {
+			xajax_AllTicketOfMy(Cid,'customer_ticket');
+		}
+		function showMyTicketsGrid(id,Ctype,start,limit,filter,content,order,divName,ordering,stype) {
+			xajax_showMyTickets(id,Ctype,start,limit,filter,content,order,divName,ordering,stype);
+		}
+		function AllTicketOfMyGrid(cid,Ctype,start,limit,filter,content,order,divName,ordering,stype) {
+			xajax_AllTicketOfMy(cid,Ctype,start,limit,filter,content,order,divName,ordering,stype);
+		}
 		//-->
 		</SCRIPT>
 
@@ -172,6 +196,12 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 						style="left: 450px; top: 50px;width: 500px"></div>
 					<div id="formeditDiallistInfo"  class="formDiv drsElement" 
 						style="left: 450px; top: 50px;width: 500px"></div>
+					<div id="formTicketDetailDiv"  class="formDiv drsElement" 
+						style="left: 600px; top: 300px;width: 490px"></div>
+					<div id="formMyTickets"  class="formDiv drsElement" 
+						style="left: 500px; top: 150px;width: 800px"></div>
+					<div id="formplaymonitor"  class="formDiv drsElement" 
+						style="left: 450px; top: 50px;width: 350px; z-index:999"></div>
 				</fieldset>
 			</td>
 		</tr>

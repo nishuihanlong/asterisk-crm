@@ -34,4 +34,10 @@ $adding_agents = '添加动态坐席';
 $agent = '坐席号码';
 $name = '名字';
 $user_type="用户类型";
+$callerid="主叫号码";
+$customer_manage = "客户管理";
+$cretime = "创建时间";
+$creby = "创建者";
+$adding_code = "添加Code";
+$edit_code = "编辑Code"
 ?>

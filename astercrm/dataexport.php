@@ -154,7 +154,7 @@ if($type != 'exportcsv'){
 
 					if($i == 1){
 						$objPHPExcel->getActiveSheet()->setCellValue($cols.$i,$k);
-						if(is_numeric($v)) $v .= "\t";
+						if(is_numeric($v)) $isnumber[$cols] = 1;
 						$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
 						if(!empty($row['color']) && $k == $locate->Translate("answered duration") ){
 							$colorcell = $cols.($i+1).":".$cols.($i+1);
@@ -175,12 +175,15 @@ if($type != 'exportcsv'){
 							$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setFillType( PHPExcel_Style_Fill::FILL_SOLID );
 							$objPHPExcel->getActiveSheet()->getStyle($colorcell)->getFill()->setStartColor($BackgroundColor);
 						}
-						if(is_numeric($v)) $v .= "\t";
+						if(is_numeric($v)) $isnumber[$cols] = 1;
 						$objPHPExcel->getActiveSheet()->setCellValue($cols.($i+1),$v);
 						
 					}							
 				}
 				$i++;
+			}
+			foreach($isnumber AS $key => $value ){
+				$objPHPExcel->getActiveSheet()->getColumnDimension($key)->setAutoSize(true);
 			}
 
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');

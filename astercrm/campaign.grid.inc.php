@@ -158,7 +158,10 @@ class Customer extends astercrm
 				."bindqueue='".$bindqueue."', "
 				."maxtrytime='".$f['maxtrytime']."', "
 				."recyletime='".$f['recyletime']."', "
+				."enablerecyle='".$f['enablerecyle']."', "
 				."minduration='".$f['minduration']."', "
+				."minduration_billsec='".$f['minduration_billsec']."', "
+				."minduration_leg_a='".$f['minduration_leg_a']."', "
 				."callerid='".$f['callerid']."', "
 				."groupid='".$f['groupid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
@@ -207,7 +210,10 @@ class Customer extends astercrm
 				."bindqueue='".$bindqueue."', "
 				."maxtrytime='".$f['maxtrytime']."', "
 				."recyletime='".$f['recyletime']."', "
+				."enablerecyle='".$f['enablerecyle']."', "
 				."minduration='".$f['minduration']."', "
+				."minduration_billsec='".$f['minduration_billsec']."', "
+				."minduration_leg_a='".$f['minduration_leg_a']."', "
 				."callerid='".$f['callerid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context='".$f['queue_context']."', "
@@ -467,8 +473,20 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="recyletime" value="3600" name="recyletime" size="10" maxlength="10"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Enable Auto Recyle").'</td>
+					<td align="left"><select name="enablerecyle" id="enablerecyle"><option value="no">'.$locate->Translate("no").'</option><option value="yes">'.$locate->Translate("yes").'</option></select></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Min Duration").'</td>
 					<td align="left"><input type="text" id="minduration" value="0" name="minduration" size="10" maxlength="10"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Agent Answer Min Duration").'</td>
+					<td align="left"><input type="text" id="minduration_billsec" value="0" name="minduration_billsec" size="10" maxlength="10"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Customer Answer Min Duration ").'</td>
+					<td align="left"><input type="text" id="minduration_leg_a" value="0" name="minduration_leg_a" size="10" maxlength="10"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("SMS Number").'</td>
@@ -596,6 +614,14 @@ class Customer extends astercrm
 				$amdtr='style="display:none"';
 			}
 
+			if($campaign['enablerecyle'] == 'no'){
+				$recyleno = 'selected'; 
+				$recyleyes = ''; 
+			}else{
+				$recyleno = ''; 
+				$recyleyes = 'selected'; 
+			}
+
 			$html .= 
 				'</tr>
 				<tr>
@@ -668,8 +694,20 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="recyletime" name="recyletime" size="10" maxlength="10" value="'.$campaign['recyletime'].'"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Enable Auto Recyle").'</td>
+					<td align="left"><select name="enablerecyle" id="enablerecyle"><option value="no" '.$recyleno.' >'.$locate->Translate("no").'</option><option value="yes" '.$recyleyes.'>'.$locate->Translate("yes").'</option></select></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Min Duration").'</td>
 					<td align="left"><input type="text" id="minduration" name="minduration" size="10" maxlength="10" value="'.$campaign['minduration'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Agent Answer Min Duration").'</td>
+					<td align="left"><input type="text" id="minduration_billsec" name="minduration_billsec" size="10" maxlength="10" value="'.$campaign['minduration_billsec'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Customer Answer Min Duration").'</td>
+					<td align="left"><input type="text" id="minduration_leg_a" name="minduration_leg_a" size="10" maxlength="10" value="'.$campaign['minduration_leg_a'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("SMS Number").'</td>

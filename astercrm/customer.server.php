@@ -625,6 +625,60 @@ function customerLeadsAction($leadType,$f,$searchFormValue){
 	return $objResponse->getXML();
 }
 
+function addTicket($customerid) {
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("ticket_detail"),"formTicketDetailDiv"); 			
+	$html .= Customer::showTicketDetail($customerid);
+	$html .= Table::Footer();
+	$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
+	$objResponse->addScript("relateByCategory();");
+	return $objResponse->getXML();
+}
+function relateByCategory($fid) {
+	$objResponse = new xajaxResponse();
+	$html = Customer::getTicketByCategory($fid);
+	$objResponse->addAssign("ticketMsg", "innerHTML", $html);
+	return $objResponse->getXML();
+}
+function relateByCategoryId($Cid,$curid=0) {
+	$objResponse = new xajaxResponse();
+	$option = Customer::getTicketByCategory($Cid,$curid);
+	$objResponse->addAssign("ticketMsg","innerHTML",$option);
+	return $objResponse->getXML();
+}
+function AllTicketOfMy($cid='',$Ctype,$start = 0, $limit = 5,$filter = null, $content = null, $order = null, $divName = "formMyTickets", $ordering = "",$stype = null) {
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	$ticketHtml = Table::Top($locate->Translate("Customer Tickets"),"formMyTickets");
+	$ticketHtml .= astercrm::createTikcetGrid($cid,$Ctype,$start, $limit,$filter, $content, $order, $divName, $ordering, $stype);
+	$ticketHtml .= Table::Footer();
+
+	$objResponse->addAssign("formMyTickets", "style.visibility", "visible");
+	$objResponse->addAssign("formMyTickets", "innerHTML", $ticketHtml);
+
+	return $objResponse->getXML();
+}
+function saveTicket($f) {
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($f['ticketid'] == 0) {
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	$result = Customer::insertTicket($f);
+	if($result == 1) {
+		$objResponse->addAlert($locate->Translate("Add ticket success"));
+		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
+		$objResponse->addScript('AllTicketOfMyself('.$f['customerid'].');');
+	} else {
+		$objResponse->addAlert($locate->Translate("Add ticket failed"));
+	}
+	return $objResponse->getXML();
+}
+
 $xajax->processRequests();
 
 ?>

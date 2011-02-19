@@ -77,8 +77,8 @@ function init($post=''){
 	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','','grid','','".$aciton."',".$campaign_id.")");
 
 	$noanswer = Customer::getNoanswerCallsNumber();
-	$objResponse->addAssign("spanRecycleUp","innerHTML","No answer calls and never recycle: $noanswer");
-	$objResponse->addAssign("spanRecycleDown","innerHTML","No answer calls and never recycle: $noanswer");
+	$objResponse->addAssign("spanRecycleUp","innerHTML",$locate->Translate("No answer calls and never recycle").": $noanswer");
+	$objResponse->addAssign("spanRecycleDown","innerHTML",$locate->Translate("No answer calls and never recycle").": $noanswer");
 
 	return $objResponse;
 }
@@ -180,7 +180,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //	$fields[] = 'response';		
 	$fields[] = 'customer';
 	$fields[] = 'customername';
-	$fields[] = 'uniqueid';
+//	$fields[] = 'uniqueid';
 	$fields[] = 'campaignresult';
 	$fields[] = 'detect';
 	$fields[] = 'transfertime';
@@ -202,7 +202,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Customer");
 	$headers[] = $locate->Translate("Name");
-	$headers[] = $locate->Translate("Uniqueid");
+//	$headers[] = $locate->Translate("Uniqueid");
 	$headers[] = $locate->Translate("Campaign Result");
 	$headers[] = $locate->Translate("Detect");
 	$headers[] = $locate->Translate("Transfertime");
@@ -222,7 +222,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
-	$attribsHeader[] = 'width=""';
+//	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -250,7 +250,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
-	$attribsCols[] = 'style="text-align: left"';
+//	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'style="text-align: left"';
 //	$attribsCols[] = 'style="text-align: left"';
 
@@ -266,7 +266,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING");return false;\'';
-	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","uniqueid","'.$divName.'","ORDERING");return false;\'';	
+//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","uniqueid","'.$divName.'","ORDERING");return false;\'';	
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignresult","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","detect","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","transfertime","'.$divName.'","ORDERING");return false;\'';
@@ -367,7 +367,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //		$rowc[] = $row['response'];
 		$rowc[] = $row['customer'];
 		$rowc[] = $row['customername'];
-		$rowc[] = $row['uniqueid'];		
+//		$rowc[] = $row['uniqueid'];		
 		$rowc[] = $row['campaignresult'];
 		$rowc[] = $row['detect'];
 		$rowc[] = $row['transfertime'];

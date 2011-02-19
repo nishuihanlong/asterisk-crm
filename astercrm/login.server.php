@@ -237,6 +237,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['accountid'] = $row['id'];
 				$_SESSION['curuser']['accountcode'] = $row['accountcode'];
 				$_SESSION['curuser']['agent'] = $row['agent'];
+				$_SESSION['curuser']['callerid'] = trim($row['callerid']);
 				$_SESSION['curuser']['update_online_interval'] = date("Y-m-d H:i:s");
 
 				// added by solo 2007-10-90

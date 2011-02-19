@@ -1,33 +1,34 @@
-new features in 0.072
-	fixed a bug of predictive dialer when dial a ivalid number with dahdi
-	fixed a popup bug when dialed number similar on agent number
-	added parameter convert_mp3 in astercc.conf to control processmonitors if converts records to mp3
-	fixed sql error when link without queue 
-	added export customer data in note page
-	fixed bugs of Campaign Report
-	fixed a bug of doesnt display trunk info in portal page
-	added parameter auto_note_popup in astercrm.conf.php for if auto popup note info
-	added parameter default_share_note in astercrm.conf.php for if share note default
-	added customertitle(Mr,Miss,Ms,Mrs,other) in customer table
-	fixed note to blank when confirm or cannel a customer
-	added auto pause on queue pannel of agent portal page
-	added parameter singleOutboundTrunk in astercc.conf
-0.072 新功能
-	修正了通过dahdi拨号时 被叫号码不存在的情况下 占用预拨号通道过长的bug
-	修正了当坐席分机号码与用户号码近似时弹屏的bug
-	astercc.conf 中增加了convert_mp3 参数,控制processmonitors是否将录音转成mp3格式
-	改进了没有queue但直接使用link事件时产生的sql语句错误
-	增加了note页导出相关客户信息的功能
-	修正了Campaign Report的bug
-	修正了不显示线路信息的bug
-	astercrm.conf.php增加了auto_note_popup,控制弹屏时是否自动弹出note信息
-	astercrm.conf.php增加了default_share_note,控制添加note信息时，默认是否为共享
-	客户信息中增加了称谓字段(先生,小姐,女士,太太,其它)
-	解决了当确认或取消客户时已填写的备注被清空的问题
-	队列面板增加了自动置忙功能
-	astercc.conf 中增加参数 singleOutboundTrunk
+new features in 0.075
+	added customer_lead and note_lead
+	added defined code for note
+	added user online statistic and user online report
+	added sms api
+	added user type and user privileges
+	added attend transfer for agent mode
+	added hangupcause, hangupcausetxt and dialstatus to cdr table
+	fixed bug of astercc daemon works with asterisk 1.2
+	fixed bug of incorrect didnumber on agent mode
+	fieed bug of incorrect curcdr works with astercrm.agi
+	added doubleCheckCampaign in astercc.conf
+	added export data to daillist directly
+	added count and time of tranfer to cdr and dialedlist
 
-astercrm features(0.072)
+0.075 新功能
+	增加了客户及备注的lead功能
+	增加了为备注表定义code的功能
+	增加了用户在线时长统计
+	增加了SMS功能及接口
+	增加了自定义用户类型及权限
+	增加了座席模式下的咨询转接
+	增加了cdr表增加了hangupcause, hangupcausetxt及dialstatus
+	解决了asterisk1.2下的astercc进程的bug
+	解决了座席模式下DID号码记录不正确的问题
+	解决了用astercrm.agi拨号的通话记录不正确的的问题
+	astercc.conf增加了doubleCheckCampaign 参数
+	增加了直接导入数据到diallist的功能
+	cdr和dialedlist里增加了转接次数和转接时间
+
+astercrm features(0.075)
 
 	pop-up when incoming calls 
 	pop-up when outbound calls

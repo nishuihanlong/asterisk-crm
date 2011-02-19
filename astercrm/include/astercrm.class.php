@@ -165,6 +165,7 @@ Class astercrm extends PEAR{
 			."callOrder='1', "
 			."assign='".$_SESSION['curuser']['extension']."', "
 			."customerid='".$f['customerid']."', "
+			."customername='".$f['customername']."', "
 			."creby='".$_SESSION['curuser']['username']."', "
 			."cretime= now(), "
 			."campaignid= ".$f['curCampaignid']." ";
@@ -467,6 +468,7 @@ Class astercrm extends PEAR{
 				."password='".$f['password']."', "
 				."firstname='".$f['firstname']."',"
 				."lastname='".$f['lastname']."',"
+				."callerid='".$f['callerid']."',"
 				."extension='".$f['extension']."',"
 				."agent = '".$f['agent']."',"
 				."channel='".$f['channel']."',"			// added 2007/10/30 by solo
@@ -690,6 +692,7 @@ Class astercrm extends PEAR{
 				."password='".$f['password']."', "
 				."firstname='".$f['firstname']."', "
 				."lastname='".$f['lastname']."', "
+				."callerid='".$f['callerid']."', "
 				."extension='".$f['extension']."', "
 				."agent ='".$f['agent']."', "
 				."usertype='".$f['usertype']."', "
@@ -2254,13 +2257,13 @@ Class astercrm extends PEAR{
 		}else{
 			$sql = '';
 			
-			if ($res_customer['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['phone']."' ".$type." ".$tableAlias.".".$feild."='".$res_customer['phone']."' ";
-			if ($res_customer['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['mobile']."' ".$type." ".$tableAlias.".".$feild."='".$res_customer['mobile']."' ";
+			if ($res_customer['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['phone']."' ".$type." ".$tableAlias.".".$feild1."='".$res_customer['phone']."' ";
+			if ($res_customer['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$res_customer['mobile']."' ".$type." ".$tableAlias.".".$feild1."='".$res_customer['mobile']."' ";
 			while ($res_contact->fetchInto($row)) {
-				if ($row['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone']."' ".$type." ".$tableAlias.".".$feild."='".$row['phone']."' ";
-				if ($row['phone1'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone1']."' ".$type." ".$tableAlias.".".$feild."='".$row['phone1']."' ";
-				if ($row['phone2'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone2']."' ".$type." ".$tableAlias.".".$feild."='".$row['phone2']."' ";
-				if ($row['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['mobile']."' ";
+				if ($row['phone'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone']."' ".$type." ".$tableAlias.".".$feild1."='".$row['phone']."' ";
+				if ($row['phone1'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone1']."' ".$type." ".$tableAlias.".".$feild1."='".$row['phone1']."' ";
+				if ($row['phone2'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['phone2']."' ".$type." ".$tableAlias.".".$feild1."='".$row['phone2']."' ";
+				if ($row['mobile'] != '' && $tableAlias != '') $sql .= " ".$type." ".$tableAlias.".".$feild."='".$row['mobile']."' ".$type." ".$tableAlias.".".$feild1."='".$row['mobile']."'" ;
 			}
 			if($sql != '') $sql = ltrim($sql,"\ ".$type);
 		}

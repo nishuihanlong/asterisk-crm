@@ -8,7 +8,10 @@ $content = "内容";
 $cretime = "创建时间";
 $object = "对象";
 $is_edit = "是否可编辑";
-$All = "是否可编辑";
-$Campaign = "是否可编辑";
-$Trunk = "是否可编辑";
+$campaign = "拨号计划";
+$trunk = "中继";
+$all = "全部";
+$adding_sms_templates = "添加短信模版";
+$obligatory_fields = "必填字段";
+$continue = "继续";
 ?>

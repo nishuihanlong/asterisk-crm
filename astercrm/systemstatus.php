@@ -29,7 +29,8 @@ require_once('systemstatus.common.php');
 		<!--
 			var timerShowStatus,timerShowChannelsInfo;
 			function showStatus(){
-				xajax_showStatus();
+				var curhover = xajax.$('curhover').value;
+				xajax_showStatus(curhover);
 				timerShowStatus = setTimeout("showStatus()", xajax.$('check_interval').value);
 			}
 
@@ -103,5 +104,6 @@ require_once('systemstatus.common.php');
 		<div id="channels" align="left" class="groupsystem_channel"></div>
 		<div id="divCopyright"></div>
 		<input type="hidden" id="check_interval" name="check_interval" value="2000">
+		<input type="hidden" id="curhover" name="curhover" value="">
 	</body>
 </html>

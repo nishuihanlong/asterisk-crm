@@ -6,9 +6,9 @@
 dbtype = mysql
 dbport = 3306
 dbhost = localhost
-dbname = astercc
-username = astercc
-password = asterccsecret
+dbname = astercc01
+username = root
+password = 
 
 [asterisk]
 ;
@@ -17,8 +17,8 @@ password = asterccsecret
 server = 127.0.0.1
 ;should be matched in manager.conf
 port = 5038
-username = admin
-secret = amp111
+username = astercc
+secret = astercc
 
 ;defined delimiter of asterisk parameter , or |.
 paramdelimiter = ,
@@ -178,7 +178,7 @@ open_new_window = 0
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = road_accident.php
+external_crm_default_url = http://astercc.org
 
 ;
 ; when using external crm, put pop up page here
@@ -187,7 +187,7 @@ external_crm_default_url = road_accident.php
 ; %method		dial_out or dial_in
 ; %uniqueid
 ; %calldate     starttime of the call
-external_crm_url = road_accident.php
+external_crm_url = http://astercc.org
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
@@ -226,11 +226,11 @@ clidcreditlimit = 0
 
 [google-map]
 
-key = ABQIAAAAlXY_fXV4_Oe0ybBhc69s-hRQ1G4EKjJ_eNALtJW0c9DV46DF-BQkpm0dJl1kG_QosmGpwYsi4cnyYg
+key = 
 
 
 [error_report]
 ;sets the error level
-error_report_level = 0
+error_report_level = 1
 
 ;?>

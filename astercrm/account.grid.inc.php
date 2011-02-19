@@ -277,6 +277,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="lastname" name="lastname" size="25" maxlength="15"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("callerid").'</td>
+					<td align="left"><input type="text" id="callerid" name="callerid" size="25" maxlength="30"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'*</td>
 					<td align="left"><input type="text" id="extension" name="extension" size="25" maxlength="15"></td>
 				</tr>
@@ -389,6 +393,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("last name").'*</td>
 					<td align="left"><input type="text" id="lastname" name="lastname" size="25" maxlength="15" value="'.$account['lastname'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("callerid").'</td>
+					<td align="left"><input type="text" id="callerid" name="callerid" size="25" maxlength="30" value="'.$account['callerid'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'*</td>
@@ -504,6 +512,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("last name").'</td>
 					<td align="left">'.$account['lastname'].'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("callerid").'</td>
+					<td align="left">'.$account['callerid'].'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extension").'</td>

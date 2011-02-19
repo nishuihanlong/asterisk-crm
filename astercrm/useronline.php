@@ -61,7 +61,7 @@ require_once('useronline.common.php');
 	<div id="divNav"></div>
 	<div id="divActive" name="divActive">
 
-		<input type="button" value="" id="btnUseronlineReport" name="btnUseronlineReport" onClick="window.location='useronline_report.php';" />
+		<input type="button" value="" id="btnUseronlineReport" name="btnUseronlineReport" onClick="window.location='user_online.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>

@@ -473,10 +473,6 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="35"  value="' . $customer['bankaccount'] . '"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("note").'</td>
-					<td align="left"><textarea id="note" name="note" cols="40" rows="5">' . $customer['note'].'</textarea></td>
-				</tr>
-				<tr>
 					<td colspan="2" align="center"><button  id="btnContinue" name="btnContinue"  onClick=\'xajax_updateCustomerLead(xajax.getFormValues("frmCustomerEdit"),"customer");return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 				';
@@ -520,8 +516,8 @@ class Customer extends astercrm
 				."mobile='".astercrm::getDigitsInStr($f['mainMobile'])."', "
 				."email='".$f['mainEmail']."', "
 				."bankaccount='".$f['bankaccount']."', "
-				."bankaccountname='".$f['bankaccountname']."', "
-				."note='".$f['note']."' "
+				."bankaccountname='".$f['bankaccountname']."' "
+				//."note='".$f['note']."' "
 				."WHERE id='".$f['customerid']."'";
 
 		astercrm::events($query);
