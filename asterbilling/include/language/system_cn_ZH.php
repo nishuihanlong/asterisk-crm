@@ -17,5 +17,6 @@ $asterisk_have_been_restart = "重启asterisk完毕";
 $server_is_rebooting = "服务器正在重启";
 $server_is_shuting_down = "服务器正在关机";
 $current_channels = "当前系统通道";
-$refresh='刷新';
+$refresh=' 刷新 ';
+$hangup='挂 断';
 ?>

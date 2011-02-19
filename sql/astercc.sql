@@ -1,6 +1,6 @@
 
 ###########   Table structure for asterCC database   ################
-###########   astercc current version: 0.14b-rc1          ################
+###########   astercc current version: 0.21 beta          ################
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -1817,6 +1817,12 @@ CREATE TABLE `customer_leads` (
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
+## 
+## table `note_leads`
+## 
+
+DROP TABLE IF EXISTS `note_leads`;
+
 CREATE TABLE `note_leads` (
   `id` int(11) NOT NULL auto_increment,
   `note` text character set utf8 collate utf8_unicode_ci NOT NULL,
@@ -1891,6 +1897,12 @@ CREATE TABLE `agent_online_time` (
 ) ENGINE = MYISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 
+## 
+## table `sms_templates`
+## 
+
+DROP TABLE IF EXISTS `sms_templates`;
+
 CREATE TABLE `sms_templates` (
   `id` int(11) NOT NULL auto_increment,
   `templatetitle` varchar(80) NOT NULL default '',
@@ -1903,6 +1915,13 @@ CREATE TABLE `sms_templates` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+
+## 
+## table `sms_sents`
+## 
+
+DROP TABLE IF EXISTS `sms_sents`;
+
 CREATE TABLE `sms_sents` (
   `id` int(11) NOT NULL auto_increment,
   `username` varchar(30) NOT NULL default '',
@@ -1914,6 +1933,12 @@ CREATE TABLE `sms_sents` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
+## 
+## table `user_types`
+## 
+
+DROP TABLE IF EXISTS `user_types`;
+
 CREATE TABLE `user_types` (
   `id` int(11) NOT NULL auto_increment,
   `usertype_name` varchar(50) NOT NULL default '',
@@ -1921,6 +1946,13 @@ CREATE TABLE `user_types` (
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+## 
+## table `user_privileges`
+## 
+
+DROP TABLE IF EXISTS `user_privileges`;
 
 CREATE TABLE `user_privileges` (
   `id` int(11) NOT NULL auto_increment,

@@ -80,7 +80,7 @@ function systemAction($type){
 }
 
 function getCurchannels(){
-	global $config;
+	global $config,$locate;
 
 	$html = '<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="650"> ';
 	$myAsterisk = new Asterisk();
@@ -101,7 +101,7 @@ function getCurchannels(){
 		$channel = explode('!',$channel);
 		if(strtolower($channel[0]) == '') continue;
 
-		$html .= '<tr bgcolor="#F7F7F7"><td  align="center" valign="center" height="30"></td>'.$channel[0].'<td  align="center" valign="center" height="30"><a href="javascript:void(null)" onclick="xajax_hangupchnnel(\''.$channel[0].'\')">hangup</a></td></tr>';
+		$html .= '<tr bgcolor="#F7F7F7"><td  align="center" valign="center" height="30"></td>'.$channel[0].'<td  align="center" valign="center" height="30"><a href="javascript:void(null)" onclick="xajax_hangupchnnel(\''.$channel[0].'\')">'.$locate->Translate('hangup').'</a></td></tr>';
 	}
 	$html .= '</table>';
 	return $html;
@@ -125,7 +125,7 @@ function hangupchnnel($channel){
 		return;
 	}
 	$myAsterisk->Hangup($channel);
-
+	sleep(1);
 	$curchannels = getCurchannels();
 	$objResponse->addAssign("curchanels","innerHTML",$curchannels);
 	return $objResponse;
