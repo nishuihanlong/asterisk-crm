@@ -90,6 +90,10 @@ my $dialed_id = $AGI->get_variable("DIALEDLISTID");
 my $campaign_id = $AGI->get_variable("CAMPAIGNID");
 my $DIALPART = $AGI->get_variable("DIALPART");
 
+$AGI->verbose($dialed_id);
+$AGI->verbose($campaign_id);
+$AGI->verbose($DIALPART);
+
 if($DIALPART eq 'CALLEE'){
 	$query = "SELECT * FROM ".$db_prefix."campaign WHERE id = $campaign_id ";
 	my $campaign_rows = &executeQuery($query,'rows');
@@ -102,11 +106,13 @@ if($DIALPART eq 'CALLEE'){
 		$AGI->verbose("DIALSTATUS:$callstatus");
 
 		if($dialed_id > 0){
-			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$callstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal')";
+			$query = "UPDATE ".$db_prefix."dialedlist SET callresult='$callstatus' WHERE id='$dialed_id' AND (callresult='' OR callresult='normal' OR callresult='unknown')";
 			my $affect = &executeQuery($query,'');
+			$AGI->verbose("affectaffectaffectaffect:$affect");
 			if($affect > 0){
 			}else{
-				$query = "UPDATE ".$db_prefix."campaigndialedlist SET callresult='$callstatus' WHERE dialednumber='$extension' AND (callresult='' OR callresult='normal') AND dialedtime > (now()-INTERVAL 60 SECOND) ";
+				$query = "UPDATE ".$db_prefix."campaigndialedlist SET callresult='$callstatus' WHERE dialednumber='$extension' AND (callresult='' OR callresult='normal' OR callresult='normal') AND dialedtime > (now()-INTERVAL 60 SECOND) ";
+				&executeQuery($query,'');
 			}
 		}
 	}
@@ -173,7 +179,7 @@ if($DIALPART eq 'CALLEE'){
 		my $amdstatus = $AGI->get_variable("AMDSTATUS");
 		$AGI->verbose($amdstatus);
 		#$amdstatus = 'NOTSURE';
-		if($amdstatus eq 'HUMAN' || $amdstatus eq 'NOTSURE' ){
+		if($amdstatus eq 'HUMAN' || $amdstatus eq 'NOTSURE'){
 			
 			$query = "UPDATE ".$db_prefix."dialedlist SET detect='$amdstatus' WHERE id='$dialed_id' ";
 			my $affect = &executeQuery($query,'');

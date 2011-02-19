@@ -139,7 +139,7 @@ if( -e "$Bin/processcdrlastid"){
 		$dialedlist_lastid = trim($lastcdrid['1']);
 	}
 }
-
+#print $cdr_lastid.$dialedlist_lastid;exit;
 my $dbh = &connect_mysql(%dbInfo);
 
 #获取所有座席帐户信息
@@ -179,7 +179,11 @@ my $rows = &executeQuery($query,'rows');
 while ( my $ref = $rows->fetchrow_hashref() ) {
 	#print Dumper $ref;next;
 	
-	if($cdrprocessed{$ref->{'id'}} > 0){
+	if($cdrprocessed{$ref->{'id'}} > 0 ){
+		next;
+	}
+
+	if($ref->{'dstchannel'} eq ''){
 		next;
 	}
 
@@ -195,6 +199,12 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 		$cdrprocessed{$ref->{'id'}} = $ref->{'id'};
 		$relates{$ref->{'id'}} = $ref;
 	}else{
+#		if($ref->{'channel'} =~ /^agent\// ){
+#			$ref->{'channel'} = '';
+#		}
+#		if($ref->{'dstchannel'} =~ /^agent\//){
+#			$ref->{'dstchannel'} = '';
+#		}
 
 		$query = "SELECT * FROM $cdrTbl WHERE (((channel='$ref->{'channel'}' OR channel='$ref->{'dstchannel'}') AND channel != '') OR ((dstchannel='$ref->{'channel'}' OR dstchannel='$ref->{'dstchannel'}') AND dstchannel != '')) AND id > '$cdr_lastid' ORDER BY calldate ASC ";
 
@@ -202,13 +212,26 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 
 
 		while ( my $relate_ref = $relate_rows->fetchrow_hashref() ) {
+
 			$relate_count++;
 			
 			$cdrprocessed{$relate_ref->{'id'}} = $relate_ref->{'id'};
 			if($relate_ref->{'billsec'} > 0 && !$answerflag){
-				$query = "SELECT * FROM $cdrTbl WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') AND id > '$cdr_lastid' ORDER BY calldate ASC ";
+				if($relate_ref->{'channel'} =~ /^agent\//){
+					$query = "SELECT * FROM $cdrTbl WHERE (channel='$relate_ref->{'agentchan'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'agentchan'}' OR dstchannel='$relate_ref->{'dstchannel'}') AND id > '$cdr_lastid' ORDER BY calldate ASC ";
+				
+				}elsif($relate_ref->{'dstchannel'} =~ /^agent\// ){
+					$query = "SELECT * FROM $cdrTbl WHERE (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'agentchan'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'agentchan'}') AND id > '$cdr_lastid' ORDER BY calldate ASC ";
+				}else{
+					$query = "SELECT * FROM $cdrTbl WHERE id > $relate_ref->{'id'} AND (channel='$relate_ref->{'channel'}' OR channel='$relate_ref->{'dstchannel'}' OR dstchannel='$relate_ref->{'channel'}' OR dstchannel='$relate_ref->{'dstchannel'}') AND id > '$cdr_lastid' ORDER BY calldate ASC ";
+				}
+				
 				my $clild_rows = &executeQuery($query,'rows');
 				while ( my $clild_ref = $clild_rows->fetchrow_hashref() ) {
+					
+					if($clild_ref->{'channel'} =~ /^agent\// || $clild_ref->{'dstchannel'} =~ /^agent\// ){
+						next;
+					}
 					$cdrprocessed{$clild_ref->{'id'}} = $clild_ref->{'id'};
 					if($clild_ref->{'billsec'} == 0 && $clild_ref->{'queue'} eq $relate_ref->{'queue'}){
 						next;
