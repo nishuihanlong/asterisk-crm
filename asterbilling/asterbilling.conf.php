@@ -40,6 +40,9 @@ log_enabled = 0
 ;Log file path
 log_file_path = /tmp/astercrmDebug.log
 
+;path of astercc daemon
+astercc_path = /opt/asterisk/scripts/astercc
+
 ;
 ; Asterisk context parameter, use which context when dial in or dial out
 ;
@@ -133,16 +136,28 @@ notify_mail =
 ;if log the pdt result 0/1
 pdt_log = 1
 
+[a2billing]
+enable = 0
+dbtype = mysql
+dbhost = localhost
+dbname = astercc01
+dbport = 3306
+cidtable = cc_callerid
+cardtable = cc_card
+calltable = cc_call
+username = root
+password = 
+
 [customers]
 enable = 0
 dbtype = mysql
 dbhost = localhost
-dbname = astercc
+dbname = astercc01
 dbport = 3306
 customertable = callshop_customers
 discounttable = discount
-username = astercc
-password = asterccsecret
+username = root
+password = 
 
 [resellertrunk]
 trunk1_type = sip

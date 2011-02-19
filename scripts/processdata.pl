@@ -19,8 +19,7 @@ if (not defined $cfg) {
 my %dbInfo = (
         dbtype => trim($cfg->val('database', 'dbtype')),
         dbhost => trim($cfg->val('database', 'dbhost')),
-        #dbname => trim($cfg->val('database', 'dbname')),
-		dbname => 'astercc_190',
+        dbname => trim($cfg->val('database', 'dbname')),
 		dbport  => trim($cfg->val('database', 'dbport')),
  		dbuser  => trim($cfg->val('database', 'username')),
  		dbpasswd  => trim($cfg->val('database', 'password'))

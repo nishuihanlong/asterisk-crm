@@ -172,16 +172,20 @@ do
   fi
 done
 
+asterv = "no"
+
 if [ -e "/var/run/asterisk/asterisk.ctl" ];then
 	asterv=`asterisk -rx "core show version"`
 	asterv=`echo $asterv |cut -f 2 -d\ `
 	asterv=`echo $asterv |cut -f 2 -d\.`
 else
-	echo -n "If your asterisk version is above 1.6, plese enter 'yes' ":
+	echo -n "If your asterisk version is above 1.6, plese enter 'yes', default no":
 	read astervchoose
 	astervchoose=`echo $astervchoose |tr [:upper:] [:lower:]`
 	if [ "${astervchoose}" == "yes" ];then
 		asterv=6
+	else
+		asterv=0
 	fi
 	
 fi
@@ -335,6 +339,7 @@ echo "#include extensions_astercc.conf" >> ${asterisketc}/extensions.conf
 #then
   if [ ! -f "/usr/bin/lame" -a ! -f "/usr/local/bin/lame" ]
   then
+    sed -i '/\[system\]/,/\[licence]/s/convert_mp3.*/convert_mp3 = '0'/1' ${daemonpath}/scripts/astercc.conf
     echo "Warning: can't locate command:lame in /usr/bin/ and /usr/local/bin/, please install"
   fi
 

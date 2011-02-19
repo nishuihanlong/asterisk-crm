@@ -6,9 +6,9 @@
 dbtype = mysql
 dbport = 3306
 dbhost = localhost
-dbname = astercc01
-username = root
-password = 
+dbname = astercc
+username = astercc
+password = asterccsecret
 
 [asterisk]
 ;
@@ -17,8 +17,8 @@ password =
 server = 127.0.0.1
 ;should be matched in manager.conf
 port = 5038
-username = astercc
-secret = astercc
+username = admin
+secret = amp111
 
 ;defined delimiter of asterisk parameter , or |.
 paramdelimiter = ,
@@ -231,6 +231,6 @@ key =
 
 [error_report]
 ;sets the error level
-error_report_level = 1
+error_report_level = 0
 
 ;?>
