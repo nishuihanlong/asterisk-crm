@@ -113,7 +113,7 @@ ALTER TABLE mycdr ADD transfertarget varchar(50) NOT NULL default '';
 
 ALTER TABLE campaigndialedlist CHANGE transfertime transfertime datetime NOT NULL default '0000-00-00 00:00:00';
 ALTER TABLE campaigndialedlist ADD transfertarget varchar(50) NOT NULL default '' after transfertime;
-ALTER TABLE campaign ADD `transfered` int(4) NOT NULL default '0' after `dialed`;
+ALTER TABLE campaign ADD `transfered` int(11) NOT NULL default '0' after `dialed`;
 
 
 CREATE TABLE `note_leads` (
@@ -161,8 +161,6 @@ CREATE TABLE `sms_sents` (
 ALTER TABLE `trunkinfo` ADD `trunk_number` varchar(30) NOT NULL default '';
 ALTER TABLE `campaign` ADD `sms_number` varchar(30) NOT NULL default '';
 
-
-
 ###########################   2010-12-31 ###########################################
 ALTER TABLE `astercrm_account` ADD `usertype_id` int(11) NOT NULL default 0;#2010-12-31
 
@@ -191,3 +189,22 @@ CREATE TABLE `user_privileges` (
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+
+
+
+ALTER TABLE `curcdr` ADD `agentchan` varchar(100) NOT NULL default '' AFTER `dialstring`;
+ALTER TABLE `mycdr` ADD `agentchan` varchar(100) NOT NULL default '' AFTER `dialstring`;
+ALTER TABLE `astercrm_account` add `callerid` varchar(30) NOT NULL default '';
+
+ALTER TABLE curcdr ADD dialstatus VARCHAR(40) NOT NULL DEFAULT '' AFTER `dialstring`;
+ALTER TABLE mycdr ADD hangupcause varchar(3) NOT NULL DEFAULT '';
+ALTER TABLE mycdr ADD hangupcausetxt varchar(50) NOT NULL DEFAULT '';
+ALTER TABLE mycdr ADD dialstatus VARCHAR(40) NOT NULL DEFAULT '' AFTER `dialstring`;
+
+ALTER TABLE historycdr ADD hangupcause varchar(3) NOT NULL DEFAULT '';
+ALTER TABLE historycdr ADD hangupcausetxt varchar(50) NOT NULL DEFAULT '';
+ALTER TABLE historycdr ADD dialstatus VARCHAR(40) NOT NULL DEFAULT '' AFTER `dialstring`;
+
+ALTER TABLE `campaign` ADD enablerecyle enum ('yes','no') not null default 'no';
+ALTER TABLE `campaign` ADD minduration_leg_a INT(11) NOT NULL DEFAULT 0 AFTER `minduration`;
+ALTER TABLE `campaign` ADD minduration_billsec INT(11) NOT NULL DEFAULT 0 AFTER `minduration`;
