@@ -42,11 +42,16 @@ class astercc extends PEAR
 		$accountcode = $reseller['accountcode'];
 		$clid_context = $reseller['clid_context'];
 
+		$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+		if ($asterccConfig['system']['billingfield'] != 'accountcode'){
+			$accountcode = $reseller['accountcode'];
+		}
+
 		$query = "SELECT * FROM accountgroup WHERE resellerid = $resellerid";
 		$group_list = $db->query($query);
 		$content = '';
 		while	($group_list->fetchInto($group)){
-			if($group['accountcode'] != ''){
+			if($group['accountcode'] != '' && $asterccConfig['system']['billingfield'] != 'accountcode'){
 				$accountcode = $group['accountcode'];
 			}
 
@@ -54,6 +59,9 @@ class astercc extends PEAR
 			$clid_list = $db->query($query);
 
 			while	($clid_list->fetchInto($row)){
+				if($asterccConfig['system']['billingfield'] == 'accountcode'){
+					$accountcode = $row['clid'];
+				}
 				$content .= "[".$row['clid']."]\n";
 
 				foreach ($config['sipbuddy'] as  $key=>$value){
@@ -295,7 +303,7 @@ class astercc extends PEAR
 		$credit = $cdr['credit'];
 		// insert the record to historycdr
 		if($config['system']['useHistoryCdr'] == 1){
-			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."',`srcname` = '".$cdr['srcname']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `billsec_leg_a` = '".$cdr['billsec_leg_a']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."',`queue` = '".$cdr['queue']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `accountid` = '".$cdr['accountid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',`dialstring` = '".$cdr['dialstring']."',children = '".$cdr['children']."',ischild = '".$cdr['ischild']."',processed = '".$cdr['processed']."',customerid = $costomerid,crm_customerid = '".$cdr['crm_customerid']."',contactid = '".$cdr['contactid']."', discount = $discount ,payment='".$payment."',note='".$cdr['note']."',setfreecall='".$cdr['setfreecall']."',astercrm_groupid='".$cdr['astercrm_groupid']."'";
+			$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."',`srcname` = '".$cdr['srcname']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `billsec_leg_a` = '".$cdr['billsec_leg_a']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."',`queue` = '".$cdr['queue']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `accountid` = '".$cdr['accountid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',`dialstring` = '".$cdr['dialstring']."',children = '".$cdr['children']."',ischild = '".$cdr['ischild']."',processed = '".$cdr['processed']."',customerid = $costomerid,crm_customerid = '".$cdr['crm_customerid']."',contactid = '".$cdr['contactid']."', discount = $discount ,payment='".$payment."',note='".$cdr['note']."',setfreecall='".$cdr['setfreecall']."',astercrm_groupid='".$cdr['astercrm_groupid']."',hangupcause='".$cdr['hangupcause']."',hangupcausetxt='".$cdr['hangupcausetxt']."',dialstatus='".$cdr['dialstatus']."'";
 		}else {
 			$sql = "UPDATE mycdr SET userfield = 'BILLED' ,customerid = $costomerid, discount = $discount , payment='".$payment."' WHERE id = $id ";
 		}
@@ -403,7 +411,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			$query = "SELECT count(*) as recordNum, sum(billsec) as seconds, sum(billsec_leg_a) as billsec_leg_a, sum(credit) as credit, sum(callshopcredit) as callshopcredit, sum(resellercredit) as resellercredit, $groupby FROM $table WHERE calldate >= '$sdate' AND  calldate <= '$edate' ";
 		}
 		
-		if ( ($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
+		if (($groupid == '' || $groupid == 0) && ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')){
 			$groupid = $_SESSION['curuser']['groupid'];
 		}
 

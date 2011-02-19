@@ -159,13 +159,16 @@ add new field amount and total in table accountgroup to store all selling and al
 2010-11-22 fixed bug of epayment with callshop_pay_fee setting
 2010-11-22 no longer support callback function(could use callback in version 0.12(asterCC 0.14))
 2010-11-29 fixed issue of astercclock cause for high CPU usage
+----------------------------------------------------------------------------------
+0.15
+2010-12-29 added pushcall mode(works with pushcall.agi)
+2011-02-18 added billing by accountcode mode
+2011-02-19 added query and hangup current channels in system page
+
 
 import时如果数据量大会报错
-需要在网页上提供重启asterrc的功能
-booth用户输入号码后会提示金额和分钟数
 code有时候会出现问题, vista总是不识别
 需要增加statics功能
-需要解决表名冲突的问题
 验证图片对ff失效
 
 astercc features:

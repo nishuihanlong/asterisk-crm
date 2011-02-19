@@ -131,7 +131,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
-	global $locate;
+	global $locate,$config;
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -189,6 +189,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$typeFromSearchShowAs[] = '<';
 
 	// Editable zone
+	$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+	if ($configstatus == -2){
+		$html = "(fail to read ".$config['system']['astercc_path']."/astercc.conf)";	
+		return $html;
+	}else{
+		$billingfield= trim($asterccConfig['system']['billingfield'] );
+	}
 
 	// Databse Table: fields
 	$fields = array();
@@ -207,7 +214,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	$headers[] = $locate->Translate("Clid")."<br>";
+	if($billingfield == 'accountcode')
+		$headers[] = $locate->Translate("Accountcode")."<br>";
+	else
+		$headers[] = $locate->Translate("Clid")."<br>";
+	
 	$headers[] = $locate->Translate("Pin")."<br>";
 	$headers[] = $locate->Translate("Display")."<br>";
 	$headers[] = $locate->Translate("Status")."<br>";
@@ -282,7 +293,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
-	$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
+	if($billingfield == 'accountcode')
+		$fieldsFromSearchShowAs[] = $locate->Translate("Accountcode");
+	else
+		$fieldsFromSearchShowAs[] = $locate->Translate("Clid");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Pin");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Display");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Status");

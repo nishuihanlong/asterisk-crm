@@ -47,4 +47,5 @@ $xajax = new xajax("system.server.php");
 
 $xajax->registerFunction("init");
 $xajax->registerFunction("systemAction");
+$xajax->registerFunction("hangupchnnel");
 ?>

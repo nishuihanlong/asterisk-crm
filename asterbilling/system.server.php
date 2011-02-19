@@ -32,6 +32,9 @@ function init(){
 	
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 
+	$curchannels = getCurchannels();
+	$objResponse->addAssign("curchanels","innerHTML",$curchannels);
+
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
 
 	return $objResponse;
@@ -74,6 +77,59 @@ function systemAction($type){
 		$objResponse->addAssign("divmsg","innerHTML","<span class='passed'>".$locate->Translate('Server is shuting down')."...</span");
 	}
 	return $objResponse;
+}
+
+function getCurchannels(){
+	global $config;
+
+	$html = '<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="650"> ';
+	$myAsterisk = new Asterisk();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();			
+	if (!$res){
+		return;
+	}
+	
+	$res = $myAsterisk->execute("core show channels concise");
+
+	$channels = explode("\n",$res);
+	foreach($channels as $channel){
+		if(strstr(strtolower($channel),'privilege') || trim($channel) == ''){
+			continue;
+		}
+		$channel = explode('!',$channel);
+		if(strtolower($channel[0]) == '') continue;
+
+		$html .= '<tr bgcolor="#F7F7F7"><td  align="center" valign="center" height="30"></td>'.$channel[0].'<td  align="center" valign="center" height="30"><a href="javascript:void(null)" onclick="xajax_hangupchnnel(\''.$channel[0].'\')">hangup</a></td></tr>';
+	}
+	$html .= '</table>';
+	return $html;
+}
+
+function hangupchnnel($channel){
+	global $config;
+
+	$objResponse = new xajaxResponse();
+	if($channel == ''){		
+		$curchannels = getCurchannels();
+		$objResponse->addAssign("curchanels","innerHTML",$curchannels);
+		return $objResponse;
+	}
+
+	$myAsterisk = new Asterisk();
+
+	$myAsterisk->config['asmanager'] = $config['asterisk'];
+	$res = $myAsterisk->connect();			
+	if (!$res){
+		return;
+	}
+	$myAsterisk->Hangup($channel);
+
+	$curchannels = getCurchannels();
+	$objResponse->addAssign("curchanels","innerHTML",$curchannels);
+	return $objResponse;
+	
 }
 
 $xajax->processRequests();

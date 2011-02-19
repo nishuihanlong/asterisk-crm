@@ -21,6 +21,7 @@
 ********************************************************************************/
 require_once ("checkout.common.php");
 require_once ("db_connect.php");
+require_once ("checkout.grid.inc.php");
 require_once ('include/asterevent.class.php');
 require_once ('include/asterisk.class.php');
 require_once ('include/astercrm.class.php');
@@ -112,7 +113,7 @@ function setGroup($resellerid){
 	return $objResponse;
 }
 
-function parseReport($myreport,$answeredNum = ''){
+function parseReport($myreport,$answeredNum = '',$a2bcost=-1){
 	global $locate;
 	$ary['recordNum'] = $myreport['recordNum'];
 	$ary['seconds'] = $myreport['seconds'];
@@ -125,6 +126,9 @@ function parseReport($myreport,$answeredNum = ''){
 	$mins = intval($myreport['seconds'] / 60);
 
 	$amins = intval($myreport['billsec_leg_a'] / 60);
+	if($a2bcost >= 0){
+		$a2bcost = round($a2bcost,4);
+	}
 
 	if($sec > 0) $mins+=1;
 	$asr = round($answeredNum/$myreport['recordNum'] * 100,2);
@@ -142,28 +146,55 @@ function parseReport($myreport,$answeredNum = ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
 			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
 		}
-		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";		
-		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
+		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
+		if($a2bcost >= 0){
+			$html .= $locate->Translate("A2B Cost").": ".$a2bcost."<br>";
+		}else{
+			$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
+		}
 		$html .= $locate->Translate("Reseller Cost").": ".$myreport['resellercredit']."<br>";
-		$html .= $locate->Translate("Markup").": ". ($myreport['callshopcredit'] - $myreport['resellercredit']) ."<br>";
-		$ary['markup'] = $myreport['callshopcredit'] - $myreport['resellercredit'];
 
+		if($a2bcost >= 0){
+			$html .= $locate->Translate("Profit").": ". ($myreport['credit'] - $a2bcost) ."<br>";
+			$ary['markup'] = $myreport['credit'] - $a2bcost;
+		}else{
+			$html .= $locate->Translate("Markup").": ". ($myreport['callshopcredit'] - $myreport['resellercredit']) ."<br>";
+			$ary['markup'] = $myreport['credit'] - $myreport['callshopcredit'];
+		}		
+		
 	}else if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .= $locate->Translate("Billsec").": ".astercrm::FormatSec($myreport['seconds'])."(".$mins."min)<br>";
+
+		$html .= $locate->Translate("Billsec_Leg_A").": ".astercrm::FormatSec($myreport['billsec_leg_a'])."(".$amins."min)<br>";
+
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
 			$html .= $locate->Translate("ACD").": ".$acd." Min<br>";
 		}
 		$html .= $locate->Translate("Amount").": ".$myreport['credit']."<br>";
-		$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
-		$html .= $locate->Translate("Markup").": ". ($myreport['credit'] - $myreport['callshopcredit']) ."<br>";
-		$ary['markup'] = $myreport['credit'] - $myreport['callshopcredit'];
+		if($a2bcost >= 0){
+			$html .= $locate->Translate("A2B Cost").": ".$a2bcost."<br>";
+			$html .= $locate->Translate("Profit").": ". ($myreport['credit'] - $a2bcost) ."<br>";
+			$ary['markup'] = $myreport['credit'] - $a2bcost;
+		}else{
+			$html .= $locate->Translate("Callshop").": ".$myreport['callshopcredit']."<br>";
+			$html .= $locate->Translate("Markup").": ". ($myreport['credit'] - $myreport['callshopcredit']) ."<br>";
+			$ary['markup'] = $myreport['credit'] - $myreport['callshopcredit'];
+		}		
+		
 	}else if ($_SESSION['curuser']['usertype'] == 'operator'){
 		$html .= $locate->Translate("Calls").": ".$myreport['recordNum']."<br>";
 		//$html .= $locate->Translate("Billsec").": ".$myreport['seconds']."(".$hour.":".$minute.":".$sec.")<br>";
 		$html .= $locate->Translate("Billsec").": ".astercrm::FormatSec($myreport['seconds'])."(".$mins."min)<br>";
+		
+		$html .= $locate->Translate("Billsec_Leg_A").": ".astercrm::FormatSec($myreport['billsec_leg_a'])."(".$amins."min)<br>";
+
+		if($a2bcost >= 0){
+			//$html .= $locate->Translate("A2B Cost").": ".$a2bcost."<br>";
+		}
+
 		$html .=  $locate->Translate("Callshop").": ".$myreport['credit']."<br>";
 		if($answeredNum != ''){
 			$html .= $locate->Translate("ASR").": ".$asr."%<br>";
@@ -190,7 +221,7 @@ function setClid($groupid){
 }
 
 function listCDR($aFormValues){
-	global $locate;
+	global $locate,$config;
 	
 	$reseller = astercrm::getAll('resellergroup');
     
@@ -248,10 +279,16 @@ function listCDR($aFormValues){
 
 		$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
 
+		$a2bcost = -1;
+		if($config['a2billing']['enable']){
+			$a2bcost = Customer::readA2Breport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], $aFormValues['sdate'],$aFormValues['edate']);
+		}
+
 		if ($res->fetchInto($myreport)){
-			$result = parseReport($myreport,$answeredNum); 
+			$result = parseReport($myreport,$answeredNum,$a2bcost); 
 			$html .= $result['html'];
 		}
+
 		$objResponse->addAssign("divUnbilledList","innerHTML",$html);
 		return $objResponse;
 	}elseif ($aFormValues['listType'] == "sumyear"){
@@ -264,11 +301,16 @@ function listCDR($aFormValues){
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
 				$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
 
+				$a2bcost = -1;
+				if($config['a2billing']['enable']){
+					$a2bcost = Customer::readA2Breport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-1-1 00:00:00","$year-12-31 23:59:59");
+				}
+
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
 					$html .= "$year :<br/>";
 					$html .= "<div>";
-					$result = parseReport($myreport,$answeredNum); 
+					$result = parseReport($myreport,$answeredNum,$a2bcost); 
 					$html .= $result['html'];
 					$html .= "</div>";
 					$html .= "</div>";
@@ -279,12 +321,19 @@ function listCDR($aFormValues){
 					$ary['resellercredit'] += $result['data']['resellercredit'];
 					$ary['billsec_leg_a'] += $myreport['billsec_leg_a'];
 					$answeredNumTotal += $answeredNum;
+					if($config['a2billing']['enable']){
+						$a2bcostTotal += $a2bcost;
+					}
 				}
+			}
+
+			if(!$config['a2billing']['enable']){
+				$a2bcostTotal = -1;
 			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary,$answeredNumTotal); 
+			$result = parseReport($ary,$answeredNumTotal,$a2bcostTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -302,11 +351,16 @@ function listCDR($aFormValues){
 				for ($month = 1;$month<=12;$month++){
 					$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
 					$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
+
+					$a2bcost = -1;
+					if($config['a2billing']['enable']){
+						$a2bcost = Customer::readA2Breport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$year-$month-1 00:00:00","$year-$month-31 23:59:59");
+					}
 					if ($res->fetchInto($myreport)){
 						$html .= "<div class='box'>";
 						$html .= "$year-$month :<br/>";
 						$html .= "<div>";
-						$result = parseReport($myreport,$answeredNum); 
+						$result = parseReport($myreport,$answeredNum,$a2bcost); 
 						$html .= $result['html'];
 						$html .= "</div>";
 						$html .= "</div>";
@@ -316,13 +370,19 @@ function listCDR($aFormValues){
 						$ary['callshopcredit'] += $result['data']['callshopcredit'];
 						$ary['resellercredit'] += $result['data']['resellercredit'];
 						$answeredNumTotal += $answeredNum;
+						if($config['a2billing']['enable']){
+							$a2bcostTotal += $a2bcost;
+						}
 					}
 				}
 			//}
+			if(!$config['a2billing']['enable']){
+				$a2bcostTotal = -1;
+			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary,$answeredNumTotal); 
+			$result = parseReport($ary,$answeredNumTotal,$a2bcostTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -338,11 +398,17 @@ function listCDR($aFormValues){
 			for ($day = $sday;$day<=31;$day++){
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
 				$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
+
+				$a2bcost = -1;
+				if($config['a2billing']['enable']){
+					$a2bcost = Customer::readA2Breport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$syear-$smonth-$day 00:00:00","$syear-$smonth-$day 23:59:59");
+				}
+
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
 					$html .= "$syear-$smonth-$day :<br/>";
 					$html .= "<div>";
-					$result = parseReport($myreport,$answeredNum); 
+					$result = parseReport($myreport,$answeredNum,$a2bcost); 
 					$html .= $result['html'];
 					$html .= "</div>";
 					$html .= "</div>";
@@ -352,12 +418,19 @@ function listCDR($aFormValues){
 					$ary['callshopcredit'] += $result['data']['callshopcredit'];
 					$ary['resellercredit'] += $result['data']['resellercredit'];
 					$answeredNumTotal += $answeredNum;
+					if($config['a2billing']['enable']){
+						$a2bcostTotal += $a2bcost;
+					}
 				}
+			}
+
+			if(!$config['a2billing']['enable']){
+				$a2bcostTotal = -1;
 			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary,$answeredNumTotal); 
+			$result = parseReport($ary,$answeredNumTotal,$a2bcostTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";
@@ -374,11 +447,16 @@ function listCDR($aFormValues){
 				$res = astercc::readReport($aFormValues['resellerid'], $aFormValues['groupid'], $aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
 				$answeredNum = astercc::readAnsweredNum($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
 
+				$a2bcost = -1;
+				if($config['a2billing']['enable']){
+					$a2bcost = Customer::readA2Breport($aFormValues['resellerid'],$aFormValues['groupid'],$aFormValues['sltBooth'], "$syear-$smonth-$sday $hour:00:00","$syear-$smonth-$sday $hour:59:59");
+				}
+
 				if ($res->fetchInto($myreport)){
 					$html .= "<div class='box'>";
 					$html .= "$syear-$smonth-$sday $hour:<br/>";
 					$html .= "<div>";
-					$result = parseReport($myreport,$answeredNum); 
+					$result = parseReport($myreport,$answeredNum,$a2bcost); 
 					$html .= $result['html'];
 					$html .= "</div>";
 					$html .= "</div>";
@@ -388,12 +466,19 @@ function listCDR($aFormValues){
 					$ary['callshopcredit'] += $result['data']['callshopcredit'];
 					$ary['resellercredit'] += $result['data']['resellercredit'];
 					$answeredNumTotal += $answeredNum;
+					if($config['a2billing']['enable']){
+						$a2bcostTotal += $a2bcost;
+					}
 				}
+			}
+
+			if(!$config['a2billing']['enable']){
+				$a2bcostTotal = -1;
 			}
 			$html .= "<div class='box'>";
 			$html .= "total :<br/>";
 			$html .= "<div>";
-			$result = parseReport($ary,$answeredNumTotal); 
+			$result = parseReport($ary,$answeredNumTotal,$a2bcostTotal); 
 			$html .= $result['html'];
 			$html .= "</div>";
 			$html .= "</div>";

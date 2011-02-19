@@ -54,7 +54,7 @@ class Common{
 					<tr>
 						<td>
 							©2007-2010 astercc - <a href="http://www.astercc.org" target="_blank">asterbilling home</a><br>
-							version: 0.14 in asterCC 0.2
+							version: 0.15 in asterCC 0.21 beta
 						</td>
 					</tr>
 					</table>
@@ -139,7 +139,7 @@ class Common{
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
-			$aryCurMenu = array('cdr','credithistory');
+			$aryCurMenu = array('clid','cdr','credithistory');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}else{ // operator
 			if($config['customers']['enable']){

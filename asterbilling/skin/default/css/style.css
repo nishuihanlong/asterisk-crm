@@ -200,11 +200,11 @@ A IMG {
 	padding: 0;
 	list-style: none;
 	position: absolute;
-	height: 30px;
+	height: 40px;
 	border-top: 4px solid #FF881A;
 	background-color: #BED1DF;
 	width: 100%;
-	padding-top: 10px;
+	padding-top: 2px;
   }
 
 #header ul li {
@@ -214,7 +214,7 @@ A IMG {
 
 #header ul a {
 	display: block;
-	font: bold 0.75em Trebuchet MS, Arial, sans-serif;
+	font: bold 10px Trebuchet MS, Arial, sans-serif;
 	color: #fff;
 	text-transform: uppercase;
 }
@@ -257,6 +257,7 @@ outline: none;
 		  #profile #header ul a.profile,
 		  #customers #header ul a.customers,
 		  #discount #header ul a.discount,		  
+		  #system #header ul a.system,
           #credithistory #header ul a.credithistory {
 			  background-color: #000000;
 			  color: #67A7E3;
@@ -307,7 +308,7 @@ div.box{
 	padding-left:10px;
 	float:left;
 	width:220px;
-	height:210px;
+	height:230px;
 	border : 1px solid #ccc;
 }
 

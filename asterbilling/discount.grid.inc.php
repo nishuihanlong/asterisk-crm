@@ -32,10 +32,10 @@ require_once 'include/astercrm.class.php';
 //ini_set('include_path',dirname($_SERVER["SCRIPT_FILENAME"])."/include");
 
 // define database connection string
-define('SQLC', $config['customers']['dbtype']."://".$config['customers']['username'].":".$config['customers']['password']."@".$config['customers']['dbhost']."/".$config['customers']['dbname']."");
+define('SQLCD', $config['customers']['dbtype']."://".$config['customers']['username'].":".$config['customers']['password']."@tcp+".$config['customers']['dbhost'].":".$config['customers']['dbport']."/".$config['customers']['dbname']."");
 
 // set a global variable to save customers database connection
-$GLOBALS['customers_db'] = DB::connect(SQLC);
+$GLOBALS['customers_db'] = DB::connect(SQLCD);
 
 // need to check if db connected
 if (DB::iserror($GLOBALS['customers_db'])){

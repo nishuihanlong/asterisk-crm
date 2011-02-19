@@ -223,6 +223,7 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['username'] = trim($aFormValues['username']);
 				$_SESSION['curuser']['usertype'] = "clid";
 				$_SESSION['curuser']['clidid'] = $clid['id'];
+				$_SESSION['curuser']['groupid'] = $clid['groupid'];
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
 				//$objResponse->addAlert($locate->Translate("login_success"));
 				$objResponse->addScript('window.location.href="cdr.php";');	

@@ -51,6 +51,8 @@ class Customer extends astercrm
 			$sql .= " ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql .= " WHERE clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " WHERE clid.id = ".$_SESSION['curuser']['clidid']." ";
 		}else{
 			$sql .= " WHERE clid.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -96,6 +98,8 @@ class Customer extends astercrm
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql .= " clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " WHERE clid.id = ".$_SESSION['curuser']['clidid']." ";
 		}else{
 			$sql .= " clid.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -127,6 +131,8 @@ class Customer extends astercrm
 			$sql = " SELECT COUNT(*) FROM clid LEFT JOIN accountgroup ON accountgroup.id = clid.groupid LEFT JOIN resellergroup ON resellergroup.id = clid.resellerid";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql = " SELECT COUNT(*) FROM clid LEFT JOIN accountgroup ON accountgroup.id = clid.groupid LEFT JOIN resellergroup ON resellergroup.id = clid.resellerid WHERE clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql = " SELECT COUNT(*) FROM clid LEFT JOIN accountgroup ON accountgroup.id = clid.groupid LEFT JOIN resellergroup ON resellergroup.id = clid.resellerid WHERE clid.id = ".$_SESSION['curuser']['clidid']." ";
 		}else{
 			$sql = " SELECT COUNT(*) FROM clid LEFT JOIN accountgroup ON accountgroup.id = clid.groupid LEFT JOIN resellergroup ON resellergroup.id = clid.resellerid WHERE clid.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -154,6 +160,8 @@ class Customer extends astercrm
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql .= " clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " clid.id = ".$_SESSION['curuser']['clidid']." ";
 		}else{
 			$sql .= " clid.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -176,6 +184,8 @@ class Customer extends astercrm
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql .= " clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " clid.id = ".$_SESSION['curuser']['clidid']." ";
 		}else{
 			$sql .= " clid.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -203,6 +213,8 @@ class Customer extends astercrm
 			$sql .= " 1 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$sql .= " clid.resellerid = ".$_SESSION['curuser']['resellerid']." ";
+		}elseif ($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " clid.id = ".$_SESSION['curuser']['clidid']." ";
 		}else{
 			$sql .= " clid.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -278,13 +290,28 @@ class Customer extends astercrm
 							<option value="-1">'.$locate->Translate("Lock").'</option>
 						';
 		$pin = astercrm::generateUniquePin(intval($config['system']['pin_len']));
+
+		$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+		if ($configstatus == -2){
+			$html = "(fail to read ".$config['system']['astercc_path']."/astercc.conf)";	
+			return $html;
+		}else{
+			$billingfield= trim($asterccConfig['system']['billingfield'] );
+		}
+
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Caller ID").'*</td>
+					<td nowrap align="left">';
+		if($billingfield == 'accountcode'){
+			$html .= $locate->Translate("Accountcode");
+		}else{
+			$html .= $locate->Translate("Caller ID");
+		}
+		$html .= '*</td>
 					<td align="left"><input type="text" id="clid" name="clid" size="25" maxlength="30"></td>
 				</tr>
 				<tr>
@@ -427,13 +454,29 @@ class Customer extends astercrm
 						';
 		}
 
+		$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+		if ($configstatus == -2){
+			$html = "(fail to read ".$config['system']['astercc_path']."/astercc.conf)";	
+			return $html;
+		}else{
+			$billingfield= trim($asterccConfig['system']['billingfield'] );
+		}
+		if ($_SESSION['curuser']['usertype'] == 'clid'){
+			$readonly = "readonly";
+		}
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
 			
 			<table border="1" width="100%" class="adminlist">
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Caller ID").'*</td>
+					<td nowrap align="left">';
+		if($billingfield == 'accountcode'){
+			$html .= $locate->Translate("Accountcode");			
+		}else{
+			$html .= $locate->Translate("Caller ID");
+		}
+		$html .= '*</td>
 					<td align="left"><input type="hidden" id="id" name="id" value="'. $clid['id'].'"><input type="text" id="clid" name="clid" size="25" maxlength="30" value="'.$clid['clid'].'" '.$readonly.'></td>
 				</tr>
 				<tr>
@@ -442,37 +485,40 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Display").'</td>
-					<td align="left"><input type="text" id="display" name="display" size="25" maxlength="20" value="'.$clid['display'].'"></td>
+					<td align="left"><input type="text" id="display" name="display" size="25" maxlength="20" value="'.$clid['display'].'" '.$readonly.'></td>
 				</tr>';
-
+				
 				if($config['system']['setclid'] == 1){
+
 					$html .= '<tr>
 						<td nowrap align="left">'.$locate->Translate("Credit Limit").'*</td>
-						<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30" value="'.$clid['creditlimit'].'"></td>
+						<td align="left"><input type="text" id="creditlimit" name="creditlimit" size="25" maxlength="30" value="'.$clid['creditlimit'].'" '.$readonly.'></td>
 					</tr>
 
 					<tr>
 						<td nowrap align="left">'.$locate->Translate("Cur Credit").'</td>
 						<td align="left">
 						<input type="text" id="curcreditshow" name="curcreditshow" size="25" maxlength="100" value="'.$clid['curcredit'].'" readonly>
-						<input type="hidden" id="curcredit" name="curcredit" value="'.$clid['curcredit'].'">
+						<input type="hidden" id="curcredit" name="curcredit" value="'.$clid['curcredit'].' ">
 					</td>
-					</tr>
-					<tr>
-						<td nowrap align="left">'.$locate->Translate("Operate").'</td>
-						<td align="left">
-							<select id="creditmodtype" name="creditmodtype" onchange="showComment(this)">
-								<option value="">'.$locate->Translate("No change").'</option>
-								<option value="add">'.$locate->Translate("Refund").'</option>
-								<option value="reduce">'.$locate->Translate("Charge").'</option>
-							</select>
-							<input type="text" id="creditmod" name="creditmod" size="15" maxlength="100" value="" disabled><p>'.$locate->Translate("Comment").' :&nbsp;<input type="text" id="comment" name="comment" size="18" maxlength="20" value="" disabled></p>
-						</td>
-					</tr>
-					<tr>
-					<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
+					</tr>';
+					if ($_SESSION['curuser']['usertype'] != 'clid'){
+						$html .= '<tr>
+							<td nowrap align="left">'.$locate->Translate("Operate").'</td>
+							<td align="left">
+								<select id="creditmodtype" name="creditmodtype" onchange="showComment(this)">
+									<option value="">'.$locate->Translate("No change").'</option>
+									<option value="add">'.$locate->Translate("Refund").'</option>
+									<option value="reduce">'.$locate->Translate("Charge").'</option>
+								</select>
+								<input type="text" id="creditmod" name="creditmod" size="15" maxlength="100" value="" disabled><p>'.$locate->Translate("Comment").' :&nbsp;<input type="text" id="comment" name="comment" size="18" maxlength="20" value="" disabled></p>
+							</td>
+						</tr>
+						<tr>';
+					}
+					$html .= '<td nowrap align="left">'.$locate->Translate("Limit Type").'</td>
 					<td align="left">
-					<select id="limittype" name="limittype">';				
+					<select id="limittype" name="limittype" '.$readonly.'>';				
 					if ($clid['limittype'] == "postpaid"){
 						$html .='
 							<option value="">'.$locate->Translate("No limit").'</option>
@@ -491,6 +537,7 @@ class Customer extends astercrm
 					}
 				}
 
+
 				$html .= '<tr>
 					<td nowrap align="left">'.$locate->Translate("Reseller").'</td>
 					<td align="left">'
@@ -508,7 +555,7 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Status").'</td>
 					<td align="left">
-						<select id="status" name="status">'
+						<select id="status" name="status"  '.$readonly.'>'
 						.$statusoptions.
 						'</select>
 					</td>
@@ -516,13 +563,15 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Is Show").'</td>
 					<td align="left">
-						<select id="isshow" name="isshow"><option value="yes" '.$selecty.'>'.$locate->Translate("yes").'</option><option value="no" '.$selectn.'>'.$locate->Translate("no").'</option></select>
+						<select id="isshow" name="isshow"  '.$readonly.'><option value="yes" '.$selecty.'>'.$locate->Translate("yes").'</option><option value="no" '.$selectn.'>'.$locate->Translate("no").'</option></select>
 					</td>
-				</tr>
-				<tr>
+				</tr>';
+				if ($_SESSION['curuser']['usertype'] != 'clid'){
+				$html .= '<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("Continue").'</button></td>
-				</tr>
-			 </table>
+				</tr>';
+				}
+			 $html .='</table>
 			';
 
 		$html .= '

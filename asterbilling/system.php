@@ -69,7 +69,7 @@ require_once('system.common.php');
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
 
 	</head>
-	<body onload="init();" id="profile">
+	<body onload="init();" id="system">
 		<div id="divNav"></div><br>
 <center>
 	<div id="info"></div>
@@ -85,7 +85,7 @@ require_once('system.common.php');
 
 				<tr bgcolor="#F7F7F7">
 					<td width="25%" align="center" valign="center" height="30"><input type="button" onclick="systemAction('restartasterrc');return false;"  value="<?echo $locate->Translate('Restart asterrc');?>" style="width:110px;"/></td>
-					<td  align="left" valign="center" height="30">&nbsp;&nbsp;<?echo $locate->Translate('- Restart asterrc daemon');?></td>					
+					<td  align="left" valign="center" height="30">&nbsp;&nbsp;- <?echo $locate->Translate('Restart asterrc daemon');?></td>					
 				  </tr>
 				  <tr bgcolor="#F7F7F7">
 					<td width="25%" align="center" valign="center" height="30"><input type="button" onclick="systemAction('reload');return false;"  value="<?echo $locate->Translate('Reload asterisk');?>" style="width:110px;"/></td>
@@ -104,6 +104,23 @@ require_once('system.common.php');
 					<td  align="left" valign="center" height="30" >&nbsp;&nbsp;<?echo $locate->Translate('shutdown info');?></td>					
 				  </tr>-->
 	</table>
+	
+	<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="650">
+	  <tr>
+		<td width="40%" height="39" class="td font" align="left">
+			<? echo $locate->Translate('Current Channels');?> (<a href="javascript:void(null)" onclick="xajax_hangupchnnel('')"><?echo $locate->Translate('refresh');?></a>)
+		</td>
+		<td width="60%" class="td font" align="center">&nbsp;</td>
+	  </tr>
+	</table>
+	<div id='curchanels'>
+	<table border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="#F0F0F0" id="menu" width="650"> 
+		<tr bgcolor="#F7F7F7">
+			<td  align="center" valign="center" height="30"></td>
+			<td  align="center" valign="center" height="30"></td>				
+		 </tr>
+	</table>
+	</div>
 	<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0" width="650">
 	  <tr>
 		<td width="25%" height="39" class="td font" align="left">			
