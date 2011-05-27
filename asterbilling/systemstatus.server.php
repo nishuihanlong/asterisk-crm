@@ -270,26 +270,31 @@ function showStatus(){
 
 	foreach ($peers as $peer){
 		// update peer status
-		$query = "SELECT status,responsetime FROM peerstatus WHERE peername LIKE '%/$peer' ";
+		if($_SESSION['curuser']['billingfield'] == 'accountcode'){
+			$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>NA In Acc Mode</font>");
+		}else{
+		
+			$query = "SELECT status,responsetime FROM peerstatus WHERE peername LIKE '%/$peer' ";
 
-		$peer_status = $db->getRow($query);//print_r($peer_status );exit;
-		if ($peer_status){
-			if ($peer_status['responsetime'] > 0 ){
-				if ($peer_status['responsetime'] > 300){
-					if(strstr($peer_status['status'],'ok')){
-						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
+			$peer_status = $db->getRow($query);//print_r($peer_status );exit;
+			if ($peer_status){
+				if ($peer_status['responsetime'] > 0 ){
+					if ($peer_status['responsetime'] > 300){
+						if(strstr($peer_status['status'],'ok')){
+							$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
+						}else{
+							$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."(".$peer_status['responsetime']." ms)</font>");
+						}
 					}else{
-						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."(".$peer_status['responsetime']." ms)</font>");
+						if(strstr($peer_status['status'],'ok')){
+							$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."</font>");
+						}else{
+							$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."(".$peer_status['responsetime']." ms)</font>");
+						}
 					}
 				}else{
-					if(strstr($peer_status['status'],'ok')){
-						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."</font>");
-					}else{
-						$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=green>".$peer_status['status']."(".$peer_status['responsetime']." ms)</font>");
-					}
+					$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
 				}
-			}else{
-				$objResponse->addAssign("$peer-peer-status","innerHTML","<font color=red>".$peer_status['status']."</font>");
 			}
 		}
 //echo "C".$cstatus[$peer]['disposition'].'P'.$peerstatus[$peer]['disposition'];exit;
@@ -460,20 +465,31 @@ function showStatus(){
 }
 
 function checkDestination($peer){
-	global $db;
+	global $db,$config;
 	$objResponse = new xajaxResponse();
 
+
 	$peers = $_SESSION['curuser']['extensions'];
-	$query = "SELECT * FROM curcdr WHERE src = '$peer' ";
+	if($_SESSION['curuser']['billingfield'] == 'accountcode'){
+		$query = "SELECT * FROM curcdr WHERE accountcode = '$peer' ";
+	}else{
+		$query = "SELECT * FROM curcdr WHERE src = '$peer' ";
+	}
 	$curcdr = $db->getRow($query);
-	$direction = 'outbound';
+	$direction = 'inbound';
 
 	if ($curcdr){
-		if (astercc::array_exist($curcdr['src'], $peers) || astercc::array_exist($curcdr['dst'], $peers)){
-			$direction = 'outbound';
-		}else{
-			if (ereg("\/(.*)-", $curcdr['srcchan'], $myAry) ){
+		if($_SESSION['curuser']['billingfield'] == 'accountcode'){
+			if (astercc::array_exist($curcdr['accountcode'], $peers)){
 				$direction = 'outbound';
+			}
+		}else{
+			if (astercc::array_exist($curcdr['src'], $peers) || astercc::array_exist($curcdr['dst'], $peers)){
+				$direction = 'outbound';
+			}else{
+				if (ereg("\/(.*)-", $curcdr['srcchan'], $myAry) ){
+					$direction = 'outbound';
+				}
 			}
 		}
 	}

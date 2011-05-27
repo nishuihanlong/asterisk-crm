@@ -280,9 +280,11 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$order = $searchFormValue['order'];
 	$divName = "grid";
 	if($optionFlag == "export"  || $optionFlag == "exportcsv"){
-		$joinstr = Customer::createSqlWithStype($searchContent,$searchField,$searchType,'tickets'); //得到要导出的sql语句
+		$joinstr = Customer::createSqlWithStype($searchField,$searchContent,$searchType,'tickets');
+		//得到要导出的sql语句
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT tickets.ticketname, groupname, campaignname,ticketcategory.ticketname AS parentname,tickets.cretime,tickets.creby FROM tickets LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = tickets.groupid LEFT JOIN campaign ON campaign.id = tickets.campaignid LEFT JOIN tickets AS ticketcategory ON ticketcategory.id=tickets.fid";
+		
+		$sql = "SELECT tickets.ticketname,astercrm_accountgroup.groupname, campaign.campaignname,ticketcategory.ticketname AS parentname,tickets.cretime,tickets.creby FROM tickets LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = tickets.groupid LEFT JOIN campaign ON campaign.id = tickets.campaignid LEFT JOIN tickets AS ticketcategory ON ticketcategory.id=tickets.fid";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql .'';
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域

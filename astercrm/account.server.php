@@ -323,7 +323,11 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("username_repeat"));
 		return $objResponse->getXML();
 	}
-
+	
+	if($f['extensions'] == $locate->translate('extensions_input_tip')){
+		$f['extensions'] = '';
+	}
+	
 	if($f['extensions'] != ""){
 		$myExtensions = split(",",astercrm::dbcToSbc($f['extensions']));
 
@@ -437,7 +441,10 @@ function update($f){
 		return $objResponse->getXML();
 	}
 
-
+	if($f['extensions'] == $locate->translate('extensions_input_tip')){
+		$f['extensions'] = '';
+	}
+	
 	if($f['extensions'] != ""){
 
 		$f['extensions'] = astercrm::dbcToSbc($f['extensions']);

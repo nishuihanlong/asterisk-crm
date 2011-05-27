@@ -259,14 +259,17 @@ class Customer extends astercrm
 			}
 			
 		}
-		$privilege_sql = "INSERT INTO `user_privileges` (`action`,`page`,`user_type_id`,`created`) VALUES ";
-		foreach($insertArray as $tmp) {
-			$privilege_sql .= "('".$tmp[0]."','".$tmp[1]."',".$tmp[2].",now()),";
+		if(!empty($insertArray)) {
+			$privilege_sql = "INSERT INTO `user_privileges` (`action`,`page`,`user_type_id`,`created`) VALUES ";
+			foreach($insertArray as $tmp) {
+				$privilege_sql .= "('".$tmp[0]."','".$tmp[1]."',".$tmp[2].",now()),";
+			}
+			$new_sql .= rtrim($privilege_sql,',').';';
+			
+			astercrm::events($new_sql);
+			$result =& $db->query($new_sql);
 		}
-		$new_sql .= rtrim($privilege_sql,',').';';
 		
-		astercrm::events($new_sql);
-		$result =& $db->query($new_sql);
 		return $res;
 	}
 

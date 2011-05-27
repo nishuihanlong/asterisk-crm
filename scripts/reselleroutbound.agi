@@ -86,10 +86,10 @@ if($ref->{'id'} > 0){
 		my	$default_trunk = '';#trim($cfg->val('system', 'resellertrunk'));
 		my	$default_trunk_protocol = '';#trim($cfg->val('system', 'resellertrunktype'));
 
-		if($trunk_ref->{'trunk1_id'} == -1){
+		if($ref->{'trunk1_id'} == -1){
 			$default_trunk = trim($cfg->val('resellertrunk', 'trunk1'));
 			$default_trunk_protocol  = trim($cfg->val('resellertrunk', 'trunk1_type'));
-		}elsif($trunk_ref->{'trunk1_id'} == -2){
+		}elsif($ref->{'trunk1_id'} == -2){
 			$default_trunk = trim($cfg->val('resellertrunk', 'trunk2'));
 			$default_trunk_protocol  = trim($cfg->val('resellertrunk', 'trunk2_type'));
 		}

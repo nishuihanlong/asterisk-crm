@@ -184,4 +184,6 @@ $text = "文本";
 $you_can_enter = "你可以输入";
 $characters = "字符";
 $send = "发送";
+$account_name = "分配给";
+$add_ticket = "添加任务";
 ?>

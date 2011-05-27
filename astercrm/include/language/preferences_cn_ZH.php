@@ -31,7 +31,8 @@ $sys_allow_same_data		= '是否允许重复的客户名称';
 $sys_browser_maximize_when_pop_up	= '弹屏时是否浏览器最大化';
 $sys_firstring				= '呼叫时先呼叫主叫号码还是先呼叫被叫号码';
 $sys_enable_external_crm	= '是否使用第三方CRM';
-$sys_open_new_window		= '弹屏时是否弹出新窗口';
+$sys_open_new_window		= '如果使用第三方CRM,怎样显示弹屏.internal 表示在内部iframe弹出屏,external 表示新弹出一个窗口显示弹屏,both 表示在内部iframe里显示,同时也新弹出一个窗口显示弹屏';
+
 $sys_external_crm_default_url = '当使用第三方CRM时, 默认启动的页面';
 $sys_external_crm_url		= '当有弹屏事件发生时, 要调用的外部CRM页面, %callerid: 主叫号码, %calleeid: 被叫号码, %method	拨出(dialout)或者拨入(dialin)';
 $sys_upload_file_path		= '上传文件的路径, 如 ./upload/ , 此目录需要有写权限';

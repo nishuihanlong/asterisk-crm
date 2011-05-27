@@ -232,6 +232,17 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['resellerid'] = $list['resellerid'];
 				$_SESSION['curuser']['limittype'] = $list['limittype'];
 
+				$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+				if ($configstatus == -2){
+					$html = "(fail to read ".$config['system']['astercc_path']."/astercc.conf)";	
+					return $html;
+				}else{
+					$billingfield= trim($asterccConfig['system']['billingfield'] );
+					if($billingfield == 'accountcode'){
+						$_SESSION['curuser']['billingfield'] = $billingfield;
+					}
+				}
+
 				$res = astercrm::getCalleridListByID($list['groupid']);
 				while	($res->fetchInto($row)){
 					$_SESSION['curuser']['extensions'][] = $row['clid'];

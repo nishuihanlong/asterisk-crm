@@ -131,6 +131,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";//"select all for delete";
 	$headers[] = $locate->Translate("TicketCategory Name");
 	$headers[] = $locate->Translate("Ticket Name");
+	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Customer");
 	$headers[] = $locate->Translate("AssignTo");
 	$headers[] = $locate->Translate("Status");
@@ -164,6 +165,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","ticketcategoryname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","ticketname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","status","'.$divName.'","ORDERING");return false;\'';
@@ -174,6 +176,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch = array();
 	$fieldsFromSearch[] = 'ticketcategoryname';
 	$fieldsFromSearch[] = 'ticketname';
+	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'username';
 	//$fieldsFromSearch[] = 'status';
@@ -184,6 +187,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs = array();
 	$fieldsFromSearchShowAs[] = $locate->Translate("TicketCategory Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Ticket Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
 	$fieldsFromSearchShowAs[] = $locate->Translate("AssignTo");
 	//$fieldsFromSearchShowAs[] = $locate->Translate("Status");
@@ -228,6 +232,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['ticketcategoryname'];
 		$rowc[] = $row['ticketname'];
+		$rowc[] = $row['groupname'];
 		$rowc[] = $row['customer'];
 		$rowc[] = $row['username'];
 		$rowc[] = $locate->Translate($row['status']);
@@ -287,10 +292,29 @@ function save($f){
 	
 }
 
-function relateByCategoryId($Cid) {
+function relateByCategoryId($fid,$curTicketId=0) {
 	$objResponse = new xajaxResponse();
-	$option = Customer::getTicketByCid($Cid);
-	$objResponse->addAssign("ticketMsg","innerHTML",$option);
+	//ticket option
+	$ticketOption = Customer::getTicketByCid($fid);
+	$objResponse->addAssign("ticketMsg","innerHTML",$ticketOption);
+	
+	// group option
+	$groupOption = Customer::getGroup($fid);
+	$objResponse->addAssign("groupMsg","innerHTML",$groupOption);
+	
+	$objResponse->addScript("relateByGroup(document.getElementById('groupid').value)");
+	return $objResponse->getXML();
+}
+
+function relateByGroup($groupId){
+	$objResponse = new xajaxResponse();
+	// customer option
+	//$customerOption = Customer::getCustomer($groupId);
+	//$objResponse->addAssign("customerMsg","innerHTML",$customerOption);
+
+	// account option
+	$accountOption = Customer::getAccount($groupId);
+	$objResponse->addAssign("accountMsg","innerHTML",$accountOption);
 	return $objResponse->getXML();
 }
 
@@ -307,9 +331,9 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$order = $searchFormValue['order'];
 	$divName = "grid";
 	if($optionFlag == "export"  || $optionFlag == "exportcsv"){
-		$joinstr = Customer::createSqlWithStype($searchContent,$searchField,$searchType,'ticket_details'); //得到要导出的sql语句
+		$joinstr = Customer::createSqlWithStype($searchField,$searchContent,$searchType,'ticket_details'); //得到要导出的sql语句
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,ticket_details.status,username,ticket_details.memo,ticket_details.cretime,ticket_details.creby FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto";
+		$sql = "SELECT ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,ticket_details.status,customer.customer,ticket_details.memo,ticket_details.cretime,ticket_details.creby FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql.'';
 		
@@ -401,7 +425,7 @@ function edit($id){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formDiv", "innerHTML", $html);
-	$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value,'edit')");
+	//$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value,'edit')");
 	return $objResponse->getXML();
 }
 

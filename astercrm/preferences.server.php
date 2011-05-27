@@ -339,6 +339,7 @@ function savePreferences($aFormValues){
 		$aFormValues['iptErrorReportLevel'] = 0;
 	}
 	$myPreferences['error_report']['error_report_level'] = $aFormValues['iptErrorReportLevel'];
+
 	if (Common::write_ini_file("astercrm.conf.php",$myPreferences) >0)
 		$objResponse->addAlert($locate->Translate('save_success'));
 	else

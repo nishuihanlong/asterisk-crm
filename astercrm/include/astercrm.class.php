@@ -4454,7 +4454,6 @@ Class astercrm extends PEAR{
 			$fields[] = 'memo';
 			$fields[] = 'creby';
 		}
-		
 
 		// HTML table: Headers showed
 		$headers = array();
@@ -4556,13 +4555,20 @@ Class astercrm extends PEAR{
 		$fieldsFromSearchShowAs[] = $locate->Translate("Creby");
 
 		// Create object whit 5 cols and all data arrays set before.
-		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype,$userexten,$table='ticket_details');
+		$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$Cid,$cdrtype,$userexten,$table='ticket_details',$divName);
 		
 		#$table = new ScrollTable(7,$start,$limit,$filter,$numRows,$content,$order,$customerid,$cdrtype);
 
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,0,0,0);
 		$table->ordering = $ordering;
-		$table->addRowSearchMore("ticket_details",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		
+		//echo $divName;exit;
+		if($divName == 'formCurTickets') {
+			$stype = 'none';
+			$table->addRowSearchMore("add_new_tickets",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		} else {
+			$table->addRowSearchMore("ticket_details",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+		}
 
 		while ($arreglo->fetchInto($row)) {
 		// Change here by the name of fields of its database table
@@ -4581,7 +4587,11 @@ Class astercrm extends PEAR{
 			$rowc[] = $row['creby'];
 			$table->addRow("ticket_details",$rowc,0,0,0,$divName,$fields);
 		}
-		$html = $table->render('static');
+		if($divName == 'formCurTickets'){
+			$html = $table->render('');//static
+		} else {
+			$html = $table->render('static');
+		}
 		return $html;
 	}
 
@@ -4595,17 +4605,20 @@ Class astercrm extends PEAR{
 	*/
 	function &getAllTicketRecords($start,$limit,$order=null,$Ctype,$Cid=0){
 		global $db;
-		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " 1 ";
-		}else{
-			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
-		}
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
 		
 		if($Ctype == 'agent_tickets') {
-			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			}else{
+				$sql .= " (username = '".$_SESSION['curuser']['username']."' OR (ticket_details.groupid='".$_SESSION['curuser']['groupid']."' AND ticket_details.assignto=0)) AND ticket_details.status IN('new','panding')";
+			}
 		} else {
-			$sql .= " AND ticket_details.customerid=$Cid";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.customerid=$Cid";
+			}else{
+				$sql .= " ticket_details.assignto IN (0,".$_SESSION['curuser']['accountid'].") AND ticket_details.customerid=$Cid";
+			}
 		}
 		
 		if($order == null){
@@ -4634,16 +4647,19 @@ Class astercrm extends PEAR{
 		global $db;		
 		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " 1";
-		}else{
-			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
-		}
 		
 		if($Ctype == 'agent_tickets') {
-			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			}else{
+				$sql .= " (username = '".$_SESSION['curuser']['username']."' OR (ticket_details.groupid='".$_SESSION['curuser']['groupid']."' AND ticket_details.assignto=0)) AND ticket_details.status IN('new','panding')";
+			}
 		} else {
-			$sql .= " AND ticket_details.customerid=$Cid";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.customerid=$Cid";
+			}else{
+				$sql .= " ticket_details.assignto IN (0,".$_SESSION['curuser']['accountid'].") AND ticket_details.customerid=$Cid";
+			}
 		}
 		
 		if ($joinstr!=''){
@@ -4668,16 +4684,20 @@ Class astercrm extends PEAR{
 	
 	function &getTicketNumRows($filter = null, $content = null,$Ctype,$Cid=0){
 		global $db;
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE 1";
-		}else{
-			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE username = '".$_SESSION['curuser']['username']."'";
-		}
+		$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE 1";
 		
 		if($Ctype == 'agent_tickets') {
-			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			} else {
+				$sql .= " AND (username = '".$_SESSION['curuser']['username']."' OR (ticket_details.groupid = '".$_SESSION['curuser']['groupid']."' AND ticket_details.assignto=0)) AND ticket_details.status IN('new','panding')";
+			}
 		} else {
-			$sql .= " AND ticket_details.customerid=$Cid";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " AND ticket_details.customerid=$Cid";
+			} else {
+				$sql .= " AND ticket_details.assignto IN (0,".$_SESSION['curuser']['accountid'].") AND ticket_details.customerid=$Cid";
+			}
 		}
 		
 		astercrm::events($sql);
@@ -4690,15 +4710,19 @@ Class astercrm extends PEAR{
 		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
 		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " 1";
-		}else{
-			$sql .= " username='".$_SESSION['curuser']['username']."'";
-		}
+		
 		if($Ctype == 'agent_tickets') {
-			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			}else{
+				$sql .= " (username='".$_SESSION['curuser']['username']."' OR (ticket_details.groupid='".$_SESSION['curuser']['groupid']."' AND ticket_details.assignto=0)) AND ticket_details.status IN('new','panding')";
+			}
 		} else {
-			$sql .= " AND ticket_details.customerid=$Cid";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.customerid=$Cid";
+			}else{
+				$sql .= " ticket_details.assignto IN (0,".$_SESSION['curuser']['accountid'].") AND ticket_details.customerid=$Cid";
+			}
 		}
 
 		if ($joinstr!=''){
@@ -4717,18 +4741,21 @@ Class astercrm extends PEAR{
 		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
 		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " 1";
-		}else{
-			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
-		}
+		
 		if($Ctype == 'agent_tickets') {
-			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1  AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			}else{
+				$sql .= " (username = '".$_SESSION['curuser']['username']."' OR (ticket_details.groupid = '".$_SESSION['curuser']['groupid']."' AND ticket_details.assignto=0)) AND ticket_details.status IN('new','panding')";
+			}
 		} else {
-			$sql .= " AND ticket_details.customerid=$Cid";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.customerid=$Cid";
+			}else{
+				$sql .= " ticket_details.assignto IN (0,".$_SESSION['curuser']['accountid'].") AND ticket_details.customerid=$Cid";
+			}
 		}
 
-		
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr;
@@ -4746,15 +4773,19 @@ Class astercrm extends PEAR{
 		$joinstr = astercrm::createTicketSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
 		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
-		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " 1";
-		}else{
-			$sql .= " username = '".$_SESSION['curuser']['username']."' ";
-		}
+		
 		if($Ctype == 'agent_tickets') {
-			$sql .= " AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.assignto=$Cid AND ticket_details.status IN('new','panding')";
+			}else{
+				$sql .= " (username = '".$_SESSION['curuser']['username']."' OR (ticket_details.groupid='".$_SESSION['curuser']['groupid']."' AND ticket_details.assignto=0)) AND ticket_details.status IN('new','panding')";
+			}
 		} else {
-			$sql .= " AND ticket_details.customerid=$Cid";
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql .= " 1 AND ticket_details.customerid=$Cid";
+			}else{
+				$sql .= " ticket_details.assignto IN (0,".$_SESSION['curuser']['accountid'].") AND ticket_details.customerid=$Cid";
+			}
 		}
 		
 		if ($joinstr!=''){
@@ -4953,6 +4984,72 @@ Class astercrm extends PEAR{
 			$identity = true;
 		}
 		return $identity;
+	}
+
+
+	function getCustomerNote($customerid){
+		global $db;
+		$sql = "SELECT * FROM note WHERE customerid = '".$customerid."' ";
+		astercrm::events($sql);
+		$result =& $db->query($sql);
+		$highestNoteId = 0;
+		$highestPrority = 0;
+		$lastestNoteId = 0;
+		$lastestTime = '';
+		while($result->fetchInto($row)) {
+			if($row['priority'] >= $highestPrority) {
+				$highestPrority = $row['priority'];
+				$highestNoteId = $row['id'];
+			}
+			if(strtotime($row['cretime']) >= strtotime($lastestTime)) {
+				$lastestNoteId = $row['id'];
+				$lastestTime = $row['cretime'];
+			}
+		}
+
+		return $highestNoteId.'-'.$lastestNoteId;
+	}
+
+	function showNoteDetails($noteId){
+		global $locate,$db;
+		$sql = "SELECT note.*,contact.contact,customer.customer FROM note LEFT JOIN contact ON contact.id = note.contactid LEFT JOIN customer ON customer.id = note.customerid WHERE note.id='".$noteId."' ;";
+		astercrm::events($sql);
+		$result = & $db->getRow($sql);
+		$html = '<table width="100%" border="0">
+			<tr>
+				<td>'.$locate->translate('note').'</td>
+				<td>'.$result['note'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('priority').'</td>
+				<td>'.$result['priority'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('codes').'</td>
+				<td>'.$result['codes'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('contact').'</td>
+				<td>'.$result['contact'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('customer_name').'</td>
+				<td>'.$result['customer'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('callerid').'</td>
+				<td>'.$result['callerid'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('create_time').'</td>
+				<td>'.$result['cretime'].'</td>
+			</tr>
+			<tr>
+				<td>'.$locate->translate('create_by').'</td>
+				<td>'.$result['creby'].'</td>
+			</tr>
+		</table>';
+		return $html;
 	}
 }
 ?>

@@ -610,13 +610,16 @@ class Customer extends astercrm
 
 	function showTicketDetail($customerid) {
 		global $db,$locate;
-		$sql = "SELECT customer FROM customer WHERE id=$customerid";
+		$sql = "SELECT customer,groupid FROM customer WHERE id=$customerid";
 		astercrm::events($sql);
-		$customername = & $db->getOne($sql);
+		$customerResult = & $db->getRow($sql);
 		
 		$statusOption = '<select id="Tstatus" name="Tstatus"><option value="new">'.$locate->Translate("new").'</option><option value="panding">'.$locate->Translate("panding").'</option><option value="closed">'.$locate->Translate("closed").'</option><option value="cancel">'.$locate->Translate("cancel").'</option></select>';
 		
-		$ticketCategory = Customer::getTicketCategory();
+		$ticketCategory = Customer::getTicketCategory('',$customerResult['groupid']);
+		$ticketHtml = Customer::getTicketByCategory($fid);
+		$groupHtml = Customer::getGroup($fid);
+		$accountHtml = Customer::getAccountForTk($customerResult['groupid']);
 		$html = '<form method="post" name="t" id="t">
 					<table border="1" width="100%" class="adminlist">
 						<tr>
@@ -625,11 +628,19 @@ class Customer extends astercrm
 						</tr>
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("Ticket Name").'*</td>
-							<td align="left" id="ticketMsg"></td>
+							<td align="left" id="ticketMsg">'.$ticketHtml.'</td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Group Name").'*</td>
+							<td align="left" id="groupMsg">'.$groupHtml.'</td>
 						</tr>
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("Customer Name").'</td>
-							<td align="left"><input type="hidden" name="customerid" value="'.$customerid.'" />'.$customername.'&nbsp;&nbsp;<a onclick="javascript:AllTicketOfMyself('.$customerid.');return false;" href="?">'.$locate->Translate("Customer Tickets").'</a></td>
+							<td align="left"><input type="hidden" name="customerid" value="'.$customerid.'" />'.$customerResult['customer'].'&nbsp;&nbsp;<a onclick="javascript:AllTicketOfMyself('.$customerid.');return false;" href="?">'.$locate->Translate("Customer Tickets").'</a></td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Account Name").'</td>
+							<td align="left" id="accountMsg">'.$accountHtml.'</td>
 						</tr>
 						<tr>
 							<td nowrap align="left">'.$locate->Translate("Status").'</td>
@@ -650,12 +661,45 @@ class Customer extends astercrm
 		return $html;
 	}
 
-	function getTicketCategory($CategoryId = '') {
+	function getAccountForTk($groupid = 0){
+		global $db,$locate;
+		
+		$sql = "SELECT * FROM astercrm_account WHERE ";
+		if($_SESSION['curuser']['usertype'] == 'agent') {
+			$sql .= " id='".$_SESSION['curuser']['accountid']."' ";
+		} else {
+			if($groupid == 0) {
+				$sql .= " 1 ";
+			} else {
+				$sql .= " groupid='".$groupid."' ";
+			}
+		}
+		
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+
+		$html = '<select id="Taccountid" name="Taccountid"><option value="0">'.$locate->Translate('please select').'</option>';
+		while($row = $result->fetchRow()){
+			if($row['username'] != 'admin'){
+				$html .= '<option value="'.$row['id'].'">'.$row['username'].'</option>';
+			}
+		}
+		$html .= '</select>';
+		return $html;
+	}
+
+	function getTicketCategory($CategoryId = '',$groupId=0) {
 		global $db,$locate;
 		$sql = "SELECT * FROM tickets ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " WHERE fid=0";
-		}else{
+			if($groupId == 0) {
+				$sql .= " WHERE fid=0";
+			} else {
+				$sql .= " WHERE fid=0 AND groupid IN(0,".$groupId.")";
+			}
+		}else if($_SESSION['curuser']['usertype'] == 'agent'){
+			$sql .= " WHERE fid=0 AND groupid ='".$_SESSION['curuser']['groupid']."' ";
+		} else {
 			$sql .= " WHERE fid=0 AND groupid IN(0,".$_SESSION['curuser']['groupid'].")";
 		}
 		astercrm::events($sql);
@@ -705,24 +749,23 @@ class Customer extends astercrm
 		} else {
 			$html .= $tmp;
 		}
-		$html .= '</select><input type="hidden" id="groupid" name="groupid" value="'.$groupid.'" />';
-		return $html;
+		$html .= '</select>';
+		return $html;//<input type="hidden" id="groupid" name="groupid" value="'.$groupid.'" />
 	}
 
 	function insertTicket($f) {
 		global $db;
-		$customer_sql = "select id from astercrm_account where username='".$_SESSION['curuser']['username']."'";
-		astercrm::events($customer_sql);
-		$customerid = & $db->getOne($customer_sql);
-		
+		//$customer_sql = "select id from astercrm_account where username='".$_SESSION['curuser']['username']."'";
+		//astercrm::events($customer_sql);
+		//$customerid = & $db->getOne($customer_sql);
 		$sql = "insert into ticket_details set"
 				." ticketcategoryid=".$f['ticketcategoryid'].", "
 				." ticketid=".$f['ticketid'].", "
 				." customerid=".$f['customerid'].", "
 				." status='".$f['Tstatus']."', "
-				." assignto=".$customerid.", "
+				." assignto=".$f['assignto'].", "
 				." groupid=".$f['groupid'].", "
-				." memo='".$f['Tmemo']."', "
+				." memo='".addslashes($f['Tmemo'])."', "
 				." cretime=now(),"
 				." creby='".$_SESSION['curuser']['username']."' ;";
 		
@@ -785,9 +828,13 @@ class Customer extends astercrm
 	function formTicketEdit($id){
 		global $locate;
 		$result =& Customer::getRecordByID($id,'ticket_details');
+		
 		$categoryHtml = Customer::getTicketCategory($result['ticketcategoryid']);
-		$customerHtml = Customer::getCustomer($result['customerid']);
-		$accountHtml = Customer::getAccount($result['assignto']);
+		$ticketHtml = Customer::getTicketByCategory($result['ticketcategoryid'],$result['ticketid']);
+		$groupHtml = Customer::getGroup($result['ticketcategoryid'],$result['groupid']);
+		//$customerHtml = Customer::getCustomer($result['groupid'],$result['customerid']);
+		$customername = Customer::getCustomername($result['customerid']);
+		$accountHtml = Customer::getAccount($result['groupid'],$result['assignto']);
 
 		$html = '
 			<!-- No edit the next line -->
@@ -799,15 +846,19 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td align="left" width="25%">'.$locate->Translate("Ticket Name").'*</td>
-					<td id="ticketMsg"></td>
+					<td id="ticketMsg">'.$ticketHtml.'</td>
+				</tr>
+				<tr>
+					<td align="left" width="25%">'.$locate->Translate("Group Name").'*</td>
+					<td id="groupMsg">'.$groupHtml.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Customer Name").'*</td>
-					<td>'.$customerHtml.'</td>
+					<td id="customerMsg"><input type="text" id="ticket_customer" name="ticket_customer" value="'.$customername.'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" /><input type="hidden" id="ticket_customer_hidden" name="customerid" value="'.$result['customerid'].'" /></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Assignto").'</td>
-					<td>'.$accountHtml.'</td>
+					<td id="accountMsg">'.$accountHtml.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Status").'</td>
@@ -841,19 +892,60 @@ class Customer extends astercrm
 				';
 		return $html;
 	}
+
+	function getGroup($FticketId=0,$curGroupid=0){
+		global $db,$locate;
+		if($FticketId == 0){
+			if($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql = "SELECT * FROM astercrm_accountgroup ";
+			} else {
+				$sql = "SELECT * FROM astercrm_accountgroup where id ='".$_SESSION['curuser']['groupid']."'";
+			}
+			
+		} else {
+			$tmpSql = "SELECT groupid FROM tickets WHERE id='".$FticketId."' ";
+			$groupid = & $db->getOne($tmpSql);
+			if($groupid == 0) {
+				$tmpHtml = '<select id="groupid" name="groupid" onchange="relateByGroup(this.value)"><option value="0">'.$locate->Translate('please select').'</option></select>';
+				return $tmpHtml;
+			}
+			$sql = "SELECT AccountGroup.id,AccountGroup.groupname FROM tickets AS Ticket LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = Ticket.groupid WHERE Ticket.id='".$FticketId."' ";
+		}
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		
+		$html = '<select id="groupid" name="groupid" onchange="relateByGroup(this.value)">';
+		$tmp = '';
+		while($row = $result->fetchRow()){
+			$tmp .= '<option value="'.$row['id'].'"';
+			if($curGroupid != 0 && $row['id'] == $curGroupid){
+				$tmp .= ' selected ';
+			}
+			$tmp .= '>'.$row['groupname'].'</option>';
+		}
+		$html .= $tmp.'</select>';
+		return $html;
+	}
 	
 	/**
 	*	get customer from table customer
 	*	@param $customerid	(int)	 default 0  (for edit)
 	*	@return		$html	(string)	create the option by the result of query
 	*/
-	function getCustomer($customerid=0) {
+	function getCustomer($groupid=0,$customerid=0) {
 		global $db,$locate;
 		$sql = "select * from customer";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " ";
-		}else{
-			$sql .= " WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
+			if($groupid == 0) {
+				$sql .= " ";
+			} else {
+				$sql .= " WHERE groupid IN (0,".$groupid.") ";
+			}
+			
+		}else if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$sql .= " WHERE groupid IN (0,".$_SESSION['curuser']['groupid'].") ";
+		} else {
+			$sql .= " WHERE groupid = '".$_SESSION['curuser']['groupid']."' ";
 		}
 		astercrm::events($sql);
 		$result = & $db->query($sql);
@@ -880,17 +972,29 @@ class Customer extends astercrm
 	*	@param	$accountid	(int) default 0  (for edit)
 	*	@return		$html	(string)	create the option by the result of query
 	*/
-	function getAccount($accountid =0) {
+	function getAccount($groupid=0,$accountid =0) {
 		global $db,$locate;
-		$sql = "SELECT * FROM astercrm_account where username!='admin'";
+		$sql = "SELECT * FROM astercrm_account where ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " ";
-		}else{
-			$sql .= " AND groupid=".$_SESSION['curuser']['groupid']." ";
+			if($groupid == 0) {
+				$sql .= " username!='admin' ";
+			} else {
+				$sql .= " username!='admin' AND groupid=".$groupid." ";
+			}
+		}else if($_SESSION['curuser']['usertype'] == 'agent'){
+			$sql .= " id=".$_SESSION['curuser']['accountid']." ";
+		} else {
+			$sql .= " username!='admin' AND groupid=".$_SESSION['curuser']['groupid']." ";
 		}
 		astercrm::events($sql);
 		$result = & $db->query($sql);
-		$html = '<select id="assignto" name="assignto">';
+
+		if($_SESSION['curuser']['usertype'] == 'agent'){
+			$html = '<select id="assignto" name="assignto">';
+		} else {
+			$html = '<select id="assignto" name="assignto"><option value="0">'.$locate->Translate('please select').'</option>';
+		}
+		
 		$tmp = '';
 		while($row = $result->fetchRow()) {
 			$tmp .= '<option value="'.$row['id'].'"';
@@ -899,12 +1003,7 @@ class Customer extends astercrm
 			}
 			$tmp .= '>'.$row['username'].'</option>';
 		}
-		if($tmp == '') {
-			$html .= '<option value="0">'.$locate->Translate('please select').'</option>';
-		} else {
-			$html .= $tmp;
-		}
-		$html .= '</select>';
+		$html .= $tmp.'</select>';
 		return $html;
 	}
 
@@ -918,7 +1017,11 @@ class Customer extends astercrm
 
 	function getTicketInWork(){
 		global $db,$locate;
-		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE username='".$_SESSION['curuser']['username']."'";
+		if($_SESSION['curuser']['usertype'] == 'admin') {
+			$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE username='".$_SESSION['curuser']['username']."'";
+		} else {
+			$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE (username='".$_SESSION['curuser']['username']."' OR (ticket_details.groupid='".$_SESSION['curuser']['groupid']."' and ticket_details.assignto = 0))";
+		}
 		$panding_sql = $sql." AND status = 'panding'";
 		astercrm::events($panding_sql);
 		$panding_num = & $db->getOne($panding_sql);
@@ -1098,5 +1201,61 @@ class Customer extends astercrm
 		return $result;
 	}
 
+	function addNewTicket(){
+		global $db,$locate;
+		$statusOption = '<select id="Tstatus" name="Tstatus"><option value="new">'.$locate->Translate("new").'</option><option value="panding">'.$locate->Translate("panding").'</option><option value="closed">'.$locate->Translate("closed").'</option><option value="cancel">'.$locate->Translate("cancel").'</option></select>';
+		
+		$ticketCategory = Customer::getTicketCategory();
+		//$ticketHtml = Customer::getTicketByCategory($fid);
+		//$groupHtml = Customer::getGroup($fid);
+		//$accountHtml = Customer::getAccountForTk($customerResult['groupid']);
+		$html = '<form method="post" name="t" id="t">
+					<table border="1" width="100%" class="adminlist">
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("TicketCategory Name").'</td>
+							<td align="left">'.$ticketCategory.'</td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Ticket Name").'*</td>
+							<td align="left" id="ticketMsg"></td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Group Name").'*</td>
+							<td align="left" id="groupMsg"></td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Customer Name").'</td>
+							<td align="left" id="customerMsg"><input type="text" id="ticket_customer" name="ticket_customer" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" /><input type="hidden" id="ticket_customer_hidden" name="customerid" value="" /></td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Account Name").'</td>
+							<td align="left" id="accountMsg"></td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Status").'</td>
+							<td align="left">'.$statusOption.'</td>
+						</tr>
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("Memo").'</td>
+							<td align="left"><textarea cols="40" rows="5" name="Tmemo" id="Tmemo"></textarea></td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center"><button onClick=\'xajax_saveNewTicket(xajax.getFormValues("t"));return false;\'>'.$locate->Translate("continue").'</button></td>
+						</tr>
+					</table>';
+			$html .='
+				</form>
+				'.$locate->Translate("obligatory_fields").'
+				';
+		return $html;
+	}
+
+	function getCustomername($customerid){
+		global $db,$locate;
+		$sql = "SELECT customer FROM customer WHERE id='".$customerid."' ";
+		astercrm::events($sql);
+		$customername = & $db->getOne($sql);
+		return $customername;
+	}
 }
 ?>

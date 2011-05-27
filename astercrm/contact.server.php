@@ -151,6 +151,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("mobile");//"Category";
 	$headers[] = $locate->Translate("email");//"Note";
 	$headers[] = $locate->Translate("customer_name");
+	$headers[] = $locate->Translate("note");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
@@ -161,7 +162,8 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="10%"';
 	$attribsHeader[] = 'width="20%"';
-	$attribsHeader[] = 'width="23%"';
+	$attribsHeader[] = 'width="15%"';
+	$attribsHeader[] = 'width="10%"';
 
 	// HTML Table: columns attributes
 	$attribsCols = array();
@@ -183,6 +185,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","mobile","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","email","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","note","'.$divName.'","ORDERING");return false;\'';
 
 	// Select Box: fields table.
 	$fieldsFromSearch = array();
@@ -194,6 +197,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'contact.email';
 	$fieldsFromSearch[] = 'customer.customer';
 	$fieldsFromSearch[] = 'contact.creby';
+	$fieldsFromSearch[] = 'note.note';
 
 	// Selecct Box: Labels showed on search select box.
 	$fieldsFromSearchShowAs = array();
@@ -205,6 +209,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("email");
 	$fieldsFromSearchShowAs[] = $locate->Translate("customer_name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("create_by");
+	$fieldsFromSearchShowAs[] = $locate->Translate("note");
 
 
 	// Create object whit 5 cols and all data arrays set before.
@@ -245,7 +250,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		else
 			$rowc[] = "<a href=? onclick=\"xajax_showCustomer('".$row['customerid']."','customer');return false;\"
 		>".$row['customer']."</a>";
-
+		$rowc[] = $row['note'];
 		$table->addRow("contact",$rowc,0,$deleteFlag,0,$divName,$fields);
  	}
  	
@@ -290,9 +295,10 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	$order = $searchFormValue['order'];
 	$divName = "grid";
 	if($optionFlag == "export"  || $optionFlag == "exportcsv"){
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'contact'); //得到要导出的sql语句
+		//$sql = astercrm::getSql($searchContent,$searchField,$searchType,'contact'); //得到要导出的sql语句
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,'contact',array('contact.*','note.note'),array('note'=>array('contact.id','note.contactid')));
+		
 		$_SESSION['export_sql'] = $sql;
-
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addAssign("exporttype", "value", $optionFlag);
 		$objResponse->addAssign("maintable", "value", 'contact');

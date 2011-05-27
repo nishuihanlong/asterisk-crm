@@ -841,6 +841,10 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `dialed` int(4) NOT NULL default '0',
  `transfered` int(11) NOT NULL default '0',
  `sms_number` varchar(30) NOT NULL default '',
+ `balance` int(11) NOT NULL default 0,#可用余额
+ `init_billing` int(11) NOT NULL default 0,#初始计费
+ `billing_block` int(11) NOT NULL default 0,#计费周期
+ `enablebalance` ENUM('yes','no','strict') NOT NULL default 'yes',#余额控制
  `creby` varchar(30) NOT NULL default '',
  `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
  UNIQUE KEY `id` (`id`)
@@ -986,6 +990,7 @@ CREATE TABLE `dialedlist` (
   `duration` int(11) NOT NULL default '0',											#added by solo 2008#2#1
   `billsec` int(11) NOT NULL DEFAULT 0,
   `billsec_leg_a` int(11) NOT NULL DEFAULT 0,
+  `credit` float(8,2) NOT NULL default '0.00',   #added by menglj   2011#5#6
   `transfertime` int(11) NOT NULL default '0',				#added by solo 2008#5#4										#added by solo 2008#2#1
   `response` varchar(20) NOT NULL default '',											#added by solo 2008#2#1
   `customerid` int(11) NOT NULL default 0,
@@ -1017,7 +1022,8 @@ CREATE TABLE `campaigndialedlist` (
   `dialtime` datetime NOT NULL default '0000-00-00 00:00:00',       
   `answertime` datetime NOT NULL default '0000-00-00 00:00:00',       
   `duration` int(4) NOT NULL default '0',               
-  `billsec` int(4) NOT NULL default '0',               
+  `billsec` int(4) NOT NULL default '0',
+  `credit` float(8,2) NOT NULL default '0.00',   #added by menglj   2011#5#6
   `billsec_leg_a` int(4) NOT NULL default '0',               
   `transfertime` datetime NOT NULL default '0000-00-00 00:00:00',
   `transfertarget` varchar(50) NOT NULL default '',

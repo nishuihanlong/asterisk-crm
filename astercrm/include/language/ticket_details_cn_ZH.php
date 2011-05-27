@@ -28,4 +28,5 @@ $continue = '继续';
 $none = '无';
 $please_select = '请选择';
 $cancel = '取消';
+$group_name = "分组名";
 ?>

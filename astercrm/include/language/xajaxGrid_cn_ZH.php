@@ -26,4 +26,5 @@ $check_duplicates = "检测重复号码";
 $clear_duplicates = "清除重复号码";
 $export_duplicates = "导出重复号码";
 $are_you_sure_clear_those_duplicate_records = "您确定要清除重复的号码吗";
+$add_new_ticket = "添加新任务";
 ?>

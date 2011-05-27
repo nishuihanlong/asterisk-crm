@@ -40,7 +40,7 @@ class Customer extends astercrm
 	function &getAllRecords($start, $limit, $order = null, $creby = null){
 		global $db;
 		
-		$sql = "SELECT contact.*,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid ";
+		$sql = "SELECT contact.*,note.note,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id ";
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -84,7 +84,7 @@ class Customer extends astercrm
 			$i++;
 		}
 
-		$sql = "SELECT contact.*, customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid WHERE ";
+		$sql = "SELECT contact.*,note.note,customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -117,9 +117,9 @@ class Customer extends astercrm
 
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*)  FROM contact LEFT JOIN customer ON customer.id = contact.customerid ";
+			$sql = " SELECT COUNT(*)  FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id ";
 		}else{
-			$sql = " SELECT COUNT(*) FROM contact LEFT JOIN customer ON customer.id = contact.customerid WHERE contact.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$sql = " SELECT COUNT(*) FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id WHERE contact.groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
 
 		Customer::events($sql);
@@ -141,7 +141,7 @@ class Customer extends astercrm
 				$i++;
 			}
 
-			$sql = "SELECT COUNT(*) FROM contact LEFT JOIN customer ON customer.id = contact.customerid  WHERE ";
+			$sql = "SELECT COUNT(*) FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{
@@ -168,7 +168,7 @@ class Customer extends astercrm
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-		$sql = "SELECT contact.*, customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid WHERE ";
+		$sql = "SELECT contact.*,note.note, customer.customer FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1 ";
 		}else{
@@ -192,7 +192,7 @@ class Customer extends astercrm
 		
 			$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
-			$sql = "SELECT COUNT(*) FROM contact LEFT JOIN customer ON customer.id = contact.customerid  WHERE ";
+			$sql = "SELECT COUNT(*) FROM contact LEFT JOIN customer ON customer.id = contact.customerid LEFT JOIN note on note.contactid = contact.id WHERE ";
 			if ($_SESSION['curuser']['usertype'] == 'admin'){
 				$sql .= " ";
 			}else{

@@ -627,8 +627,9 @@ require_once('preferences.common.php');
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open_new_window</td>
     <td width="200" align="left" valign="top" bgcolor="#F7F7F7">
 		<select name="iptSysOpenNewWindow" id="iptSysOpenNewWindow">
-		  <option value="0">0</option>
-		  <option value="1">1</option>
+		  <option value="internal">internal</option>
+		  <option value="external">external</option>
+		  <option value="both">both</option>
 		</select>
 	</td>
     <td align="left" valign="top" bgcolor="#F7F7F7">

@@ -140,6 +140,14 @@ function clearPopup(){
 
 	$objResponse->addAssign("formCurTickets","innerHTML", "" );
 	$objResponse->addAssign("formCurTickets","style.visibility", "hidden");
+
+	//The Highest Prority Note
+	$objResponse->addAssign("formHighestProrityNote","innerHTML", "" );
+	$objResponse->addAssign("formHighestProrityNote","style.visibility", "hidden");
+
+	//The Lastest Note
+	$objResponse->addAssign("formLastestNote","innerHTML", "" );
+	$objResponse->addAssign("formLastestNote","style.visibility", "hidden");
 	
 	return $objResponse->getXML();
 }
@@ -291,7 +299,9 @@ function showNote($id = '', $type="customer"){
 		$html .= Table::Footer();
 		$objResponse = new xajaxResponse();
 		$objResponse->addAssign("formNoteInfo", "style.visibility", "visible");
-		$objResponse->addAssign("formNoteInfo", "innerHTML", $html);	
+		$objResponse->addAssign("formNoteInfo", "innerHTML", $html);
+		
+		$objResponse->addScript("xajax_showHighestAndLastestNote('".$id."')");
 		return $objResponse->getXML();
 	}
 }
@@ -309,6 +319,63 @@ function showCustomer($id = 0, $type="customer",$callerid=''){
 		return $objResponse->getXML();
 	}else
 		return $objResponse->getXML();
+}
+
+function showHighestAndLastestNote($customerid){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	
+	if($customerid != null ){
+		// get the highest note and the lastest note 
+		$noteIdStr = Customer::getCustomerNote($customerid);
+
+		$noteIdArray = explode('-',$noteIdStr);
+		//$noteIdArray[0] is the highest prority note id
+		//$noteIdArray[1] is the lastest note id
+
+		if($noteIdArray[0] == $noteIdArray[1]) {//if the highest note and the lastest note are the same note ,then show one note pop;
+			$html = Table::Top($locate->Translate("Note"),"formHighestProrityNote"); 
+			$noteHTML .= Customer::showNoteDetails($noteIdArray[0]);
+			//print_r($noteHTML);exit;
+			if ($noteHTML == '')
+				return $objResponse->getXML();
+			else
+				$html .= $noteHTML;
+
+			$html .= Table::Footer();
+			$objResponse->addAssign("formHighestProrityNote", "style.visibility", "visible");
+			$objResponse->addAssign("formHighestProrityNote", "innerHTML", $html);
+
+			//
+			$objResponse->addAssign("formLastestNote", "style.visibility", "hidden");
+			$objResponse->addAssign("formLastestNote", "innerHTML",'');
+		} else {
+			$highestHtml = Table::Top($locate->Translate("Note"),"formHighestProrityNote"); 
+			$highestTableHTML .= Customer::showNoteDetails($noteIdArray[0]);
+
+			if ($highestTableHTML == '')
+				return $objResponse->getXML();
+			else
+				$highestHtml .= $highestTableHTML;
+
+			$highestHtml .= Table::Footer();
+			$objResponse->addAssign("formHighestProrityNote", "style.visibility", "visible");
+			$objResponse->addAssign("formHighestProrityNote", "innerHTML", $highestHtml);
+			
+			$lastestHtml = Table::Top($locate->Translate("Note"),"formLastestNote"); 
+			$lastetTabelHTML .= Customer::showNoteDetails($noteIdArray[1]);
+
+			if ($lastetTabelHTML == '')
+				return $objResponse->getXML();
+			else
+				$lastestHtml .= $lastetTabelHTML;
+
+			$lastestHtml .= Table::Footer();
+			$objResponse->addAssign("formLastestNote", "style.visibility", "visible");
+			$objResponse->addAssign("formLastestNote", "innerHTML", $lastestHtml);
+		}
+		return $objResponse->getXML();
+	}
 }
 
 function showContact($id = null, $type="contact"){

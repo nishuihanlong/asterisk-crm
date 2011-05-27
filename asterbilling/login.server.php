@@ -225,6 +225,17 @@ function processAccountData($aFormValues)
 				$_SESSION['curuser']['clidid'] = $clid['id'];
 				$_SESSION['curuser']['groupid'] = $clid['groupid'];
 				list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
+
+				$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
+				if ($configstatus == -2){
+					$html = "(fail to read ".$config['system']['astercc_path']."/astercc.conf)";	
+					return $html;
+				}else{
+					$billingfield= trim($asterccConfig['system']['billingfield'] );
+					if($billingfield == 'accountcode'){
+						$_SESSION['curuser']['billingfield'] = $billingfield;
+					}
+				}
 				//$objResponse->addAlert($locate->Translate("login_success"));
 				$objResponse->addScript('window.location.href="cdr.php";');	
 			}else{

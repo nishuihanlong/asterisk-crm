@@ -167,6 +167,10 @@ class Customer extends astercrm
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context = '".$f['queue_context']."',"
 				."sms_number = '".$f['sms_number']."',"
+				."balance = '".$f['balance']."',"
+				."init_billing = '".$f['init_billing']."',"
+				."billing_block = '".$f['billing_block']."',"
+				."enablebalance = '".$f['enablebalance']."',"
 				."creby = '".$_SESSION['curuser']['username']."',"
 				."cretime = now()";
 		astercrm::events($query);
@@ -218,6 +222,10 @@ class Customer extends astercrm
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context='".$f['queue_context']."', "
 				."sms_number='".$f['sms_number']."', "
+				."balance = '".$f['balance']."',"
+				."init_billing = '".$f['init_billing']."',"
+				."billing_block = '".$f['billing_block']."',"
+				."enablebalance = '".$f['enablebalance']."',"
 				."groupid='".$f['groupid']."' ";
 		if($limit_type != ''){
 			$query .= ",limit_type='$limit_type' ";
@@ -493,6 +501,22 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="sms_number" name="sms_number" size="20" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Balance").'</td>
+					<td align="left"><input type="text" id="balance" name="balance" size="20" maxlength="11"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Init Billing").'</td>
+					<td align="left"><input type="text" id="init_billing" name="init_billing" size="20" maxlength="11"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Billing Block").'</td>
+					<td align="left"><input type="text" id="billing_block" name="billing_block" size="20" maxlength="11"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Enable Balance").'</td>
+					<td align="left"><select name="enablebalance" id="enablebalance"><option value="yes">'.$locate->Translate("yes").'</option><option value="no">'.$locate->Translate("no").'</option><option value="strict">'.$locate->Translate("strict").'</option></select></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_save(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 
@@ -622,6 +646,20 @@ class Customer extends astercrm
 				$recyleyes = 'selected'; 
 			}
 
+			if($campaign['enablebalance'] == 'no'){
+				$enablebalanceNo = 'selected'; 
+				$enablebalanceYes = '';
+				$enablebalanceStrict = '';
+			}else if($campaign['enablebalance'] == 'yes'){
+				$enablebalanceNo = ''; 
+				$enablebalanceYes = 'selected';
+				$enablebalanceStrict = ''; 
+			} else {
+				$enablebalanceNo = ''; 
+				$enablebalanceYes = '';
+				$enablebalanceStrict = 'selected';
+			}
+
 			$html .= 
 				'</tr>
 				<tr>
@@ -712,6 +750,22 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("SMS Number").'</td>
 					<td align="left"><input type="text" id="sms_number" name="sms_number" size="20" maxlength="30" value="'.$campaign['sms_number'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Balance").'</td>
+					<td align="left"><input type="text" id="balance" name="balance" size="20" maxlength="11" value="'.$campaign['balance'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Init Billing").'</td>
+					<td align="left"><input type="text" id="init_billing" name="init_billing" size="20" maxlength="11" value="'.$campaign['init_billing'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Billing Block").'</td>
+					<td align="left"><input type="text" id="billing_block" name="billing_block" size="20" maxlength="11" value="'.$campaign['billing_block'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Enable Balance").'</td>
+					<td align="left"><select name="enablebalance" id="enablebalance"><option value="yes" '.$enablebalanceYes.'>'.$locate->Translate("yes").'</option><option value="no" '.$enablebalanceNo.'>'.$locate->Translate("no").'</option><option value="strict" '.$enablebalanceStrict.'>'.$locate->Translate("strict").'</option></select></td>
 				</tr>';
 
 				//print_r($campaign);exit;

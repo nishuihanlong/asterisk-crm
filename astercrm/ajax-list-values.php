@@ -11,13 +11,13 @@
 * Desc: add some comments
 * 描述: 增加了一些注释
 
+* 将这个却掉
+* <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+* 	<head>
+* 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+* 	</head>
 ********************************************************************************/
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-	<head>
-		<meta http-equiv="content-type" content="text/html;charset=utf-8">
-	</head>
-<?php 
+
 require_once ("db_connect.php");
 
 if(isset($_GET['getCustomersByLetters']) && isset($_GET['letters'])){

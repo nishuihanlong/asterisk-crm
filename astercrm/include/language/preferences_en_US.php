@@ -29,7 +29,8 @@ $sys_allow_same_data		= 'if allow same customer name';
 $sys_browser_maximize_when_pop_up	= 'if browser will maximize when pop up';
 $sys_firstring				= 'caller ring first or callee ring first';
 $sys_enable_external_crm	= 'if asterCRM use external CRM software';
-$sys_open_new_window		= 'if asterCRM open a new browser window when popup';
+$sys_open_new_window	= 'if enable_external_crm enabled,how to show the popup. internal means the popup in the iframe, external means the popup not in the iframe and open a new window, both means the popup in the iframe and open a new window';
+
 $sys_external_crm_default_url = 'when using external CRM, the default page to be displayed';
 $sys_external_crm_url		= 'when asterCRM need to pop up, which url would recevie the event,  %callerid: %calleeid:  %method	dialout or dialin';
 $sys_upload_file_path		= 'the upload directory, such as "./upload/", it need a writable permission, ';

@@ -194,7 +194,7 @@ while ( my $ref = $rows->fetchrow_hashref() ) {
 	my %childrens;
 	my $answerflag = 0;
 
-	if($ref->{'channel'} =~ /^dahdi\// ||  $ref->{'dstchannel'} =~ /^dahdi\//){#filter dahdi channel from childer process
+	if($ref->{'channel'} =~ /^dahdi\// ||  $ref->{'dstchannel'} =~ /^dahdi\// || $ref->{'channel'} =~ /^ss7\// ||  $ref->{'dstchannel'} =~ /^ss7\//){#filter dahdi channel from childer process
 		$relate_count++;
 		$cdrprocessed{$ref->{'id'}} = $ref->{'id'};
 		$relates{$ref->{'id'}} = $ref;

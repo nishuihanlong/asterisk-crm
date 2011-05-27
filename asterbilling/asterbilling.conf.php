@@ -3,10 +3,10 @@
 ;
 dbtype = mysql
 dbhost = localhost
-dbname = astercc
+dbname = astercc01
 dbport = 3306
-username = astercc
-password = asterccsecret
+username = root
+password = 
 
 tb_curchan = curcdr
 tb_cdr = mycdr
@@ -15,8 +15,8 @@ tb_cdr = mycdr
 
 server = 127.0.0.1
 port = 5038
-username = admin
-secret = amp111
+username = astercc
+secret = astercc
 
 ;defined delimiter of asterisk parameter , or |.
 paramdelimiter = ,
@@ -84,7 +84,7 @@ pin_len = 10;
 sipfile = /etc/asterisk/sip_astercc
 
 ; if require valid code when login
-validcode = no
+validcode = yes
 
 ;if open new window when click pannel button on systemstatus(callshop portal) page
 sysstatus_new_window = yes

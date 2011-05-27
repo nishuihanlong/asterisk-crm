@@ -6,9 +6,9 @@
 dbtype = mysql
 dbport = 3306
 dbhost = localhost
-dbname = astercc
-username = astercc
-password = asterccsecret
+dbname = astercc01
+username = root
+password = 
 
 [asterisk]
 ;
@@ -17,8 +17,8 @@ password = asterccsecret
 server = 127.0.0.1
 ;should be matched in manager.conf
 port = 5038
-username = admin
-secret = amp111
+username = astercc
+secret = astercc
 
 ;defined delimiter of asterisk parameter , or |.
 paramdelimiter = ,
@@ -120,7 +120,7 @@ auto_note_popup = 0
 default_share_note = 0
 
 ;if use customer_leads table move/copy/default_move/default_copy/disabled
-customer_leads = default_move
+customer_leads = disabled
 
 enable_code = 1
 
@@ -171,14 +171,14 @@ upload_file_path = ./upload/
 enable_external_crm = 0
 
 ;
-; asterCRM will open a new browser window when need popup
+; asterCRM will decide how to show the external crm popup
 ;
-open_new_window = 0
+open_new_window = internal
 
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = http://astercc.org
+external_crm_default_url = http://192.168.1.30/test.php
 
 ;
 ; when using external crm, put pop up page here
@@ -187,13 +187,13 @@ external_crm_default_url = http://astercc.org
 ; %method		dial_out or dial_in
 ; %uniqueid
 ; %calldate     starttime of the call
-external_crm_url = http://astercc.org
+external_crm_url = http://192.168.1.30/test.php
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
 external_url_parm = customer,address,zipcode,city,state,phone,email,bankaccount
 
-detail_level = all
+detail_level = group
 
 astercc_conf_path = 
 
@@ -231,6 +231,6 @@ key =
 
 [error_report]
 ;sets the error level
-error_report_level = 0
+error_report_level = 1
 
 ;?>

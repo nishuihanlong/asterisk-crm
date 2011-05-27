@@ -142,6 +142,10 @@ $xajax->registerFunction("doneLoadingFunction");
 $xajax->registerFunction("SendSmsForm");
 $xajax->registerFunction("SendSMS");
 $xajax->registerFunction("templateChange");
+$xajax->registerFunction("relateByGroup");
+$xajax->registerFunction("addNewTicket");
+$xajax->registerFunction("saveNewTicket");
+$xajax->registerFunction("showHighestAndLastestNote");
 
 
 if ($config['system']['enable_external_crm'] == false){

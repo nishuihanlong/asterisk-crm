@@ -39,5 +39,6 @@ $customer_manage = "客户管理";
 $cretime = "创建时间";
 $creby = "创建者";
 $adding_code = "添加Code";
-$edit_code = "编辑Code"
+$edit_code = "编辑Code";
+$extensions_input_tip = "多设备之间使用逗号分隔";
 ?>

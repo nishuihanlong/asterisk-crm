@@ -279,7 +279,25 @@ function init(){
 		$objResponse->addAssign("divSearchContact", "style.visibility", "visible");
 	} else {
 		$objResponse->addIncludeScript("js/extercrm.js");
-		if ($config['system']['open_new_window'] == false){
+		
+		if($config['system']['open_new_window'] == 'internal'){
+			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+		} else if($config['system']['open_new_window'] == 'external'){ 
+			//$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+			//$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+			$mycrm = '<form id="external_crm_form" action="'.$config['system']['external_crm_default_url'].'?curid=0" target="mycrm" method="post"></form>';
+			$objResponse->addAssign("external_crm_openNewDiv","innerHTML", $mycrm );
+			$objResponse->addScript('document.getElementById("external_crm_form").submit();');
+		} else {
+			$mycrm = '<form id="external_crm_form" action="'.$config['system']['external_crm_default_url'].'?curid=0" target="mycrm" method="post"></form>';
+			$objResponse->addAssign("external_crm_openNewDiv","innerHTML", $mycrm );
+			$objResponse->addScript('document.getElementById("external_crm_form").submit();');
+
+			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+		}
+		/*if ($config['system']['open_new_window'] == false){
 			$mycrm = '<iframe id="mycrm" name="mycrm" src="'.$config['system']['external_crm_default_url'].'?curid=0" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 			$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 		}else{
@@ -288,7 +306,7 @@ function init(){
 
 			$javascript = "openwindow('".$config['system']['external_crm_default_url']."?curid=0')";
 			$objResponse->addScript("document.getElementById('external_crm_form').submit();");
-		}
+		}*/
 	}
 	$monitorstatus = astercrm::getRecordByID($_SESSION['curuser']['groupid'],'astercrm_accountgroup'); 
 	if ($monitorstatus['monitorforce']) {
@@ -797,7 +815,33 @@ function waitingCalls($myValue){
 						}
 						$curHtml .="</form>";
 
-						if ($config['system']['open_new_window'] == false){
+						if ($config['system']['open_new_window'] == 'internal'){
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+						} else if ($config['system']['open_new_window'] == 'external'){
+							$objResponse->addAssign("external_crm_openNewDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crm_openNewDiv","innerHTML", "" );
+						} else {
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+
+							$internal_curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
+							$external_curHtml = preg_replace("/external_crm_form/","external_crm_openNew_form",$curHtml);
+							$objResponse->addAssign("external_crmDiv","innerHTML", $internal_curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+
+							$objResponse->addAssign("external_crm_openNewDiv","innerHTML", $external_curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_openNew_form').submit();");
+							$objResponse->addAssign("external_crm_openNewDiv","innerHTML", "" );
+							
+						}
+						/*if ($config['system']['open_new_window'] == false){
 							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
@@ -812,7 +856,7 @@ function waitingCalls($myValue){
 							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
 							//$javascript = "openwindow('".$myurl."')";
 							//$objResponse->addScript($javascript);
-						}
+						}*/
 					}
 				}
 			}else{
@@ -906,7 +950,34 @@ function waitingCalls($myValue){
 								<input type="hidden" name="calldate" value="'.$calldate.'" />
 								<input type="hidden" name="didnumber" value="'.$didnumber.'" />
 							</form>';
-						if ($config['system']['open_new_window'] == false){
+						if ($config['system']['open_new_window'] == 'internal'){
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+						} else if ($config['system']['open_new_window'] == 'external'){
+							$objResponse->addAssign("external_crmDiv","innerHTML", $curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+							//$javascript = "openwindow('".$myurl."')";
+							//$objResponse->addScript($javascript);
+						} else {
+							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
+							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
+							$internal_curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
+							$external_curHtml = preg_replace("/external_crm_form/","external_crm_openNew_form",$curHtml);
+							
+							$objResponse->addAssign("external_crmDiv","innerHTML", $internal_curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_form').submit();");
+							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
+
+							$objResponse->addAssign("external_crm_openNewDiv","innerHTML", $external_curHtml );
+							$objResponse->addScript("document.getElementById('external_crm_openNew_form').submit();");
+							$objResponse->addAssign("external_crm_openNewDiv","innerHTML", "" );
+						}
+						/*if ($config['system']['open_new_window'] == false){
 							$mycrm = '<iframe id="mycrm" name="mycrm" width="100%"  frameBorder=0 scrolling=auto height="600"></iframe>';
 							$objResponse->addAssign("divCrm","innerHTML", $mycrm );
 							$curHtml = preg_replace("/\_blank/","mycrm",$curHtml);
@@ -919,7 +990,7 @@ function waitingCalls($myValue){
 							$objResponse->addAssign("external_crmDiv","innerHTML", "" );
 							//$javascript = "openwindow('".$myurl."')";
 							//$objResponse->addScript($javascript);
-						}
+						}*/
 					}
 				}
 			}
@@ -1305,6 +1376,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$edit=true,$delete=false,$detail=true);
 	}
 	$table->setAttribsCols($attribsCols);
+	
 	//$table->addRowSearch("note",$fieldsFromSearch,$fieldsFromSearchShowAs);
 	//$table->addRowSearchMore("note",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content);
 	$table->addRowSearchMore($config['system']['portal_display_type'],$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
@@ -2084,7 +2156,7 @@ function addTicket($customerid) {
 	$html .= Table::Footer();
 	$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
-	$objResponse->addScript("relateByCategory();");
+	//$objResponse->addScript("relateByCategory();");
 	return $objResponse->getXML();
 }
 
@@ -2107,6 +2179,24 @@ function saveTicket($f) {
 		$objResponse->addAlert($locate->Translate("Add ticket success"));
 		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
 		$objResponse->addScript('AllTicketOfMyself('.$f['customerid'].');');
+	} else {
+		$objResponse->addAlert($locate->Translate("Add ticket failed"));
+	}
+	return $objResponse->getXML();
+}
+
+function saveNewTicket($f) {
+	global $locate;
+	$objResponse = new xajaxResponse();
+	if($f['ticketid'] == 0) {
+		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	$result = Customer::insertTicket($f);
+	if($result == 1) {
+		$objResponse->addAlert($locate->Translate("Add ticket success"));
+		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
+		$objResponse->addScript("showMyTickets('','agent_tickets')");
 	} else {
 		$objResponse->addAlert($locate->Translate("Add ticket failed"));
 	}
@@ -2313,7 +2403,7 @@ function curTicketDetail($id){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "visible");
 	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
-	$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value,'edit')");
+	//$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value,'edit')");
 	return $objResponse->getXML();
 }
 
@@ -2321,6 +2411,24 @@ function relateByCategoryId($Cid,$curid=0) {
 	$objResponse = new xajaxResponse();
 	$option = Customer::getTicketByCategory($Cid,$curid);
 	$objResponse->addAssign("ticketMsg","innerHTML",$option);
+
+	// group option
+	$groupOption = Customer::getGroup($Cid);
+	$objResponse->addAssign("groupMsg","innerHTML",$groupOption);
+	
+	$objResponse->addScript("relateByGroup(document.getElementById('groupid').value)");
+	return $objResponse->getXML();
+}
+
+function relateByGroup($groupId){
+	$objResponse = new xajaxResponse();
+	// customer option
+	//$customerOption = Customer::getCustomer($groupId);
+	//$objResponse->addAssign("customerMsg","innerHTML",$customerOption);
+
+	// account option
+	$accountOption = Customer::getAccount($groupId);
+	$objResponse->addAssign("accountMsg","innerHTML",$accountOption);
 	return $objResponse->getXML();
 }
 
@@ -2682,6 +2790,19 @@ function templateChange($curval){
 		
 	}
 	return $objResponse;
+}
+
+
+function addNewTicket(){
+	global $locate;
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("add_ticket"),"formTicketDetailDiv"); 			
+	$html .= Customer::addNewTicket($customerid);
+	$html .= Table::Footer();
+	$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
+	$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value)");
+	return $objResponse->getXML();
 }
 
 $xajax->processRequests();

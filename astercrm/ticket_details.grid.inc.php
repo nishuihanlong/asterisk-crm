@@ -39,7 +39,7 @@ class Customer extends astercrm {
 	function &getAllRecords($start, $limit, $order = null, $groupid = null){
 		global $db;
 		
-		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto";
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname,AccountGroup.groupname as groupname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid ";
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " ";
@@ -73,7 +73,7 @@ class Customer extends astercrm {
 		global $db;		
 		$joinstr = Customer::createSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
-		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname,AccountGroup.groupname as groupname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid  WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1";
 		}else{
@@ -105,9 +105,9 @@ class Customer extends astercrm {
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto";
+			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid ";
 		}else{
-			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ticket_details.groupid = '".$_SESSION['curuser']['groupid']."'";
+			$sql = " SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid  WHERE ticket_details.groupid = '".$_SESSION['curuser']['groupid']."'";
 		}
 		
 		Customer::events($sql);
@@ -119,7 +119,7 @@ class Customer extends astercrm {
 		global $db;
 		$joinstr = Customer::createSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
-		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid  WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1";
 		}else{
@@ -142,7 +142,7 @@ class Customer extends astercrm {
 		
 		$joinstr = Customer::createSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
-		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		$sql = "SELECT COUNT(*) FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid  WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1";
 		}else{
@@ -165,7 +165,7 @@ class Customer extends astercrm {
 
 		$joinstr = Customer::createSqlWithStype($filter,$content,$stype,'ticket_details');//<---- change by your function
 
-		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ";
+		$sql = "SELECT ticket_details.*,ticketcategory.ticketname as ticketcategoryname,AccountGroup.groupname as groupname,tickets.ticketname as ticketname, customer,username FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = ticket_details.groupid  WHERE ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " 1";
 		}else{
@@ -203,6 +203,10 @@ class Customer extends astercrm {
 					$filter[$i] = 'ticketcategory.ticketname';
 				} else if($filter[$i] == 'ticketname') {
 					$filter[$i] = 'tickets.ticketname';
+				} else if($filter[$i] == 'groupname') {
+					$filter[$i] = 'AccountGroup.groupname';
+				} else if($filter[$i] == 'creby') {
+					$filter[$i] = 'ticket_details.creby';
 				}
 				if($type == "equal"){
 					$joinstr.="AND $filter[$i] = '".trim($content[$i])."' ";
@@ -231,8 +235,8 @@ class Customer extends astercrm {
 	function formAdd(){
 		global $locate;
 		$categoryHtml = Customer::getTicketCategory();
-		$customerHtml = Customer::getCustomer();
-		$accountHtml = Customer::getAccount();
+		//$customerHtml = Customer::getCustomer();
+		//$accountHtml = Customer::getAccount();
 
 		$html = '
 			<!-- No edit the next line -->
@@ -247,12 +251,16 @@ class Customer extends astercrm {
 					<td id="ticketMsg"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Group Name").'</td>
+					<td id="groupMsg"></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Customer Name").'*</td>
-					<td>'.$customerHtml.'</td>
+					<td id="customerMsg"><input type="text" id="ticket_customer" name="ticket_customer" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" /><input type="hidden" id="ticket_customer_hidden" name="customerid" value="" /></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Assignto").'</td>
-					<td>'.$accountHtml.'</td>
+					<td id="accountMsg"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Status").'</td>
@@ -303,6 +311,13 @@ class Customer extends astercrm {
 	*/
 	function getTicketCategory($CategoryId = '') {
 		global $db,$locate;
+		if($CategoryId != 0) {
+			$fsql = "SELECT groupid FROM tickets WHERE id=$CategoryId";
+			$groupid = & $db->getOne($fsql);
+		} else {
+			$groupid = 0;
+		}
+
 		$sql = "SELECT * FROM tickets ";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql .= " WHERE fid=0";
@@ -332,13 +347,6 @@ class Customer extends astercrm {
 	*/
 	function getTicketByCid($fid,$Cid=0) {
 		global $db,$locate;
-		if($fid != 0) {
-			$fsql = "SELECT groupid FROM tickets WHERE id=$fid";
-			$groupid = & $db->getOne($fsql);
-		} else {
-			$groupid = 0;
-		}
-		
 		$sql = "SELECT * FROM tickets";
 		if($fid == 0) {
 			$sql .= " WHERE fid=-1";
@@ -361,7 +369,36 @@ class Customer extends astercrm {
 		} else {
 			$html .= $tmp;
 		}
-		$html .= '</select><input type="hidden" id="groupid" name="groupid" value="'.$groupid.'" />';
+		$html .= '</select>';
+		return $html;
+	}
+
+	function getGroup($FticketId = 0,$curGroupid = 0){
+		global $db,$locate;
+		if($FticketId == 0){
+			$sql = "SELECT * FROM astercrm_accountgroup ";
+		} else {
+			$tmpSql = "SELECT groupid FROM tickets WHERE id='".$FticketId."' ";
+			$groupid = & $db->getOne($tmpSql);
+			if($groupid == 0) {
+				$tmpHtml = '<select id="groupid" name="groupid" onchange="relateByGroup(this.value)"><option value="0">'.$locate->Translate('please select').'</option></select>';
+				return $tmpHtml;
+			}
+			$sql = "SELECT AccountGroup.id,AccountGroup.groupname FROM tickets AS Ticket LEFT JOIN astercrm_accountgroup AS AccountGroup ON AccountGroup.id = Ticket.groupid WHERE Ticket.id='".$FticketId."' ";
+		}
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		
+		$html = '<select id="groupid" name="groupid" onchange="relateByGroup(this.value)">';
+		$tmp = '';
+		while($row = $result->fetchRow()){
+			$tmp .= '<option value="'.$row['id'].'"';
+			if($curGroupid != 0 && $row['id'] == $curGroupid){
+				$tmp .= ' selected ';
+			}
+			$tmp .= '>'.$row['groupname'].'</option>';
+		}
+		$html .= $tmp.'</select>';
 		return $html;
 	}
 	
@@ -370,11 +407,15 @@ class Customer extends astercrm {
 	*	@param $customerid	(int)	 default 0  (for edit)
 	*	@return		$html	(string)	create the option by the result of query
 	*/
-	function getCustomer($customerid=0) {
+	function getCustomer($groupid = 0,$customerid=0) {
 		global $db,$locate;
 		$sql = "select * from customer";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " ";
+			if($groupid == 0){
+				$sql .= " ";
+			} else {
+				$sql .= " WHERE groupid = ".$groupid." ";
+			}
 		}else{
 			$sql .= " WHERE groupid = ".$_SESSION['curuser']['groupid']." ";
 		}
@@ -403,17 +444,21 @@ class Customer extends astercrm {
 	*	@param	$accountid	(int) default 0  (for edit)
 	*	@return		$html	(string)	create the option by the result of query
 	*/
-	function getAccount($accountid =0) {
+	function getAccount($groupid=0,$accountid =0) {
 		global $db,$locate;
 		$sql = "SELECT * FROM astercrm_account where username!='admin'";
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			$sql .= " ";
+			if($groupid == 0){
+				$sql .= " ";
+			} else {
+				$sql .= " AND groupid=".$groupid." ";
+			}
 		}else{
 			$sql .= " AND groupid=".$_SESSION['curuser']['groupid']." ";
 		}
 		astercrm::events($sql);
 		$result = & $db->query($sql);
-		$html = '<select id="assignto" name="assignto">';
+		$html = '<select id="assignto" name="assignto"><option value="0">'.$locate->Translate('please select').'</option>';
 		$tmp = '';
 		while($row = $result->fetchRow()) {
 			$tmp .= '<option value="'.$row['id'].'"';
@@ -442,9 +487,12 @@ class Customer extends astercrm {
 		global $locate;
 		$result =& Customer::getRecordByID($id,'ticket_details');
 		$categoryHtml = Customer::getTicketCategory($result['ticketcategoryid']);
-		$customerHtml = Customer::getCustomer($result['customerid']);
-		$accountHtml = Customer::getAccount($result['assignto']);
-
+		$ticketHtml = Customer::getTicketByCid($result['ticketcategoryid'],$result['ticketid']);
+		$groupHtml = Customer::getGroup($result['ticketcategoryid'],$result['groupid']);
+		//$customerHtml = Customer::getCustomer($result['groupid'],$result['customerid']);
+		$customername = Customer::getCustomername($result['customerid']);
+		$accountHtml = Customer::getAccount($result['groupid'],$result['assignto']);
+		//print_r($accountHtml);exit;
 		$html = '
 			<!-- No edit the next line -->
 			<form method="post" name="f" id="f">
@@ -455,15 +503,19 @@ class Customer extends astercrm {
 				</tr>
 				<tr>
 					<td align="left" width="25%">'.$locate->Translate("Ticket Name").'*</td>
-					<td id="ticketMsg"></td>
+					<td id="ticketMsg">'.$ticketHtml.'</td>
+				</tr>
+				<tr>
+					<td align="left" width="25%">'.$locate->Translate("Group Name").'*</td>
+					<td id="groupMsg">'.$groupHtml.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Customer Name").'*</td>
-					<td>'.$customerHtml.'</td>
+					<td id="customerMsg"><input type="text" id="ticket_customer" name="ticket_customer" value="'.$customername.'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" /><input type="hidden" id="ticket_customer_hidden" name="customerid" value="'.$result['customerid'].'" /></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Assignto").'</td>
-					<td>'.$accountHtml.'</td>
+					<td id="accountMsg">'.$accountHtml.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Status").'</td>
@@ -496,6 +548,14 @@ class Customer extends astercrm {
 				'.$locate->Translate("obligatory_fields").'
 				';
 		return $html;
+	}
+
+	function getCustomername($customerid){
+		global $db,$locate;
+		$sql = "SELECT customer FROM customer WHERE id='".$customerid."' ";
+		astercrm::events($sql);
+		$customername = & $db->getOne($sql);
+		return $customername;
 	}
 
 	/**

@@ -89,11 +89,12 @@ function init($curpeer){
 			$objResponse->addAssign("divLimitStatus","innerHTML",$html);
 		}
 	}
-    if($config['system']['useHistoryCdr'] == 1){
-       $objResponse->addScript("document.getElementById('btnCheckOut').style.display='none';");
-	}else if($config['system']['useHistoryCdr'] == 0){
-       $objResponse->addScript("document.getElementById('btnCheckOut').style.display='block';");
-	}
+	//去除了控制chekcout按钮是否显示的代码//20110303 donnie
+    //if($config['system']['useHistoryCdr'] == 1){
+       //$objResponse->addScript("document.getElementById('btnCheckOut').style.display='none';");
+	//}else if($config['system']['useHistoryCdr'] == 0){
+       //$objResponse->addScript("document.getElementById('btnCheckOut').style.display='block';");
+	//}
 
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin));
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));

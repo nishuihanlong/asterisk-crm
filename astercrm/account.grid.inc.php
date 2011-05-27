@@ -290,7 +290,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
-					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100">&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
+					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" style="color:#BBB" value="'.$locate->translate('extensions_input_tip').'" />&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("channel").'</td>
@@ -406,9 +406,15 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("dynamic agent").'</td>
 					<td align="left"><input type="text" id="agent" name="agent" size="25" maxlength="15" value="'.$account['agent'].'"></td>
 				</tr>
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("extensions").'</td>
-					<td align="left"><input type="text" id="extensions" name="extensions" size="25" maxlength="100" value="'.$account['extensions'].'">&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
+				<tr><td nowrap align="left">'.$locate->Translate("extensions").'</td>
+					<td align="left">';
+				if($account['extensions'] == '') {
+					$html .= '<input type="text" id="extensions" name="extensions" size="25" maxlength="15" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" style="color:#BBB" value="'.$locate->translate('extensions_input_tip').'">';
+				} else {
+					$html .= '<input type="text" id="extensions" name="extensions" size="25" maxlength="15" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" value="'.$account['extensions'].'">';
+				}
+		$html .= '
+					&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("channel").'</td>

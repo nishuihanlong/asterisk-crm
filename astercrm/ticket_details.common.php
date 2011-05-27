@@ -81,6 +81,7 @@ $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
 $xajax->registerFunction("relateByCategoryId");
+$xajax->registerFunction("relateByGroup");
 $xajax->registerFunction("deleteByButton");
 
 define("ROWSXPAGE", 10); // Number of rows show it per page.

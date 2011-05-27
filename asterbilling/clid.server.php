@@ -188,15 +188,6 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$typeFromSearchShowAs[] = '>';
 	$typeFromSearchShowAs[] = '<';
 
-	// Editable zone
-	$configstatus = common::read_ini_file($config['system']['astercc_path'].'/astercc.conf',$asterccConfig);
-	if ($configstatus == -2){
-		$html = "(fail to read ".$config['system']['astercc_path']."/astercc.conf)";	
-		return $html;
-	}else{
-		$billingfield= trim($asterccConfig['system']['billingfield'] );
-	}
-
 	// Databse Table: fields
 	$fields = array();
 	$fields[] = 'clid';
@@ -214,7 +205,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
-	if($billingfield == 'accountcode')
+	if($_SESSION['curuser']['billingfield'] == 'accountcode')
 		$headers[] = $locate->Translate("Accountcode")."<br>";
 	else
 		$headers[] = $locate->Translate("Clid")."<br>";

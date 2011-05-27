@@ -146,7 +146,6 @@ class ScrollTable{
 		$this->userexten = $userexten;
 		$this->table = $table; 
 		$this->divName = $divName;
-
 		if ($cdrtype != '') {
 			if($cdrtype == 'diallist_dup'){
 				$this->setSpecFooter('diallist_dup'); //用于agent页面中customer信息页中的mycdr页脚
@@ -159,10 +158,10 @@ class ScrollTable{
 			$this->setSpecFooter('monitorrecord');//用于agent页面中customer信息页中的monitorrecord页脚
 		}elseif($table == 'agents'){
 			//$this->setSpecFooter('agents');
-		}elseif($table == 'ticket_details'){
-			$this->setSpecFooter('ticket_details');
-		}elseif($table == 'ticket_details'){
-			$this->setSpecFooter('ticket_details');
+		}elseif($table == 'ticket_details' && $divName == 'formCurTickets'){
+			$this->setSpecFooter('formCurTickets');
+		}elseif($table == 'ticket_details' && $divName == 'formMyTickets'){
+			$this->setSpecFooter('formMyTickets',$customerid);
 		}else{
 			$this->setFooter();
 		}
@@ -490,6 +489,19 @@ class ScrollTable{
 			<table width="99%" border="0" style="line-height:30px;">
 			<tr>
 				<td align="left">';
+		}elseif ($table == 'add_new_tickets'){
+			$this->search = '
+			<form action="javascript:void(null);" name="searchTicketsForm" id="searchTicketsForm" onSubmit="xajax_searchTicketsFormSubmit(xajax.getFormValues(\'searchTicketsForm\'),0,5);">
+			<input type="hidden" name="numRows" id="numRows" value="'.$start.'"/>
+			<input type="hidden" name="limit" id="limit" value="'.$limit.'"/>
+			<input type="hidden" name="ordering" id="ordering" value="'.$this->ordering.'"/>
+			<input type="hidden" name="order" id="order" value="'.$this->order.'"/>
+			<table width="99%" border="0" style="line-height:30px;">
+			<tr>
+				<td align="left">';
+			if($withNewButton){
+				$this->search .= '<input type="button" id="submitButton" onClick="xajax_addNewTicket();return false;" value="'.$local_grid->Translate("add_new_ticket").'">';
+			}
 		}else {
 			$this->search = '
 				<form action="javascript:void(null);" name="searchForm" id="searchForm" onSubmit="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,'.$this->numRowsToShow.');">
@@ -731,7 +743,7 @@ class ScrollTable{
 
 	}
 
-	function setSpecFooter($type){
+	function setSpecFooter($type,$customerid=0){
 		global $local_grid;
 		$pageNav = true;
 		$next_rows = $this->start + $this->limit;
@@ -751,15 +763,18 @@ class ScrollTable{
 			$arg = 'non';
 			$form = 'searchRecordsForm';
 			$submit = 'searchRecordsFormSubmit';
-		}elseif($type == 'ticket_details'){
+		}elseif($type == 'formCurTickets'){
 			$arg = 'ticket_details';
 			$form = 'searchTicketsForm';
 			$submit = 'searchTicketsFormSubmit';
+		}elseif($type == 'formMyTickets'){
+			$arg = 'ticketCustomerdetails';
+			$form = 'searchMyTicketsForm';
+			$submit = 'searchMyTicketsFormSubmit';
 		}elseif($type == 'agents'){
 		}elseif($type == 'diallist_dup'){
 			$pageNav = false;
 		}
-
 		$this->footer = '</table>';
 		$this->footer .= '<table class="adminlist">';
 		
@@ -773,15 +788,18 @@ class ScrollTable{
 							document.getElementById(\'numRows\').value = 0;
 							document.getElementById(\'limit\').value='.$this->limit.';';
 							
-							if ($arg != 'cdrtype' && $arg != 'ticket_details')
+							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')
 								$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details') {
+							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details' && $arg != 'ticketCustomerdetails') {
 								$this->footer .= 'document.getElementById(\''.$arg.'\').value=\''.$arg.'\';';
 							}
-							if ($arg == 'cdrtype')
+							if ($arg == 'cdrtype'){
 								$this->footer .= $submit.'(\'recent\',0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
-							else
+							} else if($arg == 'ticketCustomerdetails') {
+								$this->footer .= $submit.'('.$customerid.',0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+							}else{
 								$this->footer .= $submit.'(xajax.getFormValues(\''.$form.'\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
+							}
 						}else{
 							$this->footer .= $local_grid->Translate("first");
 						}
@@ -792,17 +810,20 @@ class ScrollTable{
 						$this->footer .= '<a href="?" onClick="
 							document.getElementById(\'numRows\').value = '.$previos_rows.';
 							document.getElementById(\'limit\').value='.$this->limit.';';
-							if ($arg != 'cdrtype' && $arg != 'ticket_details')
+							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')
 								$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details') {
+							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details' && $arg != 'ticketCustomerdetails') {
 								$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$arg.'\';';
 							}
-							if ($arg == 'cdrtype')
+							if ($arg == 'cdrtype'){
 								$this->footer .=$submit.'(\'recent\','.$previos_rows.','.$this->limit.');
 								return false;">'.$local_grid->Translate("previous").'</a>';
-							else
+							} else if($arg == 'ticketCustomerdetails') {
+								$this->footer .= $submit.'('.$customerid.','.$previos_rows.','.$this->limit.');return false;">'.$local_grid->Translate("previous").'</a>';
+							}else{
 								$this->footer .=$submit.'(xajax.getFormValues(\''.$form.'\'),'.$previos_rows.','.$this->limit.');
 								return false;">'.$local_grid->Translate("previous").'</a>';
+							}
 						}else{
 							$this->footer .= $local_grid->Translate("previous");
 						}
@@ -820,13 +841,15 @@ class ScrollTable{
 							$this->footer .= '<a href="?" onClick="
 							document.getElementById(\'numRows\').value = '.$next_rows.';
 							document.getElementById(\'limit\').value='.$this->limit.';';
-							if ($arg != 'cdrtype' && $arg != 'ticket_details')
+							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')
 							$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details') {
+							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details' && $arg != 'ticketCustomerdetails') {
 								$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$arg.'\';';
 							}
 							if ($arg == 'cdrtype')	
 								$this->footer .=$submit.'(\'recent\','.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
+							else if($arg == 'ticketCustomerdetails') 
+								$this->footer .= $submit.'('.$customerid.','.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
 							else
 								$this->footer .=$submit.'(xajax.getFormValues(\''.$form.'\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
 						}else{
@@ -840,13 +863,15 @@ class ScrollTable{
 							$this->footer .= '<a href="?" onClick="
 							document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
 							document.getElementById(\'limit\').value='.$this->limit.';';
-							if ($arg != 'cdrtype' && $arg != 'ticket_details')
+							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')
 							$this->footer .= 'document.getElementById(\'customerid\').value = \''.$this->customerid.'\';';
-							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details') {
+							if($arg != 'non' && $arg != 'cdrtype'&& $arg != 'ticket_details' && $arg != 'ticketCustomerdetails') {
 								$this->footer .='document.getElementById(\''.$arg.'\').value=\''.$arg.'\';';
 							}
 							if ($arg == 'cdrtype')
 								$this->footer .=$submit.'(\'recent\','.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
+							else if($arg == 'ticketCustomerdetails') 
+								$this->footer .= $submit.'('.$customerid.','.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
 							else
 								$this->footer .=$submit.'(xajax.getFormValues(\''.$form.'\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
 						}else{

@@ -668,6 +668,11 @@ $clientDst = $_REQUEST['clientdst'];
 			xajax_searchTicketsFormSubmit(searchFormValue,numRows,limit,id,type);
 		}
 
+		function searchMyTicketsFormSubmit(Cid,numRows,limit){
+			ShowProcessingDiv();
+			xajax_AllTicketOfMy(Cid,'customer_ticket',numRows,limit);
+		}
+
 		function edit(parm,table){
 			ShowProcessingDiv();
 			xajax_edit(parm,table);
@@ -718,6 +723,11 @@ $clientDst = $_REQUEST['clientdst'];
 			}
 			xajax_SendSmsForm(sendtype,objId);
 		}
+
+		function relateByGroup(Gid){
+			xajax_relateByGroup(Gid);
+		}
+
 		</script>
 <?
 if ($config['system']['enable_external_crm'] == false && $config['google-map']['key'] != ''){
@@ -847,6 +857,7 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 						<div id="grid" align="center"></div>
 						<div id="msgZone" name="msgZone" align="left"> </div>
 						<div id="external_crmDiv" style="display:none;"></div>
+						<div id="external_crm_openNewDiv" style="display:none;"></div>
 						<div id="formTicketDetailDiv"  class="formDiv drsElement" 
 							style="left: 600px; top: 300px;width: 490px"></div>
 						<div id="formMyTickets"  class="formDiv drsElement" 
@@ -855,6 +866,10 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 							style="left: 300px; top: 300px;width: 800px"></div>
 						<div id="formSendSMS"  class="formDiv drsElement" 
 							style="left: 300px; top: 200px;width: 500px"></div>
+						<div id="formHighestProrityNote"  class="formDiv drsElement" 
+							style="left: 300px; top: 200px;width: 500px"></div>
+						<div id="formLastestNote"  class="formDiv drsElement" 
+							style="left: 350px; top: 150px;width: 500px"></div>
 					</fieldset>
 				</td>
 			</tr>

@@ -53,6 +53,24 @@ require_once('account.common.php');
 				}
 			}
 
+			function chkExtenionClick(curVal,obj){
+				if(curVal == "<?php echo $locate->translate('extensions_input_tip'); ?>") {
+					obj.value = '';
+					obj.style.color = '#000';
+				} else {
+					obj.style.color = '#000';
+				}
+			}
+
+			function chkExtenionBlur(curVal,obj){
+				if(curVal == "") {
+					obj.value = "<?php echo $locate->translate('extensions_input_tip'); ?>";
+					obj.style.color = '#BBB';
+				} else {
+					obj.style.color = '#000';
+				}
+			}
+
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
@@ -60,7 +78,6 @@ require_once('account.common.php');
 		<script type="text/javascript" src="js/astercrm.js"></script>
 		<LINK href="skin/default/css/style.css" type=text/css rel=stylesheet>
 		<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
-
 	</head>
 	<body onload="init();">
 		<div id="divNav"></div>

@@ -92,19 +92,29 @@ class astercc extends PEAR
 	}
 
 	function checkPeerStatus($groupid,$peers){
+		global $config;
 		$curChans =& astercc::getCurChan($groupid);
-		//print_r($curChans);exit;
+		#print_r($curChans);exit;
 		$status =  array();
 		while ($curChans->fetchInto($list)) {
+			//print_r($list);exit;
 			// 检查src或者dst是否在peers里
-			if (astercc::array_exist($list['src'], $peers) || astercc::array_exist($list['dst'], $peers)){
-				$status[$list['src']] = $list;
-				$status[$list['src']]['direction'] = 'outbound';
+			
+			if($_SESSION['curuser']['billingfield'] == 'accountcode'){
+				if (astercc::array_exist($list['accountcode'],$peers)){
+					$status[$list['accountcode']] = $list;
+					$status[$list['accountcode']]['direction'] = 'outbound';
+				}
 			}else{
-				// 使用srcchan作为src
-				if (ereg("\/(.*)-", $list['srcchan'], $myAry) ){
-					$status[$myAry[1]] = $list;
-					$status[$myAry[1]]['direction'] = 'outbound';
+				if (astercc::array_exist($list['src'], $peers) || astercc::array_exist($list['dst'], $peers)){
+					$status[$list['src']] = $list;
+					$status[$list['src']]['direction'] = 'outbound';
+				}else{
+					// 使用srcchan作为src
+					if (ereg("\/(.*)-", $list['srcchan'], $myAry) ){
+						$status[$myAry[1]] = $list;
+						$status[$myAry[1]]['direction'] = 'outbound';
+					}
 				}
 			}
 			$status[$list['dst']] = $list;
@@ -323,7 +333,13 @@ class astercc extends PEAR
 		global $db;
 
 		if ($leg == null){
-			$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+			
+
+			if($_SESSION['curuser']['billingfield'] == 'accountcode'){
+				$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer' OR accountcode='$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+			}else{
+				$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer' OR accountcode='$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+			}
 		}else{
 			/*
 			$query = 'SELECT * FROM cdr WHERE 

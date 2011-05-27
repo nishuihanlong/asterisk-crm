@@ -62,6 +62,8 @@ if(isset($_POST['CHECK']) && trim($_POST['CHECK']) == '1'){
 		
 	if ( $upload_msg == '' ) //未发生错误
 	{
+		//$detectFileCode = mb_detect_encoding(file_get_contents($config['system']['upload_file_path'].$file_name),'UTF-8');
+		$detectFileCode = chkCode(file_get_contents($config['system']['upload_file_path'].$file_name));
 		$upload_msg =$locate->Translate('file').' '.$original_name.' '.$locate->Translate('uploadsuccess')."!<br />";
 		if($type == 'csv'){
 			$handleup = fopen($config['system']['upload_file_path'] . $file_name,"r");
@@ -90,9 +92,25 @@ else
 	$upload_msg = $locate->Translate('feifa');
 }
 
+function chkCode($string){
+	$code = array('ASCII', 'GBK', 'UTF-8');
+	foreach($code as $c){
+		if($string === iconv('UTF-8', $c, iconv($c, 'UTF-8', $string))){
+			return $c;
+		}
+	}
+	return null;
+}
+
+
 ?>
 <SCRIPT LANGUAGE="JavaScript">
+	var curFileCode = "<?php echo $detectFileCode; ?>";
+	if(curFileCode != 'UTF-8') {
+		alert("<?=$locate->Translate('Please convert the file to UTF-8')?>");
+	}
 	var msg = "<? echo $upload_msg; ?><br />";
+	//alert(msg);
 	window.parent.document.getElementById("divMessage").innerHTML = msg;//msg;
 	//alert ("<?=$_FILES['excel']['name']?>");
 	window.parent.showDivMainRight("<?=$file_name?>");
