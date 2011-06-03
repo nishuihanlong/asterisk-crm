@@ -495,6 +495,7 @@ Class astercrm extends PEAR{
 				."firstring='".$f['firstring']."',"
 				."allowloginqueue='".$f['allowloginqueue']."',"
 				."agentinterval='".$f['agentinterval']."',"
+				."notice_interval='".$f['notice_interval']."',"
 				."clear_popup='".$f['clear_popup']."',"
 				."groupnote='".$f['groupnote']."',"
 				."billingid='".$f['billingid']."',"
@@ -719,6 +720,7 @@ Class astercrm extends PEAR{
 				."firstring='".$f['firstring']."', "
 				."allowloginqueue='".$f['allowloginqueue']."', "
 				."agentinterval='".$f['agentinterval']."', "
+				."notice_interval='".$f['notice_interval']."', "
 				."clear_popup='".$f['clear_popup']."', "
 				."groupnote='".$f['groupnote']."',"
 				."incontext='".$f['incontext']."', "
@@ -4440,12 +4442,14 @@ Class astercrm extends PEAR{
 		// Databse Table: fields
 		$fields = array();
 		if($Ctype == 'agent_tickets') {
+			$fields[] = 'id';
 			$fields[] = 'ticketname';
 			$fields[] = 'customer';
 			$fields[] = 'status';
 			$fields[] = 'memo';
 			$fields[] = 'creby';
 		} else {
+			$fields[] = 'id';
 			$fields[] = 'ticketcategoryname';
 			$fields[] = 'ticketname';
 			$fields[] = 'customer';
@@ -4457,6 +4461,7 @@ Class astercrm extends PEAR{
 
 		// HTML table: Headers showed
 		$headers = array();
+		$headers[] = $locate->Translate("Ticket Id");
 		if($Ctype != 'agent_tickets') {
 			$headers[] = $locate->Translate("TicketCategory Name");
 		}
@@ -4472,11 +4477,12 @@ Class astercrm extends PEAR{
 		if($Ctype == 'agent_tickets') {
 			// HTML table: hearders attributes
 			$attribsHeader = array();
+			$attribsHeader[] = 'width="15%"';
+			$attribsHeader[] = 'width="20%"';
+			$attribsHeader[] = 'width="20%"';
+			$attribsHeader[] = 'width="10%"';
 			$attribsHeader[] = 'width="20%"';
 			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="15%"';
-			$attribsHeader[] = 'width="30%"';
-			$attribsHeader[] = 'width="20%"';
 
 			// HTML Table: columns attributes
 			$attribsCols = array();
@@ -4509,11 +4515,13 @@ Class astercrm extends PEAR{
 		
 		// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 		$eventHeader = array();
+
 		if($Ctype == 'agent_tickets') {
 			$XajaxMath = 'showMyTicketsGrid';
 		} else{
 			$XajaxMath = 'AllTicketOfMyGrid';
 		}
+		$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
 		if($Ctype != 'agent_tickets') {
 			$eventHeader[]= 'onClick=\''.$XajaxMath.'('.$Cid.',"'.$Ctype.'",0,'.$limit.',"'.$filter.'","'.$content.'","ticketcategoryname","'.$divName.'","ORDERING");return false;\'';
 		}
@@ -4574,6 +4582,7 @@ Class astercrm extends PEAR{
 		// Change here by the name of fields of its database table
 			$rowc = array();
 			$rowc[] = $row['id'];
+			$rowc[] = str_pad($row['id'],8,'0',STR_PAD_LEFT);
 			if($Ctype != 'agent_tickets') {
 				$rowc[] = $row['ticketcategoryname'];
 			}

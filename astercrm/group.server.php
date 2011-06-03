@@ -275,6 +275,11 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
+	
+	if(!preg_match('/^[\d]*$/',$f['notice_interval'])) {
+		$objResponse->addAlert($locate->Translate("notice interval must be integer"));
+		return $objResponse->getXML();
+	}
 
 //	if (!ereg("[0-9]+",$f['groupid'])){
 //		$objResponse->addAlert($locate->Translate("digit_only"));
@@ -332,6 +337,10 @@ function update($f){
 	$objResponse = new xajaxResponse();
 	if(trim($f['groupname']) == '' ){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	if(!preg_match('/^[\d]*$/',$f['notice_interval'])) {
+		$objResponse->addAlert($locate->Translate("notice interval must be integer"));
 		return $objResponse->getXML();
 	}
 

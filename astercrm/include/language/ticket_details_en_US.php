@@ -28,4 +28,9 @@ $continue = 'continue';
 $none = 'None';
 $please_select = 'please select';
 $cancel = 'cancel';
+$ticketdetail_id = "ID";
+$view_subordinate_ticketdetails = "View Subordinate Ticketdetails";
+$ticket_details_operate_logs = "Ticket Details OperateLogs";
+$subordinate_ticketdetails = "Subordinate TicketDetails";
+$parent_ticketdetail_id = "Parent TicketDetail ID";
 ?>

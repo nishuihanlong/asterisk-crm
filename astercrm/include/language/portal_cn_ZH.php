@@ -186,4 +186,9 @@ $characters = "字符";
 $send = "发送";
 $account_name = "分配给";
 $add_ticket = "添加任务";
+$ticket_id = "任务ID";
+$ticketdetail_id = "任务ID";
+$view_subordinate_ticketdetails = "查看下级任务详细";
+$subordinate_ticketdetails = "下级任务详细";
+$parent_ticketdetail_id = "上级任务详细ID";
 ?>

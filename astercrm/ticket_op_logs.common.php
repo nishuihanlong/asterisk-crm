@@ -1,9 +1,5 @@
 <?php
 /*******************************************************************************
-* ticket_details.common.php
-* ticket_details参数信息文件
-* ticket_details parameter file
-
 * 功能描述
 	检查用户权限
 	初始化语言变量
@@ -21,16 +17,6 @@ registed function:
 *	call these function by xajax_ + funcionname
 *	such as xajax_init()
 
-basic functions
-	init					init html page
-	listenCalls				check database for new event
-	dial					click to dial
-	transfer				click to transfer
-	addWithPhoneNumber
-	monitor					monitor control
-	hangup					hangup a channel
-	chanspy					spy on a extension
-
 astercrm functions
 	showGrid
 	add
@@ -41,8 +27,6 @@ astercrm functions
 	init
 	showDetail
 	searchFormSubmit
-
-* Revision 0.0456  2007/11/7 14:45:00  modified by solo
 * Desc:
 
 
@@ -66,24 +50,17 @@ if ($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertyp
 require_once ("include/xajax.inc.php");
 require_once ('include/localization.class.php');
 
-$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'ticket_details');
+$GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'ticket_op_log');
 
 
-$xajax = new xajax("ticket_details.server.php");
+$xajax = new xajax("ticket_op_logs.server.php");
 
 $xajax->registerFunction("showGrid");
-$xajax->registerFunction("add");
-$xajax->registerFunction("save");
-$xajax->registerFunction("edit");
-$xajax->registerFunction("update");
 $xajax->registerFunction("delete");
 $xajax->registerFunction("init");
 $xajax->registerFunction("showDetail");
 $xajax->registerFunction("searchFormSubmit");
-$xajax->registerFunction("relateByCategoryId");
-$xajax->registerFunction("relateByGroup");
 $xajax->registerFunction("deleteByButton");
-$xajax->registerFunction("viewSubordinateTicket");
 
 define("ROWSXPAGE", 10); // Number of rows show it per page.
 define("MAXROWSXPAGE", 25);  // Total number of rows show it when click on "Show All" button.

@@ -116,7 +116,8 @@ $clientDst = $_REQUEST['clientdst'];
 	<body onload="init();">
 	<div id="divNav"></div>
 	<div id="divActive" name="divActive">
-		<input type="button" value="TicketCategory" id="btnTicketCategory" name="btnTicketCategory" onClick="window.location='ticketcategory.php';" />
+		<input type="button" value="TicketCategory" id="btnTicketCategory" name="btnTicketCategory" onClick="window.location='ticketcategory.php';" /> 
+		<input type="button" value="TicketOplogs" id="btnTicketOplogs" name="btnTicketOplogs" onClick="window.location='ticket_op_logs.php';" />
 	</div>
 	<table width="100%" border="0" style="background: #F9F9F9; padding: 0px;">
 		<tr>
@@ -128,6 +129,8 @@ $clientDst = $_REQUEST['clientdst'];
 					<div id="msgZone" name="msgZone" align="left"> </div>
 					<div id="formTicketDiv"  class="formDiv drsElement" 
 						style="left: 350px; top: 150px;width:500px;"></div>
+					<div id="formSubordinateTicketDiv"  class="formDiv drsElement" 
+						style="left: 200px; top: 200px;width:800px;"></div>
 				</fieldset>
 			</td>
 		</tr>

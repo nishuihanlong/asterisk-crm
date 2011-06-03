@@ -155,6 +155,12 @@ function initIni(){
 	//sms
 	$objResponse->addAssign("iptSysEnableSMS","value",$config["system"]["enable_sms"]);
 
+	//require_reason_when_pause
+	$objResponse->addAssign("iptSysRequireReasonWhenPause","value",$config["system"]["require_reason_when_pause"]);
+
+	//iptCreateTicket 
+	$objResponse->addAssign("iptSysCreateTicket","value",$config["system"]["create_ticket"]);
+
 	return $objResponse;
 }
 
@@ -258,8 +264,16 @@ function initLocate(){
 	$objResponse->addAssign("divPopup_diallist","innerHTML",$locate->Translate('popup_diallist'));
 
 	$objResponse->addAssign("divSysEnableCode","innerHTML",$locate->Translate('if_enable_code'));
-	$objResponse->addAssign("divSysUpdateOnlineInterval","innerHTML",$locate->Translate('the_smaller_the_value_the_more_accurate'));//sms
+	$objResponse->addAssign("divSysUpdateOnlineInterval","innerHTML",$locate->Translate('the_smaller_the_value_the_more_accurate'));
+	
+	//sms
 	$objResponse->addAssign("divSysEnableSMS","innerHTML",$locate->Translate('enable_sms_pop'));
+
+	//sms
+	$objResponse->addAssign("divSysRequireReasonWhenPause","innerHTML",$locate->Translate('require_reason_when_pause'));
+
+	//iptSysCreateTicket
+	$objResponse->addAssign("divSysCreateTicket","innerHTML",$locate->Translate('create_ticket'));
 	
 	return $objResponse;
 }
@@ -329,6 +343,8 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['enable_code'] = $aFormValues['iptSysEnableCode'];
 	$myPreferences['system']['update_online_interval'] = $aFormValues['iptSysUpdateOnlineInterval'];
 	$myPreferences['system']['enable_sms'] = $aFormValues['iptSysEnableSMS'];
+	$myPreferences['system']['require_reason_when_pause'] = $aFormValues['iptSysRequireReasonWhenPause'];
+	$myPreferences['system']['create_ticket'] = $aFormValues['iptSysCreateTicket'];
 
 	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
 	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];

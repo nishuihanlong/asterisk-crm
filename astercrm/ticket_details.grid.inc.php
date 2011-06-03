@@ -251,6 +251,10 @@ class Customer extends astercrm {
 					<td id="ticketMsg"></td>
 				</tr>
 				<tr>
+					<td align="left" width="25%">'.$locate->Translate("Parent TicketDetail ID").'</td>
+					<td><input type="text" id="parent_id" name="parent_id" maxlength="8" /></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group Name").'</td>
 					<td id="groupMsg"></td>
 				</tr>
@@ -290,16 +294,18 @@ class Customer extends astercrm {
 	function insertTicketDetail($f) {
 		global $db;
 		$sql = "INSERT INTO ticket_details SET"
-			 ." ticketcategoryid=".$f['ticketcategoryid'].","
-			 ." ticketid=".$f['ticketid'].","
-			 ." customerid=".$f['customerid'].","
+			 ." ticketcategoryid='".$f['ticketcategoryid']."',"
+			 ." ticketid='".$f['ticketid']."',"
+			 ."parent_id='".(($f['parent_id'] == '')?'':str_pad($f['parent_id'],8,'0',STR_PAD_LEFT))."',"
+			 ." customerid='".$f['customerid']."',"
 			 ." status='".$f['status']."',"
-			 ." assignto=".$f['assignto'].","
-			 ." groupid=".$f['groupid'].","
+			 ." assignto='".$f['assignto']."',"
+			 ." groupid='".$f['groupid']."',"
 			 ." memo='".$f['memo']."',"
 			 ." cretime=now(),"
 			 ." creby='".$_SESSION['curuser']['username']."' ;";
 		astercrm::events($sql);
+		
 		$res = & $db->query($sql);
 		return $res;
 	}
@@ -445,17 +451,19 @@ class Customer extends astercrm {
 	*	@return		$html	(string)	create the option by the result of query
 	*/
 	function getAccount($groupid=0,$accountid =0) {
-		global $db,$locate;
+		global $db,$locate,$config;
 		$sql = "SELECT * FROM astercrm_account where username!='admin'";
+
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-			if($groupid == 0){
+			$sql .= " ";
+		}else{
+			if($config['system']['create_ticket'] == 'system') {
 				$sql .= " ";
 			} else {
-				$sql .= " AND groupid=".$groupid." ";
+				$sql .= " AND groupid=".$_SESSION['curuser']['groupid']." ";
 			}
-		}else{
-			$sql .= " AND groupid=".$_SESSION['curuser']['groupid']." ";
 		}
+		
 		astercrm::events($sql);
 		$result = & $db->query($sql);
 		$html = '<select id="assignto" name="assignto"><option value="0">'.$locate->Translate('please select').'</option>';
@@ -506,6 +514,10 @@ class Customer extends astercrm {
 					<td id="ticketMsg">'.$ticketHtml.'</td>
 				</tr>
 				<tr>
+					<td align="left" width="25%">'.$locate->Translate("Parent TicketDetail ID").'</td>
+					<td><input type="text" id="parent_id" name="parent_id"  maxlength="8" value="'.(($result['parent_id']=='')?'':str_pad($result['parent_id'],8,'0',STR_PAD_LEFT)).'" /></td>
+				</tr>
+				<tr>
 					<td align="left" width="25%">'.$locate->Translate("Group Name").'*</td>
 					<td id="groupMsg">'.$groupHtml.'</td>
 				</tr>
@@ -539,7 +551,7 @@ class Customer extends astercrm {
 					<td><textarea id="memo" name="memo" cols="40" rows="5">'.$result['memo'].'</textarea></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
+					<td colspan="2"><input type="button" id="" onclick="xajax_viewSubordinateTicket('.$result['id'].')" value="'.$locate->Translate("Subordinate TicketDetails").'">&nbsp;&nbsp;<button id="submitButton" onClick=\'xajax_update(xajax.getFormValues("f"));return false;\'>'.$locate->Translate("continue").'</button></td>
 				</tr>
 			 </table>
 			';
@@ -568,10 +580,13 @@ class Customer extends astercrm {
 	function updateTicketDetail($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
+
+		
 		
 		$query= "UPDATE ticket_details SET "
 				."ticketcategoryid=".$f['ticketcategoryid'].", "
 				."ticketid=".$f['ticketid'].", "
+				."parent_id='".(($f['parent_id'] == '')?'':str_pad($f['parent_id'],8,'0',STR_PAD_LEFT))."',"
 				."customerid=".$f['customerid'].", "
 				."assignto=".$f['assignto'].","
 				."status='".$f['status']."', "
@@ -582,6 +597,78 @@ class Customer extends astercrm {
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
+	}
+
+	//验证填写的上级ticket_details 是否存在
+	function validParentTicketId($pid){
+		global $db;
+		$sql = "select * from ticket_details where id='".$pid."' ";
+		astercrm::events($sql);
+		$result =& $db->getOne($sql);
+		if($result){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//查看下级的ticket_details
+	function subordinateTicket($pid){
+		global $db,$locate;
+		$sql = "SELECT ticket_details.*,tickets.ticketname,astercrm_accountgroup.groupname,customer.customer,astercrm_account.username FROM ticket_details LEFT JOIN tickets on tickets.id = ticket_details.ticketid LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = ticket_details.groupid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto WHERE ticket_details.parent_id='".str_pad($pid,8,'0',STR_PAD_LEFT)."' ";
+		
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		$html = '
+			<table width="100%" border="1" align="center" class="adminlist">
+				<tr>
+					<th>'.$locate->Translate("Ticket Name").'</th>
+					<th>'.$locate->Translate("TicketDetail ID").'</th>
+					<th>'.$locate->Translate("Group Name").'</th>
+					<th>'.$locate->Translate("Customer").'</th>
+					<th>'.$locate->Translate("AssignTo").'</th>
+					<th>'.$locate->Translate("Status").'</th>
+					<th>'.$locate->Translate("Memo").'</th>
+				</tr>';
+		while($row = $result->fetchRow()){
+			$html .= "
+				<tr>
+					<td>".$row['ticketname']."</td>
+					<td>".str_pad($row['id'],8,'0',STR_PAD_LEFT)."</td>
+					<td>".$row['groupname']."</td>
+					<td>".$row['customer']."</td>
+					<td>".$row['username']."</td>
+					<td>".$locate->Translate($row['status'])."</td>
+					<td>".$row['memo']."</td>
+				</tr>";
+		}
+		$html .= "</table>";
+		return $html;
+	}
+
+	function getOriResult($Id){
+		global $db;
+		$sql = "SELECT * FROM ticket_details WHERE id='".$Id."' ;";
+		astercrm::events($sql);
+		$result = & $db->getRow($sql);
+		return $result;
+	}
+
+	function ticketOpLogs($operate,$op_field = '',$op_ori_value = '',$op_new_value = '',$curOwner,$groupid){
+		global $db;
+		$sql = "INSERT INTO `ticket_op_logs` SET operate='".$operate."',`op_field`='".$op_field."',`op_ori_value`='".$op_ori_value."',`op_new_value`='".$op_new_value."',`curOwner`='".$curOwner."',`operator`='".$_SESSION['curuser']['username']."',`groupid`='".$groupid."',optime=now() ;";
+		//print_r($sql);exit;
+		astercrm::events($sql);
+		$res =& $db->query($sql);
+		return $res;
+	}
+
+	function getAssignToName($assignto){
+		global $db;
+		$sql = "SELECT username FROM astercrm_account WHERE id='".$assignto."' ";
+		astercrm::events($sql);
+		$username = & $db->getOne($sql);
+		return $username;
 	}
 }
 ?>

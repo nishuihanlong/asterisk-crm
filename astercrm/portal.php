@@ -509,6 +509,54 @@ $clientDst = $_REQUEST['clientdst'];
 			document.getElementById("SmartMatchDiv").style.visibility="hidden";
 			if(objTimer) window.clearInterval(objTimer);
 		}
+
+		var divTicketTop,divTicketLeft,divTicketWidth,divTicketHeight,docTicketHeight,docTicketWidth,objTicketTimer,t_i = 0; 
+		function getTicketNoticeMsg() {
+			try{ 
+				divTicketTop = parseInt(document.getElementById("ticketNoticDiv").style.top,10);
+				divTicketLeft = parseInt(document.getElementById("ticketNoticDiv").style.left,10); 
+				divTicketHeight = parseInt(document.getElementById("ticketNoticDiv").offsetHeight,10); 
+				divTicketWidth = parseInt(document.getElementById("ticketNoticDiv").offsetWidth,10); 
+				docTicketWidth = document.documentElement.clientWidth; 
+				docTicketHeight = document.documentElement.clientHeight; 
+				document.getElementById("ticketNoticDiv").style.top = parseInt(document.documentElement.scrollTop,10) + docTicketHeight + 10 +'px';// divHeight 
+				document.getElementById("ticketNoticDiv").style.left = parseInt(document.documentElement.scrollLeft,10) + docTicketWidth - divTicketWidth +'px';
+				document.getElementById("ticketNoticDiv").style.visibility="visible";
+				objTicketTimer = window.setInterval("moveTicketNoticeDiv()",10) ;
+			} 
+			catch(e){} 
+		}
+
+		function resizeTicketNoticeDiv() {
+			t_i+=1 
+			//if(i>600) closeTicketNotice(); //自动消失
+			try{ 
+				divTicketHeight = parseInt(document.getElementById("ticketNoticDiv").offsetHeight,10);
+				divTicketWidth = parseInt(document.getElementById("ticketNoticDiv").offsetWidth,10);
+				docTicketWidth = document.documentElement.clientWidth; 
+				docTicketHeight = document.documentElement.clientHeight; 
+				document.getElementById("ticketNoticDiv").style.top = docTicketHeight - divTicketHeight + parseInt(document.documentElement.scrollTop,10) +'px';
+				document.getElementById("ticketNoticDiv").style.left = docTicketWidth - divTicketWidth + parseInt(document.documentElement.scrollLeft,10) + 'px';
+			} 
+			catch(e){} 
+		} 
+
+		function moveTicketNoticeDiv() {
+			try {
+				if(parseInt(document.getElementById("ticketNoticDiv").style.top,10) <= (docTicketHeight - divTicketHeight + parseInt(document.documentElement.scrollTop,10))) { 
+					window.clearInterval(objTicketTimer);
+					objTicketTimer = window.setInterval("resizeTicketNoticeDiv()",1);
+				} 
+				divTicketTop = parseInt(document.getElementById("ticketNoticDiv").style.top,10) ;
+				document.getElementById("ticketNoticDiv").style.top = divTicketTop - 1 +'px';
+			} 
+			catch(e){} 
+		} 
+
+		function closeTicketNotice() {
+			document.getElementById("ticketNoticDiv").style.visibility="hidden";
+			if(objTicketTimer) window.clearInterval(objTicketTimer);
+		}
 		
 		function showMsgBySmartMatch(msgtype,msg) {
 			if (document.getElementById(msgtype)){
@@ -870,6 +918,8 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 							style="left: 300px; top: 200px;width: 500px"></div>
 						<div id="formLastestNote"  class="formDiv drsElement" 
 							style="left: 350px; top: 150px;width: 500px"></div>
+						<div id="formSubordinateTicketDiv"  class="formDiv drsElement" 
+						style="left: 200px; top: 200px;width:800px;"></div>
 					</fieldset>
 				</td>
 			</tr>
@@ -925,7 +975,23 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 					<img src="skin/default/images/close.png" onClick='closeSmartMatch();return false;' title="Close Window" style="cursor: pointer; height: 16px;">
 				</th>
 			</tr>			
-			<tr><td><fieldset><legend><?echo $locate->Translate("which customer has similar number"); ?>:</legend><div id="smartMsgDiv" style="width: 280px;height:160px;OVERFLOW-y:auto;OVERFLOW-x:auto;"></div></fieldset></td></tr></table></div>
+			<tr><td><fieldset><legend><?echo $locate->Translate("which customer has similar number"); ?>:</legend><div id="smartMsgDiv" style="width: 280px;height:160px;OVERFLOW-y:auto;OVERFLOW-x:auto;"></div></fieldset></td></tr></table>
+	</div>
+	<div id='ticketNoticDiv' style="position:absolute;z-index:99999; left:0px;visibility:hidden;width: 320px;">
+		<table width="100%" border="1" align="center" class="adminlist">
+			<tr>
+				<th align="right" valign="center" >
+					<img src="skin/default/images/close.png" onClick='closeTicketNotice();return false;' title="Close Window" style="cursor: pointer; height: 16px;">
+				</th>
+			</tr>
+			<tr>
+				<td><fieldset>
+					<legend><?php echo $locate->Translate("tickets notice"); ?>:</legend>
+					<div id="noticeTicketMsgDiv" style="width: 280px;height:80px;OVERFLOW-y:auto;OVERFLOW-x:auto;"></div>
+				</fieldset></td>
+			</tr>
+		</table>
+	</div>
 	<div id="divCopyright"></div>
 	</body>
 	<script type="text/javascript">

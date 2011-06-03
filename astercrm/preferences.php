@@ -597,6 +597,31 @@ require_once('preferences.common.php');
 		<div id="divSysEnableCode" name="divSysEnableCode"></div>
 	</td>
   </tr>
+   <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysRequireReasonWhenPause" 
+	name="SysRequireReasonWhenPause">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;require_reason_when_pause</td> 	<td width="200" align="left" valign="top" >
+		<select name="iptSysRequireReasonWhenPause" id="iptSysRequireReasonWhenPause">
+			<option value="no">no</option>
+			<option value="yes">yes</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysRequireReasonWhenPause" name="divSysRequireReasonWhenPause"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysCreateTicket" 
+	name="SysCreateTicket">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create_ticket</td> 	<td width="200" align="left" valign="top" >
+		<select name="iptSysCreateTicket" id="iptSysCreateTicket">
+			<option value="default">default</option>
+			<option value="system">system</option>
+			<option value="group">group</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysCreateTicket" name="divSysCreateTicket"></div>
+	</td>
+  </tr>
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>

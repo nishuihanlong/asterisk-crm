@@ -258,6 +258,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("notice interval").'</td>
+					<td align="left"><input type="text" id="notice_interval" name="notice_interval" size="11" maxlength="11"> ('.$locate->Translate("m").')</td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("clear popup").'(s)</td>
 					<td align="left"><input type="text" id="clear_popup" name="clear_popup" size="5" maxlength="5"></td>
 				</tr>
@@ -347,6 +351,10 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("agent interval").'</td>
 					<td align="left"><input type="text" id="agentinterval" name="agentinterval" size="25" maxlength="100" value="'.$account['agentinterval'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("notice interval").'</td>
+					<td align="left"><input type="text" id="notice_interval" name="notice_interval" size="11" maxlength="11" value="'.$account['notice_interval'].'"> ('.$locate->Translate("m").')</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("clear popup").'(s)</td>

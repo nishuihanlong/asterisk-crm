@@ -17,6 +17,7 @@ function init(){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("divNav","innerHTML",common::generateManageNav($skin,$_SESSION['curuser']['country'],$_SESSION['curuser']['language']));
 	$objResponse->addAssign("btnTicketCategory","value",$locate->Translate("ticketcategory_manage"));
+	$objResponse->addAssign("btnTicketOplogs","value",$locate->Translate("ticket_details_operate_logs"));
 	$objResponse->addAssign("btnTicket","value",$locate->Translate("ticket_manage"));
 	$_SESSION['ParentID'] = '';
 	$objResponse->addAssign("divCopyright","innerHTML",common::generateCopyright($skin));
@@ -120,6 +121,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields = array();
 	$fields[] = 'ticketcategoryname';
 	$fields[] = 'ticketname';
+	$fields[] = 'id';// ticket id
 	$fields[] = 'customer';
 	$fields[] = 'assignto';
 	$fields[] = 'status';
@@ -131,6 +133,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("ALL")."<input type='checkbox' onclick=\"ckbAllOnClick(this);\"><BR \>";//"select all for delete";
 	$headers[] = $locate->Translate("TicketCategory Name");
 	$headers[] = $locate->Translate("Ticket Name");
+	$headers[] = $locate->Translate("TicketDetail ID");
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Customer");
 	$headers[] = $locate->Translate("AssignTo");
@@ -165,6 +168,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= '';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","ticketcategoryname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","ticketname","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
@@ -232,6 +236,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc['select_id'] = $row['id'];
 		$rowc[] = $row['ticketcategoryname'];
 		$rowc[] = $row['ticketname'];
+		$rowc[] = str_pad($row['id'],8,'0',STR_PAD_LEFT);
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['customer'];
 		$rowc[] = $row['username'];
@@ -273,13 +278,33 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
-
+	
+	$validParentTicket = true;
+	if($f['parent_id'] != '') {
+		if(!preg_match('/^[\d]*$/',$f['parent_id'])){
+			$objResponse->addAlert($locate->Translate("Parent TicketDetail ID must be integer"));
+			return $objResponse->getXML();
+		}
+		//验证写入的parent_id 是否存在
+		$validParentTicket = Customer::validParentTicketId($f['parent_id']);
+	}
+	
 	// check over
 	//if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
 
 	$respOk = Customer::insertTicketDetail($f); // add a new ticket
 	
 	if ($respOk == 1){
+		if(!$validParentTicket) {
+			$objResponse->addAlert($locate->Translate("Save Success,but Parent TicketDetail ID is not exists"));
+		}
+
+		// track the ticket_op_logs
+		if($f['assignto'] == 0) {
+			$f['assignto'] = '';
+		}
+		Customer::ticketOpLogs('add','status','','new',$f['assignto'],$f['groupid']);
+
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("add_ticket_details"));
@@ -333,7 +358,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	if($optionFlag == "export"  || $optionFlag == "exportcsv"){
 		$joinstr = Customer::createSqlWithStype($searchField,$searchContent,$searchType,'ticket_details'); //得到要导出的sql语句
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,ticket_details.status,customer.customer,ticket_details.memo,ticket_details.cretime,ticket_details.creby FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto";
+		$sql = "SELECT ticketcategory.ticketname as ticketcategoryname,tickets.ticketname as ticketname, customer,ticket_details.status,customer.customer,ticket_details.id,ticket_details.memo,ticket_details.cretime,ticket_details.creby FROM ticket_details LEFT JOIN tickets AS ticketcategory ON ticketcategory.id = ticket_details.ticketcategoryid LEFT JOIN tickets AS tickets ON tickets.id = ticket_details.ticketid LEFT JOIN customer ON customer.id = ticket_details.customerid LEFT JOIN astercrm_account ON astercrm_account.id = ticket_details.assignto";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql.'';
 		
@@ -444,11 +469,46 @@ function update($f){
 		return $objResponse->getXML();
 	}
 
+	$validParentTicket = true;
+	if($f['parent_id'] != '') {
+		if(!preg_match('/^[\d]*$/',$f['parent_id'])){
+			$objResponse->addAlert($locate->Translate("Parent TicketDetail ID must be integer"));
+			return $objResponse->getXML();
+		}
+		//验证写入的parent_id 是否存在
+		$validParentTicket = Customer::validParentTicketId($f['parent_id']);
+	}
+
+	$oriResult = Customer::getOriResult($f['id']);
+
 	//if ( $f['usertype'] == 'admin' ) $f['groupid'] = 0;
 	// check over
 	$respOk = Customer::updateTicketDetail($f);
 
 	if($respOk){
+		if(!$validParentTicket) {
+			$objResponse->addAlert($locate->Translate("Update Success,but Parent TicketDetail ID is not exists"));
+		}
+
+		$new_assign = '';
+		if($f['assignto'] != 0) {
+			$new_assign = Customer::getAssignToName($f['assignto']);
+		}
+
+		$ori_assign = '';
+		if($oriResult['assignto'] != 0) {
+			$ori_assign = Customer::getAssignToName($oriResult['assignto']);
+		}
+
+		// track the ticket_op_logs
+		if($oriResult['status'] != $f['status']) {
+			Customer::ticketOpLogs('update','status',$oriResult['status'],$f['status'],$new_assign,$f['groupid']);
+		}
+
+		if($oriResult['assignto'] != $f['assignto']) {
+			Customer::ticketOpLogs('update','assignto',$ori_assign,$new_assign,$new_assign,$f['groupid']);
+		}
+		
 		$html = createGrid(0,ROWSXPAGE);
 		$objResponse->addAssign("grid", "innerHTML", $html);
 		$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("update_rec"));
@@ -458,6 +518,20 @@ function update($f){
 	}
 	
 	return $objResponse->getXML();
+}
+
+
+function viewSubordinateTicket($pid){
+	global $locate;
+	$html = Table::Top( $locate->Translate("view_subordinate_ticketdetails"),"formSubordinateTicketDiv"); 
+	$html .= Customer::subordinateTicket($pid);
+	$html .= Table::Footer();
+	// End edit zone
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formSubordinateTicketDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formSubordinateTicketDiv", "innerHTML", $html);
+	return $objResponse->getXML();
+	
 }
 
 $xajax->processRequests();

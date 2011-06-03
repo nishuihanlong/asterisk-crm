@@ -133,7 +133,7 @@ function init(){
 						<input type="checkbox" '.$curInputAbled.' onclick="setStatus(this);" id="'.$campaign['id'].'-ckb" '.$status.'>'.$locate->Translate("Start").'
 						<input type="radio" '.$curInputAbled.' name="'.$campaign['id'].'-limittpye[]" value="channel" '.$channel_checked.'>
 						'.$locate->Translate("Limited by max calls").' 
-						<input type="text" '.$curInputAbled.' value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="2" maxlength="2" class="inputlimit" onblur="setMaxChannel(this);">
+						<input type="text" '.$curInputAbled.' value="'.$campaign['max_channel'].'" id="'.$campaign['id'].'-maxchannel" name="'.$campaign['id'].'-maxchannel" size="3" maxlength="3" class="inputlimit" onblur="setMaxChannel(this);">
 						</div>';
 					}
 				}

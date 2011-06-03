@@ -5,10 +5,10 @@
 
 dbtype = mysql
 dbport = 3306
-dbhost = localhost
-dbname = astercc01
-username = root
-password = 
+dbhost = 127.0.0.1
+dbname = astercc
+username = astercc
+password = asterccsecret
 
 [asterisk]
 ;
@@ -131,6 +131,15 @@ update_online_interval = 2
 ;if enable sms popup   disabled/callerid/campaign_number/trunk_number
 enable_sms = campaign_number
 
+;if set to yes,will popup a tip to record the reasion when the agent pause the queue
+;if set to no,will not popup a tip
+require_reason_when_pause = no
+
+;if set default,will create the ticket: systemadmin for all user; groupadmin for all group user; agent for self.
+;if set system,allow a ticket to be assigned to any user regardless of the group they belong to.
+;if set group,allow a ticket to be assigned to any user who belongs to same group
+create_ticket = default
+
 ; if need display the recend cdr link
 display_recent_cdr = 1
 
@@ -178,7 +187,7 @@ open_new_window = internal
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = http://192.168.1.30/test.php
+external_crm_default_url = 
 
 ;
 ; when using external crm, put pop up page here
@@ -187,7 +196,7 @@ external_crm_default_url = http://192.168.1.30/test.php
 ; %method		dial_out or dial_in
 ; %uniqueid
 ; %calldate     starttime of the call
-external_crm_url = http://192.168.1.30/test.php
+external_crm_url = 
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
@@ -202,13 +211,13 @@ checkworkexten = yes
 
 [survey]
 ; if need a note after survey option
-enable_surveynote = 1
+enable_surveynote = 0
 
 ; if need close all popups after survey saved
-close_popup_after_survey = 1
+close_popup_after_survey = 0
 
 [diallist]
-popup_diallist = 1
+popup_diallist = 0
 
 [billing]
 ;if astercrm work with asterbilling(set to 1,call which astercrm agent dialed could be billed)
@@ -231,6 +240,6 @@ key =
 
 [error_report]
 ;sets the error level
-error_report_level = 1
+error_report_level = 0
 
 ;?>

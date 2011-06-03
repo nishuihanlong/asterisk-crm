@@ -57,4 +57,6 @@ $if_auto_popup_note_info = 'if auto popup note info';
 $if_share_note_default = 'if share note default';
 $if_enable_code = 'if enable code';
 $the_smaller_the_value_the_more_accurate = "the smaller the value the more accurate";
+$require_reason_when_pause = 'if set to yes,will popup a tip to record the reasion when the agent pause the queueif set to no,will not popup a tip';
+$create_ticket = 'if set default,will create the ticket: systemadmin for all user; groupadmin for all group user; agent for self.if set system,allow a ticket to be assigned to any user regardless of the group they belong to.if set group,allow a ticket to be assigned to any user who belongs to same group';
 ?>

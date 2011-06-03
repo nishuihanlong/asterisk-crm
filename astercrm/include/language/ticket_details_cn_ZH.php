@@ -29,4 +29,9 @@ $none = '无';
 $please_select = '请选择';
 $cancel = '取消';
 $group_name = "分组名";
+$ticketdetail_id = "ID";
+$view_subordinate_ticketdetails = "查看下级任务详细";
+$ticket_details_operate_logs = "任务详细操作日志";
+$subordinate_ticketdetails = "下级任务详细";
+$parent_ticketdetail_id = "上级任务详细ID";
 ?>

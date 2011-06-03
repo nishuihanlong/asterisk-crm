@@ -153,6 +153,15 @@ function init(){
 	if ( is_numeric($config['system']['status_check_interval']) ) $check_interval = $config['system']['status_check_interval'] * 1000;
 
 	$objResponse->addAssign("checkInterval","value", $check_interval );
+
+	if($_SESSION['curuser']['usertype'] == 'agent') {
+		$noticeInterval = Customer::getNoticeInterval($_SESSION['curuser']['groupid']);
+		$_SESSION['ticketNoticeTime'] = '0000-00-00 00:00:00';
+		$_SESSION['noticeInterval'] = $noticeInterval;
+	} else {
+		unset($_SESSION['ticketNoticeTime']);
+		unset($_SESSION['noticeInterval']);
+	}
 	
 	$html = $locate->Translate("welcome").':'.$_SESSION['curuser']['username'].',';
 	$html .= $locate->Translate("extension").$_SESSION['curuser']['extension'];
@@ -224,7 +233,6 @@ function init(){
 
 		//$objResponse->addAssign("formDiallistPannel", "style.visibility", "visible");
 	}
-
 
 	foreach ($_SESSION['curuser']['extensions'] as $extension){
 		$extension = trim($extension);
@@ -345,6 +353,8 @@ function init(){
 */
 function listenCalls($aFormValues){
 	global $config,$locate;
+
+	//print_r($_SESSION['ticketNoticeTime']);exit;
 	//print_r($aFormValues);exit;
 	
 	$objResponse = new xajaxResponse();
@@ -378,6 +388,33 @@ function listenCalls($aFormValues){
 //			$objResponse->addAssign("breakStatus","value", -1);
 //		}
 //	}
+
+	
+	//根据后台 astercrm_accountgroup里设置的参数 notice_interval 来判断多少分钟的间隔执行 ticket 的提示
+	if($_SESSION['curuser']['usertype'] == 'agent') {
+		$noticeInterval = $_SESSION['noticeInterval'];
+		//print_r($_SESSION['ticketNoticeTime'].' - '.date("Y-m-d H:i:s",strtotime($_SESSION['ticketNoticeTime']." + $noticeInterval minutes")));exit;
+		//print_r($noticeInterval > 0 && (strtotime($_SESSION['ticketNoticeTime']." + $noticeInterval minutes") <= strtotime(date("Y-m-d"))));exit;
+		
+		$noticeArray = array();
+		if($noticeInterval > 0 && (strtotime($_SESSION['ticketNoticeTime']." + $noticeInterval minutes") <= strtotime(date("Y-m-d H:i:s")))) {
+			$noticeArray = Customer::ticketNoticeValid();
+
+			//更新右上角的mytickets处的数值
+			$curTicketmsg = Customer::getTicketInWork();
+			$objResponse->addAssign("curticketMsg", "innerHTML", $curTicketmsg);
+		}
+		
+		if(!empty($noticeArray)) {
+			$objResponse->addAssign("noticeTicketMsgDiv","innerHTML",str_replace('%d',count($noticeArray),$locate->Translate('You have %d new tickets')));
+			$objResponse->addScript('getTicketNoticeMsg();');
+
+			$_SESSION['ticketNoticeTime'] = date("Y-m-d H:i:s");//更新session里的提醒时间
+		}/* else {
+			$objResponse->addAssign("noticeTicketMsgDiv","innerHTML",'');
+			$objResponse->addScript('closeTicketNotice();');
+		}*/
+	}
 	
 	//根据后台设置的update_online_interval 判断多长时间进行更新astecrm_account表里的last_update_time字段值
 	if(isset($_SESSION['curuser']['update_online_interval']) && $_SESSION['curuser']['update_online_interval'] != ''){
@@ -2174,9 +2211,30 @@ function saveTicket($f) {
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
+
+	$validParentTicket = true;
+	if($f['parent_id'] != '') {
+		if(!preg_match('/^[\d]*$/',$f['parent_id'])){
+			$objResponse->addAlert($locate->Translate("Parent TicketDetail ID must be integer"));
+			return $objResponse->getXML();
+		}
+		//验证写入的parent_id 是否存在
+		$validParentTicket = Customer::validParentTicketId($f['parent_id']);
+	}
+
 	$result = Customer::insertTicket($f);
 	if($result == 1) {
-		$objResponse->addAlert($locate->Translate("Add ticket success"));
+		if(!$validParentTicket) {
+			$objResponse->addAlert($locate->Translate("Add ticket success,but Parent TicketDetail ID is not exists"));
+		}
+
+		// track the ticket_op_logs
+		$new_assign = '';
+		if($f['assignto'] != 0) {
+			$new_assign = Customer::getAssignToName($f['assignto']);
+		}
+		Customer::ticketOpLogs('add','status','','new',$new_assign,$f['groupid']);
+
 		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
 		$objResponse->addScript('AllTicketOfMyself('.$f['customerid'].');');
 	} else {
@@ -2192,9 +2250,31 @@ function saveNewTicket($f) {
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
+	
+	$validParentTicket = true;
+	if($f['parent_id'] != '') {
+		if(!preg_match('/^[\d]*$/',$f['parent_id'])){
+			$objResponse->addAlert($locate->Translate("Parent TicketDetail ID must be integer"));
+			return $objResponse->getXML();
+		}
+		//验证写入的parent_id 是否存在
+		$validParentTicket = Customer::validParentTicketId($f['parent_id']);
+	}
+
 	$result = Customer::insertTicket($f);
 	if($result == 1) {
-		$objResponse->addAlert($locate->Translate("Add ticket success"));
+		if(!$validParentTicket) {
+			$objResponse->addAlert($locate->Translate("Add ticket success,but Parent TicketDetail ID is not exists"));
+		}
+
+		// track the ticket_op_logs
+		$new_assign = '';
+		if($f['assignto'] != 0) {
+			$new_assign = Customer::getAssignToName($f['assignto']);
+		}
+		Customer::ticketOpLogs('add','status','','new',$new_assign,$f['groupid']);
+
+		//$objResponse->addAlert($locate->Translate("Add ticket success"));
 		$objResponse->addAssign("formTicketDetailDiv", "style.visibility", "hidden");
 		$objResponse->addScript("showMyTickets('','agent_tickets')");
 	} else {
@@ -2454,11 +2534,47 @@ function updateCurTicket($f) {
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
 	}
+
+	$validParentTicket = true;
+	if($f['parent_id'] != '') {
+		if(!preg_match('/^[\d]*$/',$f['parent_id'])){
+			$objResponse->addAlert($locate->Translate("Parent TicketDetail ID must be integer"));
+			return $objResponse->getXML();
+		}
+		//验证写入的parent_id 是否存在
+		$validParentTicket = Customer::validParentTicketId($f['parent_id']);
+	}
+
+	$oriResult = Customer::getOriResult($f['id']);
+
 	$respOk = Customer::updateCurTicket($f);
 
 	$accountid = Customer::getAccountid();
 	
 	if($respOk){
+		if(!$validParentTicket) {
+			$objResponse->addAlert($locate->Translate("Update Success,but Parent TicketDetail ID is not exists"));
+		}
+
+		$new_assign = '';
+		if($f['assignto'] != 0) {
+			$new_assign = Customer::getAssignToName($f['assignto']);
+		}
+
+		$ori_assign = '';
+		if($oriResult['assignto'] != 0) {
+			$ori_assign = Customer::getAssignToName($oriResult['assignto']);
+		}
+
+		// track the ticket_op_logs
+		if($oriResult['status'] != $f['status']) {
+			Customer::ticketOpLogs('update','status',$oriResult['status'],$f['status'],$new_assign,$f['groupid']);
+		}
+
+		if($oriResult['assignto'] != $f['assignto']) {
+			Customer::ticketOpLogs('update','assignto',$ori_assign,$new_assign,$new_assign,$f['groupid']);
+		}
+
 		$html = Table::Top($locate->Translate("My Tickets"),"formCurTickets");
 		$html .= astercrm::createTikcetGrid($accountid,'agent_tickets',0,ROWSXPAGE,'','','','formCurTickets');
 		$html .= Table::Footer();
@@ -2803,6 +2919,19 @@ function addNewTicket(){
 	$objResponse->addAssign("formTicketDetailDiv", "innerHTML", $html);
 	$objResponse->addScript("relateBycategoryID(document.getElementById('ticketcategoryid').value)");
 	return $objResponse->getXML();
+}
+
+function viewSubordinateTicket($pid){
+	global $locate;
+	$html = Table::Top( $locate->Translate("view_subordinate_ticketdetails"),"formSubordinateTicketDiv"); 
+	$html .= Customer::subordinateTicket($pid);
+	$html .= Table::Footer();
+	// End edit zone
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("formSubordinateTicketDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formSubordinateTicketDiv", "innerHTML", $html);
+	return $objResponse->getXML();
+	
 }
 
 $xajax->processRequests();

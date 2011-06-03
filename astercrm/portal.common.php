@@ -146,6 +146,7 @@ $xajax->registerFunction("relateByGroup");
 $xajax->registerFunction("addNewTicket");
 $xajax->registerFunction("saveNewTicket");
 $xajax->registerFunction("showHighestAndLastestNote");
+$xajax->registerFunction("viewSubordinateTicket");
 
 
 if ($config['system']['enable_external_crm'] == false){

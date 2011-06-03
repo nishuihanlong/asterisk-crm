@@ -285,11 +285,11 @@ class ScrollTable{
 					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'><a href="?" onClick="var l= getPosLeft(this); var t=getPosTop(this);xajax_playmonitor(\''.$value.'\',l,t);return false;" class="info"><span>'.basename($value).'</span><img src="skin/default/images/play.gif" border="0"></a></td>'."\n";
 				}elseif($key == 'select_id'){
 					$row .= '<td id="'.$nameCell.'" style="cursor: pointer;" '.$this->colAttrib[$ind-1].'><input type="checkbox" id="ckb[]" name="ckb[]" value="'.$value.'" ></td>'."\n";
-				}elseif($table == 'ticket_details' && $key == 1 && $divName =='formCurTickets'){
+				}elseif($table == 'ticket_details' && $key == 2 && $divName =='formCurTickets'){
 					if($value != '') {
 						$row .= '<td id="'.$nameCell.'" style="cursor: pointer;'.$styleStr.'" '.$this->colAttrib[$ind-1].'><a href="?" onclick="curTicketDetail('.$arr[0].');return false;">'.$value.'</a></td>'."\n";
 					}
-				}elseif($table == 'ticket_details' && $key == 2 && $divName =='formCurTickets'){
+				}elseif($table == 'ticket_details' && $key == 3 && $divName =='formCurTickets'){
 					if($value != '') {
 						$row .= '<td id="'.$nameCell.'" style="cursor: pointer;'.$styleStr.'" '.$this->colAttrib[$ind-1].'><a href="?" onclick="curCustomerDetail(\''.$value.'\');return false;">'.$value.'</a></td>'."\n";
 					}

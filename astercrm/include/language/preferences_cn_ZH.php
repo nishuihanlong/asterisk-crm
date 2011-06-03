@@ -82,4 +82,6 @@ $if_auto_popup_note_info = '控制弹屏时是否自动弹出note信息';
 $if_share_note_default = '控制添加note信息时，默认是否为共享';
 $if_enable_code = '是否启用code';
 $the_smaller_the_value_the_more_accurate = "数值越小越精准";
+$require_reason_when_pause = '如果设置成yes,当坐席点击暂停的时候会弹出一个弹屏要求输入暂停原因,如果设置成no,就不会弹出这个弹屏';
+$create_ticket = '如果设置成default,系统管理员可以给所有人增加ticket,组管理员只能给本组人添加ticket,坐席只能给自己添加ticket.如果设置成system,可以给任意人添加ticket.如果设置成group,只能给本组人添加ticket';
 ?>
