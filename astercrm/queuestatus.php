@@ -43,7 +43,7 @@ require_once('queuestatus.common.php');
 			
 		//-->
 		</SCRIPT>
-
+		
 		<script language="JavaScript" src="js/astercrm.js"></script>
 
 	<LINK href="skin/default/css/dragresize.css" type=text/css rel=stylesheet>
@@ -54,6 +54,7 @@ require_once('queuestatus.common.php');
 	<body onload="init();">
 		<div id="divNav"></div>
 		<div id="AMIStatudDiv" name="AMIStatudDiv"></div>
+		<div id="formRequiredReasionDiv"  class="formDiv drsElement" style="left: 250px; top: 50px;width:500px;"></div>
 
 		<div id="divStatus" align="center"></div>
 		<div id="channels" align="left" class="groupsystem_channel"></div>

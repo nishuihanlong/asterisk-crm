@@ -107,7 +107,7 @@ require_once('login.common.php');
 				</div>
 				<div class="right">&nbsp;</div>
 				<div class="right">&copy; 2004-2011 <a href="http://astercc.org" target="_blank">astercc.org</a></div>
-				<div class="right">version: 0.15 in asterCC 0.21 beta</div>
+				<div class="right">version: 0.16 in asterCC 0.21</div>
 		  </div></form></div>
 	    </div>
 	</body>

@@ -27,5 +27,6 @@ $ticket_category = "任务类别";
 $useronline_report = "账户在线报表";
 $user_online = "账户在线";
 $sms_templates = "sms模版";
-$user_type = "用户类型"
+$user_type = "用户类型";
+$agent_queue_log = "坐席队列日志";
 ?>

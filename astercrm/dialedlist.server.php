@@ -177,11 +177,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'callresult';
 	$fields[] = 'billsec';
 	$fields[] = 'billsec_leg_a';
-//	$fields[] = 'response';		
 	$fields[] = 'customer';
 	$fields[] = 'customername';
 //	$fields[] = 'uniqueid';
 	$fields[] = 'campaignresult';
+	$fields[] = 'response';
 	$fields[] = 'detect';
 	$fields[] = 'transfertime';
 	$fields[] = 'transfertarget';
@@ -199,11 +199,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Billsec");
 	$headers[] = $locate->Translate("Total Billsec");
 	$headers[] = $locate->Translate("Call Result");
-//	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Customer");
 	$headers[] = $locate->Translate("Name");
 //	$headers[] = $locate->Translate("Uniqueid");
 	$headers[] = $locate->Translate("Campaign Result");
+	$headers[] = $locate->Translate("Response");
 	$headers[] = $locate->Translate("Detect");
 	$headers[] = $locate->Translate("Transfertime");
 	$headers[] = $locate->Translate("Transfertarget");
@@ -222,7 +222,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
-//	$attribsHeader[] = 'width=""';
+	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -263,11 +263,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","billsec_leg_a","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","callresult","'.$divName.'","ORDERING");return false;\'';
-//	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customer","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","customername","'.$divName.'","ORDERING");return false;\'';
 //	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","uniqueid","'.$divName.'","ORDERING");return false;\'';	
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","campaignresult","'.$divName.'","ORDERING");return false;\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","response","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","detect","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","transfertime","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","transfertarget","'.$divName.'","ORDERING");return false;\'';
@@ -286,10 +286,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'campaigndialedlist.billsec';
 	$fieldsFromSearch[] = 'campaigndialedlist.billsec_leg_a';
 	$fieldsFromSearch[] = 'callresult';
-	$fieldsFromSearch[] = 'response';
 	$fieldsFromSearch[] = 'customer';
 	$fieldsFromSearch[] = 'customername';
 	$fieldsFromSearch[] = 'uniqueid';
+	$fieldsFromSearch[] = 'response';
 	$fieldsFromSearch[] = 'detect';
 	$fieldsFromSearch[] = 'campaignresult';
 	$fieldsFromSearch[] = 'transfertarget';
@@ -309,10 +309,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Billsec");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Total Billsec");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Call Result");
-	$fieldsFromSearchShowAs[] = $locate->Translate("Response");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Customer");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Uniqueid");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Response");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Detect");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Result");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Transfertarget");
@@ -364,11 +364,11 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = astercrm::FormatSec($row['billsec']);
 		$rowc[] = astercrm::FormatSec($row['billsec_leg_a']);
 		$rowc[] = $row['callresult'];
-//		$rowc[] = $row['response'];
 		$rowc[] = $row['customer'];
 		$rowc[] = $row['customername'];
 //		$rowc[] = $row['uniqueid'];		
 		$rowc[] = $row['campaignresult'];
+		$rowc[] = $row['response'];
 		$rowc[] = $row['detect'];
 		$rowc[] = $row['transfertime'];
 		$rowc[] = $row['transfertarget'];
@@ -404,7 +404,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	if($optionFlag == "export" || $optionFlag == "exportcsv"){
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'campaigndialedlist');
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT campaigndialedlist.dialednumber,customer.customer,campaigndialedlist.customername,campaigndialedlist.dialtime,campaigndialedlist.answertime,campaigndialedlist.duration,campaigndialedlist.billsec,campaigndialedlist.billsec_leg_a as total_billsec,campaigndialedlist.response,campaigndialedlist.campaignresult,campaigndialedlist.detect,campaigndialedlist.transfertime,campaigndialedlist.transfertarget,campaigndialedlist.resultby,campaigndialedlist.dialedby, groupname, campaignname,campaigndialedlist.dialedtime FROM campaigndialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaigndialedlist.groupid LEFT JOIN campaign ON campaign.id = campaigndialedlist.campaignid LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ";
+		$sql = "SELECT campaigndialedlist.dialednumber,customer.customer,campaigndialedlist.customername,campaigndialedlist.dialtime,campaigndialedlist.answertime,campaigndialedlist.duration,campaigndialedlist.billsec,campaigndialedlist.billsec_leg_a as total_billsec,campaigndialedlist.campaignresult,campaigndialedlist.response,campaigndialedlist.detect,campaigndialedlist.transfertime,campaigndialedlist.transfertarget,campaigndialedlist.resultby,campaigndialedlist.dialedby, groupname, campaignname,campaigndialedlist.dialedtime FROM campaigndialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaigndialedlist.groupid LEFT JOIN campaign ON campaign.id = campaigndialedlist.campaignid LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ";
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域

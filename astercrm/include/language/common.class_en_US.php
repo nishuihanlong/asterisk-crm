@@ -17,4 +17,5 @@ $knowledge				= "Knowledge";
 $useronline_report		= "Useronline Report";
 $user_online = "User Online";
 $sms_templates = "SMS Templates";
+$agent_queue_log = "Agent Queue Log";
 ?>

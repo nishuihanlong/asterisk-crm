@@ -179,7 +179,7 @@
   <div id="copyright" style="background-repeat:repeat-x;height:64px;margin-top:10px;text-align:center;">
 				<ul>
 				<li>2007-2010 asterBilling</li>
-				<li>version: 0.15 in asterCC 0.21 beta</li>
+				<li>version: 0.16 in asterCC 0.21</li>
 				</ul>
   </div>
   </div>

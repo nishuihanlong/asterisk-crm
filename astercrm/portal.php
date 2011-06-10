@@ -459,9 +459,21 @@ $clientDst = $_REQUEST['clientdst'];
 			} 
 		} 
 
+		var ticketNoticDivShow = '',smartMatchDivShow = '';//
+
 		var divTop,divLeft,divWidth,divHeight,docHeight,docWidth,objTimer,i = 0; 
 
 		function getSmartMatchMsg() {
+			var noticTicketDivHeight = 0;
+			if(document.getElementById("ticketNoticDiv").style.visibility == 'visible') {
+				ticketNoticDivShow = 'first';
+				smartMatchDivShow = 'second';
+				noticTicketDivHeight = document.getElementById("ticketNoticDiv").offsetHeight;
+			} else {
+				smartMatchDivShow = 'first';
+				ticketNoticDivShow = 'second';
+			}
+
 			try{ 
 				divTop = parseInt(document.getElementById("SmartMatchDiv").style.top,10);			
 				divLeft = parseInt(document.getElementById("SmartMatchDiv").style.left,10); 
@@ -469,7 +481,7 @@ $clientDst = $_REQUEST['clientdst'];
 				divWidth = parseInt(document.getElementById("SmartMatchDiv").offsetWidth,10); 
 				docWidth = document.documentElement.clientWidth; 
 				docHeight = document.documentElement.clientHeight; 
-				document.getElementById("SmartMatchDiv").style.top = parseInt(document.documentElement.scrollTop,10) + docHeight + 10 +'px';// divHeight 
+				document.getElementById("SmartMatchDiv").style.top = parseInt(document.documentElement.scrollTop,10) + docHeight - noticTicketDivHeight + 10 +'px';// divHeight 
 				document.getElementById("SmartMatchDiv").style.left = parseInt(document.documentElement.scrollLeft,10) + docWidth - divWidth +'px' ;
 				//document.getElementById("SmartMatchDiv").style.display="" ;
 				document.getElementById("SmartMatchDiv").style.visibility="visible";
@@ -486,7 +498,15 @@ $clientDst = $_REQUEST['clientdst'];
 				divWidth = parseInt(document.getElementById("SmartMatchDiv").offsetWidth,10);
 				docWidth = document.documentElement.clientWidth; 
 				docHeight = document.documentElement.clientHeight; 
-				document.getElementById("SmartMatchDiv").style.top = docHeight - divHeight + parseInt(document.documentElement.scrollTop,10) +'px';
+
+				if(ticketNoticDivShow == 'first') {
+					noticTicketDivHeight = document.getElementById("ticketNoticDiv").offsetHeight;
+
+					document.getElementById("SmartMatchDiv").style.top = docHeight - divHeight + parseInt(document.documentElement.scrollTop,10) + 5 - noticTicketDivHeight +'px';
+				} else {
+					document.getElementById("SmartMatchDiv").style.top = docHeight - divHeight + parseInt(document.documentElement.scrollTop,10) +'px';
+				}
+				
 				document.getElementById("SmartMatchDiv").style.left = docWidth - divWidth + parseInt(document.documentElement.scrollLeft,10) + 'px';
 			} 
 			catch(e){} 
@@ -499,12 +519,23 @@ $clientDst = $_REQUEST['clientdst'];
 					objTimer = window.setInterval("resizeDiv()",1);
 				} 
 				divTop = parseInt(document.getElementById("SmartMatchDiv").style.top,10) ;
-				document.getElementById("SmartMatchDiv").style.top = divTop - 1 +'px';
+
+				if(ticketNoticDivShow == 'first') {
+					noticTicketDivHeight = document.getElementById("ticketNoticDiv").offsetHeight;
+
+					document.getElementById("SmartMatchDiv").style.top = divTop - 1 - noticTicketDivHeight +'px';
+				} else {
+					document.getElementById("SmartMatchDiv").style.top = divTop - 1 +'px';
+				}
 			} 
 			catch(e){} 
 		} 
 
 		function closeSmartMatch() {
+			if(ticketNoticDivShow != '') {
+				ticketNoticDivShow = 'first';
+				smartMatchDivShow = ''
+			}
 			//document.getElementById("SmartMatchDiv").style.display="none"; 
 			document.getElementById("SmartMatchDiv").style.visibility="hidden";
 			if(objTimer) window.clearInterval(objTimer);
@@ -512,6 +543,17 @@ $clientDst = $_REQUEST['clientdst'];
 
 		var divTicketTop,divTicketLeft,divTicketWidth,divTicketHeight,docTicketHeight,docTicketWidth,objTicketTimer,t_i = 0; 
 		function getTicketNoticeMsg() {
+			document.getElementById("ticketNoticDiv").style.visibility="hidden";
+			if(objTicketTimer) window.clearInterval(objTicketTimer);
+
+			if(document.getElementById("SmartMatchDiv").style.visibility == 'visible') {
+				smartMatchDivShow = 'first';
+				ticketNoticDivShow = 'second';
+				noticTicketDivHeight = document.getElementById("SmartMatchDiv").offsetHeight;
+			} else {
+				ticketNoticDivShow = 'first';
+				smartMatchDivShow = 'second';
+			}
 			try{ 
 				divTicketTop = parseInt(document.getElementById("ticketNoticDiv").style.top,10);
 				divTicketLeft = parseInt(document.getElementById("ticketNoticDiv").style.left,10); 
@@ -535,7 +577,15 @@ $clientDst = $_REQUEST['clientdst'];
 				divTicketWidth = parseInt(document.getElementById("ticketNoticDiv").offsetWidth,10);
 				docTicketWidth = document.documentElement.clientWidth; 
 				docTicketHeight = document.documentElement.clientHeight; 
-				document.getElementById("ticketNoticDiv").style.top = docTicketHeight - divTicketHeight + parseInt(document.documentElement.scrollTop,10) +'px';
+
+				if(smartMatchDivShow == 'first') {
+					noticTicketDivHeight = document.getElementById("SmartMatchDiv").offsetHeight;
+
+					document.getElementById("ticketNoticDiv").style.top = docTicketHeight - divTicketHeight + parseInt(document.documentElement.scrollTop,10) - noticTicketDivHeight +'px';
+				} else {
+					document.getElementById("ticketNoticDiv").style.top = docTicketHeight - divTicketHeight + parseInt(document.documentElement.scrollTop,10) +'px';
+				}
+				
 				document.getElementById("ticketNoticDiv").style.left = docTicketWidth - divTicketWidth + parseInt(document.documentElement.scrollLeft,10) + 'px';
 			} 
 			catch(e){} 
@@ -547,13 +597,24 @@ $clientDst = $_REQUEST['clientdst'];
 					window.clearInterval(objTicketTimer);
 					objTicketTimer = window.setInterval("resizeTicketNoticeDiv()",1);
 				} 
+
 				divTicketTop = parseInt(document.getElementById("ticketNoticDiv").style.top,10) ;
-				document.getElementById("ticketNoticDiv").style.top = divTicketTop - 1 +'px';
+				if(smartMatchDivShow == 'first') {
+					noticTicketDivHeight = document.getElementById("SmartMatchDiv").offsetHeight;
+
+					document.getElementById("ticketNoticDiv").style.top = divTicketTop - 1 +'px';
+				} else {
+					document.getElementById("ticketNoticDiv").style.top = divTicketTop - 1 +'px';
+				}
 			} 
 			catch(e){} 
 		} 
 
 		function closeTicketNotice() {
+			if(smartMatchDivShow != '') {
+				smartMatchDivShow = 'first';
+				ticketNoticDivShow = ''
+			}
 			document.getElementById("ticketNoticDiv").style.visibility="hidden";
 			if(objTicketTimer) window.clearInterval(objTicketTimer);
 		}
@@ -920,6 +981,10 @@ if ($config['system']['enable_external_crm'] == false && $config['google-map']['
 							style="left: 350px; top: 150px;width: 500px"></div>
 						<div id="formSubordinateTicketDiv"  class="formDiv drsElement" 
 						style="left: 200px; top: 200px;width:800px;"></div>
+						<div id="formRequiredReasionDiv"  class="formDiv drsElement" 
+						style="left: 250px; top: 50px;width:500px;"></div>
+						<div id="formdAddSechedualaraDiv"  class="formDiv drsElement" 
+						style="left: 300px; top: 200px;width:500px;z-index:800"></div>
 					</fieldset>
 				</td>
 			</tr>

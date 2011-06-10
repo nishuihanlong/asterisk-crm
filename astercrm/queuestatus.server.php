@@ -300,6 +300,10 @@ function agentPause($agent,$queueno='',$action){
 	}
 	
 	if($action == 'pause'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			savePauseReasion($agent,$queueno,$action,'admin pause');
+		}
+
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agent,1);
 		}else{
@@ -307,6 +311,10 @@ function agentPause($agent,$queueno='',$action){
 			$res = $myAsterisk->Command($cmd);
 		}
 	}else{
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			savePauseToContinue($agent,$queueno);
+		}
+
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agent,0);
 		}else{
@@ -318,6 +326,60 @@ function agentPause($agent,$queueno='',$action){
 	$objResponse = new xajaxResponse();
 	$objResponse->addAssign("updated","value", date("Y-m-d H:i:s"));
 	return $objResponse;
+}
+
+function savePauseReasion($agent,$queueno,$action,$reasion){
+	global $db;
+	//query the username by extension 
+	$tmpArray = explode('@',$agent);
+	$curArray = explode('/',$tmpArray[0]);
+	$tSql = "SELECT * FROM astercrm_account WHERE extension='".$curArray[1]."' ";
+	$accountResult = & $db->getRow($tSql);
+
+	$sql = 
+		"INSERT INTO `agent_queue_log` SET 
+			action = '".$action."',
+			queue = '".$queueno."',
+			account = '".$accountResult['username']."',
+			reasion = '".$reasion."',
+			groupid = '".$accountResult['groupid']."',
+			pausetime = 0,
+			cretime = now() 
+		";
+	//astercrm::events($sql);
+	$result = & $db->query($sql);
+	return $result;
+}
+
+function savePauseToContinue($agent,$queueno){
+	global $db;
+	$tmpArray = explode('@',$agent);
+	$curArray = explode('/',$tmpArray[0]);
+	$tSql = "SELECT * FROM astercrm_account WHERE extension='".$curArray[1]."' ";
+	$accountResult = & $db->getRow($tSql);
+
+	$chkSql = "SELECT * FROM `agent_queue_log` WHERE account='".$accountResult['username']."' ORDER BY cretime DESC LIMIT 1 ; ";
+	$chkResult = & $db->getRow($chkSql);
+	
+	if($chkResult['action'] == 'pause') {
+		$sql = 
+		"INSERT INTO `agent_queue_log` SET 
+			action = 'continue',
+			queue = '".$queueno."',
+			account = '".$accountResult['username']."',
+			reasion = 'admin continue ',
+			groupid = '".$accountResult['groupid']."',
+			pausetime = 0,
+			cretime = now() 
+		";
+		$saveResult = & $db->query($sql);
+
+		if($saveResult) {
+			$pausetime = strtotime(date("Y-m-d H:i:s"))-strtotime($chkResult['cretime']);
+			$updateSql = "UPDATE `agent_queue_log` SET pausetime='".$pausetime."' WHERE id='".$chkResult['id']."' ";
+			$chkResult = & $db->query($updateSql);
+		}
+	}
 }
 
 

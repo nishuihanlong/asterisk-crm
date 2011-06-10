@@ -96,4 +96,5 @@ $ticketdetail_id = "TicketDetail ID";
 $view_subordinate_ticketdetails = "View Subordinate Ticketdetails";
 $subordinate_ticketdetails = "Subordinate TicketDetails";
 $parent_ticketdetail_id = "Parent TicketDetail ID";
+$pause_reasion = "Pause Reasion";
 ?>

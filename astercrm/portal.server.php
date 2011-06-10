@@ -2109,7 +2109,7 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 function addSchedulerDial($display='',$number,$customerid = ''){
 	global $locate,$db;
 
-	$objResponse = new xajaxResponse();
+	/*$objResponse = new xajaxResponse();
 	if($display == "none"){
 		$campaignflag = false;
 		$html = '<td nowrap align="left">'.$locate->Translate("Scheduler Dial").'</td>
@@ -2144,6 +2144,55 @@ function addSchedulerDial($display='',$number,$customerid = ''){
 	}else{
 		$objResponse->addAssign("trAddSchedulerDial", "style.display", "none");
 	}
+
+	formdAddSechedualaraDiv
+	return $objResponse->getXML();*/
+
+	$objResponse = new xajaxResponse();
+	$html = Table::Top($locate->Translate("Scheduler Dial"),"formdAddSechedualaraDiv");
+	
+	$campaignflag = false;
+	$html .= '
+		<!-- No edit the next line -->
+		<form method="post" name="require_reasion" id="require_reasion">
+		<table border="1" width="100%" class="adminlist">
+			<tr>
+				<td nowrap align="left">'.$locate->Translate("DialNumber").' :</td><td align="left"><input type="text" id="sDialNum" name="sDialNum" size="15" maxlength="35" value="'.$number.'"></td>
+			</tr>';
+	if($number != ''){
+		$curtime = date("Y-m-d H:i:s");
+		$curtime = date("Y-m-d H:i:s",strtotime("$curtime - 30 seconds"));
+		$sql = "SELECT campaignid FROM dialedlist WHERE dialednumber = '".$number."' AND dialedtime > '".$curtime."' ";
+		$curcampaignid = $db->getOne($sql);
+		if($curcampaignid != ''){
+			$campaignflag = true;
+			$curcampaign = astercrm::getRecordByID($curcampaignid,'campaign');
+			$curcampaign_name = $curcampaign['campaignname'];
+			$html .= '<tr><td nowrap align="left">'.$locate->Translate("campaign").' :</td><td align="left"> <input type="text" value="'.$curcampaign_name.'" id="campaignname" name="campaignname" size="15" readonly><input type="hidden" value="'.$curcampaignid.'" id="curCampaignid" name="curCampaignid" size="15" readonly></td></tr>';
+		}
+	}
+	if(!$campaignflag){
+		$campaign_res = astercrm::getRecordsByField("groupid",$_SESSION['curuser']['groupid'],"campaign");
+		while ($campaign_res->fetchInto($campaign)) {
+			$campaignoption .= '<option value="'.$campaign['id'].'">'.$campaign['campaignname'].'</option>'; 
+		}
+		$html .= '<tr><td nowrap align="left">'.$locate->Translate("campaign").' :</td><td align="left"> <select id="curCampaignid" name="curCampaignid" >'.$campaignoption.'</select></td></tr>';
+	}
+	$html .= '<tr><td nowrap align="left">'.$locate->Translate("Dialtime").' :</td><td align="left"> <input type="text" name="sDialtime" id="sDialtime" size="15" value="" onfocus="displayCalendar(this,\'yyyy-mm-dd hh:ii\',this,true)"></td></tr>';
+	//if ($customerid >0 ){
+		$html .= '<tr><td colspan="2" align="center">
+				<input type="button" value="'.$locate->Translate("Add").'" onclick="saveSchedulerDial(\''.$customerid.'\');">
+				</td></tr>';
+	//}
+	$html .= '
+		</table>
+		';
+	$html .='
+		</form>';
+	$html .= Table::Footer();
+	$objResponse->addAssign("formdAddSechedualaraDiv", "style.visibility", "visible");
+	$objResponse->addAssign("formdAddSechedualaraDiv", "innerHTML", $html);
+	//$objResponse->addScript("relateByCategory();");
 	return $objResponse->getXML();
 }
 
@@ -2176,11 +2225,17 @@ function saveSchedulerDial($dialnumber='',$campaignid='',$dialtime='',$customeri
 	$f['sDialtime'] = $dialtime;
 
 	$res = astercrm::insertNewSchedulerDial($f);
+	$resultId = mysql_insert_id();
 	if($res){
 		$objResponse->addAlert($locate->Translate("Add scheduler dial success"));
-		$objResponse->addAssign("trAddSchedulerDial", "style.display", "none");
+		$objResponse->addAssign("formdAddSechedualaraDiv", "style.visibility", "hidden");
+		$objResponse->addAssign("formdAddSechedualaraDiv", "innerHTML", '');
+		$objResponse->addAssign("addedSchedulerDialId", "value",$resultId);
+		//$objResponse->addAssign("trAddSchedulerDial", "style.display", "none");
 	}else{
 		$objResponse->addAlert($locate->Translate("Add scheduler dial failed"));
+		$objResponse->addAssign("formdAddSechedualaraDiv", "style.visibility", "hidden");
+		$objResponse->addAssign("formdAddSechedualaraDiv", "innerHTML", '');
 	}
 	return $objResponse->getXML();
 }
@@ -2591,7 +2646,7 @@ function updateCurTicket($f) {
 }
 
 function getMsgInCampaign($form) {
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();	
 
 	$curagentdata = array();
@@ -2647,20 +2702,28 @@ function getMsgInCampaign($form) {
 	
 	$tableHtml = '';
 	//print_r($_SESSION['curuser']['campaign_queue']);exit;
+
+	
+	//if set the param require_reason_when_pause to yes,can not auto pause the queue;
+	$autoSetToPause = '';
+	if($config['system']['require_reason_when_pause'] == 'yes') {
+		$autoSetToPause = ' disabled ';
+	}
+	
 	foreach($_SESSION['curuser']['campaign_queue'] as $row) {
 		if(is_array($curagentdata[$row['queuename']]) && !((strtolower($curagentdata[$row['queuename']]['status']) == 'unavailable' || $curagentdata[$row['queuename']]['status'] == 'invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
 
 			$campaignSpan = '<span style="float:left;cursor:pointer;color:green"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span>';
 			if($curagentdata[$row['queuename']]['isdynamic']){			
-				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
+				$loginSpan = '<span id="span-campaign-login-'.$row['id'].'"><input id="autoSetPause_'.$row['id'].'_queue" '.$autoSetToPause.' type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
 				
 			}else{
 				if($curagentdata[$row['queuename']]['type'] == 'agent' ){
-					$loginSpan = '<input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
+					$loginSpan = '<input id="autoSetPause_'.$row['id'].'_queue" '.$autoSetToPause.' type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Agent').']</span>';
 				}elseif( !$curagentdata[$row['queuename']]['isdynamic']){
-					$loginSpan = '<input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
+					$loginSpan = '<input id="autoSetPause_'.$row['id'].'_queue" '.$autoSetToPause.' type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'">['.$locate->translate('Static Member').']</span>';
 				}else{
-					$loginSpan = '<input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
+					$loginSpan = '<input id="autoSetPause_'.$row['id'].'_queue" '.$autoSetToPause.' type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<span id="span-campaign-login-'.$row['id'].'"><a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('logoff').']</a></span>';
 				}				
 			}
 
@@ -2686,11 +2749,20 @@ function getMsgInCampaign($form) {
 
 			$tableHtml .= '<div id="campaignDiv-'.$row['id'].'" style="clear:both;"><span style="float:right">'.$loginSpan.'&nbsp;&nbsp;'.$pauseSpan.'</span>'.$campaignSpan.'&nbsp;&nbsp;&nbsp;</div>';
 		}else{
-			$tableHtml .= '<div style="clear:both;" id="campaignDiv-'.$row['id'].'" ><span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><input type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('pause').']</a></span></span><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')&nbsp;&nbsp;&nbsp;</span> </div>';
+			$tableHtml .= '<div style="clear:both;" id="campaignDiv-'.$row['id'].'" ><span style="float:right"><span id="span-campaign-login-'.$row['id'].'"><input id="autoSetPause_'.$row['id'].'_queue" '.$autoSetToPause.' type="checkbox" onclick="if(this.checked)xajax_setAutoPauseQueue(\''.$row['id'].'\',\'checked\');else xajax_setAutoPauseQueue(\''.$row['id'].'\',\'\')" '.$row['autopause'].'>'.$locate->translate('auto pause').'&nbsp;<a id="campaign-login-'.$row['id'].'" href="javascript:void(null)" title="login" onclick="xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('login').']</a></span>&nbsp;&nbsp;<span id="span-campaign-pause-'.$row['id'].'" ><a id="campaign-pause-'.$row['id'].'" href="javascript:void(null)" title="logoff" onclick="if(this.title == \'logoff\'){alert(\''.$locate->translate('Not in the queue').'\');return;} xajax_queueAgentControl(\''.$row['queuename'].'\',this.title,\''.$row['queue_context'].'\',\''.$curagentdata[$row['queuename']]['agent'].'\');">['.$locate->translate('pause').']</a></span></span><span style="float:left;color:blue" id="campaign-'.$row['id'].'">'.$row['campaignname'].'('.$row['queuename'].')&nbsp;&nbsp;&nbsp;</span> </div>';
 		}
 	}
 	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
 	$objResponse->addAssign("divGetMsgInCampaign","innerHTML",$tableHtml);
+
+	//if set the param require_reason_when_pause to yes,can not auto pause the queue;
+	if($config['system']['require_reason_when_pause'] == 'yes') {
+		foreach($_SESSION['curuser']['campaign_queue'] as $key=>$tmp) {
+			//print_r($tmp);exit;
+			$_SESSION['curuser']['campaign_queue'][$tmp['id']]['autopause'] = '';
+			$objResponse->addAssign("autoSetPause_".$tmp['id']."_queue","checked",false);
+		}
+	}
 	return $objResponse->getXML();
 }
 
@@ -2711,12 +2783,22 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 	}else{
 		$agentstr = $agent;
 	}
-
+	
 	if($action == 'login'){
 		$cmd = "queue add member $agentstr to $queueno";
 	}elseif($action == 'logoff'){
 		$cmd = "queue remove member $agentstr from $queueno";
 	}elseif($action == 'pause'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			//$objResponse = new xajaxResponse();
+			$html = Table::Top($locate->Translate("Pause Reasion"),"formRequiredReasionDiv");
+			$html .= Customer::formRequireReasion($queueno,$context,$agent);
+			$html .= Table::Footer();
+			$objResponse->addAssign("formRequiredReasionDiv", "style.visibility", "visible");
+			$objResponse->addAssign("formRequiredReasionDiv", "innerHTML", $html);
+			
+			return $objResponse->getXML();
+		}
 //		print_R($_SESSION['asterisk']['paramdelimiter'] == '|');exit;
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agentstr,1);
@@ -2724,6 +2806,10 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 			$cmd = "queue pause member $agentstr queue $queueno";
 		}
 	}elseif($action == 'continue'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			Customer::savePauseToContinue($queueno);
+		}
+
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agentstr,0);
 		}else{
@@ -2731,6 +2817,17 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 		}
 		$cmd = "queue unpause member $agentstr queue $queueno";
 	}elseif($action == 'pausea'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			//$objResponse = new xajaxResponse();
+			$html = Table::Top($locate->Translate("Pause Reasion"),"formRequiredReasionDiv");
+			$html .= Customer::formRequireReasion($queueno,$context,$agent);
+			$html .= Table::Footer();
+			$objResponse->addAssign("formRequiredReasionDiv", "style.visibility", "visible");
+			$objResponse->addAssign("formRequiredReasionDiv", "innerHTML", $html);
+			
+			return $objResponse->getXML();
+		}
+
 		$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agentstr,1);
@@ -2738,6 +2835,10 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 			$cmd = "queue pause member $agentstr queue $queueno";
 		}
 	}elseif($action == 'continuea'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			Customer::savePauseToContinue($queueno);
+		}
+
 		$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agentstr,0);
@@ -2745,6 +2846,17 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 			$cmd = "queue unpause member $agentstr queue $queueno";
 		}
 	}elseif($action == 'pausec'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			//$objResponse = new xajaxResponse();
+			$html = Table::Top($locate->Translate("Pause Reasion"),"formRequiredReasionDiv");
+			$html .= Customer::formRequireReasion($queueno,$context,$agent);
+			$html .= Table::Footer();
+			$objResponse->addAssign("formRequiredReasionDiv", "style.visibility", "visible");
+			$objResponse->addAssign("formRequiredReasionDiv", "innerHTML", $html);
+			
+			return $objResponse->getXML();
+		}
+
 		//$agentstr = $_SESSION['curuser']['channel'];
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agentstr,1);
@@ -2752,6 +2864,10 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 			$cmd = "queue pause member $agentstr queue $queueno";
 		}
 	}elseif($action == 'continuec'){
+		if($config['system']['require_reason_when_pause'] == 'yes') {
+			Customer::savePauseToContinue($queueno);
+		}
+
 		//$agentstr = $_SESSION['curuser']['channel'];
 		if($_SESSION['asterisk']['paramdelimiter'] == '|'){
 			$res = $myAsterisk->queuePause($queueno,$agentstr,0);
@@ -2818,6 +2934,95 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 		}
 	}
 	$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
+	return $objResponse;
+}
+
+function requireReasionWhenPause($f){
+	global $locate,$config,$db;
+	$agent = $f['require_reasion_agent'];
+	$queueno = $f['require_reasion_queueno'];
+	$context = $f['require_reasion_context'];
+	
+	$objResponse = new xajaxResponse();
+
+	//add a record to table pause_reasion
+	$saveResult = Customer::savePauseReasion($f['require_reasion_queueno'],'pause',$f['require_reasion']);
+	
+	if(!$saveResult) {
+		$objResponse->addAlert('Save Pause Reasion Failed');
+	} else {
+		$objResponse->addAssign("formRequiredReasionDiv","style.visibility",'hidden');
+		$objResponse->addAssign("formRequiredReasionDiv","innerHTML",'');
+
+		$myAsterisk = new Asterisk();	
+		$myAsterisk->config['asmanager'] = $config['asterisk'];
+		$res = $myAsterisk->connect();
+		
+		$action = 'pause';
+		if($agent == ''){
+			if($context == ''){
+				if ($_SESSION['curuser']['group']['incontext'] != '' ) $context = $_SESSION['curuser']['group']['incontext'];
+				else $context = $config['system']['incontext'];		
+			}
+
+			$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$context.'/n';
+		}else{
+			$agentstr = $agent;
+		}
+
+		if($action == 'pause'){
+			if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+				$res = $myAsterisk->queuePause($queueno,$agentstr,1);
+			}else{
+				$cmd = "queue pause member $agentstr queue $queueno";
+			}
+		}else if($action == 'pausea'){
+			$agentstr = 'Agent/'.$_SESSION['curuser']['agent'];
+			if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+				$res = $myAsterisk->queuePause($queueno,$agentstr,1);
+			}else{
+				$cmd = "queue pause member $agentstr queue $queueno";
+			}
+		}else if($action == 'pausec'){
+			if($_SESSION['asterisk']['paramdelimiter'] == '|'){
+				$res = $myAsterisk->queuePause($queueno,$agentstr,1);
+			}else{
+				$cmd = "queue pause member $agentstr queue $queueno";
+			}
+		}
+
+		if(!empty($cmd)){	
+			$res = $myAsterisk->Command($cmd);
+		}
+		if(strstr($res['data'],'failed')){
+			if($action == 'pausea'){
+				$action == 'pause';
+			}elseif($action == 'continuea'){
+				$action == 'continue';
+			}
+			$objResponse->addAlert($locate->translate($action).' '.$locate->translate('failed'));	
+		}else{
+			$sql = "SELECT * FROM campaign WHERE queuename = '".$queueno."' AND groupid='".$_SESSION['curuser']['groupid']."' AND enable= 1";
+			$res = & $db->query($sql);
+			while ($res->fetchInto($row)) {
+				if($action == 'pause'){
+					$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
+					$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continue');
+					$objResponse->addAssign("campaign-".$row['id'],"style.color",'#30569D');
+				}elseif($action == 'pausea'){
+					$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
+					$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continuea');
+					$objResponse->addAssign("campaign-".$row['id'],"style.color",'#30569D');
+				}elseif($action == 'pausec'){
+					$objResponse->addAssign("campaign-pause-".$row['id'],"innerHTML",'['.$locate->translate('continue').']');
+					$objResponse->addAssign("campaign-pause-".$row['id'],"title",'continuec');
+					$objResponse->addAssign("campaign-".$row['id'],"style.color",'#30569D');
+				}
+			}
+		}
+		$objResponse->addAssign("clkPauseTime","value", date("Y-m-d H:i:s"));
+	}
+	
 	return $objResponse;
 }
 

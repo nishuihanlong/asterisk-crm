@@ -544,7 +544,12 @@ function save($f){
 	}
 
 	// 查看是否有scheduler call
-	if(empty($f['sDialNum'])) {
+	if($f['addedSchedulerDialId'] != '') {
+		$res = astercrm::updateAddedSchedulerDial($customerID,$f['addedSchedulerDialId']);
+		$objResponse->addAssign("formdAddSechedualaraDiv", "style.visibility", "hidden");
+		$objResponse->addAssign("formdAddSechedualaraDiv", "innerHTML", '');
+	}
+	/*if(empty($f['sDialNum'])) {
 
 	} else{
 		$f['customerid'] = $customerID;
@@ -552,7 +557,7 @@ function save($f){
 		if ($res){
 			$objResponse->addAlert($locate->Translate("Scheduler Call added"));
 		}
-	}
+	}*/
 	
 	if($f['customer_leads_check'] == 'on') {
 		if($customerID != '' && $customerID != 0) {

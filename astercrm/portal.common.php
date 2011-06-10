@@ -148,6 +148,9 @@ $xajax->registerFunction("saveNewTicket");
 $xajax->registerFunction("showHighestAndLastestNote");
 $xajax->registerFunction("viewSubordinateTicket");
 
+//2011#6#7
+$xajax->registerFunction("requireReasionWhenPause");
+
 
 if ($config['system']['enable_external_crm'] == false){
 	//crm function

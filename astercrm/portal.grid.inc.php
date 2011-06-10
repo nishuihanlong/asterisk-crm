@@ -1420,5 +1420,77 @@ class Customer extends astercrm
 		$username = & $db->getOne($sql);
 		return $username;
 	}
+
+	function formRequireReasion($queueno,$context,$agent){
+		global $locate,$config;
+	$html = '
+			<!-- No edit the next line -->
+			<form method="post" name="require_reasion" id="require_reasion">
+			<table border="1" width="100%" class="adminlist">
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Pause Reasion").'</td>
+					<td align="left">
+						<textarea rows="5" cols="40" id="require_reasion" name="require_reasion"></textarea>
+						<input type="hidden" id="" name="require_reasion_queueno" value="'.$queueno.'" />
+						<input type="hidden" id="" name="require_reasion_context" value="'.$context.'" />
+						<input type="hidden" id="" name="require_reasion_agent" value="'.$agent.'" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"><button id="submitButton" onClick=\'xajax_requireReasionWhenPause(xajax.getFormValues("require_reasion"));return false;\'>'.$locate->Translate("continue").'</button></td>
+				</tr>
+
+			 </table>
+			';
+		$html .='
+			</form>';
+		return $html;
+	}
+
+	function savePauseReasion($queueno,$action,$reasion){
+		global $db;
+		$sql = 
+			"INSERT INTO `agent_queue_log` SET 
+				action = '".$action."',
+				queue = '".$queueno."',
+				account = '".$_SESSION['curuser']['username']."',
+				reasion = '".$reasion."',
+				groupid = '".$_SESSION['curuser']['groupid']."',
+				pausetime = 0,
+				cretime = now() 
+			";
+		astercrm::events($sql);
+		$result = & $db->query($sql);
+		return $result;
+	}
+	
+	function savePauseToContinue($queueno){
+		global $db;
+		$chkSql = "SELECT * FROM `agent_queue_log` WHERE account='".$_SESSION['curuser']['username']."' ORDER BY cretime DESC LIMIT 1 ; ";
+		astercrm::events($chkSql);
+		$chkResult = & $db->getRow($chkSql);
+		
+		if($chkResult['action'] == 'pause') {
+			$sql = 
+			"INSERT INTO `agent_queue_log` SET 
+				action = 'continue',
+				queue = '".$queueno."',
+				account = '".$_SESSION['curuser']['username']."',
+				reasion = '',
+				groupid = '".$_SESSION['curuser']['groupid']."',
+				pausetime = 0,
+				cretime = now() 
+			";
+			astercrm::events($sql);
+			$saveResult = & $db->query($sql);
+
+			if($saveResult) {
+				$pausetime = strtotime(date("Y-m-d H:i:s"))-strtotime($chkResult['cretime']);
+				$updateSql = "UPDATE `agent_queue_log` SET pausetime='".$pausetime."' WHERE id='".$chkResult['id']."' ";
+				astercrm::events($updateSql);
+				$chkResult = & $db->query($updateSql);
+			}
+		}
+	}
 }
 ?>

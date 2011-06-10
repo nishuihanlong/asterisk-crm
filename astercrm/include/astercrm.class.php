@@ -1231,7 +1231,7 @@ Class astercrm extends PEAR{
 								xajax.$(\'hidAddBankDetails\').value = \'OFF\';
 							}
 							return false;">'.$locate->Translate("bank").'</a>]
-						&nbsp; [<a href=? onclick="addSchedulerDial(\'0\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>]
+						&nbsp; [<a href=? onclick="addSchedulerDial(\'0\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>] <input type="hidden" id="addedSchedulerDialId" name="addedSchedulerDialId" value="" />
 					</td>
 				</tr>
 				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none">		
@@ -5059,6 +5059,18 @@ Class astercrm extends PEAR{
 			</tr>
 		</table>';
 		return $html;
+	}
+
+	function updateAddedSchedulerDial($customerid,$diallistId){
+		global $db;
+		$sql = "SELECT * FROM customer WHERE id='".$customerid."' ";
+		astercrm::events($sql);
+		$result = & $db->getRow($sql);
+		
+		$updateSql = "UPDATE diallist SET customerid='".$customerid."',customername='".$result['customer']."' WHERE id='".$diallistId."' ";
+		astercrm::events($updateSql);
+		$res = & $db->query($updateSql);
+		return $res;
 	}
 }
 ?>

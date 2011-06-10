@@ -191,4 +191,5 @@ $ticketdetail_id = "任务ID";
 $view_subordinate_ticketdetails = "查看下级任务详细";
 $subordinate_ticketdetails = "下级任务详细";
 $parent_ticketdetail_id = "上级任务详细ID";
+$pause_reasion = "暂停原因";
 ?>

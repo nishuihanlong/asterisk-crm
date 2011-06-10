@@ -122,7 +122,7 @@ default_share_note = 0
 ;if use customer_leads table move/copy/default_move/default_copy/disabled
 customer_leads = disabled
 
-enable_code = 1
+enable_code = 0
 
 ;how long to update last_update_time field in table astercrm_account
 ;unit is the minute
@@ -133,7 +133,7 @@ enable_sms = campaign_number
 
 ;if set to yes,will popup a tip to record the reasion when the agent pause the queue
 ;if set to no,will not popup a tip
-require_reason_when_pause = no
+require_reason_when_pause = yes
 
 ;if set default,will create the ticket: systemadmin for all user; groupadmin for all group user; agent for self.
 ;if set system,allow a ticket to be assigned to any user regardless of the group they belong to.
@@ -145,7 +145,7 @@ display_recent_cdr = 1
 
 ; define what information would be displayed in portal page
 ; customer | note
-portal_display_type = customer
+portal_display_type = note
 
 ;
 ; astercrm wouldnot pop-up when dial out unless this parameter is true
