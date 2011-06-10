@@ -208,11 +208,3 @@ ALTER TABLE historycdr ADD dialstatus VARCHAR(40) NOT NULL DEFAULT '' AFTER `dia
 ALTER TABLE `campaign` ADD enablerecyle enum ('yes','no') not null default 'no';
 ALTER TABLE `campaign` ADD minduration_leg_a INT(11) NOT NULL DEFAULT 0 AFTER `minduration`;
 ALTER TABLE `campaign` ADD minduration_billsec INT(11) NOT NULL DEFAULT 0 AFTER `minduration`;
-
-
-
-###########################   2011-05-14 ###########################################
-ALTER TABLE `campaign` ADD `balance` int(11) NOT NULL default 0 AFTER `sms_number`;
-ALTER TABLE `campaign` ADD `init_billing` int(11) NOT NULL default 0 AFTER `balance`;
-ALTER TABLE `campaign` ADD `billing_block` int(11) NOT NULL default 0 AFTER `init_billing`;
-ALTER TABLE `campaign` ADD `enablebalance` ENUM('yes','no','strict') NOT NULL default 'yes' AFTER `billing_block`;

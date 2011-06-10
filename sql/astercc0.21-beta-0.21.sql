@@ -7,7 +7,6 @@ ALTER TABLE `campaign` ADD `billing_block` int(11) NOT NULL default 0;#计费周
 ALTER TABLE `campaign` ADD `enablebalance` ENUM('yes','no','strict') NOT NULL default 'yes';#余额控制
 
 #############################    2011-06-01  ##################################
-DROP TABLE IF EXISTS `ticket_op_logs`;
 CREATE TABLE `ticket_op_logs` (
   `id` int(11) NOT NULL auto_increment,
   `operate` enum('add','update','assign','delete') not null default 'add',
@@ -25,8 +24,6 @@ ALTER TABLE `astercrm_accountgroup` ADD `notice_interval` int(11) NOT NULL defau
 
 ALTER TABLE `ticket_details` ADD `parent_id` varchar(30) NOT NULL DEFAULT '';#parent ticket_detail_id(上级ticket的id)
 
-
-DROP TABLE IF EXISTS `agent_queue_log`;
 CREATE TABLE `agent_queue_log` (
   `id` int(11) NOT NULL auto_increment,
   `action` varchar(50) NOT NULL default '',
@@ -34,7 +31,7 @@ CREATE TABLE `agent_queue_log` (
   `account` varchar(30) NOT NULL default '',
   `pausetime` int(11) NOT NULL default 0,
   `reasion` text not null,
-  `groupid` int(11) NOT NULL defualt 0,
+  `groupid` int(11) NOT NULL default 0,
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;

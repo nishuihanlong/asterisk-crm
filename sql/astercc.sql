@@ -2003,7 +2003,7 @@ CREATE TABLE `agent_queue_log` (
   `account` varchar(30) NOT NULL default '',
   `pausetime` int(11) NOT NULL default 0,
   `reasion` text not null,
-  `groupid` int(11) NOT NULL defualt 0,
+  `groupid` int(11) NOT NULL default 0,
   `cretime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
