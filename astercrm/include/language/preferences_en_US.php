@@ -59,4 +59,9 @@ $if_enable_code = 'if enable code';
 $the_smaller_the_value_the_more_accurate = "the smaller the value the more accurate";
 $require_reason_when_pause = 'if set to yes,will popup a tip to record the reasion when the agent pause the queueif set to no,will not popup a tip';
 $create_ticket = 'if set default,will create the ticket: systemadmin for all user; groupadmin for all group user; agent for self.if set system,allow a ticket to be assigned to any user regardless of the group they belong to.if set group,allow a ticket to be assigned to any user who belongs to same group';
+$enable_socket = "if check socket to yes,when the call dialin it will notic the agent by socket";
+$fix_port = "fix port";
+$socket_url = "socket string";
+$export_customer_fields_in_dialedlist = "export customer field when export dialedlist";
+$allow_popup_when_already_popup = "whether to popup the customer window when it had existed";
 ?>

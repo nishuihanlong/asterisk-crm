@@ -53,4 +53,5 @@ $xajax->registerFunction("checkOut");
 $xajax->registerFunction("setGroup");
 $xajax->registerFunction("setClid");
 $xajax->registerFunction("speedDate");
+$xajax->registerFunction("checkoutAll");
 ?>

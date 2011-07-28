@@ -345,8 +345,13 @@ Class astercrm extends PEAR{
 	function insertNewCustomer($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
+		if($f['customer'] == '') {
+			$f['customer'] = $f['first_name'].' '.$f['last_name'];
+		}
 		$query= "INSERT INTO customer SET "
 				."customer='".$f['customer']."', "
+				."first_name='".$f['first_name']."', "
+				."last_name='".$f['last_name']."', "
 				."customertitle='".$f['customertitle']."', "
 				."website='".$f['website']."', "
 				."country='".$f['country']."', "
@@ -576,8 +581,13 @@ Class astercrm extends PEAR{
 	function updateCustomerRecord($f){
 		global $db;
 		$f = astercrm::variableFiler($f);
+		if($f['customer'] == '') {
+			$f['customer'] = $f['first_name'].' '.$f['last_name'];
+		}
 		$query= "UPDATE customer SET "
 				."customer='".$f['customer']."', "
+				."first_name='".$f['first_name']."', "
+				."last_name='".$f['last_name']."', "
 				."customertitle='".$f['customertitle']."', "
 				."website='".$f['website']."', "
 				."country='".$f['country']."', "
@@ -1235,7 +1245,19 @@ Class astercrm extends PEAR{
 					</td>
 				</tr>
 				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none">		
-				</tr>	
+				</tr>
+				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("first_name").'</td>
+					<td align="left"><input type="text" id="first_name" name="first_name" size="35" maxlength="50"></td>
+				</tr>
+				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("last_name").'</td>
+					<td align="left"><input type="text" id="last_name" name="last_name" size="35" maxlength="50"></td>
+				</tr>
+				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+					<td nowrap align="left">'.$locate->Translate("address").'</td>
+					<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
+				</tr>
 				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
 					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 					<td align="left">
@@ -1800,7 +1822,7 @@ Class astercrm extends PEAR{
 							}
 							return false;">'.$locate->Translate("bank").'</a>]					
 						</td>
-					</tr>					
+					</tr>
 					<tr id="trEditCustomerDetails" name="trEditCustomerDetails">
 						<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 						<td align="left"><input type="text" id="customerContact" name="customerContact" size="35" maxlength="35" value="' . $customer['contact'] . '"><BR />
@@ -1812,7 +1834,15 @@ Class astercrm extends PEAR{
 						</select>
 						
 						</td>
-					</tr>					
+					</tr>
+					<tr id="trEditCustomerDetails" name="trEditCustomerDetails" >
+						<td nowrap align="left">'.$locate->Translate("first_name").'</td>
+						<td align="left"><input type="text" id="first_name" name="first_name" size="35" maxlength="50" value="' . $customer['first_name'] . '"></td>
+					</tr>
+					<tr id="trEditCustomerDetails" name="trEditCustomerDetails" >
+						<td nowrap align="left">'.$locate->Translate("last_name").'</td>
+						<td align="left"><input type="text" id="last_name" name="last_name" size="35" maxlength="50" value="' . $customer['last_name'] . '"></td>
+					</tr>
 					<tr id="trEditCustomerDetails" name="trEditCustomerDetails">
 						<td nowrap align="left">'.$locate->Translate("address").'</td>
 						<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200" value="' . $customer['address'] . '"></td>

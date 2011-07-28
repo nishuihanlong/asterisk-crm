@@ -686,7 +686,7 @@ class Customer extends astercrm
 			} else{
 				$sql .= " username!='admin' AND groupid=".$_SESSION['curuser']['groupid']." ";
 			}
-		} else if($_SESSION['curuser']['usertype'] == 'agent'){
+		} else {//if($_SESSION['curuser']['usertype'] == 'agent')
 			if($config['system']['create_ticket'] == 'system'){
 				$sql .= " username!='admin' ";
 			} else if($config['system']['create_ticket'] == 'group') {
@@ -1030,7 +1030,7 @@ class Customer extends astercrm
 			} else{
 				$sql .= " username!='admin' AND groupid=".$_SESSION['curuser']['groupid']." ";
 			}
-		} else if($_SESSION['curuser']['usertype'] == 'agent'){
+		} else {// if($_SESSION['curuser']['usertype'] == 'agent')
 			if($config['system']['create_ticket'] == 'system'){
 				$sql .= " username!='admin' ";
 			} else if($config['system']['create_ticket'] == 'group') {
@@ -1491,6 +1491,26 @@ class Customer extends astercrm
 				$chkResult = & $db->query($updateSql);
 			}
 		}
+	}
+
+	function get_real_ip() {
+		$ip=false;
+		if(!empty($_SERVER["HTTP_CLIENT_IP"])) {
+			$ip = $_SERVER["HTTP_CLIENT_IP"];
+		}
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$ips = explode (", ", $_SERVER['HTTP_X_FORWARDED_FOR']);
+			if ($ip) {
+				array_unshift($ips, $ip); $ip = FALSE;
+			}
+			for ($i = 0; $i < count($ips); $i++) {
+				if (!eregi ("^(10|172\.16|192\.168)\.", $ips[$i])) {
+					$ip = $ips[$i];
+					break;
+				}
+			}
+		}
+		return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
 	}
 }
 ?>

@@ -329,6 +329,43 @@ class astercc extends PEAR
 		return $credit;
 	}
 
+	function setAllBilled($resellerid,$groupid,$clidid){
+		global $db,$config;
+
+		if($clidid > 0){
+			$sql = "SELECT * FROM mycdr WHERE src = '$booth' OR dst = '$booth'";
+		}elseif($groupid > 0){
+			$sql = "SELECT * FROM mycdr WHERE groupid = $groupid ";
+		}elseif($resellerid > 0){
+			$sql = "SELECT * FROM mycdr WHERE resellerid = $resellerid ";
+		}else{
+			$sql = "SELECT * FROM mycdr";
+		}
+		astercc::events($sql);
+		$cdrs = &$db->query($sql);
+
+		// insert the record to historycdr
+		if($config['system']['useHistoryCdr'] == 1){
+			while ($cdrs->fetchInto($cdr)) {
+				$sql = "INSERT INTO historycdr SET calldate = '".$cdr['calldate']."', src = '".$cdr['src']."', `dst` = '".$cdr['dst']."',`srcname` = '".$cdr['srcname']."', `channel` = '".$cdr['channel']."', `dstchannel` = '".$cdr['dstchannel']."',`didnumber` = '".$cdr['didnumber']."', `duration` = '".$cdr['duration']."', `billsec` = '".$cdr['billsec']."', `billsec_leg_a` = '".$cdr['billsec_leg_a']."', `disposition` = '".$cdr['disposition']."', `accountcode` = '".$cdr['accountcode']."', `userfield` = 'BILLED', `srcuid` = '".$cdr['srcuid']."', `dstuid` = '".$cdr['dstuid']."',`queue` = '".$cdr['queue']."', `calltype` = '".$cdr['calltype']."', `credit` = '".$cdr['credit']."', `callshopcredit` = '".$cdr['callshopcredit']."', `resellercredit` = '".$cdr['resellercredit']."', `groupid` = '".$cdr['groupid']."', `resellerid` = '".$cdr['resellerid']."', `userid` = '".$cdr['userid']."', `accountid` = '".$cdr['accountid']."', `destination` = '".$cdr['destination']."', `memo` = '".$cdr['memo']."',`dialstring` = '".$cdr['dialstring']."',children = '".$cdr['children']."',ischild = '".$cdr['ischild']."',processed = '".$cdr['processed']."',customerid = 0,crm_customerid = '".$cdr['crm_customerid']."',contactid = '".$cdr['contactid']."', discount = 0 ,note='".$cdr['note']."',setfreecall='".$cdr['setfreecall']."',astercrm_groupid='".$cdr['astercrm_groupid']."',hangupcause='".$cdr['hangupcause']."',hangupcausetxt='".$cdr['hangupcausetxt']."',dialstatus='".$cdr['dialstatus']."'";
+
+				astercc::events($sql);
+				$res = &$db->query($sql);
+				$sql ="DELETE FROM mycdr WHERE id='".$cdr['id']."' ";
+				astercc::events($sql);
+				$res = $db->query($sql);
+			}
+		}else {
+			while ($cdrs->fetchInto($cdr)) {
+				$sql = "UPDATE mycdr SET userfield = 'BILLED' WHERE id = '".$cdr['id']."' ";
+				astercc::events($sql);
+				$res = &$db->query($sql);
+			}
+		}
+		
+		return 1;
+	}
+
 	function readUnbilled($peer,$leg = null,$groupid){
 		global $db;
 
@@ -449,7 +486,7 @@ function readAll($resellerid, $groupid, $peer, $sdate = null , $edate = null){
 			if ($booth == '-1'){
 				$query .= " AND LEFT(channel,6) = 'local/' ";
 			}else{
-				$query .= " AND src = '$booth' OR dst = '$booth'";
+				$query .= " AND (src = '$booth' OR dst = '$booth')";
 			}
 		}		
 		#exit;

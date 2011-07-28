@@ -677,7 +677,6 @@ function monitor($channel,$callerid,$action = 'start',$uniqueid = '',$curid,$dir
 	return $objResponse;
 }
 
-
 function waitingCalls($myValue){
 	global $db,$config,$locate;
 	$objResponse = new xajaxResponse();
@@ -721,6 +720,33 @@ function waitingCalls($myValue){
 		///$objResponse->addAssign("dndlist_campaignid","value","0");
 		
 	} elseif ($call['status'] == 'incoming'){	//incoming calls here
+		if($config['system']['enable_socket'] == 'yes'){
+			//固定端口
+			$service_port = $config['system']['fix_port'];
+			//socketURL
+			$socket_url = $config['system']['socket_url'];
+			if($service_port != '' && $socket_url != '') {
+				//本地
+				$address = Customer::get_real_ip();
+				//创建 TCP/IP socket
+				$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+				if ($socket < 0) {
+					print_r("socket创建失败原因: " . socket_strerror($socket) . "\n");
+				}
+				
+				$result = socket_connect($socket, $address, $service_port);
+				if ($result < 0) {
+					print_r("SOCKET连接失败原因: ($result) " . socket_strerror($result) . "\n");
+				}
+
+				$socket_url = str_replace('%callerid%',$call['callerid'],$socket_url);
+				$noticeHtml='"'.addslashes($socket_url).'"';
+				socket_write($socket, $noticeHtml, strlen($noticeHtml));
+				socket_close($socket);
+			}
+			
+		}
+		
 //		if(strstr($call['calleeChannel'],'agent')){
 //			$objResponse->addAssign("attendtran","disabled",true);
 //		}else{
@@ -804,7 +830,8 @@ function waitingCalls($myValue){
 
 		if ($config['system']['pop_up_when_dial_in']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length'] && $call['callerid'] != '<unknown>'){
-				if ($myValue['popup'] == 'yes' || $config['system']['enable_external_crm']){
+				// $config['system']['allow_popup_when_aleady_popup'] 客户弹屏存在是否重新弹出客户窗口
+				if ($myValue['popup'] == 'yes' || $config['system']['enable_external_crm'] || $config['system']['allow_popup_when_already_popup']){
 					if ($config['system']['enable_external_crm'] == false){
 							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
@@ -962,7 +989,8 @@ function waitingCalls($myValue){
 
 		if ($config['system']['pop_up_when_dial_out']){
 			if (strlen($call['callerid']) > $config['system']['phone_number_length']){
-				if ($myValue['popup'] == 'yes'){
+				
+				if ($myValue['popup'] == 'yes' || $config['system']['allow_popup_when_already_popup']){
 					if ($config['system']['enable_external_crm'] == false ){
 							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
@@ -1798,7 +1826,8 @@ function invite($src,$dest,$campaignid='',$dialedlistid=0){
 		}
 
 		$variable .= '__CAMPAIGNID='.$row_campaign['id'].$_SESSION['asterisk']['paramdelimiter']; #传拨号计划id给asterisk
-		$variable .= '__DIALEDLISTID='.$dialedlistid; #dialedlist id给asterisk
+		$variable .= '__DIALEDLISTID='.$dialedlistid.$_SESSION['asterisk']['paramdelimiter']; #dialedlist id给asterisk
+		$variable .= '__DIALEDNUM='.$dest;
 		
 	}else{
 		if($_SESSION['curuser']['callerid'] == '' ){
@@ -2709,8 +2738,9 @@ function getMsgInCampaign($form) {
 	if($config['system']['require_reason_when_pause'] == 'yes') {
 		$autoSetToPause = ' disabled ';
 	}
-	
+
 	foreach($_SESSION['curuser']['campaign_queue'] as $row) {
+		if ($row['use_ext_chan'] == 'yes') $row['queue_context'] = '#use_ext_chan#';
 		if(is_array($curagentdata[$row['queuename']]) && !((strtolower($curagentdata[$row['queuename']]['status']) == 'unavailable' || $curagentdata[$row['queuename']]['status'] == 'invalid') && $curagentdata[$row['queuename']]['type'] == 'agent')){ //在队列中或是动态座席可用的情况
 
 			$campaignSpan = '<span style="float:left;cursor:pointer;color:green"  id="campaign-'.$row['id'].'" title="'.$curagentdata[$row['queuename']]['data'].'">'.$row['campaignname'].'('.$row['queuename'].')</span>';
@@ -2778,12 +2808,16 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 			if ($_SESSION['curuser']['group']['incontext'] != '' ) $context = $_SESSION['curuser']['group']['incontext'];
 			else $context = $config['system']['incontext'];		
 		}
+		if($context == '#use_ext_chan#'){
+			$agentstr = $_SESSION['curuser']['channel'];
+		}else{
 
-		$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$context.'/n';
+			$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$context.'/n';
+		}
 	}else{
 		$agentstr = $agent;
 	}
-	
+
 	if($action == 'login'){
 		$cmd = "queue add member $agentstr to $queueno";
 	}elseif($action == 'logoff'){

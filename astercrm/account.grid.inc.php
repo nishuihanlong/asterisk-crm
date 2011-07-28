@@ -299,21 +299,21 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'*</td>
 					<td align="left">
-					<select id="usertype" name="usertype" onchange="usertypeChange(this)">
-						<option value=""></option>
-						<option value="agent">agent</option>
-						<option value="groupadmin">groupadmin</option>';
+					<select id="usertypeSelect" onchange="usertypeChange(this)">
+						<option value="0"></option>
+						<option value="0">agent</option>
+						<option value="0">groupadmin</option>';
 						if ($_SESSION['curuser']['usertype'] == 'admin') {
-							$html .='<option value="admin">admin</option>';
+							$html .='<option value="0">admin</option>';
 						}
 					$userTyperesult = Customer::getAstercrmUsertype();
 					if(!empty($userTyperesult)) {
 						foreach($userTyperesult as $usertype) {
-							$html .='<option value="'.$usertype['usertype_name'].'" label="'.$usertype['id'].'">'.$usertype['usertype_name'].'</option>';
+							$html .='<option value="'.$usertype['id'].'">'.$usertype['usertype_name'].'</option>';
 						}
 					}
 			$html .='
-					</select><input type="hidden" id="usertype_id" name="usertype_id" value="0" /></td>
+					</select><input type="hidden" id="usertype" name="usertype" value="" /><input type="hidden" id="usertype_id" name="usertype_id" value="0" /></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("account_code").'</td>
@@ -409,9 +409,9 @@ class Customer extends astercrm
 				<tr><td nowrap align="left">'.$locate->Translate("extensions").'</td>
 					<td align="left">';
 				if($account['extensions'] == '') {
-					$html .= '<input type="text" id="extensions" name="extensions" size="25" maxlength="15" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" style="color:#BBB" value="'.$locate->translate('extensions_input_tip').'">';
+					$html .= '<input type="text" id="extensions" name="extensions" size="25" maxlength="100" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" style="color:#BBB" value="'.$locate->translate('extensions_input_tip').'">';
 				} else {
-					$html .= '<input type="text" id="extensions" name="extensions" size="25" maxlength="15" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" value="'.$account['extensions'].'">';
+					$html .= '<input type="text" id="extensions" name="extensions" size="25" maxlength="100" onclick="chkExtenionClick(this.value,this)" onblur="chkExtenionBlur(this.value,this)" value="'.$account['extensions'].'">';
 				}
 		$html .= '
 					&nbsp;<input type="radio" value="username" id="extensType" name="extensType" checked>'.$locate->Translate("username").'<input type="radio" value="extension" id="extensType" name="extensType" >'.$locate->Translate("extension").'</td>
@@ -423,39 +423,39 @@ class Customer extends astercrm
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'*</td>
 					<td align="left">
-					<select id="usertype" name="usertype" onchange="usertypeChange(this)">
-						<option value="" ';
+					<select id="usertypeSelect" onchange="usertypeChange(this)">
+						<option value="0" ';
 						if($account['usertype'] == ''){
 							$html .= ' selected ';
 						}
 				$html .= '></option>
-						<option value="agent"';
+						<option value="0"';
 						if($account['usertype'] == 'agent'){
 							$html .= ' selected ';
 						}
 				$html .=' >agent</option>
-						<option value="groupadmin"';
+						<option value="0"';
 						if($account['usertype'] == 'groupadmin'){
 							$html .= ' selected ';
 						}
 				$html .='>groupadmin</option>';
 
 				if ($_SESSION['curuser']['usertype'] == 'admin') {
-					$html .='<option value="admin"';
+					$html .='<option value="0"';
 					if($account['usertype'] == 'admin')	$html .= ' selected ';
 					$html .='>admin</option>';
 				}
 				$userTyperesult = Customer::getAstercrmUsertype();
 				if(!empty($userTyperesult)) {
 					foreach($userTyperesult as $usertype) {
-						$html .='<option value="'.$usertype['usertype_name'].'" label="'.$usertype['id'].'"';
+						$html .='<option value="'.$usertype['id'].'" ';
 						if($usertype['id'] == $account['usertype_id']) {
 							$html .=' selected';
 						}
 						$html .='>'.$usertype['usertype_name'].'</option>';
 					}
 				}
-				$html .=	'</select><input type="hidden" id="usertype_id" name="usertype_id" value="'.$account['usertype_id'].'" />
+				$html .=	'</select><input type="hidden" id="usertype" name="usertype" value="'.$account['usertype'].'" /><input type="hidden" id="usertype_id" name="usertype_id" value="'.$account['usertype_id'].'" />
 					<!--<input type="text" id="usertype" name="usertype" size="25" maxlength="30" value="'.$account['usertype'].'">--></td>
 				</tr>
 				<tr>

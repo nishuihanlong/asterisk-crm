@@ -411,11 +411,8 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 		}
 		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructure,$tableName,$date,$groupid,$assignNum,$arryAssign,$campaignid,$assgignKey);
 
-		$assgignKey++;
-		
-
 		$strSql = $arrRes['strSql'];					//得到插入选择表的sql语句
-
+		
 		$dialListNum = $arrRes['dialListNum'];	//以及要导入diallist的sql语句
 		$dialListTime = $arrRes['dialListTime'];
 
@@ -434,7 +431,7 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 		if (trim($dialListNum) != "" && $tableName != 'diallist'){
 			if(isset($dialListField) && trim($dialListField) != ''  && $assignNum > 0){  //是否存在添加到拨号列表
 				while ($arryAssign[$x] == ''){
-					if($x >$assignNum){
+					if($x >=$assignNum){
 						$x = 0;
 					}else{
 						$x ++;
@@ -456,6 +453,8 @@ function importResource($filePath,$order,$tableName,$tableStructure,$dialListFie
 				$diallistAffectRows += $db->affectedRows();
 			}
 		}
+		
+		$assgignKey++;
 	}
 	$affectRows['diallist'] = $diallistAffectRows;
 	$affectRows['table'] = $tableAffectRows;
@@ -468,7 +467,27 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 	$strData = '';
 //echo $dialListField.'111';exit;
 	$phone_field = array( 0 => 'phone',1 => 'phone_ext', 2 => 'fax',3 => 'fax_ext',4 => 'mobile',5 => 'ext',6 => 'phone1',7 => 'ext1',8 => 'phone2',9 => 'ext2');
-
+	
+	//判断customer传过来的名字是不是空，如果是空就用 first name 和 last name 组合下赋给 customer的名
+	$customerFieldExist = false;//判断导入选择的字段里是否有customer字段
+	$customername = '';
+	$hasCheckflag = false;
+	$customerKey = '';//导入的时候选择的字段里有没有customer
+	$firstnameKey = '';//导入的时候选择的字段里有没有customer
+	$lastnameKey = '';//导入的时候选择的字段里有没有customer
+	if($tableName == 'customer') {
+		foreach($order as $key=>$tmp) {
+			if($tableStructure[trim($tmp)]['name'] == 'customer') {
+				$customerFieldExist = true;
+				$customerKey = $key;
+			} else if($tableStructure[trim($tmp)]['name'] == 'first_name') {
+				$firstnameKey = $key;
+			} else if($tableStructure[trim($tmp)]['name'] == 'last_name'){
+				$lastnameKey = $key;
+			}
+		}
+	}
+	
 	for ($j=0;$j<count($arrRow);$j++)
 	{
 		$arrRow[$j] = trim($arrRow[$j]);
@@ -485,8 +504,35 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 			if (in_array($tableStructure[$fieldOrder]['name'],$phone_field)){
 				$arrRow[$j] = astercrm::getDigitsInStr($arrRow[$j]);
 			}
-			$strData .= '"'.$arrRow[$j].'"'.',';
+
+			//如果导入里有customer字段并且值为空
+			if($tableStructure[$fieldOrder]['name'] == 'customer' && $arrRow[$j] == '') {
+				$tmpNameStr = '';
+				if($firstnameKey !== '') {
+					$tmpNameStr .= $arrRow[$firstnameKey].' ';
+				}
+				if($lastnameKey !== ''){
+					$tmpNameStr .= $arrRow[$lastnameKey];
+				}
+				$arrRow[$j] = trim($tmpNameStr);
+			}
+
+			//如果导入里没有customer字段
+			if(!$customerFieldExist && !$hasCheckflag && $tableName == 'customer') {
+				$tmpNameStr = '';
+				if($firstnameKey !== '') {
+					$tmpNameStr .= $arrRow[$firstnameKey].' ';
+				}
+				if($lastnameKey !== ''){
+					$tmpNameStr .= $arrRow[$lastnameKey];
+				}
+				$customername = addslashes(trim($tmpNameStr));
+				$hasCheckflag = true;
+			}
+
+			$strData .= '"'.addslashes($arrRow[$j]).'"'.',';
 		}
+		
 		if(isset($dialListField) && $dialListField != ''  && $arrRow[$j] != ''){
 			if($dialListField == $j){
 				if($tableName == 'diallist'){
@@ -499,7 +545,7 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 //							}
 //						}
 						$fieldName .= 'assign,';
-						$strData .= '"'.$arryAssign[$assignKey].'"'.',';
+						$strData .= '"'.addslashes($arryAssign[$assignKey]).'"'.',';
 					}
 					
 				}else{
@@ -512,9 +558,15 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 				$dialTime = trim($arrRow[$j]);			
 		}
 	}
+	
+	if(!$customerFieldExist && $tableName == 'customer') {
+		$fieldName = 'customer,'.substr($fieldName,0,strlen($fieldName)-1);
+		$strData = '"'.$customername.'",'.substr($strData,0,strlen($strData)-1);
+	} else {
+		$fieldName = substr($fieldName,0,strlen($fieldName)-1);
+		$strData = substr($strData,0,strlen($strData)-1);
+	}
 
-	$fieldName = substr($fieldName,0,strlen($fieldName)-1);
-	$strData = substr($strData,0,strlen($strData)-1);
 	if ($fieldName != ""){
 		if ($tableName == "diallist"){
 			$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid,campaignid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', '".$groupid."','".$campaignid."')";
@@ -522,17 +574,15 @@ function parseRowToSql($arrRow,$order,$dialListField,$dialListTime,$tableStructu
 			$strSql = "INSERT INTO $tableName ($fieldName,cretime,creby,groupid) VALUES ($strData, '".$date."', '".$_SESSION['curuser']['username']."', ".$groupid.")";
 		}
 	}
-	//print $strSql;
-	//exit;
+	
 	return array('strSql'=>$strSql,'dialListNum'=>$dialNum,'dialListTime'=>$dialTime);
 }
 
 function csv_string_to_array($str){
-
    $expr="/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
 
-   $results=preg_split($expr,trim($str));
-
+   $results=preg_split($expr,trim(addslashes($str)));
+	
     return preg_replace(array("/^\"(.*)\"$/","/\"\"/"),array("$1",""),$results);
 }
 
@@ -548,14 +598,22 @@ function getSourceData($filePath,$line = -1){
 	$i = 0;
 
 	if($type == 'csv'){  //csv 格式文件
+	//fgetcsv
 		$handle = fopen($filePath,"r");  //打开csv文件,得到句柄
-		while (($data = fgets($handle)) !== FALSE) { 
+		while($row = fgetcsv($handle,1000)){
+			if ($line > 0)
+				if ($i>$line) 
+					break;
+			$i++;
+			$arrData[] = $row;
+		}
+		/*while (($data = fgets($handle)) !== FALSE) {
 			if ($line > 0)
 				if ($i>$line) 
 					break;
 			$i++;
 			$arrData[] = csv_string_to_array($data);
-		}
+		}*/
 	}elseif($type == 'xls'){  //xls格式文件
 		Read_Excel_File($filePath,$return);
 		for ($i=0;$i<count($return[Sheet1]);$i++){
@@ -616,7 +674,6 @@ function getGridHTML($filePath){
 	$HTML .= "</tr>";
 	$HTML .= "</table>";
 
-	
 	return array('gridHTML'=>$HTML,'columnNumber'=>$num);
 }
 

@@ -67,4 +67,5 @@ $min_duration = "最少总时长";
 $sms_number = "短信号码";
 $callerid = "主叫号码";
 $any_time = "所有时间";
+$use_extension_channel_for_queue = "使用分机通道签出队列";
 ?>

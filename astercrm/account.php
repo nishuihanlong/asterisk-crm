@@ -48,8 +48,10 @@ require_once('account.common.php');
 			function usertypeChange(obj){
 				if(obj.value == '' || obj.value == 'agent' || obj.value == 'groupadmin' || obj.value == 'admin') {
 					document.getElementById('usertype_id').value = '0';
+					document.getElementById('usertype').value = obj.options[obj.selectedIndex].text;
 				} else {
-					document.getElementById('usertype_id').value = obj.options[obj.selectedIndex].label;
+					document.getElementById('usertype_id').value = obj.value;
+					document.getElementById('usertype').value = obj.options[obj.selectedIndex].text;
 				}
 			}
 

@@ -307,13 +307,16 @@ function showNote($id = '', $type="customer"){
 }
 
 function showCustomer($id = 0, $type="customer",$callerid=''){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	if($id != 0 && $id != null ){
 		$html = Table::Top($locate->Translate("customer_detail"),"formCustomerInfo"); 			
 		$html .= Customer::showCustomerRecord($id,$type,$callerid); 		
 		$html .= Table::Footer();
-		$objResponse->addScript("xajax_showNote('".$id."','customer')");
+
+		if($config['system']['auto_note_popup']){
+			$objResponse->addScript("xajax_showNote('".$id."','customer')");
+		}
 		$objResponse->addAssign("formCustomerInfo", "style.visibility", "visible");
 		$objResponse->addAssign("formCustomerInfo", "innerHTML", $html);	
 		return $objResponse->getXML();

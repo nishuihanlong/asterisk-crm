@@ -161,6 +161,16 @@ function initIni(){
 	//iptCreateTicket 
 	$objResponse->addAssign("iptSysCreateTicket","value",$config["system"]["create_ticket"]);
 
+	//iptSysEnableSocket 
+	$objResponse->addAssign("iptSysEnableSocket","value",$config["system"]["enable_socket"]);
+	//iptSysPort 
+	$objResponse->addAssign("iptSysFixPort","value",$config["system"]["fix_port"]);
+	//iptSysSocketUrl 
+	$objResponse->addAssign("iptSysSocketUrl","value",$config["system"]["socket_url"]);
+	$objResponse->addAssign("iptSysExportCustomerFieldsInDialedlist","value",$config["system"]["export_customer_fields_in_dialedlist"]);
+
+	$objResponse->addAssign("iptSysAllowPopupWhenAlreadyPopup","value",$config["system"]["allow_popup_when_already_popup"]);
+
 	return $objResponse;
 }
 
@@ -274,6 +284,16 @@ function initLocate(){
 
 	//iptSysCreateTicket
 	$objResponse->addAssign("divSysCreateTicket","innerHTML",$locate->Translate('create_ticket'));
+
+	//divSysCreateTicket 
+	$objResponse->addAssign("divSysEnableSocket","innerHTML",$locate->Translate('enable_socket'));
+	//divSysFixPort 
+	$objResponse->addAssign("divSysFixPort","innerHTML",$locate->Translate('fix_port'));
+	//divSysSocketUrl 
+	$objResponse->addAssign("divSysSocketUrl","innerHTML",$locate->Translate('socket_url'));
+	$objResponse->addAssign("divSysExportCustomerFieldsInDialedlist","innerHTML",$locate->Translate('export_customer_fields_in_dialedlist'));
+
+	$objResponse->addAssign("divSysAllowPopupWhenAlreadyPopup","innerHTML",$locate->Translate('allow_popup_when_already_popup'));
 	
 	return $objResponse;
 }
@@ -345,6 +365,13 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['enable_sms'] = $aFormValues['iptSysEnableSMS'];
 	$myPreferences['system']['require_reason_when_pause'] = $aFormValues['iptSysRequireReasonWhenPause'];
 	$myPreferences['system']['create_ticket'] = $aFormValues['iptSysCreateTicket'];
+	$myPreferences['system']['enable_socket'] = $aFormValues['iptSysEnableSocket'];
+	$myPreferences['system']['fix_port'] = $aFormValues['iptSysFixPort'];
+	$myPreferences['system']['socket_url'] = $aFormValues['iptSysSocketUrl'];
+
+	$myPreferences['system']['export_customer_fields_in_dialedlist'] = $aFormValues['iptSysExportCustomerFieldsInDialedlist'];
+
+	$myPreferences['system']['allow_popup_when_already_popup'] = $aFormValues['iptSysAllowPopupWhenAlreadyPopup'];
 
 	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
 	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];

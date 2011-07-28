@@ -60,6 +60,7 @@ if($table != ''){ //判断是否传了主表名
 }
 if($table != 'report') $res = $db->query($sql);
 global $locate;
+
 if($table == 'report'){
 	$groupid = 0;
 	$accountid = 0;
@@ -116,9 +117,11 @@ if($table == 'report'){
 	}
 }else{
 	while( $res->fetchinto($row) ) {
-		$data[] = $row;
+		//print_r($row);exit;
+		$data[] = str_replace("\n","",$row);
 	}
 }
+//print_r($data);exit;
 if($type != 'exportcsv'){
 	$objPHPExcel = new PHPExcel();
 
@@ -215,9 +218,9 @@ if($type != 'exportcsv'){
 			}
 			//if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
 			//		$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
-			
-			$txtstr .= "\t".$val."\t".',';
+			#$txtstr .= "\t".str_replace(",","\",\"",$val)."\t".',';
 			#$txtstr .= '"'.$val.'"'.',';
+			$txtstr .= '"'.str_replace('"','""',$val).'",';
 		}
 		if($first_line != ''){
 			$first_line .= "\n";

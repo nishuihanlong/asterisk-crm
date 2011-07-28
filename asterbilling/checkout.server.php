@@ -836,5 +836,16 @@ function speedDate($date_type){
 	return $objResponse;
 }
 
+function checkoutAll($resellerid,$groupid,$clidid){
+	global $locate;
+
+	$objResponse = new xajaxResponse();
+	$res =  astercc::setAllBilled($resellerid,$groupid,$clidid);
+
+	$objResponse->addAlert($locate->Translate("booth_cleared"));
+
+	return $objResponse;
+}
+
 $xajax->processRequests();
 ?>

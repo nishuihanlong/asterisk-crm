@@ -310,7 +310,7 @@ function showStatus(){
 
 				// should reload CDR
 				$objResponse->addScript("removeTr('".$peer."');");
-				$objResponse->addScript('setTimeout("xajax_addUnbilled(\''.$peer.'\')",1000);');	 //wait daemon write data to cdr
+				$objResponse->addScript('setTimeout("xajax_addUnbilled(\''.$peer.'\')",3000);');	 //wait daemon write data to cdr
 			}else{ 
 				// set display name
 				$objResponse->addAssign("$peer-displayname","style.backgroundColor","green");
@@ -623,7 +623,7 @@ function checkOut($aFormValues,$divId,$payment){
 	//echo $payment;exit;
 	$iptCustomerId = $divId."-CustomerId";
 	$iptDiscount = $divId."-CustomerDiscount";
-	if($aFormValues[$iptCustomerId] != '' && $aFormValues[$iptDiscount] != 0){
+	if($aFormValues[$iptCustomerId] != '' ){//&& $aFormValues[$iptDiscount] != 0
 		$customerid = $aFormValues[$iptCustomerId];
 		$discount = $aFormValues[$iptDiscount];
 	}else{
@@ -641,7 +641,7 @@ function checkOut($aFormValues,$divId,$payment){
 		$objResponse->addAssign($divId."-displayname","style.backgroundColor","");
 	}
 
-	if( $customerid != 0 ){
+	if( $customerid > 0 ){
 		$objResponse->addAssign($divId."-CustomerName",'value','');
 		$objResponse->addAssign($divId."-CustomerId",'value','');
 		$objResponse->addAssign($divId."-CustomerDiscount",'value','0');

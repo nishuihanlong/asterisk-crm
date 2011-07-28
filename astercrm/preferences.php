@@ -622,6 +622,63 @@ require_once('preferences.common.php');
 		<div id="divSysCreateTicket" name="divSysCreateTicket"></div>
 	</td>
   </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysEnableSocket" 
+	name="SysEnableSocket">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_socket</td>
+	<td width="200" align="left" valign="top" >
+		<select name="iptSysEnableSocket" id="iptSysEnableSocket">
+			<option value="no">no</option>
+			<option value="yes">yes</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysEnableSocket" name="divSysEnableSocket"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysFixPort" 
+	name="SysFixPort">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fix_port</td>
+	<td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysFixPort" name="iptSysFixPort" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysFixPort" name="divSysFixPort"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysSocketUrl" 
+	name="SysSocketUrl">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;socket_url</td>
+	<td width="200" align="left" valign="top" >
+		<textarea cols="35" rows="5" id="iptSysSocketUrl" name="iptSysSocketUrl"></textarea>
+		<!--<input type="text" size="30" id="iptSysSocketUrl" name="iptSysSocketUrl" />-->
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysSocketUrl" name="divSysSocketUrl"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysExportCustomerFieldsInDialedlist" 
+	name="SysExportCustomerFieldsInDialedlist">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;export_customer_fields_in_dialedlist</td>
+	<td width="200" align="left" valign="top" >
+		<input type="text" size="30" id="iptSysExportCustomerFieldsInDialedlist" name="iptSysExportCustomerFieldsInDialedlist" />
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysExportCustomerFieldsInDialedlist" name="divSysExportCustomerFieldsInDialedlist"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysAllowPopupWhenAlreadyPopup" 
+	name="SysAllowPopupWhenAlreadyPopup">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow_popup_when_already_popup</td>
+	<td width="200" align="left" valign="top" >
+		<select name="iptSysAllowPopupWhenAlreadyPopup" id="iptSysAllowPopupWhenAlreadyPopup">
+			<option value="0">0</option>
+			<option value="1">1</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysAllowPopupWhenAlreadyPopup" name="divSysAllowPopupWhenAlreadyPopup"></div>
+	</td>
+  </tr>
 </table>
 <table border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#F0F0F0" width="780">
   <tr>

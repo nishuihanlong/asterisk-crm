@@ -157,6 +157,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fields[] = 'campaignnote';
 	$fields[] = 'groupname';
 	$fields[] = 'servername';
+	$fields[] = 'balance';
 	$fields[] = 'creby';
 	$fields[] = 'cretime';
 
@@ -167,11 +168,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$headers[] = $locate->Translate("Group Name");
 	$headers[] = $locate->Translate("Server Name");
 	$headers[] = $locate->Translate("Remaining").'/'.$locate->Translate("Dialed ").'/'.$locate->Translate("Answered");
+	$headers[] = $locate->Translate("Balance");
 	$headers[] = $locate->Translate("Creby");
 	$headers[] = $locate->Translate("Cretime");
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
 	$attribsHeader[] = 'width=""';
@@ -189,6 +192,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
 	$attribsCols[] = 'style="text-align: left"';
+	$attribsCols[] = 'style="text-align: left"';
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
@@ -197,6 +201,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","groupname","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","servers.name","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'\'';
+	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","balance","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","creby","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","cretime","'.$divName.'","ORDERING");return false;\'';
 
@@ -206,6 +211,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearch[] = 'campaignnote';
 	$fieldsFromSearch[] = 'groupname';
 	$fieldsFromSearch[] = 'servers.name';
+	$fieldsFromSearch[] = 'balance';
 	$fieldsFromSearch[] = 'campaign.creby';
 	$fieldsFromSearch[] = 'campaign.cretime';
 	
@@ -215,6 +221,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$fieldsFromSearchShowAs[] = $locate->Translate("Campaign Note");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Group Name");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Server Name");
+	$fieldsFromSearchShowAs[] = $locate->Translate("Balance");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Creby");
 	$fieldsFromSearchShowAs[] = $locate->Translate("Cretime");
 
@@ -226,6 +233,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	$editFlag = 1;
 	$deleteFlag = 1;
+	$addFlag = 1;
 	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
 		if($_SESSION['curuser']['privileges']['campaign']['delete']) {
 			$deleteFlag = 1;
@@ -238,9 +246,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$editFlag = 0;
 		}
 	}
+
+	//如果是groupoperator 就没有添加 编辑和删除的功能
+	if($_SESSION['curuser']['usertype'] == 'groupoperator') {
+		$addFlag = 0;
+		$editFlag = 0;
+		$deleteFlag = 0;
+	}
+
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$editFlag,$deleteFlag,0);
 	$table->setAttribsCols($attribsCols);
-	$table->addRowSearchMore("campaign",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->addRowSearchMore("campaign",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,$addFlag,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -257,6 +273,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		#$dialed = $row['dialed'];
 		#$answered = customer::getCountAnswered($row['id']);
 		$rowc[] = $total.'/'.$row['dialed'].'/'.$row['answered'];
+		$rowc[] = $row['balance'];
 		$rowc[] = $row['creby'];
 		$rowc[] = $row['cretime'];
 		$table->addRow("campaign",$rowc,$editFlag,$deleteFlag,0,$divName,$fields);

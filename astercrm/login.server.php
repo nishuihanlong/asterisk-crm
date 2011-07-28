@@ -294,7 +294,7 @@ function processAccountData($aFormValues)
 				}
 
 				if($_SESSION['curuser']['groupid'] > 0){
-					$sql = "SELECT id,campaignname,queuename,queue_context FROM campaign WHERE queuename != '' AND groupid='".$_SESSION['curuser']['groupid']."' AND enable= 1 ORDER BY queuename ASC";
+					$sql = "SELECT id,campaignname,queuename,queue_context,use_ext_chan FROM campaign WHERE queuename != '' AND groupid='".$_SESSION['curuser']['groupid']."' AND enable= 1 ORDER BY queuename ASC";
 					$result = & $db->query($sql);
 
 					$dataArray = array();

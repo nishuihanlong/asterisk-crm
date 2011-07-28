@@ -116,7 +116,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname,customereab
 	var div = document.createElement("div");
 	div.className = "lable";
 	div.innerHTML += "&nbsp;&nbsp;U:&nbsp;<span id=\""+divId+"-unbilled\">0</span>";
-	div.innerHTML += "&nbsp;&nbsp;B:&nbsp;<span name=\"" + divId + "-balance\" id = \"" + divId + "-balance\" style=\"CURSOR: pointer;\" onclick=\"calculateBalance('" + divId + "')\"></span>";
+	div.innerHTML += "&nbsp;&nbsp;B:&nbsp;<span name=\"" + divId + "-balance\" id = \"" + divId + "-balance\" style=\"CURSOR: pointer;\" onclick=\"calculateBalance('" + divId + "')\"></span><span style=\"float:right;\">&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:void(null)\" onclick=\"removeTr("+divId+");xajax_addUnbilled("+divId+")\">refresh</a>&nbsp;</span>";
 	divContainer.appendChild(div);
 
 	if(customereable != 0){

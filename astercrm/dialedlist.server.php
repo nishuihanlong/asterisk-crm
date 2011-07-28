@@ -389,7 +389,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 }
 
 function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = null,$type = null){
-	global $locate,$db;
+	global $locate,$db,$config;
+	//根据后台设置导出的customer字段，来导出diallist关联的customer数据
+	$customerField = '';
+	if($config['system']['export_customer_fields_in_dialedlist'] != '') {
+		$relateCustomerFieldArr = explode(',',$config['system']['export_customer_fields_in_dialedlist']);
+		foreach($relateCustomerFieldArr as $tmp) {
+			$customerField .= 'customer.'.$tmp.',';
+		}
+	}
+
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -404,7 +413,12 @@ function searchFormSubmit($searchFormValue,$numRows = null,$limit = null,$id = n
 	if($optionFlag == "export" || $optionFlag == "exportcsv"){
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,'campaigndialedlist');
 		$joinstr=ltrim($joinstr,'AND');
-		$sql = "SELECT campaigndialedlist.dialednumber,customer.customer,campaigndialedlist.customername,campaigndialedlist.dialtime,campaigndialedlist.answertime,campaigndialedlist.duration,campaigndialedlist.billsec,campaigndialedlist.billsec_leg_a as total_billsec,campaigndialedlist.campaignresult,campaigndialedlist.response,campaigndialedlist.detect,campaigndialedlist.transfertime,campaigndialedlist.transfertarget,campaigndialedlist.resultby,campaigndialedlist.dialedby, groupname, campaignname,campaigndialedlist.dialedtime FROM campaigndialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaigndialedlist.groupid LEFT JOIN campaign ON campaign.id = campaigndialedlist.campaignid LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ";
+		if($customerField != '') {
+			$sql = "SELECT campaigndialedlist.dialednumber,customer.customer,campaigndialedlist.customername,campaigndialedlist.dialtime,campaigndialedlist.answertime,campaigndialedlist.duration,campaigndialedlist.billsec,campaigndialedlist.billsec_leg_a as total_billsec,campaigndialedlist.campaignresult,campaigndialedlist.response,campaigndialedlist.detect,campaigndialedlist.transfertime,campaigndialedlist.transfertarget,campaigndialedlist.resultby,campaigndialedlist.dialedby, groupname, campaignname,campaigndialedlist.dialedtime,".rtrim($customerField,',')." FROM campaigndialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaigndialedlist.groupid LEFT JOIN campaign ON campaign.id = campaigndialedlist.campaignid LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ";
+		} else {
+			$sql = "SELECT campaigndialedlist.dialednumber,customer.customer,campaigndialedlist.customername,campaigndialedlist.dialtime,campaigndialedlist.answertime,campaigndialedlist.duration,campaigndialedlist.billsec,campaigndialedlist.billsec_leg_a as total_billsec,campaigndialedlist.campaignresult,campaigndialedlist.response,campaigndialedlist.detect,campaigndialedlist.transfertime,campaigndialedlist.transfertarget,campaigndialedlist.resultby,campaigndialedlist.dialedby, groupname, campaignname,campaigndialedlist.dialedtime FROM campaigndialedlist LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.groupid = campaigndialedlist.groupid LEFT JOIN campaign ON campaign.id = campaigndialedlist.campaignid LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ";
+		}
+		
 		if($joinstr != '') $sql .= " WHERE ".$joinstr;
 		$_SESSION['export_sql'] = $sql;
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域

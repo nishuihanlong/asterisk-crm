@@ -834,6 +834,7 @@ CREATE TABLE `campaign` ( #added by solo 2008#2#5
  `minduration_leg_a` int(11) NOT NULL default '0',
  `dialtwoparty` enum ("yes","no") not null default "no",
  `queue_context` varchar(60) not null default '',
+ `use_ext_chan` ENUM('yes','no') NOT NULL default 'no',
  `billsec` int(4) NOT NULL default '0',
  `billsec_leg_a` int(4) NOT NULL default '0',
  `duration_answered` int(4) NOT NULL default '0',
@@ -947,6 +948,8 @@ DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
  `id` int(11) NOT NULL auto_increment,
  `customer` varchar(120) NOT NULL default '',
+ `first_name` varchar(50) NOT NULL default '',#add 2011#7#14 by shixb
+ `last_name` varchar(50) NOT NULL default '',#add 2011#7#14 by shixb
  `customertitle` varchar(30) default '',
  `address` varchar(200) NOT NULL default '',
  `zipcode` varchar(10) NOT NULL default '',
@@ -1002,6 +1005,7 @@ CREATE TABLE `dialedlist` (
   `resultby` varchar(30) NOT NULL default '',
   `uniqueid` varchar(40) NOT NULL default '',										#added by solo 2008#2#1
   `channel` varchar(50) NOT NULL DEFAULT '',
+  `amd` enum('yes','no') NOT NULL DEFAULT 'no',
   `groupid` INT NOT NULL DEFAULT '0',															#added by solo 2008#2#3
   `campaignid` INT NOT NULL DEFAULT 0,														#added by solo 2008#2#5
   `assign` varchar(20) NOT NULL default '',												#added by solo 2008#2#10
@@ -1796,6 +1800,8 @@ DROP TABLE IF EXISTS `customer_leads`;
 CREATE TABLE `customer_leads` (
  `id` int(11) NOT NULL auto_increment,
  `customer` varchar(120) NOT NULL default '',
+ `first_name` varchar(50) NOT NULL default '',#add 2011#7#14 by shixb
+ `last_name` varchar(50) NOT NULL default '',#add 2011#7#14 by shixb
  `customertitle` varchar(30) default '',
  `address` varchar(200) NOT NULL default '',
  `zipcode` varchar(10) NOT NULL default '',
@@ -1954,7 +1960,7 @@ CREATE TABLE `user_types` (
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
-
+INSERT INTO `user_types` (`id`,`usertype_name`,`memo`,`created`) VALUES (1,'groupoperator','groupoperator',now());
 
 ## 
 ## table `user_privileges`
@@ -1970,6 +1976,87 @@ CREATE TABLE `user_privileges` (
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
+INSERT INTO `user_privileges` (`action`,`page`,`user_type_id`,`created`) VALUES
+('view','import','1',now()),
+('view','surveyresult','1',now()),
+('view','account','1',now()),
+('view','customer','1',now()),
+('view','predictivedialer','1',now()),
+('view','systemstatus','1',now()),
+('view','survey','1',now()),
+('view','diallist','1',now()),
+('view','trunkinfo','1',now()),
+('view','cdr','1',now()),
+('view','speeddial','1',now()),
+('view','report','1',now()),
+('view','queuestatus','1',now()),
+('view','agent','1',now()),
+('view','knowledge','1',now()),
+('view','dnc','1',now()),
+('view','ticketcategory','1',now()),
+('view','useronline','1',now()),
+('view','user_online','1',now()),
+('view','codes','1',now()),
+('view','sms_templates','1',now()),
+('view','sms_sents','1',now()),
+('view','contact','1',now()),
+('view','note','1',now()),
+('view','customer_leads','1',now()),
+('view','note_leads','1',now()),
+('view','dialedlist','1',now()),
+('view','campaign','1',now()),
+('view','campaignresult','1',now()),
+('view','worktimepackages','1',now()),
+('view','worktime','1',now()),
+('view','ticket_details','1',now()),
+('edit','account','1',now()),
+('edit','customer','1',now()),
+('edit','survey','1',now()),
+('edit','diallist','1',now()),
+('edit','trunkinfo','1',now()),
+('edit','cdr','1',now()),
+('edit','speeddial','1',now()),
+('edit','report','1',now()),
+('edit','agent','1',now()),
+('edit','knowledge','1',now()),
+('edit','dnc','1',now()),
+('edit','ticketcategory','1',now()),
+('edit','codes','1',now()),
+('edit','sms_templates','1',now()),
+('edit','sms_sents','1',now()),
+('edit','contact','1',now()),
+('edit','note','1',now()),
+('edit','customer_leads','1',now()),
+('edit','note_leads','1',now()),
+('edit','dialedlist','1',now()),
+('edit','campaignresult','1',now()),
+('edit','worktimepackages','1',now()),
+('edit','worktime','1',now()),
+('edit','ticket_details','1',now()),
+('delete','account','1',now()),
+('delete','customer','1',now()),
+('delete','survey','1',now()),
+('delete','diallist','1',now()),
+('delete','trunkinfo','1',now()),
+('delete','cdr','1',now()),
+('delete','speeddial','1',now()),
+('delete','report','1',now()),
+('delete','agent','1',now()),
+('delete','knowledge','1',now()),
+('delete','dnc','1',now()),
+('delete','ticketcategory','1',now()),
+('delete','codes','1',now()),
+('delete','sms_templates','1',now()),
+('delete','sms_sents','1',now()),
+('delete','contact','1',now()),
+('delete','note','1',now()),
+('delete','customer_leads','1',now()),
+('delete','note_leads','1',now()),
+('delete','dialedlist','1',now()),
+('delete','campaignresult','1',now()),
+('delete','worktimepackages','1',now()),
+('delete','worktime','1',now()),
+('delete','ticket_details','1',now());
 
 
 ## 

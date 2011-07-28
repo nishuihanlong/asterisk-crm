@@ -142,6 +142,13 @@ class Customer extends astercrm
 			$dialtwoparty = "no";
 		}
 
+		if ($f['use_ext_chan'] =="on"){
+			$useExtChan = "yes";
+		} else {
+			$useExtChan = "no";
+		}
+		
+
 		$query= "INSERT INTO campaign SET "
 				."campaignname='".$f['campaignname']."', "
 				."campaignnote='".$f['campaignnote']."', "
@@ -163,6 +170,7 @@ class Customer extends astercrm
 				."minduration_billsec='".$f['minduration_billsec']."', "
 				."minduration_leg_a='".$f['minduration_leg_a']."', "
 				."callerid='".$f['callerid']."', "
+				."use_ext_chan='".$useExtChan."', "
 				."groupid='".$f['groupid']."', "
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context = '".$f['queue_context']."',"
@@ -193,6 +201,12 @@ class Customer extends astercrm
 			$dialtwoparty = "no";
 		}
 
+		if ($f['use_ext_chan'] =="on"){
+			$useExtChan = "yes";
+		} else {
+			$useExtChan = "no";
+		}
+
 		$limit_type = '';
 		if ($f['queuename'] == ""){
 			$limit_type = 'channel';
@@ -219,6 +233,7 @@ class Customer extends astercrm
 				."minduration_billsec='".$f['minduration_billsec']."', "
 				."minduration_leg_a='".$f['minduration_leg_a']."', "
 				."callerid='".$f['callerid']."', "
+				."use_ext_chan='".$useExtChan."', "
 				."dialtwoparty='".$dialtwoparty."', "
 				."queue_context='".$f['queue_context']."', "
 				."sms_number='".$f['sms_number']."', "
@@ -464,6 +479,10 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30"></td>
 				</tr>
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Use Extension Channel For Queue").'</td>
+					<td align="left"><input type="checkbox" id="use_ext_chan" name="use_ext_chan" /></td>
+				</tr>
+				<tr>
 					<td nowrap align="left">'.$locate->Translate("Queue Context").'</td>
 					<td align="left"><input type="text" id="queue_context" name="queue_context" size="30" maxlength="60"></td>
 				</tr>
@@ -646,6 +665,12 @@ class Customer extends astercrm
 				$recyleyes = 'selected'; 
 			}
 
+			if($campaign['use_ext_chan'] == 'yes'){
+				$useExtChanChecked = 'checked';
+			}else{
+				$useExtChanChecked = '';
+			}
+
 			if($campaign['enablebalance'] == 'no'){
 				$enablebalanceNo = 'selected'; 
 				$enablebalanceYes = '';
@@ -718,7 +743,10 @@ class Customer extends astercrm
 					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
 					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>
 				</tr>
-
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Use Extension Channel For Queue").'</td>
+					<td align="left"><input type="checkbox" id="use_ext_chan" name="use_ext_chan" '.$useExtChanChecked.'/></td>
+				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">'.$grouphtml.'</td>

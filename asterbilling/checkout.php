@@ -328,6 +328,18 @@ swfobject.embedSWF(
   {"data-file":"checkout.server.piegroup.php?action=markupV"+resellerid+"V"+groupid+"V"+sltBooth+"V"+sdate+"V"+edate+"V"+listType+"V"+hidCurpeer} );
 
 }
+
+function checkoutAll()
+{
+	if (!confirm("<?echo $locate->Translate("Are you sure to clear all booth");?>"+"?'"))
+	{
+		return false;
+	}
+	var r = document.getElementById("resellerid").value;
+	var g = document.getElementById("groupid").value;
+	var c = document.getElementById("sltBooth").value;
+	xajax_checkoutAll(r,g,c);
+}
 </script>
 
        
@@ -352,7 +364,10 @@ swfobject.embedSWF(
 
 			<select id="sltBooth" name="sltBooth" onchange="listCDR();">
 			</select>
-			<br>
+			<? if($_SESSION['curuser']['usertype'] == 'admin'){
+				echo '&nbsp;&nbsp;<a href="###" onclick="checkoutAll();">'.$locate->Translate("CheckOutAll").'</a>&nbsp';
+			}?>
+						<br>
 			<a href="###" onclick="xajax_speedDate('td')"><?echo $locate->Translate("Today")?></a>&nbsp;|
 			<a href="###" onclick="xajax_speedDate('tw')"><?echo $locate->Translate("This week")?></a>&nbsp;|
 			<a href="###" onclick="xajax_speedDate('tm')"><?echo $locate->Translate("This month")?></a>&nbsp;|

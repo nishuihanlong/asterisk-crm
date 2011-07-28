@@ -230,6 +230,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->deleteFlag = '1';//对删除标记进行赋值
 	$editFlag = 1;
 	$deleteFlag = 1;
+	$addFlag = 1;
 	if($_SESSION['curuser']['usertype'] != 'admin' && $_SESSION['curuser']['usertype'] != 'groupadmin') {
 		if($_SESSION['curuser']['privileges']['account']['delete']) {
 			$deleteFlag = 1;
@@ -244,10 +245,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			$editFlag = 0;
 		}
 	}
+	//如果是groupoperator 就没有添加 编辑和删除的功能
+	if($_SESSION['curuser']['usertype'] == 'groupoperator') {
+		$addFlag = 0;
+		$editFlag = 0;
+		$deleteFlag = 0;
+	}
+
 	$table->setHeader('title',$headers,$attribsHeader,$eventHeader,$editFlag,$deleteFlag);
 	$table->setAttribsCols($attribsCols);
 	$table->ordering = $ordering;
-	$table->addRowSearchMore("astercrm_account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->addRowSearchMore("astercrm_account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,$addFlag,$deleteFlag,$typeFromSearch,$typeFromSearchShowAs,$stype);
 	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
