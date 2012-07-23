@@ -11,11 +11,11 @@ use FindBin qw($Bin);
 
 my $asterisk = '127.0.0.1';
 my $asteriskport = 5038;
-my $asteriskuser = '';
-my $asterisksecret = '';
+my $asteriskuser = 'astercc';
+my $asterisksecret = 'astercc';
 
 my $dbhost = '127.0.0.1';
-my $dbname = 'astercrm';
+my $dbname = 'astercc01';
 my $dbport = 3306;
 my $dbuser = '';
 my $dbpasswd = '';
@@ -150,7 +150,7 @@ my	$row = $sth->fetchrow_arrayref();
                         `id` INT(16) PRIMARY KEY AUTO_INCREMENT NOT NULL,
                         `timestamp` DATETIME,
                         `event` TEXT,
-                        INDEX `timestamp` (`timestamp`)) ENGINE = MyISAM;~) or die $dbh->errstr;
+                        INDEX `timestamp` (`timestamp`)) ENGINE = Memory;~) or die $dbh->errstr;
 		
 	}
 return();

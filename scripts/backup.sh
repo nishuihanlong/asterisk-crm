@@ -2,9 +2,10 @@
 basepath=`dirname $0`
 cd ${basepath}
 thispath=`pwd`
+thispath='/opt/asterisk/scripts/astercc/'
 
 config=${thispath}"/backup.conf"  # if this run for crontab please assign absolute path for config
-
+asterccconfig=${thispath}"/astercc.conf"
 if [ "X$1" != "X" ];then
   config="$1"
 fi
@@ -215,6 +216,42 @@ if [ ${dbcount} -gt 0 ];then
   fi
   mv ${dblocalpath}/*.tar.gz ${dblocalpath}/localsave
 fi
+
+if [ ! -e ${asterccconfig} ];then
+  echo "can not find asterccconfig file "${asterccconfig}
+else
+   startTime=`date "+%Y-%m-%d %H:%M:%S"`
+   echo "Start to delete historycdr and mycdr...... at ${startTime}" >> ${dblocalpath}/db_cdr_delete.log
+
+   keep_cdr_days=`sed -n '/\[system]/,/\[.*\]/p' ${asterccconfig} |grep keep_cdr_days[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+   dbhost=`sed -n '/\[database]/,/\[.*\]/p' ${asterccconfig} |grep dbhost[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+   dbname=`sed -n '/\[database]/,/\[.*\]/p' ${asterccconfig} |grep dbname[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+   dbport=`sed -n '/\[database]/,/\[.*\]/p' ${asterccconfig} |grep dbport[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+   username=`sed -n '/\[database]/,/\[.*\]/p' ${asterccconfig} |grep username[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+   password=`sed -n '/\[database]/,/\[.*\]/p' ${asterccconfig} |grep password[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " "`
+
+   if [ "X${password}" == "X" ];then
+      if [ "X${dbport}" == "X" ];then
+        mysql -h$dbhost -u$username -e "USE ${dbname};DELETE FROM mycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+        mysql -h$dbhost -u$username -e "USE ${dbname};DELETE FROM historycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+      else
+        mysql -h$dbhost -u$username --port=$dbport -e "USE ${dbname};DELETE FROM mycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+        mysql -h$dbhost -u$username --port=$dbport -e "USE ${dbname};DELETE FROM historycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+      fi
+   else
+      if [ "X${dbport}" == "X" ];then
+        mysql -h$dbhost -u$username -p$password -e "USE ${dbname};DELETE FROM mycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+        mysql -h$dbhost -u$username -p$password -e "USE ${dbname};DELETE FROM historycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+      else
+        mysql -h$dbhost -u$username -p$password --port=$dbport -e "USE ${dbname};DELETE FROM mycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+        mysql -h$dbhost -u$username -p$password --port=$dbport -e "USE ${dbname};DELETE FROM historycdr WHERE calldate < now() - INTERVAL ${keep_cdr_days} DAY ;"
+      fi
+   fi
+fi
+endTime=`date "+%Y-%m-%d %H:%M:%S"`
+echo "delete historycdr and mycdr END at ${endTime}" >> ${dblocalpath}/db_cdr_delete.log
+
+
 
 curremotefile=""
 if [ -e ${dblocalpath}/curremotedbfile ];then

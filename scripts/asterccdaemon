@@ -40,6 +40,12 @@ if [ "X${astercc_start}" == "X" ]; then
   astercc_start=0
 fi
 
+events2filedaemon_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep events2filedaemon_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
+
+if [ "X${events2filedaemon_start}" == "X" ]; then
+  events2filedaemon_start=0
+fi
+
 astercctools_start=`sed -n '/\[system]/,/\[.*\]/p' ${asterccpath}/astercc.conf |grep astercctools_start[\ ]*= |grep -v "^\ *#" |cut -d= -f2 |tr -d " " |grep -o "[0-9]\+"`
 
 if [ "X${astercctools_start}" == "X" ]; then
@@ -60,37 +66,44 @@ fi
 
 while   [   1   ]   
 	do
-		sleep  ${sleepsec}		
+		sleep  ${sleepsec}
+		
+		if [ ${events2filedaemon_start} -eq 1 ]; 
+		then
+			events2filedaemonpid=`ps -ef |grep -v grep |grep -E '/events2filedaemon.pl$|/events2filedaemon.pl[\ ]+-d' |awk '{print $2}'`
+		else
+			events2filedaemonpid='pass'
+		fi
 
 		if [ ${astercc_start} -eq 1 ]; 
 		then
-			asterccpid=`ps -ef |grep -v grep |grep -E /asterc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
+			asterccpid=`ps -ef |grep -v grep |grep -E '/astercc$|/astercc[\ ]+-d' |awk '{print $2}'`
 		else
 			asterccpid='pass'
 		fi		
 		
 		if [ ${astercctools_start} -eq 1 ]; 
 		then
-			asterctpid=`ps -ef |grep -v grep |grep -E /astercctool[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
+			asterctpid=`ps -ef |grep -v grep |grep -E '/astercctools$|/astercctools[\ ]+-d' |awk '{print $2}'`
 		else
 			asterctpid='pass'
 		fi		
 		
 		if [ ${asterrc_start} -eq 1 ]; 
 		then
-			asterrcpid=`ps -ef |grep -v grep |grep -E /asterr[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
+			asterrcpid=`ps -ef |grep -v grep |grep -E '/asterrc$|/asterrc[\ ]+-d' |awk '{print $2}'`
 		else
 			asterrcpid='pass'
 		fi		
 		
 		if [ ${astercclock_start} -eq 1 ]; 
 		then
-			asterlcpid=`ps -ef |grep -v grep |grep -E /asterccloc[a-z]{0,1\}[.\ ]+-d |awk '{print $2}'`
+			asterlcpid=`ps -ef |grep -v grep |grep -E '/astercclock$|/astercclock[\ ]+-d' |awk '{print $2}'`
 		else
 			asterlcpid='pass'
 		fi
 		
-		if [ "x$asterccpid" == "x" -o "x$asterctpid" == "x" -o "x$asterrcpid" == "x" -o "x$asterlcpid" == "x" ]
+		if [ "x$asterccpid" == "x" -o "x$asterctpid" == "x" -o "x$asterrcpid" == "x" -o "x$asterlcpid" == "x" -o "x$events2filedaemonpid" == "x" ]
 		then
 			if test -s $asterccdpath; then
 				$asterccdpath > /dev/null

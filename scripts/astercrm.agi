@@ -101,10 +101,14 @@ if($DIALPART eq 'CALLEE'){
 
 	if ($campaign_ref) {
 		if($campaign_ref->{'enablebalance'} eq "strict" && $campaign_ref->{'balance'} <= "0"){
+			$query = "UPDATE ".$db_prefix."campaign  SET status='idle' WHERE id='$campaign_id' ;";		
+			&executeQuery($query);
+
 			$AGI->noop("Dial Stop : campaign_id=$campaign_id AND enablebalance=strict AND balance<=0 ");
+			&hangup;
 			exit;
 		}
-		
+
 		$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'firstcontext'}/n".$paramdelimiter."$campaign_ref->{'waittime'}".$paramdelimiter."tT");
 		$AGI->get_variable("DIALSTATUS");
 		my $callstatus = $AGI->get_variable("DIALSTATUS");
@@ -133,26 +137,33 @@ if($DIALPART eq 'CALLEE'){
 			#}
 			#$AGI->noop("overrrrrrrrrrrrrrrrrrrrrrrrr   $billsec");
 			my $balance = $campaign_ref->{'balance'};
-			if($campaign_ref->{'billing_block'} > 0){
-				my $z = int(($billsec - $campaign_ref->{'init_billing'})/$campaign_ref->{'billing_block'});
-				my $y = ($billsec - $campaign_ref->{'init_billing'})%$campaign_ref->{'billing_block'};
-				if($y > 0){
-					$credit = ($z+1)*$campaign_ref->{'billing_block'}+$campaign_ref->{'init_billing'};
+			if($billsec > 0){
+				if($billsec < $campaign_ref->{'init_billing'}){
+					$credit = $campaign_ref->{'init_billing'};
+					$balance = $campaign_ref->{'balance'}-$credit;
 				}else{
-					$credit = $z*$campaign_ref->{'billing_block'}+$campaign_ref->{'init_billing'};
+					if($campaign_ref->{'billing_block'} > 0){
+						my $z = int(($billsec - $campaign_ref->{'init_billing'})/$campaign_ref->{'billing_block'});
+						my $y = ($billsec - $campaign_ref->{'init_billing'})%$campaign_ref->{'billing_block'};
+						if($y > 0){
+							$credit = ($z+1)*$campaign_ref->{'billing_block'}+$campaign_ref->{'init_billing'};
+						}else{
+							$credit = $z*$campaign_ref->{'billing_block'}+$campaign_ref->{'init_billing'};
+						}	
+						$balance = $campaign_ref->{'balance'}-$credit;
+					}else{
+						$credit = $billsec;
+						$balance = $campaign_ref->{'balance'} - $credit;
+					}
 				}
-				$balance = $campaign_ref->{'balance'}-$credit;
-			}else{
-				$credit = $billsec;
-				$balance = $campaign_ref->{'balance'} - $billsec;
+				#更新剩余金额
+				if($balance <= 0 && $campaign_ref->{'enablebalance'} eq "strict"){
+					$query = "UPDATE ".$db_prefix."campaign  SET balance=balance-$credit, status='idle' WHERE id='$campaign_id' ;";		
+				}else{
+					$query = "UPDATE ".$db_prefix."campaign  SET balance=balance-$credit WHERE id='$campaign_id' ;";
+				}
+				&executeQuery($query,'');
 			}
-			#更新剩余金额
-			if($balance <= 0 && $campaign_ref->{'enablebalance'} eq "strict"){
-				$query = "UPDATE ".$db_prefix."campaign  SET balance='$balance',status='idle' WHERE id='$campaign_id' ;";		
-			}else{
-				$query = "UPDATE ".$db_prefix."campaign  SET balance='$balance' WHERE id='$campaign_id' ;";
-			}
-			&executeQuery($query,'');
 		}
 		
 		if($dialed_id > 0){
@@ -177,6 +188,9 @@ if($DIALPART eq 'CALLEE'){
 }elsif($DIALPART eq 'CALLER'){
 	#$AGI->exec("AMD");
 	my $customerphone = $input{'callerid'};
+	my $cuscid = $AGI->get_variable("DIALEDNUM");
+	$AGI->set_variable("CALLERID(num)",$cuscid);
+	$customerphone = $cuscid;
 
 	if($extension eq 'fax'){
 		my $cuscid = $AGI->get_variable("CUSCID");
@@ -233,6 +247,7 @@ if($DIALPART eq 'CALLEE'){
 		}
 		
 	}else{
+
 		my $amdstatus = $AGI->get_variable("AMDSTATUS");
 		$AGI->verbose($amdstatus);
 		#$amdstatus = 'NOTSURE';
@@ -246,11 +261,7 @@ if($DIALPART eq 'CALLEE'){
 			my $campaign_ref = $campaign_rows->fetchrow_hashref();
 
 			if ($campaign_ref) {
-				my $cuscid = $AGI->get_variable("CUSCID");
-				if($cuscid ne 'NONE'){
-					$AGI->set_variable("CALLERID(num)",$cuscid);
-					$customerphone = $cuscid;
-				}
+
 				$AGI->exec("Dial","Local/$extension\@$campaign_ref->{'nextcontext'}/n".$paramdelimiter."40".$paramdelimiter."tT");
 			}
 			
@@ -315,8 +326,8 @@ if($DIALPART eq 'CALLEE'){
 die;
 
 sub hangup{
-	$AGI->hangup();
 	$AGI->verbose("hang up");
+	$AGI->hangup();
 	exit;
 }
 
