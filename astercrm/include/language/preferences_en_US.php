@@ -64,4 +64,7 @@ $fix_port = "fix port";
 $socket_url = "socket string";
 $export_customer_fields_in_dialedlist = "export customer field when export dialedlist";
 $allow_popup_when_already_popup = "whether to popup the customer window when it had existed";
+$enable_formadd_popup = "whether to pop up the add record popup";
+$if_popup_the_highest_priority_note_info = "if popup the highest priority note info";
+$if_popup_the_lastest_priority_note_info = "if popup the lastest priority note info";
 ?>

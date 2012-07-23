@@ -119,7 +119,7 @@ function init($aFormValue){
 	//get locate parameter
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
 
-	$login_div = '<input type="image" src="skin/default/images_'.$_SESSION['curuser']['country'].'/login.gif" align="absmiddle" onclick="form.submit(\'loginForm\');"/>';
+	$login_div = '<img src="skin/default/images_'.$_SESSION['curuser']['country'].'/login.gif" onclick="document.getElementById(\'loginForm\').submit();" />';//onclick="form.submit(\'loginForm\');"
 
 	$objResponse->addAssign("titleDiv","innerHTML",$locate->Translate("Title"));
 	$objResponse->addAssign("logintip","innerHTML",$locate->Translate("logintip"));
@@ -197,7 +197,14 @@ function processAccountData($aFormValues)
 
 	$loginError = false;
 	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);
-	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');
+	
+	/* check whether the pear had been installed */
+	$pear_exists_result = class_exists('PEAR');
+	if(empty($pear_exists_result)) {
+		$objResponse->addAlert($locate->Translate("Please install php pear"));
+		return $objResponse;
+	}
 
 	if (!$bError)
 	{
@@ -348,6 +355,9 @@ function processAccountData($aFormValues)
 				}
 
 				$_SESSION['error_report'] = $config['error_report']['error_report_level'];
+
+				//clear socket_url session to 
+				$_SESSION['socket_url_flag'] = 'yes';
 				$objResponse->addScript('window.location.href="portal.php";');
 				return $objResponse;
 

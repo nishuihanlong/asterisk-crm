@@ -89,4 +89,7 @@ $fix_port = "固定端口";
 $socket_url = "socket字符串";
 $export_customer_fields_in_dialedlist = "导出已拨列表数据的时候关联导出客户相关字段";
 $allow_popup_when_already_popup = "客户弹屏存在是否重新弹出客户窗口";
+$enable_formadd_popup = "是否启用添加记录弹屏";
+$if_popup_the_highest_priority_note_info = "是否弹出最高级别note";
+$if_popup_the_lastest_priority_note_info = "是否弹出最新note";
 ?>

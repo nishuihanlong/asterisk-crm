@@ -101,7 +101,7 @@ $clientDst = $_REQUEST['clientdst'];
 	<script type="text/javascript" src="js/dragresize.js"></script>
 	<script type="text/javascript" src="js/dragresizeInit.js"></script>
 	<script type="text/javascript" src="js/common.js"></script>
-	<script type="text/javascript" src="xajax_js/xajax.js"></script>
+	<script type="text/javascript" src="include/xajax_js/xajax.js"></script>
 	
 	<script language="JavaScript" src="js/dhtmlgoodies_calendar.js"></script>
 	<LINK href="js/dhtmlgoodies_calendar.css" type=text/css rel=stylesheet>
@@ -113,6 +113,7 @@ $clientDst = $_REQUEST['clientdst'];
 		var intervalID = 0; //for stop setInterval of autoDial
 		var countCheNum = 0;//for enable/disable the dial button
 		var clientDst = "<?echo $clientDst ?>";
+		var enableExternalCrm = "<?echo $config['system']['enable_external_crm'] ?>";
 		var settimeNum = 0;
 		var popupToclear;
 		if(clientDst != ''){
@@ -311,7 +312,10 @@ $clientDst = $_REQUEST['clientdst'];
 			}
 			ShowProcessingDiv();
 			//xajax.$('btnDial').disabled = true;
-			xajax_getContact(src,0);
+
+			if(enableExternalCrm != 1) {
+				xajax_getContact(src,0);
+			}
 
 			setTimeout("xajax_invite(src,dest)",1000);
 			checkExtensionStatus('extensionStatus');

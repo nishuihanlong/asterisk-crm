@@ -90,6 +90,18 @@ require_once('preferences.common.php');
 					return false;
 				}
 			}
+
+			function AutoNotePopupOperate(curval){
+				if(curval == 0) {
+					document.getElementById('iptSysLastest_priority_note').checked = false;
+					document.getElementById('iptSysHighest_priority_note').checked = false;
+					document.getElementById('iptSysLastest_priority_note').disabled = true;
+					document.getElementById('iptSysHighest_priority_note').disabled = true;
+				} else {
+					document.getElementById('iptSysLastest_priority_note').disabled = false;
+					document.getElementById('iptSysHighest_priority_note').disabled = false;
+				}
+			}
 		//-->
 		</SCRIPT>
 		<script type="text/javascript" src="js/dragresize.js"></script>
@@ -526,10 +538,14 @@ require_once('preferences.common.php');
   <tr bgcolor="#F7F7F7">
     <td width="230" align="left" valign="top"  id="SysAuto_note_popup" name="SysAuto_note_popup">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto_note_popup</td>
     <td width="200" align="left" valign="top" >
-		<select name="iptSysAuto_note_popup" id="iptSysAuto_note_popup">
+		<select name="iptSysAuto_note_popup" id="iptSysAuto_note_popup" onchange="AutoNotePopupOperate(this.value)">
 			<option value="0">0</option>
 			<option value="1">1</option>
 		</select>
+		<br />
+		<input type="checkbox" name="iptSysHighest_priority_note" id="iptSysHighest_priority_note" /><span id="divSysHighest_priority_note">highest_priority_note</span>
+		<br/>
+		<input type="checkbox" name="iptSysLastest_priority_note" id="iptSysLastest_priority_note" /><span id="divSysLastest_priority_note">lastest_priority_note</span>
 	</td>
     <td align="left" valign="top" >
 		<div id="divSysAuto_note_popup" name="divSysAuto_note_popup"></div>
@@ -677,6 +693,19 @@ require_once('preferences.common.php');
 	</td>
     <td align="left" valign="top" >
 		<div id="divSysAllowPopupWhenAlreadyPopup" name="divSysAllowPopupWhenAlreadyPopup"></div>
+	</td>
+  </tr>
+  <tr bgcolor="#F7F7F7">
+	<td width="230" align="left" valign="top"  id="SysEnableFormAddPopup" 
+	name="SysEnableFormAddPopup">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enable_formadd_popup</td>
+	<td width="200" align="left" valign="top" >
+		<select name="iptSysEnableFormAddPopup" id="iptSysEnableFormAddPopup">
+			<option value="0">0</option>
+			<option value="1">1</option>
+		</select>
+	</td>
+    <td align="left" valign="top" >
+		<div id="divSysEnableFormAddPopup" name="divSysEnableFormAddPopup"></div>
 	</td>
   </tr>
 </table>

@@ -325,8 +325,12 @@ function showCustomer($id = 0, $type="customer",$callerid=''){
 }
 
 function showHighestAndLastestNote($customerid){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
+	
+	if($config['system']['highest_priority_note'] == 0 && $config['system']['lastest_priority_note'] == 0) {//同时禁止弹出最高级别note和最新的note
+		return $objResponse->getXML();
+	}
 	
 	if($customerid != null ){
 		// get the highest note and the lastest note 
@@ -335,7 +339,7 @@ function showHighestAndLastestNote($customerid){
 		$noteIdArray = explode('-',$noteIdStr);
 		//$noteIdArray[0] is the highest prority note id
 		//$noteIdArray[1] is the lastest note id
-
+		
 		if($noteIdArray[0] == $noteIdArray[1]) {//if the highest note and the lastest note are the same note ,then show one note pop;
 			$html = Table::Top($locate->Translate("Note"),"formHighestProrityNote"); 
 			$noteHTML .= Customer::showNoteDetails($noteIdArray[0]);
@@ -345,37 +349,49 @@ function showHighestAndLastestNote($customerid){
 			else
 				$html .= $noteHTML;
 
-			$html .= Table::Footer();
-			$objResponse->addAssign("formHighestProrityNote", "style.visibility", "visible");
-			$objResponse->addAssign("formHighestProrityNote", "innerHTML", $html);
+			if($config['system']['highest_priority_note'] == 1 && $config['system']['lastest_priority_note'] == 0){
+				$html .= Table::Footer();
+				$objResponse->addAssign("formHighestProrityNote", "style.visibility", "visible");
+				$objResponse->addAssign("formHighestProrityNote", "innerHTML", $html);
 
-			//
-			$objResponse->addAssign("formLastestNote", "style.visibility", "hidden");
-			$objResponse->addAssign("formLastestNote", "innerHTML",'');
+				$objResponse->addAssign("formLastestNote", "style.visibility", "hidden");
+				$objResponse->addAssign("formLastestNote", "innerHTML",'');
+			} else if($config['system']['lastest_priority_note'] == 0 && $config['system']['lastest_priority_note'] == 1) {
+				$html .= Table::Footer();
+				$objResponse->addAssign("formHighestProrityNote", "style.visibility", "hidden");
+				$objResponse->addAssign("formHighestProrityNote", "innerHTML","");
+
+				$objResponse->addAssign("formLastestNote", "style.visibility", "visible");
+				$objResponse->addAssign("formLastestNote", "innerHTML",$html);
+			}
 		} else {
-			$highestHtml = Table::Top($locate->Translate("Note"),"formHighestProrityNote"); 
-			$highestTableHTML .= Customer::showNoteDetails($noteIdArray[0]);
+			if($config['system']['highest_priority_note']){
+				$highestHtml = Table::Top($locate->Translate("Note"),"formHighestProrityNote"); 
+				$highestTableHTML .= Customer::showNoteDetails($noteIdArray[0]);
 
-			if ($highestTableHTML == '')
-				return $objResponse->getXML();
-			else
-				$highestHtml .= $highestTableHTML;
+				if ($highestTableHTML == '')
+					return $objResponse->getXML();
+				else
+					$highestHtml .= $highestTableHTML;
 
-			$highestHtml .= Table::Footer();
-			$objResponse->addAssign("formHighestProrityNote", "style.visibility", "visible");
-			$objResponse->addAssign("formHighestProrityNote", "innerHTML", $highestHtml);
+				$highestHtml .= Table::Footer();
+				$objResponse->addAssign("formHighestProrityNote", "style.visibility", "visible");
+				$objResponse->addAssign("formHighestProrityNote", "innerHTML", $highestHtml);
+			}
 			
-			$lastestHtml = Table::Top($locate->Translate("Note"),"formLastestNote"); 
-			$lastetTabelHTML .= Customer::showNoteDetails($noteIdArray[1]);
+			if($config['system']['lastest_priority_note']){
+				$lastestHtml = Table::Top($locate->Translate("Note"),"formLastestNote"); 
+				$lastetTabelHTML .= Customer::showNoteDetails($noteIdArray[1]);
 
-			if ($lastetTabelHTML == '')
-				return $objResponse->getXML();
-			else
-				$lastestHtml .= $lastetTabelHTML;
+				if ($lastetTabelHTML == '')
+					return $objResponse->getXML();
+				else
+					$lastestHtml .= $lastetTabelHTML;
 
-			$lastestHtml .= Table::Footer();
-			$objResponse->addAssign("formLastestNote", "style.visibility", "visible");
-			$objResponse->addAssign("formLastestNote", "innerHTML", $lastestHtml);
+				$lastestHtml .= Table::Footer();
+				$objResponse->addAssign("formLastestNote", "style.visibility", "visible");
+				$objResponse->addAssign("formLastestNote", "innerHTML", $lastestHtml);
+			}
 		}
 		return $objResponse->getXML();
 	}
@@ -869,7 +885,15 @@ function saveDiallist($f,$userexten = '',$customerid = ''){
 		$objResponse->addAlert($locate->Translate("Must select a campaign"));
 		return $objResponse->getXML();
 	}
-
+	
+	if($customerid > 0){
+		$res_customer =astercrm::getRecordById($customerid,'customer');
+		$f['customerid'] = $customerid;
+		$f['customername'] = $res_customer['customer'];
+	}
+	
+		//print_r($f);exit;
+	
 	// check if the assign number belong to this group
 	if ($_SESSION['curuser']['usertype'] != 'admin'){
 		$flag = false;

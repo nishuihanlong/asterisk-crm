@@ -67,6 +67,10 @@
 * Desc: add some comments
 * 描述: 增加了一些注释信息
 
+* Revision 0.044  2011/10/26 10:55:00  modified by solo
+* Desc: return srcname at line 156,201,269,274. Related to the function are checkNewCall and checkCallStatus
+* 描述: 增加了返回 srcname 在行 156,201,269,274 处修改,涉及到的函数有 checkNewCall 和 checkCallStatus
+
 
 ********************************************************************************/
 
@@ -148,6 +152,9 @@ class asterEvent extends PEAR
 					$sql = "SELECT * FROM hold_channel WHERE agentchan='".$list['srcchan']."' ORDER BY id DESC LIMIT 1";
 					$holds = $db->getrow($sql);
 					$call['hold'] = $holds;
+					 
+					$call['srcname'] = $list['srcname'];
+					
 					//print_r($call);exit;
 					return $call;
 				}elseif ((strstr($list['dstchan'],$channel) && !strstr($list['srcchan'],'local')) OR $list['dst'] == $exten OR $list['dstchan'] == "agent/".$agent ){	//OR strstr($list['dst'],$agent)	//dial in
@@ -190,6 +197,8 @@ class asterEvent extends PEAR
 					$sql = "SELECT * FROM hold_channel WHERE agentchan='".$list['dstchan']."' ORDER BY id DESC LIMIT 1";
 					$holds = $db->getrow($sql);
 					$call['hold'] = $holds;
+
+					$call['srcname'] = $list['srcname'];
 
 					return $call;
 				}
@@ -257,10 +266,12 @@ class asterEvent extends PEAR
 
 					$call['status'] = 'link';
 					$call['didnumber'] = $list['didnumber'];
+					$call['srcname'] = $list['srcname'];
 				}else{
 					$call['status'] = '';
 					$call['queue'] = $list['queue'];
 					$call['didnumber'] = $list['didnumber'];
+					$call['srcname'] = $list['srcname'];
 				}
 			}else{
 				//检查onhold 通话

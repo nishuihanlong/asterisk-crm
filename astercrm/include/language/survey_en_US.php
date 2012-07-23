@@ -11,4 +11,5 @@ $option_updated = "An option has been updated";
 $survey_note	= "Survey Note";
 $survey_result	= "Survey Result";
 $obligatory_fields = '* Obligatory fields';
+$phone_number = "Phone Number";
 ?>

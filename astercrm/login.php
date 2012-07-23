@@ -60,7 +60,7 @@ require_once('login.common.php');
 			//xajax.$('loginButton').disabled=true;
 			//xajax.$('loginButton').value=xajax.$('onclickMsg').value;
 			xajax_processForm(xajax.getFormValues("loginForm"));
-			return false;
+			//return false;
 		}
 		
 		function selectmode(msg)
@@ -97,7 +97,7 @@ require_once('login.common.php');
 		<div id="loginbody">
 		<div id="astercclogo"><img src="skin/default/images/asterCC_logo.gif" /></div>		
 		<div id="logininfo">
-		<form id="loginForm" action="javascript:void(null);" onsubmit="loginSignup();">
+		<form id="loginForm" action="javascript:loginSignup();"><!--  onsubmit="loginSignup();" -->
 		<div class="text01" id="logintip" id="logintip"></div>
 		<table border="0" cellspacing="0" cellpadding="2">
 			<tr>

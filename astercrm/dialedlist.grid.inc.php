@@ -158,9 +158,15 @@ class Customer extends astercrm
 			$joinstr=ltrim($joinstr,'AND');
 			$sql = 'SELECT campaigndialedlist.*,campaign.maxtrytime  ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid WHERE '.$joinstr;
 		}else{
-			$sql = 'SELECT campaigndialedlist.*,campaign.maxtrytime  ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid ';
+			$sql = 'SELECT campaigndialedlist.*,campaign.maxtrytime  ,customer.customer FROM campaigndialedlist LEFT JOIN campaign ON campaigndialedlist.campaignid = campaign.id  LEFT JOIN customer ON customer.id = campaigndialedlist.customerid WHERE 1 ';
 		}
 
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " ";
+		}else{
+			$sql .= " AND campaigndialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+		
 		Customer::events($sql);
 		$res =& $db->query($sql);
 		
@@ -341,11 +347,21 @@ class Customer extends astercrm
 	function getCampaignReport($aFormValues){
 		global $db,$locate;
 
-		$total_sql = "SELECT COUNT(*) AS total,SUM(campaigndialedlist.billsec) AS billsec,SUM(campaigndialedlist.billsec_leg_a) AS billsec_leg_a,SUM(campaigndialedlist.duration) AS duration,campaign.campaignname,campaigndialedlist.campaignid FROM campaigndialedlist LEFT JOIN campaign ON campaign.id  = campaigndialedlist.campaignid WHERE campaigndialedlist.dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' GROUP BY campaigndialedlist.campaignid ";
+		$total_sql = "SELECT COUNT(*) AS total,SUM(campaigndialedlist.billsec) AS billsec,SUM(campaigndialedlist.billsec_leg_a) AS billsec_leg_a,SUM(campaigndialedlist.duration) AS duration,campaign.campaignname,campaigndialedlist.campaignid FROM campaigndialedlist LEFT JOIN campaign ON campaign.id  = campaigndialedlist.campaignid WHERE campaigndialedlist.dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."'  ";
 
-		$answer_sql = "SELECT COUNT(*) AS total,SUM(billsec) AS billsec,SUM(billsec_leg_a) AS billsec_leg_a,SUM(duration) AS duration,campaignid FROM campaigndialedlist WHERE dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' AND billsec > 0  GROUP BY campaignid ";
+		$answer_sql = "SELECT COUNT(*) AS total,SUM(billsec) AS billsec,SUM(billsec_leg_a) AS billsec_leg_a,SUM(duration) AS duration,campaignid FROM campaigndialedlist WHERE dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' AND billsec > 0  ";
 
-		$transfer_sql = "SELECT COUNT(transfertarget) AS transferednum,campaignid FROM campaigndialedlist WHERE dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' and transfertarget != '' GROUP BY campaignid ";
+		$transfer_sql = "SELECT COUNT(transfertarget) AS transferednum,campaignid FROM campaigndialedlist WHERE dialedtime BETWEEN '".$aFormValues['sdate']."' AND '".$aFormValues['edate']."' and transfertarget != ''  ";
+		
+		if ($_SESSION['curuser']['usertype'] != 'admin'){
+			$total_sql .= " AND campaigndialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$answer_sql .= " AND campaigndialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
+			$transfer_sql .= " AND campaigndialedlist.groupid = ".$_SESSION['curuser']['groupid']." ";
+		}
+
+		$total_sql .= " GROUP BY campaigndialedlist.campaignid ";
+		$answer_sql .= "  GROUP BY campaignid ";
+		$transfer_sql .= " GROUP BY campaignid ";
 
 		astercrm::events($total);
 		$total = & $db->getAll($total_sql);

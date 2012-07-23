@@ -406,7 +406,7 @@ function listenCalls($aFormValues){
 		}
 		
 		if(!empty($noticeArray)) {
-			$objResponse->addAssign("noticeTicketMsgDiv","innerHTML",str_replace('%d',count($noticeArray),$locate->Translate('You have %d new tickets')));
+			$objResponse->addAssign("noticeTicketMsgDiv","innerHTML",str_replace('%d',count($noticeArray),$locate->Translate('you have new tickets')));
 			$objResponse->addScript('getTicketNoticeMsg();');
 
 			$_SESSION['ticketNoticeTime'] = date("Y-m-d H:i:s");//更新session里的提醒时间
@@ -681,7 +681,7 @@ function waitingCalls($myValue){
 	global $db,$config,$locate;
 	$objResponse = new xajaxResponse();
 	$curid = trim($myValue['curid']);
-
+	
 // to improve system efficiency
 /**************************
 **************************/
@@ -720,7 +720,7 @@ function waitingCalls($myValue){
 		///$objResponse->addAssign("dndlist_campaignid","value","0");
 		
 	} elseif ($call['status'] == 'incoming'){	//incoming calls here
-		if($config['system']['enable_socket'] == 'yes'){
+		if($config['system']['enable_socket'] == 'yes' && $_SESSION['socket_url_flag'] == 'yes'){
 			//固定端口
 			$service_port = $config['system']['fix_port'];
 			//socketURL
@@ -730,18 +730,25 @@ function waitingCalls($myValue){
 				$address = Customer::get_real_ip();
 				//创建 TCP/IP socket
 				$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-				if ($socket < 0) {
-					print_r("socket创建失败原因: " . socket_strerror($socket) . "\n");
+				
+				if ($socket === FALSE) {
+					$_SESSION['socket_url_flag'] = 'no';
+
+					$objResponse->addAlert("socket创建失败原因: " . socket_strerror($socket) . " \n 请检查当前系统的socket,并且重新登录系统 \n 坐席的ip是 ".$address);
+					return $objResponse;
 				}
 				
 				$result = socket_connect($socket, $address, $service_port);
-				if ($result < 0) {
-					print_r("SOCKET连接失败原因: ($result) " . socket_strerror($result) . "\n");
+				if ($result === FALSE) {
+					$_SESSION['socket_url_flag'] = 'no';
+					$objResponse->addAlert("SOCKET连接失败原因: ($result) " . socket_strerror($result) . " \n 请检查当前系统的socket,并且重新登录系统 \n 坐席的ip是 ".$address);
+					return $objResponse;
 				}
 
 				$socket_url = str_replace('%callerid%',$call['callerid'],$socket_url);
-				$noticeHtml='"'.addslashes($socket_url).'"';
-				socket_write($socket, $noticeHtml, strlen($noticeHtml));
+
+				socket_write($socket, $socket_url, strlen($socket_url));
+				#socket_write ($socket, "\r\n", strlen ("\r\n"));
 				socket_close($socket);
 			}
 			
@@ -756,7 +763,13 @@ function waitingCalls($myValue){
 		$title	= $call['callerid'];
 		$stauts	= 'ringing';
 		$direction	= 'in';
-		$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
+
+		if(!empty($call['srcname']) && $call['srcname'] != 'unknown' && $call['srcname'] != '<unknown>') {
+			$info	= $locate->Translate("incoming"). ' ' . $call['callerid'] . ' (' .$call['srcname']. ')&nbsp;&nbsp;';
+		} else {
+			$info	= $locate->Translate("incoming"). ' ' . $call['callerid'];
+		}
+		
 		$result = asterCrm::checkDialedlistCall($call['callerid']);
 		
 		$dialedlistid = $result['id'];
@@ -833,7 +846,7 @@ function waitingCalls($myValue){
 				// $config['system']['allow_popup_when_aleady_popup'] 客户弹屏存在是否重新弹出客户窗口
 				if ($myValue['popup'] == 'yes' || $config['system']['enable_external_crm'] || $config['system']['allow_popup_when_already_popup']){
 					if ($config['system']['enable_external_crm'] == false){
-							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
+							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id,0,$call['srcname']));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
 								$objResponse->addScript('maximizeWin();');
 							}
@@ -849,7 +862,9 @@ function waitingCalls($myValue){
 						$calldate = $call['calldate'];
 						$didnumber = $call['didnumber'];
 
-						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'" target="_blank" method="post">
+						$cur_srcname = Customer::getSrcnameByCurid($call['curid']);
+
+						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'&srcname='.$cur_srcname.'" target="_blank" method="post">
 								<input type="hidden" name="callerid" value="'.$callerid.'" />
 								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
 								<input type="hidden" name="method" value="'.$method.'" />
@@ -992,7 +1007,7 @@ function waitingCalls($myValue){
 				
 				if ($myValue['popup'] == 'yes' || $config['system']['allow_popup_when_already_popup']){
 					if ($config['system']['enable_external_crm'] == false ){
-							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id));
+							$objResponse->loadXML(getContact($call['callerid'],0,$campaign_id,0,$call['srcname']));
 							if ( $config['system']['browser_maximize_when_pop_up'] == true ){
 								$objResponse->addScript('maximizeWin();');
 							}
@@ -1007,7 +1022,10 @@ function waitingCalls($myValue){
 						$uniqueid = $call['uniqueid'];
 						$calldate = $call['calldate'];
 						$didnumber = $call['didnumber'];
-						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'" target="_blank" method="post">
+						
+						$cur_srcname = Customer::getSrcnameByCurid($call['curid']);
+						
+						$curHtml = '<form id="external_crm_form" action="'.$myurl.'?curid='.$call['curid'].'&srcname='.$cur_srcname.'" target="_blank" method="post">
 								<input type="hidden" name="callerid" value="'.$callerid.'" />
 								<input type="hidden" name="calleeid" value="'.$calleeid.'" />
 								<input type="hidden" name="method" value="'.$method.'" />
@@ -1061,6 +1079,7 @@ function waitingCalls($myValue){
 			}
 		}
 	}
+	
 //	$objResponse->addScript('document.title='.$title.';');
 //	$objResponse->addAssign("status","innerHTML", $stauts );
 	$objResponse->addAssign("extensionStatus","value", $stauts );
@@ -1081,10 +1100,10 @@ function waitingCalls($myValue){
 function incomingCalls($myValue){
 	global $db,$locate,$config;
 	$objResponse = new xajaxResponse();
-//print_r($myValue);exit;
+	//print_r($myValue);exit;
 	if ($myValue['direction'] != ''){
 		$call = asterEvent::checkCallStatus($myValue['curid'],$myValue['uniqueid']);
-//print_r($call);exit;
+		#print_r($call);exit;
 		if ($call['status'] ==''){
 			if($call['hold']['number'] != ''){
 			//print_r($myValue);exit;
@@ -1170,8 +1189,13 @@ function incomingCalls($myValue){
 				$curcallerid = $myValue['callerid'];
 				$objResponse->addAssign("divHolding","innerHTML",'');
 			}
-
-			$info	= $locate->Translate("talking_to").$curcallerid;
+			#print_r($myValue);exit;
+			if(!empty($call['srcname']) && $call['srcname'] != 'unknown' && $call['srcname'] != '<unknown>') {
+				$info = $locate->Translate("talking_to").$curcallerid.' ('.$call['srcname'].')&nbsp;&nbsp;';
+			} else {
+				$info = $locate->Translate("talking_to").$curcallerid;
+			}
+			
 			if($call['queue'] != ''){
 				foreach($_SESSION['curuser']['campaign_queue'] as $row){
 					
@@ -1266,6 +1290,7 @@ function incomingCalls($myValue){
 		}
 		$objResponse->addAssign("status","innerHTML", $status );
 //		$objResponse->addAssign("extensionStatus","value", $status );
+		
 		$objResponse->addAssign("myevents","innerHTML", $info );
 	}
 
@@ -1896,8 +1921,9 @@ function hangup($channel){
 	return $objResponse;
 }
 
-function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
-	global $db,$locate,$config;	
+function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0,$srcname=null){
+	global $db,$locate,$config;
+	
 	$mycallerid = $callerid;
 	$objResponse = new xajaxResponse();
 	if($callerid == '') {
@@ -1922,7 +1948,7 @@ function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 		else
 			$row = astercrm::getContactByCallerid($mycallerid,$_SESSION['curuser']['groupid']);
 	}
-
+	
 	if ($row['id'] == '' || $config['system']['enable_contact'] == '0'){	//no match
 		//	print 'no match in contact list';
 
@@ -1934,13 +1960,15 @@ function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 
 		if ($customerid == ''){
 			//$objResponse->addScript('xajax_add(\'' . $callerid . '\');');
-			
-			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the 
-			$html .= Customer::formAdd($callerid,0,0,$campaignid,$diallistid);
+			if($config['system']['enable_formadd_popup']) {
+				$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the 
+				$html .= Customer::formAdd($callerid,0,0,$campaignid,$diallistid,'',$srcname);
 
-			$html .= Table::Footer();
-			$objResponse->addAssign("formDiv", "style.visibility", "visible");
-			$objResponse->addAssign("formDiv", "innerHTML", $html);
+				$html .= Table::Footer();
+				$objResponse->addAssign("formDiv", "style.visibility", "visible");
+				$objResponse->addAssign("formDiv", "innerHTML", $html);
+			}
+			
 
 			// callerid smart match
 			if ($config['system']['smart_match_remove']) {
@@ -1976,12 +2004,14 @@ function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 				}
 			}
 		}else{
-			
-			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
-			$html .= Customer::formAdd($callerid,$customerid,0,$campaignid,$diallistid);  // <-- Change by your method
-			$html .= Table::Footer();
-			$objResponse->addAssign("formDiv", "style.visibility", "visible");
-			$objResponse->addAssign("formDiv", "innerHTML", $html);			
+			if($config['system']['enable_formadd_popup']) {
+				$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
+				$html .= Customer::formAdd($callerid,$customerid,0,$campaignid,$diallistid,'',$srcname);  // <-- Change by your method
+				$html .= Table::Footer();
+				$objResponse->addAssign("formDiv", "style.visibility", "visible");
+				$objResponse->addAssign("formDiv", "innerHTML", $html);
+			}
+
 			$objResponse->addScript('xajax_showCustomer(\''.$customerid.'\',\'customer\','.$callerid.');');
 			if($config['system']['auto_note_popup']){
 				$objResponse->addScript('xajax_showNote(\''.$customerid.'\',\'customer\');');
@@ -1996,11 +2026,13 @@ function getContact($callerid,$customer_id=0,$campaignid=0,$diallistid=0){
 		
 		$contactid = $row['id'];
 		
-		$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
-		$html .= Customer::formAdd($callerid,$customerid,$contactid,$campaignid,$diallistid);  // <-- Change by your method
-		$html .= Table::Footer();
-		$objResponse->addAssign("formDiv", "style.visibility", "visible");
-		$objResponse->addAssign("formDiv", "innerHTML", $html);
+		if($config['system']['enable_formadd_popup']) {
+			$html = Table::Top($locate->Translate("add_record"),"formDiv");  // <-- Set the title for your form.
+			$html .= Customer::formAdd($callerid,$customerid,$contactid,$campaignid,$diallistid);  // <-- Change by your method
+			$html .= Table::Footer();
+			$objResponse->addAssign("formDiv", "style.visibility", "visible");
+			$objResponse->addAssign("formDiv", "innerHTML", $html);
+		}
 
 		$objResponse->addScript('xajax_showContact(\''.$contactid.'\');');
 		
@@ -2330,8 +2362,14 @@ function saveTicket($f) {
 function saveNewTicket($f) {
 	global $locate;
 	$objResponse = new xajaxResponse();
+	
 	if($f['ticketid'] == 0) {
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
+		return $objResponse->getXML();
+	}
+
+	if(empty($f['customerid'])){
+		$objResponse->addAlert($locate->Translate("please_select_a_customer"));
 		return $objResponse->getXML();
 	}
 	
@@ -2810,6 +2848,10 @@ function queueAgentControl($queueno,$action,$context,$agent=''){//echo $agent;ex
 		}
 		if($context == '#use_ext_chan#'){
 			$agentstr = $_SESSION['curuser']['channel'];
+			if(trim($agentstr) == ''){
+				$objResponse->addAlert($locate->translate("please set up your channel !"));
+				return $objResponse;
+			}
 		}else{
 
 			$agentstr = 'Local/'.$_SESSION['curuser']['extension'].'@'.$context.'/n';

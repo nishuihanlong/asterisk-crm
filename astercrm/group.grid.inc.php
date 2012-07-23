@@ -232,11 +232,11 @@ class Customer extends astercrm
 				</tr>				
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("incontext").'</td>
-					<td align="left"><input type="text" id="incontext" name="incontext" size="25" maxlength="30"></td>
+					<td align="left"><input type="text" id="incontext" name="incontext" size="25" maxlength="30" value="from-internal"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("outcontext").'</td>
-					<td align="left"><input type="text" id="outcontext" name="outcontext" size="25" maxlength="100"></td>
+					<td align="left"><input type="text" id="outcontext" name="outcontext" size="25" maxlength="100" value="from-internal"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("force monitor").'</td>

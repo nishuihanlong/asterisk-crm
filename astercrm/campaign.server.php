@@ -321,6 +321,11 @@ function save($f){
 		return $objResponse->getXML();
 	}
 */
+	if(trim($f['groupid']) == 0 || empty($f['groupid'])){
+		$objResponse->addAlert($locate->Translate("group_is_obligatory_fields"));
+		return $objResponse->getXML();
+	}
+	
 	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){
 		$objResponse->addAlert($locate->Translate("obligatory_fields"));
 		return $objResponse->getXML();
@@ -385,6 +390,11 @@ function update($f){
 			$objResponse->addAlert($locate->Translate("This campaing is busy now").','.$locate->Translate("can not set to Disable"));
 			return $objResponse->getXML();
 		}
+	}
+
+	if(trim($f['groupid']) == 0 || empty($f['groupid'])){
+		$objResponse->addAlert($locate->Translate("group_is_obligatory_fields"));
+		return $objResponse->getXML();
 	}
 
 	if(trim($f['campaignname']) == '' || trim($f['outcontext']) == '' || trim($f['incontext']) == ''){

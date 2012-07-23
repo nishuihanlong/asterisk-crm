@@ -429,11 +429,12 @@ class ScrollTable{
 			</tr>
 		</table>';
 	}
+	
 	/*
-	* customer addRowSearth
+	* customer addRowSearchMore
 	*/
     //增加搜索选项
-	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=false,$typeFromSearch = null,$typeFromSearchShowAs = null,$stype = null){
+	function addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit, $withNewButton = 1,$withDelButton=false,$typeFromSearch = null,$typeFromSearchShowAs = null,$stype = null,$radioFieldVal = null){
 		global $local_grid;
 		$ind = 0;
 		$ind_type = 0;
@@ -595,16 +596,29 @@ class ScrollTable{
 				$this->search .= '</select>&nbsp;&nbsp;';
 			}
 			$this->search .= '<input type="text" size="30"  name="searchContent[]" id="searchContent[]" /><br>';
-						
+			
 			$this->search .= '</div>
 						</td>
 						<td>
 					&nbsp;&nbsp;
 					<INPUT TYPE="hidden" value="" name="numRowsToShow" id="numRowsToShow"/>
 					<INPUT TYPE="hidden" value="'.$this->limit.'" name="limit" id="limit"/>
-					&nbsp;&nbsp;
-					<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/>
-					</td>';
+					';
+			if($table == 'mycdr') {
+				if($radioFieldVal == 'answered') {
+					$allRadioSelect = ' ';
+					$answerRadioSelect = ' checked ';
+				} else {
+					$allRadioSelect = ' checked ';
+					$answerRadioSelect = ' ';
+				}
+				$this->search .= '&nbsp;&nbsp;
+					<input type="radio" name="allOrAnswer" value="all" id="cdrAll" '.$allRadioSelect.' onclick="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,50);" />&nbsp;<b>'.$local_grid->Translate("All").'</b>
+					<input type="radio" name="allOrAnswer" value="answered" id="cdrAnswered" '.$answerRadioSelect.' onclick="xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,50);" />&nbsp;<b>'.$local_grid->Translate("Answered").'</b>';
+			}
+			
+			$this->search .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="submit" id="searchButton" name="searchButton" value="'.$local_grid->Translate("continue").'" onclick="if(document.getElementById(\'optionFlag\').value == \'delete\'){if(confirm(\''.$local_grid->Translate("searchdelete_confirm").'\')) return true; return false;}"/></td>';
 			
 			if($this->deleteFlag != 1 && $this->exportFlag != 1 && $this->exportFlag != 2 && $this->multiEditFlag != 1){
 				$this->search .= '<input type="hidden" name="optionFlag" id="optionFlag" value="">';
@@ -676,7 +690,7 @@ class ScrollTable{
 				<th colspan="'.$this->n_cols.'">
 					<span class="pagenav">';
 					if($this->start>0){
-						$this->footer .= '<a href="?" onClick="
+						$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 						document.getElementById(\'numRows\').value = 0;
 						document.getElementById(\'limit\').value='.$this->limit.';
 						xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),0,'.$this->limit.');return false;">'.$local_grid->Translate("first").'</a>';
@@ -687,7 +701,7 @@ class ScrollTable{
 					<span class="pagenav">';
 
 					if($this->start >0){
-					$this->footer .= '<a href="?" onClick="
+					$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 						document.getElementById(\'numRows\').value = '.$previos_rows.';
 						document.getElementById(\'limit\').value='.$this->limit.';
 						xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),'.$previos_rows.','.$this->limit.');
@@ -706,7 +720,7 @@ class ScrollTable{
 					<span class="pagenav">';
 
 					if($next_rows < $this->numRows){
-						$this->footer .= '<a href="?" onClick="
+						$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 						document.getElementById(\'numRows\').value = '.$next_rows.';
 						document.getElementById(\'limit\').value='.$this->limit.';
 						xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),'.$next_rows.','.$this->limit.');return false;">'.$local_grid->Translate("next").'</a>';
@@ -718,7 +732,7 @@ class ScrollTable{
 					<span class="pagenav">';
 
 					if($next_rows < $this->numRows){
-						$this->footer .= '<a href="?" onClick="
+						$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 						document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
 						document.getElementById(\'limit\').value='.$this->limit.';
 						xajax_searchFormSubmit(xajax.getFormValues(\'searchForm\'),'.($this->numRows - $this->limit).','.$this->limit.');return false;">'.$local_grid->Translate("last").'</a>';
@@ -784,7 +798,7 @@ class ScrollTable{
 					<th colspan="'.$this->n_cols.'">
 						<span class="pagenav">';
 						if($this->start>0){
-							$this->footer .= '<a href="?" onClick="
+							$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 							document.getElementById(\'numRows\').value = 0;
 							document.getElementById(\'limit\').value='.$this->limit.';';
 							
@@ -807,7 +821,7 @@ class ScrollTable{
 						<span class="pagenav">';
 
 						if($this->start >0){
-						$this->footer .= '<a href="?" onClick="
+						$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 							document.getElementById(\'numRows\').value = '.$previos_rows.';
 							document.getElementById(\'limit\').value='.$this->limit.';';
 							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')
@@ -838,7 +852,7 @@ class ScrollTable{
 						<span class="pagenav">';
 
 						if($next_rows < $this->numRows){
-							$this->footer .= '<a href="?" onClick="
+							$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 							document.getElementById(\'numRows\').value = '.$next_rows.';
 							document.getElementById(\'limit\').value='.$this->limit.';';
 							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')
@@ -860,7 +874,7 @@ class ScrollTable{
 						<span class="pagenav">';
 
 						if($next_rows < $this->numRows){
-							$this->footer .= '<a href="?" onClick="
+							$this->footer .= '<a href="?" onClick="document.getElementById(\'submitButton\').value=\''.$local_grid->Translate("continue").'\';document.getElementById(\'optionFlag\').value=\'\';
 							document.getElementById(\'numRows\').value = '.($this->numRows - $this->limit).';
 							document.getElementById(\'limit\').value='.$this->limit.';';
 							if ($arg != 'cdrtype' && $arg != 'ticket_details' && $arg != 'ticketCustomerdetails')

@@ -1,0 +1,5 @@
+new features in 0.077
+	fixed a bug of doesnt display the monitor icon on the cdr popup and recentcdr popup in portal page
+
+0.077 新功能
+	修正了portal页面 cdr弹屏和 recentcdr弹屏 中无法正确显示查看录音图标的bug

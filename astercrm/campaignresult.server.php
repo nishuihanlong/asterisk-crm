@@ -254,7 +254,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = "<a href=? onclick=\"showReport('".$row['id']."');return false;\">".$row['resultname']."</a>";
 //		$rowc[] = $row['resultname'];
 		$rowc[] = $row['resultnote'];
-		$rowc[] = $row['status'];
+		$rowc[] = $locate->Translate($row['status']);
 		if ($row['parentid'] != 0) 
 			$rowc[] = $row['parentresult'];
 		else 

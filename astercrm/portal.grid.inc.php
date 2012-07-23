@@ -1293,7 +1293,7 @@ class Customer extends astercrm
 							<td align="left" id="groupMsg"></td>
 						</tr>
 						<tr>
-							<td nowrap align="left">'.$locate->Translate("Customer Name").'</td>
+							<td nowrap align="left">'.$locate->Translate("Customer Name").'*</td>
 							<td align="left" id="customerMsg"><input type="text" id="ticket_customer" name="ticket_customer" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" /><input type="hidden" id="ticket_customer_hidden" name="customerid" value="" /></td>
 						</tr>
 						<tr>
@@ -1511,6 +1511,15 @@ class Customer extends astercrm
 			}
 		}
 		return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
+	}
+
+	function getSrcnameByCurid($curid){
+		global $db;
+		
+		$sql = "SELECT srcname FROM curcdr WHERE id='".$curid."'";
+		astercrm::events($sql);
+		$srcname = & $db->getOne($sql);
+		return $srcname;
 	}
 }
 ?>

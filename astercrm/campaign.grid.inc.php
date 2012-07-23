@@ -163,6 +163,7 @@ class Customer extends astercrm
 				."inexten='".$f['inexten']."', "
 				."queuename='".$f['queuename']."', "
 				."bindqueue='".$bindqueue."', "
+				."max_dialing='".$f['max_dialing']."', "
 				."maxtrytime='".$f['maxtrytime']."', "
 				."recyletime='".$f['recyletime']."', "
 				."enablerecyle='".$f['enablerecyle']."', "
@@ -226,6 +227,7 @@ class Customer extends astercrm
 				."inexten='".$f['inexten']."', "
 				."queuename='".$f['queuename']."', "
 				."bindqueue='".$bindqueue."', "
+				."max_dialing='".$f['max_dialing']."', "
 				."maxtrytime='".$f['maxtrytime']."', "
 				."recyletime='".$f['recyletime']."', "
 				."enablerecyle='".$f['enablerecyle']."', "
@@ -475,21 +477,24 @@ class Customer extends astercrm
 					</td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
-					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30"></td>
+					<td nowrap align="left">'.$locate->Translate("Queue Context").'</td>
+					<td align="left"><input type="text" id="queue_context" name="queue_context" size="30" maxlength="60"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Use Extension Channel For Queue").'</td>
 					<td align="left"><input type="checkbox" id="use_ext_chan" name="use_ext_chan" /></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Queue Context").'</td>
-					<td align="left"><input type="text" id="queue_context" name="queue_context" size="30" maxlength="60"></td>
+					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
+					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30"></td>
 				</tr>
-				
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Group").'</td>
+					<td nowrap align="left">'.$locate->Translate("Group").'*</td>
 					<td align="left">'.$grouphtml.'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Max Dialing").'</td>
+					<td align="left"><input type="text" id="max_dialing" value="0" name="max_dialing" size="10" maxlength="4"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Max trytime").'</td>
@@ -512,7 +517,7 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="minduration_billsec" value="0" name="minduration_billsec" size="10" maxlength="10"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Customer Answer Min Duration ").'</td>
+					<td nowrap align="left">'.$locate->Translate("Customer Answer Min Duration").'</td>
 					<td align="left"><input type="text" id="minduration_leg_a" value="0" name="minduration_leg_a" size="10" maxlength="10"></td>
 				</tr>
 				<tr>
@@ -740,16 +745,20 @@ class Customer extends astercrm
 					<td align="left"><input type="text" id="queue_context" name="queue_context" size="30" maxlength="60" value="'.$campaign['queue_context'].'"></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
-					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>
-				</tr>
-				<tr>
 					<td nowrap align="left">'.$locate->Translate("Use Extension Channel For Queue").'</td>
 					<td align="left"><input type="checkbox" id="use_ext_chan" name="use_ext_chan" '.$useExtChanChecked.'/></td>
 				</tr>
 				<tr>
-					<td nowrap align="left">'.$locate->Translate("Group").'</td>
+					<td nowrap align="left">'.$locate->Translate("CallerID").'</td>
+					<td align="left"><input type="text" id="callerid" name="callerid" size="30" maxlength="30" value="'.$campaign['callerid'].'"></td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Group").'*</td>
 					<td align="left">'.$grouphtml.'</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Max Dialing").'</td>
+					<td align="left"><input type="text" id="max_dialing" name="max_dialing" size="10" maxlength="4" value="'.$campaign['max_dialing'].'"></td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Max trytime").'</td>

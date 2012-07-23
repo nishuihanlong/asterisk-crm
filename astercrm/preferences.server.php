@@ -147,6 +147,17 @@ function initIni(){
 	$objResponse->addAssign("asterccKey","value",$asterccConfig["licence"]["key"]);
 
 	$objResponse->addAssign("iptSysAuto_note_popup","value",$config["system"]["auto_note_popup"]);
+	if($config["system"]["highest_priority_note"]){
+		$objResponse->addAssign("iptSysHighest_priority_note","checked","true");
+	} else {
+		$objResponse->addAssign("iptSysHighest_priority_note","checked","");
+	}
+	if($config["system"]["lastest_priority_note"]) {
+		$objResponse->addAssign("iptSysLastest_priority_note","checked","true");
+	} else {
+		$objResponse->addAssign("iptSysLastest_priority_note","checked","");
+	}
+	
 	$objResponse->addAssign("iptSysDefault_share_note","value",$config["system"]["default_share_note"]);
 	$objResponse->addAssign("iptSysCustomer_leads","value",$config["system"]["customer_leads"]);
 	$objResponse->addAssign("iptSysEnableCode","value",$config["system"]["enable_code"]);
@@ -170,6 +181,9 @@ function initIni(){
 	$objResponse->addAssign("iptSysExportCustomerFieldsInDialedlist","value",$config["system"]["export_customer_fields_in_dialedlist"]);
 
 	$objResponse->addAssign("iptSysAllowPopupWhenAlreadyPopup","value",$config["system"]["allow_popup_when_already_popup"]);
+
+	//enable_formadd_popup
+	$objResponse->addAssign("iptSysEnableFormAddPopup","value",$config["system"]["enable_formadd_popup"]);
 
 	return $objResponse;
 }
@@ -267,6 +281,9 @@ function initLocate(){
 	$objResponse->addAssign("divSysUploadFilePath","innerHTML",$locate->Translate('sys_upload_file_path'));
 
 	$objResponse->addAssign("divSysAuto_note_popup","innerHTML",$locate->Translate('if_auto_popup_note_info'));
+	$objResponse->addAssign("divSysHighest_priority_note","innerHTML",$locate->Translate('if_popup_the_highest_priority_note_info'));
+	$objResponse->addAssign("divSysLastest_priority_note","innerHTML",$locate->Translate('if_popup_the_lastest_priority_note_info'));
+
 	$objResponse->addAssign("divSysDefault_share_note","innerHTML",$locate->Translate('if_share_note_default'));
 	
 	$objResponse->addAssign("divEnable_surveynote","innerHTML",$locate->Translate('enable_surveynote'));
@@ -294,6 +311,9 @@ function initLocate(){
 	$objResponse->addAssign("divSysExportCustomerFieldsInDialedlist","innerHTML",$locate->Translate('export_customer_fields_in_dialedlist'));
 
 	$objResponse->addAssign("divSysAllowPopupWhenAlreadyPopup","innerHTML",$locate->Translate('allow_popup_when_already_popup'));
+
+	//enable_formadd_popup
+	$objResponse->addAssign("divSysEnableFormAddPopup","innerHTML",$locate->Translate('enable_formadd_popup'));
 	
 	return $objResponse;
 }
@@ -357,7 +377,12 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['external_crm_default_url'] = $aFormValues['iptSysExternalCrmDefaultUrl'];
 	$myPreferences['system']['external_crm_url'] = $aFormValues['iptSysExternalCrmUrl'];
 	$myPreferences['system']['upload_file_path'] = $aFormValues['iptSysUploadFilePath'];
+
 	$myPreferences['system']['auto_note_popup'] = $aFormValues['iptSysAuto_note_popup'];
+	
+	$myPreferences['system']['highest_priority_note'] = ($aFormValues['iptSysHighest_priority_note'] == 'on'?1:0);
+	$myPreferences['system']['lastest_priority_note'] = ($aFormValues['iptSysLastest_priority_note'] == 'on'?1:0);
+
 	$myPreferences['system']['default_share_note'] = $aFormValues['iptSysDefault_share_note'];
 	$myPreferences['system']['customer_leads'] = $aFormValues['iptSysCustomer_leads'];
 	$myPreferences['system']['enable_code'] = $aFormValues['iptSysEnableCode'];
@@ -372,6 +397,9 @@ function savePreferences($aFormValues){
 	$myPreferences['system']['export_customer_fields_in_dialedlist'] = $aFormValues['iptSysExportCustomerFieldsInDialedlist'];
 
 	$myPreferences['system']['allow_popup_when_already_popup'] = $aFormValues['iptSysAllowPopupWhenAlreadyPopup'];
+
+	//enable_formadd_popup
+	$myPreferences['system']['enable_formadd_popup'] = $aFormValues['iptSysEnableFormAddPopup'];
 
 	$myPreferences['survey']['enable_surveynote'] = $aFormValues['iptEnable_surveynote'];
 	$myPreferences['survey']['close_popup_after_survey'] = $aFormValues['iptClose_popup_after_survey'];

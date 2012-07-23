@@ -545,6 +545,9 @@ Class astercrm extends PEAR{
 				."campaignid= ".$f['campaignid'].", "
 				."memo= '".$f['memo']."', "
 				."assign='".$f['assign']."'";
+		if(!empty($f['customerid'])){
+			$query .= ",customerid='".$f['customerid']."'";
+		}
 		astercrm::events($query);
 		$res =& $db->query($query);
 		return $res;
@@ -1165,323 +1168,332 @@ Class astercrm extends PEAR{
 	*							un nuevo registro.
 	*/
 
-	function formAdd($callerid = null,$customerid = null, $contactid = null,$campaignid=0,$diallistid=0,$note=''){
-	global $locate,$config;
-
-	$html = '
-			<!-- No edit the next line -->
-			<form method="post" name="f" id="f">
-			<table border="1" width="100%" class="adminlist">
-			<tr>
-				<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href="?" onclick="dial(\''.$callerid.'\',\'\',\'\',\'\',\''.$diallistid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> <span id="diallist_control"></span>';
-			
-			if($campaignid > 0){
-				$html .= "<span id=\"diallist_control\"><input type=\"button\" id=\"insert_dnc_list\" name=\"insert_dnc_list\" value=\"".$locate->Translate("Add Dnc_list")."\" onclick=\"xajax_insertIntoDnc('".$callerid."','".$campaignid."');return false;\"/>";
-				if($diallistid > 0){
-					$html .="&nbsp;&nbsp;&nbsp;<input type=\"button\" id=\"skip_diallist\" name=\"skip_diallist\" value=\"".$locate->Translate("Skip this number")."\" onclick=\"xajax_skipDiallist('".$callerid."','".$diallistid."');return false;\"/>";
+	function formAdd($callerid = null,$customerid = null, $contactid = null,$campaignid=0,$diallistid=0,$note='',$srcname){
+		global $locate,$config;
+		
+		$html = '
+				<!-- No edit the next line -->
+				<form method="post" name="f" id="f">
+				<table border="1" width="100%" class="adminlist">
+				<tr>
+					<td nowrap align="left" colspan="2">'.$locate->Translate("add_record").' <a href="?" onclick="dial(\''.$callerid.'\',\'\',\'\',\'\',\''.$diallistid.'\');return false;">'. $callerid .'</a><input type="hidden" value="'.$callerid.'" id="iptcallerid" name="iptcallerid"> <span id="diallist_control"></span>';
+				
+				if($campaignid > 0){
+					$html .= "<span id=\"diallist_control\"><input type=\"button\" id=\"insert_dnc_list\" name=\"insert_dnc_list\" value=\"".$locate->Translate("Add Dnc_list")."\" onclick=\"xajax_insertIntoDnc('".$callerid."','".$campaignid."');return false;\"/>";
+					if($diallistid > 0){
+						$html .="&nbsp;&nbsp;&nbsp;<input type=\"button\" id=\"skip_diallist\" name=\"skip_diallist\" value=\"".$locate->Translate("Skip this number")."\" onclick=\"xajax_skipDiallist('".$callerid."','".$diallistid."');return false;\"/>";
+					}
+					$html .= '</span>';
 				}
-				$html .= '</span>';
-			}
-			$html .= '</td>
-			</tr>';
-	
-	if ($customerid == null || $customerid ==0){
-		$customerid = 0;
-		$html .= '
-				<tr>
-					<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
-					<td align="left">';
-					if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
-						$html .= '<select id="customertitle" name="customertitle">
-								<option value="Mr" >'.$locate->Translate("Mr").'</option>
-								<option value="Miss">'.$locate->Translate("Miss").'</option>
-								<option value="Ms" >'.$locate->Translate("Ms").'</option>
-								<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
-								<option value="other" >'.$locate->Translate("Other").'</option>
-						</select>&nbsp;
-						<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">';
-					}else{
-						$html .= '<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">&nbsp;
-						<select id="customertitle" name="customertitle">
-								<option value="Mr" >'.$locate->Translate("Mr").'</option>
-								<option value="Miss">'.$locate->Translate("Miss").'</option>
-								<option value="Ms" >'.$locate->Translate("Ms").'</option>
-								<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
-								<option value="other" >'.$locate->Translate("Other").'</option>
-						</select>';
-					}
-					if($config['system']['customer_leads'] == 'move') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("move_to_customer_lead");
-					} else if($config['system']['customer_leads'] == 'copy') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("copy_to_customer_lead");
-					} else if($config['system']['customer_leads'] == 'default_move') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("move_to_customer_lead");
-					} else if($config['system']['customer_leads'] == 'default_copy') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("copy_to_customer_lead");
-					}
-
-					$html .= '<br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
-					<input type="hidden" id="hidAddCustomerDetails" name="hidAddCustomerDetails" value="OFF">
-					[<a href=? onclick="
-						if (xajax.$(\'hidAddCustomerDetails\').value == \'OFF\'){
-							showObj(\'trAddCustomerDetails\');
-							xajax.$(\'hidAddCustomerDetails\').value = \'ON\';
-						}else{
-							hideObj(\'trAddCustomerDetails\');
-							xajax.$(\'hidAddCustomerDetails\').value = \'OFF\';
-						};
-						return false;">
-						'.$locate->Translate("detail").'
-					</a>] &nbsp; [<a href=? onclick="
-							if (xajax.$(\'hidAddBankDetails\').value == \'OFF\'){
-								showObj(\'trAddBankDetails\');
-								xajax.$(\'hidAddBankDetails\').value = \'ON\';
-							}else{
-								hideObj(\'trAddBankDetails\');
-								xajax.$(\'hidAddBankDetails\').value = \'OFF\';
-							}
-							return false;">'.$locate->Translate("bank").'</a>]
-						&nbsp; [<a href=? onclick="addSchedulerDial(\'0\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>] <input type="hidden" id="addedSchedulerDialId" name="addedSchedulerDialId" value="" />
-					</td>
-				</tr>
-				<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none">		
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("first_name").'</td>
-					<td align="left"><input type="text" id="first_name" name="first_name" size="35" maxlength="50"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("last_name").'</td>
-					<td align="left"><input type="text" id="last_name" name="last_name" size="35" maxlength="50"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("address").'</td>
-					<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
-					<td align="left">
-						<input type="text" id="customerContact" name="customerContact" size="35" maxlength="35"><br>
-						<select id="customerContactGender" name="customerContactGender">
-							<option value="male">'.$locate->Translate("male").'</option>
-							<option value="female">'.$locate->Translate("female").'</option>
-							<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
-						</select>
-					</td>
-				</tr>				
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("address").'</td>
-					<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("zipcode").'/'.$locate->Translate("city").'</td>
-					<td align="left"> <input type="text" id="zipcode" name="zipcode" size="10" maxlength="10">&nbsp;&nbsp;<input type="text" id="city" name="city" size="17" maxlength="50"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("state").'</td>
-					<td align="left"><input type="text" id="state" name="state" size="35" maxlength="50"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("country").'</td>
-					<td align="left"><input type="text" id="country" name="country" size="35" maxlength="50"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
-					<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50">-<input type="text" id="customerPhone_ext" name="customerPhone_ext" size="8" maxlength="8"></td>
-				</tr>
-				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-					<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35" value="'.$callerid.'"></td>
-				</tr>
-				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("email").'</td>
-					<td align="left"><input type="text" id="mainEmail" name="mainEmail" size="35"></td>
-				</tr>				
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("website").'</td>
-					<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><br><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
-				</tr>
-				<!--<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
-					<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
-				</tr>-->
-				<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left">'.$locate->Translate("fax").'</td>
-					<td align="left"><input type="text" id="mainFax" name="mainFax" size="35">-<input type="text" id="mainFax_ext" name="mainFax_ext" size="8" maxlength="8"></td>
-				</tr>
-				<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
-					<td nowrap align="left" style="border-bottom:1px double orange;">'.$locate->Translate("category").'</td>
-					<td align="left" style="border-bottom:1px double orange"><input type="text" id="category" name="category" size="35"></td>
+				$html .= '</td>
 				</tr>';
-				/*
-				*  control bank data
-				*/
-				$html .='
-					
-						<input type="hidden" id="hidAddBankDetails" name="hidAddBankDetails" value="OFF">
-					<!--********************-->
-					
-					<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
-						<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="35"></td>
-					</tr>
-					<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
-					<td nowrap align="left" style="border-top:1px double orange;">'.$locate->Translate("bank_name").'</td>
-					<td align="left" style="border-top:1px double orange"><input type="text" id="bankname" name="bankname" size="35"></td>
-					</tr>
-					<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
-						<td align="left"><input type="text" id="bankzip" name="bankzip" size="35"></td>
-					</tr>
-					<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
-						<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="35"></td>
-					</tr>	
-					<!--********************-->
-					';
-	}else{
-		$customer =& astercrm::getCustomerByID($customerid);
-		$html .= '
-				<tr>
-					<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
-					<td align="left">';
-					if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
-						$html .= $locate->Translate($customer['customertitle']).'&nbsp;<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" readOnly>';
-					}else{
-						$html .= '<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" readOnly>&nbsp;'.$locate->Translate($customer['customertitle']);
-					}
-					if($config['system']['customer_leads'] == 'move') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("move_to_customer_lead");
-					} else if($config['system']['customer_leads'] == 'copy') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("copy_to_customer_lead");
-					} else if($config['system']['customer_leads'] == 'default_move') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("move_to_customer_lead");
-					} else if($config['system']['customer_leads'] == 'default_copy') {
-						$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("copy_to_customer_lead");
-					}
-
-					$html .= '<BR /><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
-				</tr>
-				';
-	}
-	if($config['system']['enable_contact'] != '0'){ //控制contact模块的显示与隐藏
-		if ($contactid == null){
-				$html .='
+		
+		if ($customerid == null || $customerid ==0){
+			$customerid = 0;
+			$html .= '
 					<tr>
-						<td nowrap align="left">'.$locate->Translate("contact").'</td>
-						<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><BR /><input id="btnConfirmContact" name="btnConfirmContact" type="button" onclick="btnConfirmContactOnClick();return false;" value="'.$locate->Translate("confirm").'"><input type="hidden" id="contactid" name="contactid" value="">
-						<input type="hidden" id="contactDetail" name="contactDetail" value="OFF">
+						<td nowrap align="left">'.$locate->Translate("customer_name").'</td>
+						<td align="left">';
+						if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
+							$html .= '<select id="customertitle" name="customertitle">
+									<option value="Mr" >'.$locate->Translate("Mr").'</option>
+									<option value="Miss">'.$locate->Translate("Miss").'</option>
+									<option value="Ms" >'.$locate->Translate("Ms").'</option>
+									<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
+									<option value="other" >'.$locate->Translate("Other").'</option>
+							</select>&nbsp;';
+							if(!empty($srcname) && $srcname != '<unknown>') {
+								$html .= '<input type="text" id="customer" name="customer" value="'.$srcname.'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">';
+							} else {
+								$html .= '<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">';
+							}
+						}else{
+							if(!empty($srcname) && $srcname != '<unknown>') {
+								$html .= '<input type="text" id="customer" name="customer" value="'.$srcname.'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">';
+							} else {
+								$html .= '<input type="text" id="customer" name="customer" value="" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off">';
+							}
+							$html .= '&nbsp;
+							<select id="customertitle" name="customertitle">
+									<option value="Mr" >'.$locate->Translate("Mr").'</option>
+									<option value="Miss">'.$locate->Translate("Miss").'</option>
+									<option value="Ms" >'.$locate->Translate("Ms").'</option>
+									<option value="Mrs" >'.$locate->Translate("Mrs").'</option>
+									<option value="other" >'.$locate->Translate("Other").'</option>
+							</select>';
+						}
+						if($config['system']['customer_leads'] == 'move') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("move_to_customer_lead");
+						} else if($config['system']['customer_leads'] == 'copy') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("copy_to_customer_lead");
+						} else if($config['system']['customer_leads'] == 'default_move') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("move_to_customer_lead");
+						} else if($config['system']['customer_leads'] == 'default_copy') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("copy_to_customer_lead");
+						}
+
+						$html .= '<br /><input type="button" value="'.$locate->Translate("confirm").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="0">
+						<input type="hidden" id="hidAddCustomerDetails" name="hidAddCustomerDetails" value="OFF">
 						[<a href=? onclick="
-							if (xajax.$(\'contactDetail\').value == \'OFF\'){
-								xajax.$(\'genderTR\').style.display = \'\';
-								xajax.$(\'positionTR\').style.display = \'\';
-								xajax.$(\'phoneTR\').style.display = \'\';
-								xajax.$(\'phone1TR\').style.display = \'\';
-								xajax.$(\'phone2TR\').style.display = \'\';
-								xajax.$(\'mobileTR\').style.display = \'\';
-								xajax.$(\'faxTR\').style.display = \'\';
-								xajax.$(\'emailTR\').style.display = \'\';
-								xajax.$(\'contactDetail\').value = \'ON\';
+							if (xajax.$(\'hidAddCustomerDetails\').value == \'OFF\'){
+								showObj(\'trAddCustomerDetails\');
+								xajax.$(\'hidAddCustomerDetails\').value = \'ON\';
 							}else{
-								xajax.$(\'genderTR\').style.display = \'none\';
-								xajax.$(\'positionTR\').style.display = \'none\';
-								xajax.$(\'phoneTR\').style.display = \'none\';
-								xajax.$(\'phone1TR\').style.display = \'none\';
-								xajax.$(\'phone2TR\').style.display = \'none\';
-								xajax.$(\'mobileTR\').style.display = \'none\';
-								xajax.$(\'faxTR\').style.display = \'none\';
-								xajax.$(\'emailTR\').style.display = \'none\';
-								xajax.$(\'contactDetail\').value = \'OFF\';
+								hideObj(\'trAddCustomerDetails\');
+								xajax.$(\'hidAddCustomerDetails\').value = \'OFF\';
 							};
 							return false;">
 							'.$locate->Translate("detail").'
-						</a>]
+						</a>] &nbsp; [<a href=? onclick="
+								if (xajax.$(\'hidAddBankDetails\').value == \'OFF\'){
+									showObj(\'trAddBankDetails\');
+									xajax.$(\'hidAddBankDetails\').value = \'ON\';
+								}else{
+									hideObj(\'trAddBankDetails\');
+									xajax.$(\'hidAddBankDetails\').value = \'OFF\';
+								}
+								return false;">'.$locate->Translate("bank").'</a>]
+							&nbsp; [<a href=? onclick="addSchedulerDial(\'0\'); return false;">'.$locate->Translate("Scheduler Dial").'</a>] <input type="hidden" id="addedSchedulerDialId" name="addedSchedulerDialId" value="" />
 						</td>
 					</tr>
-					<tr name="genderTR" id="genderTR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("gender").'</td>
+					<tr id="trAddSchedulerDial" name="trAddSchedulerDial" style="display:none">		
+					</tr>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("first_name").'</td>
+						<td align="left"><input type="text" id="first_name" name="first_name" size="35" maxlength="50"></td>
+					</tr>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("last_name").'</td>
+						<td align="left"><input type="text" id="last_name" name="last_name" size="35" maxlength="50"></td>
+					</tr>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("address").'</td>
+						<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
+					</tr>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("customer_contact").'</td>
 						<td align="left">
-							<select id="contactGender" name="contactGender">
+							<input type="text" id="customerContact" name="customerContact" size="35" maxlength="35"><br>
+							<select id="customerContactGender" name="customerContactGender">
 								<option value="male">'.$locate->Translate("male").'</option>
 								<option value="female">'.$locate->Translate("female").'</option>
 								<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
 							</select>
 						</td>
+					</tr>				
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("address").'</td>
+						<td align="left"><input type="text" id="address" name="address" size="35" maxlength="200"></td>
 					</tr>
-					<tr name="positionTR" id="positionTR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("position").'</td>
-						<td align="left"><input type="text" id="position" name="position" size="35"></td>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("zipcode").'/'.$locate->Translate("city").'</td>
+						<td align="left"> <input type="text" id="zipcode" name="zipcode" size="10" maxlength="10">&nbsp;&nbsp;<input type="text" id="city" name="city" size="17" maxlength="50"></td>
 					</tr>
-					<tr name="phoneTR" id="phoneTR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("phone").'</td>
-						<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="8" maxlength="8" value=""></td>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("state").'</td>
+						<td align="left"><input type="text" id="state" name="state" size="35" maxlength="50"></td>
 					</tr>
-					<tr name="phone1TR" id="phone1TR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("phone1").'</td>
-						<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="8" maxlength="8" value=""></td>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("country").'</td>
+						<td align="left"><input type="text" id="country" name="country" size="35" maxlength="50"></td>
 					</tr>
-					<tr name="phone2TR" id="phone2TR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("phone2").'</td>
-						<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="8" maxlength="8" value=""></td>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("customer_phone").'</td>
+						<td align="left"><input type="text" id="customerPhone" name="customerPhone" size="35" maxlength="50">-<input type="text" id="customerPhone_ext" name="customerPhone_ext" size="8" maxlength="8"></td>
 					</tr>
-					<tr name="mobileTR" id="mobileTR" style="display:none">
+					<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("mobile").'</td>
-						<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
+						<td align="left"><input type="text" id="mainMobile" name="mainMobile" size="35" value="'.$callerid.'"></td>
 					</tr>
-					<tr name="faxTR" id="faxTR" style="display:none">
-						<td nowrap align="left">'.$locate->Translate("fax").'</td>
-						<td align="left"><input type="text" id="fax" name="fax" size="35">-<input type="text" id="fax_ext" name="fax_ext" size="8" maxlength="8" value=""></td>
-					</tr>
-					<tr name="emailTR" id="emailTR" style="display:none">
+					<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
 						<td nowrap align="left">'.$locate->Translate("email").'</td>
-						<td align="left"><input type="text" id="email" name="email" size="35"></td>
-					</tr>					
-					';
+						<td align="left"><input type="text" id="mainEmail" name="mainEmail" size="35"></td>
+					</tr>				
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("website").'</td>
+						<td align="left"><input type="text" id="website" name="website" size="35" maxlength="100" value="http://"><br><input type="button" value="'.$locate->Translate("browser").'" onclick="openWindow(xajax.$(\'website\').value);return false;"></td>
+					</tr>
+					<!--<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("zipcode").'</td>
+						<td align="left"><input type="text" id="zipcode" name="zipcode" size="10" maxlength="10"></td>
+					</tr>-->
+					<tr name="trAddCustomerDetails" id="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left">'.$locate->Translate("fax").'</td>
+						<td align="left"><input type="text" id="mainFax" name="mainFax" size="35">-<input type="text" id="mainFax_ext" name="mainFax_ext" size="8" maxlength="8"></td>
+					</tr>
+					<tr id="trAddCustomerDetails" name="trAddCustomerDetails" style="display:none">
+						<td nowrap align="left" style="border-bottom:1px double orange;">'.$locate->Translate("category").'</td>
+						<td align="left" style="border-bottom:1px double orange"><input type="text" id="category" name="category" size="35"></td>
+					</tr>';
+					/*
+					*  control bank data
+					*/
+					$html .='
+						
+							<input type="hidden" id="hidAddBankDetails" name="hidAddBankDetails" value="OFF">
+						<!--********************-->
+						
+						<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("bank_account_name").'</td>
+							<td align="left"><input type="text" id="bankaccountname" name="bankaccountname" size="35"></td>
+						</tr>
+						<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
+						<td nowrap align="left" style="border-top:1px double orange;">'.$locate->Translate("bank_name").'</td>
+						<td align="left" style="border-top:1px double orange"><input type="text" id="bankname" name="bankname" size="35"></td>
+						</tr>
+						<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("bank_zip").'</td>
+							<td align="left"><input type="text" id="bankzip" name="bankzip" size="35"></td>
+						</tr>
+						<tr id="trAddBankDetails" name="trAddBankDetails" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("bank_account").'</td>
+							<td align="left"><input type="text" id="bankaccount" name="bankaccount" size="35"></td>
+						</tr>	
+						<!--********************-->
+						';
 		}else{
-			$contact =& astercrm::getContactByID($contactid);
-
-				$html .='
+			$customer =& astercrm::getCustomerByID($customerid);
+			$html .= '
 					<tr>
-						<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
-						<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
+						<td nowrap align="left"><a href=? onclick="xajax_showCustomer('. $customerid .');return false;">'.$locate->Translate("customer_name").'</a></td>
+						<td align="left">';
+						if($_SESSION['curuser']['language'] != 'ZH' && $_SESSION['curuser']['country'] != 'cn'){
+							$html .= $locate->Translate($customer['customertitle']).'&nbsp;<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" readOnly>';
+						}else{
+							$html .= '<input type="text" id="customer" name="customer" value="'. $customer['customer'].'" onkeyup="ajax_showOptions(this,\'getCustomersByLetters\',event)" size="25" maxlength="50" autocomplete="off" readOnly>&nbsp;'.$locate->Translate($customer['customertitle']);
+						}
+						if($config['system']['customer_leads'] == 'move') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("move_to_customer_lead");
+						} else if($config['system']['customer_leads'] == 'copy') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" />'.$locate->Translate("copy_to_customer_lead");
+						} else if($config['system']['customer_leads'] == 'default_move') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("move_to_customer_lead");
+						} else if($config['system']['customer_leads'] == 'default_copy') {
+							$html .= ' <input type="checkbox" name="customer_leads_check" id="customer_leads" checked/>'.$locate->Translate("copy_to_customer_lead");
+						}
+
+						$html .= '<BR /><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmCustomer" name="btnConfirmCustomer" onclick="btnConfirmCustomerOnClick();"><input type="hidden" id="customerid" name="customerid" value="'. $customerid .'"></td>
 					</tr>
 					';
 		}
-	}
+		if($config['system']['enable_contact'] != '0'){ //控制contact模块的显示与隐藏
+			if ($contactid == null){
+					$html .='
+						<tr>
+							<td nowrap align="left">'.$locate->Translate("contact").'</td>
+							<td align="left"><input type="text" id="contact" name="contact" value="" onkeyup="ajax_showOptions(this,\'customerid='.$customerid.'&getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off"><BR /><input id="btnConfirmContact" name="btnConfirmContact" type="button" onclick="btnConfirmContactOnClick();return false;" value="'.$locate->Translate("confirm").'"><input type="hidden" id="contactid" name="contactid" value="">
+							<input type="hidden" id="contactDetail" name="contactDetail" value="OFF">
+							[<a href=? onclick="
+								if (xajax.$(\'contactDetail\').value == \'OFF\'){
+									xajax.$(\'genderTR\').style.display = \'\';
+									xajax.$(\'positionTR\').style.display = \'\';
+									xajax.$(\'phoneTR\').style.display = \'\';
+									xajax.$(\'phone1TR\').style.display = \'\';
+									xajax.$(\'phone2TR\').style.display = \'\';
+									xajax.$(\'mobileTR\').style.display = \'\';
+									xajax.$(\'faxTR\').style.display = \'\';
+									xajax.$(\'emailTR\').style.display = \'\';
+									xajax.$(\'contactDetail\').value = \'ON\';
+								}else{
+									xajax.$(\'genderTR\').style.display = \'none\';
+									xajax.$(\'positionTR\').style.display = \'none\';
+									xajax.$(\'phoneTR\').style.display = \'none\';
+									xajax.$(\'phone1TR\').style.display = \'none\';
+									xajax.$(\'phone2TR\').style.display = \'none\';
+									xajax.$(\'mobileTR\').style.display = \'none\';
+									xajax.$(\'faxTR\').style.display = \'none\';
+									xajax.$(\'emailTR\').style.display = \'none\';
+									xajax.$(\'contactDetail\').value = \'OFF\';
+								};
+								return false;">
+								'.$locate->Translate("detail").'
+							</a>]
+							</td>
+						</tr>
+						<tr name="genderTR" id="genderTR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("gender").'</td>
+							<td align="left">
+								<select id="contactGender" name="contactGender">
+									<option value="male">'.$locate->Translate("male").'</option>
+									<option value="female">'.$locate->Translate("female").'</option>
+									<option value="unknown" selected>'.$locate->Translate("unknown").'</option>
+								</select>
+							</td>
+						</tr>
+						<tr name="positionTR" id="positionTR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("position").'</td>
+							<td align="left"><input type="text" id="position" name="position" size="35"></td>
+						</tr>
+						<tr name="phoneTR" id="phoneTR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("phone").'</td>
+							<td align="left"><input type="text" id="phone" name="phone" size="35" value="'. $callerid .'">-<input type="text" id="ext" name="ext" size="8" maxlength="8" value=""></td>
+						</tr>
+						<tr name="phone1TR" id="phone1TR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("phone1").'</td>
+							<td align="left"><input type="text" id="phone1" name="phone1" size="35" value="">-<input type="text" id="ext1" name="ext1" size="8" maxlength="8" value=""></td>
+						</tr>
+						<tr name="phone2TR" id="phone2TR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("phone2").'</td>
+							<td align="left"><input type="text" id="phone2" name="phone2" size="35" value="">-<input type="text" id="ext2" name="ext2" size="8" maxlength="8" value=""></td>
+						</tr>
+						<tr name="mobileTR" id="mobileTR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("mobile").'</td>
+							<td align="left"><input type="text" id="mobile" name="mobile" size="35"></td>
+						</tr>
+						<tr name="faxTR" id="faxTR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("fax").'</td>
+							<td align="left"><input type="text" id="fax" name="fax" size="35">-<input type="text" id="fax_ext" name="fax_ext" size="8" maxlength="8" value=""></td>
+						</tr>
+						<tr name="emailTR" id="emailTR" style="display:none">
+							<td nowrap align="left">'.$locate->Translate("email").'</td>
+							<td align="left"><input type="text" id="email" name="email" size="35"></td>
+						</tr>					
+						';
+			}else{
+				$contact =& astercrm::getContactByID($contactid);
 
-	//add survey html
-	//$html .= '<tr><td colspan="2">';
+					$html .='
+						<tr>
+							<td nowrap align="left"><a href=? onclick="xajax_showContact('. $contactid .');return false;">'.$locate->Translate("contact").'</a></td>
+							<td align="left"><input type="text" id="contact" name="contact" value="'. $contact['contact'].'" onkeyup="ajax_showOptions(this,\'getContactsByLetters\',event)" size="35" maxlength="50" autocomplete="off" readOnly><input type="button" value="'.$locate->Translate("cancel").'" id="btnConfirmContact" name="btnConfirmContact" onclick="btnConfirmContactOnClick();"><input type="hidden" id="contactid" name="contactid" value="'. $contactid .'"></td>
+						</tr>
+						';
+			}
+		}
 
-	//$surveyHTML =& astercrm::generateSurvey();
-	//$html .= $surveyHTML;
+		//add survey html
+		//$html .= '<tr><td colspan="2">';
 
-	//$html .= '</tr></td>';
-	//if(!defined('HOME_DIR')) define('HOME_DIR',dirname(dirname(__FILE__)));
-	//add note html
+		//$surveyHTML =& astercrm::generateSurvey();
+		//$html .= $surveyHTML;
 
-	$html .='
-			<tr>
-				<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}"';
-				if($config['system']['default_share_note']){
-				
-					$html .= 'checked>'.$locate->Translate("share").')<input type="hidden" value="0" name="private" id="private"></td>';
-				}else{
-					$html .= '>'.$locate->Translate("share").')<input type="hidden" value="1" name="private" id="private"></td>';
-				}
-				$html .='<td align="left">
-					<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;">'.$note.'</textarea>
-				</td>
-			</tr>
-			<tr>
-				<td nowrap align="left">'.$locate->Translate("note_code").'</td>
-				<td align="left"><select id="note_code" name="note_code">';
+		//$html .= '</tr></td>';
+		//if(!defined('HOME_DIR')) define('HOME_DIR',dirname(dirname(__FILE__)));
+		//add note html
 
-	$getAllNoteCodes =& astercrm::getAllNoteCodes();
-	foreach($getAllNoteCodes as $tmp) {
-		$html .='<option value="'.$tmp['code'].'">'.$tmp['code'].'</option>';
-	}
-	
-	$html .='</select></td>
+		$html .='
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("note").'(<input type="checkbox" name="sltPrivate" id="sltPrivate" value="0" onclick="if(this.checked){ document.getElementById(\'private\').value=0;}else{ document.getElementById(\'private\').value=1;}"';
+					if($config['system']['default_share_note']){
+					
+						$html .= 'checked>'.$locate->Translate("share").')<input type="hidden" value="0" name="private" id="private"></td>';
+					}else{
+						$html .= '>'.$locate->Translate("share").')<input type="hidden" value="1" name="private" id="private"></td>';
+					}
+					$html .='<td align="left">
+						<textarea rows="4" cols="50" id="note" name="note" wrap="soft" style="overflow:auto;">'.$note.'</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("note_code").'</td>
+					<td align="left"><select id="note_code" name="note_code">';
+
+		$getAllNoteCodes =& astercrm::getAllNoteCodes();
+		foreach($getAllNoteCodes as $tmp) {
+			$html .='<option value="'.$tmp['code'].'">'.$tmp['code'].'</option>';
+		}
+		
+		$html .='</select></td>
 			</tr>
 			<tr>
 				<td nowrap align="left">'.$locate->Translate("priority").'</td>
@@ -2750,6 +2762,9 @@ Class astercrm extends PEAR{
 
 	function deletefromsearch($searchContent,$searchField,$searchType="",$table){
 		global $db;
+		if(empty($_SESSION['curuser']['usertype'])){
+			return;
+		}
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table,'delete');
 
 		if ($joinstr!=''){
@@ -3115,11 +3130,11 @@ Class astercrm extends PEAR{
 	}
 
 	
-	function &getAllCdrRecords($customerid='',$cdrtype='',$start, $limit, $order = null, $creby = null){//echo $cdrtype;exit;
+	function &getAllCdrRecords($customerid='',$cdrtype='',$start, $limit, $order = null, $creby = null,$allOrAnswer = null){//echo $cdrtype;exit;
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
-				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.fileformat,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid']."' AND mycdr.processed >= 0 ";
+				$sql = "SELECT mycdr.*,monitorrecord.filename as filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.id as monitorid FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid']."' AND mycdr.processed >= 0 ";
 				if($order == null || is_array($order)){
 					$sql .= " ORDER by mycdr.calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 				}else{
@@ -3169,6 +3184,10 @@ Class astercrm extends PEAR{
 				$sql = "SELECT mycdr.*,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON monitorrecord.id = mycdr.monitored LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.id = 0";
 			}
 		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND mycdr.billsec > 0 ";
+		}
 		
 		//print_r($order);exit;
 		if($order == null || is_array($order) || $order == ''){
@@ -3176,14 +3195,14 @@ Class astercrm extends PEAR{
 		}else{
 			$sql .= " ORDER BY mycdr.".$order." ".$_SESSION['ordering']." LIMIT $start, $limit";
 		}
-		//print_r($sql);exit;
+		#print_r($sql);exit;
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		
 		return $res;
 	}
 
-	function &getCdrNumRows($customerid='',$cdrtype='',$filter = null, $content = null){
+	function &getCdrNumRows($customerid='',$cdrtype='',$filter = null, $content = null,$allOrAnswer = null){
 		global $db;
 		if($cdrtype == 'recent'){
 			if($_SESSION['curuser']['extension'] != ''){
@@ -3231,13 +3250,17 @@ Class astercrm extends PEAR{
 				return '0';
 			}
 		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND mycdr.billsec > 0 ";
+		}
 		
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
 
-	function &getCdrRecordsFilteredMore($customerid='',$cdrtype='',$start, $limit, $filter, $content, $order,$table = '', $ordering = ""){
+	function &getCdrRecordsFilteredMore($customerid='',$cdrtype='',$start, $limit, $filter, $content, $order,$table = '', $ordering = "",$allOrAnswer = null){
 		global $db;
 		
 		$i=0;
@@ -3285,6 +3308,10 @@ Class astercrm extends PEAR{
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr."  ";
 		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND mycdr.billsec > 0 ";
+		}
 		
 		$sql .= " ORDER BY mycdr.".$order
 					." DESC LIMIT $start, $limit $ordering";
@@ -3294,7 +3321,7 @@ Class astercrm extends PEAR{
 		return $res;
 	}
 
-	function &getCdrNumRowsMore($customerid='',$cdrtype='',$filter = null, $content = null,$table = ''){
+	function &getCdrNumRowsMore($customerid='',$cdrtype='',$filter = null, $content = null,$table = '',$allOrAnswer = null){
 		global $db;
 
 		$i=0;
@@ -3343,12 +3370,16 @@ Class astercrm extends PEAR{
 			$sql .= " ".$joinstr;
 		}
 
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND mycdr.billsec > 0 ";
+		}
+
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
 	}
 
-	function &getCdrNumRowsMorewithstype($customerid,$cdrtype,$filter, $content,$stype){
+	function &getCdrNumRowsMorewithstype($customerid,$cdrtype,$filter, $content,$stype,$allOrAnswer = null){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
@@ -3381,13 +3412,18 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$sql .= " ".$joinstr;
 		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND mycdr.billsec > 0 ";
+		}
+
 //echo $sql;exit;
 		astercrm::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
 	}
 
-	function &getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order){
+	function &getCdrRecordsFilteredMorewithstype($customerid,$cdrtype,$start, $limit, $filter, $content, $stype,$order,$allOrAnswer = null){
 		global $db;
 		
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
@@ -3420,6 +3456,10 @@ Class astercrm extends PEAR{
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr."  ";
+		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND mycdr.billsec > 0 ";
 		}
 		
 		$sql .= " ORDER BY mycdr.".$order
@@ -4091,12 +4131,13 @@ Class astercrm extends PEAR{
 			}
 			$rowc[] = $row['duration'];
 			$rowc[] = $row['billsec'];
-			if($row['fileformat'] == 'error'){
-				$rowc['filename'] = '';
-			}else{
-				$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
-			}
 
+			if($row['processed'] == 'yes' && $row['fileformat'] != 'error'){
+				$rowc['filename'] = $row['filename'].'.'.$row['fileformat'];
+			}else{
+				$rowc['filename'] = '';
+			}
+			
 			$rowc[] = $row['creby'];
 			$table->addRow("monitorrecord",$rowc,false,false,false,$divName,$fields);
 		}
@@ -4116,19 +4157,19 @@ Class astercrm extends PEAR{
 		}
 
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.processed >= 0 ";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.processed >= 0 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
 						
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND mycdr.processed >= 0 ";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND mycdr.processed >= 0 ";
 		}else{
 
 			if($sql != '' ) {
 				if($_SESSION['curuser']['usertype'] == 'admin' ){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE (".$sql.")  AND mycdr.processed >= 0 ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE (".$sql.")  AND mycdr.processed >= 0 ";
 				}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND (".$sql.")  AND mycdr.processed >= 0 ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND (".$sql.")  AND mycdr.processed >= 0 ";
 				}else{
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' AND (".$sql.")  AND mycdr.processed >= 0 ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' AND (".$sql.")  AND mycdr.processed >= 0 ";
 				}
 
 			}else {
@@ -4228,18 +4269,18 @@ Class astercrm extends PEAR{
 			$sql = astercrm::getCustomerphoneSqlByid($customerid,'dst','OR','src','mycdr');
 		}
 		if($_SESSION['curuser']['usertype'] == 'admin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.processed >= 0 ";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.processed >= 0 ";
 		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin' && $customerid == ''){
-			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE  mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND mycdr.processed >= 0 ";
+			$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE  mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND mycdr.processed >= 0 ";
 			
 		}else{
 			if($sql != '' ) {
 				if($_SESSION['curuser']['usertype'] == 'admin' ){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE (".$sql.") AND mycdr.processed >= 0 ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE (".$sql.") AND mycdr.processed >= 0 ";
 				}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE  (".$sql.")  AND mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND mycdr.processed >= 0 ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE  (".$sql.")  AND mycdr.astercrm_groupid = '".$_SESSION['curuser']['groupid'] ."' AND mycdr.processed >= 0 ";
 				}else{
-					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE (".$sql.")  AND mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' AND mycdr.processed >= 0 ";
+					$sql = "SELECT mycdr.calldate,mycdr.src,mycdr.dst,mycdr.didnumber,mycdr.dstchannel,mycdr.duration,mycdr.billsec,monitorrecord.id,monitorrecord.filename,monitorrecord.fileformat,monitorrecord.processed,monitorrecord.creby,astercrm_accountgroup.groupname,astercrm_account.username FROM mycdr LEFT JOIN monitorrecord ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE (".$sql.")  AND mycdr.accountid = '".$_SESSION['curuser']['accountid'] ."' AND mycdr.processed >= 0 ";
 				}
 			}else {
 				$sql = "SELECT mycdr.* FROM monitorrecord LEFT JOIN mycdr ON mycdr.monitored = monitorrecord.id LEFT JOIN astercrm_accountgroup ON astercrm_accountgroup.id = mycdr.astercrm_groupid LEFT JOIN astercrm_account ON astercrm_account.id = mycdr.accountid WHERE mycdr.id = 0";
@@ -4253,7 +4294,7 @@ Class astercrm extends PEAR{
 
 		$sql .= " ORDER BY ".$order
 					." DESC LIMIT $start, $limit $ordering";
-
+		
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;

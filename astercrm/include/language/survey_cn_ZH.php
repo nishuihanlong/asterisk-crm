@@ -25,4 +25,5 @@ $text = "文本";
 $update_option = "更新选项";
 $option_item = "题目选项";
 $are_you_sure_to_delete_this_option = "确定要删除这个题目么";
+$phone_number = "电话号码";
 ?>

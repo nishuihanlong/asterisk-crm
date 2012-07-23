@@ -97,4 +97,7 @@ $view_subordinate_ticketdetails = "View Subordinate Ticketdetails";
 $subordinate_ticketdetails = "Subordinate TicketDetails";
 $parent_ticketdetail_id = "Parent TicketDetail ID";
 $pause_reasion = "Pause Reasion";
+$please_select_a_customer = "Please Select A Customer";
+$tickets_notice = "Tickets Notice";
+$you_have_new_tickets = "You have %d new tickets";
 ?>

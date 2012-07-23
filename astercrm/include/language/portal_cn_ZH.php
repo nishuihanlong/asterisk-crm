@@ -192,4 +192,9 @@ $view_subordinate_ticketdetails = "查看下级任务详细";
 $subordinate_ticketdetails = "下级任务详细";
 $parent_ticketdetail_id = "上级任务详细ID";
 $pause_reasion = "暂停原因";
+$first_name = "名";
+$last_name = "姓";
+$please_select_a_customer = "请选择一个客户";
+$tickets_notice = "任务提醒";
+$you_have_new_tickets = "你有 %d 条新的任务";
 ?>

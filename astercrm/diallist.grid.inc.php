@@ -291,7 +291,7 @@ function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $st
 					<tr>
 						<td nowrap colspan=2 align=center><input type="button" id="btnAddDiallist" name="btnAddDiallist" value="'.$locate->Translate("continue").'" onclick="xajax_save(xajax.getFormValues(\'formDiallist\'));return false;"></td>
 					</tr>
-				<table>
+				</table>
 				</form>
 				'.$locate->Translate("obligatory_fields").'
 			';

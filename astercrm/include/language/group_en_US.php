@@ -30,4 +30,5 @@ $display_all_member = "show member";
 $first_ring = "first ring";
 $caller = "caller";
 $callee = "callee";
+$notice_interval = "notice interval";
 ?>

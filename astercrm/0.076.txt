@@ -1,0 +1,117 @@
+new features in 0.076
+	added check csv file if the utf-8 code when import
+	added billing for campaign
+	added auto popup the latest and top priority notes
+	improved open_new_window to internal,external and both in astercrm.conf.php
+	added require_reason_when_pause (yes|no) in astercrm.conf.php
+	added agent_queue_log to record agent pause and continue logs
+	added a socket method to send calling info (added enable_socket,fix_port and socket_url in astercrm.conf.php)
+	added first_name and last_name in customer table
+	improved include customer info when export dialedlist (added export_customer_fields_in_dialedlist in astercrm.conf.php for assign exported fields)
+	added create_ticket in astercrm.conf.php to control the privileges when create ticket
+	added popup ticket notice in portal page
+
+
+0.076 新功能
+	增加了导入时检查上传的csv文件是否为utf-8编码
+	增加了拨号计划计费功能
+	增加了呼叫弹屏时弹出最新及优先级最高的备注信息
+	改进了外部弹屏方法,astercrm.conf.php 中open_new_window 参数分为：internal(表示frame内显示),external(表示frame内不显示 弹出新窗口显示),both(表示frame内显示默认 同时弹出新窗口)
+	增加了座席填写手动暂停原因功能,使用astercrm.conf.php中require_reason_when_pause参数控制开关
+	增加了agent_queue_log用于记录座席暂停和继续操作的日志
+	增加了通过socket发送呼叫信息的功能
+	增加了客户表中增加姓，名两个字段
+	增加了导出已拨列表数据的时候关联导出客户相关字段，astercrm.conf.php中export_customer_fields_in_dialedlist参数设置相关导出哪些客户字段
+	增加了create_ticket参数在astercrm.conf.php中，用于控制创建任务的权限范围
+	增加了弹出任务提醒的功能
+
+astercrm features(0.076)
+
+	pop-up when incoming calls 
+	pop-up when outbound calls
+	suggestion when enter business name or contact 
+	account/extension manager
+	click to dial
+	manually dial
+	invite dial
+	click to transfer
+	click to monitor
+	can be integrated with all asterisk based systems, 
+			such as Magiclink IP PBX, Trixbox ...
+	multi-language support (Chinese, English, German)
+	multi-skin support	
+	support external crm
+	extension status
+	show asterisk active channels 
+	predictive dialer
+	CRM data import/export online
+	diallist import online
+	survey
+	survey result statistics
+	distributed solution
+	google map support
+	multi condition search & export
+	config system parameters in browser 
+	monitor/spy channel in real time
+	list and listen to the monitor records
+	check history phone recorded on line
+	customer call history
+	remove prefix
+	switch in customer mode and customer->contact mode
+	read callerid of other extensions when they are talking
+	user group
+	dail campaign
+	recyle no answer calls from dialed list
+	scheduler dialer
+	customer dialer
+	could work with astercc
+	cdr(in astercc mode)
+	DID inforamtion when pop up
+	removing lot of customer records in one go
+	agent auto dial
+	speed dial list
+	recycle no answer number in dialed list(in astercc mode)
+	support dynamic agent mode
+	extension whisper
+	DID number display
+	support predictive dial dial out strategy
+	support import file which exist in server
+	recent cdr bind to monitor records
+	fax ext
+	support play gsm file in web
+	force monitor by group
+	update licence in web
+	auto install
+	system status monitor by groupadmin
+	predictive dial by groupadmin
+	multi mode search(like,=,<,>)
+	advance survey
+	callerid smart mathcing
+	barge-in and invite
+	predictive dialer direct to queue
+	dialer support dialout mutil-servers
+	support chinese address of google map 
+	support post more customer infomation to external CRM by URL
+	support count how long dynamic agent loged in the queue
+	private note
+	support licence with time limit
+	campaign result statistics
+	agent dialed result statistics
+	support set start time and end time for campaign
+	supply a shell for backup file and database
+	agent can add a scheduler dial for a customer
+	support set dial waittime in campaign	
+	agent can add a transfer link in note
+	astercrm workwith asterbilling simplely
+	supoort delete a uploaded file
+	agent break function
+	realtime queue status 
+	reload or restart asterisk in web
+	my tickets
+	dialedlist statistic
+	loigin/logoff as dynamic agent to queue
+	attend tranfer(with asterisk 1.6.x) in portal page
+	billing for campaign
+	send calling info by socket
+	popup ticket notice
+	

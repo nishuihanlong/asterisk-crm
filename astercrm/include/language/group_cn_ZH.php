@@ -30,4 +30,5 @@ $allowloginqueue = "允许签入队列";
 $yes = "是";
 $no = "否";
 $clear_popup = "清屏间隔";
+$notice_interval = "提醒间隔";
 ?>
