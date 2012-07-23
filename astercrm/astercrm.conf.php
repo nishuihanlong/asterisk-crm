@@ -7,8 +7,8 @@ dbtype = mysql
 dbport = 3306
 dbhost = 127.0.0.1
 dbname = astercc
-username = astercc
-password = asterccsecret
+username = root
+password = 
 
 [asterisk]
 ;
@@ -115,12 +115,25 @@ allow_dropcall = 0
 
 allow_same_data = 0
 
-auto_note_popup = 0
+;
+; if auto popup the note
+;
+auto_note_popup = 1
+
+;
+; if popup the highest priority note when enable auto_note_popup
+;
+highest_priority_note = 1
+
+;
+; if popup the lastest priority note when enable auto_note_popup
+;
+lastest_priority_note = 1
 
 default_share_note = 0
 
 ;if use customer_leads table move/copy/default_move/default_copy/disabled
-customer_leads = disabled
+customer_leads = copy
 
 enable_code = 0
 
@@ -129,7 +142,7 @@ enable_code = 0
 update_online_interval = 2
 
 ;if enable sms popup   disabled/callerid/campaign_number/trunk_number
-enable_sms = campaign_number
+enable_sms = disabled
 
 ;if set to yes,will popup a tip to record the reasion when the agent pause the queue
 ;if set to no,will not popup a tip
@@ -160,7 +173,7 @@ pop_up_when_dial_in = 1
 ;
 ; browser will maximize when pop up
 ;
-browser_maximize_when_pop_up = 0
+browser_maximize_when_pop_up = 1
 
 ;
 ; which phone ring first when using click to dial
@@ -182,12 +195,12 @@ enable_external_crm = 0
 ;
 ; asterCRM will decide how to show the external crm popup
 ;
-open_new_window = internal
+open_new_window = both
 
 ;
 ; when using external crm, put default page here
 ;
-external_crm_default_url = 
+external_crm_default_url = http://192.168.1.30/astercrm/road_accident.php
 
 ;
 ; when using external crm, put pop up page here
@@ -196,7 +209,7 @@ external_crm_default_url =
 ; %method		dial_out or dial_in
 ; %uniqueid
 ; %calldate     starttime of the call
-external_crm_url = 
+external_crm_url = http://192.168.1.30/astercrm/road_accident.php
 
 ; any fields you need to post which in customer table, use comma between fields
 ; note: the field must in customer table
@@ -209,9 +222,25 @@ astercc_conf_path =
 ;if check extension status when click "start work" on agent portal
 checkworkexten = yes
 
+;if check socket to yes,when the call dialin it will notic the agent by socket
+enable_socket = no
+
+socket_url = <?xml version="1.0" encoding="UTF-8"?>  <!DOCTYPE cti PUBLIC "-//DTD cti 1.0//EN"  "http://siebelURL/epublicsector_enu/21211/applets/cti.dtd">\n<cti>\n  <version>1.0</version>\n<event>\n<field>\n<name>CallerNumber</name>\n<value>%callerid%</value>\n</field>\n</event>\n</cti>
+
+fix_port = 5555
+
+;export customer field when export dialedlist
+export_customer_fields_in_dialedlist = first_name,last_name,address,city,state,zipcode
+
+
+;whether to popup the customer window when it had existed
+allow_popup_when_already_popup = 1
+
+
+enable_formadd_popup = 1
 [survey]
 ; if need a note after survey option
-enable_surveynote = 0
+enable_surveynote = 1
 
 ; if need close all popups after survey saved
 close_popup_after_survey = 0
