@@ -107,15 +107,20 @@ function calculateBalance(divId){
 			credit = credit*discount;
 		}
 	}
+	lock_clid = 0;
 	if (document.getElementById(divId+'-ckbCredit').checked && document.getElementById('creditlimittype').value == 'balance' && (unbilled - credit)  >= -0.001 )
 	{
-//		alert('warning: the credit should be greater than unbilled');
+	//		alert('warning: the credit should be greater than unbilled');
 		document.getElementById(divId + '-balance').style.backgroundColor="red";
+		lock_clid = 1;
 		//document.getElementById(divId+'-iptCredit').readOnly = false;
 	}else{
 		document.getElementById(divId + '-balance').style.backgroundColor="";
 	}
 	document.getElementById(divId + '-balance').innerHTML = setCurrency(credit - unbilled);
+	// update clid locked field
+	// alter table `clid` add locked tinyint(4) default '0' after `curcredit`;
+	xajax_setLocked(divId,lock_clid);
 }
 
 function removeTr(divId){

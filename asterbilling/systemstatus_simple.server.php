@@ -211,6 +211,14 @@ function setGroupBalance(){
 	return $objResponse->getXML();
 }
 
+function setLocked($clid,$locked){
+	$objResponse = new xajaxResponse();
+	global $db;
+	$query = "UPDATE clid SET locked = '$locked' WHERE clid = '$clid' ";
+	$db->query($query);
+	return $objResponse;
+}
+
 function setStatus($clid,$status){
 	$affectrows = astercc::setStatus($clid,$status);
 	$objResponse = new xajaxResponse();

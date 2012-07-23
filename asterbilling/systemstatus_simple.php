@@ -220,15 +220,16 @@ function calculateBalance_simple(divId){
 			credit = credit*discount;
 		}
 	}
-	/*if (document.getElementById(divId+'-ckbCredit').checked && document.getElementById('creditlimittype').value == 'balance' && (unbilled - credit)  >= -0.001 )
+	lock_clid = 0;
+	if (document.getElementById(divId+'-ckbCredit').checked && document.getElementById('creditlimittype').value == 'balance' && (unbilled - credit)  >= -0.001 )
 	{
-//		alert('warning: the credit should be greater than unbilled');
-		document.getElementById(divId + '-balance').style.backgroundColor="red";
-		//document.getElementById(divId+'-iptCredit').readOnly = false;
+		lock_clid = 1;
 	}else{
-		document.getElementById(divId + '-balance').style.backgroundColor="";
-	}*/
+
+	}
 	document.getElementById(divId + '-balance').innerHTML = setCurrency(credit - unbilled);
+	xajax_setLocked(divId,lock_clid);
+
 }
 
 
