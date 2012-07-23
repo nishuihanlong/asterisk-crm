@@ -53,8 +53,8 @@ class Common{
 					<table class="copyright" id="tblCopyright">
 					<tr>
 						<td>
-							©2007-2010 astercc - <a href="http://www.astercc.org" target="_blank">asterbilling home</a><br>
-							version: 0.16 in asterCC 0.21
+							©2007-2012 astercc - <a href="http://www.astercc.org" target="_blank">asterbilling home</a><br>
+							version: 0.17 in asterCC 0.22-beta
 						</td>
 					</tr>
 					</table>
