@@ -160,11 +160,12 @@ Class astercrm extends PEAR{
 	*/
 	
 	function insertNewClid($f){
-		global $db;
+		global $db,$config;
 		$f = astercrm::variableFiler($f);
 		
 		$sql= "INSERT INTO clid SET "
 				."clid='".$f['clid']."', "
+				."accountcode='".$f['accountcode']."', "
 				."pin='".$f['pin']."', "
 				."display='".$f['display']."', "
 				."groupid = ".$f['groupid'].", "
@@ -174,6 +175,10 @@ Class astercrm extends PEAR{
 				 creditlimit = '".$f['creditlimit']."',
 				 limittype = '".$f['limittype']."',"
 				."addtime = now() ";
+
+		if($config['synchronize']['id_autocrement_byset']){
+			$sql .= ",id='".$f['id']."' ";
+		}
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -218,7 +223,7 @@ Class astercrm extends PEAR{
 	*/
 	
 	function insertNewAccount($f){
-		global $db;
+		global $db,$config;
 		$f = astercrm::variableFiler($f);
 
 		if ($_SESSION['curuser']['usertype'] == 'reseller'){
@@ -246,6 +251,10 @@ Class astercrm extends PEAR{
 				."resellerid='".$f['resellerid']."', "
 				."addtime= now() ";
 		
+		if($config['synchronize']['id_autocrement_byset']){
+			$sql .= ",id='".$f['id']."' ";
+		}
+
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -343,6 +352,7 @@ Class astercrm extends PEAR{
 		}
 		$sql= "UPDATE clid SET "
 				."clid='".$f['clid']."', "
+				."accountcode='".$f['accountcode']."', "
 				."pin='".$f['pin']."', "
 				."display='".$f['display']."', "
 				."groupid='".$f['groupid']."', "
@@ -953,10 +963,20 @@ Class astercrm extends PEAR{
 
 	function exportDataToCSV($sql){
 		global $db;
+		
+		//require_once ("include/xajax.inc.php");
+		//$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],$table);
+
 		astercrm::events($sql);
 		$res =& $db->query($sql);
+		
+		$fieldArray = array();//table field name which wants to export to the csv
 		while ($res->fetchInto($row)) {
-			foreach ($row as $val){
+			foreach ($row as $key=>$val){
+				if(!in_array($key,$fieldArray)){
+					$fieldArray[] = $key;//$locate->Translate($key);
+				}
+				
 				if ($val != mb_convert_encoding($val,"UTF-8","UTF-8"))
 						$val='"'.mb_convert_encoding($val,"UTF-8","GB2312").'"';
 				
@@ -964,7 +984,9 @@ Class astercrm extends PEAR{
 			}
 			$txtstr .= "\n";
 		}
-		return $txtstr;
+		$fieldStr = '"'.implode('","',$fieldArray)."\"\n";
+		
+		return $fieldStr.$txtstr;
 	}
 
 	/**
@@ -982,16 +1004,19 @@ Class astercrm extends PEAR{
 		return $customerid;
 	}
 
-	function getSql($searchContent,$searchField,$searchType,$table){
+	/**
+	*  新增一个参数 $field，标识要查询的字段,如果为 * 表示查询全部, 传递值的形式是以 , 分割的字符串
+	*/
+	function getSql($searchContent,$searchField,$searchType,$table,$fieldStr='*'){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType);
 		
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND');
-			$sql = 'SELECT * FROM '.$table.' WHERE '.$joinstr;
+			$sql = 'SELECT '.$fieldStr.' FROM '.$table.' WHERE '.$joinstr;
 		}else {
-			$sql = 'SELECT * FROM '.$table.'';
+			$sql = 'SELECT '.$fieldStr.' FROM '.$table.'';
 		}
 		//if ($sql != mb_convert_encoding($sql,"UTF-8","UTF-8")){
 		//	$sql='"'.mb_convert_encoding($sql,"UTF-8","GB2312").'"';
@@ -1001,6 +1026,9 @@ Class astercrm extends PEAR{
 
 	function deletefromsearch($searchContent,$searchField,$searchType="",$table){
 		global $db;
+		if(empty($_SESSION['curuser']['usertype'])){
+			return;
+		}
 		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
 
 		if ($joinstr!=''){
@@ -1008,8 +1036,10 @@ Class astercrm extends PEAR{
 			$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr;
 		}else{
 			if($_SESSION['curuser']['usertype'] == 'admin'){
+				#echo 'cccccccccc';exit;
 				$sql = 'TRUNCATE '.$table;
 			}else{
+				#echo 'ggggggggggggg';exit;
 				$sql = "DELETE FROM ".$table." WHERE ".$table.".groupid = '".$_SESSION['curuser']['groupid']."'";
 			}
 		}
@@ -1142,6 +1172,111 @@ Class astercrm extends PEAR{
 			$formateStr = gmstrftime("%H:%M:%S",$sec);
 		}
 		return $formateStr;
+	}
+
+	/**
+	*	get the last id which id in the setting id array 
+	*
+	*	@param  $tablename the table name
+	*/
+	function getLocalLastId($tablename){
+		global $db,$config;
+		$local_minId = $config['local_host']['minId'];
+		$local_maxId = $config['local_host']['maxId'];
+
+		$sql = "SELECT id FROM ".$tablename." WHERE id between ".$local_minId." AND ".$local_maxId." ORDER BY id DESC limit 1 ";
+		astercrm::events($sql);
+		$res =& $db->getRow($sql);
+		return $res['id'];
+	}
+
+	/**
+	*  delete a record form a table into that's history table
+	*
+	*	@param  $id			(int)		identity of the record
+	*	@param  $table		(string)	table name
+	*	@return $res		(object)	object
+	*/
+	function deleteRecordToHistory($field,$value,$table){
+		global $db;
+		
+		//backup all datas
+		$history_sql = "INSERT INTO ".$table."_history SELECT * FROM ".$table." WHERE ".$field."='".$value."' ";
+		astercrm::events($history_sql);
+		$history_res =& $db->query($history_sql);
+		if($history_res){
+			//delete all note
+			$sql = "DELETE FROM $table WHERE ".$field." = '".$value."'";
+			astercrm::events($sql);
+			$res =& $db->query($sql);
+
+			return $res;
+		} else {
+			return false;
+		}
+	}
+
+	function deleteToHistoryFromSearch($searchContent,$searchField,$searchType="",$table){
+		global $db,$config;
+		if(empty($_SESSION['curuser']['usertype'])){
+			return;
+		}
+		$joinstr = astercrm::createSqlWithStype($searchField,$searchContent,$searchType,$table);
+
+		if ($joinstr!=''){
+			$joinstr=ltrim($joinstr,'AND');
+
+			$history_sql = "INSERT INTO ".$table."_history SELECT * FROM ".$table." WHERE ".$joinstr;
+			
+			$sql = 'DELETE FROM '.$table.' WHERE '.$joinstr;
+		}else{
+			if($_SESSION['curuser']['usertype'] == 'admin'){
+				$sql = 'TRUNCATE '.$table;
+
+				$history_sql = "INSERT INTO ".$table."_history SELECT * FROM ".$table." ";
+			}else{
+				$sql = "DELETE FROM ".$table." WHERE ".$table.".groupid = '".$_SESSION['curuser']['groupid']."'";
+
+				$history_sql = "INSERT INTO ".$table."_history SELECT * FROM ".$table." WHERE ".$table.".groupid = '".$_SESSION['curuser']['groupid']."' ";
+			}
+		}
+		
+		Customer::events($history_sql);
+		$result =& $db->query($history_sql);
+		if($result) {
+			Customer::events($sql);
+			$res =& $db->query($sql);
+			return $res;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	*  the data belongs to the server judge by id ,then show the field with the server ip
+	*
+	*	@param  $id			(int)		id of the record
+	*	@param  $field		(string)	table field name
+	*	@return $field		(string)	table field name with the server ip
+	*/
+	function getSynchronDisplay($id,$field){
+		global $config,$locate;
+		
+		$otherHost = $config['synchronize_host']['Host'];
+		$hostArray = explode(',',trim($otherHost,','));
+
+		$existFlag = false;
+		foreach($hostArray as $tmp){
+			if($id >= $config['synchronize_host'][$tmp.'_minId'] && $id <= $config['synchronize_host'][$tmp.'_maxId']){
+				$field = $field.' ('.$config['synchronize_host'][$tmp].')';
+				$existFlag = true;
+			}
+		}
+		if(!$existFlag){
+			$field = $field.' ('.$locate->Translate("Local").')';
+		}
+
+		return $field;
 	}
 }
 ?>

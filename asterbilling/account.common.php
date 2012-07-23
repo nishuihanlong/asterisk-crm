@@ -64,7 +64,7 @@ $GLOBALS['locate']=new Localization($_SESSION['curuser']['country'],$_SESSION['c
 
 $xajax = new xajax("account.server.php");
 
-$xajax->registerFunction("showGrid");
+$xajax->registerFunction("showGrid"); 
 $xajax->registerFunction("add");
 $xajax->registerFunction("save");
 $xajax->registerFunction("edit");

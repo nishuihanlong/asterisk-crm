@@ -1,5 +1,6 @@
 <?
 $phone = "号码";
+$billsec = "时长";
 $sec = "时长";
 $price = "价格";
 $callback = "回拨";

@@ -151,6 +151,7 @@ function addDiv(containerId,divId,creditLimit,num,status,displayname,customereab
 	}
 
 	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-channel\" name=\"" + divId + "-channel\" value=''>";
+	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-dstchan\" name=\"" + divId + "-dstchan\" value=''>";
 	div.innerHTML += "<input type=\"hidden\" id=\"" + divId + "-legb-channel\" name=\"" + divId + "-legb-channel\" value=''>";
 	div.innerHTML += '<input type="hidden" id="' + divId + '-localanswertime" name="' + divId + '-localanswertime" value="">';
 	div.innerHTML += '<input type="hidden" id="' + divId + '-legb-localanswertime" name="' + divId + '-localanswertime" value="">';
@@ -279,10 +280,10 @@ function ckbCreditOnClick(objCkb){
 	}
 }
 
-
 function appendTr(tbodyId,aryValues){
 	var tbody = document.getElementById(tbodyId);
     var tr = document.createElement("tr");
+	//tr.setAttribute("ondblclick", "if (confirm('<?echo $locate->Translate("are you sure to re-calculate the credit");?>'))  xajax_reCalculate('"+tbodyId.substring(0,tbodyId.length-14)+"','"+aryValues["billsec"]+"','"+aryValues["rate"]+"');return false;"); //.toString()
 
 	// caller id
     var td = document.createElement("td");
@@ -389,7 +390,11 @@ function hangupOnClick(trId){
 		//return false;
 //		"Local/84350822-legb-channel"
 		hangup(document.getElementById( trId + '-channel').value);
+		hangup(document.getElementById( trId + '-dstchan').value);
 		hangup(document.getElementById( trId + '-legb-channel').value);
+		//alert(document.getElementById( trId + '-channel').value);
+		//alert(document.getElementById( trId + '-dstchan').value);
+		//alert(document.getElementById( trId + '-legb-channel').value);
 	}
 	return false;
 }
@@ -433,6 +438,7 @@ function searchRate(){
 				<li><a href="checkout.php" target="<? echo $target ?>"><?echo $locate->Translate("Report");?></a></li>
 				<li><a href="spsystemstatus.php" target="<? echo $target ?>"><?echo $locate->Translate("Profi");?></a></li>
 				<li><a href="clid.php" target="<? echo $target ?>"><?echo $locate->Translate("Clid");?></a></li>
+				<li><a href="curcdr.php" target="<? echo $target ?>"><?echo $locate->Translate("Curcdr");?></a></li>
 				<li><a href="manager_login.php" onclick="return confirm('<?echo $locate->Translate("are you sure to exit");?>');"><?echo $locate->Translate("Log Out");?></a></li>
 			</ul>
 		</div>
@@ -501,6 +507,9 @@ function searchRate(){
 		<input type="hidden" name="curid" id="curid" value="0"/>
 		<input type="hidden" name="creditlimittype" id="creditlimittype" value=""/>
 </div>
+		
 		<div id="divCopyright"></div>
+		<script language="JavaScript" src="js/niftyplayer.js"></script>
+		<div><object id='hangup-beep' classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"  width="0" height="0" ><param name="movie" value="sound/niftyplayer.swf?file=sound/beep.mp3&as=0"><param name="quality" value="high"><embed src="sound/niftyplayer.swf?file=sound/beep.mp3&as=0" quality="high"  width="0" height="0"  type="application/x-shockwave-flash" swLiveConnect="true" name="hangup-beep" ></embed></object></div>
 	</body>
 </html>

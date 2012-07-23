@@ -95,6 +95,9 @@ function init($fileName){
 		$res = astercrm::getAll('resellergroup');
 		$objResponse->addScript("addOption('resellerid','0','".$locate->Translate("All")."');");
 		while ($row = $res->fetchRow()) {
+			if($config['synchronize']['id_autocrement_byset'] && ($row['id'] < $config['local_host']['minId'] || $row['id'] > $config['local_host']['maxId'])){
+				continue;
+			}
 			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
 		}
 
@@ -105,6 +108,9 @@ function init($fileName){
 		$objResponse->addScript("addOption('groupid','0','".$locate->Translate("All")."');");
 		$res = astercrm::getAll('accountgroup',"resellerid",$_SESSION['curuser']['resellerid']);
 		while ($row = $res->fetchRow()) {
+			if($config['synchronize']['id_autocrement_byset'] && ($row['id'] < $config['local_host']['minId'] || $row['id'] > $config['local_host']['maxId'])){
+				continue;
+			}
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 		}
 	}else{
@@ -120,12 +126,15 @@ function init($fileName){
 }
 
 function setGroup($resellerid){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
 	$objResponse->addScript("addOption('groupid','0','".$locate->Translate("All")."');");
 	//添加option
 	while ($res->fetchInto($row)) {
+		if($config['synchronize']['id_autocrement_byset'] && ($row['id'] < $config['local_host']['minId'] || $row['id'] > $config['local_host']['maxId'])){
+			continue;
+		}
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 	}
 	return $objResponse;
@@ -263,13 +272,16 @@ function submitForm($aFormValues){
 	$tableStructure = array();
 	foreach($tableStructure_source as $row) {
 		$type_arr = explode(' ',$row['flags']);
-		if(!in_array('auto_increment',$type_arr))
-		{
-				if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
+		if(!in_array('auto_increment',$type_arr)) {
+			if ($row['name'] == "creby" || $row['name'] == "cretime" || $row['name'] == "groupid" ){
 
-				}else{
-					$tableStructure[]= $row;
-				}
+			}else{
+				$tableStructure[]= $row;
+			}
+		} else {
+			if($row['name'] == 'id' && $config['synchronize']['id_autocrement_byset']){
+				$tableStructure[]= $row;
+			}
 		}
 	}
 	$filePath = $config['system']['upload_file_path'].$fileName;//数据文件存放路径
@@ -331,14 +343,26 @@ function getDiallistBar($columnNum){
 
 
 function importResource($filePath,$order,$tableName,$tableStructure,$dialListField,$date,$groupid,$resellerid){
-	global $db;
+	global $db,$config;
 	$arrData = getSourceData($filePath);
+	
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId($tableName);
+		if(empty($local_lastid)){
+			$local_lastid = $config['local_host']['minId'];
+		}
+	}
 	$tableAffectRows = 0;
 	foreach($arrData as $arrRow){
+		if($config['synchronize']['id_autocrement_byset']){
+			$local_lastid ++;
+			
+			array_unshift($arrRow,$local_lastid);
+		}
 		$arrRes = parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,$date,$groupid,$resellerid);
 
 		$strSql = $arrRes['strSql'];					//得到插入选择表的sql语句
-
+		
 		if($tableName != '' && $strSql != '' ){
 			$res = $db->query($strSql);  
 			$tableAffectRows += $db->affectedRows();   //得到影响的数据条数
@@ -385,9 +409,9 @@ function parseRowToSql($arrRow,$order,$dialListField,$tableStructure,$tableName,
 
 	if ($fieldName != ""){
 		if ($tableName == 'resellerrate'){
-			$strSql = "INSERT INTO $tableName ($fieldName,addtime,resellerid) VALUES ($strData, now(), '$resellerid')";
+			$strSql = "INSERT IGNORE INTO $tableName ($fieldName,addtime,resellerid) VALUES ($strData, now(), '$resellerid')";
 		}elseif ($tableName == 'callshoprate' || $tableName == 'myrate'){
-			$strSql = "INSERT INTO $tableName ($fieldName,addtime,resellerid,groupid) VALUES ($strData, now(), '$resellerid', '$groupid')";
+			$strSql = "INSERT IGNORE INTO $tableName ($fieldName,addtime,resellerid,groupid) VALUES ($strData, now(), '$resellerid', '$groupid')";
 		}
 	}
 	return array('strSql'=>$strSql,'dialListValue'=>$dialListValue);

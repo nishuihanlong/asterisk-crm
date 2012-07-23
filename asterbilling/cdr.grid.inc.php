@@ -37,7 +37,7 @@ class Customer extends astercrm
 	*	@param $order 	(string) Campo por el cual se aplicar&aacute; el orden en la consulta SQL.
 	*	@return $res 	(object) Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
-	function &getAllRecords($start, $limit, $order = null, $creby = null, $table='mycdr'){
+	function &getAllRecords($start, $limit, $order = null, $creby = null, $table='mycdr',$allOrAnswer=null){
 		global $db;
 		if($_SESSION['curuser']['usertype'] == 'admin'){
 			$sql = "SELECT * FROM ".$table." WHERE (groupid > 0 OR resellerid > '0')";
@@ -48,6 +48,11 @@ class Customer extends astercrm
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
 			$sql = "SELECT * FROM ".$table." WHERE src = '".$_SESSION['curuser']['username']."'";
 		}
+		
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND billsec > 0 ";
+		}
+		
 		if($order == null || is_array($order)){
 			$sql .= "ORDER by calldate DESC LIMIT $start, $limit";//.$_SESSION['ordering'];
 		}else{
@@ -70,7 +75,7 @@ class Customer extends astercrm
 	*	@return $res		(object)	Objeto que contiene el arreglo del resultado de la consulta SQL.
 	*/
 
-	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = ""){
+	function &getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table, $ordering = "",$allOrAnswer=null){
 		global $db;
 
 		$i=0;
@@ -98,6 +103,10 @@ class Customer extends astercrm
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr."  ";
 		}
+		
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND billsec > 0 ";
+		}
 
 		$sql .= " ORDER BY ".$order
 					." ".$_SESSION['ordering']
@@ -116,7 +125,7 @@ class Customer extends astercrm
 	*	@return $row['numrows']	(int) 	N&uacute;mero de registros (l&iacute;neas)
 	*/
 	
-	function &getNumRows($table='mycdr'){
+	function &getNumRows($table='mycdr',$allOrAnswer=null){
 		global $db;
 		
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
@@ -129,69 +138,82 @@ class Customer extends astercrm
 			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE src = '".$_SESSION['curuser']['username']."'";
 		}
 
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND billsec > 0 ";
+		}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);
 		return $res;		
 	}
 
-	function &getNumRowsMore($filter = null, $content = null,$table){
+	function &getNumRowsMore($filter = null, $content = null,$table,$allOrAnswer=null){
 		global $db;
 		
-			$i=0;
-			$joinstr='';
-			foreach ($content as $value){
-				$value = preg_replace("/'/","\\'",$value);
-				$value=trim($value);
-				if (strlen($value)!=0 && strlen($filter[$i]) != 0){
-					$joinstr.="AND $filter[$i] like '%".$value."%' ";
-				}
-				$i++;
+		$i=0;
+		$joinstr='';
+		foreach ($content as $value){
+			$value = preg_replace("/'/","\\'",$value);
+			$value=trim($value);
+			if (strlen($value)!=0 && strlen($filter[$i]) != 0){
+				$joinstr.="AND $filter[$i] like '%".$value."%' ";
 			}
+			$i++;
+		}
 
-			if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE (groupid > '0' OR resellerid > '0')";
-			}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE groupid = '".$_SESSION['curuser']['groupid']."'";
-			}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE resellerid = '".$_SESSION['curuser']['resellerid']."'";
-			}elseif($_SESSION['curuser']['usertype'] == 'clid'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE src = '".$_SESSION['curuser']['username']."'";
-			}
+		if ($_SESSION['curuser']['usertype'] == 'admin'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE (groupid > '0' OR resellerid > '0')";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE groupid = '".$_SESSION['curuser']['groupid']."'";
+		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE resellerid = '".$_SESSION['curuser']['resellerid']."'";
+		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE src = '".$_SESSION['curuser']['username']."'";
+		}
 
-			if ($joinstr!=''){
-				$sql .= " ".$joinstr;
-			}else {
-				$sql .= " 1";
-			}
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}else {
+			$sql .= " 1";
+		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND billsec > 0 ";
+		}
+
 		Customer::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
 	}
 	
-	function &getNumRowsMorewithstype($filter = null, $content = null,$stype = null,$table){
+	function &getNumRowsMorewithstype($filter = null, $content = null,$stype = null,$table,$allOrAnswer=null){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE (groupid > '0' OR resellerid > '0')";
-			}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE groupid = '".$_SESSION['curuser']['groupid']."'";
-			}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE resellerid = '".$_SESSION['curuser']['resellerid']."'";
-			}elseif($_SESSION['curuser']['usertype'] == 'clid'){
-				$sql .= " SELECT COUNT(*) FROM ".$table." WHERE src = '".$_SESSION['curuser']['username']."'";
-			}
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE (groupid > '0' OR resellerid > '0')";
+		}elseif ($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE groupid = '".$_SESSION['curuser']['groupid']."'";
+		}elseif ($_SESSION['curuser']['usertype'] == 'reseller'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE resellerid = '".$_SESSION['curuser']['resellerid']."'";
+		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
+			$sql .= " SELECT COUNT(*) FROM ".$table." WHERE src = '".$_SESSION['curuser']['username']."'";
+		}
 
-			if ($joinstr!=''){
-				$sql .= " ".$joinstr;
-			}
+		if ($joinstr!=''){
+			$sql .= " ".$joinstr;
+		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND billsec > 0 ";
+		}
 		Customer::events($sql);
 		$res =& $db->getOne($sql);		
 		return $res;
 	}
 
-	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype = null, $order,$table, $ordering = ""){
+	function &getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype = null, $order,$table, $ordering = "",$allOrAnswer=null){
 		global $db;
 
 		$joinstr = astercrm::createSqlWithStype($filter,$content,$stype);
@@ -209,6 +231,10 @@ class Customer extends astercrm
 		if ($joinstr!=''){
 			$joinstr=ltrim($joinstr,'AND'); //去掉最左边的AND
 			$sql .= " AND ".$joinstr."  ";
+		}
+
+		if(!empty($allOrAnswer) && $allOrAnswer == 'answered') {
+			$sql .= " AND billsec > 0 ";
 		}
 
 		$sql .= " ORDER BY ".$order

@@ -220,7 +220,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->setAttribsCols($attribsCols);
 	$table->exportFlag = '1';//对导出标记进行赋值
 
-	$table->addRowSearchMore("account_log",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$table->addRowSearchMore("account_log",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -296,8 +296,13 @@ function add(){
 */
 
 function save($f){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
+
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId('account');
+		$f['id'] = intval($local_lastid+1);
+	}
 	
 	$f['username'] = trim($f['username']);
 	$f['password'] = trim($f['password']);

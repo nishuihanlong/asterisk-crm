@@ -63,4 +63,9 @@ $trunk1 = "中继1";
 $trunk2 = "中继2";
 $save_trunk = "保存中继";
 $clid_context = "分机Context";
+$make_sure_to_reset_the_relate_data_by_group= "确定重置本组相关的信息么";
+$reset_group = "重置分组";
+$reset_group_success = "重置分组成功";
+$reset_group_failed = "重置分组失败";
+$local = "本地";
 ?>

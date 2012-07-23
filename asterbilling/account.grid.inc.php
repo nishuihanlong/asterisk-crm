@@ -231,7 +231,7 @@ class Customer extends astercrm
 	}
 
 	function formAdd(){
-		global $locate;
+		global $locate,$config;
 
 		$reselleroptions = '';
 		$reseller = astercrm::getAll('resellergroup');
@@ -240,12 +240,20 @@ class Customer extends astercrm
 			$reselleroptions .= '<select id="resellerid" name="resellerid" onchange="setGroup();">';
 			$reselleroptions .= '<option value="0"></option>';
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				$reselleroptions .= "<OPTION value='".$row['id']."'>".$row['resellername']."</OPTION>";
 			}
 			$reselleroptions .= '</select>';
 		}else{
 			while	($reseller->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['resellerid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+					}
+
 					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
 					break;
 				}
@@ -257,12 +265,20 @@ class Customer extends astercrm
 			$groupoptions .= '<select id="groupid" name="groupid">';
 			$groupoptions .= "<OPTION value='0'></OPTION>";
 			while	($group->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+				}
+
 				$groupoptions .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
 			}
 			$groupoptions .= '</select>';
 		}else{
 			while	($group->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['groupid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+					}
+
 					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
 					break;
 				}
@@ -337,7 +353,7 @@ class Customer extends astercrm
 	*/
 	
 	function formEdit($id){
-		global $locate;
+		global $locate,$config;
 		$account =& Customer::getRecordByID($id,'account');
 
 /*
@@ -375,6 +391,10 @@ class Customer extends astercrm
 			$reselleroptions .= '<select id="resellerid" name="resellerid" onchange="setGroup();">';
 			$reselleroptions .= '<option value="0"></option>';
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				if ($row['id'] == $account['resellerid']){
 					$reselleroptions .= "<OPTION value='".$row['id']."' selected>".$row['resellername']."</OPTION>";
 				}else{
@@ -384,6 +404,10 @@ class Customer extends astercrm
 			$reselleroptions .= '</select>';
 		}else{
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				if ($row['id'] == $account['resellerid']){
 					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
 					break;
@@ -396,6 +420,10 @@ class Customer extends astercrm
 			$groupoptions .= '<select id="groupid" name="groupid">';
 			$groupoptions .= "<OPTION value='0'></OPTION>";
 			while	($group->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+				}
+
 				if ($row['id'] == $account['groupid']){
 					$groupoptions .= "<OPTION value='".$row['id']."' selected>".$row['groupname']."</OPTION>";
 				}else{
@@ -406,6 +434,10 @@ class Customer extends astercrm
 		}else{
 			while	($group->fetchInto($row)){
 				if ($row['id'] == $account['groupid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+					}
+
 					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
 					break;
 				}

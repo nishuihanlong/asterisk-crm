@@ -31,7 +31,7 @@ class Customer extends astercrm
 	*/
 	
 	function insertNewRate($f){
-		global $db;
+		global $db,$config;
 		$f = astercrm::variableFiler($f);
 		$sql= "INSERT INTO resellerrate SET "
 				."dialprefix='".$f['dialprefix']."', "
@@ -43,6 +43,10 @@ class Customer extends astercrm
 				."connectcharge='".$f['connectcharge']."', "
 				."addtime= now(), "
 				."resellerid= ".$f['resellerid']." ";
+
+		if($config['synchronize']['id_autocrement_byset']){
+			$sql .= ",id='".$f['id']."' ";
+		}
 
 		Customer::events($sql);
 		$res =& $db->query($sql);
@@ -252,9 +256,13 @@ class Customer extends astercrm
 
 	function formAdd(){
 	
-		global $locate;
+		global $locate,$config;
 		$reseller = astercrm::getAll('resellergroup');
 		while	($reseller->fetchInto($row)){
+			if($config['synchronize']['display_synchron_server']){
+				$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+			}
+
 			$options .= "<OPTION value='".$row['id']."'>".$row['resellername']."</OPTION>";
 		}
 		$options .= "<OPTION value='0'>"."All"."</OPTION>";
@@ -325,13 +333,17 @@ class Customer extends astercrm
 	*/
 	
 	function formEdit($id){
-		global $locate;
+		global $locate,$config;
 		$rate =& Customer::getRecordByID($id,'resellerrate');
 		$reseller = astercrm::getAll('resellergroup');
 
 		$options .= '<select id="resellerid" name="resellerid">';
 		$flag = false;
 		while	($reseller->fetchInto($row)){
+			if($config['synchronize']['display_synchron_server']){
+				$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+			}
+
 			if ($row['id'] == $rate['resellerid']){
 				$options .= "<OPTION value='".$row['id']."' selected>".$row['resellername']."</OPTION>";
 				$flag = true;

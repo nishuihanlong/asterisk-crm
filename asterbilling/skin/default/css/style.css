@@ -241,29 +241,31 @@ outline: none;
 */
 
 
-          #home #header ul a.home,
-          #account #header ul a.account,
-		  #account_log #header ul a.account_log,
-          #accountgroup #header ul a.accountgroup,
-          #resellergroup #header ul a.resellergroup,
-          #report #header ul a.report,
-          #statistic #header ul a.statistic,
-          #customerrate #header ul a.customerrate,
-          #callshoprate #header ul a.callshoprate,
-          #resellerrate #header ul a.resellerrate,
-          #clid #header ul a.clid,
-          #import #header ul a.import,
-          #cdr #header ul a.cdr,
-		  #profile #header ul a.profile,
-		  #customers #header ul a.customers,
-		  #discount #header ul a.discount,		  
-		  #system #header ul a.system,
-          #credithistory #header ul a.credithistory {
-			  background-color: #000000;
-			  color: #67A7E3;
-			  -moz-border-radius: 3px;
-			  -webkit-border-radius : 3px;
-          }
+#home #header ul a.home,
+#account #header ul a.account,
+#account_log #header ul a.account_log,
+#accountgroup #header ul a.accountgroup,
+#resellergroup #header ul a.resellergroup,
+#report #header ul a.report,
+#statistic #header ul a.statistic,
+#customerrate #header ul a.customerrate,
+#callshoprate #header ul a.callshoprate,
+#resellerrate #header ul a.resellerrate,
+#clid #header ul a.clid,
+#import #header ul a.import,
+#cdr #header ul a.cdr,
+#profile #header ul a.profile,
+#customers #header ul a.customers,
+#discount #header ul a.discount,		  
+#system #header ul a.system,
+#credithistory #header ul a.credithistory,
+#curcdr #header ul a.curcdr,
+#delete_rate #header ul a.delete_rate{
+	  background-color: #000000;
+	  color: #67A7E3;
+	  -moz-border-radius: 3px;
+	  -webkit-border-radius : 3px;
+  }
 
 
 #wrapper1 div {

@@ -101,7 +101,7 @@ function getCurchannels(){
 		$channel = explode('!',$channel);
 		if(strtolower($channel[0]) == '') continue;
 
-		$html .= '<tr bgcolor="#F7F7F7"><td  align="center" valign="center" height="30"></td>'.$channel[0].'<td  align="center" valign="center" height="30"><a href="javascript:void(null)" onclick="xajax_hangupchnnel(\''.$channel[0].'\')">'.$locate->Translate('hangup').'</a></td></tr>';
+		$html .= '<tr bgcolor="#F7F7F7"><td  align="center" valign="center" height="30">'.$channel[0].'</td><td  align="center" valign="center" height="30"><a href="javascript:void(null)" onclick="xajax_hangupchnnel(\''.$channel[0].'\')">'.$locate->Translate('hangup').'</a></td></tr>';
 	}
 	$html .= '</table>';
 	return $html;

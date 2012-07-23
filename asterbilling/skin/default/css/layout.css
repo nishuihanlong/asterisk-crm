@@ -3,7 +3,7 @@ html, body {
   width:  100%;
   font-family: Arial, Verdana, sans-serif;
   font: 12px Tahoma;
-  color: #3c79c8;
+  color: #000;
   font-size: 1em;
   /* overflow: auto; */
   margin-left: 0px;
@@ -35,7 +35,7 @@ div.floatnomember {
 	overflow-y: hidden;
 	overflow-x: hidden;
 	border: 1px solid #777;
-	background-color: #efefef;
+	background-color: #fff;
 	margin-left: 5px;
 	margin-top:  10px;
 	margin-bottom: 5px;
@@ -66,7 +66,7 @@ div.spacer {
 div.lable{
 	width: 290px;
 	height: 20px;
-	background-color: silver;
+	background-color:#4b9ae9;
 	border: 1px solid #777;
 	border-color:#8e8e8e #bebebe #bebebe #bebebe;
 
@@ -106,7 +106,7 @@ table.curcall th{
 table.curcall td{
 	border: solid;
 	border-width: 1px 1px 1px 1px;
-	border-color: #ccc;
+	border-color: #e1dcd5;
 	padding: 4px;
 	font-size: 10px;
 }
@@ -114,7 +114,7 @@ table.curcall td{
 tr.curchannel{
 	border: solid;
 	border-width: 1px 1px 1px 1px;
-	background-color: #cccccc;
+	background-color: #f4e7d6;
 	padding: 4px;
 	font-size: 15px;
 	font-weight: bold;
@@ -212,10 +212,10 @@ table.adminlist td.options {
 }
 
 A:link {
-	COLOR: #336699; TEXT-DECORATION: none
+	COLOR: #ff2121; TEXT-DECORATION: none
 }
 A:visited {
-	COLOR: #666699; TEXT-DECORATION: none
+	COLOR: #ff2121; TEXT-DECORATION: none
 }
 A:hover {
 	BACKGROUND: #003399; COLOR: #ffffff; TEXT-DECORATION: none

@@ -123,7 +123,7 @@
 	<tr>
 		<th width="15%"><? echo $locate->Translate("Phone");?></th>		
 		<th width="20%"><? echo $locate->Translate("Start at");?></th>
-		<th width="10%" align="center"><? echo $locate->Translate("Sec");?></th>
+		<th width="10%" align="center"><? echo $locate->Translate("Billsec");?></th>
 		<th width="15%"><? echo $locate->Translate("Destination");?></th>
 		<th width="20%"><? echo $locate->Translate("Rate");?></th>
 		<th width="10%" align="center"><? echo $locate->Translate("Price");?></th>
@@ -154,7 +154,7 @@
 		  }
 		  $content .= '
 					<td>'.$myreceipt['calldate'].'</td>
-					<td align="right">'.$myreceipt['billsec'].'</td>
+					<td align="right">'.astercrm::FormatSec($myreceipt['billsec']).'</td>
 					<td align="right">'.$myreceipt['destination'].'</td>
 					<td align="right">'.$ratedesc.'</td>
 					<td id="rprice-'.$myreceipt['id'].'" align="right">'.astercc::creditDigits($myreceipt['credit']).'</td>

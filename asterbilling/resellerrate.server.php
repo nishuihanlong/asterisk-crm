@@ -70,7 +70,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "", $exportFlag="",$stype=array()){
-	global $locate;
+	global $locate,$config;
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -131,6 +131,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
+	if($config['synchronize']['display_synchron_server']){
+		$fields[] = 'id';
+	}
 	$fields[] = 'dialprefix';
 	$fields[] = 'numlen';
 	$fields[] = 'destination';
@@ -143,6 +146,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	if($config['synchronize']['display_synchron_server']){
+		$headers[] = $locate->Translate("Id").'<br>';
+	}
 	$headers[] = $locate->Translate("Prefix").'<br>';
 	$headers[] = $locate->Translate("Length").'<br>';
 	$headers[] = $locate->Translate("Destination").'<br>';
@@ -191,6 +197,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	if($config['synchronize']['display_synchron_server']){
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
+	}
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","dialprefix","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","numlen","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","destination","'.$divName.'","ORDERING");return false;\'';
@@ -243,10 +252,26 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	else
 		$table->addRowSearchMore("resellerrate",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
+	if($config['synchronize']['display_synchron_server']){
+		$otherHost = $config['synchronize_host']['Host'];
+		$hostArray = explode(',',trim($otherHost,','));
+	}
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		if($config['synchronize']['display_synchron_server']){
+			$existFlag = false;
+			foreach($hostArray as $tmp){
+				if($row['id'] >= $config['synchronize_host'][$tmp.'_minId'] && $row['id'] <= $config['synchronize_host'][$tmp.'_maxId']){
+					$rowc[] = $row['id'].'('.$config['synchronize_host'][$tmp].')';
+					$existFlag = true;
+				}
+			}
+			if(!$existFlag){
+				$rowc[] = $row['id'].'('.$locate->Translate("Local").')';
+			}
+		}
 		$rowc[] = $row['dialprefix'];
 		$rowc[] = $row['numlen'];
 		$rowc[] = $row['destination'];
@@ -295,7 +320,7 @@ function add(){
 */
 
 function save($f){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 
 	// check if clid duplicate
@@ -304,7 +329,11 @@ function save($f){
 		$objResponse->addAlert("rate duplicate");
 		return $objResponse->getXML();
 	}
-
+	
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId('resellerrate');
+		$f['id'] = intval($local_lastid+1);
+	}
 
 	$respOk = Customer::insertNewRate($f); // add a new account
 	if ($respOk){
@@ -370,7 +399,7 @@ function edit($id){
 }
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -388,7 +417,17 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($deleteFlag == "1" || $optionFlag == "delete"){
-		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'resellerrate');
+		if(empty($_SESSION['curuser']['usertype'])){
+			$objResponse->addAlert($locate->Translate("Session time out,please try again"));
+			return $objResponse->getXML();
+		}
+
+		if($config['synchronize']['delete_by_use_history']){
+			astercrm::deleteToHistoryFromSearch($searchContent,$searchField,$searchType,'resellerrate');
+		} else {
+			astercrm::deletefromsearch($searchContent,$searchField,$searchType,'resellerrate');
+		}
+		
 		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",1,$searchType);
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
@@ -403,7 +442,17 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign('formDiv', "style.visibility", 'visible');
 	}else{
 		if($type == "delete"){
-			$res = Customer::deleteRecord($id,'resellerrate');
+			if(empty($_SESSION['curuser']['usertype'])){
+				$objResponse->addAlert($locate->Translate("Session time out,please try again"));
+				return $objResponse->getXML();
+			}
+
+			if($config['synchronize']['delete_by_use_history']){
+				$res = Customer::deleteRecordToHistory('id',$id,'resellerrate');
+			} else {
+				$res = Customer::deleteRecord($id,'resellerrate');
+			}
+			
 			if ($res){
 				$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",1,$searchType);
 				$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted")); 

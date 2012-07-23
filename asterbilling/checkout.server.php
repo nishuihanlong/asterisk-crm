@@ -37,6 +37,10 @@ function init($curpeer){
 		$reseller = astercrm::getAll('resellergroup');
 		$objResponse->addScript("addOption('resellerid','"."0"."','".$locate->Translate("All")."');");
 		while	($reseller->fetchInto($row)){
+			if($config['synchronize']['display_synchron_server']){
+				$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+			}
+			
 			$objResponse->addScript("addOption('resellerid','".$row['id']."','".$row['resellername']."');");
 		}
 
@@ -48,6 +52,10 @@ function init($curpeer){
 		$group = astercrm::getAll('accountgroup','resellerid',$_SESSION['curuser']['resellerid']);
 		$objResponse->addScript("addOption('groupid','"."0"."','"."All"."');");
 		while	($group->fetchInto($row)){
+			if($config['synchronize']['display_synchron_server']){
+				$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+			}
+			
 			$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 		}
 
@@ -72,10 +80,14 @@ function init($curpeer){
 		$objResponse->addScript("addOption('sltBooth','"."0"."','".$locate->Translate("All")."');");
 
 		while	($clid->fetchInto($row)){
+			if($config['synchronize']['display_synchron_server']){
+				$clidDisplay = astercrm::getSynchronDisplay($row['id'],$row['clid']);
+			}
+			
 			if ($curpeer == $row['clid'])
-				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."',true);");
+				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$clidDisplay."',true);");
 			else
-				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
+				$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$clidDisplay."');");
 		}
 		$objResponse->addScript("addOption('sltBooth','-1','".$locate->Translate("Callback")."');");
 		// get limit status and creditlimit
@@ -103,12 +115,16 @@ function init($curpeer){
 }
 
 function setGroup($resellerid){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
 	//添加option
 	$objResponse->addScript("addOption('groupid','"."0"."','".$locate->Translate("All")."');");
 	while ($res->fetchInto($row)) {
+		if($config['synchronize']['display_synchron_server']){
+			$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+		}
+
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 	}
 	return $objResponse;
@@ -209,13 +225,17 @@ function parseReport($myreport,$answeredNum = '',$a2bcost=-1){
 }
 
 function setClid($groupid){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("clid",'groupid',$groupid);
 	//添加option
 	$objResponse->addScript("addOption('sltBooth','"."0"."','".$locate->Translate("All")."');");
 	while ($res->fetchInto($row)) {
-		$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$row['clid']."');");
+		if($config['synchronize']['display_synchron_server']){
+			$clidDisplay = astercrm::getSynchronDisplay($row['id'],$row['clid']);
+		}
+		
+		$objResponse->addScript("addOption('sltBooth','".$row['clid']."','".$clidDisplay."');");
 	}
 	$objResponse->addScript("addOption('sltBooth','-1','".$locate->Translate("Callback")."');");
 	return $objResponse;

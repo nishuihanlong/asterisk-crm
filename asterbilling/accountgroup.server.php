@@ -94,7 +94,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
-	global $locate;
+	global $locate,$config;
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -264,11 +264,31 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	$table->addRowSearchMore("accountgroup",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
+	if($config['synchronize']['display_synchron_server']){
+		$otherHost = $config['synchronize_host']['Host'];
+		$hostArray = explode(',',trim($otherHost,','));
+	}
+	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['id'];
+		
+		if($config['synchronize']['display_synchron_server']){
+			$existFlag = false;
+			foreach($hostArray as $tmp){
+				if($row['id'] >= $config['synchronize_host'][$tmp.'_minId'] && $row['id'] <= $config['synchronize_host'][$tmp.'_maxId']){
+					$rowc[] = $row['id'].'('.$config['synchronize_host'][$tmp].')';
+					$existFlag = true;
+				}
+			}
+			if(!$existFlag){
+				$rowc[] = $row['id'].'('.$locate->Translate("Local").')';
+			}
+		} else {
+			$rowc[] = $row['id'];
+		}
+		
 		$rowc[] = $row['groupname'];
 		$rowc[] = $row['resellername'];
 		$rowc[] = $row['allowcallback'];
@@ -315,12 +335,17 @@ function add(){
 */
 
 function save($f){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	
 	if (trim($f['groupname']) == '' || trim($f['resellerid']) == 0){
 		$objResponse->addAlert('*'.$locate->Translate("obligatory fields"));
 		return $objResponse;
+	}
+	
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId('accountgroup');
+		$f['id'] = intval($local_lastid+1);
 	}
 
 	$f['creditlimit'] = trim($f['creditlimit']);
@@ -425,7 +450,7 @@ function updateBillingtime($id,$billingtime){
 }
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -440,11 +465,19 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecords('groupid',$id,'clid');
-		$res = Customer::deleteRecords('groupid',$id,'myrate');
-		$res = Customer::deleteRecords('groupid',$id,'callshoprate');
-		$res = Customer::deleteRecords('groupid',$id,'account');
-		$res = Customer::deleteRecord($id,'accountgroup');
+		if($config['synchronize']['delete_by_use_history']){
+			$res = Customer::deleteRecordToHistory('groupid',$id,'clid');
+			$res = Customer::deleteRecordToHistory('groupid',$id,'myrate');
+			$res = Customer::deleteRecordToHistory('groupid',$id,'callshoprate');
+			$res = Customer::deleteRecordToHistory('groupid',$id,'account');
+			$res = Customer::deleteRecordToHistory('id',$id,'accountgroup');
+		} else {
+			$res = Customer::deleteRecords('groupid',$id,'clid');
+			$res = Customer::deleteRecords('groupid',$id,'myrate');
+			$res = Customer::deleteRecords('groupid',$id,'callshoprate');
+			$res = Customer::deleteRecords('groupid',$id,'account');
+			$res = Customer::deleteRecord($id,'accountgroup');
+		}
 
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
@@ -460,6 +493,21 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}	
+	return $objResponse->getXML();
+}
+
+
+function resetGroup($groupId){
+	global $locate;
+	$objResponse = new xajaxResponse();
+
+	$res = Customer::resetGroup($groupId);
+	if ($res){
+		$objResponse->addAlert($locate->Translate("reset_group_success"));
+	}else{
+		$objResponse->addAlert($locate->Translate("reset_group_failed")); 
+	}
+	$objResponse->addScript("xajax_showGrid(0,".ROWSXPAGE.",'','','')");
 	return $objResponse->getXML();
 }
 

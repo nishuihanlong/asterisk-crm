@@ -259,7 +259,7 @@ function showStatus(){
 	if ($_SESSION['curuser']['groupid'] == ""){
 		return $objResponse;
 	}
-
+//print_r($cstatus);exit;
 	$peers = $_SESSION['curuser']['extensions'];
 	
 	$peerstatus = astercc::checkPeerStatus($_SESSION['curuser']['groupid'],$peers);
@@ -300,7 +300,8 @@ function showStatus(){
 //echo "C".$cstatus[$peer]['disposition'].'P'.$peerstatus[$peer]['disposition'];exit;
 //print_r($peerstatus);exit;
 		if ($cstatus[$peer]['disposition'] != $peerstatus[$peer]['disposition']){	// status changed
-
+//echo "C".$cstatus[$peer]['disposition'].'P'.$peerstatus[$peer]['disposition'];exit;
+//print_r($peerstatus);exit;
 			if ($peerstatus[$peer]['disposition'] == ''){
 				// a hangup event
 				$objResponse->addScript("clearCurchannel('".$peer."');");
@@ -311,16 +312,17 @@ function showStatus(){
 				// should reload CDR
 				$objResponse->addScript("removeTr('".$peer."');");
 				$objResponse->addScript('setTimeout("xajax_addUnbilled(\''.$peer.'\')",3000);');	 //wait daemon write data to cdr
-			}else{ 
+			}else{
+				//print_r($peerstatus);exit;
 				// set display name
-				$objResponse->addAssign("$peer-displayname","style.backgroundColor","green");
+				$objResponse->addAssign("$peer-displayname","style.backgroundColor","#deff4b");
 				$destination = '';
 				if($peerstatus[$peer]['destination'] != ''){
 					$destination = '<br>&nbsp;'.$peerstatus[$peer]['destination'];
 				}else{
 					#print $peerstatus[$peer]['destination'];die;
 					# try get the destination in 5 sec
-					$objResponse->addScript('setTimeout("xajax_checkDestination(\''.$peer.'\')", 5000);');
+					$objResponse->addScript('setTimeout("xajax_checkDestination(\''.$peer.'\',\''.$peerstatus[$peer]['direction'].'\')", 5000);');
 				}
 
 				if( $peerstatus[$peer]['direction'] == 'outbound'){
@@ -331,6 +333,7 @@ function showStatus(){
 				}
 				$objResponse->addAssign($peer.'-startat','innerHTML',$peerstatus[$peer]['starttime']);
 				$objResponse->addAssign($peer.'-channel','value',$peerstatus[$peer]['srcchan']);
+				$objResponse->addAssign($peer.'-dstchan','value',$peerstatus[$peer]['dstchan']);
 				if ($peerstatus[$peer]['answertime'] != '0000-00-00 00:00:00'){
 					if($peerstatus[$peer]['pushcall'] == 'LINK' || $peerstatus[$peer]['pushcall'] == 'no'){
 					
@@ -464,35 +467,39 @@ function showStatus(){
 	return $objResponse;
 }
 
-function checkDestination($peer){
+function checkDestination($peer,$direction){
 	global $db,$config;
 	$objResponse = new xajaxResponse();
-
-
+//echo $direction;exit;
 	$peers = $_SESSION['curuser']['extensions'];
 	if($_SESSION['curuser']['billingfield'] == 'accountcode'){
 		$query = "SELECT * FROM curcdr WHERE accountcode = '$peer' ";
 	}else{
-		$query = "SELECT * FROM curcdr WHERE src = '$peer' ";
-	}
-	$curcdr = $db->getRow($query);
-	$direction = 'inbound';
-
-	if ($curcdr){
-		if($_SESSION['curuser']['billingfield'] == 'accountcode'){
-			if (astercc::array_exist($curcdr['accountcode'], $peers)){
-				$direction = 'outbound';
-			}
+		if($direction == 'inbound'){
+			$query = "SELECT * FROM curcdr WHERE dst = '$peer' ";
 		}else{
-			if (astercc::array_exist($curcdr['src'], $peers) || astercc::array_exist($curcdr['dst'], $peers)){
-				$direction = 'outbound';
-			}else{
-				if (ereg("\/(.*)-", $curcdr['srcchan'], $myAry) ){
-					$direction = 'outbound';
-				}
-			}
+			$query = "SELECT * FROM curcdr WHERE src = '$peer' ";
 		}
 	}
+	$curcdr = $db->getRow($query);
+	//$direction = 'inbound';
+	//print_r($curcdr);exit;
+//	if ($curcdr){
+//		if($_SESSION['curuser']['billingfield'] == 'accountcode'){
+//			if (astercc::array_exist($curcdr['accountcode'], $peers)){
+//				$direction = 'outbound';
+//			}
+//		}else{
+//			if (astercc::array_exist($curcdr['src'], $peers) || astercc::array_exist($curcdr['dst'], $peers)){
+//				$direction = 'outbound';
+//			}else{
+//				if (ereg("\/(.*)-", $curcdr['srcchan'], $myAry) ){
+//					$direction = 'outbound';
+//				}
+//			}
+//		}
+//	}
+
 	if ($direction == 'inbound'){
 		$objResponse->addAssign($peer.'-phone','innerHTML',"<img src='images/inbound.gif'>".$curcdr['src'].$curcdr['destination']);
 		$objResponse->addAssign($peer.'-phone','style.color','green');
@@ -527,8 +534,27 @@ function hangup($channel){
 	if (!$res){
 		return;
 	}
-	$myAsterisk->Hangup($channel);
+	$return = $myAsterisk->Hangup($channel);
+	write_hangup_log($channel,$return);
 	return $objResponse;
+}
+
+function write_hangup_log($channel,$events){
+	if(LOG_ENABLED){
+		$now = date("Y-M-d H:i:s");
+		$fd = fopen(FILE_LOG,'a');
+		
+		$logMessage = '';
+		if(is_array($events)){
+			$logMessage = 'Response='.$events['Response'].'|Message='.$events['Message'];
+		} else {
+			$logMessage = $events;
+		}
+		
+		$log = $now."|AMI|systemstatus-hangup|".$channel.'|'.$logMessage." \n";
+		fwrite($fd,$log);
+		fclose($fd);
+	}
 }
 
 
@@ -609,7 +635,7 @@ function addUnbilled($peer,$leg = null){
 		$jsscript .= "cdr['rate'] = '".$ratedesc."';";
 		$jsscript .= "cdr['price'] = '".astercc::creditDigits($mycdr['credit'])."';";
 		$jsscript .= "appendTr('".$peer."-calllog-tbody',cdr);";
-		$objResponse->addAssign($peer."-displayname","style.backgroundColor","red");
+		$objResponse->addAssign($peer."-displayname","style.backgroundColor","#ffce4b");
 		$objResponse->addScript($jsscript);
 	}
 	$objResponse->addAssign($peer."-unbilled","innerHTML",$totalprice);

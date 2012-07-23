@@ -72,14 +72,14 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 *  @return	html		string		grid HTML code
 */
 
-function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array(),$customerid=''){
+function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array(),$customerid='',$allOrAnswer=null){
 	global $locate,$config;
 	//print_R($filter);
 	//print_r($content);exit;
 	if($config['system']['useHistoryCdr'] == 1) $table='historycdr';
 	else $table='mycdr';
-//	echo $config['system']['useHistoryCdr'];
-//	echo $table;exit;
+	//echo $config['system']['useHistoryCdr'];
+	//echo $table;exit;
 	$_SESSION['ordering'] = $ordering;
 	if(is_numeric($customerid) && $customerid != 0 && $_SESSION['curuser']['usertype'] != 'clid'){
 		$filter['0'] = 'customerid';
@@ -113,16 +113,16 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		}
 		if($flag != "1" || $flag2 != "1" ){  //无值	
 			$order = null;
-			$numRows =& Customer::getNumRows($table);
-			$arreglo =& Customer::getAllRecords($start,$limit,$order,'',$table);
+			$numRows =& Customer::getNumRows($table,$allOrAnswer);
+			$arreglo =& Customer::getAllRecords($start,$limit,$order,'',$table,$allOrAnswer);
 		}elseif($flag3 != 1 ){  //未选择搜索方式
 			$order = "calldate";
-			$numRows =& Customer::getNumRowsMore($filter, $content,$table);
-			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table);
+			$numRows =& Customer::getNumRowsMore($filter, $content,$table,$allOrAnswer);
+			$arreglo =& Customer::getRecordsFilteredMore($start, $limit, $filter, $content, $order,$table,'',$allOrAnswer);
 		}else{
 			$order = "calldate";
-			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table);
-			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table);
+			$numRows =& Customer::getNumRowsMorewithstype($filter, $content,$stype,$table,$allOrAnswer);
+			$arreglo =& Customer::getRecordsFilteredMorewithstype($start, $limit, $filter, $content, $stype,$order,$table,'',$allOrAnswer);
 		}
 	}	
 
@@ -246,7 +246,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	if ($_SESSION['curuser']['usertype'] == 'admin'){
 		$tableGrid->deleteFlag = '1';//对导出标记进行赋值	
 	}
-	$tableGrid->addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
+	$tableGrid->addRowSearchMore($table,$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype,'',$allOrAnswer);
 
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
@@ -289,11 +289,29 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	$searchField = $searchFormValue['searchField'];      //搜索条件 数组
 	$searchType =  $searchFormValue['searchType'];			//搜索方式 数组
 	$divName = "grid";
+
+	$allOrAnswer = $searchFormValue['allOrAnswer'];#选中的radio值
+	
 	if($exportFlag == "1" || $optionFlag == "export"){
 		if($config['system']['useHistoryCdr'] == 1) $table='historycdr';
 		else $table='mycdr';
-		$sql = astercrm::getSql($searchContent,$searchField,$searchType,$table); //得到要导出的sql语句
 
+		if($searchFormValue['allOrAnswer'] == 'answered'){
+			$searchContent[] = '0';
+			$searchField[] = 'billsec';
+			$searchType[] = 'more';
+		}
+		
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+			$fieldArray = array('id','calldate','src','dst','srcname','channel','dstchannel','didnumber','duration','billsec','billsec_leg_a','disposition','accountcode','userfield','srcuid','dstuid','queue','calltype','credit','callshopcredit','resellercredit','groupid','resellerid','userid','accountid','destination','monitored','memo','dialstring','dialstatus','children','ischild','processed','customerid','crm_customerid','contactid','discount','payment','note','setfreecall','astercrm_groupid','hangupcause','hangupcausetxt');
+		}else if($_SESSION['curuser']['usertype'] == 'groupadmin'){
+			$fieldArray = array('id','calldate','src','dst','srcname','channel','dstchannel','didnumber','duration','billsec','billsec_leg_a','disposition','accountcode','userfield','srcuid','dstuid','queue','calltype','credit','callshopcredit','groupid','resellerid','userid','accountid','destination','monitored','memo','dialstring','dialstatus','children','ischild','processed','customerid','crm_customerid','contactid','discount','payment','note','setfreecall','astercrm_groupid','hangupcause','hangupcausetxt');
+		}else if($_SESSION['curuser']['usertype'] == 'operator' && $_SESSION['curuser']['usertype'] == 'clid'){
+			$fieldArray = array('id','calldate','src','dst','srcname','channel','dstchannel','didnumber','duration','billsec','billsec_leg_a','disposition','accountcode','userfield','srcuid','dstuid','queue','calltype','credit','groupid','resellerid','userid','accountid','destination','monitored','memo','dialstring','dialstatus','children','ischild','processed','customerid','crm_customerid','contactid','discount','payment','note','setfreecall','astercrm_groupid','hangupcause','hangupcausetxt');
+		}
+
+		$sql = astercrm::getSql($searchContent,$searchField,$searchType,$table,implode(',',$fieldArray)); //得到要导出的sql语句
+		
 		$_SESSION['export_sql'] = $sql;
 		
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
@@ -302,21 +320,28 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 	}elseif($optionFlag == "delete"){
 		if($config['system']['useHistoryCdr'] == 1) $table='historycdr';
 		else $table='mycdr';
+
+		if($searchFormValue['allOrAnswer'] == 'answered'){
+			$searchContent[] = '0';
+			$searchField[] = 'billsec';
+			$searchType[] = 'more';
+		}
+
 		astercrm::deletefromsearch($searchContent,$searchField,$searchType,$table);
-		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",$searchType);
+		$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],'','','',$divName,"",$searchType,'',$allOrAnswer);
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($type == "delete"){
 		$res = '';
 		if ($res){
-			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
+			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType,'',$allOrAnswer);
 			$objResponse = new xajaxResponse();
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec")); 
 		}else{
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("rec_cannot_delete")); 
 		}
 	}else{
-		$html = createGrid($numRows, $limit,$searchField, $searchContent,  $searchField[count($searchField)-1], $divName, "",$searchType);
+		$html = createGrid($numRows, $limit,$searchField, $searchContent,  $searchField[count($searchField)-1], $divName, "",$searchType,'',$allOrAnswer);
 	}
 	$objResponse->addClear("msgZone", "innerHTML");
 	$objResponse->addAssign($divName, "innerHTML", $html);

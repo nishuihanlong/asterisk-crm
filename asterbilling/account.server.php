@@ -92,7 +92,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
-	global $locate;
+	global $locate,$config;
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -153,6 +153,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
+	if($config['synchronize']['display_synchron_server']){
+		$fields[] = 'id';
+	}
 	$fields[] = 'username';
 	$fields[] = 'password';
 	$fields[] = 'usertype';
@@ -162,6 +165,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	if($config['synchronize']['display_synchron_server']){
+		$headers[] = $locate->Translate("Id");
+	}
 	$headers[] = $locate->Translate("Username");
 	$headers[] = $locate->Translate("Password");
 	$headers[] = $locate->Translate("Usertype");
@@ -171,6 +177,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: hearders attributes
 	$attribsHeader = array();
+	if($config['synchronize']['display_synchron_server']){
+		$attribsHeader[] = 'width="6%"';
+	}
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
 	$attribsHeader[] = 'width="15%"';
@@ -190,6 +199,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	if($config['synchronize']['display_synchron_server']){
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
+	}
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","username","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","password","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","usertype","'.$divName.'","ORDERING");return false;\'';
@@ -222,10 +234,27 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	$table->addRowSearchMore("account",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
+	if($config['synchronize']['display_synchron_server']){
+		$otherHost = $config['synchronize_host']['Host'];
+		$hostArray = explode(',',trim($otherHost,','));
+	}
+	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		if($config['synchronize']['display_synchron_server']){
+			$existFlag = false;
+			foreach($hostArray as $tmp){
+				if($row['id'] >= $config['synchronize_host'][$tmp.'_minId'] && $row['id'] <= $config['synchronize_host'][$tmp.'_maxId']){
+					$rowc[] = $row['id'].'('.$config['synchronize_host'][$tmp].')';
+					$existFlag = true;
+				}
+			}
+			if(!$existFlag){
+				$rowc[] = $row['id'].'('.$locate->Translate("Local").')';
+			}
+		}
 		$rowc[] = $row['username'];
 		$rowc[] = $row['password'];
 		$rowc[] = $row['usertype'];
@@ -268,8 +297,13 @@ function add(){
 */
 
 function save($f){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
+
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId('account');
+		$f['id'] = intval($local_lastid+1);
+	}
 	
 	$f['username'] = trim($f['username']);
 	$f['password'] = trim($f['password']);
@@ -406,12 +440,16 @@ function showDetail($accountid){
 }
 
 function setGroup($resellerid){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
 	$objResponse->addScript("addOption('groupid','0','');");
 	//添加option
 	while ($res->fetchInto($row)) {
+		if($config['synchronize']['display_synchron_server']){
+			$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+		}
+
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 	}
 	return $objResponse;
@@ -419,7 +457,7 @@ function setGroup($resellerid){
 
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -434,7 +472,12 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecord($id,'account');
+		if($config['synchronize']['delete_by_use_history']){
+			$res = Customer::deleteRecordToHistory('id',$id,'account');
+		} else {
+			$res = Customer::deleteRecord($id,'account');
+		}
+		
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse = new xajaxResponse();

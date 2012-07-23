@@ -257,12 +257,20 @@ class Customer extends astercrm
 			$reselleroptions .= '<select id="resellerid" name="resellerid" onchange="setGroup();">';
 			$reselleroptions .= '<option value="0"></option>';
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				$reselleroptions .= "<OPTION value='".$row['id']."'>".$row['resellername']."</OPTION>";
 			}
 			$reselleroptions .= '</select>';
 		}else{
 			while	($reseller->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['resellerid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+					}
+
 					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
 					break;
 				}
@@ -273,12 +281,20 @@ class Customer extends astercrm
 			$groupoptions .= '<select id="groupid" name="groupid">';
 			$groupoptions .= "<OPTION value='0'></OPTION>";
 			while	($group->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+				}
+
 				$groupoptions .= "<OPTION value='".$row['id']."'>".$row['groupname']."</OPTION>";
 			}
 			$groupoptions .= '</select>';
 		}else{
 			while	($group->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['groupid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+					}
+					
 					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
 					break;
 				}
@@ -312,8 +328,24 @@ class Customer extends astercrm
 			$html .= $locate->Translate("Caller ID");
 		}
 		$html .= '*</td>
-					<td align="left"><input type="text" id="clid" name="clid" size="25" maxlength="30"></td>
-				</tr>
+					<td align="left"><input type="text" id="clid" name="clid" size="25" maxlength="30" onblur="document.getElementById(\'accountcode\').value = this.value;"></td>
+				</tr>';
+		
+		if($billingfield == 'callerid'){
+			$html .= '
+				<tr>
+					<td nowrap align="left">'.$locate->Translate("Accountcode").'</td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="40"></td>
+				</tr>';
+		} else {
+			$html .= '
+				<tr style="display:none;">
+					<td nowrap align="left">'.$locate->Translate("Accountcode").'</td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="40"></td>
+				</tr>';
+		}
+		
+		$html .= '
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Pin").'*</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30" value="'.$pin.'" readonly><input type="hidden" id="pin" name="pin" value="'.$pin.'"></td>
@@ -405,6 +437,10 @@ class Customer extends astercrm
 			$reselleroptions .= '<select id="resellerid" name="resellerid" onchange="setGroup();">';
 			$reselleroptions .= '<option value="0"></option>';
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				if ($row['id'] == $clid['resellerid']){
 					$reselleroptions .= "<OPTION value='".$row['id']."' selected>".$row['resellername']."</OPTION>";
 				}else{
@@ -415,6 +451,10 @@ class Customer extends astercrm
 		}else{
 			while	($reseller->fetchInto($row)){
 				if ($row['id'] == $clid['resellerid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+					}
+
 					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
 					break;
 				}
@@ -426,6 +466,10 @@ class Customer extends astercrm
 			$groupoptions .= '<select id="groupid" name="groupid">';
 			$groupoptions .= "<OPTION value='0'></OPTION>";
 			while	($group->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+				}
+
 				if ($row['id'] == $clid['groupid']){
 					$groupoptions .= "<OPTION value='".$row['id']."' selected>".$row['groupname']."</OPTION>";
 				}else{
@@ -436,6 +480,10 @@ class Customer extends astercrm
 		}else{
 			while	($group->fetchInto($row)){
 				if ($row['id'] == $clid['groupid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+					}
+
 					$groupoptions .= $row['groupname'].'<input type="hidden" value="'.$row['id'].'" name="groupid" id="groupid">';
 					break;
 				}
@@ -477,9 +525,22 @@ class Customer extends astercrm
 			$html .= $locate->Translate("Caller ID");
 		}
 		$html .= '*</td>
-					<td align="left"><input type="hidden" id="id" name="id" value="'. $clid['id'].'"><input type="text" id="clid" name="clid" size="25" maxlength="30" value="'.$clid['clid'].'" '.$readonly.'></td>
-				</tr>
+					<td align="left"><input type="hidden" id="id" name="id" value="'. $clid['id'].'"><input type="text" id="clid" name="clid" size="25" maxlength="30" value="'.$clid['clid'].'" '.$readonly.' onblur="document.getElementById(\'accountcode\').value = this.value;"></td>
+				</tr>';
+		if($billingfield == 'callerid'){
+			$html .= '
 				<tr>
+					<td nowrap align="left">'.$locate->Translate("Account Code").'*</td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="40" value="'.$clid['accountcode'].'"></td>
+				</tr>';
+		} else {
+			$html .= '
+				<tr style="display:none;">
+					<td nowrap align="left">'.$locate->Translate("Account Code").'*</td>
+					<td align="left"><input type="text" id="accountcode" name="accountcode" size="25" maxlength="40" value="'.$clid['accountcode'].'" readonly></td>
+				</tr>';
+		}
+		$html .= '<tr>
 					<td nowrap align="left">'.$locate->Translate("Pin").'*</td>
 					<td align="left"><input type="text" id="pin" name="pin" size="25" maxlength="30" value="'.$clid['pin'].'" readonly><input type="hidden" id="pin" name="pin" value="'.$clid['pin'].'"></td>
 				</tr>

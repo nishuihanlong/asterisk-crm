@@ -164,7 +164,12 @@ add new field amount and total in table accountgroup to store all selling and al
 2010-12-29 added pushcall mode(works with pushcall.agi)
 2011-02-18 added billing by accountcode mode
 2011-02-19 added query and hangup current channels in system page
-
+----------------------------------------------------------------------------------
+0.16
+2011-10-19 improved both hangup channels of caller and callee when click to hanguup in portal page
+2011-11-21 added the options display 'all' or 'answered' in cdr page
+2012-01-30 added booth_cdr_order in asterbilling.conf.php to determine order of showing cdr in booth
+2011-02-02 added the synchronization.pl for asteriblling synchronization solution
 
 import时如果数据量大会报错
 code有时候会出现问题, vista总是不识别

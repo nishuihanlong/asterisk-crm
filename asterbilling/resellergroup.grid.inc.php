@@ -72,7 +72,7 @@ class Customer extends astercrm
 	*/
 	
 	function insertNewResellergroup($f){
-		global $db;
+		global $db,$config;
 		$f = astercrm::variableFiler($f);
 		$sql= "INSERT INTO resellergroup SET "
 				."resellername='".$f['resellername']."', "
@@ -86,6 +86,10 @@ class Customer extends astercrm
 				."trunk2_id= '".$f['trunk2_id']."', "
 				."multiple= '".$f['multiple']."', "
 				."addtime = now() ";
+				
+		if($config['synchronize']['id_autocrement_byset']){
+			$sql .= ",id='".$f['id']."' ";
+		}
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -180,8 +184,9 @@ class Customer extends astercrm
 		$f = astercrm::variableFiler($f);
 		if ( $f['creditmodtype'] == '' ){
 			$newcurcredit = $f['curcredit'];
-		}elseif ( $f['creditmodtype'] == 'add' ){
+		}elseif ( $f['creditmodtype'] == 'add' && is_numeric( $f['creditmod'])){
 			$newcurcredit = $f['curcredit'] + $f['creditmod'];
+			$newcurcreditstr = "curcredit=curcredit + ".$f['creditmod'].", ";
 			$historysql = "INSERT INTO credithistory SET "
 							."modifytime= now(), "
 							."resellerid='".$f['resellerid']."', "
@@ -191,8 +196,9 @@ class Customer extends astercrm
 							."comment='".$f['comment']."', "
 							."operator='".$_SESSION['curuser']['userid']."'";
 							$historyres =& $db->query($historysql);
-		}elseif ( $f['creditmodtype'] == 'reduce' ){
+		}elseif ( $f['creditmodtype'] == 'reduce' && is_numeric( $f['creditmod'])){
 			$newcurcredit = $f['curcredit'] - $f['creditmod'];
+			$newcurcreditstr = "curcredit=curcredit - ".$f['creditmod'].", ";
 			$historysql = "INSERT INTO credithistory SET "
 							."modifytime= now(), "
 							."resellerid='".$f['resellerid']."', "
@@ -208,7 +214,7 @@ class Customer extends astercrm
 				."resellername='".$f['resellername']."', "
 				."accountcode='".$f['accountcode']."', "
 				."clid_context='".$f['clid_context']."', "
-				."curcredit='".$newcurcredit."', "
+				.$newcurcreditstr
 				."creditlimit='".$f['creditlimit']."', "
 				."limittype='".$f['limittype']."', "
 				."multiple= '".$f['multiple']."', "

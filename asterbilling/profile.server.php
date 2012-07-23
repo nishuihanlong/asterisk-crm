@@ -94,7 +94,7 @@ function init($get=''){
 				
 			// check that txn_id has not been previously processed
 				if($txn_res['id'] > 0){
-					$rechargeInfoHtml .= $locate->Translate('payment_already_compelted');
+					$rechargeInfoHtml .= $locate->Translate('payment_success');
 				}else{			
 
 					if( $identity_token != ''){
@@ -125,8 +125,9 @@ function init($get=''){
 								if($errorFlag > 0){
 									$rechargeInfoHtml .= $locate->Translate('payment_order_error')."</br>".$locate->Translate('payment_may_completed');
 								}else{
-									// process Order
-									$process_res = processOrder($return['pdt']);
+									// process Order 不再用pdt处理订单,等待ipn处理
+									//$process_res = processOrder($return['pdt']);
+									sleep(1);
 									$infoHtml = InfomationHtml();
 									$objResponse->addAssign("info","innerHTML",$infoHtml);
 									$rechargeInfoHtml .= $locate->Translate('payment_success');		

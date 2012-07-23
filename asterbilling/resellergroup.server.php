@@ -94,7 +94,7 @@ function showGrid($start = 0, $limit = 1,$filter = null, $content = null, $order
 */
 
 function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $order = null, $divName = "grid", $ordering = "",$stype=array()){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$_SESSION['ordering'] = $ordering;
 	
 	if($filter == null or $content == null || (!is_array($content) && $content == 'Array') || (!is_array(filter) && $filter == 'Array')){
@@ -259,11 +259,31 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 	$table->exportFlag = '1';//对导出标记进行赋值
 	$table->addRowSearchMore("resellergroup",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,1,$typeFromSearch,$typeFromSearchShowAs,$stype);
 
+	if($config['synchronize']['display_synchron_server']){
+		$otherHost = $config['synchronize_host']['Host'];
+		$hostArray = explode(',',trim($otherHost,','));
+	}
+	
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
-		$rowc[] = $row['id'];
+		
+		if($config['synchronize']['display_synchron_server']){
+			$existFlag = false;
+			foreach($hostArray as $tmp){
+				if($row['id'] >= $config['synchronize_host'][$tmp.'_minId'] && $row['id'] <= $config['synchronize_host'][$tmp.'_maxId']){
+					$rowc[] = $row['id'].'('.$config['synchronize_host'][$tmp].')';
+					$existFlag = true;
+				}
+			}
+			if(!$existFlag){
+				$rowc[] = $row['id'].'('.$locate->Translate("Local").')';
+			}
+		} else {
+			$rowc[] = $row['id'];
+		}
+		
 		$rowc[] = $row['resellername'];
 		$rowc[] = $row['allowcallback'];
 		$rowc[] = $row['creditlimit'];
@@ -399,6 +419,11 @@ function save($f){
 	if($f['trunk2_id'] != $f['tmptrunk2id'] && $f['tmptrunk2id'] > 0){
 		Customer::deleteRecord($f['tmptrunk2id'],'trunks');
 	}
+
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId('resellergroup');
+		$f['id'] = intval($local_lastid+1);
+	}
 	
 	$respOk = Customer::insertNewResellergroup($f); // add a new group
 	if ($respOk){
@@ -513,7 +538,7 @@ function updateBillingtime($id,$billingtime){
 }
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -528,14 +553,30 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecords('resellerid',$id,'clid');
-		$res = Customer::deleteRecords('resellerid',$id,'accountgroup');
-		$res = Customer::deleteRecords('resellerid',$id,'myrate');
-		$res = Customer::deleteRecords('resellerid',$id,'callshoprate');
-		$res = Customer::deleteRecords('resellerid',$id,'resellerrate');
-		$res = Customer::deleteRecords('resellerid',$id,'account');
-		$res = Customer::deleteTrunk($id,'trunks');
-		$res = Customer::deleteRecord($id,'resellergroup');
+		if($config['synchronize']['delete_by_use_history']){
+			$res = Customer::deleteRecordToHistory('resellerid',$id,'clid');
+			$res = Customer::deleteRecordToHistory('resellerid',$id,'accountgroup');
+			$res = Customer::deleteRecordToHistory('resellerid',$id,'myrate');
+			$res = Customer::deleteRecordToHistory('resellerid',$id,'callshoprate');
+			$res = Customer::deleteRecordToHistory('resellerid',$id,'resellerrate');
+			$res = Customer::deleteRecordToHistory('resellerid',$id,'account');
+			
+			$res = Customer::deleteTrunk($id,'trunks');
+
+			$res = Customer::deleteRecordToHistory('id',$id,'resellergroup');
+		} else {
+			$res = Customer::deleteRecords('resellerid',$id,'clid');
+			$res = Customer::deleteRecords('resellerid',$id,'accountgroup');
+			$res = Customer::deleteRecords('resellerid',$id,'myrate');
+			$res = Customer::deleteRecords('resellerid',$id,'callshoprate');
+			$res = Customer::deleteRecords('resellerid',$id,'resellerrate');
+			$res = Customer::deleteRecords('resellerid',$id,'account');
+
+			$res = Customer::deleteTrunk($id,'trunks');
+
+			$res = Customer::deleteRecord($id,'resellergroup');
+		}
+		
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("delete_rec"));

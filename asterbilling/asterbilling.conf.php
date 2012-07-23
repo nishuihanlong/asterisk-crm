@@ -3,7 +3,7 @@
 ;
 dbtype = mysql
 dbhost = localhost
-dbname = astercc01
+dbname = astercc
 dbport = 3306
 username = root
 password = 
@@ -35,10 +35,10 @@ qualify = yes
 
 [system]
 
-log_enabled = 0
+log_enabled = 1
 
 ;Log file path
-log_file_path = /tmp/astercrmDebug.log
+log_file_path = /tmp/asterbillingDebug.log
 
 ;path of astercc daemon
 astercc_path = /opt/asterisk/scripts/astercc
@@ -84,7 +84,7 @@ pin_len = 10;
 sipfile = /etc/asterisk/sip_astercc
 
 ; if require valid code when login
-validcode = yes
+validcode = no
 
 ;if open new window when click pannel button on systemstatus(callshop portal) page
 sysstatus_new_window = yes
@@ -96,6 +96,9 @@ callshop_status_limit = 1
 callshop_status_credit = 1
 callshop_status_balance = 1
 
+;controll the booth window,how to show the cdr(calldate_ASC,calldate_DESC)
+booth_cdr_order = calldate_DESC
+
 [epayment]
 ;if enable online payment by paypaly (enable,disable)
 epayment_status = enable
@@ -106,13 +109,13 @@ paypal_payment_url = "https://www.sandbox.paypal.com/cgi-bin/webscr"
 
 ;paypal PDT verification url (to test with sandbox)
 ;paypal_verify_url = "ssl://www.paypal.com"
-paypal_verify_url = www.sandbox.paypal.com
+paypal_verify_url = "ssl://www.sandbox.paypal.com"
 
 ;paypal PDT identity token
-pdt_identity_token = W4KjUmOsxgJ1fCnLPX_H8Co_mFXnAGmaGPI4OHGG42OWZRfCsoZZNYE2dw8
+pdt_identity_token = EKnEHrMcYjaZ_tpGyYXxAk1clspll-yWwJy9rktx6wDc9mnVH9PCJgq8RLK
 
 ;email address for your paypal account
-paypal_account = du.don_1237957108_biz@gmail.com
+paypal_account = seler_plane@126.com
 
 ;name of payment item
 item_name = Credit Purchase
@@ -125,16 +128,19 @@ currency_code = USD
 amount = 10,20,50,100
 
 ;if callshop pays fee of paypal
-callshop_pay_fee = 1
+callshop_pay_fee = 0
 
 ;for IPN notify return, request internet url of asterbilling, like http://yourdomain/callshop
-asterbilling_url = http://192.168.1.22/asterbilling
+asterbilling_url = http://123.185.228.112/asterbilling
 
 ;your email address for receice a notice when someone payment
-notify_mail = 
+notify_mail = donnie@astercc.org
 
 ;if log the pdt result 0/1
 pdt_log = 1
+
+;if log the ipn result 0/1
+ipn_log = 1
 
 [a2billing]
 enable = 0
@@ -164,5 +170,29 @@ trunk1_type = sip
 trunk1= reselleroutbound1
 trunk2_type = sip
 trunk2= reselleroutbound2
+
+[error_report]
+;sets the error level
+error_report_level = 3
+
+[synchronize]
+;id will follow the last id of the local server when save data
+id_autocrement_byset = 1
+
+;if display the server which the data belongs to
+display_synchron_server = 1
+
+;if use the rate history table when delete data
+delete_by_use_history = 1
+
+[local_host]
+minId = 1
+maxId = 10000
+
+[synchronize_host]
+Host = host45
+host45 = 192.168.1.45
+host45_minId = 10001
+host45_maxId = 20000
 
 #?>

@@ -108,51 +108,53 @@ class Common{
 		$aryMenu['system'] = array("link"=>"system.php","title"=> $locate_common->Translate("system"));
 		$aryMenu['profile'] = array("link"=>"profile.php","title"=> $locate_common->Translate("profile"));
 		$aryMenu['systemstatus'] = array("link"=>"systemstatus.php","title"=> $locate_common->Translate("systemstatus"));
+		$aryMenu['curcdr'] = array("link"=>"curcdr.php","title"=> $locate_common->Translate("curcdr"));
+		$aryMenu['delete_rate'] = array("link"=>"delete_rate.php","title"=> $locate_common->Translate("delete_rate"));
 
 		if ($_SESSION['curuser']['usertype'] == 'admin'){
 			if($config['customers']['enable']){
-				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','account_log','system');
+				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','account_log','curcdr','system','delete_rate');
 			}else{
-				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','account_log','system');
+				$aryCurMenu =array('account','accountgroup','resellergroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','account_log','curcdr','system','delete_rate');
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'reseller'){
 			if($config['customers']['enable']){
-				$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','profile');
+				$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','customers','discount','profile','curcdr');
 			}else{
-				$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','profile');
+				$aryCurMenu = array('account','accountgroup','report','customerrate','callshoprate','resellerrate','clid','import','cdr','credithistory','profile','curcdr');
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			if($config['customers']['enable']){
 				if($config['system']['sysstatus_new_window'] == 'yes'){
-					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile');
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile','curcdr');
 				}else{
-					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile','systemstatus');
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','customers','discount','profile','systemstatus','curcdr');
 				}
 			}else{
 				if($config['system']['sysstatus_new_window'] == 'yes'){
-					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile');
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile','curcdr');
 				}else{
-					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile','systemstatus');
+					$aryCurMenu = array('account','report','customerrate','callshoprate','clid','import','cdr','credithistory','profile','systemstatus','curcdr');
 				}
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}elseif($_SESSION['curuser']['usertype'] == 'clid'){
-			$aryCurMenu = array('clid','cdr','credithistory');
+			$aryCurMenu = array('clid','cdr','credithistory','curcdr');
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);
 		}else{ // operator
 			if($config['customers']['enable']){
 				if($config['system']['sysstatus_new_window'] == 'yes'){
-					$aryCurMenu = array('report','customerrate','customers','discount');
+					$aryCurMenu = array('report','customerrate','customers','discount','curcdr');
 				}else{
-					$aryCurMenu = array('report','customerrate','customers','discount','systemstatus');
+					$aryCurMenu = array('report','customerrate','customers','discount','systemstatus','curcdr');
 				}
 			}else{
 				if($config['system']['sysstatus_new_window'] == 'yes'){
-					$aryCurMenu = array('report','customerrate');
+					$aryCurMenu = array('report','customerrate','curcdr');
 				}else{
-					$aryCurMenu = array('report','customerrate','systemstatus');
+					$aryCurMenu = array('report','customerrate','systemstatus','curcdr');
 				}
 			}
 			$html .= common::generateNavMenu($aryMenu,$aryCurMenu);

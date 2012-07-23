@@ -28,4 +28,6 @@ $months = "个月前的";
 $data = "数据";
 $file = "文件";
 $as = "为";
+$all = "全部";
+$answered = "应答";
 ?>

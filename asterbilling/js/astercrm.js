@@ -240,6 +240,8 @@ function checkHangup(){
 
 function clearCurchannel(divId){
 	//Local/84754138-legb-localanswertime
+	//alert("ok");
+	niftyplayer('hangup-beep').play();
 	document.getElementById(divId + '-phone').innerHTML = '&nbsp;';
 	document.getElementById(divId + '-startat').innerHTML = '';
 	document.getElementById(divId + '-duration').innerHTML = '';
@@ -252,7 +254,7 @@ function clearCurchannel(divId){
 	document.getElementById(divId + '-billsec').value = 0;
 	document.getElementById(divId + '-localanswertime').value = '';
 	document.getElementById(divId + '-totalsec').innerHTML = '-';
-	document.getElementById(divId + '-limitstatus').value = '';
+	document.getElementById(divId + '-limitstatus').value = '';	
 }
 
 

@@ -74,7 +74,7 @@ class Customer extends astercrm
 	*/
 	
 	function insertNewAccountgroup($f){
-		global $db;
+		global $db,$config;
 		$f = astercrm::variableFiler($f);
 		$sql= "INSERT INTO accountgroup SET "
 				."groupname='".$f['groupname']."', "
@@ -89,6 +89,10 @@ class Customer extends astercrm
 				."customer_multiple= '".$f['customer_multiple']."', "
 				."resellerid= ".$f['resellerid'].", "
 				."addtime = now() ";
+				
+		if($config['synchronize']['id_autocrement_byset']){
+			$sql .= ",id='".$f['id']."' ";
+		}
 		astercrm::events($sql);
 		$res =& $db->query($sql);
 		return $res;
@@ -107,8 +111,9 @@ class Customer extends astercrm
 		$f = astercrm::variableFiler($f);
 		if ( $f['creditmodtype'] == '' ){
 			$newcurcredit = $f['curcredit'];
-		}elseif ( $f['creditmodtype'] == 'add' ){
+		}elseif ( $f['creditmodtype'] == 'add' && is_numeric( $f['creditmod']) ){
 			$newcurcredit = $f['curcredit'] + $f['creditmod'];
+			$newcurcreditstr = "curcredit=curcredit + ".$f['creditmod'].", ";
 			$historysql = "INSERT INTO credithistory SET "
 							."modifytime= now(), "
 							."resellerid='".$f['resellerid']."', "
@@ -119,8 +124,9 @@ class Customer extends astercrm
 							."comment='".$f['comment']."', "
 							."operator='".$_SESSION['curuser']['userid']."'";
 			$historyres =& $db->query($historysql);
-		}elseif ( $f['creditmodtype'] == 'reduce' ){
+		}elseif ( $f['creditmodtype'] == 'reduce' && is_numeric( $f['creditmod'])){
 			$newcurcredit = $f['curcredit'] - $f['creditmod'];
+			$newcurcreditstr = "curcredit=curcredit - ".$f['creditmod'].", ";
 			$historysql = "INSERT INTO credithistory SET "
 							."modifytime= now(), "
 							."resellerid='".$f['resellerid']."', "
@@ -138,7 +144,7 @@ class Customer extends astercrm
 				."grouptagline='".$f['grouptagline']."', "
 				."grouplogostatus='".$f['grouplogostatus']."', "
 				."resellerid='".$f['resellerid']."', "
-				."curcredit='".$newcurcredit."', "
+				.$newcurcreditstr
 				."creditlimit='".$f['creditlimit']."', "
 				."limittype='".$f['limittype']."', "
 				."group_multiple= '".$f['group_multiple']."', "
@@ -318,7 +324,7 @@ class Customer extends astercrm
 	*/
 	
 	function formAdd(){
-			global $locate;
+		global $locate,$config;
 
 		$reselleroptions = '';
 		$reseller = astercrm::getAll('resellergroup');
@@ -327,6 +333,10 @@ class Customer extends astercrm
 			$reselleroptions .= '<select id="resellerid" name="resellerid">';
 			$reselleroptions .= '<option value="0"></option>';
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				$reselleroptions .= "<OPTION value='".$row['id']."'>".$row['resellername']."</OPTION>";
 			}
 			$reselleroptions .= '</select>';
@@ -335,6 +345,10 @@ class Customer extends astercrm
 		}else{
 			while	($reseller->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['resellerid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+					}
+
 					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
 					break;
 				}
@@ -440,7 +454,7 @@ class Customer extends astercrm
 	*/
 	
 	function formEdit($id){
-		global $locate;
+		global $locate,$config;
 		$group =& Customer::getRecordByID($id,'accountgroup');
 
 		$reselleroptions = '';
@@ -450,6 +464,10 @@ class Customer extends astercrm
 			$reselleroptions .= '<select id="resellerid" name="resellerid">';
 			$reselleroptions .= '<option value="0"></option>';
 			while	($reseller->fetchInto($row)){
+				if($config['synchronize']['display_synchron_server']){
+					$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+				}
+
 				if ($row['id'] == $group['resellerid']){
 					$reselleroptions .= "<OPTION value='".$row['id']."' selected>".$row['resellername']."</OPTION>";
 				}else{
@@ -457,15 +475,25 @@ class Customer extends astercrm
 				}
 			}
 			$reselleroptions .= '</select>';
+
+			//the admin has the reset group button
+			$resetBtnStr = '<input type="button" onclick="if(confirm(&quot;'.$locate->Translate("Make Sure To Reset The Relate Data By Group").'?&quot;)) xajax_resetGroup(&quot;'.$group['id'].'&quot;);return false;" value="'.$locate->Translate("Reset Group").'">';
 		}else{
 			while	($reseller->fetchInto($row)){
 				if ($row['id'] == $_SESSION['curuser']['resellerid']){
+					if($config['synchronize']['display_synchron_server']){
+						$row['resellername'] = astercrm::getSynchronDisplay($row['id'],$row['resellername']);
+					}
+
 					$reselleroptions .= $row['resellername'].'<input type="hidden" value="'.$row['id'].'" name="resellerid" id="resellerid">';
 					break;
 				}
 			}
-		}
 
+			//except the admin,other don't have the reset group button
+			$resetBtnStr = '';
+		}
+		
 
 		$html = '
 			<!-- No edit the next line -->
@@ -480,7 +508,7 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Group Name").'*</td>
-					<td align="left"><input type="text" id="groupname" name="groupname" size="25" maxlength="30" value="'.$group['groupname'].'"></td>
+					<td align="left"><input type="text" id="groupname" name="groupname" size="25" maxlength="30" value="'.$group['groupname'].'">&nbsp;'.$resetBtnStr.'</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Title").'</td>
@@ -655,5 +683,36 @@ class Customer extends astercrm
 		return $html;
 	}
 
+	function resetGroup($groupId){
+		global $db;
+
+		//delete all mycdr data by this group
+		$query_mycdr = "DELETE FROM mycdr WHERE groupid = '$groupId'";
+		astercrm::events($query_mycdr);
+		$res =& $db->query($query_mycdr);
+
+		//delete all historycdr data by this group
+		$query_historycdr = "DELETE FROM historycdr WHERE groupid = '$groupId'";
+		astercrm::events($query_historycdr);
+		$res =& $db->query($query_historycdr);
+
+		//delete all credithistory data by this group
+		$query_credithistory = "DELETE FROM credithistory WHERE groupid = '$groupId'";
+		astercrm::events($query_credithistory);
+		$res =& $db->query($query_credithistory);
+
+		//reset clid field
+		$reset_clid = "UPDATE clid SET creditlimit='0.0000',curcredit='0.0000',credit_clid='0.0000',credit_group='0.0000',credit_reseller='0.0000' WHERE groupid = '$groupId'";
+		astercrm::events($reset_clid);
+		$res =& $db->query($reset_clid);
+
+		//reset accountgroup field
+		$reset_accountgroup = "UPDATE accountgroup SET creditlimit='0.0000',curcredit='0.0000',credit_clid='0.0000',credit_group='0.0000',credit_reseller='0.0000' WHERE id = '$groupId'";
+		astercrm::events($reset_accountgroup);
+		$res =& $db->query($reset_accountgroup);
+
+		return $res;
+	}
+	
 }
 ?>

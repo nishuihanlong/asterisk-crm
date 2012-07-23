@@ -94,6 +94,12 @@ function init($aFormValue){
 		$language = $aFormValue['locate'];
 	}
 
+	if (isset($_COOKIE["pagestyle"])) {
+		$pagestyle = $_COOKIE["pagestyle"];	
+	}else{
+		$pagestyle = $aFormValue['pagestyle'];
+	}
+
 	list($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $language);	//get locate parameter
 
 	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');			//init localization class
@@ -105,6 +111,11 @@ function init($aFormValue){
 	$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
 	$objResponse->addAssign("loginButton","disabled",false);
 	$objResponse->addAssign("onclickMsg","value",$locate->Translate("please_waiting"));
+	
+	$objResponse->addAssign("locateDiv","innerHTML",$locate->Translate("language").'&nbsp;&nbsp;&nbsp;');
+	$objResponse->addAssign("pagestyleDiv","innerHTML",$locate->Translate("page style").'&nbsp;&nbsp;&nbsp;');
+	$objResponse->addAssign("pagestyleSelectDiv","innerHTML","<SELECT name=\"pagestyle\" id=\"pagestyle\" style=\"width:120px;\"><option value=\"classic\">".$locate->Translate("classic")."</option><option value=\"simple\">".$locate->Translate("simple")."</option></SELECT>");
+	
 	$objResponse->addScript("xajax.$('username').focus();");
 	$objResponse->addScript("imgCode = new Image;imgCode.src = 'showimage.php';document.getElementById('imgCode').src = imgCode.src;");
 
@@ -118,6 +129,7 @@ function init($aFormValue){
 	$objResponse->addAssign("password","value",$password);
 	$objResponse->addAssign("rememberme","checked",$checked);
 	$objResponse->addAssign("locate","value",$language);
+	$objResponse->addAssign("pagestyle","value",$pagestyle);
 
 	$objResponse->addAssign("divCopyright","innerHTML",Common::generateCopyright($skin));
 	unset($_SESSION['curuser']);
@@ -151,13 +163,21 @@ function setLang($f){
 function processAccountData($aFormValues)
 {
 	global $db,$config;
-	
 
 	list ($_SESSION['curuser']['country'],$_SESSION['curuser']['language']) = split ("_", $aFormValues['locate']);	
 	//get locate parameter
-	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');	
+	$locate=new Localization($_SESSION['curuser']['country'],$_SESSION['curuser']['language'],'login');
 	
 	$objResponse = new xajaxResponse();
+	
+	/* check whether the pear had been installed */
+	$pear_exists_result = class_exists('PEAR');
+	if(empty($pear_exists_result)) {
+		$objResponse->addAlert($locate->Translate("Please install php pear"));
+		$objResponse->addAssign("loginButton","value",$locate->Translate("submit"));
+		$objResponse->addAssign("loginButton","disabled",false);
+		return $objResponse;
+	}
 
 	if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
 		if ($_SERVER["HTTP_CLIENT_IP"]) {
@@ -212,11 +232,13 @@ function processAccountData($aFormValues)
 					setcookie("username", $aFormValues['username'], time() + 94608000);
 					setcookie("password", $aFormValues['password'], time() + 94608000);
 					setcookie("language", $aFormValues['locate'], time() + 94608000);
+					setcookie("pagestyle", $aFormValues['pagestyle'], time() + 94608000);
 				}else{
 				// destroy cookies
 					setcookie("username", "", time()-3600);
 					setcookie("password", "", time()-3600);
 					setcookie("language", "", time()-3600);
+					setcookie("pagestyle", $aFormValues['pagestyle'], time() + 94608000);
 					$username = '';
 					$password = '';
 					$language = 'en_US';
@@ -269,10 +291,15 @@ function processAccountData($aFormValues)
 		please uncomment these three line
 	*/
 	//				$objResponse->addAlert($locate->Translate("login_success"));
-				if ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator')
-					$objResponse->addScript('window.location.href="systemstatus.php";');
-				else
+				if ($_SESSION['curuser']['usertype'] == 'groupadmin' || $_SESSION['curuser']['usertype'] == 'operator'){
+					if($aFormValues['pagestyle'] == 'classic') {
+						$objResponse->addScript('window.location.href="systemstatus.php";');
+					} else {
+						$objResponse->addScript('window.location.href="systemstatus_simple.php";');
+					}
+				} else {
 					$objResponse->addScript('window.location.href="account.php";');
+				}
 
 				astercrm::insertAccountLog($log);
 				return $objResponse;
@@ -293,7 +320,12 @@ function processAccountData($aFormValues)
 				}else{
 					$html .= '<font color=red>'.$locate->Translate("no_pass").'</font>';
 				}
-				$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'systemstatus.php\';">';
+				if($aFormValues['pagestyle'] == 'classic') {
+					$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'systemstatus.php\';">';
+				} else {
+					$html .= '<input type="button" value="'.$locate->Translate("continue").'" id="btnContinue" name="btnContinue" onclick="window.location.href=\'systemstatus_simple.php\';">';
+				}
+				
 				$objResponse->addAssign("formDiv","innerHTML",$html);
 				$objResponse->addClear("titleDiv","innerHTML");
 				$objResponse->addScript("xajax.$('btnContinue').focus();");

@@ -76,7 +76,8 @@ class astercc extends PEAR
 					$content .= "accountcode = ".$accountcode."\n";
 				}
 				$content .= "secret = ".$row['pin']."\n";
-				$content .= "callerid = \"".$row['clid']."\" <".$row['clid'].">\n\n";
+				$content .= "callerid = \"".$row['clid']."\" <".$row['clid'].">\n";
+				$content .= "accountcode = ".$row['accountcode']."\n\n";
 
 			}
 		}
@@ -367,15 +368,20 @@ class astercc extends PEAR
 	}
 
 	function readUnbilled($peer,$leg = null,$groupid){
-		global $db;
+		global $db,$config;
+		if($config['system']['booth_cdr_order'] == 'calldate_ASC'){
+			$cdr_order = 'ASC';
+		} else {
+			$cdr_order = 'DESC';
+		}
 
 		if ($leg == null){
 			
 
 			if($_SESSION['curuser']['billingfield'] == 'accountcode'){
-				$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer' OR accountcode='$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+				$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer' OR accountcode='$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate $cdr_order";
 			}else{
-				$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer' OR accountcode='$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+				$query = "SELECT * FROM mycdr WHERE (src = '$peer' OR dst = '$peer' OR accountcode='$peer') AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate $cdr_order";
 			}
 		}else{
 			/*
@@ -383,10 +389,11 @@ class astercc extends PEAR
 				src = "'.$peer.' AND dst="'.$leg.'"" 
 				AND userfield = "UNBILLED" ORDER BY calldate';
 				*/
-			$query = "SELECT * FROM mycdr WHERE channel LIKE 'local/$peer%' AND src = '$leg' AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate";
+			$query = "SELECT * FROM mycdr WHERE channel LIKE 'local/$peer%' AND src = '$leg' AND userfield = 'UNBILLED' AND groupid = $groupid ORDER BY calldate $cdr_order";
 			//	print $query;
 			//	exit;
 		}
+		
 		astercc::events($query);
 		$res = $db->query($query);
 		return $res;

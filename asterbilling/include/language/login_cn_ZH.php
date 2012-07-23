@@ -20,4 +20,9 @@ $no_pass			= "失败, 请检查服务器配置文件";
 $invalid_string		= "输入数据中含有非法字符，仅允许字符或者数字";
 $valid_code		= "验证码";
 $remember_me	= "记住我";
+$page_style = "风格";
+$classic = "经典版";
+$simple = "简化版";
+$language = "语言";
+$please_install_php_pear = "请先安装php-pear";
 ?>

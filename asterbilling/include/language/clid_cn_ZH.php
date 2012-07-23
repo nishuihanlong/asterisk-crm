@@ -41,4 +41,5 @@ $is_show = "显示";
 $yes = "是";
 $no = "否";
 $accountcode="账号";
+$local = "本地";
 ?>

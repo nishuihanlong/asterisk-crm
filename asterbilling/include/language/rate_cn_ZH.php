@@ -39,4 +39,5 @@ $per = "每";
 $update = "更新";
 $shortcut_update_rate = "快速更新费率";
 $return = "返回";
+$local = "本地";
 ?>

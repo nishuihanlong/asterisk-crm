@@ -21,4 +21,6 @@ $profile = "用户信息";
 $system = "系统";
 $systemstatus = "操作界面";
 $account_log = "登录日志";
+$curcdr = "实时通话记录";
+$delete_rate = "删除费率";
 ?>

@@ -88,11 +88,15 @@ function reloadSip(){
 }
 
 function setGroup($resellerid){
-	global $locate;
+	global $locate,$config;
 	$objResponse = new xajaxResponse();
 	$res = astercrm::getAll("accountgroup",'resellerid',$resellerid);
 	//添加option
 	while ($res->fetchInto($row)) {
+		if($config['synchronize']['display_synchron_server']){
+			$row['groupname'] = astercrm::getSynchronDisplay($row['id'],$row['groupname']);
+		}
+
 		$objResponse->addScript("addOption('groupid','".$row['id']."','".$row['groupname']."');");
 	}
 	return $objResponse;
@@ -190,6 +194,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// Databse Table: fields
 	$fields = array();
+
+	if($config['synchronize']['display_synchron_server']){
+		$fields[] = 'id';
+	}
 	$fields[] = 'clid';
 	$fields[] = 'pin';
 	$fields[] = 'display';
@@ -205,6 +213,10 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML table: Headers showed
 	$headers = array();
+	if($config['synchronize']['display_synchron_server']){
+		$headers[] = $locate->Translate("Id")."<br>";
+	}
+
 	if($_SESSION['curuser']['billingfield'] == 'accountcode')
 		$headers[] = $locate->Translate("Accountcode")."<br>";
 	else
@@ -255,6 +267,9 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 
 	// HTML Table: If you want ascendent and descendent ordering, set the Header Events.
 	$eventHeader = array();
+	if($config['synchronize']['display_synchron_server']){
+		$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","id","'.$divName.'","ORDERING");return false;\'';
+	}
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","clid","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","pin","'.$divName.'","ORDERING");return false;\'';
 	$eventHeader[]= 'onClick=\'xajax_showGrid(0,'.$limit.',"'.$filter.'","'.$content.'","display","'.$divName.'","ORDERING");return false;\'';
@@ -324,10 +339,26 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 //		$table->addRowSearchMore("clid",$fieldsFromSearch,$fieldsFromSearchShowAs,$filter,$content,$start,$limit,0,$typeFromSearch,$typeFromSearchShowAs,$stype);
 //	}
 
+	if($config['synchronize']['display_synchron_server']){
+		$otherHost = $config['synchronize_host']['Host'];
+		$hostArray = explode(',',trim($otherHost,','));
+	}
 	while ($arreglo->fetchInto($row)) {
 	// Change here by the name of fields of its database table
 		$rowc = array();
 		$rowc[] = $row['id'];
+		if($config['synchronize']['display_synchron_server']){
+			$existFlag = false;
+			foreach($hostArray as $tmp){
+				if($row['id'] >= $config['synchronize_host'][$tmp.'_minId'] && $row['id'] <= $config['synchronize_host'][$tmp.'_maxId']){
+					$rowc[] = $row['id'].'('.$config['synchronize_host'][$tmp].')';
+					$existFlag = true;
+				}
+			}
+			if(!$existFlag){
+				$rowc[] = $row['id'].'('.$locate->Translate("Local").')';
+			}
+		}
 		$rowc[] = $row['clid'];
 		$rowc[] = $row['pin'];
 		$rowc[] = $row['display'];
@@ -380,7 +411,7 @@ function add(){
 */
 
 function save($f){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	//check clid could only be numuric
 	if (!is_numeric($f['clid'])){
@@ -396,6 +427,11 @@ function save($f){
 	if ($f['groupid'] == 0 || $f['resellerid'] == 0){
 		$objResponse->addAlert($locate->Translate("Please choose reseller and group"));
 		return $objResponse->getXML();
+	}
+
+	if($config['synchronize']['id_autocrement_byset']){
+		$local_lastid = astercrm::getLocalLastId('clid');
+		$f['id'] = intval($local_lastid+1);
 	}
 
 	// check if clid duplicate
@@ -417,7 +453,6 @@ function save($f){
 		$objResponse->addAlert($locate->Translate("pin duplicate"));
 		return $objResponse->getXML();
 	}
-
 
 	$respOk = Customer::insertNewClid($f); // add a new account
 	if ($respOk){
@@ -516,7 +551,7 @@ function edit($id){
 }
 
 function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
-	global $locate,$db;
+	global $locate,$db,$config;
 	$objResponse = new xajaxResponse();
 	$searchField = array();
 	$searchContent = array();
@@ -531,6 +566,10 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 		$objResponse->addAssign("hidSql", "value", $sql); //赋值隐含域
 		$objResponse->addScript("document.getElementById('exportForm').submit();");
 	}elseif($optionFlag == "delete"){
+		if(empty($_SESSION['curuser']['usertype'])){
+			$objResponse->addAlert($locate->Translate("Session time out,please try again"));
+			return $objResponse->getXML();
+		}
 		if($_SESSION['curuser']['usertype'] == 'groupadmin'){
 			$searchContent[] = $_SESSION['curuser']['groupid'];
 			$searchField[] = 'groupid';
@@ -540,12 +579,28 @@ function searchFormSubmit($searchFormValue,$numRows,$limit,$id,$type){
 			$searchField[] = 'resellerid';
 			$searchType[] = 'equal';
 		}
-		astercrm::deletefromsearch($searchContent,$searchField,$searchType,'clid');
+
+		if($config['synchronize']['delete_by_use_history']){
+			astercrm::deleteToHistoryFromSearch($searchContent,$searchField,$searchType,'clid');
+		} else {
+			astercrm::deletefromsearch($searchContent,$searchField,$searchType,'clid');
+		}
+
 		$html = createGrid($numRows, $limit,'','','',$divName,"",$searchType);
 		$objResponse->addClear("msgZone", "innerHTML");
 		$objResponse->addAssign($divName, "innerHTML", $html);
 	}elseif($type == "delete"){
-		$res = Customer::deleteRecord($id,'clid');
+		if(empty($_SESSION['curuser']['usertype'])){
+			$objResponse->addAlert($locate->Translate("Session time out,please try again"));
+			return $objResponse->getXML();
+		}
+
+		if($config['synchronize']['delete_by_use_history']){
+			$res = Customer::deleteRecordToHistory('id',$id,'clid');
+		} else {
+			$res = Customer::deleteRecord($id,'clid');
+		}
+		
 		if ($res){
 			$html = createGrid($searchFormValue['numRows'], $searchFormValue['limit'],$searchField, $searchContent, $searchField, $divName, "",$searchType);
 			$objResponse->addAssign("msgZone", "innerHTML", $locate->Translate("record deleted"));

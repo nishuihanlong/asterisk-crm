@@ -32,4 +32,5 @@ $status = "属性";
 $failed_cause = "失败原因";
 $cretime = "创建时间";
 $option = "操作";
+$local = "本地";
 ?>

@@ -17,4 +17,9 @@ $device_status			= "Device status";
 $continue			= "Contunue";
 $no_pass			= "no pass, please check your configuration file";
 $invalid_string		= "Invalid input, only digits or letters allowed";
+$page_style = "Page Style";
+$classic = "Classic";
+$simple = "Simple";
+$language = "Language";
+$please_install_php_pear = "Please install php-pear";
 ?>

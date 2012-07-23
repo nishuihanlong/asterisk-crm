@@ -177,7 +177,7 @@ class paypal_class {
 						
 		if (!$fp) {
 			if($log){
-				fwrite($loghandle,$oricontent.$date.'-PDT return error:HTTP ERROR'."\n");
+				fwrite($loghandle,$oricontent.$date.'-PDT return error:HTTP ERRORNO-'.$errno."|ERRSTR-".$errstr."\n");
 				fclose($loghandle);
 			}
 		// HTTP ERROR
@@ -226,7 +226,7 @@ class paypal_class {
 		}
    }
    
-   function validate_ipn() {
+   function validate_ipn($log=false) {
 
       // parse the paypal URL
       $url_parsed=parse_url($this->paypal_url);
@@ -240,6 +240,14 @@ class paypal_class {
          $post_string .= $field.'='.urlencode($value).'&'; 
       }
       $post_string.="cmd=_notify-validate"; // append ipn command
+	  if($log){
+			$loghandle = fopen("upload/paypalipn.log",'rb');
+			$oricontent = fread($loghandle,filesize("upload/paypalipn.log"));
+			fclose($loghandle);
+			$loghandle = fopen("upload/paypalipn.log",'w');
+			$date = '#####'.date("Y-m-d H:i:s");
+			$logstr = $oricontent.$date.'-IPN post_string:'.$post_string."\n";
+		}
 
       // open the connection to paypal
       $fp = fsockopen($url_parsed['host'],80,$err_num,$err_str,30); 
@@ -248,7 +256,10 @@ class paypal_class {
          // could not open the connection.  If loggin is on, the error message
          // will be in the log.
          $this->last_error = "fsockopen error no. $errnum: $errstr";
-         $this->log_ipn_results(false);       
+         $this->log_ipn_results(false);  
+		 if($log){
+			 $logstr .= "fsockopen error no. $errnum: $errstr \n";
+		 }
          return false;
          
       } else { 
@@ -267,6 +278,9 @@ class paypal_class {
          } 
 
          fclose($fp); // close connection
+		 if($log){
+			 $logstr .= "ipn_response: $ipn_response \n";
+		 }
 
       }
       
@@ -274,13 +288,23 @@ class paypal_class {
   
          // Valid IPN transaction.
          $this->log_ipn_results(true);
+		 if($log){
+			 $logstr .= "ipn_results: Valid \n";
+			 fwrite($loghandle,$logstr);
+			 fclose($loghandle);
+		 }
          return true;       
          
       } else {
   
          // Invalid IPN transaction.  Check the log for details.
          $this->last_error = 'IPN Validation Failed.';
-         $this->log_ipn_results(false);   
+         $this->log_ipn_results(false);
+		 if($log){
+			 $logstr .= "ipn_results: Invalid \n";
+			 fwrite($loghandle,$logstr);
+			 fclose($loghandle);
+		 }
          return false;
          
       }
