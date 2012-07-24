@@ -3,7 +3,7 @@
 ;
 dbtype = mysql
 dbhost = localhost
-dbname = astercc
+dbname = astercc01
 dbport = 3306
 username = root
 password = 

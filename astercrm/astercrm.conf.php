@@ -6,7 +6,7 @@
 dbtype = mysql
 dbport = 3306
 dbhost = 127.0.0.1
-dbname = astercc
+dbname = astercc01
 username = root
 password = 
 
