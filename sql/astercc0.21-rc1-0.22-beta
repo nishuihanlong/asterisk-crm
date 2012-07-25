@@ -1,0 +1,4 @@
+INSERT INTO qevent VALUES (19,'ADDMEMBER');
+INSERT INTO qevent VALUES (20,'REMOVEMEMBER');
+ALTER TABLE mycdr ADD INDEX `src` ( `srcuid` );
+ALTER TABLE mycdr ADD INDEX `dst` ( `dstuid` );

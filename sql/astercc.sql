@@ -603,7 +603,9 @@ CREATE TABLE `mycdr` (
   `hangupcausetxt` varchar(50) NOT NULL DEFAULT '',
   UNIQUE KEY `id` (`id`),
   INDEX `customerid` (`customerid`),
-  KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`)
+  KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`),
+  INDEX `src` ( `srcuid` ),
+  INDEX `dst` ( `dstuid` ),
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ########################################################
@@ -1395,7 +1397,8 @@ INSERT INTO qevent VALUES (15,'SYSCOMPAT');
 INSERT INTO qevent VALUES (16,'TRANSFER');
 INSERT INTO qevent VALUES (17,'PAUSE');
 INSERT INTO qevent VALUES (18,'UNPAUSE');
-
+INSERT INTO qevent VALUES (19,'ADDMEMBER');
+INSERT INTO qevent VALUES (20,'REMOVEMEMBER');
 
 ##
 ## Table structure for table `qname`
