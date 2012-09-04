@@ -228,7 +228,7 @@ Class astercrm extends PEAR{
 
 		if ($_SESSION['curuser']['usertype'] == 'reseller'){
 			$f['resellerid'] = $_SESSION['curuser']['resellerid'];
-			$f['groupid'] = $_SESSION['curuser']['resellerid'];
+			//$f['groupid'] = $_SESSION['curuser']['groupid'];
 		}
 
 		if ($_SESSION['curuser']['usertype'] == 'groupadmin'){
