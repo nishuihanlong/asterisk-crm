@@ -177,13 +177,13 @@ error_report_level = 3
 
 [synchronize]
 ;id will follow the last id of the local server when save data
-id_autocrement_byset = 1
+id_autocrement_byset = 0
 
 ;if display the server which the data belongs to
-display_synchron_server = 1
+display_synchron_server = 0
 
 ;if use the rate history table when delete data
-delete_by_use_history = 1
+delete_by_use_history = 0
 
 [local_host]
 minId = 1

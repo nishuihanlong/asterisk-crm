@@ -300,7 +300,13 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['credit_reseller'];
 			//astercc::readAmount($row['id'],null,$row['billingtime'],null,'callshopcredit');
 		$rowc[] = $row['group_multiple'];
-		$table->addRow("accountgroup",$rowc,1,1,0,$divName,$fields);
+
+		if(!empty($row['limittype']) && (($row['creditlimit'] - $row['curcredit']) < 0 || $row['curcredit'] < 0)){
+			$trstyle = 'style="background-color:red;"';
+		} else {
+			$trstyle = '';
+		}
+		$table->addRow("accountgroup",$rowc,1,1,0,$divName,$fields,$trstyle);
  	}
  	
  	// End Editable Zone

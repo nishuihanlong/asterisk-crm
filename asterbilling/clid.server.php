@@ -371,10 +371,17 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 		$rowc[] = $row['resellername'];
 		$rowc[] = $locate->Translate($row['isshow']);
 		$rowc[] = $row['addtime'];
-	if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-			$table->addRow("clid",$rowc,1,1,0,$divName,$fields);
+
+		if(!empty($row['limittype']) && (($row['creditlimit'] - $row['curcredit'] < 0) || $row['curcredit'] < 0)){
+			$trstyle = 'style="background-color:red;"';
+		} else {
+			$trstyle = '';
+		}
+		
+		if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+			$table->addRow("clid",$rowc,1,1,0,$divName,$fields,$trstyle);
 		}else{
-			$table->addRow("clid",$rowc,1,0,0,$divName,$fields);
+			$table->addRow("clid",$rowc,1,0,0,$divName,$fields,$trstyle);
 		}
  	}
  	
