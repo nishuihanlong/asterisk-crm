@@ -164,6 +164,7 @@ CREATE TABLE `clid` (
   `isshow` enum('yes','no') NOT NULL default 'yes',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `locked` tinyint(4) NOT NULL DEFAULT '0',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `pin` (`pin`),
   UNIQUE KEY `clid` (`clid`)
@@ -605,7 +606,7 @@ CREATE TABLE `mycdr` (
   INDEX `customerid` (`customerid`),
   KEY `srcid` (`src`,`dst`,`channel`,`didnumber`,`dstchannel`,`duration`,`billsec`,`disposition`),
   INDEX `src` ( `srcuid` ),
-  INDEX `dst` ( `dstuid` ),
+  INDEX `dst` ( `dstuid` )
 ) ENGINE=MyISAM DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;
 
 ########################################################
@@ -2184,6 +2185,7 @@ CREATE TABLE `clid_history` (
   `isshow` enum('yes','no') NOT NULL default 'yes',
   `addtime` datetime NOT NULL default '0000-00-00 00:00:00',
   `billingtime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `locked` tinyint(4) NOT NULL DEFAULT '0',
   UNIQUE KEY `id` (`id`)
   #UNIQUE KEY `pin` (`pin`),
   #UNIQUE KEY `clid` (`clid`)
