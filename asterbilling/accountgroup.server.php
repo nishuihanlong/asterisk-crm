@@ -301,7 +301,7 @@ function createGrid($start = 0, $limit = 1, $filter = null, $content = null, $or
 			//astercc::readAmount($row['id'],null,$row['billingtime'],null,'callshopcredit');
 		$rowc[] = $row['group_multiple'];
 
-		if(!empty($row['limittype']) && (($row['creditlimit'] - $row['curcredit']) < 0 || $row['curcredit'] < 0)){
+		if(!empty($row['limittype']) && ($row['creditlimit'] - $row['curcredit']) < 0 ){//|| $row['curcredit'] < 0)
 			$trstyle = 'style="background-color:red;"';
 		} else {
 			$trstyle = '';

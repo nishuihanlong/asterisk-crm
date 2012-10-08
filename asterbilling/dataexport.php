@@ -42,6 +42,10 @@ if ($_SESSION['curuser']['usertype'] != 'admin'){
 	}
 }
 
+if(!function_exists('mb_convert_encoding')){
+	echo "Please install php-mbstring!";exit;
+}
+
 ob_start();
 header("charset=uft-8");   
 header('Content-type:  application/force-download');
