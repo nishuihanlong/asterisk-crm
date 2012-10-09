@@ -384,6 +384,61 @@ class Customer extends astercrm
 		}
 */
 
+		$fixedValueFlag = false;
+		$groupSelectTrStyle = '';
+		if($_SESSION['curuser']['usertype'] == 'reseller' && ($_SESSION['curuser']['userid'] == $account['id'] || $account['usertype'] == 'reseller')){
+			$fixedValueFlag = true;
+			
+			$groupSelectTrStyle = " style='display:none;' ";
+		} else if($_SESSION['curuser']['usertype'] == 'groupadmin' && ($_SESSION['curuser']['userid'] == $account['id'] || $account['usertype'] == 'groupadmin')){
+			$fixedValueFlag = true;
+		}
+		
+		if($fixedValueFlag){
+			if($_SESSION['curuser']['usertype'] == 'reseller'){
+				$usertypeoptions = $locate->Translate("Reseller").'<input type="hidden" value="reseller" name="usertype" id="usertype" />';
+			} else {
+				$usertypeoptions = $locate->Translate("Group Admin").'<input type="hidden" value="groupadmin" name="usertype" id="usertype" />';
+			}
+		} else {
+			$usertypeoptions = '<select id="usertype" name="usertype">';
+			$usertypeoptions .= '<option value="" ';
+			if($account['usertype'] == ''){
+				$html .= ' selected ';
+			}
+			$usertypeoptions .= '></option>';
+
+			if ($_SESSION['curuser']['usertype'] == 'admin'){
+				$usertypeoptions .= '<option value="admin"';
+				if($account['usertype'] == 'admin'){
+					$usertypeoptions .= ' selected ';
+				}
+				$usertypeoptions .=' >'.$locate->Translate("Admin").'</option>';
+				$usertypeoptions .= '<option value="reseller"';
+				if($account['usertype'] == 'reseller'){
+					$usertypeoptions .= ' selected ';
+				}
+				$usertypeoptions .=' >'.$locate->Translate("Reseller").'</option>';
+			}
+
+			if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
+				$usertypeoptions .= '<option value="groupadmin"';
+				if($account['usertype'] == 'groupadmin'){
+					$usertypeoptions .= ' selected ';
+				}
+				$usertypeoptions .=' >'.$locate->Translate("Group Admin").'</option>';
+			}
+
+			$usertypeoptions .= ' <option value="operator"';
+				if($account['usertype'] == 'operator'){
+				$usertypeoptions .= ' selected ';
+			}
+			$usertypeoptions .= '>'.$locate->Translate("Operator").'</option>';
+			 
+			$usertypeoptions .= '</select>';
+		}
+		
+
 		$reselleroptions = '';
 		$reseller = astercrm::getAll('resellergroup');
 
@@ -459,41 +514,10 @@ class Customer extends astercrm
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("usertype").'</td>
-					<td align="left">
-					<select id="usertype" name="usertype">
-						<option value="" ';
-				if($account['usertype'] == ''){
-					$html .= ' selected ';
-				}
-				$html .= '></option>';
-
-				if ($_SESSION['curuser']['usertype'] == 'admin'){
-					$html .= '<option value="admin"';
-					if($account['usertype'] == 'admin'){
-						$html .= ' selected ';
-					}
-					$html .=' >'.$locate->Translate("Admin").'</option>';
-					$html .= '<option value="reseller"';
-					if($account['usertype'] == 'reseller'){
-						$html .= ' selected ';
-					}
-					$html .=' >'.$locate->Translate("Reseller").'</option>';
-				}
-
-				if ($_SESSION['curuser']['usertype'] == 'admin' || $_SESSION['curuser']['usertype'] == 'reseller'){
-					$html .= '<option value="groupadmin"';
-					if($account['usertype'] == 'groupadmin'){
-						$html .= ' selected ';
-					}
-					$html .=' >'.$locate->Translate("Group Admin").'</option>';
-				}
-
-				$html .= ' <option value="operator"';
-					if($account['usertype'] == 'operator'){
-					$html .= ' selected ';
-				}
-				$html .= '>'.$locate->Translate("Operator").'</option>';
-			$html .='</select>
+					<td align="left">'
+						.$usertypeoptions.
+					'
+					</td>
 				</tr>
 				<tr>
 					<td nowrap align="left">'.$locate->Translate("Reseller").'</td>
@@ -501,7 +525,7 @@ class Customer extends astercrm
 						.$reselleroptions.
 					'</td>
 				</tr>
-				<tr>
+				<tr '.$groupSelectTrStyle.'>
 					<td nowrap align="left">'.$locate->Translate("Group").'</td>
 					<td align="left">
 					'
